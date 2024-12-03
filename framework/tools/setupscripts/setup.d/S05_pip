@@ -1,0 +1,7 @@
+#
+# Copyright 2024 Morse Micro
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+echo -e "\u001b[32mInstalling python packages.\u001b[0m"
+$DRYRUNCMD pip3 install --user -q -r $SCRIPT_DIR/requirements.txt

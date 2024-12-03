@@ -1,0 +1,3 @@
+# We install pipenv via pip instead of apt because the version in Ubuntu 22.04 PPA is not
+# compatiable with it's default Python version.
+pipenv

@@ -1,0 +1,159 @@
+' Copyright 2024 Morse Micro
+' SPDX-License-Identifier: Apache-2.0
+@startuml
+
+skinparam SequenceMessageAlign center
+!pragma teoz true
+
+title MMAGIC_DATALINK Transactions for M2M
+
+box Controller
+participant controller
+entity mmagic_datalink_controller
+end box
+
+box Agent
+entity mmagic_datalink_agent
+participant agent
+end box
+
+== Initialization ==
+note across
+    The initialization for agent and controller does not need to occur synchronously. However,
+    both sides need to be initialized before the first transaction occurs.
+end note
+
+activate controller
+controller -> mmagic_datalink_controller: mmagic_datalink_controller_init()
+mmagic_datalink_controller --> controller
+controller -> mmagic_datalink_controller: mmagic_datalink_controller_register_irq_cb()
+mmagic_datalink_controller --> controller
+deactivate controller
+
+
+activate agent
+agent -> mmagic_datalink_agent: mmagic_datalink_agent_init()
+mmagic_datalink_agent --> agent
+
+agent -> mmagic_datalink_agent: mmagic_datalink_agent_register_rx_buffer_cb()
+mmagic_datalink_agent -> mmagic_datalink_agent: Configure RX
+mmagic_datalink_agent --> agent
+
+note over mmagic_datalink_agent
+    At this point the agent will be
+    waiting to RX a transacton of
+    `max_packet_size`
+end note
+deactivate agent
+
+== Controller Transmission ==
+
+note across
+    It is assumed that the controller will always be the first to transmit.
+end note
+
+controller -> mmagic_datalink_controller: mmagic_datalink_controller_alloc_buffer_for_tx()
+activate controller
+mmagic_datalink_controller --> controller
+
+controller -> mmagic_datalink_controller: mmagic_datalink_controller_tx_buffer()
+note over mmagic_datalink_controller #Red
+    Executes in LLC
+    thread context
+    and is blocking
+end note
+mmagic_datalink_controller ->> mmagic_datalink_agent++#SkyBlue: WRITE_PAYLOAD
+mmagic_datalink_agent -->> mmagic_datalink_controller: ack
+&mmagic_datalink_agent -> mmagic_datalink_agent: Queue_Packet
+deactivate mmagic_datalink_agent
+
+mmagic_datalink_agent -> mmagic_datalink_agent++#SkyBlue: ACK_Complete
+mmagic_datalink_agent -> mmagic_datalink_agent: Configure RX
+deactivate mmagic_datalink_agent
+
+{c2a_first} mmagic_datalink_controller --> controller: Success
+
+note over agent
+    Upper layer takes
+    ownership of the buffer
+end note
+
+activate mmagic_datalink_agent
+mmagic_datalink_agent -> agent: mmagic_datalink_agent_rx_buffer_cb(mmbuf)
+agent --> mmagic_datalink_agent
+deactivate mmagic_datalink_agent
+
+
+alt Further data
+    {c2a_next} controller -> mmagic_datalink_controller: mmagic_datalink_controller_alloc_buffer_for_tx()
+    mmagic_datalink_controller --> controller
+
+    controller -> mmagic_datalink_controller: mmagic_datalink_controller_tx_buffer()
+    mmagic_datalink_controller ->> mmagic_datalink_agent++#SkyBlue: WRITE_PAYLOAD
+    mmagic_datalink_agent -->> mmagic_datalink_controller: ack
+    &mmagic_datalink_agent -> mmagic_datalink_agent: Queue_Packet
+    deactivate mmagic_datalink_agent
+    mmagic_datalink_controller --> controller: Success
+end
+deactivate controller
+
+{c2a_first} <-> {c2a_next} : Possible inter-tx-delay ??
+
+== Agent Transmission ==
+
+agent -> mmagic_datalink_agent: mmagic_datalink_agent_alloc_buffer_for_tx()
+mmagic_datalink_agent --> agent
+
+agent -> mmagic_datalink_agent: mmagic_datalink_agent_tx_buffer()
+activate agent
+alt Successful case
+    mmagic_datalink_agent ->o mmagic_datalink_controller++#SkyBlue: IRQ_Assert
+
+    mmagic_datalink_controller -> controller++: irq_cb()
+    controller --> mmagic_datalink_controller
+
+    controller -> mmagic_datalink_controller: mmagic_datalink_controller_alloc_buffer_for_rx()
+    mmagic_datalink_controller --> controller
+    controller -> mmagic_datalink_controller: mmagic_datalink_rx_buffer()
+    note over mmagic_datalink_controller #Red
+        Executes in LLC
+        thread context
+        and is blocking
+    end note
+    mmagic_datalink_controller ->> mmagic_datalink_agent: READ_PAYLOAD
+    alt Payload Available
+        mmagic_datalink_agent ->> mmagic_datalink_controller: RSP_LEN (num bytes)
+        mmagic_datalink_agent ->> mmagic_datalink_controller: Payload
+    else No Payload
+        note over mmagic_datalink_agent
+            This is not a likely
+            case as the raised
+            the IRQ.
+        end note
+        mmagic_datalink_agent ->> mmagic_datalink_controller: RSP_LEN (0)
+    end
+
+    mmagic_datalink_agent -> mmagic_datalink_controller: IRQ_Deassert
+    deactivate mmagic_datalink_controller
+    mmagic_datalink_agent --> agent: Success
+    deactivate agent
+else Some error occurs during transmission
+    mmagic_datalink_agent --> agent: Error Code
+end
+
+alt CRC Error on Read
+    loop n-times
+        mmagic_datalink_controller ->> mmagic_datalink_agent: RE_READ_PAYLOAD
+        mmagic_datalink_agent ->> mmagic_datalink_controller: RSP_LEN (num bytes)
+        mmagic_datalink_agent ->> mmagic_datalink_controller: Payload
+    end
+end
+
+note over controller
+    Upper layer takes
+    ownership of the buffer
+end note
+mmagic_datalink_controller --> controller: Payload
+deactivate controller
+
+@enduml

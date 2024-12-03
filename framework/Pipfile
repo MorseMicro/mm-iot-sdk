@@ -1,0 +1,39 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+protobuf = "~=3.20.3"
+coloredlogs = "*"
+hjson = "*"
+pyelftools = "*"
+dacite = "*"
+dict-to-dataclass = "*"
+
+[dev-packages]
+matplotlib = "~=3.7.3"
+pyyaml = "*"
+pypugjs = "*"
+pandas = "~=2.0.3"
+enlighten = "*"
+gitpython = "*"
+jinja2 = "*"
+numpy = "~=1.24.4"
+requests = "*"
+prettytable = "*"
+plotly = "~=5.15.0"
+kaleido = "==0.2.1"
+# contourpy is a dependency of kaleido. We're only specifying a version because we're using 3.8 and
+# pipenv is trying to install an unsupported version (newer).
+contourpy = "~=1.1.1"
+ruff = "== 0.4.4"
+# To utilise these additional package categories simply add `--categories power-measurement` option to
+# the pipenv command. See https://pipenv.pypa.io/en/latest/specifiers/#specifying-package-categories
+# for more details.
+pyserial = "*"
+crc = "*"
+
+[power-measurement]
+joulescope-ui = "~=0.10.13"
+joulescope = "*"

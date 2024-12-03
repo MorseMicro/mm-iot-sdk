@@ -1,0 +1,46 @@
+{
+  "build": {
+    "core": "stm32",
+    "cpu": "cortex-m4",
+    "fpu": "fpv4-sp-d16",
+    "extra_flags": "-DSTM32F429xx",
+    "f_cpu": "180000000L",
+    "mcu": "stm32f429zit6",
+    "product_line": "STM32F429xx",
+    "variant": "STM32F4xx/F427Z(G-I)T_F429ZET_F429Z(G-I)(T-Y)_F437Z(G-I)T_F439Z(G-I)(T-Y)"
+  },
+  "connectivity": [
+    "can",
+    "ethernet"
+  ],
+  "debug": {
+    "default_tools": [
+      "stlink"
+    ],
+    "jlink_device": "STM32F429ZI",
+    "onboard_tools": [
+      "stlink"
+    ],
+    "openocd_board": "st_nucleo_f4",
+    "openocd_target": "stm32f4x",
+    "svd_path": "STM32F429.svd"
+  },
+  "frameworks": [
+	"mm_iot"
+  ],
+  "name": "EKH08-F429 (STM32F429ZI)",
+  "upload": {
+    "maximum_ram_size": 196608,
+    "maximum_size": 2097152,
+    "protocol": "stlink",
+    "protocols": [
+      "jlink",
+      "cmsis-dap",
+      "stlink",
+      "blackmagic",
+      "mbed"
+    ]
+  },
+  "url": "https://www.morsemicro.com",
+  "vendor": "Morse Micro"
+}

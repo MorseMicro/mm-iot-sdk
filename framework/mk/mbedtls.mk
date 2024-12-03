@@ -1,0 +1,162 @@
+#
+# Copyright 2023 Morse Micro
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+MBEDTLS_DIR = src/mbedtls
+
+MBEDTLS_SRCS_C += library/aes.c
+MBEDTLS_SRCS_C += library/aria.c
+MBEDTLS_SRCS_C += library/asn1parse.c
+MBEDTLS_SRCS_C += library/asn1write.c
+MBEDTLS_SRCS_C += library/base64.c
+MBEDTLS_SRCS_C += library/bignum.c
+MBEDTLS_SRCS_C += library/bignum_core.c
+MBEDTLS_SRCS_C += library/bignum_mod.c
+MBEDTLS_SRCS_C += library/bignum_mod_raw.c
+MBEDTLS_SRCS_C += library/camellia.c
+MBEDTLS_SRCS_C += library/ccm.c
+MBEDTLS_SRCS_C += library/chacha20.c
+MBEDTLS_SRCS_C += library/chachapoly.c
+MBEDTLS_SRCS_C += library/cipher.c
+MBEDTLS_SRCS_C += library/cipher_wrap.c
+MBEDTLS_SRCS_C += library/cmac.c
+MBEDTLS_SRCS_C += library/constant_time.c
+MBEDTLS_SRCS_C += library/ctr_drbg.c
+MBEDTLS_SRCS_C += library/debug.c
+MBEDTLS_SRCS_C += library/des.c
+MBEDTLS_SRCS_C += library/dhm.c
+MBEDTLS_SRCS_C += library/ecdh.c
+MBEDTLS_SRCS_C += library/ecdsa.c
+MBEDTLS_SRCS_C += library/ecjpake.c
+MBEDTLS_SRCS_C += library/ecp.c
+MBEDTLS_SRCS_C += library/ecp_curves.c
+MBEDTLS_SRCS_C += library/entropy.c
+MBEDTLS_SRCS_C += library/entropy_poll.c
+MBEDTLS_SRCS_C += library/error.c
+MBEDTLS_SRCS_C += library/gcm.c
+MBEDTLS_SRCS_C += library/hkdf.c
+MBEDTLS_SRCS_C += library/hmac_drbg.c
+MBEDTLS_SRCS_C += library/lmots.c
+MBEDTLS_SRCS_C += library/lms.c
+MBEDTLS_SRCS_C += library/mbedtls_platform.c
+MBEDTLS_SRCS_C += library/md5.c
+MBEDTLS_SRCS_C += library/md.c
+MBEDTLS_SRCS_C += library/memory_buffer_alloc.c
+MBEDTLS_SRCS_C += library/mps_reader.c
+MBEDTLS_SRCS_C += library/mps_trace.c
+MBEDTLS_SRCS_C += library/nist_kw.c
+MBEDTLS_SRCS_C += library/oid.c
+MBEDTLS_SRCS_C += library/padlock.c
+MBEDTLS_SRCS_C += library/pem.c
+MBEDTLS_SRCS_C += library/pk.c
+MBEDTLS_SRCS_C += library/pk_ecc.c
+MBEDTLS_SRCS_C += library/pkcs12.c
+MBEDTLS_SRCS_C += library/pkcs5.c
+MBEDTLS_SRCS_C += library/pkcs7.c
+MBEDTLS_SRCS_C += library/pkparse.c
+MBEDTLS_SRCS_C += library/pk_wrap.c
+MBEDTLS_SRCS_C += library/pkwrite.c
+MBEDTLS_SRCS_C += library/platform.c
+MBEDTLS_SRCS_C += library/platform_util.c
+MBEDTLS_SRCS_C += library/poly1305.c
+MBEDTLS_SRCS_C += library/ripemd160.c
+MBEDTLS_SRCS_C += library/rsa_alt_helpers.c
+MBEDTLS_SRCS_C += library/rsa.c
+MBEDTLS_SRCS_C += library/sha1.c
+MBEDTLS_SRCS_C += library/sha256.c
+MBEDTLS_SRCS_C += library/sha512.c
+MBEDTLS_SRCS_C += library/ssl_cache.c
+MBEDTLS_SRCS_C += library/ssl_ciphersuites.c
+MBEDTLS_SRCS_C += library/ssl_client.c
+MBEDTLS_SRCS_C += library/ssl_debug_helpers_generated.c
+MBEDTLS_SRCS_C += library/ssl_msg.c
+MBEDTLS_SRCS_C += library/ssl_ticket.c
+MBEDTLS_SRCS_C += library/ssl_tls12_client.c
+MBEDTLS_SRCS_C += library/ssl_tls12_server.c
+MBEDTLS_SRCS_C += library/ssl_tls13_client.c
+MBEDTLS_SRCS_C += library/ssl_tls13_generic.c
+MBEDTLS_SRCS_C += library/ssl_tls13_keys.c
+MBEDTLS_SRCS_C += library/ssl_tls13_server.c
+MBEDTLS_SRCS_C += library/ssl_tls.c
+MBEDTLS_SRCS_C += library/threading.c
+MBEDTLS_SRCS_C += library/version.c
+MBEDTLS_SRCS_C += library/version_features.c
+MBEDTLS_SRCS_C += library/x509.c
+MBEDTLS_SRCS_C += library/x509_create.c
+MBEDTLS_SRCS_C += library/x509_crl.c
+MBEDTLS_SRCS_C += library/x509_crt.c
+MBEDTLS_SRCS_C += library/x509_csr.c
+MBEDTLS_SRCS_C += library/x509write_crt.c
+MBEDTLS_SRCS_C += library/x509write_csr.c
+
+MBEDTLS_SRCS_H += include/mbedtls/aes.h
+MBEDTLS_SRCS_H += include/mbedtls/aria.h
+MBEDTLS_SRCS_H += include/mbedtls/base64.h
+MBEDTLS_SRCS_H += include/mbedtls/bignum.h
+MBEDTLS_SRCS_H += include/mbedtls/build_info.h
+MBEDTLS_SRCS_H += include/mbedtls/camellia.h
+MBEDTLS_SRCS_H += include/mbedtls/ccm.h
+MBEDTLS_SRCS_H += include/mbedtls/chacha20.h
+MBEDTLS_SRCS_H += include/mbedtls/chachapoly.h
+MBEDTLS_SRCS_H += include/mbedtls/check_config.h
+MBEDTLS_SRCS_H += include/mbedtls/cipher.h
+MBEDTLS_SRCS_H += include/mbedtls/cmac.h
+MBEDTLS_SRCS_H += include/mbedtls/compat-2.x.h
+MBEDTLS_SRCS_H += include/mbedtls/config_psa.h
+MBEDTLS_SRCS_H += include/mbedtls/constant_time.h
+MBEDTLS_SRCS_H += include/mbedtls/ctr_drbg.h
+MBEDTLS_SRCS_H += include/mbedtls/debug.h
+MBEDTLS_SRCS_H += include/mbedtls/des.h
+MBEDTLS_SRCS_H += include/mbedtls/dhm.h
+MBEDTLS_SRCS_H += include/mbedtls/ecjpake.h
+MBEDTLS_SRCS_H += include/mbedtls/entropy.h
+MBEDTLS_SRCS_H += include/mbedtls/error.h
+MBEDTLS_SRCS_H += include/mbedtls/hkdf.h
+MBEDTLS_SRCS_H += include/mbedtls/hmac_drbg.h
+MBEDTLS_SRCS_H += include/mbedtls/lms.h
+MBEDTLS_SRCS_H += include/mbedtls/md5.h
+MBEDTLS_SRCS_H += include/mbedtls/md.h
+MBEDTLS_SRCS_H += include/mbedtls/memory_buffer_alloc.h
+MBEDTLS_SRCS_H += include/mbedtls/nist_kw.h
+MBEDTLS_SRCS_H += include/mbedtls/pem.h
+MBEDTLS_SRCS_H += include/mbedtls/pkcs12.h
+MBEDTLS_SRCS_H += include/mbedtls/pkcs5.h
+MBEDTLS_SRCS_H += include/mbedtls/pkcs7.h
+MBEDTLS_SRCS_H += include/mbedtls/platform.h
+MBEDTLS_SRCS_H += include/mbedtls/platform_time.h
+MBEDTLS_SRCS_H += include/mbedtls/platform_util.h
+MBEDTLS_SRCS_H += include/mbedtls/poly1305.h
+MBEDTLS_SRCS_H += include/mbedtls/private_access.h
+MBEDTLS_SRCS_H += include/mbedtls/psa_util.h
+MBEDTLS_SRCS_H += include/mbedtls/ripemd160.h
+MBEDTLS_SRCS_H += include/mbedtls/rsa.h
+MBEDTLS_SRCS_H += include/mbedtls/sha1.h
+MBEDTLS_SRCS_H += include/mbedtls/sha256.h
+MBEDTLS_SRCS_H += include/mbedtls/ssl_cache.h
+MBEDTLS_SRCS_H += include/mbedtls/ssl_ciphersuites.h
+MBEDTLS_SRCS_H += include/mbedtls/ssl.h
+MBEDTLS_SRCS_H += include/mbedtls/ssl_ticket.h
+MBEDTLS_SRCS_H += include/mbedtls/threading.h
+MBEDTLS_SRCS_H += include/mbedtls/version.h
+MBEDTLS_SRCS_H += include/mbedtls/x509_crl.h
+MBEDTLS_SRCS_H += include/mbedtls/x509_crt.h
+MBEDTLS_SRCS_H += include/mbedtls/x509_csr.h
+MBEDTLS_SRCS_H += include/mbedtls/x509.h
+MBEDTLS_SRCS_H += include/threading_alt.h
+
+ifneq ($(IP_STACK),)
+MBEDTLS_SRCS_C += library/net_$(IP_STACK).c
+MBEDTLS_SRCS_H += include/mbedtls/net.h
+endif
+MMIOT_SRCS_C += $(addprefix $(MBEDTLS_DIR)/,$(MBEDTLS_SRCS_C))
+MMIOT_SRCS_H += $(addprefix $(MBEDTLS_DIR)/,$(MBEDTLS_SRCS_H))
+
+MMIOT_INCLUDES += $(MBEDTLS_DIR)/include
+
+CFLAGS-$(MBEDTLS_DIR) += -Wno-c++-compat
+CFLAGS-$(MBEDTLS_DIR) += -Wno-sign-compare
+CFLAGS-$(MBEDTLS_DIR) += -Wno-unused-but-set-variable
+
+BUILD_DEFINES += MBEDTLS_CONFIG_FILE="<mbedtls_config.h>"

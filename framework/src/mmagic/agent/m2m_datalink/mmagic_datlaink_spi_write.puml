@@ -1,0 +1,79 @@
+' Copyright 2024 Morse Micro
+' SPDX-License-Identifier: Apache-2.0
+@startuml
+hide time-axis
+title Data Link Packet Write Transfer
+scale 100 as 50 pixels
+concise "SPI MOSI" as mosi
+concise "SPI MISO" as miso
+concise "SPI CLK" as clk
+binary "SPI CS" as cs
+binary "Ready" as rdy
+binary "Wake" as wake
+@0
+mosi is {-}
+miso is {-}
+clk is {-}
+cs is high
+rdy is low
+wake is low
+
+@50
+wake is high
+@100
+rdy is high
+@200
+cs is low
+@205
+mosi is Header
+clk is CLK
+@400
+mosi is CRC
+@495
+mosi is {-}
+clk is {-}
+@500
+cs is high
+@550
+rdy is low
+
+@600
+cs is low
+@605
+mosi is Packet
+clk is CLK
+@1100
+mosi is CRC
+@1195
+mosi is {-}
+clk is {-}
+@1200
+cs is high
+@1250
+rdy is high
+
+@1300
+cs is low
+@1305
+miso is Ack
+clk is CLK
+@1500
+miso is CRC
+@1595
+miso is {-}
+clk is {-}
+@1600
+cs is high
+
+@1610
+rdy is low
+
+@1650
+wake is low
+
+highlight 200 to 500 : SPI write transaction
+highlight 600 to 1200 : SPI write transaction
+highlight 1300 to 1600 : SPI read transaction
+
+
+@enduml

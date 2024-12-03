@@ -1,0 +1,9 @@
+#
+# Copyright 2022-2023 Morse Micro
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+echo -e "\u001b[32mInstalling required apt packages.\u001b[0m"
+$DRYRUNCMD $SUDO apt-get update
+$DRYRUNCMD $SUDO apt-get -qq install $(cat $SCRIPT_DIR/apt-pkglist.txt)

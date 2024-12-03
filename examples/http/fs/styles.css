@@ -1,0 +1,300 @@
+html,body
+{
+    min-height: 100vh;
+    height: 100%;
+    min-width: 1000px;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* Properties for nav bar. CSS for nav bar should be changed sparingly, getting everything to align properly in the nav bar is challenging */
+.banner
+{
+    margin: 0;
+    height: 72px;
+    width: 100%;
+    background-color: #000000;
+}
+
+#logo
+{
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.banner table, .banner tr, .banner td
+{
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-content
+{
+    min-width: 120px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.nav-content a
+{
+    vertical-align: middle;
+    padding: 20%;
+    height: 100%;
+    display: inline-block;
+    margin: 0;
+    text-decoration: none;
+    color: #ffffff;
+    /* Next 3 lines set size, then add padding without changing element size */
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+/* Adjusts the color of the elements in the nav-bar when cursor is over them */
+.nav-content:hover
+{
+    background-color: #111111;
+}
+
+.nav-content:hover > a
+{
+    color: #aaaaaa;
+}
+
+.nav-dropdown
+{
+    display: none;
+    position: absolute;
+    color: #000000;
+    background-color: #eeeeee;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    min-width: 200px;
+}
+
+/* The links in the dropdown */
+.nav-dropdown a
+{
+    width: 100%;
+    text-align: left;
+    color: #000000;
+    background-color: #f8f8f8f;
+    padding: 15px 15px;
+}
+
+/* Adjusts the color of the elements in the dropdowns when cursor is over them */
+.nav-dropdown a:hover
+{
+    background-color: #dddddd;
+}
+
+/* Show the dropdowns when cursor is over the main options in the nav-bar */
+.nav-content:hover .nav-dropdown
+{
+    display: block;
+}
+
+.nav-dropdown ul
+{
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+/* END OF NAV-BAR PROPERTIES */
+
+/* Footer related properties */
+footer
+{
+    /* Position */
+    bottom: 0;
+    /* Size */
+    height: 2.5rem;
+    width: 100%;
+    /* Border */
+    border: 1px solid #dcdcdc;
+    border-style: solid none none none;
+    /* Margin/Padding */
+    margin: 0;
+    padding: 0 1% 0 1%;
+    /* Next 3 lines set size, then add padding without changing element size */
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+#current_mode
+{
+    float: right;
+}
+
+/* Properties for main page */
+#main
+{
+    min-height: calc(100% - 72px - 2.5rem);
+    margin: 0 5% 0 5%;
+    padding: 1rem 0 1rem 0;
+    /* Next 3 lines set size, then add padding without changing element size */
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+/* DO NOT REMOVE: Without this, headers space themselves from the nav bar and push the div down */
+#main > h1
+{
+    margin-top: 0;
+}
+
+#main table
+{
+    border-collapse: collapse;
+    width: 100%;
+}
+
+/* Properties for table elements in the main div */
+#main td, #main th
+{
+    border: 1px solid #c0c0c0;
+    border-style: solid none solid none;
+    width: 50%;
+}
+
+/* Specific to form table elements. !important is necessary */
+.form_table_element
+{
+    border-style: solid none none none !important;
+}
+
+/* Specific to connection table elements. !important is necessary */
+.connection_table_element
+{
+    width: 33% !important;
+    text-align: center;
+}
+
+.floated_right
+{
+    float: right;
+    margin: 2px;
+}
+
+/* For the box with results from changing configuration */
+#output_box
+{
+    width: 50%;
+    resize: none;
+}
+
+#warning
+{
+    color: #ff0000;
+}
+
+/* Limits the size of the input boxes for the DHCP range */
+.dhcp_range
+{
+    width: 3em;
+}
+
+.spacing_row
+{
+    height: 25px;
+}
+
+/* Hide channel preset dropdowns */
+.channel_presets
+{
+    display: none;
+}
+
+/* Properties for the shell */
+#shell
+{
+    width: 100%;
+    /* Calculate the height to be the full size of the screen minus the height of the banner */
+    height: calc(100% - 72px);
+    padding: 0% 5% 0% 5%;
+    /* Next 3 lines set size, then add padding without changing element size */
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+#shell iframe
+{
+    width: 100%;
+    height: 80%;
+}
+/* END OF PROPERTIES FOR THE SHELL */
+
+/* For the cursor */
+.waiting, .waiting *
+{
+    cursor: wait !important;
+}
+
+.canvas_div
+{
+    width: 75%;
+    margin: 0% 12.5% 0% 12.5%;
+}
+
+/* Properties for confirmation boxes */
+#confirmOverlay
+{
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: -moz-linear-gradient(rgba(11,11,11,0.1), rgba(11,11,11,0.6)) repeat-x rgba(11,11,11,0.2);
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(11,11,11,0.1)), to(rgba(11,11,11,0.6))) repeat-x rgba(11,11,11,0.2);
+    z-index: 100000;
+}
+
+#confirmBox
+{
+    background: white;
+    width: 640px;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    margin:-130px 0 0 -320px;
+    border: 1px solid rgba(33, 33, 33, 0.6);
+
+    -moz-box-shadow: 0 0 2px rgba(255, 255, 255, 0.6) inset;
+    -webkit-box-shadow: 0 0 2px rgba(255, 255, 255, 0.6) inset;
+    box-shadow: 0 0 2px rgba(255, 255, 255, 0.6) inset;
+}
+
+#confirmBox h1
+{
+    font: 26px/1 sans-serif;
+    padding: 18px 25px;
+}
+
+#confirmBox h1
+{
+    text-align: center;
+}
+
+#confirmButtons
+{
+    padding: 15px 0 25px;
+    text-align: center;
+}
+
+#confirmBox .button
+{
+    display: inline-block;
+    position: relative;
+    height: 33px;
+
+    font: 17px/33px sans-serif;
+
+    margin-right: 15px;
+    padding: 0 35px 0 40px;
+    text-decoration: none;
+}

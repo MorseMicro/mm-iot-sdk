@@ -1,0 +1,20 @@
+{#
+ # Copyright 2024 Morse Micro
+ #
+ # SPDX-License-Identifier: Apache-2.0
+ #}
+{%- macro module_label(config, module) -%}
+    MMAGIC_{{module.name|upper}}
+{%- endmacro -%}
+
+{%- macro var_label(config, module, var) -%}
+    MMAGIC_{{module.name|upper}}_VAR_{{var.name|upper}}
+{%- endmacro -%}
+
+{%- macro cmd_label(config, module, cmd_name) -%}
+    MMAGIC_{{module.name|upper}}_CMD_{{cmd_name|upper}}
+{%- endmacro -%}
+
+{%- macro event_label(config, module, event) -%}
+    MMAGIC_{{module.name|upper}}_EVT_{{event.name|upper}}
+{%- endmacro -%}

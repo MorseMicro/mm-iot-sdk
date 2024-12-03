@@ -1,0 +1,145 @@
+/*
+ * Copyright 2024 Morse Micro
+ */
+
+/*
+ * This is the config file for loading custom settings for the rf-test application.
+ * To load the settings on to a device, do the following from the `framework` directory:
+ *
+ *   - Ensure the MMIOT_ROOT environment variable is set to the path to the framework directory
+ *     of the MM-IoT-SDK package. This will be set automatically if using Platform IO and is
+ *     set by the environment setup script (`tools/setupscripts/env.sh`) if building
+ *     using command line make -- for more information see the Getting Started Guide.
+ *
+ *   - If this is the first time using the config store programmer ensure the pipenv is
+ *     synchronised by running the following command in the framework directory:
+ *     `pipenv sync`
+ *
+ *   - Connect the target on USB and run the following command from a shell
+ *     `openocd -f src/platforms/mm-ekh08-u575/openocd.cfg`
+ *     (Replace mm-ekh08-u575 with the actual name of your platform.)
+ *
+ *   - Now run the following command to load the keys to the device:
+ *     `pipenv run ./tools/platform/program-configstore.py -H localhost -p mm-ekh08-u575 write-json ../examples/rf-test/config.hjson`
+ *     (Replace mm-ekh08-u575 with the actual name of your platform.)
+ */
+{
+    /* You can specify a list of key/value strings in this section to write to config store
+     * this is equivalent to the write-string command */
+    "strings" : {
+        /* The iperf mode, valid values are udp_server, tcp_server, udp_client and
+         * tcp_client */
+        "iperf.mode": "udp_server"
+        /* IP address of server to connect to when in client mode */
+        "iperf.server": "192.168.1.1"
+        /* Specifies the port to listen on in server mode. */
+        "iperf.port": "5001"
+        /* Duration for client transfers specified either in seconds or bytes. If this is
+         * negative, it specifies a time in seconds; if positive, it specifies the number
+         * of bytes to transmit. */
+        "iperf.amount": "-10"
+
+        "ping.target": "192.168.1.1"
+        "ping.count": "10"
+        "ping.interval": "1000"
+        "ping.size": "56"
+
+        /* The Wi-Fi SSID */
+        "wlan.ssid": "MorseMicro"
+        /* The Wi-Fi password, not required if wlan.security is open */
+        "wlan.password": "12345678"
+        /* The Wi-Fi security to use, valid values are sae, owe and open */
+        "wlan.security": "sae"
+        /* The 2 letter country code to ensure the correct regulatory domain is used */
+        // "wlan.country_code": "XX"
+
+        /* If true use DHCP, else the static IP configuration will be used */
+        "ip.dhcp_enabled": "True"
+
+        /* These settings are ignored if DHCP is used, but mandatory if using static IP */
+        // "ip.ip_addr": "192.168.1.2"
+        // "ip.netmask": "255.255.255.0"
+        // "ip.gateway": "192.168.1.1"
+
+        /* These settings are for IPv6, ip6.ip_addr is only required if ip6.autoconfig is
+         * false */
+        "ip6.autoconfig": "true"
+        // "ip6.ip_addr": "FE80::2"
+
+        /* Note: The following settings should be used only when explicitly required */
+        /* If specified, use this MAC address for the WLAN interface */
+        // "wlan.macaddr": "02:00:12:34:56:78"
+        /* BSSID of the AP to connect to. If non-zero, the STA will only connect to an AP
+         * that matches this value. */
+        // "wlan.bssid": "00:00:00:00:00:00"
+        /* S1G non-AP STA type, valid values are sensor and non_sensor */
+        // "wlan.station_type": "non_sensor"
+        /* Whether Centralized Authentication Controlled is enabled on the STA. */
+        // "wlan.cac_enabled": "true"
+        /* Priority used by the AP to assign a STA to a Restricted Access Window (RAW)
+         * group. Valid range is 0 - 7, or -1 to disable RAW. */
+        // "wlan.raw_priority": "-1"
+        // "wlan.power_save_mode": "enabled"
+        // "wlan.subbands_enabled": "true"
+        // "wlan.sgi_enabled": "true"
+        // "wlan.ampdu_enabled": "true"
+        // "wlan.fragment_threshold": "0"
+        // "wlan.rts_threshold": "0"
+        /* If true, enables ARP response offload which allows the Morse chip to directly
+         * respond to ARP requests without waking up the host processor. */
+        // "wlan.offload_arp_response": "true"
+        /* If non zero, enables ARP refresh offload with the specified interval in
+         * milliseconds. */
+        // "wlan.offload_arp_refresh_s": "60"
+        /* The minimum interval to wait after the last health check before triggering
+         * another. If this parameter is 0 then health checks will always happen at the
+         * max_interval_ms value. min_interval_ms must always be less than or equal to
+         * max_interval_ms. If only min_health_check_intvl_ms is specified, then
+         * max_health_check_intvl_ms is assumed to be unbounded. */
+        // "wlan.min_health_check_intvl_ms": "60000"
+        /* The maximum interval to wait after the last health check before triggering
+         * another. If this parameter is 0 then periodic health checks will be disabled.
+         * min_interval_ms must always be less than or equal to max_interval_ms. Set this
+         * to UINT32_MAX to have the maximum unbounded. If only max_health_check_intvl_ms
+         * is specified, then min_health_check_intvl_ms is assumed to be 0. */
+        // "wlan.max_health_check_intvl_ms": "120000"
+        /* If true, enables DHCP offload which allows the Morse chip to directly handle
+         * DHCP discovery and leases without waking up the host processor. Note: this comes
+         * into effect only if ip.dhcp_enabled is also true. */
+        // "ip.dhcp_offload": "true"
+
+        
+    },
+    /* You can specify a list of key/value hex-strings in this section to write to config store
+     * this is equivalent to the write-hex command */
+    "hex_strings" : {
+        
+    },
+    /*
+     * You can specify a list of files in this section to write to config store
+     * this is equivalent to the write-file command.
+     *
+     * If a relative path is specified then it is taken relative to the location of this JSON file
+     * unless the path starts with an environment variable, in which case the environment variable
+     * will be expanded relative to the working directory.
+     *
+     * For example:
+     *    ../../framework/morsefirmware/bcf_mf08551.mbin     is treated relative to this file
+     *    $MMIOT_ROOT/morsefirmware/bcf_mf08551.mbin         is treated relative to the working
+     *                                                       directory if $MMIOT_ROOT contains
+     *                                                       a relative path.
+     */
+    "files" : {
+        /* The Board Configuration File (BCF) is a configuration file for the Morse Micro
+         * chip that provides board-specific information and is required for the system to
+         * function properly. BCFs for Morse Micro modules are included in the MM-IoT-SDK
+         * package. These modules can be identified by the part numbers printed on their
+         * labels, which take the form MM6108-MFxxxxx. Uncomment the line below and replace
+         * `mf08551` with the appropriate value for the module that you have. For example,
+         * if your module were MM6108-MF12345 then you would change the value of this key
+         * to: $MMIOT_ROOT/morsefirmware/bcf_mf12345.mbin */
+        // "bcf_file": "$MMIOT_ROOT/morsefirmware/bcf_mf08551.mbin"
+
+        
+    }
+}

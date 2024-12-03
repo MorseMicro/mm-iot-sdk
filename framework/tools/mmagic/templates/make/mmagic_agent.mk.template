@@ -1,0 +1,59 @@
+#
+# Copyright {{config.copyright_year}} Morse Micro
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+MMAGIC_AGENT_DIR = src/mmagic/agent
+
+MMIOT_INCLUDES += $(MMAGIC_AGENT_DIR)
+
+MMAGIC_AGENT_SRCS_H += mmagic.h
+MMAGIC_AGENT_SRCS_H += core/autogen/mmagic_core_data.h
+MMAGIC_AGENT_SRCS_H += core/autogen/mmagic_core_types.h
+{%- for module in config.modules %}
+MMAGIC_AGENT_SRCS_H += core/autogen/mmagic_core_{{module.name}}.h
+{%- endfor %}
+
+MMAGIC_AGENT_SRCS_C += core/autogen/mmagic_core_data.c
+MMAGIC_AGENT_SRCS_C += core/mmagic_core_types.c
+{%- for module in config.modules %}
+MMAGIC_AGENT_SRCS_C += core/mmagic_core_{{module.name}}.c
+{%- endfor %}
+
+MMAGIC_AGENT_SRCS_H += cli/autogen/mmagic_cli_internal.h
+{%- for module in config.modules %}
+{%- if module.cli_support %}
+MMAGIC_AGENT_SRCS_H += cli/autogen/mmagic_cli_{{module.name}}.h
+MMAGIC_AGENT_SRCS_H += cli/autogen/mmagic_cli_{{module.name}}.def
+{%- endif %}
+{%- endfor %}
+
+MMAGIC_AGENT_SRCS_C += cli/mmagic_cli.c
+MMAGIC_AGENT_SRCS_C += cli/mmagic_cli_internal.c
+{%- for module in config.modules %}
+{%- if module.cli_support %}
+MMAGIC_AGENT_SRCS_C += cli/mmagic_cli_{{module.name}}.c
+{%- endif %}
+{%- endfor %}
+
+MMAGIC_AGENT_SRCS_H += m2m_api/autogen/mmagic_m2m_internal.h
+MMAGIC_AGENT_SRCS_H += m2m_api/mmagic_m2m_agent.h
+{%- for module in config.modules %}
+MMAGIC_AGENT_SRCS_H += m2m_api/autogen/mmagic_m2m_{{module.name}}.h
+{%- endfor %}
+
+MMAGIC_AGENT_SRCS_C += m2m_api/mmagic_m2m_agent.c
+{%- for module in config.modules %}
+MMAGIC_AGENT_SRCS_C += m2m_api/autogen/mmagic_m2m_{{module.name}}.c
+{%- endfor %}
+
+MMAGIC_AGENT_SRCS_H += m2m_llc/mmagic_llc_agent.h
+MMAGIC_AGENT_SRCS_C += m2m_llc/mmagic_llc_agent.c
+
+MMAGIC_AGENT_SRCS_H += mmagic_datalink_agent.h
+
+MMAGIC_AGENT_SRCS_C += m2m_datalink/mmagic_datalink_uart.c
+
+MMIOT_SRCS_C += $(addprefix $(MMAGIC_AGENT_DIR)/,$(MMAGIC_AGENT_SRCS_C))
+MMIOT_SRCS_H += $(addprefix $(MMAGIC_AGENT_DIR)/,$(MMAGIC_AGENT_SRCS_H))

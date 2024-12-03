@@ -1,0 +1,41 @@
+{
+    "name": "mm_iottoolkit",
+    "title": "Morse Micro IoT Toolkit",
+    "description": "Toolkit for developing IoT applications using Morse Micro Wi-Fi HaLow transceivers",
+    "homepage": "https://www.morsemicro.com",
+    "licence": "Morse Micro",
+    "keywords": [
+        "Wi-Fi", "HaLow", "Morse Micro", "MM6108"
+    ],
+    "engines": {
+        "platformio": "^6"
+    },
+    "version": "2.6.4",
+    "frameworks": {
+        "mm_iot": {
+            "script": "builder/frameworks/mm_iot.py",
+            "description": "Morse Micro IoT framework for developing Wi-Fi HaLow devices",
+            "homepage": "https://www.morsemicro.com",
+            "title": "MM IoT"
+        }
+    },
+    "packages": {
+        "toolchain-gccarmnoneeabi": {
+            "type": "toolchain",
+            "owner": "platformio",
+            "version": "~1.100301",
+            "optionalVersions": [
+            ]
+          },
+          "tool-openocd": {
+            "type": "uploader",
+            "owner": "platformio",
+            "version": "~3.1200.0"
+          },
+          "tool-ldscripts-ststm32": {
+            "optional": true,
+            "owner": "platformio",
+            "version": "~0.2.0"
+          }
+    }
+}

@@ -1,0 +1,1027 @@
+# Copyright 2023-2024 Morse Micro
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+---
+enums:
+  - name: enum_security_type
+    description: Connection security type
+    values:
+      - name: sae
+        value: 0
+        description: >-
+          Simultaneous Authentication of Equals (password-based authentication)
+
+      - name: owe
+        value: 1
+        description: Opportunistic Wireless Encryption (encrypted, passwordless)
+
+      - name: open
+        value: 2
+        description: No security enabled at all
+
+  - name: enum_pmf_mode
+    description: Protected management frame mode
+    values:
+      - name: required
+        value: 0
+        description: Protected management frames must be used
+
+      - name: disabled
+        value: 1
+        description: No protected management frames
+
+  - name: enum_power_save_mode
+    description: Enumeration of supported 802.11 power save modes.
+    values:
+      - name: disabled
+        value: 0
+        description: Power save disabled.
+
+      - name: enabled
+        value: 1
+        description: Power save enabled.
+
+  - name: enum_station_type
+    description: Enumeration of S1G non-AP STA types.
+    values:
+      - name: sensor
+        value: 0
+        description: Sensor type.
+
+      - name: non_sensor
+        value: 1
+        description: Non-Sensor type.
+
+  - name: enum_status
+    description: Enumeration of return status codes.
+    values:
+      - name: ok
+        value: 0
+        description: Operation was successful.
+
+      - name: error
+        value: 1
+        description: The operation failed with an unspecified error.
+
+      - name: invalid_arg
+        value: 2
+        description: The operation failed due to an invalid argument.
+
+      - name: unavailable
+        value: 3
+        description: Functionality is temporarily unavailable.
+
+      - name: timeout
+        value: 4
+        description: The operation failed due to an invalid argument.
+
+      - name: invalid_stream
+        value: 5
+        description: An invalid stream was specified.
+
+      - name: not_found
+        value: 6
+        description: Specified operation was not found.
+
+      - name: not_supported
+        value: 7
+        description: Specified operation is not supported.
+
+      - name: tx_error
+        value: 8
+        description: An error occured during transmission.
+
+      - name: no_mem
+        value: 9
+        description: Failed due to memory allocation failure.
+
+      - name: closed
+        value: 10
+        description: Failed due to stream being closed from the other side.
+
+      - name: max
+        value: 11
+        description: Maximum status value possible
+
+  - name: enum_iperf_mode
+    description: Mode to use when running the iperf.
+    values:
+      - name: udp_server
+        value: 0
+        description: Iperf UDP server (RX).
+
+      - name: tcp_server
+        value: 1
+        description: Iperf TCP server (RX).
+
+      - name: udp_client
+        value: 2
+        description: Iperf UDP client (TX).
+
+      - name: tcp_client
+        value: 3
+        description: Iperf TCP client (TX).
+
+  - name: enum_iperf_state
+    description: Current state of iperf session.
+    values:
+      - name: not_started
+        value: 0
+        description: Iperf session not started.
+
+      - name: running
+        value: 1
+        description: Iperf session is in progress.
+
+      - name: finished
+        value: 2
+        description: Iperf session has completed.
+
+      - name: aborted
+        value: 3
+        description: Iperf session has been aborted.
+
+  - name: enum_ip_link_state
+    description: Status of the IP link.
+    values:
+      - name: down
+        value: 0
+        description: Link is down because the interface is down or DHCP has not yet completed.
+
+      - name: up
+        value: 1
+        description: Link is up. This implies that the interface is up and DHCP has completed.
+
+  - name: enum_deep_sleep_mode
+    description: Deep sleep modes for the agent MCU.
+    values:
+      - name: disabled
+        value: 0
+        description: Deep sleep is disabled.
+      - name: one_shot
+        value: 1
+        description: Deep sleep is enabled until activity occurs on the datalink.
+      - name: hardware
+        value: 2
+        description: The datalink layer is responsible for waking the agent.
+
+  - name: enum_standby_mode_exit_reason
+    description: Reasons for exiting standby mode.
+    values:
+      - name: standby_exit_none
+        value: 0
+        description: Standby mode was exited manually through a call to standby_exit.
+      - name: standby_exit_wakeup_frame
+        value: 1
+        description: We were woken up by a wakeup frame.
+      - name: standby_exit_associate
+        value: 2
+        description: We just reassociated with the AP.
+      - name: standby_exit_ext_input
+        value: 3
+        description: We were woken up by an external input trigger.
+      - name: standby_exit_whitelist_pkt
+        value: 4
+        description: We received a packet from a whitelist source.
+      - name: standby_exit_tcp_connection_lost
+        value: 5
+        description: An open TCP connection was lost.
+
+structs:
+  - name: struct_packet_buffer
+    description: Packet buffer for standard 1536 byte size packets
+    elements:
+      - name: len
+        description: Length of the data in @c data
+        type: uint16_t
+
+      - name: data
+        description: Array containing the data
+        type: array1536_uint8_t
+
+  - name: struct_string_254
+    description: >-
+      Data type for string up to 254 characters (with space for a null terminating character).
+
+    elements:
+      - name: len
+        description: Length of the data in @c data (excluding null terminator)
+        type: uint8_t
+
+      - name: data
+        description: Array containing the string
+        type: array255_uint8_t
+
+  - name: struct_string_32
+    description: >-
+      Data type for string up to 32 characters (with space for a null terminating character).
+
+    elements:
+      - name: len
+        description: Length of the data in @c data (excluding null terminator)
+        type: uint8_t
+
+      - name: data
+        description: Array containing the string
+        type: array33_uint8_t
+
+  - name: struct_mac_addr
+    description: Data type to contain mac address byte array
+    elements:
+      - name: addr
+        description: Array containing the mac addr
+        type: array6_uint8_t
+
+  - name: struct_country_code
+    description: >-
+      Data type to contain Two character country code (null-terminated)
+      used to identify the regulatory domain.
+    elements:
+      - name: country_code
+        description: Array containing the country code, including room for null-terminator.
+        type: array3_char
+
+  - name: struct_oui
+    description: Data type to contain a three octet OUI.
+    elements:
+      - name: oui
+        description: The 3 octet OUI
+        type: array3_uint8_t
+
+  - name: struct_oui_list
+    description: Data type to contain a list of three octet OUIs.
+    elements:
+      - name: count
+        description: The number of OUIs in the list.
+        type: uint8_t
+      - name: ouis
+        description: The OUI data.
+        type: array5_struct_oui
+
+  - name: struct_scan_result
+    description: Structure for holding a scan result.
+    elements:
+      - name: ssid
+        description: SSID of the AP.
+        type: struct_string_32
+
+      - name: bssid
+        description: BSSID of the AP network.
+        type: struct_mac_addr
+
+      - name: rssi
+        description: RSSI of the AP in dBm.
+        type: int32_t
+
+  - name: struct_version_info
+    description: Structure for devise firmware and hardware versions.
+    elements:
+      - name: application_version
+        description: Version of the application software.
+        type: struct_string_32
+
+      - name: bootloader_version
+        description: Version of the bootloader software.
+        type: struct_string_32
+
+      - name: user_hardware_version
+        description: Version of the user hardware.
+        type: struct_string_32
+
+      - name: morse_firmware_version
+        description: Version of the Morse firmware.
+        type: struct_string_32
+
+      - name: morselib_version
+        description: Version of the Morse IoT SDK library.
+        type: struct_string_32
+
+      - name: morse_hardware_version
+        description: Version of the Morse hardware.
+        type: struct_string_32
+
+  - name: struct_scan_status
+    description: Structure for returning the scan status
+    elements:
+      - name: results
+        description: Array of scan results.
+        type: array10_struct_scan_result
+
+      - name: num
+        description: Number of results retrieved
+        type: uint8_t
+
+  - name: struct_ip_addr
+    description: >-
+      Data type for a string representation of an IP address. Dotted decimal notation for IPv4
+      addresses and colon-separated hexadecimal notation for IPv6 addresses.
+    elements:
+      - name: addr
+        description: Array containing the IP string
+        type: array48_char
+
+  - name: struct_ip_status
+    description: Structure to contain the current IP status
+    elements:
+      - name: link_state
+        description: Current link state
+        type: enum_ip_link_state
+
+      - name: dhcp_enabled
+        description: Whether or not dhcp is enabled
+        type: bool
+
+      - name: ip_addr
+        description: Current IP address
+        type: struct_ip_addr
+
+      - name: netmask
+        description: Current IP network mask
+        type: struct_ip_addr
+
+      - name: gateway
+        description: Current IP gateway
+        type: struct_ip_addr
+
+      - name: broadcast
+        description: Current broadcast IP address
+        type: struct_ip_addr
+
+      - name: dns_servers
+        description: DNS server IP addresses
+        type: array2_struct_ip_addr
+
+  - name: struct_ping_status
+    description: Data structure to store ping results
+    elements:
+      - name: receiver_addr
+        description: IP address of the device receiving the ping requests
+        type: struct_ip_addr
+
+      - name: total_count
+        description: Total number of requests sent
+        type: uint32_t
+
+      - name: recv_count
+        description: The number of ping responses received
+        type: uint32_t
+
+      - name: min_time_ms
+        description: The minimum latency in ms between request sent and response received
+        type: uint32_t
+
+      - name: avg_time_ms
+        description: The average latency in ms between request sent and response received
+        type: uint32_t
+
+      - name: max_time_ms
+        description: The maximum latency in ms between request sent and response received
+        type: uint32_t
+
+      - name: session_id
+        description: Stores non-zero session ID whilst ping session is running
+        type: uint16_t
+
+  - name: struct_iperf_status
+    description: Data structure to store iperf results
+    elements:
+      - name: remote_addr
+        description: IP address of the remote device
+        type: struct_ip_addr
+
+      - name: remote_port
+        description: Port number of the remote device
+        type: uint16_t
+
+      - name: local_addr
+        description: IP address of the local device
+        type: struct_ip_addr
+
+      - name: local_port
+        description: Port number of the local device
+        type: uint16_t
+
+      - name: bytes_transferred
+        description: The number of bytes of data transferred during the iperf test
+        type: uint64_t
+
+      - name: duration_ms
+        description: The duration of the iperf test in milliseconds
+        type: uint32_t
+
+      - name: bandwidth_kbitpsec
+        description: The average throughput in kbps
+        type: uint32_t
+
+  - name: struct_buffer64
+    description: Generic 64 byte buffer
+    elements:
+      - name: buffer
+        description: The 64 byte buffer
+        type: array64_uint8_t
+
+      - name: len
+        description: Leangth of data in the buffer
+        type: uint8_t
+
+modules:
+  - name: wlan
+    id: 1
+    description: Wireless LAN management
+
+    configs:
+      - name: ssid
+        description: SSID of the AP to connect to, can be 1-32 characters long.
+        type: struct_string_32
+
+      - name: password
+        description: Password used when associating, 1-32 characters long.
+        type: struct_string_32
+
+      - name: security
+        description: Security type to used when associating.
+        type: enum_security_type
+
+      - name: raw_priority
+        description: >-
+          Priority to request if raw is supported by the AP. Valid priorities are 0-7.
+          -1 disables RAW.
+        type: int16_t
+
+      - name: bssid
+        description: BSSID of the ap to associate to, all 0x00 for any.
+        type: struct_mac_addr
+
+      - name: pmf_mode
+        description: Protected Management Frame mode to use (802.11w)
+        type: enum_pmf_mode
+
+      - name: station_type
+        description: S1G non-AP STA type.
+        type: enum_station_type
+
+      - name: country_code
+        description: Two character country code used to identify the regulatory domain.
+        type: struct_country_code
+
+      - name: rts_threshold
+        description: The RTS threshold (in octets) to set, or 0 to disable.
+        type: uint32_t
+
+      - name: sgi_enabled
+        description: Boolean value indicating whether SGI support should be enabled.
+        type: bool
+
+      - name: subbands_enabled
+        description: Boolean value indicating whether sub-band support should be enabled.
+        type: bool
+
+      - name: ampdu_enabled
+        description: Boolean value indicating whether AMPDU support should be enabled.
+        type: bool
+
+      - name: power_save_mode
+        description: Sets the 802.11 power save mode.
+        type: enum_power_save_mode
+
+      - name: fragment_threshold
+        description: >-
+          Sets the 802.11 fragmentation threshold. The fragmentation threshold (in octets)
+          to set, or 0 to disable.
+        type: uint32_t
+
+      - name: cac_enabled
+        description: Whether Centralized Authentication Controlled is enabled on the STA.
+        type: bool
+
+      - name: offload_arp_response
+        description: >-
+          If true, enables ARP response offload which allows the Morse chip to directly respond
+          to ARP requests without waking up the host processor.
+        type: bool
+
+      - name: offload_arp_refresh_s
+        description: >-
+          If non zero, enables ARP refresh offload with the specified interval in seconds.
+          Note: ARP response offload needs to be enabled for this feature to work.
+        type: uint32_t
+
+      - name: min_health_check_intvl_ms
+        description: >-
+          The minimum interval to wait after the last health check before triggering another.
+          If this parameter is 0 then health checks will always happen at the max_interval_ms
+          value. min_interval_ms must always be less than or equal to max_interval_ms.
+          If only min_health_check_intvl_ms is specified, then max_health_check_intvl_ms
+          is assumed to be unbounded.
+        type: uint32_t
+
+      - name: max_health_check_intvl_ms
+        description: >-
+          The maximum interval to wait after the last health check before triggering another.
+          If this parameter is 0 then periodic health checks will be disabled. min_interval_ms
+          must always be less than or equal to max_interval_ms. Set this to UINT32_MAX to
+          have the maximum unbounded. If only max_health_check_intvl_ms is specified,
+          then min_health_check_intvl_ms is assumed to be 0.
+        type: uint32_t
+
+    commands:
+      - name: connect
+        description: >-
+          Brings up the WLAN interface and connects to the AP with configured parameters.
+
+        command_args:
+          - name: timeout
+            description: >-
+              Duration in milliseconds to wait for connection establish, if connection does not get
+              established an explicit disconnect will be sent. 0 to return immediately without
+              waiting
+            type: uint32_t
+
+      - name: disconnect
+        description: Disconnects and brings down the WLAN interface.
+
+      - name: scan
+        description: Starts an undirected scan for available networks.
+        command_args:
+          - name: timeout
+            description: >-
+              Duration in milliseconds to wait for scan to complete, if scan does not complete by
+              the timeout any available results will be returned and the scan aborted.
+            type: uint32_t
+        response_args:
+          - name: results
+            description: Reference to structure to store the results of the scan.
+            type: struct_scan_status
+
+      - name: get_rssi
+        description: Retrieves the RSSI if the WLAN interface is up, else 0.
+        response_args:
+          - name: rssi
+            description: The RSSI in dBm.
+            type: int32_t
+
+      - name: get_mac_addr
+        description: Retrieves the MAC address if the WLAN interface is up.
+        response_args:
+          - name: mac_addr
+            description: Buffer to receive the MAC address.
+            type: struct_mac_addr
+
+      - name: wnm_sleep
+        description: Requests entry or exit from extended sleep (wnm sleep) if the WLAN interface is up.
+
+        command_args:
+          - name: wnm_sleep_enabled
+            description: Boolean indicating whether WNM sleep is enabled.
+            type: bool
+
+      - name: beacon_monitor_enable
+        description: >-
+          Enable beacon monitoring with the given filter settings. If beacon monitoring is already
+          enabled it will be reconfigured with the given arguments.
+
+        command_args:
+          - name: oui_filter
+            description: OUIs to monitor.
+            type: struct_oui_list
+
+      - name: beacon_monitor_disable
+        description: >-
+          Disable beacon monitoring. If beacon monitor is not enabled then this has no effect.
+
+      - name: standby_enter
+        description: >-
+          This puts the Morse chip into standby mode allowing the host processor to go to sleep
+          while the Morse chip takes over certain functionality to keep the connection alive with
+          the provision to wake up the host processor when certain conditions are met.
+
+      - name: standby_exit
+        description: >-
+          Forces the Morse chip to exit standby mode. There may be certain instances such as a
+          timer expiry, which cause the host chip to wake up independant of the Morse chip. In
+          such situations, the host calls this function to instruct the Morse chip to exit standby
+          mode and return to normal operating mode.
+
+      - name: standby_set_status_payload
+        description: >-
+          Sets the user payload for the standby status packet. Once standby mode is enabled, the
+          Morse chip will periodically emit a UDP standby status packet regardless of
+          whether it is in standby or not. The UDP packet will also be sent immediately upon
+          entering or exiting Standby mode. If this command is not executed then the standby
+          status packet will contain no payload.
+
+        command_args:
+          - name: payload
+            description: Payload to append to standby status packets.
+            type: struct_buffer64
+
+      - name: standby_set_wake_filter
+        description: >-
+          Configures the standby mode UDP wake packet filter. The system can be woken up from
+          standby mode by sending it a UDP wake packet. If a wake filter is set using this function
+          then the wake packet will only wake up the system if the specified filter pattern matches
+          the payload at the specified offset within the payload. If this command is not executed
+          then any wake packet will wake up the system.
+
+        command_args:
+          - name: filter
+            description: Filter to apply to wake packets to wake on match.
+            type: struct_buffer64
+          - name: offset
+            description: Offset within wake packet payload to apply the filter.
+            type: uint32_t
+
+      - name: standby_set_config
+        description: >-
+          Sets the standby mode configuration parameters. If this command is not executed
+          then the defaults are as specified.
+
+        command_args:
+          - name: notify_period_s
+            description: Interval in seconds for transmitting Standby status packets. (Default 15s)
+            type: uint32_t
+          - name: src_ip
+            description: Source IP address to use for the standby status packets. (Default 0.0.0.0)
+            type: struct_ip_addr
+          - name: dst_ip
+            description: Destination IP address for the standby status packets. (Default 0.0.0.0)
+            type: struct_ip_addr
+          - name: dst_port
+            description: >-
+              Destination UDP Port for the standby status packets, also used the source port for
+              outgoing UDP port for outgoing UDP packets. (Default 22000)
+            type: uint16_t
+          - name: bss_inactivity_s
+            description: >-
+              The interval in seconds to wait after beacon loss before entering snooze mode. In
+              snooze mode the Morse chip stops listening for beacons to save power.
+              (Default 120s)
+            type: uint32_t
+          - name: snooze_period_s
+            description: >-
+              The interval in seconds to wake periodically from snooze mode and check for beacons.
+              If no beacons are found then the Morse chip will re-enter snooze mode. If beacons are
+              found then the Morse chip will exit standby mode so the host can reassociate.
+              (Default 60s)
+            type: uint32_t
+          - name: snooze_increment_s
+            description: >-
+              The amount in seconds to increase successive snooze intervals. This saves power
+              by snoozing for longer before checking for beacons again if no beacons are found.
+              (Default 0s)
+            type: uint32_t
+          - name: snooze_max_s
+            description: >-
+              The maximum time in seconds to snooze for after increments. (Default unlimited)
+            type: uint32_t
+
+    events:
+      - name: beacon_rx
+        id: 1
+        description: >-
+          Triggered when a beacon matching the configured beacon monitor filter(s) is received.
+
+        event_args:
+          - name: vendor_ies
+            description: >-
+              Raw octet string of Vendor Information Elements contained in the beacon.
+              Only the IEs that match the configured filters are returned. If multiple matching
+              IEs are present then they are concatenated in the buffer. Each IE is a TLV where
+              the first byte is the Tag (0xDD for Vendor Specific IE), followed by a byte
+              specifying the length IE contents (i.e., excluding the Tag and Length).
+            type: struct_packet_buffer
+
+      - name: standby_exit
+        id: 2
+        description: >-
+          Triggered when chip exits standby mode either manually or through an event.
+
+        event_args:
+          - name: reason
+            description: >-
+              Reason why we exited standby mode. If we manually exited standby mode through a call
+              to wlan-standby_exit, then the reason will be standby_exit_none.
+            type: enum_standby_mode_exit_reason
+
+  - name: ip
+    id: 2
+    description: IP Stack Management
+
+    configs:
+      - name: ip_addr
+        description: >-
+          IP address to use for a static network connection. This will take effect when the reload
+          command is successfully executed.
+        type: struct_ip_addr
+
+      - name: netmask
+        description: >-
+          Netmask to use for a static network connection. This will take effect when the reload
+          command is successfully executed.
+        type: struct_ip_addr
+
+      - name: gateway
+        description: >-
+          Gateway to use for a static network connection. This will take effect when the reload
+          command is successfully executed.
+        type: struct_ip_addr
+
+      - name: dns_server0
+        description: >-
+          Primary DNS server IP address. If a value is specified this will override the primary
+          DNS server provided by DHCP (if any). Changes will take effect when the reload command
+          is successfully executed.
+        type: struct_ip_addr
+
+      - name: dns_server1
+        description: >-
+          Secondary DNS server IP address. If a value is specified this will override the secondary
+          DNS server provided by DHCP (if any). Changes  will take effect when the reload command
+          is successfully executed. Note that this option may be ignored by some IP stacks.
+        type: struct_ip_addr
+
+      - name: dhcp_enabled
+        description: >-
+          True to enable DHCP for IP address configuration, or false to use the static configuration
+          given by ip_addr, netmask, and gateway. This will take effect when the reload command is
+          successfully executed.
+        type: bool
+
+      - name: dhcp_offload
+        description: >-
+          If true, enables DHCP offload which allows the Morse chip to directly handle
+          DHCP discovery and leases without waking up the host processor. Note: this comes into
+          effect only if ip.dhcp_enabled is also true.
+        type: bool
+
+    commands:
+      - name: status
+        description: >-
+          Gets the status of the IP stack.
+
+        response_args:
+          - name: status
+            description: >-
+              Reference to the struct to return the IP status retrieved from the network stack.
+            type: struct_ip_status
+
+      - name: reload
+        description: >-
+          Reloads the IP stack network configuration based on the current values in the subsystem
+          config.
+
+      - name: enable_tcp_keepalive_offload
+        description: >-
+          Enables sending periodic TCP keep-alive packets by the morse chip allowing the TCP
+          connection to be maintained without waking up the host processor. This needs to be
+          enabled before opening a TCP connection. As of now, this feature will work only
+          on the first TCP connection opened after this command.
+
+        command_args:
+          - name: period_s
+            description: Interval in seconds to send the keep-alive packets in.
+            type: uint16_t
+          - name: retry_count
+            description: The number of times to retry before giving up.
+            type: uint8_t
+          - name: retry_interval_s
+            description: The interval in seconds to wait between retries.
+            type: uint8_t
+
+      - name: disable_tcp_keepalive_offload
+        description: Disables sending of TCP keepalive packets.
+
+      - name: set_whitelist_filter
+        description: >-
+          Sets the whitelist filter specifing which incoming packets can wake the system from
+          standby mode.
+
+        command_args:
+          - name: src_ip
+            description: The IPv4 source address to match, 0.0.0.0 for any.
+            type: struct_ip_addr
+          - name: dest_ip
+            description: >-
+              The IPv4 destination address to match, 0.0.0.0 for any. (Usually our IP address)
+            type: struct_ip_addr
+          - name: netmask
+            description: The netmask to apply to the source or destination IP, 0.0.0.0 for any.
+            type: struct_ip_addr
+          - name: src_port
+            description: The source port to match, 0 for any.
+            type: uint16_t
+          - name: dest_port
+            description: The destination port to match, 0 for any.
+            type: uint16_t
+          - name: ip_protocol
+            description: The IPv4 protocol number to match - 6 for TCP, 17 for UDP, 0 for any.
+            type: uint8_t
+          - name: llc_protocol
+            description: >-
+              The LLC protocol (or EtherType) to match - 0x0800 for IPv4 and 0x86DD for IPv6,
+              0 for any.
+            type: uint16_t
+
+      - name: clear_whitelist_filter
+        description: Clears any applied whitelist filters.
+
+  - name: ping
+    id: 3
+    description: Ping application
+
+    configs:
+      - name: target
+        description: The IP address of the ping target.
+        type: struct_ip_addr
+
+      - name: interval
+        description: The time interval between ping requests (in milliseconds).
+        type: uint32_t
+
+      - name: count
+        description: >-
+          This specifies the number of ping requests to send before terminating
+          the session. If this is zero or exceeds UINT16_MAX (65535) then it
+          it will be set to UINT16_MAX.
+        type: uint32_t
+
+    commands:
+      - name: run
+        description: Commences a ping session using the current values in the the subsystem config.
+        response_args:
+          - name: status
+            description: >-
+              Reference to the struct to return the status of the ping session.
+            type: struct_ping_status
+
+  - name: iperf
+    id: 4
+    description: Iperf application
+
+    configs:
+      - name: mode
+        description: >-
+          The iperf mode to use. Valid values are udp_server, tcp_server, udp_client and tcp_client.
+          If not set, defaults to udp_server.
+        type: enum_iperf_mode
+
+      - name: server
+        description: IP address of server to connect to when in client mode.
+        type: struct_ip_addr
+
+      - name: port
+        description: >-
+          Specifies the local port to listen on when in server mode or the server port to send data
+          to when in client mode.
+        type: uint16_t
+
+      - name: amount
+        description: >-
+          This specifies the duration for client transfers specified either in seconds or bytes.
+          If this is negative, it specifies a time in seconds; if positive, it specifies the number
+          of bytes to transmit.
+        type: int32_t
+
+    commands:
+      - name: run
+        description: Starts an iperf session using the current values in the the subsystem config.
+
+        response_args:
+          - name: status
+            description: >-
+              Reference to the struct to return the status of the iperf session.
+            type: struct_iperf_status
+
+  - name: sys
+    id: 5
+    description: System management
+
+    commands:
+      - name: reset
+        description: Performs a soft reset.
+
+      - name: deep_sleep
+        description: Enters deep sleep mode.
+        command_args:
+          - name: mode
+            description: Deep sleep mode to enter.
+            type: enum_deep_sleep_mode
+
+      - name: get_version
+        description: Gets the device firmware and hardware versions.
+        response_args:
+          - name: results
+            description: Reference to structure to store the version information.
+            type: struct_version_info
+
+  - name: tcp
+    id: 6
+    description: TCP Socket IO
+    cli_support: False
+
+    commands:
+      - name: connect
+        description: Opens a client TCP socket and returns its stream ID
+        command_args:
+          - name: url
+            description: URL of the server to connect to.
+            type: struct_string_254
+
+          - name: port
+            description: TCP port to connect to.
+            type: uint16_t
+
+        response_args:
+          - name: stream_id
+            description: Stream ID of the opened socket.
+            type: uint8_t
+
+      - name: bind
+        description: Opens a server TCP socket and returns its stream ID
+        command_args:
+          - name: port
+            description: TCP port to listen on.
+            type: uint16_t
+
+        response_args:
+          - name: stream_id
+            description: Stream ID of the opened socket.
+            type: uint8_t
+
+      - name: recv
+        description: Reads from a socket
+        stream_type: True
+        command_args:
+          - name: stream_id
+            description: Stream ID of the socket to receive from.
+            type: uint8_t
+
+          - name: len
+            description: TCP port to listen on.
+            type: uint16_t
+
+          - name: timeout
+            description: Timeout in ms. 0 to return immediately, UINT32_MAX to wait indefinately.
+            type: uint32_t
+
+        response_args:
+          - name: buffer
+            description: Buffer of read data.
+            type: struct_packet_buffer
+
+      - name: send
+        description: Writes to a socket
+        stream_type: True
+        command_args:
+          - name: stream_id
+            description: Stream ID of the socket to send on.
+            type: uint8_t
+
+          - name: buffer
+            description: Buffer to send.
+            type: struct_packet_buffer
+
+      - name: read_poll
+        description: Polls the socket till it is ready for reading
+        stream_type: True
+        command_args:
+          - name: stream_id
+            description: Stream ID of the socket to wait on.
+            type: uint8_t
+
+          - name: timeout
+            description: Timeout in ms. 0 to return immediately, UINT32_MAX to wait indefinately.
+            type: uint32_t
+
+      - name: write_poll
+        description: Polls the socket till it is ready for writing
+        stream_type: True
+        command_args:
+          - name: stream_id
+            description: Stream ID of the socket to wait on.
+            type: uint8_t
+
+          - name: timeout
+            description: Timeout in ms. 0 to return immediately, UINT32_MAX to wait indefinately.
+            type: uint32_t
+
+      - name: accept
+        description: Waits for an incoming socket connection and returns a new stream ID.
+        stream_type: True
+        command_args:
+          - name: stream_id
+            description: Stream ID of the bound socket.
+            type: uint8_t
+
+        response_args:
+          - name: stream_id
+            description: Stream ID of the new incoming connection.
+            type: uint8_t
+
+      - name: close
+        description: Closes and frees the socket
+        command_args:
+          - name: stream_id
+            description: Stream ID of the socket to close.
+            type: uint8_t

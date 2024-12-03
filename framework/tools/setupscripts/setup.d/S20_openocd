@@ -1,0 +1,20 @@
+#
+# Copyright 2022-2023 Morse Micro
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+source $SCRIPT_DIR/config.sh
+
+if [[ -d "$MORSE_OPENOCD_DIR" ]]
+then
+    echo -e "\u001b[36mOpenOCD already directory $MORSE_OPENOCD_DIR exits. Skipping installation.\u001b[0m"
+else
+    echo -e "\u001b[32mDownloading and extracting OpenOCD.\u001b[0m"
+    $DRYRUNCMD wget -q --show-progress https://github.com/xpack-dev-tools/openocd-xpack/releases/download/v$MORSE_OPENOCD_VERSION/$MORSE_OPENOCD_TAR -O $MORSE_OPENOCD_TAR
+    $DRYRUNCMD sha256sum -c <<<"$MORSE_OPENOCD_TAR_SHA256  $MORSE_OPENOCD_TAR" || (echo -e "\u001b[31mDownload corrupted, retry. \u001b[0m" && exit 1)
+    $DRYRUNCMD $SUDO tar -xf $MORSE_OPENOCD_TAR -C $MORSE_OPENOCD_DESTINATION_DIRECTORY
+    $DRYRUNCMD $SUDO cp $MORSE_OPENOCD_DIR/openocd/contrib/60-openocd.rules /etc/udev/rules.d
+    $DRYRUNCMD $SUDO udevadm control --reload
+    $DRYRUNCMD $SUDO udevadm trigger
+fi

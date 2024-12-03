@@ -1,0 +1,17 @@
+#
+# Copyright 2022-2023 Morse Micro
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+source $SCRIPT_DIR/config.sh
+
+if [ -d "$MORSE_ARM_TOOLCHAIN_DIR" ]
+then
+    echo -e "\u001b[36mToolchain directory $MORSE_ARM_TOOLCHAIN_DIR exists. Skipping installation.\u001b[0m"
+else
+    echo -e "\u001b[32mDownloading and extracting ARM toolchain.\u001b[0m"
+    $DRYRUNCMD wget -q --show-progress https://developer.arm.com/-/media/Files/downloads/gnu-rm/$MORSE_ARM_TOOLCHAIN_VERSION/$MORSE_ARM_TOOLCHAIN_TAR -O $MORSE_ARM_TOOLCHAIN_TAR
+    $DRYRUNCMD md5sum -c <<<"$MORSE_ARM_TOOLCHAIN_TAR_MD5  $MORSE_ARM_TOOLCHAIN_TAR" || (echo -e "\u001b[31mDownload corrupted, retry. \u001b[0m" && exit 1)
+    $DRYRUNCMD $SUDO tar xjf $MORSE_ARM_TOOLCHAIN_TAR -C $MORSE_ARM_TOOLCHAIN_DESTINATION_DIRECTORY
+fi

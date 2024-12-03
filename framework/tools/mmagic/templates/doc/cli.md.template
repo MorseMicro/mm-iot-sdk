@@ -1,0 +1,119 @@
+{# Given a type, convert it to a more useful representation for display in CLI help.
+ # In the case of enums, put a reference to the appropriate section. #}
+{% macro format_cli_type(type_name) -%}
+{% if config.datatype_is_c_type(type_name) -%}
+    {{ type_name }}
+{%- elif type_name == "struct_mac_addr" -%}
+    MAC address
+{%- elif type_name == "struct_ip_addr" -%}
+    IP address
+{%- elif type_name == "struct_country_code" -%}
+    string
+{%- elif config.datatype_is_string(type_name) -%}
+    string
+{%- else -%}
+    @ref CLI_{{ type_name }}
+{%- endif -%}
+{% endmacro -%}
+
+
+Morse Micro CLI API
+===================
+
+__Copyright {{config.copyright_year}} Morse Micro__
+
+The Morse Micro CLI allows control of various aspects of system functionality from a command
+line interface (e.g., via UART). An example application with CLI functionality is provided
+as part of this SDK, see `cli.c`.
+
+The CLI is separated into modules, which are described below. Each module has a set of
+commands and configuration variables.
+
+For a list of all commands type `help`. For example:
+
+```
+> help
+
+```
+
+## Configuration variables
+
+Configuration variables provide a means of configuring various aspects of the system.
+The commands `get` and `set` are provided to read and write the values of the variables.
+To list all the currently set configuration variables, invoke:
+
+```
+> get all
+```
+
+When a configuration variable is set the value is stored in volatile memory. The
+`commit` command can be used to commit these to non-volatile memory.
+
+Note that changes to configuration variables may not have an immediate effect. For example,
+the IP configuration variables will not take effect until the `ip-reload` command is invoked.
+
+{% for module in config.modules -%}
+{% if module.cli_support %}
+## {{ module.description }} ({{ module.name }}) module
+
+{% if module.configs %}
+### Configuration variables
+
+| Name | Type | Description |
+|------|------|-------------|
+{% for var in module.configs -%}
+| `{{ module.name}}.{{ var.name }}` | {{ format_cli_type(var.type) }} | {{ var.description }} |
+{% endfor -%}
+{% endif %}
+
+{% if module.commands %}
+### Commands
+
+{% for cmd in module.commands -%}
+
+#### {{ module.name }}-{{ cmd.name }}
+
+{{ cmd.description }}
+
+```
+> {{ module.name }}-{{ cmd.name }} {% for arg in  cmd.command_args %}<{{arg.name}}> {% endfor %}
+```
+
+{% for arg in  cmd.command_args %}
+* `{{arg.name}}`: {{arg.description}}
+{% endfor %}
+
+
+
+{% endfor -%}
+{% endif %}
+{% endif %}
+{% endfor -%}
+
+{#
+## Structure definitions
+
+{% for struct in config.structs %}
+### {{ struct.name}} {{ "{" }}#CLI_{{ struct.name}}}
+
+{{ struct.description }}
+
+
+{% endfor %}
+#}
+
+## Enum definitions
+
+{% for enum in config.enums %}
+### {{ enum.human_readable_name() }} {{ "{" }}#CLI_{{ enum.name}}}
+
+{{ enum.description }}
+
+
+| Label | Value | Description |
+|-------|-------|-------------|
+{% for value in enum.values -%}
+| `{{ value.name }}` | {{ loop.index0 }} | {{ value.description }} |
+{% endfor -%}
+
+{% endfor %}
