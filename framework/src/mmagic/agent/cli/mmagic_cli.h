@@ -38,3 +38,12 @@ struct mmagic_cli
     EmbeddedCliConfig *config;
     struct mmagic_cli_config_accessor *config_accessors;
 };
+
+/**
+ * Print an error message composed of @p base_msg and the string representation of @p status.
+ *
+ * @param cli      EmbeddedCli instance.
+ * @param base_msg The base error message.
+ * @param status   Error status code.
+ */
+void mmagic_cli_print_error(EmbeddedCli *cli, const char *base_msg, enum mmagic_status status);

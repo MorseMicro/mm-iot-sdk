@@ -1,5 +1,5 @@
 /*
- * FreeRTOS+TCP <DEVELOPMENT BRANCH>
+ * FreeRTOS+TCP V4.2.2
  * Copyright (C) 2022 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -148,12 +148,12 @@ typedef struct xTCP_WINDOW
  *=============================================================================*/
 
 /* Create and initialize a window */
-void vTCPWindowCreate( TCPWindow_t * pxWindow,
-                       uint32_t ulRxWindowLength,
-                       uint32_t ulTxWindowLength,
-                       uint32_t ulAckNumber,
-                       uint32_t ulSequenceNumber,
-                       uint32_t ulMSS );
+BaseType_t xTCPWindowCreate( TCPWindow_t * pxWindow,
+                             uint32_t ulRxWindowLength,
+                             uint32_t ulTxWindowLength,
+                             uint32_t ulAckNumber,
+                             uint32_t ulSequenceNumber,
+                             uint32_t ulMSS );
 
 /* Destroy a window (always returns NULL)
  * It will free some resources: a collection of segments */

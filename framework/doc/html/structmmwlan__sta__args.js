@@ -10,6 +10,8 @@ var structmmwlan__sta__args =
     [ "pmf_mode", "structmmwlan__sta__args.html#a5f424a8f2c9ea4906a99fcc87dc5553f", null ],
     [ "raw_sta_priority", "structmmwlan__sta__args.html#a203987678cafb13e43d58f70564d78a2", null ],
     [ "sae_owe_ec_groups", "structmmwlan__sta__args.html#a210625043c5195cb38c203b2d51f3e3f", null ],
+    [ "scan_interval_base_s", "structmmwlan__sta__args.html#a273e51fd31b3331e73b33f2c3d3de775", null ],
+    [ "scan_interval_limit_s", "structmmwlan__sta__args.html#afa7e7842511277605c7681b339c06429", null ],
     [ "scan_rx_cb", "structmmwlan__sta__args.html#a125f53ea8950b80c3a114e206e299b25", null ],
     [ "scan_rx_cb_arg", "structmmwlan__sta__args.html#ad2ab0fd59f84e5f035fb40c1b9a3a11e", null ],
     [ "security_type", "structmmwlan__sta__args.html#a6bcc064f22d95a72f600901eec121440", null ],

@@ -1,5 +1,8 @@
 /*
  * Copyright 2022 Morse Micro
+ *
+ * This software may be distributed under the terms of the BSD license.
+ * See README for more details.
  */
 
 #ifndef MORSE_H
@@ -13,6 +16,8 @@
 #define MORSE_S1G_RETURN_ERROR (-1)
 #define MORSE_INVALID_CHANNEL (-2)
 #define MORSE_SUCCESS (0)
+/** The maximum number of country codes that can be assigned to an S1G class */
+#define COUNTRY_CODE_MAX (2)
 #define COUNTRY_CODE_LEN (2)
 #define S1G_CHAN_ENABLED_FLAG(ch) (1LLU << (ch))
 #define NUMBER_OF_BITS(x) (sizeof(x) * 8)
@@ -53,7 +58,7 @@ struct ah_class {
 	u8 s1g_op_class_idx;
 	u8 global_op_class;
 	u8 s1g_width;
-	char cc[COUNTRY_CODE_LEN + 1];
+	char cc_list[COUNTRY_CODE_MAX][COUNTRY_CODE_LEN];
 	u64 chans;
 };
 
@@ -72,15 +77,17 @@ enum s1g_op_class_type {
 	OP_CLASS_S1G_GLOBAL = 0,
 };
 
+/* This table is also in the Morse Micro driver */
 enum morse_dot11ah_region {
-	MORSE_US,
+	MORSE_AU,
+	MORSE_CA,
 	MORSE_EU,
+	MORSE_IN,
 	MORSE_JP,
 	MORSE_KR,
-	MORSE_SG,
-	MORSE_AU,
 	MORSE_NZ,
-	MORSE_IN,
+	MORSE_SG,
+	MORSE_US,
 	REGION_UNSET = 0xFF,
 };
 
@@ -96,9 +103,9 @@ enum morse_dot11ah_region {
 	(type *)((char *)__mptr - offsetof(type, member)); })
 
 /**
- * @brief Set the s1g->ht channelisation pairs.
+ * morse_set_s1g_ht_chan_pairs - Set the s1g->ht channelisation pairs
  *
- * @param cc the country code for the required channelisation scheme.
+ * @cc: The country code for the required channelisation scheme.
  *	Passing NULL selects the default scheme (AU/US etc.)
  */
 void morse_set_s1g_ht_chan_pairs(const char *cc);
@@ -141,6 +148,9 @@ int morse_s1g_op_class_to_ch_width(u8 s1g_op_class);
 /* Convert an operating class to country code */
 int morse_s1g_op_class_to_country(u8 s1g_op_class, char *cc);
 
+/* Convert a country code to a global operating class */
+int morse_s1g_country_to_global_op_class(char *cc);
+
 /* Convert an operating class and s1g channel to frequency (kHz) */
 int morse_s1g_op_class_chan_to_freq(u8 s1g_op_class, int s1g_chan);
 
@@ -152,6 +162,9 @@ int morse_s1g_op_class_ht_freq_to_s1g_freq(u8 s1g_op_class, int ht_freq);
 
 /* Convert a country and ht frequency into a s1g frequency (kHz) */
 int morse_cc_ht_freq_to_s1g_freq(char *cc, int ht_freq);
+
+/* Convert a country and S1G frequency (kHz) into an HT frequency (MHz) */
+int morse_s1g_freq_and_cc_to_ht_freq(int s1g_frequency, const char *cc);
 
 /* Return the first valid channel from an s1g operating class */
 int morse_s1g_op_class_first_chan(u8 s1g_op_class);
@@ -180,6 +193,16 @@ int morse_validate_ht_channel_with_idx(u8 s1g_op_class, int ht_center_channel, i
 				int s1g_prim_1mhz_chan_index, struct hostapd_config *conf);
 
 int morse_s1g_validate_csa_params(struct hostapd_iface *iface, struct csa_settings *settings);
+
+/*
+ * Map the given S1G frequency in KHz onto the matching 5GHz one in MHz.
+ */
+int morse_convert_s1g_freq_to_ht_freq(int s1g_freq, const char *country);
+
+/*
+ * Get the lowest center frequency for a given country.
+ */
+int morse_s1g_get_first_center_freq_for_country(char *cc);
 
 /* Defined in driver/driver/h */
 enum wnm_oper;
@@ -311,12 +334,13 @@ int morse_twt_conf(const char* ifname, struct morse_twt *twt_config);
  * @param oper_freq		Frequency of operating channel in kHz
  * @param prim_1mhz_ch_idx	1MHz channel index of primary channel
  * @param prim_global_op_class	Global operating class for primary channel
+ * @param s1g_capab  User configured S1G capabilities.
  *
  * @returns 0 on success, else an error code.
  */
 int morse_set_ecsa_params(const char* ifname, u8 global_oper_class, u8 prim_chwidth,
 			int oper_chwidth, int oper_freq, u8 prim_1mhz_ch_idx,
-			u8 prim_global_op_class);
+			u8 prim_global_op_class, u32 s1g_capab);
 
 int morse_set_mbssid_info(const char *ifname, const char *tx_iface_idx,
 					u8 max_bss_index);

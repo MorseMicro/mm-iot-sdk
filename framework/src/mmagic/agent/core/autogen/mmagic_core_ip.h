@@ -14,14 +14,15 @@ struct mmagic_data;
 
 struct mmagic_ip_config
 {
-    /** True to enable DHCP for IP address configuration, or false to use the static
-     * configuration given by ip_addr, netmask, and gateway. This will take effect when
+    /** IP address to use for a static network connection. This will take effect when
      * the reload command is successfully executed. */
-    bool dhcp_enabled;
-    /** If true, enables DHCP offload which allows the Morse chip to directly handle
-     * DHCP discovery and leases without waking up the host processor. Note: this comes
-     * into effect only if ip.dhcp_enabled is also true. */
-    bool dhcp_offload;
+    struct struct_ip_addr ip_addr;
+    /** Netmask to use for a static network connection. This will take effect when the
+     * reload command is successfully executed. */
+    struct struct_ip_addr netmask;
+    /** Gateway to use for a static network connection. This will take effect when the
+     * reload command is successfully executed. */
+    struct struct_ip_addr gateway;
     /** Primary DNS server IP address. If a value is specified this will override the
      * primary DNS server provided by DHCP (if any). Changes will take effect when the
      * reload command is successfully executed. */
@@ -31,15 +32,14 @@ struct mmagic_ip_config
      * the reload command is successfully executed. Note that this option may be
      * ignored by some IP stacks. */
     struct struct_ip_addr dns_server1;
-    /** Gateway to use for a static network connection. This will take effect when the
-     * reload command is successfully executed. */
-    struct struct_ip_addr gateway;
-    /** IP address to use for a static network connection. This will take effect when
+    /** True to enable DHCP for IP address configuration, or false to use the static
+     * configuration given by ip_addr, netmask, and gateway. This will take effect when
      * the reload command is successfully executed. */
-    struct struct_ip_addr ip_addr;
-    /** Netmask to use for a static network connection. This will take effect when the
-     * reload command is successfully executed. */
-    struct struct_ip_addr netmask;
+    bool dhcp_enabled;
+    /** If true, enables DHCP offload which allows the Morse chip to directly handle
+     * DHCP discovery and leases without waking up the host processor. Note: this comes
+     * into effect only if ip.dhcp_enabled is also true. */
+    bool dhcp_offload;
 };
 
 struct mmagic_ip_data

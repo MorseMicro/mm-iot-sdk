@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.6.4</span>
+   &#160;<span id="projectnumber">2.7.2</span>
    </div>
   </td>
  </tr>
@@ -180,7 +180,19 @@ Enumerations</h2></td></tr>
 &#160;&#160;<a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a9afd35ed2c57c25887eed910c9ad713f">MMAGIC_STATUS_TX_ERROR</a> = 8
 , <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92abe80e31a894b419ef3b53e6f1c4f2995">MMAGIC_STATUS_NO_MEM</a> = 9
 , <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92aa49755e66951b7d030bdf090f4d5de27">MMAGIC_STATUS_CLOSED</a> = 10
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a54a04dbd9553dc43d20aec6bdb6afcdf">MMAGIC_STATUS_MAX</a> = 11
+, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a00c737695a1f2638d65cab6e15a0fe0b">MMAGIC_STATUS_CHANNEL_LIST_NOT_SET</a> = 11
+, <br />
+&#160;&#160;<a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92aef247ebae18d86c5090e6b120d302404">MMAGIC_STATUS_SHUTDOWN_BLOCKED</a> = 12
+, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a72a9c2bb10041ccf7a01a15def3267cc">MMAGIC_STATUS_CHANNEL_INVALID</a> = 13
+, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92aba3219c36022bb6b3ffe6c1c67f38427">MMAGIC_STATUS_NOT_RUNNING</a> = 14
+, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a410c796f38cf9c64ba9a8b03bfb2afef">MMAGIC_STATUS_NO_LINK</a> = 15
+, <br />
+&#160;&#160;<a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a94b9d1eef2064e9f097fa6c6c8b2a795">MMAGIC_STATUS_UNKNOWN_HOST</a> = 16
+, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92ae370f3b93b96a043d3e91c9223360bb8">MMAGIC_STATUS_SOCKET_FAILED</a> = 17
+, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92ab8c53b7e40d35ed2944001ed79a22bba">MMAGIC_STATUS_SOCKET_CONNECT_FAILED</a> = 18
+, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a3d8ae0507b43c6cbd6e9acf00a300b7a">MMAGIC_STATUS_SOCKET_BIND_FAILED</a> = 19
+, <br />
+&#160;&#160;<a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a273683e027ae66b77f99af86940c87e4">MMAGIC_STATUS_SOCKET_LISTEN_FAILED</a> = 20
 <br />
  }</td></tr>
 <tr class="memdesc:gad2f6cd96ec8731a96031b0b5614f9f92"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enumeration of return status codes.  <a href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">More...</a><br /></td></tr>
@@ -218,6 +230,8 @@ Enumerations</h2></td></tr>
 , <br />
 &#160;&#160;<a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggab67ae7b325fb681fb00aaff541c63410a6d3a493adccd4545ddf3b12b290a7ce9">MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_WHITELIST_PKT</a> = 4
 , <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggab67ae7b325fb681fb00aaff541c63410a1000ac0430f0cb2cdc9bf804e841627e">MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_TCP_CONNECTION_LOST</a> = 5
+, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggab67ae7b325fb681fb00aaff541c63410ab5dc6728ea2f3e3c21d3211467db7444">MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_HW_SCAN_NOT_ENABLED</a> = 6
+, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggab67ae7b325fb681fb00aaff541c63410a480e4754f7ffb6fb74cf79e6fb7f4bc5">MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_HW_SCAN_FAILED_TO_START</a> = 7
 <br />
  }</td></tr>
 <tr class="memdesc:gab67ae7b325fb681fb00aaff541c63410"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reasons for exiting standby mode.  <a href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gab67ae7b325fb681fb00aaff541c63410">More...</a><br /></td></tr>
@@ -258,7 +272,7 @@ Enumerations</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00148">148</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00166">166</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -283,7 +297,7 @@ Enumerations</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00139">139</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00157">157</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -311,7 +325,7 @@ Enumerations</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00113">113</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00131">131</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -339,7 +353,7 @@ Enumerations</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00126">126</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00144">144</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -443,9 +457,13 @@ Enumerations</h2></td></tr>
 </td></tr>
 <tr><td class="fieldname"><a id="ggab67ae7b325fb681fb00aaff541c63410a1000ac0430f0cb2cdc9bf804e841627e" name="ggab67ae7b325fb681fb00aaff541c63410a1000ac0430f0cb2cdc9bf804e841627e"></a>MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_TCP_CONNECTION_LOST&#160;</td><td class="fielddoc"><p >An open TCP connection was lost. </p>
 </td></tr>
+<tr><td class="fieldname"><a id="ggab67ae7b325fb681fb00aaff541c63410ab5dc6728ea2f3e3c21d3211467db7444" name="ggab67ae7b325fb681fb00aaff541c63410ab5dc6728ea2f3e3c21d3211467db7444"></a>MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_HW_SCAN_NOT_ENABLED&#160;</td><td class="fielddoc"><p >Hardware scan was not enabled. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ggab67ae7b325fb681fb00aaff541c63410a480e4754f7ffb6fb74cf79e6fb7f4bc5" name="ggab67ae7b325fb681fb00aaff541c63410a480e4754f7ffb6fb74cf79e6fb7f4bc5"></a>MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_HW_SCAN_FAILED_TO_START&#160;</td><td class="fielddoc"><p >Hardware scan failed to start. </p>
+</td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00159">159</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00177">177</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -509,7 +527,25 @@ Enumerations</h2></td></tr>
 </td></tr>
 <tr><td class="fieldname"><a id="ggad2f6cd96ec8731a96031b0b5614f9f92aa49755e66951b7d030bdf090f4d5de27" name="ggad2f6cd96ec8731a96031b0b5614f9f92aa49755e66951b7d030bdf090f4d5de27"></a>MMAGIC_STATUS_CLOSED&#160;</td><td class="fielddoc"><p >Failed due to stream being closed from the other side. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="ggad2f6cd96ec8731a96031b0b5614f9f92a54a04dbd9553dc43d20aec6bdb6afcdf" name="ggad2f6cd96ec8731a96031b0b5614f9f92a54a04dbd9553dc43d20aec6bdb6afcdf"></a>MMAGIC_STATUS_MAX&#160;</td><td class="fielddoc"><p >Maximum status value possible. </p>
+<tr><td class="fieldname"><a id="ggad2f6cd96ec8731a96031b0b5614f9f92a00c737695a1f2638d65cab6e15a0fe0b" name="ggad2f6cd96ec8731a96031b0b5614f9f92a00c737695a1f2638d65cab6e15a0fe0b"></a>MMAGIC_STATUS_CHANNEL_LIST_NOT_SET&#160;</td><td class="fielddoc"><p >WLAN operation failed because the channel list has not been set. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ggad2f6cd96ec8731a96031b0b5614f9f92aef247ebae18d86c5090e6b120d302404" name="ggad2f6cd96ec8731a96031b0b5614f9f92aef247ebae18d86c5090e6b120d302404"></a>MMAGIC_STATUS_SHUTDOWN_BLOCKED&#160;</td><td class="fielddoc"><p >WLAN shutdown failed. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ggad2f6cd96ec8731a96031b0b5614f9f92a72a9c2bb10041ccf7a01a15def3267cc" name="ggad2f6cd96ec8731a96031b0b5614f9f92a72a9c2bb10041ccf7a01a15def3267cc"></a>MMAGIC_STATUS_CHANNEL_INVALID&#160;</td><td class="fielddoc"><p >Attempted to tune to a channel that was not available. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ggad2f6cd96ec8731a96031b0b5614f9f92aba3219c36022bb6b3ffe6c1c67f38427" name="ggad2f6cd96ec8731a96031b0b5614f9f92aba3219c36022bb6b3ffe6c1c67f38427"></a>MMAGIC_STATUS_NOT_RUNNING&#160;</td><td class="fielddoc"><p >Operation failed because the WLAN device was not booted. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ggad2f6cd96ec8731a96031b0b5614f9f92a410c796f38cf9c64ba9a8b03bfb2afef" name="ggad2f6cd96ec8731a96031b0b5614f9f92a410c796f38cf9c64ba9a8b03bfb2afef"></a>MMAGIC_STATUS_NO_LINK&#160;</td><td class="fielddoc"><p >Operation failed because the link was not up. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ggad2f6cd96ec8731a96031b0b5614f9f92a94b9d1eef2064e9f097fa6c6c8b2a795" name="ggad2f6cd96ec8731a96031b0b5614f9f92a94b9d1eef2064e9f097fa6c6c8b2a795"></a>MMAGIC_STATUS_UNKNOWN_HOST&#160;</td><td class="fielddoc"><p >Failed to get an IP address for the given hostname. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ggad2f6cd96ec8731a96031b0b5614f9f92ae370f3b93b96a043d3e91c9223360bb8" name="ggad2f6cd96ec8731a96031b0b5614f9f92ae370f3b93b96a043d3e91c9223360bb8"></a>MMAGIC_STATUS_SOCKET_FAILED&#160;</td><td class="fielddoc"><p >Failed to open the socket. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ggad2f6cd96ec8731a96031b0b5614f9f92ab8c53b7e40d35ed2944001ed79a22bba" name="ggad2f6cd96ec8731a96031b0b5614f9f92ab8c53b7e40d35ed2944001ed79a22bba"></a>MMAGIC_STATUS_SOCKET_CONNECT_FAILED&#160;</td><td class="fielddoc"><p >Socket connection failed. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ggad2f6cd96ec8731a96031b0b5614f9f92a3d8ae0507b43c6cbd6e9acf00a300b7a" name="ggad2f6cd96ec8731a96031b0b5614f9f92a3d8ae0507b43c6cbd6e9acf00a300b7a"></a>MMAGIC_STATUS_SOCKET_BIND_FAILED&#160;</td><td class="fielddoc"><p >Socket bind failed. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ggad2f6cd96ec8731a96031b0b5614f9f92a273683e027ae66b77f99af86940c87e4" name="ggad2f6cd96ec8731a96031b0b5614f9f92a273683e027ae66b77f99af86940c87e4"></a>MMAGIC_STATUS_SOCKET_LISTEN_FAILED&#160;</td><td class="fielddoc"><p >Socket listen failed. </p>
 </td></tr>
 </table>
 
@@ -545,7 +581,7 @@ Enumerations</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00347">347</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00369">369</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>

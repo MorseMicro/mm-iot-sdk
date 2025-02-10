@@ -17,19 +17,19 @@ void mmagic_core_ping_load_all(struct mmagic_data *core)
 {
     struct mmagic_ping_data *data = &core->ping_data;
     char val[MAX_VAL_LEN];
-    if (mmconfig_read_string("ping.count", val, sizeof(val)) > 0)
+    if (mmconfig_read_string("ping.target", val, sizeof(val)) > 0)
     {
-        (void)string_to_uint32_t(&data->config.count, val);
+        (void)mmagic_string_to_struct_ip_addr(&data->config.target, val);
     }
 
     if (mmconfig_read_string("ping.interval", val, sizeof(val)) > 0)
     {
-        (void)string_to_uint32_t(&data->config.interval, val);
+        (void)mmagic_string_to_uint32_t(&data->config.interval, val);
     }
 
-    if (mmconfig_read_string("ping.target", val, sizeof(val)) > 0)
+    if (mmconfig_read_string("ping.count", val, sizeof(val)) > 0)
     {
-        (void)string_to_struct_ip_addr(&data->config.target, val);
+        (void)mmagic_string_to_uint32_t(&data->config.count, val);
     }
 
 }
@@ -38,14 +38,14 @@ void mmagic_core_ping_save_all(struct mmagic_data *core)
 {
     struct mmagic_ping_data *data = &core->ping_data;
     char val[MAX_VAL_LEN];
-    uint32_t_to_string(&data->config.count, val, sizeof(val));
-    mmconfig_write_string("ping.count", val);
+    mmagic_struct_ip_addr_to_string(&data->config.target, val, sizeof(val));
+    mmconfig_write_string("ping.target", val);
 
-    uint32_t_to_string(&data->config.interval, val, sizeof(val));
+    mmagic_uint32_t_to_string(data->config.interval, val, sizeof(val));
     mmconfig_write_string("ping.interval", val);
 
-    struct_ip_addr_to_string(&data->config.target, val, sizeof(val));
-    mmconfig_write_string("ping.target", val);
+    mmagic_uint32_t_to_string(data->config.count, val, sizeof(val));
+    mmconfig_write_string("ping.count", val);
 
 }
 

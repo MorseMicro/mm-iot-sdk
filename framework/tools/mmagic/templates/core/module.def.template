@@ -18,10 +18,10 @@ void mmagic_core_{{data.name}}_load_all(struct mmagic_data *core)
 {
     struct mmagic_{{data.name}}_data *data = &core->{{data.name}}_data;
     char val[MAX_VAL_LEN];
-{%- for var in data.configs %}
+{%- for var in data.configs | sort(attribute="id") %}
     if (mmconfig_read_string("{{data.name}}.{{var.name}}", val, sizeof(val)) > 0)
     {
-        (void)string_to_{{var.type}}(&data->config.{{var.name}}, val);
+        (void)mmagic_string_to_{{var.type}}(&data->config.{{var.name}}, val);
     }
 {% endfor %}
 }
@@ -30,8 +30,13 @@ void mmagic_core_{{data.name}}_save_all(struct mmagic_data *core)
 {
     struct mmagic_{{data.name}}_data *data = &core->{{data.name}}_data;
     char val[MAX_VAL_LEN];
-{%- for var in data.configs %}
-    {{var.type}}_to_string(&data->config.{{var.name}}, val, sizeof(val));
+{%- for var in data.configs | sort(attribute="id") %}
+    {%- if var.type.startswith("struct") %}
+        {%- set ref = "&" %}
+    {%- else %}
+        {%- set ref = "" %}
+    {%- endif %}
+    mmagic_{{var.type}}_to_string({{ref}}data->config.{{var.name}}, val, sizeof(val));
     mmconfig_write_string("{{data.name}}.{{var.name}}", val);
 {% endfor %}
 }

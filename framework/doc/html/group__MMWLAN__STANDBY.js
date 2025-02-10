@@ -30,7 +30,9 @@ var group__MMWLAN__STANDBY =
       [ "MMWLAN_STANDBY_EXIT_REASON_ASSOCIATE", "group__MMWLAN__STANDBY.html#gga7be2c8d7da01c0a12e0d4cb171ef7764ac63562b5e23b7141fd6982f7ce8b6718", null ],
       [ "MMWLAN_STANDBY_EXIT_REASON_EXT_INPUT", "group__MMWLAN__STANDBY.html#gga7be2c8d7da01c0a12e0d4cb171ef7764a25c67b54af8a9f6ab547a32e723c1717", null ],
       [ "MMWLAN_STANDBY_EXIT_REASON_WHITELIST_PKT", "group__MMWLAN__STANDBY.html#gga7be2c8d7da01c0a12e0d4cb171ef7764a588bdca3034f6a2a2ae5601394c25547", null ],
-      [ "MMWLAN_STANDBY_EXIT_REASON_TCP_CONNECTION_LOST", "group__MMWLAN__STANDBY.html#gga7be2c8d7da01c0a12e0d4cb171ef7764aaa92ecec0ee5082323326b39a753baf4", null ]
+      [ "MMWLAN_STANDBY_EXIT_REASON_TCP_CONNECTION_LOST", "group__MMWLAN__STANDBY.html#gga7be2c8d7da01c0a12e0d4cb171ef7764aaa92ecec0ee5082323326b39a753baf4", null ],
+      [ "MMWLAN_STANDBY_EXIT_REASON_HW_SCAN_NOT_ENABLED", "group__MMWLAN__STANDBY.html#gga7be2c8d7da01c0a12e0d4cb171ef7764a19f6edcbf858d1200532cb1dc8640a46", null ],
+      [ "MMWLAN_STANDBY_EXIT_REASON_HW_SCAN_FAILED_TO_START", "group__MMWLAN__STANDBY.html#gga7be2c8d7da01c0a12e0d4cb171ef7764aa8881b473fd80aa08e976467d96ef801", null ]
     ] ],
     [ "mmwlan_standby_enter", "group__MMWLAN__STANDBY.html#gacf3e87544fee10ac452e54da876da9fc", null ],
     [ "mmwlan_standby_exit", "group__MMWLAN__STANDBY.html#ga383744d01dea3f96db0bc5a4ac878c34", null ],

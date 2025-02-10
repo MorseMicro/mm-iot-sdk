@@ -31,100 +31,115 @@ static struct mmbuf *mmagic_m2m_wlan_get(struct mmagic_m2m_agent *agent,
     struct mmagic_wlan_data *data = mmagic_data_get_wlan(&agent->core);
     switch (subcommand)
     {
-    case mmagic_wlan_var_ampdu_enabled:
-        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_get, subcommand,
-                                          MMAGIC_STATUS_OK, &data->config.ampdu_enabled,
-                                          sizeof(data->config.ampdu_enabled));
-
-    case mmagic_wlan_var_bssid:
-        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_get, subcommand,
-                                          MMAGIC_STATUS_OK, &data->config.bssid,
-                                          sizeof(data->config.bssid));
-
-    case mmagic_wlan_var_cac_enabled:
-        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_get, subcommand,
-                                          MMAGIC_STATUS_OK, &data->config.cac_enabled,
-                                          sizeof(data->config.cac_enabled));
-
     case mmagic_wlan_var_country_code:
         return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_get, subcommand,
                                           MMAGIC_STATUS_OK, &data->config.country_code,
                                           sizeof(data->config.country_code));
-
-    case mmagic_wlan_var_fragment_threshold:
-        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_get, subcommand,
-                                          MMAGIC_STATUS_OK, &data->config.fragment_threshold,
-                                          sizeof(data->config.fragment_threshold));
-
-    case mmagic_wlan_var_max_health_check_intvl_ms:
-        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_get, subcommand,
-                                          MMAGIC_STATUS_OK, &data->config.max_health_check_intvl_ms,
-                                          sizeof(data->config.max_health_check_intvl_ms));
-
-    case mmagic_wlan_var_min_health_check_intvl_ms:
-        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_get, subcommand,
-                                          MMAGIC_STATUS_OK, &data->config.min_health_check_intvl_ms,
-                                          sizeof(data->config.min_health_check_intvl_ms));
-
-    case mmagic_wlan_var_offload_arp_refresh_s:
-        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_get, subcommand,
-                                          MMAGIC_STATUS_OK, &data->config.offload_arp_refresh_s,
-                                          sizeof(data->config.offload_arp_refresh_s));
-
-    case mmagic_wlan_var_offload_arp_response:
-        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_get, subcommand,
-                                          MMAGIC_STATUS_OK, &data->config.offload_arp_response,
-                                          sizeof(data->config.offload_arp_response));
-
-    case mmagic_wlan_var_password:
-        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_get, subcommand,
-                                          MMAGIC_STATUS_OK, &data->config.password,
-                                          sizeof(data->config.password));
-
-    case mmagic_wlan_var_pmf_mode:
-        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_get, subcommand,
-                                          MMAGIC_STATUS_OK, &data->config.pmf_mode,
-                                          sizeof(data->config.pmf_mode));
-
-    case mmagic_wlan_var_power_save_mode:
-        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_get, subcommand,
-                                          MMAGIC_STATUS_OK, &data->config.power_save_mode,
-                                          sizeof(data->config.power_save_mode));
-
-    case mmagic_wlan_var_raw_priority:
-        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_get, subcommand,
-                                          MMAGIC_STATUS_OK, &data->config.raw_priority,
-                                          sizeof(data->config.raw_priority));
-
-    case mmagic_wlan_var_rts_threshold:
-        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_get, subcommand,
-                                          MMAGIC_STATUS_OK, &data->config.rts_threshold,
-                                          sizeof(data->config.rts_threshold));
-
-    case mmagic_wlan_var_security:
-        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_get, subcommand,
-                                          MMAGIC_STATUS_OK, &data->config.security,
-                                          sizeof(data->config.security));
-
-    case mmagic_wlan_var_sgi_enabled:
-        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_get, subcommand,
-                                          MMAGIC_STATUS_OK, &data->config.sgi_enabled,
-                                          sizeof(data->config.sgi_enabled));
 
     case mmagic_wlan_var_ssid:
         return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_get, subcommand,
                                           MMAGIC_STATUS_OK, &data->config.ssid,
                                           sizeof(data->config.ssid));
 
+    case mmagic_wlan_var_password:
+        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_get, subcommand,
+                                          MMAGIC_STATUS_OK, &data->config.password,
+                                          sizeof(data->config.password));
+
+    case mmagic_wlan_var_security:
+        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_get, subcommand,
+                                          MMAGIC_STATUS_OK, &data->config.security,
+                                          sizeof(data->config.security));
+
+    case mmagic_wlan_var_raw_priority:
+        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_get, subcommand,
+                                          MMAGIC_STATUS_OK, &data->config.raw_priority,
+                                          sizeof(data->config.raw_priority));
+
+    case mmagic_wlan_var_bssid:
+        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_get, subcommand,
+                                          MMAGIC_STATUS_OK, &data->config.bssid,
+                                          sizeof(data->config.bssid));
+
+    case mmagic_wlan_var_pmf_mode:
+        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_get, subcommand,
+                                          MMAGIC_STATUS_OK, &data->config.pmf_mode,
+                                          sizeof(data->config.pmf_mode));
+
     case mmagic_wlan_var_station_type:
         return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_get, subcommand,
                                           MMAGIC_STATUS_OK, &data->config.station_type,
                                           sizeof(data->config.station_type));
 
+    case mmagic_wlan_var_rts_threshold:
+        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_get, subcommand,
+                                          MMAGIC_STATUS_OK, &data->config.rts_threshold,
+                                          sizeof(data->config.rts_threshold));
+
+    case mmagic_wlan_var_sgi_enabled:
+        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_get, subcommand,
+                                          MMAGIC_STATUS_OK, &data->config.sgi_enabled,
+                                          sizeof(data->config.sgi_enabled));
+
     case mmagic_wlan_var_subbands_enabled:
         return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_get, subcommand,
                                           MMAGIC_STATUS_OK, &data->config.subbands_enabled,
                                           sizeof(data->config.subbands_enabled));
+
+    case mmagic_wlan_var_ampdu_enabled:
+        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_get, subcommand,
+                                          MMAGIC_STATUS_OK, &data->config.ampdu_enabled,
+                                          sizeof(data->config.ampdu_enabled));
+
+    case mmagic_wlan_var_power_save_mode:
+        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_get, subcommand,
+                                          MMAGIC_STATUS_OK, &data->config.power_save_mode,
+                                          sizeof(data->config.power_save_mode));
+
+    case mmagic_wlan_var_fragment_threshold:
+        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_get, subcommand,
+                                          MMAGIC_STATUS_OK, &data->config.fragment_threshold,
+                                          sizeof(data->config.fragment_threshold));
+
+    case mmagic_wlan_var_cac_enabled:
+        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_get, subcommand,
+                                          MMAGIC_STATUS_OK, &data->config.cac_enabled,
+                                          sizeof(data->config.cac_enabled));
+
+    case mmagic_wlan_var_offload_arp_response:
+        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_get, subcommand,
+                                          MMAGIC_STATUS_OK, &data->config.offload_arp_response,
+                                          sizeof(data->config.offload_arp_response));
+
+    case mmagic_wlan_var_offload_arp_refresh_s:
+        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_get, subcommand,
+                                          MMAGIC_STATUS_OK, &data->config.offload_arp_refresh_s,
+                                          sizeof(data->config.offload_arp_refresh_s));
+
+    case mmagic_wlan_var_min_health_check_intvl_ms:
+        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_get, subcommand,
+                                          MMAGIC_STATUS_OK, &data->config.min_health_check_intvl_ms,
+                                          sizeof(data->config.min_health_check_intvl_ms));
+
+    case mmagic_wlan_var_max_health_check_intvl_ms:
+        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_get, subcommand,
+                                          MMAGIC_STATUS_OK, &data->config.max_health_check_intvl_ms,
+                                          sizeof(data->config.max_health_check_intvl_ms));
+
+    case mmagic_wlan_var_ndp_probe_enabled:
+        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_get, subcommand,
+                                          MMAGIC_STATUS_OK, &data->config.ndp_probe_enabled,
+                                          sizeof(data->config.ndp_probe_enabled));
+
+    case mmagic_wlan_var_sta_scan_interval_base_s:
+        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_get, subcommand,
+                                          MMAGIC_STATUS_OK, &data->config.sta_scan_interval_base_s,
+                                          sizeof(data->config.sta_scan_interval_base_s));
+
+    case mmagic_wlan_var_sta_scan_interval_limit_s:
+        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_get, subcommand,
+                                          MMAGIC_STATUS_OK, &data->config.sta_scan_interval_limit_s,
+                                          sizeof(data->config.sta_scan_interval_limit_s));
 
     default:
         return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_get, subcommand,
@@ -141,8 +156,32 @@ static struct mmbuf *mmagic_m2m_wlan_set(struct mmagic_m2m_agent *agent,
     void *args = (void *)mmbuf_get_data_start(commandbuffer);
     switch (subcommand)
     {
-    case mmagic_wlan_var_ampdu_enabled:
-        memcpy(&data->config.ampdu_enabled, args, sizeof(data->config.ampdu_enabled));
+    case mmagic_wlan_var_country_code:
+        memcpy(&data->config.country_code, args, sizeof(data->config.country_code));
+        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_set,
+                                          subcommand, MMAGIC_STATUS_OK, NULL, 0);
+        break;
+
+    case mmagic_wlan_var_ssid:
+        memcpy(&data->config.ssid, args, sizeof(data->config.ssid));
+        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_set,
+                                          subcommand, MMAGIC_STATUS_OK, NULL, 0);
+        break;
+
+    case mmagic_wlan_var_password:
+        memcpy(&data->config.password, args, sizeof(data->config.password));
+        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_set,
+                                          subcommand, MMAGIC_STATUS_OK, NULL, 0);
+        break;
+
+    case mmagic_wlan_var_security:
+        memcpy(&data->config.security, args, sizeof(data->config.security));
+        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_set,
+                                          subcommand, MMAGIC_STATUS_OK, NULL, 0);
+        break;
+
+    case mmagic_wlan_var_raw_priority:
+        memcpy(&data->config.raw_priority, args, sizeof(data->config.raw_priority));
         return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_set,
                                           subcommand, MMAGIC_STATUS_OK, NULL, 0);
         break;
@@ -153,14 +192,44 @@ static struct mmbuf *mmagic_m2m_wlan_set(struct mmagic_m2m_agent *agent,
                                           subcommand, MMAGIC_STATUS_OK, NULL, 0);
         break;
 
-    case mmagic_wlan_var_cac_enabled:
-        memcpy(&data->config.cac_enabled, args, sizeof(data->config.cac_enabled));
+    case mmagic_wlan_var_pmf_mode:
+        memcpy(&data->config.pmf_mode, args, sizeof(data->config.pmf_mode));
         return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_set,
                                           subcommand, MMAGIC_STATUS_OK, NULL, 0);
         break;
 
-    case mmagic_wlan_var_country_code:
-        memcpy(&data->config.country_code, args, sizeof(data->config.country_code));
+    case mmagic_wlan_var_station_type:
+        memcpy(&data->config.station_type, args, sizeof(data->config.station_type));
+        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_set,
+                                          subcommand, MMAGIC_STATUS_OK, NULL, 0);
+        break;
+
+    case mmagic_wlan_var_rts_threshold:
+        memcpy(&data->config.rts_threshold, args, sizeof(data->config.rts_threshold));
+        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_set,
+                                          subcommand, MMAGIC_STATUS_OK, NULL, 0);
+        break;
+
+    case mmagic_wlan_var_sgi_enabled:
+        memcpy(&data->config.sgi_enabled, args, sizeof(data->config.sgi_enabled));
+        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_set,
+                                          subcommand, MMAGIC_STATUS_OK, NULL, 0);
+        break;
+
+    case mmagic_wlan_var_subbands_enabled:
+        memcpy(&data->config.subbands_enabled, args, sizeof(data->config.subbands_enabled));
+        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_set,
+                                          subcommand, MMAGIC_STATUS_OK, NULL, 0);
+        break;
+
+    case mmagic_wlan_var_ampdu_enabled:
+        memcpy(&data->config.ampdu_enabled, args, sizeof(data->config.ampdu_enabled));
+        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_set,
+                                          subcommand, MMAGIC_STATUS_OK, NULL, 0);
+        break;
+
+    case mmagic_wlan_var_power_save_mode:
+        memcpy(&data->config.power_save_mode, args, sizeof(data->config.power_save_mode));
         return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_set,
                                           subcommand, MMAGIC_STATUS_OK, NULL, 0);
         break;
@@ -171,16 +240,14 @@ static struct mmbuf *mmagic_m2m_wlan_set(struct mmagic_m2m_agent *agent,
                                           subcommand, MMAGIC_STATUS_OK, NULL, 0);
         break;
 
-    case mmagic_wlan_var_max_health_check_intvl_ms:
-        memcpy(&data->config.max_health_check_intvl_ms, args,
-               sizeof(data->config.max_health_check_intvl_ms));
+    case mmagic_wlan_var_cac_enabled:
+        memcpy(&data->config.cac_enabled, args, sizeof(data->config.cac_enabled));
         return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_set,
                                           subcommand, MMAGIC_STATUS_OK, NULL, 0);
         break;
 
-    case mmagic_wlan_var_min_health_check_intvl_ms:
-        memcpy(&data->config.min_health_check_intvl_ms, args,
-               sizeof(data->config.min_health_check_intvl_ms));
+    case mmagic_wlan_var_offload_arp_response:
+        memcpy(&data->config.offload_arp_response, args, sizeof(data->config.offload_arp_response));
         return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_set,
                                           subcommand, MMAGIC_STATUS_OK, NULL, 0);
         break;
@@ -192,68 +259,36 @@ static struct mmbuf *mmagic_m2m_wlan_set(struct mmagic_m2m_agent *agent,
                                           subcommand, MMAGIC_STATUS_OK, NULL, 0);
         break;
 
-    case mmagic_wlan_var_offload_arp_response:
-        memcpy(&data->config.offload_arp_response, args, sizeof(data->config.offload_arp_response));
+    case mmagic_wlan_var_min_health_check_intvl_ms:
+        memcpy(&data->config.min_health_check_intvl_ms, args,
+               sizeof(data->config.min_health_check_intvl_ms));
         return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_set,
                                           subcommand, MMAGIC_STATUS_OK, NULL, 0);
         break;
 
-    case mmagic_wlan_var_password:
-        memcpy(&data->config.password, args, sizeof(data->config.password));
+    case mmagic_wlan_var_max_health_check_intvl_ms:
+        memcpy(&data->config.max_health_check_intvl_ms, args,
+               sizeof(data->config.max_health_check_intvl_ms));
         return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_set,
                                           subcommand, MMAGIC_STATUS_OK, NULL, 0);
         break;
 
-    case mmagic_wlan_var_pmf_mode:
-        memcpy(&data->config.pmf_mode, args, sizeof(data->config.pmf_mode));
+    case mmagic_wlan_var_ndp_probe_enabled:
+        memcpy(&data->config.ndp_probe_enabled, args, sizeof(data->config.ndp_probe_enabled));
         return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_set,
                                           subcommand, MMAGIC_STATUS_OK, NULL, 0);
         break;
 
-    case mmagic_wlan_var_power_save_mode:
-        memcpy(&data->config.power_save_mode, args, sizeof(data->config.power_save_mode));
+    case mmagic_wlan_var_sta_scan_interval_base_s:
+        memcpy(&data->config.sta_scan_interval_base_s, args,
+               sizeof(data->config.sta_scan_interval_base_s));
         return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_set,
                                           subcommand, MMAGIC_STATUS_OK, NULL, 0);
         break;
 
-    case mmagic_wlan_var_raw_priority:
-        memcpy(&data->config.raw_priority, args, sizeof(data->config.raw_priority));
-        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_set,
-                                          subcommand, MMAGIC_STATUS_OK, NULL, 0);
-        break;
-
-    case mmagic_wlan_var_rts_threshold:
-        memcpy(&data->config.rts_threshold, args, sizeof(data->config.rts_threshold));
-        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_set,
-                                          subcommand, MMAGIC_STATUS_OK, NULL, 0);
-        break;
-
-    case mmagic_wlan_var_security:
-        memcpy(&data->config.security, args, sizeof(data->config.security));
-        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_set,
-                                          subcommand, MMAGIC_STATUS_OK, NULL, 0);
-        break;
-
-    case mmagic_wlan_var_sgi_enabled:
-        memcpy(&data->config.sgi_enabled, args, sizeof(data->config.sgi_enabled));
-        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_set,
-                                          subcommand, MMAGIC_STATUS_OK, NULL, 0);
-        break;
-
-    case mmagic_wlan_var_ssid:
-        memcpy(&data->config.ssid, args, sizeof(data->config.ssid));
-        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_set,
-                                          subcommand, MMAGIC_STATUS_OK, NULL, 0);
-        break;
-
-    case mmagic_wlan_var_station_type:
-        memcpy(&data->config.station_type, args, sizeof(data->config.station_type));
-        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_set,
-                                          subcommand, MMAGIC_STATUS_OK, NULL, 0);
-        break;
-
-    case mmagic_wlan_var_subbands_enabled:
-        memcpy(&data->config.subbands_enabled, args, sizeof(data->config.subbands_enabled));
+    case mmagic_wlan_var_sta_scan_interval_limit_s:
+        memcpy(&data->config.sta_scan_interval_limit_s, args,
+               sizeof(data->config.sta_scan_interval_limit_s));
         return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_set,
                                           subcommand, MMAGIC_STATUS_OK, NULL, 0);
         break;

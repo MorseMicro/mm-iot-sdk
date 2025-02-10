@@ -1,5 +1,5 @@
 /*
- * FreeRTOS+TCP <DEVELOPMENT BRANCH>
+ * FreeRTOS+TCP V4.2.2
  * Copyright (C) 2022 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -65,6 +65,9 @@ extern BaseType_t prvChecksumICMPv6Checks( size_t uxBufferLength,
 size_t usGetExtensionHeaderLength( const uint8_t * pucEthernetBuffer,
                                    size_t uxBufferLength,
                                    uint8_t * pucProtocol );
+
+void vManageSolicitedNodeAddress( const struct xNetworkEndPoint * pxEndPoint,
+                                  BaseType_t xNetworkGoingUp );
 
 /* *INDENT-OFF* */
 #ifdef __cplusplus

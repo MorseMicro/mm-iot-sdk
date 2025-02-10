@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.6.4</span>
+   &#160;<span id="projectnumber">2.7.2</span>
    </div>
   </td>
  </tr>
@@ -95,10 +95,10 @@ $(document).ready(function(){initNavTree('group__MMCONFIG.html',''); initResizab
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p >This provides key/value based persistent storage. </p>
 <p >The <a class="el" href="group__MMCONFIG__API.html">Morse Micro Persistent Configuration Store API</a> is provided to access the values stored in the <a class="el" href="group__MMCONFIG.html">Morse Micro Persistent Configuration Store</a>. An additional set of <a class="el" href="mm__app__loadconfig_8h.html#LOADCONFIG">Helper functions for loading configuration</a> simplify loading from persistent store into commonly used data structures.</p>
-<h1><a class="anchor" id="autotoc_md36"></a>
+<h1><a class="anchor" id="autotoc_md39"></a>
 Storage format</h1>
 <p >Two equal sized copies of persistent storage are stored in separate flash partitions. One is designated primary - this is the highest versioned valid partition. Whenever data needs to be written, the secondary is updated and then the pointers are switched to make the now updated secondary the primary. This ensures that primary always points to a valid and latest copy. For redundancy, this process is done twice so that both primary and secondary are up to date. Flash life can be doubled by doing this only once with the disadvantage that if primary partition gets corrupted then the secondary data will be stale.</p>
-<h2><a class="anchor" id="autotoc_md37"></a>
+<h2><a class="anchor" id="autotoc_md40"></a>
 Partition Header</h2>
 <p >Each Flash partition consists of a header containing the following data: </p><div class="fragment"><div class="line">|---------------------|------------------------------------------------------------------|</div>
 <div class="line">| Signature (32 bits) | This is the text ‘MMCS’ in little Endian format                  |</div>
@@ -114,47 +114,47 @@ Partition Header</h2>
 <div class="line">|-------|-----------|---------|----------|---------------------------|-------------------|</div>
 <div class="line">| Bytes |    4      |    4    |     4    |             n             |          1        |</div>
 <div class="line">|-------|-----------|---------|----------|---------------------------|-------------------|</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md38"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md41"></a>
 Key-Value pair</h2>
-<h3><a class="anchor" id="autotoc_md39"></a>
+<h3><a class="anchor" id="autotoc_md42"></a>
 Keys</h3>
 <p >Keys are unique in each copy of the persistent store and are case insensitive. A key must start with an alphabet [A..Z,a..z]. Subsequent letters in the key may contain alphanumeric characters, underscores or periods[A..Z,a..z,0..9,_,.]. The reasoning for this is to allow them to be used as well defined identifiers in a future scripting or CLI implementation.</p>
 <p >A key ending with an asterisk '*' is accepted for deletions only (i.e. the data is NULL). Any key matching up to the asterisk will be deleted.</p>
 <p >A key starts with a single byte indicating the length of the key in bytes followed by the characters of the key itself. The key must not be null terminated.</p>
 <p >A length value of <code>0xFF</code> indicates end of the list. The <code>0xFF</code> is excluded from the checksum calculation.</p>
-<h3><a class="anchor" id="autotoc_md40"></a>
+<h3><a class="anchor" id="autotoc_md43"></a>
 Values</h3>
 <p >Values are streams of raw data bytes and may be opaque binary data or NULL terminated strings. The Data may be up to 65279 bytes in length. (A length of <code>0xFFxx</code> could mean a partially programmed flash so is prohibited as it may cause buffer overruns)</p>
 <p >Values start with a 16bit value indicating the length of the data stream followed immediately by the raw data bytes.</p>
-<h2><a class="anchor" id="autotoc_md41"></a>
+<h2><a class="anchor" id="autotoc_md44"></a>
 Supported data types</h2>
 <p >Internally the persistent store stores all data as raw bytes of opaque binary data. However, for user convenience, we provide helper functions that can convert from common C data types to the binary format and back. Some of the data types we support are described below.</p>
-<h3><a class="anchor" id="autotoc_md42"></a>
+<h3><a class="anchor" id="autotoc_md45"></a>
 Binary data</h3>
 <p >The <a class="el" href="group__MMCONFIG__API.html#gaced6e1453d3114b98696af9bbcca4288">mmconfig_read_bytes()</a> and <a class="el" href="group__MMCONFIG__API.html#gab1379a02dfbef05b86b02a475f09f484">mmconfig_write_data()</a> function calls can read and write arbitrary binary data like arrays and C data structures into the persistent store. However, please be aware that if you store data structures in raw binary format there is a risk that future versions of the software will be incompatible if the data structure changes.</p>
-<h3><a class="anchor" id="autotoc_md43"></a>
+<h3><a class="anchor" id="autotoc_md46"></a>
 Strings</h3>
 <p >The <a class="el" href="group__MMCONFIG__API.html#ga49a03e759500ae9d9395a22d3846c11e">mmconfig_read_string()</a> and <a class="el" href="group__MMCONFIG__API.html#gad75d2af944e63a2b6f5615ba8a4e7ad6">mmconfig_write_string()</a> function calls can be used to read and write NULL terminated strings into the persistent store. <a class="el" href="group__MMCONFIG__API.html#ga49a03e759500ae9d9395a22d3846c11e">mmconfig_read_string()</a> will return an error if attempting to read any data from the persistent store whose last byte is not 0 as the function determines that this is not a valid NULL terminated string.</p>
-<h3><a class="anchor" id="autotoc_md44"></a>
+<h3><a class="anchor" id="autotoc_md47"></a>
 Unsigned integers</h3>
 <p >Unsigned integers are stored as a string for maximum compatibility - this removes confusion about word width and endianness. The API can be expanded to cater to wider integers and even floating point numbers if needed. The functions <a class="el" href="group__MMCONFIG__API.html#gae93df8026b038c5b216f7dc16a65ce91">mmconfig_read_uint32()</a> and <a class="el" href="group__MMCONFIG__API.html#ga8339629d27f454f568df2f68e457d5bd">mmconfig_write_uint32()</a> allow the user to read and write 32 bit (and smaller) unsigned integers to/from the persistent store. The <a class="el" href="group__MMCONFIG__API.html#gae93df8026b038c5b216f7dc16a65ce91">mmconfig_read_uint32()</a> will return an error if the data being read is not a NULL terminated string or contains characters that are invalid in an unsigned decimal or hexadecimal number. This function supports reading integers in hexadecimal format if it detects a string starting with <code>0x</code>.</p>
-<h3><a class="anchor" id="autotoc_md45"></a>
+<h3><a class="anchor" id="autotoc_md48"></a>
 Signed integers</h3>
 <p >Signed integers are stored as a string for maximum compatibility. <a class="el" href="group__MMCONFIG__API.html#ga525c691a659dbd32281c0de12432d9c9">mmconfig_read_int()</a> and <a class="el" href="group__MMCONFIG__API.html#ga093ef5caa1ee5d2d49ac26510e3f8d3b">mmconfig_write_int()</a> allow the user to read and write signed integers to/from the persistent store. These functions simply test for a negative number and then call the unsigned versions of the conversion functions above after correcting for the sign. The <a class="el" href="group__MMCONFIG__API.html#ga525c691a659dbd32281c0de12432d9c9">mmconfig_read_int()</a> will return an error if the data being read is not a NULL terminated string or contains characters that are invalid in a signed decimal or hexadecimal number. This function supports reading integers in hexadecimal format if it detects a string starting with <code>0x</code> or <code>-0x</code>.</p>
-<h3><a class="anchor" id="autotoc_md46"></a>
+<h3><a class="anchor" id="autotoc_md49"></a>
 Boolean</h3>
 <p ><a class="el" href="group__MMCONFIG__API.html#ga5cf5f8b78e861e232a9133656daf2df6">mmconfig_read_bool()</a> and <a class="el" href="group__MMCONFIG__API.html#ga635c965295967a5965b6bc46c763e173">mmconfig_write_bool()</a> functions can be used to read and write boolean data types the persistent store. Once again for maximum compatibility the data is represented as strings in persistent store. <a class="el" href="group__MMCONFIG__API.html#ga635c965295967a5965b6bc46c763e173">mmconfig_write_bool()</a> simply writes the strings <code>true</code> or <code>false</code> to the persistent store depending on the boolean value being written. <a class="el" href="group__MMCONFIG__API.html#ga5cf5f8b78e861e232a9133656daf2df6">mmconfig_read_bool()</a> is a bit more accommodating and in addition to the case insensitive strings <code>true</code> and <code>false</code> also returns true for a non zero numeric string.</p>
 <dl class="section note"><dt>Note</dt><dd>Since the above functions with the exception of the binary data functions all store the data in a string representation, it is possible to write the data in one format and read it in another. For example you can use <a class="el" href="group__MMCONFIG__API.html#ga093ef5caa1ee5d2d49ac26510e3f8d3b">mmconfig_write_int()</a> to write an integer and then use <a class="el" href="group__MMCONFIG__API.html#ga49a03e759500ae9d9395a22d3846c11e">mmconfig_read_string()</a> to read it back as a string and vice versa. You can also choose not to use these conversion functions at all and use only the raw <a class="el" href="group__MMCONFIG__API.html#gaced6e1453d3114b98696af9bbcca4288">mmconfig_read_bytes()</a> and <a class="el" href="group__MMCONFIG__API.html#gab1379a02dfbef05b86b02a475f09f484">mmconfig_write_data()</a> functions, in which case the string conversion functions will be optimized out giving you considerable code size savings provided you also exclude the helper functions in <a class="el" href="mm__app__loadconfig_8h.html">mm_app_loadconfig.h</a> which are used in <code>mm_app_common.c</code>.</dd></dl>
-<h1><a class="anchor" id="autotoc_md47"></a>
+<h1><a class="anchor" id="autotoc_md50"></a>
 Operations</h1>
-<h2><a class="anchor" id="autotoc_md48"></a>
+<h2><a class="anchor" id="autotoc_md51"></a>
 Initialization</h2>
 <p >On startup the system will scan both partitions looking for the signature value. If found, it will then perform a checksum calculation by summing all bytes after the partition header till if finds a <code>0xFF</code> key length, it then compares this computed checksum with the checksum stored in the header.</p>
 <p >If both partitions contain a valid signature and matching checksum, then the partition with the higher version number is designated the primary partition and the other is designated the secondary. If only one is valid then that is designated the primary partition and the other is designated the secondary. If neither are valid then both partitions are erased and the header is written to both with version number 0. Since the first byte following the header is <code>0xFF</code> this is treated as an empty list.</p>
-<h2><a class="anchor" id="autotoc_md49"></a>
+<h2><a class="anchor" id="autotoc_md52"></a>
 Writing a new Key-Value pair</h2>
 <p >To write a new key value pair the system first erases the secondary partition. Then it copies all key-value pairs from the primary partition to the secondary partition. If a key with the same name as the new key is found then it is excluded from the copy. The system then appends the new Key-Value pair to the end of the list. If the new data is NULL then it skips writing the new Key-Value pair effectively deleting the named key. Once this is done, the new checksum is computed and the header is written after incrementing the version number by 1. The written data is then validated and if correct the partitions are swapped and the newly written partition becomes the primary.</p>
-<h2><a class="anchor" id="autotoc_md50"></a>
+<h2><a class="anchor" id="autotoc_md53"></a>
 Reading Data</h2>
 <p >To read data we simply scan the primary partition Key-Value by Key-Value till we find the requested key or run into the <code>0xFF</code> marker signifying end of the list.</p>
 <h1><a class="anchor" id="MMCONFIG_PROGRAMMING"></a>

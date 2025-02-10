@@ -1,5 +1,5 @@
 /*
- * FreeRTOS+TCP <DEVELOPMENT BRANCH>
+ * FreeRTOS+TCP V4.2.2
  * Copyright (C) 2022 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -293,5 +293,11 @@
 
 
 #define portINLINE                               __inline
+
+#define ipconfigISO_STRICTNESS_VIOLATION_START \
+    _Pragma("GCC diagnostic push")             \
+    _Pragma("GCC diagnostic ignored \"-Wpedantic\"")
+
+#define ipconfigISO_STRICTNESS_VIOLATION_END    _Pragma("GCC diagnostic pop")
 
 #endif /* FREERTOS_IP_CONFIG_H */

@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.6.4</span>
+   &#160;<span id="projectnumber">2.7.2</span>
    </div>
   </td>
  </tr>
@@ -99,49 +99,51 @@ $(document).ready(function(){initNavTree('m2m__agent_8c_source.html',''); initRe
 <div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="preprocessor">#include &quot;mmosal.h&quot;</span></div>
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="preprocessor">#include &quot;mmutils.h&quot;</span></div>
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="preprocessor">#include &quot;mmagic.h&quot;</span></div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span> </div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="preprocessor">#if !defined(MBEDTLS_CONFIG_FILE)</span></div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="preprocessor">#include &quot;mbedtls/mbedtls_config.h&quot;</span></div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">#else</span></div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="preprocessor">#include MBEDTLS_CONFIG_FILE</span></div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="preprocessor">#ifdef MBEDTLS_THREADING_ALT</span></div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="preprocessor">#include &quot;threading_alt.h&quot;</span></div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span> </div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="preprocessor">#include &quot;mm_app_regdb.h&quot;</span></div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span> </div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="preprocessor">#if !defined(MBEDTLS_CONFIG_FILE)</span></div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">#include &quot;mbedtls/mbedtls_config.h&quot;</span></div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="preprocessor">#else</span></div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="preprocessor">#include MBEDTLS_CONFIG_FILE</span></div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="preprocessor">#ifdef MBEDTLS_THREADING_ALT</span></div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="preprocessor">#include &quot;threading_alt.h&quot;</span></div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span> </div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="preprocessor">#ifndef APPLICATION_VERSION</span></div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span><span class="preprocessor">#error Please define APPLICATION_VERSION to an appropriate value.</span></div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span> </div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno"><a class="line" href="m2m__agent_8c.html#add3190cf715f513666f4be42874d91e2">   40</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="m2m__agent_8c.html#add3190cf715f513666f4be42874d91e2">app_init</a>(<span class="keywordtype">void</span>)</div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>{</div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>    printf(<span class="stringliteral">&quot;\n\nM2M Agent Example (Built &quot;</span> __DATE__ <span class="stringliteral">&quot; &quot;</span> __TIME__ <span class="stringliteral">&quot;)\n\n&quot;</span>);</div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span> </div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>    <span class="comment">/* Initialize mbedTLS threading (required if MBEDTLS_THREADING_ALT is defined) */</span></div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span><span class="preprocessor">#ifdef MBEDTLS_THREADING_ALT</span></div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>    mbedtls_platform_threading_init();</div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span> </div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>    <span class="keyword">const</span> <span class="keyword">struct </span><a class="code hl_struct" href="structmmagic__m2m__agent__init__args.html">mmagic_m2m_agent_init_args</a> init_args = {</div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>        .<a class="code hl_variable" href="structmmagic__m2m__agent__init__args.html#ad4731621e21f22b29c7cb8bf54e55ab9">app_version</a> = APPLICATION_VERSION,</div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>    };</div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>    <span class="keyword">struct </span>mmagic_m2m_agent *m2m_agent = <a class="code hl_function" href="group__MMAGIC__AGENT.html#ga0c7e0c69e10d9b0046cf7a8733a88cc8">mmagic_m2m_agent_init</a>(&amp;init_args);</div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    <a class="code hl_define" href="group__MMUTILS.html#ga0157597bdd038d83fbb0f2f488e6e4ee">MM_UNUSED</a>(m2m_agent);</div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>    printf(<span class="stringliteral">&quot;M2M interface enabled\n&quot;</span>);</div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>}</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span> </div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span><span class="preprocessor">#ifndef APPLICATION_VERSION</span></div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="preprocessor">#error Please define APPLICATION_VERSION to an appropriate value.</span></div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span> </div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno"><a class="line" href="m2m__agent_8c.html#add3190cf715f513666f4be42874d91e2">   41</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="m2m__agent_8c.html#add3190cf715f513666f4be42874d91e2">app_init</a>(<span class="keywordtype">void</span>)</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>{</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>    printf(<span class="stringliteral">&quot;\n\nM2M Agent Example (Built &quot;</span> __DATE__ <span class="stringliteral">&quot; &quot;</span> __TIME__ <span class="stringliteral">&quot;)\n\n&quot;</span>);</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span> </div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>    <span class="comment">/* Initialize mbedTLS threading (required if MBEDTLS_THREADING_ALT is defined) */</span></div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span><span class="preprocessor">#ifdef MBEDTLS_THREADING_ALT</span></div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>    mbedtls_platform_threading_init();</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span> </div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>    <span class="keyword">const</span> <span class="keyword">struct </span><a class="code hl_struct" href="structmmagic__m2m__agent__init__args.html">mmagic_m2m_agent_init_args</a> init_args = {</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>        .<a class="code hl_variable" href="structmmagic__m2m__agent__init__args.html#ad4731621e21f22b29c7cb8bf54e55ab9">app_version</a> = APPLICATION_VERSION,</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>        .reg_db = get_regulatory_db(),</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    };</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>    <span class="keyword">struct </span>mmagic_m2m_agent *m2m_agent = <a class="code hl_function" href="group__MMAGIC__AGENT.html#ga0c7e0c69e10d9b0046cf7a8733a88cc8">mmagic_m2m_agent_init</a>(&amp;init_args);</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    <a class="code hl_define" href="group__MMUTILS.html#ga0157597bdd038d83fbb0f2f488e6e4ee">MM_UNUSED</a>(m2m_agent);</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>    printf(<span class="stringliteral">&quot;M2M interface enabled\n&quot;</span>);</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>}</div>
 <div class="ttc" id="agroup__MMAGIC__AGENT_html_ga0c7e0c69e10d9b0046cf7a8733a88cc8"><div class="ttname"><a href="group__MMAGIC__AGENT.html#ga0c7e0c69e10d9b0046cf7a8733a88cc8">mmagic_m2m_agent_init</a></div><div class="ttdeci">struct mmagic_m2m_agent * mmagic_m2m_agent_init(const struct mmagic_m2m_agent_init_args *args)</div><div class="ttdoc">Initialize the M2M agent.</div></div>
 <div class="ttc" id="agroup__MMUTILS_html_ga0157597bdd038d83fbb0f2f488e6e4ee"><div class="ttname"><a href="group__MMUTILS.html#ga0157597bdd038d83fbb0f2f488e6e4ee">MM_UNUSED</a></div><div class="ttdeci">#define MM_UNUSED(_x)</div><div class="ttdoc">Casts the given expression to void to avoid &quot;unused&quot; warnings from the compiler.</div><div class="ttdef"><b>Definition:</b> <a href="mmutils_8h_source.html#l00069">mmutils.h:69</a></div></div>
-<div class="ttc" id="am2m__agent_8c_html_add3190cf715f513666f4be42874d91e2"><div class="ttname"><a href="m2m__agent_8c.html#add3190cf715f513666f4be42874d91e2">app_init</a></div><div class="ttdeci">void app_init(void)</div><div class="ttdoc">Main entry point to the application.</div><div class="ttdef"><b>Definition:</b> <a href="m2m__agent_8c_source.html#l00040">m2m_agent.c:40</a></div></div>
-<div class="ttc" id="astructmmagic__m2m__agent__init__args_html"><div class="ttname"><a href="structmmagic__m2m__agent__init__args.html">mmagic_m2m_agent_init_args</a></div><div class="ttdoc">M2M initialization args.</div><div class="ttdef"><b>Definition:</b> <a href="mmagic_8h_source.html#l00289">mmagic.h:290</a></div></div>
-<div class="ttc" id="astructmmagic__m2m__agent__init__args_html_ad4731621e21f22b29c7cb8bf54e55ab9"><div class="ttname"><a href="structmmagic__m2m__agent__init__args.html#ad4731621e21f22b29c7cb8bf54e55ab9">mmagic_m2m_agent_init_args::app_version</a></div><div class="ttdeci">char app_version[MMAGIC_SYS_MAX_APP_VERSION_LENGTH+1]</div><div class="ttdoc">Application version string.</div><div class="ttdef"><b>Definition:</b> <a href="mmagic_8h_source.html#l00292">mmagic.h:292</a></div></div>
+<div class="ttc" id="am2m__agent_8c_html_add3190cf715f513666f4be42874d91e2"><div class="ttname"><a href="m2m__agent_8c.html#add3190cf715f513666f4be42874d91e2">app_init</a></div><div class="ttdeci">void app_init(void)</div><div class="ttdoc">Main entry point to the application.</div><div class="ttdef"><b>Definition:</b> <a href="m2m__agent_8c_source.html#l00041">m2m_agent.c:41</a></div></div>
+<div class="ttc" id="astructmmagic__m2m__agent__init__args_html"><div class="ttname"><a href="structmmagic__m2m__agent__init__args.html">mmagic_m2m_agent_init_args</a></div><div class="ttdoc">M2M initialization args.</div><div class="ttdef"><b>Definition:</b> <a href="mmagic_8h_source.html#l00292">mmagic.h:293</a></div></div>
+<div class="ttc" id="astructmmagic__m2m__agent__init__args_html_ad4731621e21f22b29c7cb8bf54e55ab9"><div class="ttname"><a href="structmmagic__m2m__agent__init__args.html#ad4731621e21f22b29c7cb8bf54e55ab9">mmagic_m2m_agent_init_args::app_version</a></div><div class="ttdeci">char app_version[MMAGIC_SYS_MAX_APP_VERSION_LENGTH+1]</div><div class="ttdoc">Application version string.</div><div class="ttdef"><b>Definition:</b> <a href="mmagic_8h_source.html#l00295">mmagic.h:295</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.17-->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_d138b6e526abaf28ea8a67143596e651.html">applications</a></li><li class="navelem"><a class="el" href="dir_c19022350bbebe37c74d765164f53811.html">mm-ekh08-u575</a></li><li class="navelem"><a class="el" href="dir_372fc6d23b5961bcb88829a99a10db6f.html">m2m_agent</a></li><li class="navelem"><a class="el" href="dir_9545da5587fbe02ab6da00f04d5f48e2.html">src</a></li><li class="navelem"><a class="el" href="m2m__agent_8c.html">m2m_agent.c</a></li>
+    <li class="navelem"><a class="el" href="dir_6582a8495d7b9ff15877d9412ab2e32b.html">applications</a></li><li class="navelem"><a class="el" href="dir_7ab533786368c6af89871a1470579ae6.html">mm-ekh08-u575</a></li><li class="navelem"><a class="el" href="dir_fca9f2a88ea54ba72b6ddc9b5bba5509.html">m2m_agent</a></li><li class="navelem"><a class="el" href="dir_0e2a63bb8fd93c914cb2a8e5ac451055.html">src</a></li><li class="navelem"><a class="el" href="m2m__agent_8c.html">m2m_agent.c</a></li>
     <li class="footer">Copyright 2021 Morse Micro </li>
   </ul>
 </div>

@@ -1,6 +1,7 @@
 /*
  * WPA Supplicant - Basic mesh peer management
  * Copyright (c) 2013-2014, cozybit, Inc.  All rights reserved.
+ * Copyright 2023 Morse Micro
  *
  * This software may be distributed under the terms of the BSD license.
  * See README for more details.

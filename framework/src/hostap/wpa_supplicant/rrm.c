@@ -1,6 +1,7 @@
 /*
  * wpa_supplicant - Radio Measurements
  * Copyright (c) 2003-2016, Jouni Malinen <j@w1.fi>
+ * Copyright 2022 Morse Micro
  *
  * This software may be distributed under the terms of the BSD license.
  * See README for more details.
@@ -1198,7 +1199,7 @@ static void wpas_rrm_scan_timeout(void *eloop_ctx, void *timeout_ctx)
 	    params->duration) {
 		wpa_printf(MSG_DEBUG,
 			   "RRM: Cannot set scan duration due to missing driver support %d %d",
-			    (wpa_s->drv_rrm_flags & WPA_DRIVER_FLAGS_SUPPORT_SET_SCAN_DWELL), 
+			    (wpa_s->drv_rrm_flags & WPA_DRIVER_FLAGS_SUPPORT_SET_SCAN_DWELL),
 				wpa_s->drv_rrm_flags & WPA_DRIVER_FLAGS_SUPPORT_BEACON_REPORT);
 		params->duration = 0;
 	}

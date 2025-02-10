@@ -642,6 +642,30 @@ enum mmhal_sleep_state mmhal_sleep_prepare(uint32_t expected_idle_time_ms)
     return sleep_state;
 }
 
+/**
+ * Function to stop the clocks before entering stop 2 and stop 3 modes. This is a workaround
+ * described in the STM32 U5 errata (ES0499 - Rev 9, section 2.2.5).
+ *
+ * > Device hang-up can occur when wakeup request received a few clock cycles before entering
+ * > Stop 2 or Stop 3 mode.
+ */
+static void mmhal_sleep_u5_stop_prepare(void)
+{
+    LL_RCC_PLL2_Disable();
+    LL_RCC_PLL3_Disable();
+    LL_RCC_HSI48_Disable();
+    LL_RCC_SHSI_Disable();
+
+    while (LL_RCC_PLL2_IsReady())
+    {}
+    while (LL_RCC_PLL3_IsReady())
+    {}
+    while (LL_RCC_HSI48_IsReady())
+    {}
+    while (LL_RCC_SHSI_IsReady())
+    {}
+}
+
 uint32_t mmhal_sleep(enum mmhal_sleep_state sleep_state, uint32_t expected_idle_time_ms)
 {
     uint32_t elapsed_ms = 0;
@@ -654,6 +678,8 @@ uint32_t mmhal_sleep(enum mmhal_sleep_state sleep_state, uint32_t expected_idle_
     if (sleep_state == MMHAL_SLEEP_DEEP)
     {
         mmhal_sleep_deinit_peripherals();
+
+        mmhal_sleep_u5_stop_prepare();
 
         start_time_ticks = mmhal_sleep_configure_timer(expected_idle_time_ms);
         /* Clear wake-up flags */

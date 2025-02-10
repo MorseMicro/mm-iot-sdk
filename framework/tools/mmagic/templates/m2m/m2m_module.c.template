@@ -31,7 +31,7 @@ static struct mmbuf* mmagic_m2m_{{data.name}}_get(struct mmagic_m2m_agent *agent
     struct mmagic_{{data.name}}_data *data = mmagic_data_get_{{data.name}}(&agent->core);
     switch (subcommand)
     {
-{%- for var in data.configs %}
+{%- for var in data.configs | sort(attribute="id") %}
     case mmagic_{{data.name}}_var_{{var.name}}:
         return mmagic_m2m_create_response(mmagic_{{data.name}}, mmagic_{{data.name}}_cmd_get, subcommand,
             MMAGIC_STATUS_OK, &data->config.{{var.name}},
@@ -51,7 +51,7 @@ static struct mmbuf* mmagic_m2m_{{data.name}}_set(struct mmagic_m2m_agent *agent
     void* args = (void*) mmbuf_get_data_start(commandbuffer);
     switch (subcommand)
     {
-{%- for var in data.configs %}
+{%- for var in data.configs | sort(attribute="id") %}
     case mmagic_{{data.name}}_var_{{var.name}}:
         memcpy(&data->config.{{var.name}}, args, sizeof(data->config.{{var.name}}));
         return mmagic_m2m_create_response(mmagic_{{data.name}}, mmagic_{{data.name}}_cmd_set,

@@ -13,7 +13,6 @@ import argparse
 import logging
 import os
 import re
-import shutil
 import jinja2
 from mmagiclib import api
 
@@ -42,6 +41,9 @@ class CodeGenerator:
     def _generate_types(self, output_dir):
         template = self.template_env.get_template('core/types.h.template')
         output_file = os.path.join(output_dir, 'mmagic_core_types.h')
+        self.write_c(output_file, template)
+        template = self.template_env.get_template('core/types.c.template')
+        output_file = os.path.join(output_dir, 'mmagic_core_types.c')
         self.write_c(output_file, template)
 
     def _generate_data_header(self, output_dir):

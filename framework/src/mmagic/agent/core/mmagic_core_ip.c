@@ -13,6 +13,7 @@
 #include "core/autogen/mmagic_core_data.h"
 #include "core/autogen/mmagic_core_ip.h"
 #include "mmagic.h"
+#include "mmagic_core_utils.h"
 
 /* This should be included after all the header files */
 #include "core/autogen/mmagic_core_ip.def"
@@ -127,17 +128,17 @@ enum mmagic_status mmagic_core_ip_status(struct mmagic_data *core,
     struct mmagic_ip_data *data = mmagic_data_get_ip(core);
     struct mmipal_ip_config ip_config = {};
     mmipal_ip_addr_t broadcast_addr = {};
-    enum mmipal_status ret;
+    enum mmipal_status status;
     size_t ii;
 
     (void)data;
 
     memset(rsp_args, 0, sizeof(*rsp_args));
 
-    ret = mmipal_get_ip_config(&ip_config);
-    if (ret != MMIPAL_SUCCESS)
+    status = mmipal_get_ip_config(&ip_config);
+    if (status != MMIPAL_SUCCESS)
     {
-        return MMAGIC_STATUS_ERROR;
+        return mmagic_mmipal_status_to_mmagic_status(status);
     }
 
     rsp_args->status.link_state =
@@ -154,10 +155,10 @@ enum mmagic_status mmagic_core_ip_status(struct mmagic_data *core,
     mmosal_safer_strcpy(rsp_args->status.gateway.addr, ip_config.gateway_addr,
                         sizeof(rsp_args->status.gateway.addr));
 
-    ret = mmipal_get_ip_broadcast_addr(broadcast_addr);
-    if (ret != MMIPAL_SUCCESS)
+    status = mmipal_get_ip_broadcast_addr(broadcast_addr);
+    if (status != MMIPAL_SUCCESS)
     {
-        return MMAGIC_STATUS_ERROR;
+        return mmagic_mmipal_status_to_mmagic_status(status);
     }
     mmosal_safer_strcpy(rsp_args->status.broadcast.addr, broadcast_addr,
                         sizeof(rsp_args->status.broadcast.addr));
@@ -203,26 +204,16 @@ enum mmagic_status mmagic_core_ip_enable_tcp_keepalive_offload(
     args.retry_interval_s = cmd_args->retry_interval_s;
     args.set_cfgs = MMWLAN_TCP_KEEPALIVE_SET_CFG_TIMING_ONLY;
 
-    enum mmwlan_status result = mmwlan_enable_tcp_keepalive_offload(&args);
-    if (result != MMWLAN_SUCCESS)
-    {
-        return MMAGIC_STATUS_ERROR;
-    }
-
-    return MMAGIC_STATUS_OK;
+    enum mmwlan_status status = mmwlan_enable_tcp_keepalive_offload(&args);
+    return mmagic_mmwlan_status_to_mmagic_status(status);
 }
 
 enum mmagic_status mmagic_core_ip_disable_tcp_keepalive_offload(struct mmagic_data *core)
 {
     MM_UNUSED(core);
 
-    enum mmwlan_status result = mmwlan_disable_tcp_keepalive_offload();
-    if (result != MMWLAN_SUCCESS)
-    {
-        return MMAGIC_STATUS_ERROR;
-    }
-
-    return MMAGIC_STATUS_OK;
+    enum mmwlan_status status = mmwlan_disable_tcp_keepalive_offload();
+    return mmagic_mmwlan_status_to_mmagic_status(status);
 }
 
 enum mmagic_status mmagic_core_ip_set_whitelist_filter(struct mmagic_data *core,
@@ -262,13 +253,8 @@ enum mmagic_status mmagic_core_ip_set_whitelist_filter(struct mmagic_data *core,
     whitelist.ip_protocol = cmd_args->ip_protocol;
     whitelist.llc_protocol = cmd_args->llc_protocol;
 
-    enum mmwlan_status result = mmwlan_set_whitelist_filter(&whitelist);
-    if (result != MMWLAN_SUCCESS)
-    {
-        return MMAGIC_STATUS_ERROR;
-    }
-
-    return MMAGIC_STATUS_OK;
+    enum mmwlan_status status = mmwlan_set_whitelist_filter(&whitelist);
+    return mmagic_mmwlan_status_to_mmagic_status(status);
 }
 
 enum mmagic_status mmagic_core_ip_clear_whitelist_filter(struct mmagic_data *core)
@@ -279,11 +265,6 @@ enum mmagic_status mmagic_core_ip_clear_whitelist_filter(struct mmagic_data *cor
 
     whitelist.flags = MMWLAN_WHITELIST_FLAGS_CLEAR;
 
-    enum mmwlan_status result = mmwlan_set_whitelist_filter(&whitelist);
-    if (result != MMWLAN_SUCCESS)
-    {
-        return MMAGIC_STATUS_ERROR;
-    }
-
-    return MMAGIC_STATUS_OK;
+    enum mmwlan_status status = mmwlan_set_whitelist_filter(&whitelist);
+    return mmagic_mmwlan_status_to_mmagic_status(status);
 }

@@ -1,5 +1,5 @@
 /*
- * FreeRTOS+TCP <DEVELOPMENT BRANCH>
+ * FreeRTOS+TCP V4.2.2
  * Copyright (C) 2022 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -56,7 +56,11 @@
 
 #include "catch_assert.h"
 
-/* ============================== Test Cases ============================== */
+/* ============================ EXTERN VARIABLES ============================ */
+
+BaseType_t xTCPWindowLoggingLevel = 0;
+
+/* =============================== Test Cases =============================== */
 
 /**
  * @brief Binding successful.

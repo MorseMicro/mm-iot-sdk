@@ -16,7 +16,8 @@ MMAGIC_AGENT_SRCS_H += core/autogen/mmagic_core_{{module.name}}.h
 {%- endfor %}
 
 MMAGIC_AGENT_SRCS_C += core/autogen/mmagic_core_data.c
-MMAGIC_AGENT_SRCS_C += core/mmagic_core_types.c
+MMAGIC_AGENT_SRCS_C += core/autogen/mmagic_core_types.c
+MMAGIC_AGENT_SRCS_C += core/mmagic_core_utils.c
 {%- for module in config.modules %}
 MMAGIC_AGENT_SRCS_C += core/mmagic_core_{{module.name}}.c
 {%- endfor %}

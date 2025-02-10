@@ -1,5 +1,5 @@
 /*
- * FreeRTOS+TCP <DEVELOPMENT BRANCH>
+ * FreeRTOS+TCP V4.2.2
  * Copyright (C) 2022 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -301,7 +301,6 @@ void vCheckNetworkTimers( void )
              * check must be repeated. */
             xNextTime = xTCPTimerCheck( xWillSleep );
             prvIPTimerStart( &xTCPTimer, xNextTime );
-            xProcessedTCPMessage = 0;
         }
     }
 

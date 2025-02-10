@@ -31,25 +31,25 @@ static struct mmbuf *mmagic_m2m_iperf_get(struct mmagic_m2m_agent *agent,
     struct mmagic_iperf_data *data = mmagic_data_get_iperf(&agent->core);
     switch (subcommand)
     {
-    case mmagic_iperf_var_amount:
-        return mmagic_m2m_create_response(mmagic_iperf, mmagic_iperf_cmd_get, subcommand,
-                                          MMAGIC_STATUS_OK, &data->config.amount,
-                                          sizeof(data->config.amount));
-
     case mmagic_iperf_var_mode:
         return mmagic_m2m_create_response(mmagic_iperf, mmagic_iperf_cmd_get, subcommand,
                                           MMAGIC_STATUS_OK, &data->config.mode,
                                           sizeof(data->config.mode));
+
+    case mmagic_iperf_var_server:
+        return mmagic_m2m_create_response(mmagic_iperf, mmagic_iperf_cmd_get, subcommand,
+                                          MMAGIC_STATUS_OK, &data->config.server,
+                                          sizeof(data->config.server));
 
     case mmagic_iperf_var_port:
         return mmagic_m2m_create_response(mmagic_iperf, mmagic_iperf_cmd_get, subcommand,
                                           MMAGIC_STATUS_OK, &data->config.port,
                                           sizeof(data->config.port));
 
-    case mmagic_iperf_var_server:
+    case mmagic_iperf_var_amount:
         return mmagic_m2m_create_response(mmagic_iperf, mmagic_iperf_cmd_get, subcommand,
-                                          MMAGIC_STATUS_OK, &data->config.server,
-                                          sizeof(data->config.server));
+                                          MMAGIC_STATUS_OK, &data->config.amount,
+                                          sizeof(data->config.amount));
 
     default:
         return mmagic_m2m_create_response(mmagic_iperf, mmagic_iperf_cmd_get, subcommand,
@@ -66,14 +66,14 @@ static struct mmbuf *mmagic_m2m_iperf_set(struct mmagic_m2m_agent *agent,
     void *args = (void *)mmbuf_get_data_start(commandbuffer);
     switch (subcommand)
     {
-    case mmagic_iperf_var_amount:
-        memcpy(&data->config.amount, args, sizeof(data->config.amount));
+    case mmagic_iperf_var_mode:
+        memcpy(&data->config.mode, args, sizeof(data->config.mode));
         return mmagic_m2m_create_response(mmagic_iperf, mmagic_iperf_cmd_set,
                                           subcommand, MMAGIC_STATUS_OK, NULL, 0);
         break;
 
-    case mmagic_iperf_var_mode:
-        memcpy(&data->config.mode, args, sizeof(data->config.mode));
+    case mmagic_iperf_var_server:
+        memcpy(&data->config.server, args, sizeof(data->config.server));
         return mmagic_m2m_create_response(mmagic_iperf, mmagic_iperf_cmd_set,
                                           subcommand, MMAGIC_STATUS_OK, NULL, 0);
         break;
@@ -84,8 +84,8 @@ static struct mmbuf *mmagic_m2m_iperf_set(struct mmagic_m2m_agent *agent,
                                           subcommand, MMAGIC_STATUS_OK, NULL, 0);
         break;
 
-    case mmagic_iperf_var_server:
-        memcpy(&data->config.server, args, sizeof(data->config.server));
+    case mmagic_iperf_var_amount:
+        memcpy(&data->config.amount, args, sizeof(data->config.amount));
         return mmagic_m2m_create_response(mmagic_iperf, mmagic_iperf_cmd_set,
                                           subcommand, MMAGIC_STATUS_OK, NULL, 0);
         break;

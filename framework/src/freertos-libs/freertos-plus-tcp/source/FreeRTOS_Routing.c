@@ -1,5 +1,5 @@
 /*
- * FreeRTOS+TCP V2.3.1
+ * FreeRTOS+TCP V4.2.2
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -170,10 +170,6 @@ struct xIPv6_Couple
             {
                 /* Other interfaces are already defined, so iterate to the end of the
                  * list. */
-
-                /*_RB_ Question - if ipconfigMULTI_INTERFACE is used to define the
-                 * maximum number of interfaces, would it be more efficient to have an
-                 * array of interfaces rather than a linked list of interfaces? */
                 pxIterator = pxNetworkInterfaces;
 
                 for( ; ; )

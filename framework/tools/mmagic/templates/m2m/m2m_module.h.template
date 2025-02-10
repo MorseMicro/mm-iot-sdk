@@ -15,8 +15,8 @@
 {% if data.configs -%}
 enum mmagic_{{data.name}}_vars
 {
-    {%- for var in data.configs %}
-    mmagic_{{data.name}}_var_{{var.name}},
+    {%- for var in data.configs | sort(attribute="id") %}
+    mmagic_{{data.name}}_var_{{var.name}} = {{var.id}},
     {%- endfor %}
 };
 {%- endif %}

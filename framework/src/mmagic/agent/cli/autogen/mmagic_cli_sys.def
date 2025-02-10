@@ -23,7 +23,11 @@
 /********* Setters **********/
 
 
-/********* Dictionary **********/
+/********* Dictionary **********
+ *
+ * This list must be in alphabetical order as @c mmagic_cli_element_search() is implemented using
+ * a binary search which requires an ordered list.
+ */
 struct mmagic_cli_config_elem sys_cli_config_vars[] = {
 };
 
@@ -52,7 +56,7 @@ void mmagic_cli_sys_get(struct mmagic_cli *ctx, EmbeddedCli *cli, const char *co
     struct mmagic_cli_config_elem *elem = mmagic_cli_element_search(sys_cli_config_vars, num_elements, config_var);
     if (elem == NULL)
     {
-        embeddedCliPrint(cli, "Unable to find config variable");
+        mmagic_cli_printf(cli, "Unable to find config variable 'sys.%s'", config_var);
         return;
     }
 
@@ -77,7 +81,7 @@ void mmagic_cli_sys_set(struct mmagic_cli *ctx, EmbeddedCli *cli, const char *co
     struct mmagic_cli_config_elem *elem = mmagic_cli_element_search(sys_cli_config_vars, num_elements, config_var);
     if (elem == NULL)
     {
-        mmagic_cli_printf(cli, "Unable to find config variable sys.%s", config_var);
+        mmagic_cli_printf(cli, "Unable to find config variable 'sys.%s'", config_var);
         return;
     }
 

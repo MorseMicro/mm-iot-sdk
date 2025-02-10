@@ -30,7 +30,7 @@
 
 static const char *const wpa_cli_version =
 "wpa_cli v" VERSION_STR "\n"
-"Copyright (c) 2004-2022, Jouni Malinen <j@w1.fi> and contributors";
+"Copyright (c) 2004-2024, Jouni Malinen <j@w1.fi> and contributors";
 
 #define VENDOR_ELEM_FRAME_ID \
 	"  0: Probe Req (P2P), 1: Probe Resp (P2P) , 2: Probe Resp (GO), " \
@@ -3219,6 +3219,50 @@ static int wpa_cli_cmd_dpp_push_button(struct wpa_ctrl *ctrl, int argc,
 #endif /* CONFIG_DPP */
 
 
+#ifdef CONFIG_NAN_USD
+static int wpa_cli_cmd_nan_publish(struct wpa_ctrl *ctrl, int argc,
+				   char *argv[])
+{
+	return wpa_cli_cmd(ctrl, "NAN_PUBLISH", 1, argc, argv);
+}
+
+
+static int wpa_cli_cmd_nan_cancel_publish(struct wpa_ctrl *ctrl, int argc,
+					  char *argv[])
+{
+	return wpa_cli_cmd(ctrl, "NAN_CANCEL_PUBLISH", 1, argc, argv);
+}
+
+
+static int wpa_cli_cmd_nan_update_publish(struct wpa_ctrl *ctrl, int argc,
+					  char *argv[])
+{
+	return wpa_cli_cmd(ctrl, "NAN_UPDATE_PUBLISH", 1, argc, argv);
+}
+
+
+static int wpa_cli_cmd_nan_subscribe(struct wpa_ctrl *ctrl, int argc,
+				     char *argv[])
+{
+	return wpa_cli_cmd(ctrl, "NAN_SUBSCRIBE", 1, argc, argv);
+}
+
+
+static int wpa_cli_cmd_nan_cancel_subscribe(struct wpa_ctrl *ctrl, int argc,
+					    char *argv[])
+{
+	return wpa_cli_cmd(ctrl, "NAN_CANCEL_SUBSCRIBE", 1, argc, argv);
+}
+
+
+static int wpa_cli_cmd_nan_transmit(struct wpa_ctrl *ctrl, int argc,
+				    char *argv[])
+{
+	return wpa_cli_cmd(ctrl, "NAN_TRANSMIT", 3, argc, argv);
+}
+#endif /* CONFIG_NAN_USD */
+
+
 static int wpa_ctrl_command_bss(struct wpa_ctrl *ctrl, const char *cmd)
 {
 	char buf[512], *pos, *bssid = NULL, *freq = NULL, *level = NULL,
@@ -4063,6 +4107,34 @@ static const struct wpa_cli_cmd wpa_cli_commands[] = {
 	  "= press DPP push button" },
 #endif /* CONFIG_DPP3 */
 #endif /* CONFIG_DPP */
+#ifdef CONFIG_NAN_USD
+	{ "nan_publish", wpa_cli_cmd_nan_publish, NULL,
+	  cli_cmd_flag_none,
+#ifdef CONFIG_IEEE80211AH
+	  "service_name=<name> [ttl=<time-to-live-in-sec>] [freq=<in KHz>] [freq_list=<comma separated list in KHz>] [srv_proto_type=<type>] [ssi=<service specific information (hexdump)>] [p2p=1] [solicited=0] [unsolicited=0] [fsd=0] = Publish USD Service"},
+#else
+	  "service_name=<name> [ttl=<time to live in sec>] [freq=<in MHz>] [freq_list=<'all' | comma separated list in MHz>] [srv_proto_type=<type>] [ssi=<service specific information (hexdump)>] [p2p=1] [solicited=0] [unsolicited=0] [fsd=0] = Publish USD Service"},
+#endif /* CONFIG_IEEE80211AH */
+	{ "nan_cancel_publish", wpa_cli_cmd_nan_cancel_publish, NULL,
+	  cli_cmd_flag_none,
+	  "publish_id=<id from NAN_PUBLISH> = Cancel USD Service"},
+	{ "nan_update_publish", wpa_cli_cmd_nan_update_publish, NULL,
+	  cli_cmd_flag_none,
+	  "publish_id=<id from NAN_PUBLISH> [ssi=<service specific information (hexdump)>] = Update USD Service"},
+	{ "nan_subscribe", wpa_cli_cmd_nan_subscribe, NULL,
+	  cli_cmd_flag_none,
+#ifdef CONFIG_IEEE80211AH
+	  "service_name=<name> [active=1] [ttl=<time-to-live-in-sec>] [freq=<in KHz>] [freq_list=<comma separated list in KHz>] [srv_proto_type=<type>] [ssi=<service specific information (hexdump)>] [p2p=1] = Subscribe to a USD service"},
+#else
+	  "service_name=<name> [active=1] [ttl=<time to live in sec>] [freq=<in MHz>] [freq_list=<'all' | comma separated list in MHz>] [srv_proto_type=<type>] [ssi=<service specific information (hexdump)>] [p2p=1] = Subscribe to a USD Service"},
+#endif /* CONFIG_IEEE80211AH */
+	{ "nan_cancel_subscribe", wpa_cli_cmd_nan_cancel_subscribe, NULL,
+	  cli_cmd_flag_none,
+	  "subscribe_id=<id from NAN_SUBSCRIBE> = Un-subscribe from a USD Service"},
+	{ "nan_transmit", wpa_cli_cmd_nan_transmit, NULL,
+	  cli_cmd_flag_none,
+	  "handle=<id from NAN_PUBLISH or NAN_SUBSCRIBE> req_instance_id=<peer's id> address=<peer's MAC address> [ssi=<service specific information (hexdump)>] = Send a USD Transmit message to the given peer"},
+#endif /* CONFIG_NAN_USD */
 	{ "all_bss", wpa_cli_cmd_all_bss, NULL, cli_cmd_flag_none,
 	  "= list all BSS entries (scan results)" },
 #ifdef CONFIG_PASN

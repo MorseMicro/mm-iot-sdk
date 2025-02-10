@@ -14,13 +14,13 @@
 /********* Enumerations **********/
 enum mmagic_ip_vars
 {
-    mmagic_ip_var_dhcp_enabled,
-    mmagic_ip_var_dhcp_offload,
-    mmagic_ip_var_dns_server0,
-    mmagic_ip_var_dns_server1,
-    mmagic_ip_var_gateway,
-    mmagic_ip_var_ip_addr,
-    mmagic_ip_var_netmask,
+    mmagic_ip_var_ip_addr      = 0,
+    mmagic_ip_var_netmask      = 1,
+    mmagic_ip_var_gateway      = 2,
+    mmagic_ip_var_dns_server0  = 3,
+    mmagic_ip_var_dns_server1  = 4,
+    mmagic_ip_var_dhcp_enabled = 5,
+    mmagic_ip_var_dhcp_offload = 6,
 };
 
 /**

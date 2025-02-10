@@ -14,10 +14,10 @@
 /********* Enumerations **********/
 enum mmagic_iperf_vars
 {
-    mmagic_iperf_var_amount,
-    mmagic_iperf_var_mode,
-    mmagic_iperf_var_port,
-    mmagic_iperf_var_server,
+    mmagic_iperf_var_mode   = 0,
+    mmagic_iperf_var_server = 1,
+    mmagic_iperf_var_port   = 2,
+    mmagic_iperf_var_amount = 3,
 };
 
 /**

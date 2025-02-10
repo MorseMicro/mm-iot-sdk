@@ -118,6 +118,9 @@ struct ieee802_11_elems {
 	const u8 *prior_access_mle;
 	const u8 *mbssid_known_bss;
 	const u8 *mbssid;
+	const u8 *rsne_override;
+	const u8 *rsne_override_2;
+	const u8 *rsn_selection;
 	const u8 *aid;
 
 	u8 ssid_len;
@@ -183,6 +186,9 @@ struct ieee802_11_elems {
 	size_t prior_access_mle_len;
 	u8 mbssid_known_bss_len;
 	u8 mbssid_len;
+	size_t rsne_override_len;
+	size_t rsne_override_2_len;
+	size_t rsn_selection_len;
 
 	struct mb_ies_info mb_ies;
 

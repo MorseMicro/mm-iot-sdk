@@ -1847,6 +1847,19 @@ struct wpa_config {
 	 */
 	int wowlan_disconnect_on_deinit;
 
+	/**
+	 * rsn_overriding - RSN overriding
+	 *
+	 * 0 = Disabled
+	 * 1 = Enabled automatically if the driver indicates support
+	 * 2 = Forced to be enabled even without driver capability indication
+	 */
+	enum rsn_overriding {
+		RSN_OVERRIDING_DISABLED = 0,
+		RSN_OVERRIDING_AUTO = 1,
+		RSN_OVERRIDING_ENABLED = 2,
+	} rsn_overriding;
+
 #ifdef CONFIG_MORSE_STANDBY_MODE
 	/**
 	 * standby_session_dir - Directory in which to store persistent session keys for Standby

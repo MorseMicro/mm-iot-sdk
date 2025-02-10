@@ -7,9 +7,9 @@
 #include "mmosal.h"
 #include "mmutils.h"
 #include "mmwlan.h"
-#include "mmwlan_regdb.def"
 
 #include "mmagic.h"
+#include "mmagic_core_utils.h"
 #include "core/autogen/mmagic_core_data.h"
 #include "core/autogen/mmagic_core_wlan.h"
 #include "m2m_api/mmagic_m2m_agent.h"
@@ -34,12 +34,14 @@ static struct mmagic_wlan_config default_config =
     .power_save_mode = MMAGIC_POWER_SAVE_MODE_ENABLED,
     .fragment_threshold = 0,
     .cac_enabled = false,
+    .ndp_probe_enabled = false,
 };
 
-static void mmagic_core_wlan_init_mmwlan(struct mmagic_wlan_data *data)
+static void mmagic_core_wlan_init_mmwlan(
+    struct mmagic_wlan_data *data, const struct mmwlan_regulatory_db *reg_db)
 {
     const struct mmwlan_s1g_channel_list *channel_list =
-        mmwlan_lookup_regulatory_domain(&regulatory_db, data->config.country_code.country_code);
+        mmwlan_lookup_regulatory_domain(reg_db, data->config.country_code.country_code);
     if (channel_list == NULL)
     {
         printf("No regulatory domain matching code %s\n", data->config.country_code.country_code);
@@ -76,16 +78,17 @@ static void mmagic_core_wlan_shim_sta_status_cb(enum mmwlan_sta_state sta_state)
  * Function to install any parameters that are not set by @c mmwlan_sta_enable . This will shutdown
  * the WLAN interface and set parameters such as country code.
  *
- * @param  data Reference to the wlan data struct.
+ * @param  data   Reference to the wlan data struct.
+ * @param  reg_db Reference to the regulatory database
  *
- * @return      @c 0 if successful else @c -1
+ * @return        @c 0 if successful else @c -1
  */
-static int wlan_shim_reconfigure(struct mmagic_wlan_data *data)
+static int wlan_shim_reconfigure(
+    struct mmagic_wlan_data *data, const struct mmwlan_regulatory_db *reg_db)
 {
     mmwlan_shutdown();
-
     const struct mmwlan_s1g_channel_list *channel_list =
-        mmwlan_lookup_regulatory_domain(&regulatory_db, data->config.country_code.country_code);
+        mmwlan_lookup_regulatory_domain(reg_db, data->config.country_code.country_code);
     if (channel_list == NULL)
     {
         printf("No regulatory domain matching code %s\n", data->config.country_code.country_code);
@@ -106,7 +109,7 @@ void mmagic_core_wlan_init(struct mmagic_data *core)
 void mmagic_core_wlan_start(struct mmagic_data *core)
 {
     struct mmagic_wlan_data *data = mmagic_data_get_wlan(core);
-    mmagic_core_wlan_init_mmwlan(data);
+    mmagic_core_wlan_init_mmwlan(data, core->reg_db);
 
     sta_status = mmosal_semb_create("sta_status");
 }
@@ -117,9 +120,7 @@ enum mmagic_status mmagic_core_wlan_connect(
     struct mmagic_data *core, const struct mmagic_core_wlan_connect_cmd_args *cmd_args)
 {
     struct mmagic_wlan_data *data = mmagic_data_get_wlan(core);
-
-    wlan_shim_reconfigure(data);
-
+    wlan_shim_reconfigure(data, core->reg_db);
     struct mmwlan_sta_args args = MMWLAN_STA_ARGS_INIT;
     memcpy(args.ssid, data->config.ssid.data, data->config.ssid.len);
     args.ssid_len = data->config.ssid.len;
@@ -160,10 +161,17 @@ enum mmagic_status mmagic_core_wlan_connect(
         args.sta_type = MMWLAN_STA_TYPE_NON_SENSOR; break;
     }
 
+    args.scan_interval_base_s = data->config.sta_scan_interval_base_s;
+    args.scan_interval_limit_s = data->config.sta_scan_interval_limit_s;
+
+    struct mmwlan_scan_config scan_config = MMWLAN_SCAN_CONFIG_INIT;
+    scan_config.ndp_probe_enabled = data->config.ndp_probe_enabled;
+    mmwlan_set_scan_config(&scan_config);
+
     enum mmwlan_status status = mmwlan_sta_enable(&args, mmagic_core_wlan_shim_sta_status_cb);
     if (status != MMWLAN_SUCCESS)
     {
-        return MMAGIC_STATUS_ERROR;
+        return mmagic_mmwlan_status_to_mmagic_status(status);
     }
 
     /* If no timeout is set return immediately */
@@ -178,7 +186,7 @@ enum mmagic_status mmagic_core_wlan_connect(
     if (state != MMWLAN_STA_CONNECTED)
     {
         mmagic_core_wlan_disconnect(core);
-        return MMAGIC_STATUS_ERROR;
+        return MMAGIC_STATUS_TIMEOUT;
     }
 
     return MMAGIC_STATUS_OK;
@@ -260,11 +268,26 @@ enum mmagic_status mmagic_core_wlan_scan(struct mmagic_data *core,
     scan_req.scan_rx_cb = mmagic_core_wlan_scan_rx_callback;
     scan_req.scan_complete_cb = mmagic_core_wlan_scan_complete_callback;
 
+    if (cmd_args->ssid.len != 0)
+    {
+        if (cmd_args->ssid.len > MMWLAN_SSID_MAXLEN)
+        {
+            return MMAGIC_STATUS_INVALID_ARG;
+        }
+        memcpy(scan_req.args.ssid, cmd_args->ssid.data, cmd_args->ssid.len);
+        scan_req.args.ssid_len = cmd_args->ssid.len;
+    }
+
+    struct mmagic_wlan_data *data = mmagic_data_get_wlan(core);
+    struct mmwlan_scan_config scan_config = MMWLAN_SCAN_CONFIG_INIT;
+    scan_config.ndp_probe_enabled = data->config.ndp_probe_enabled;
+    mmwlan_set_scan_config(&scan_config);
+
     enum mmwlan_status status = mmwlan_scan_request(&scan_req);
     if (status != MMWLAN_SUCCESS)
     {
         mmosal_semb_delete(cb_args.scan_complete_semb);
-        return MMAGIC_STATUS_ERROR;
+        return mmagic_mmwlan_status_to_mmagic_status(status);
     }
 
     bool ok = mmosal_semb_wait(cb_args.scan_complete_semb, cmd_args->timeout);
@@ -296,7 +319,7 @@ enum mmagic_status mmagic_core_wlan_get_mac_addr(
 
     enum mmwlan_status status = mmwlan_get_mac_addr(rsp_args->mac_addr.addr);
 
-    return (status == MMWLAN_SUCCESS) ? MMAGIC_STATUS_OK : MMAGIC_STATUS_ERROR;
+    return mmagic_mmwlan_status_to_mmagic_status(status);
 }
 
 enum mmagic_status mmagic_core_wlan_wnm_sleep(
@@ -305,7 +328,7 @@ enum mmagic_status mmagic_core_wlan_wnm_sleep(
     MM_UNUSED(core);
     enum mmwlan_status status = mmwlan_set_wnm_sleep_enabled(cmd_args->wnm_sleep_enabled);
 
-    return (status == MMWLAN_SUCCESS) ? MMAGIC_STATUS_OK : MMAGIC_STATUS_ERROR;
+    return mmagic_mmwlan_status_to_mmagic_status(status);
 }
 
 /* Note: in future this will get refactored into the MMAGIC data structure and we will pass
@@ -414,15 +437,12 @@ enum mmagic_status mmagic_core_wlan_beacon_monitor_enable(
     if (status != MMWLAN_SUCCESS)
     {
         printf("Failed to configure Vendor IE filter\n");
-        goto error;
+        return mmagic_mmwlan_status_to_mmagic_status(status);
     }
 
     mmosal_mutex_release(data->mutex);
 
     return MMAGIC_STATUS_OK;
-
-error:
-    return MMAGIC_STATUS_ERROR;
 }
 
 enum mmagic_status mmagic_core_wlan_beacon_monitor_disable(
@@ -443,7 +463,7 @@ enum mmagic_status mmagic_core_wlan_beacon_monitor_disable(
     status = mmwlan_update_beacon_vendor_ie_filter(NULL);
     if (status != MMWLAN_SUCCESS)
     {
-        return MMAGIC_STATUS_ERROR;
+        return mmagic_mmwlan_status_to_mmagic_status(status);
     }
 
     mmosal_mutex_delete(data->mutex);
@@ -468,25 +488,17 @@ enum mmagic_status mmagic_core_wlan_standby_enter(struct mmagic_data *core)
     args.standby_exit_cb = mmagic_standby_exit_handler;
     args.standby_exit_arg = (void *)core;
 
-    enum mmwlan_status result = mmwlan_standby_enter(&args);
-    if (result != MMWLAN_SUCCESS)
-    {
-        return MMAGIC_STATUS_ERROR;
-    }
-
-    return MMAGIC_STATUS_OK;
+    enum mmwlan_status status = mmwlan_standby_enter(&args);
+    return mmagic_mmwlan_status_to_mmagic_status(status);
 }
 
 enum mmagic_status mmagic_core_wlan_standby_exit(struct mmagic_data *core)
 {
+    enum mmwlan_status status;
     MM_UNUSED(core);
 
-    if (mmwlan_standby_exit() == MMWLAN_SUCCESS)
-    {
-        return MMAGIC_STATUS_OK;
-    }
-
-    return MMAGIC_STATUS_ERROR;
+    status = mmwlan_standby_exit();
+    return mmagic_mmwlan_status_to_mmagic_status(status);
 }
 
 enum mmagic_status mmagic_core_wlan_standby_set_status_payload(
@@ -499,13 +511,8 @@ enum mmagic_status mmagic_core_wlan_standby_set_status_payload(
     memcpy(&args.payload, cmd_args->payload.buffer, sizeof(args.payload));
     args.payload_len = cmd_args->payload.len;
 
-    enum mmwlan_status result = mmwlan_standby_set_status_payload(&args);
-    if (result != MMWLAN_SUCCESS)
-    {
-        return MMAGIC_STATUS_ERROR;
-    }
-
-    return MMAGIC_STATUS_OK;
+    enum mmwlan_status status = mmwlan_standby_set_status_payload(&args);
+    return mmagic_mmwlan_status_to_mmagic_status(status);
 }
 
 enum mmagic_status mmagic_core_wlan_standby_set_wake_filter(
@@ -518,13 +525,8 @@ enum mmagic_status mmagic_core_wlan_standby_set_wake_filter(
     args.filter_len = cmd_args->filter.len;
     args.offset = cmd_args->offset;
 
-    enum mmwlan_status result = mmwlan_standby_set_wake_filter(&args);
-    if (result != MMWLAN_SUCCESS)
-    {
-        return MMAGIC_STATUS_ERROR;
-    }
-
-    return MMAGIC_STATUS_OK;
+    enum mmwlan_status status = mmwlan_standby_set_wake_filter(&args);
+    return mmagic_mmwlan_status_to_mmagic_status(status);
 }
 
 enum mmagic_status mmagic_core_wlan_standby_set_config(struct mmagic_data *core,
@@ -559,11 +561,6 @@ enum mmagic_status mmagic_core_wlan_standby_set_config(struct mmagic_data *core,
     config.snooze_increment_s = cmd_args->snooze_increment_s;
     config.snooze_max_s = cmd_args->snooze_max_s;
 
-    enum mmwlan_status result = mmwlan_standby_set_config(&config);
-    if (result != MMWLAN_SUCCESS)
-    {
-        return MMAGIC_STATUS_ERROR;
-    }
-
-    return MMAGIC_STATUS_OK;
+    enum mmwlan_status status = mmwlan_standby_set_config(&config);
+    return mmagic_mmwlan_status_to_mmagic_status(status);
 }

@@ -378,6 +378,88 @@ enum mmagic_status mmagic_llc_controller_tx(struct mmagic_controller *controller
 
 /* -------------------------------------------------------------------------------------------- */
 
+/**
+ * Safely convert from an unsigned 8-bit integer value to @ref mmagic_status code.
+ *
+ * @note While this may look inefficient, the compiler should be smart in optimizing it.
+ *
+ * @param status The input status code (integer type).
+ *
+ * @returns The status code (as @c mmagic_status). Unrecognized input values will result in a
+ *          return value of @c MMAGIC_STATUS_ERROR.
+ */
+static enum mmagic_status mmagic_status_from_u8(uint8_t status)
+{
+    switch (status)
+    {
+    case MMAGIC_STATUS_OK:
+        return MMAGIC_STATUS_OK;
+
+    case MMAGIC_STATUS_ERROR:
+        return MMAGIC_STATUS_ERROR;
+
+    case MMAGIC_STATUS_INVALID_ARG:
+        return MMAGIC_STATUS_INVALID_ARG;
+
+    case MMAGIC_STATUS_UNAVAILABLE:
+        return MMAGIC_STATUS_UNAVAILABLE;
+
+    case MMAGIC_STATUS_TIMEOUT:
+        return MMAGIC_STATUS_TIMEOUT;
+
+    case MMAGIC_STATUS_INVALID_STREAM:
+        return MMAGIC_STATUS_INVALID_STREAM;
+
+    case MMAGIC_STATUS_NOT_FOUND:
+        return MMAGIC_STATUS_NOT_FOUND;
+
+    case MMAGIC_STATUS_NOT_SUPPORTED:
+        return MMAGIC_STATUS_NOT_SUPPORTED;
+
+    case MMAGIC_STATUS_TX_ERROR:
+        return MMAGIC_STATUS_TX_ERROR;
+
+    case MMAGIC_STATUS_NO_MEM:
+        return MMAGIC_STATUS_NO_MEM;
+
+    case MMAGIC_STATUS_CLOSED:
+        return MMAGIC_STATUS_CLOSED;
+
+    case MMAGIC_STATUS_CHANNEL_LIST_NOT_SET:
+        return MMAGIC_STATUS_CHANNEL_LIST_NOT_SET;
+
+    case MMAGIC_STATUS_SHUTDOWN_BLOCKED:
+        return MMAGIC_STATUS_SHUTDOWN_BLOCKED;
+
+    case MMAGIC_STATUS_CHANNEL_INVALID:
+        return MMAGIC_STATUS_CHANNEL_INVALID;
+
+    case MMAGIC_STATUS_NOT_RUNNING:
+        return MMAGIC_STATUS_NOT_RUNNING;
+
+    case MMAGIC_STATUS_NO_LINK:
+        return MMAGIC_STATUS_NO_LINK;
+
+    case MMAGIC_STATUS_UNKNOWN_HOST:
+        return MMAGIC_STATUS_UNKNOWN_HOST;
+
+    case MMAGIC_STATUS_SOCKET_FAILED:
+        return MMAGIC_STATUS_SOCKET_FAILED;
+
+    case MMAGIC_STATUS_SOCKET_CONNECT_FAILED:
+        return MMAGIC_STATUS_SOCKET_CONNECT_FAILED;
+
+    case MMAGIC_STATUS_SOCKET_BIND_FAILED:
+        return MMAGIC_STATUS_SOCKET_BIND_FAILED;
+
+    case MMAGIC_STATUS_SOCKET_LISTEN_FAILED:
+        return MMAGIC_STATUS_SOCKET_LISTEN_FAILED;
+
+    default:
+        return MMAGIC_STATUS_ERROR;
+    }
+}
+
 enum mmagic_status mmagic_controller_rx(struct mmagic_controller *controller, uint8_t stream_id,
                                         uint8_t submodule_id, uint8_t command_id,
                                         uint8_t subcommand_id, uint8_t *buffer,
@@ -422,8 +504,7 @@ enum mmagic_status mmagic_controller_rx(struct mmagic_controller *controller, ui
     {
         /* Error condition indicated by the agent. */
         mmbuf_release(rx_buffer);
-        return rx_header->result >=
-               MMAGIC_STATUS_MAX ? MMAGIC_STATUS_ERROR : (enum mmagic_status)rx_header->result;
+        return mmagic_status_from_u8(rx_header->result);
     }
 
     if ((rx_header->command == command_id) && (rx_header->subsystem == submodule_id) &&

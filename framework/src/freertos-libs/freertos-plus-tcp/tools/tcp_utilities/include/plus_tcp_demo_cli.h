@@ -1,5 +1,5 @@
 /*
- * FreeRTOS+TCP <DEVELOPMENT BRANCH>
+ * FreeRTOS+TCP V4.2.2
  * Copyright (C) 2022 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -43,13 +43,10 @@
  */
     void xHandleTesting( void );
 
-    #if ( ipconfigMULTI_INTERFACE != 0 )
-
 /*
  * Show all properties of an end-point.
  */
-        void showEndPoint( NetworkEndPoint_t * pxEndPoint );
-    #endif
+    void showEndPoint( NetworkEndPoint_t * pxEndPoint );
 
 /*/ * 'xServerSemaphore' should be declared in main.c * / */
 /*extern SemaphoreHandle_t xServerSemaphore; */

@@ -1,5 +1,5 @@
 /*
- * FreeRTOS+TCP V2.3.1
+ * FreeRTOS+TCP V4.2.2
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -320,8 +320,8 @@
 
                     FreeRTOS_printf( ( "RA: Prefix len %d Life %u, %u (%pip)\n",
                                        pxPrefixOption->ucPrefixLength,
-                                       FreeRTOS_ntohl( pxPrefixOption->ulValidLifeTime ),
-                                       FreeRTOS_ntohl( pxPrefixOption->ulPreferredLifeTime ),
+                                       ( unsigned ) FreeRTOS_ntohl( pxPrefixOption->ulValidLifeTime ),
+                                       ( unsigned ) FreeRTOS_ntohl( pxPrefixOption->ulPreferredLifeTime ),
                                        ( void * ) pxPrefixOption->ucPrefix ) );
                     break;
 
@@ -489,7 +489,7 @@
                 if( pxEndPoint->xRAData.bits.bRouterReplied != pdFALSE_UNSIGNED )
                 {
                     /* Obtained configuration from a router. */
-                    uxNewReloadTime = pdMS_TO_TICKS( 1000U * pxEndPoint->xRAData.ulPreferredLifeTime );
+                    uxNewReloadTime = pdMS_TO_TICKS( ( 1000U * ( uint64_t ) pxEndPoint->xRAData.ulPreferredLifeTime ) );
                     pxEndPoint->xRAData.eRAState = eRAStatePreLease;
                     iptraceRA_SUCCEEDED( &( pxEndPoint->ipv6_settings.xIPAddress ) );
                     FreeRTOS_printf( ( "RA: succeeded, using IP address %pip Reload after %u seconds\n",

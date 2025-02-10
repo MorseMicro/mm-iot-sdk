@@ -54,7 +54,7 @@
  *
  * To add a Vendor Specific IE using a Morse Micro AP the following command can be used.
  * @code
- * morse_cli -a 4D4D42FF00FF -b
+ * morse_cli vendor_ie -a 4D4D42FF00FF -b
  * @endcode
  *
  * This will add a Vendor Specific IE with
@@ -63,7 +63,7 @@
  *
  * To clear the Vendor Specific IEs.
  * @code
- * morse_cli -c -b
+ * morse_cli vendor_ie -c -b
  * @endcode
  *
  * @note A beacon may contain multiple Vendor IEs with the same OUI. The handling of these is

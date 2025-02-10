@@ -1,6 +1,7 @@
 /*
  * Driver interface definition
  * Copyright (c) 2003-2017, Jouni Malinen <j@w1.fi>
+ * Copyright 2023 Morse Micro
  *
  * This software may be distributed under the terms of the BSD license.
  * See README for more details.
@@ -314,6 +315,27 @@ struct hostapd_hw_modes {
 	 * eht_capab - EHT (IEEE 802.11be) capabilities
 	 */
 	struct eht_capabilities eht_capab[IEEE80211_MODE_NUM];
+};
+
+
+/**
+ * struct hostapd_multi_hw_info: Supported multiple underlying hardware info
+ */
+struct hostapd_multi_hw_info {
+	/**
+	 * hw_idx - Hardware index
+	 */
+	u8 hw_idx;
+
+	/**
+	 * start_freq - Frequency range start in MHz
+	 */
+	int start_freq;
+
+	/**
+	 * end_freq - Frequency range end in MHz
+	 */
+	int end_freq;
 };
 
 
@@ -1405,6 +1427,12 @@ struct wpa_driver_associate_params {
 	 * mld_params - MLD association parameters
 	 */
 	struct wpa_driver_mld_params mld_params;
+
+
+	/**
+	 * rsn_overriding - wpa_supplicant RSN overriding support
+	 */
+	bool rsn_overriding;
 };
 
 enum hide_ssid {
@@ -2376,6 +2404,8 @@ struct wpa_driver_capa {
 #define WPA_DRIVER_FLAGS2_SAE_OFFLOAD_AP	0x0000000000100000ULL
 /** Driver supports TWT responder in HT and VHT modes */
 #define WPA_DRIVER_FLAGS2_HT_VHT_TWT_RESPONDER	0x0000000000200000ULL
+/** Driver supports RSN override elements */
+#define WPA_DRIVER_FLAGS2_RSN_OVERRIDE_STA	0x0000000000400000ULL
 	u64 flags2;
 
 #define FULL_AP_CLIENT_STATE_SUPP(drv_flags) \
@@ -5243,15 +5273,19 @@ struct wpa_driver_ops {
 	/**
 	 * is_drv_shared - Check whether the driver interface is shared
 	 * @priv: Private driver interface data from init()
-	 * @bss_ctx: BSS context for %WPA_IF_AP_BSS interfaces
+	 * @link_id: Link ID to match
+	 * Returns: true if it is being used or else false.
 	 *
 	 * Checks whether the driver interface is being used by other partner
 	 * BSS(s) or not. This is used to decide whether the driver interface
 	 * needs to be deinitilized when one interface is getting deinitialized.
 	 *
-	 * Returns: true if it is being used or else false.
+	 * NOTE: @link_id will be used only when there is only one BSS
+	 * present and if that single link is active. In that case, the
+	 * link ID is matched with the active link_id to decide whether the
+	 * driver interface is being used by other partner BSS(s).
 	 */
-	bool (*is_drv_shared)(void *priv, void *bss_ctx);
+	bool (*is_drv_shared)(void *priv, int link_id);
 
 	/**
 	 * link_sta_remove - Remove a link STA from an MLD STA
@@ -5267,6 +5301,18 @@ struct wpa_driver_ops {
 			      const u8 *match, size_t match_len,
 			      bool multicast);
 #endif /* CONFIG_TESTING_OPTIONS */
+
+	/**
+	 * get_multi_hw_info - Get multiple underlying hardware information
+	 *		       (hardware IDx and supported frequency range)
+	 * @priv: Private driver interface data
+	 * @num_multi_hws: Variable for returning the number of returned
+	 *	hardware info data
+	 * Returns: Pointer to allocated multiple hardware data on success
+	 * or %NULL on failure. Caller is responsible for freeing this.
+	 */
+	struct hostapd_multi_hw_info *
+	(*get_multi_hw_info)(void *priv, unsigned int *num_multi_hws);
 };
 
 /**
@@ -5894,6 +5940,11 @@ enum wpa_event_type {
 	 * EVENT_LINK_RECONFIG - Notification that AP links removed
 	 */
 	EVENT_LINK_RECONFIG,
+
+	/**
+	 * EVENT_MLD_INTERFACE_FREED - Notification of AP MLD interface removal
+	 */
+	EVENT_MLD_INTERFACE_FREED,
 };
 
 
@@ -6848,6 +6899,7 @@ union wpa_event_data {
 	 */
 	struct bss_color_collision {
 		u64 bitmap;
+		int link_id;
 	} bss_color_collision;
 
 	/**

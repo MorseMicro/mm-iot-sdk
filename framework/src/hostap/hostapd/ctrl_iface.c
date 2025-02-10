@@ -1,6 +1,7 @@
 /*
  * hostapd / UNIX domain socket -based control interface
  * Copyright (c) 2004-2018, Jouni Malinen <j@w1.fi>
+ * Copyright 2022 Morse Micro
  *
  * This software may be distributed under the terms of the BSD license.
  * See README for more details.
@@ -181,7 +182,7 @@ static struct hostapd_config *hostapd_ctrl_iface_config_read(const char *fname)
 	return conf;
 }
 
-static int hostapd_ctrl_iface_update(struct hostapd_data *hapd, char *txt)
+static void hostapd_ctrl_iface_update(struct hostapd_data *hapd, char *txt)
 {
 	struct hostapd_config * (*config_read_cb)(const char *config_fname);
 	struct hostapd_iface *iface = hapd->iface;
@@ -2512,6 +2513,31 @@ static int hostapd_ctrl_register_frame(struct hostapd_data *hapd,
 
 
 #ifdef NEED_AP_MLME
+
+static bool
+hostapd_ctrl_is_freq_in_cmode(struct hostapd_hw_modes *mode,
+			      struct hostapd_multi_hw_info *current_hw_info,
+			      int freq)
+{
+	struct hostapd_channel_data *chan;
+	int i;
+
+	for (i = 0; i < mode->num_channels; i++) {
+		chan = &mode->channels[i];
+
+		if (chan->flag & HOSTAPD_CHAN_DISABLED)
+			continue;
+
+		if (!chan_in_current_hw_info(current_hw_info, chan))
+			continue;
+
+		if (chan->freq == freq)
+			return true;
+	}
+	return false;
+}
+
+
 static int hostapd_ctrl_check_freq_params(struct hostapd_freq_params *params,
 					  u16 punct_bitmap)
 {
@@ -2534,6 +2560,21 @@ static int hostapd_ctrl_check_freq_params(struct hostapd_freq_params *params,
 			if (bw < 0 || bw > (int) ARRAY_SIZE(bw_idx) ||
 			    bw_idx[bw] != params->bandwidth)
 				return -1;
+		}
+	} else { /* Non-6 GHz channel */
+		/* An EHT STA is also an HE STA as defined in
+		 * IEEE P802.11be/D5.0, 4.3.16a. */
+		if (params->he_enabled || params->eht_enabled) {
+			params->he_enabled = 1;
+			/* An HE STA is also a VHT STA if operating in the 5 GHz
+			 * band and an HE STA is also an HT STA in the 2.4 GHz
+			 * band as defined in IEEE Std 802.11ax-2021, 4.3.15a.
+			 * A VHT STA is an HT STA as defined in IEEE
+			 * Std 802.11, 4.3.15. */
+			if (IS_5GHZ(params->freq))
+				params->vht_enabled = 1;
+
+			params->ht_enabled = 1;
 		}
 	}
 
@@ -2733,6 +2774,15 @@ static int hostapd_ctrl_iface_chan_switch(struct hostapd_iface *iface,
 	}
 #endif /* CONFIG_IEEE80211AH */
 
+	if (iface->num_hw_features > 1 &&
+	    !hostapd_ctrl_is_freq_in_cmode(iface->current_mode,
+					   iface->current_hw_info,
+					   settings.freq_params.freq)) {
+		wpa_printf(MSG_INFO,
+			   "chanswitch: Invalid frequency settings provided for multi band phy");
+		return -1;
+	}
+
 	ret = hostapd_ctrl_check_freq_params(&settings.freq_params,
 					     settings.punct_bitmap);
 	if (ret) {
@@ -2800,6 +2850,12 @@ static int hostapd_ctrl_iface_chan_switch(struct hostapd_iface *iface,
 		return 0;
 	}
 
+	if (iface->cac_started) {
+		wpa_printf(MSG_DEBUG,
+			   "CAC is in progress - switching channel without CSA");
+		return hostapd_force_channel_switch(iface, settings);
+	}
+
 	for (i = 0; i < iface->num_bss; i++) {
 
 		/* Save CHAN_SWITCH VHT, HE, and EHT config */
@@ -2807,6 +2863,12 @@ static int hostapd_ctrl_iface_chan_switch(struct hostapd_iface *iface,
 					   &settings.freq_params);
 
 #ifdef CONFIG_IEEE80211AH
+		/* Enable VHT caps based on the new channel width and S1G config */
+		if (settings.freq_params.bandwidth > 80) {
+			iface->conf->vht_capab |= VHT_CAP_SUPP_CHAN_WIDTH_160MHZ;
+			if (iface->conf->s1g_capab & S1G_CAP0_SGI_8MHZ)
+				iface->conf->vht_capab |= VHT_CAP_SHORT_GI_160;
+		}
 		if (is_s1g_freq)
 			morse_set_ecsa_params(iface->conf->bss[i]->iface,
 					settings.s1g_freq_params.s1g_global_op_class,
@@ -2814,7 +2876,8 @@ static int hostapd_ctrl_iface_chan_switch(struct hostapd_iface *iface,
 					settings.s1g_freq_params.s1g_oper_bw,
 					settings.s1g_freq_params.s1g_oper_freq,
 					settings.s1g_freq_params.s1g_prim_channel_index_1MHz,
-					settings.s1g_freq_params.s1g_prim_ch_global_op_class);
+					settings.s1g_freq_params.s1g_prim_ch_global_op_class,
+					iface->conf->s1g_capab);
 #endif /* CONFIG_IEEE80211AH */
 
 		err = hostapd_switch_channel(iface->bss[i], &settings);

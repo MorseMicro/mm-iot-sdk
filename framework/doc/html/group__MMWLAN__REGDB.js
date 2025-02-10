@@ -1,6 +1,5 @@
 var group__MMWLAN__REGDB =
 [
-    [ "Template S1G regulatory database", "group__MMWLAN__REGDB__TEMPLATE.html", "group__MMWLAN__REGDB__TEMPLATE" ],
     [ "mmwlan_s1g_channel", "structmmwlan__s1g__channel.html", [
       [ "airtime_max_us", "structmmwlan__s1g__channel.html#a439d35c1296a95736a93b0b1fb1cd4f3", null ],
       [ "airtime_min_us", "structmmwlan__s1g__channel.html#a1d2de953b66a3f3ab83e9ef31856b69c", null ],

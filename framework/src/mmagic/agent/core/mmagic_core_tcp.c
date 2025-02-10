@@ -20,6 +20,30 @@
 /* This should be included after all the header files */
 #include "core/autogen/mmagic_core_tcp.def"
 
+enum mmagic_status mmagic_mbedtls_return_code_to_mmagic_status(int ret)
+{
+    switch (ret)
+    {
+    case MBEDTLS_ERR_NET_UNKNOWN_HOST:
+        return MMAGIC_STATUS_UNKNOWN_HOST;
+
+    case MBEDTLS_ERR_NET_SOCKET_FAILED:
+        return MMAGIC_STATUS_SOCKET_FAILED;
+
+    case MBEDTLS_ERR_NET_CONNECT_FAILED:
+        return MMAGIC_STATUS_SOCKET_CONNECT_FAILED;
+
+    case MBEDTLS_ERR_NET_BIND_FAILED:
+        return MMAGIC_STATUS_SOCKET_BIND_FAILED;
+
+    case MBEDTLS_ERR_NET_LISTEN_FAILED:
+        return MMAGIC_STATUS_SOCKET_LISTEN_FAILED;
+
+    default:
+        return MMAGIC_STATUS_ERROR;
+    }
+}
+
 void mmagic_core_tcp_init(struct mmagic_data *core)
 {
     MM_UNUSED(core);
@@ -45,25 +69,27 @@ enum mmagic_status mmagic_core_tcp_connect(struct mmagic_data *core,
 
     if (tcp_context == NULL)
     {
-        return MMAGIC_STATUS_ERROR;
+        return MMAGIC_STATUS_NO_MEM;
     }
 
     mbedtls_net_init(tcp_context);
     snprintf(portstr, sizeof(portstr), "%7d", cmd_args->port);
 
-    int status = mbedtls_net_connect(tcp_context, (const char *)cmd_args->url.data,
-                                     portstr, MBEDTLS_NET_PROTO_TCP);
-    if (status != 0)
+    int ret = mbedtls_net_connect(tcp_context, (const char *)cmd_args->url.data,
+                                  portstr, MBEDTLS_NET_PROTO_TCP);
+    if (ret != 0)
     {
         mmosal_free(tcp_context);
-        return MMAGIC_STATUS_ERROR;
+        return mmagic_mbedtls_return_code_to_mmagic_status(ret);
     }
 
-    if (mmagic_m2m_agent_open_stream(core, tcp_context, &rsp_args->stream_id) != MMAGIC_STATUS_OK)
+    enum mmagic_status status =
+        mmagic_m2m_agent_open_stream(core, tcp_context, &rsp_args->stream_id);
+    if (status != MMAGIC_STATUS_OK)
     {
         mbedtls_net_close(tcp_context);
         mmosal_free(tcp_context);
-        return MMAGIC_STATUS_ERROR;
+        return status;
     }
 
     return MMAGIC_STATUS_OK;
@@ -83,24 +109,26 @@ enum mmagic_status mmagic_core_tcp_bind(struct mmagic_data *core,
         (struct mbedtls_net_context *)mmosal_malloc(sizeof(struct mbedtls_net_context));
     if (tcp_context == NULL)
     {
-        return MMAGIC_STATUS_ERROR;
+        return MMAGIC_STATUS_NO_MEM;
     }
 
     mbedtls_net_init(tcp_context);
     snprintf(portstr, sizeof(portstr), "%7d", cmd_args->port);
 
-    int status = mbedtls_net_bind(tcp_context, NULL, portstr, MBEDTLS_NET_PROTO_TCP);
-    if (status != 0)
+    int ret = mbedtls_net_bind(tcp_context, NULL, portstr, MBEDTLS_NET_PROTO_TCP);
+    if (ret != 0)
     {
         mmosal_free(tcp_context);
-        return MMAGIC_STATUS_ERROR;
+        return mmagic_mbedtls_return_code_to_mmagic_status(ret);
     }
 
-    if (mmagic_m2m_agent_open_stream(core, tcp_context, &rsp_args->stream_id) != MMAGIC_STATUS_OK)
+    enum mmagic_status status =
+        mmagic_m2m_agent_open_stream(core, tcp_context, &rsp_args->stream_id);
+    if (status != MMAGIC_STATUS_OK)
     {
         mbedtls_net_close(tcp_context);
         mmosal_free(tcp_context);
-        return MMAGIC_STATUS_ERROR;
+        return status;
     }
 
     return MMAGIC_STATUS_OK;
@@ -124,7 +152,7 @@ enum mmagic_status mmagic_core_tcp_recv(struct mmagic_data *core,
         mmagic_m2m_agent_get_stream_context(core, cmd_args->stream_id);
     if (tcp_context == NULL)
     {
-        return MMAGIC_STATUS_ERROR;
+        return MMAGIC_STATUS_INVALID_ARG;
     }
 
     uint32_t timeout = cmd_args->timeout;
@@ -170,7 +198,7 @@ enum mmagic_status mmagic_core_tcp_send(struct mmagic_data *core,
         mmagic_m2m_agent_get_stream_context(core, cmd_args->stream_id);
     if (tcp_context == NULL)
     {
-        return MMAGIC_STATUS_ERROR;
+        return MMAGIC_STATUS_INVALID_ARG;
     }
 
     mbedtls_net_send(tcp_context, cmd_args->buffer.data, cmd_args->buffer.len);
@@ -189,7 +217,7 @@ enum mmagic_status mmagic_core_tcp_read_poll(struct mmagic_data *core,
         mmagic_m2m_agent_get_stream_context(core, cmd_args->stream_id);
     if (tcp_context == NULL)
     {
-        return MMAGIC_STATUS_ERROR;
+        return MMAGIC_STATUS_INVALID_ARG;
     }
 
     uint32_t timeout = cmd_args->timeout;
@@ -200,14 +228,14 @@ enum mmagic_status mmagic_core_tcp_read_poll(struct mmagic_data *core,
         timeout = 1;
     }
 
-    int status = mbedtls_net_poll(tcp_context, MBEDTLS_NET_POLL_READ, timeout);
+    int ret = mbedtls_net_poll(tcp_context, MBEDTLS_NET_POLL_READ, timeout);
 
-    if (status < 0)
+    if (ret < 0)
     {
-        return MMAGIC_STATUS_ERROR;
+        return mmagic_mbedtls_return_code_to_mmagic_status(ret);
     }
 
-    if (status == 0)
+    if (ret == 0)
     {
         return MMAGIC_STATUS_TIMEOUT;
     }
@@ -226,7 +254,7 @@ enum mmagic_status mmagic_core_tcp_write_poll(struct mmagic_data *core,
         mmagic_m2m_agent_get_stream_context(core, cmd_args->stream_id);
     if (tcp_context == NULL)
     {
-        return MMAGIC_STATUS_ERROR;
+        return MMAGIC_STATUS_INVALID_ARG;
     }
 
     uint32_t timeout = cmd_args->timeout;
@@ -237,14 +265,14 @@ enum mmagic_status mmagic_core_tcp_write_poll(struct mmagic_data *core,
         timeout = 1;
     }
 
-    int status = mbedtls_net_poll(tcp_context, MBEDTLS_NET_POLL_WRITE, timeout);
+    int ret = mbedtls_net_poll(tcp_context, MBEDTLS_NET_POLL_WRITE, timeout);
 
-    if (status < 0)
+    if (ret < 0)
     {
-        return MMAGIC_STATUS_ERROR;
+        return mmagic_mbedtls_return_code_to_mmagic_status(ret);
     }
 
-    if (status == 0)
+    if (ret == 0)
     {
         return MMAGIC_STATUS_TIMEOUT;
     }
@@ -264,29 +292,30 @@ enum mmagic_status mmagic_core_tcp_accept(struct mmagic_data *core,
         mmagic_m2m_agent_get_stream_context(core, cmd_args->stream_id);
     if (tcp_context == NULL)
     {
-        return MMAGIC_STATUS_ERROR;
+        return MMAGIC_STATUS_INVALID_ARG;
     }
 
     struct mbedtls_net_context *client_context =
         (struct mbedtls_net_context *)mmosal_malloc(sizeof(struct mbedtls_net_context));
     if (client_context == NULL)
     {
-        return MMAGIC_STATUS_ERROR;
+        return MMAGIC_STATUS_NO_MEM;
     }
 
-    int status = mbedtls_net_accept(tcp_context, client_context, NULL, 0, NULL);
-    if (status != 0)
+    int ret = mbedtls_net_accept(tcp_context, client_context, NULL, 0, NULL);
+    if (ret != 0)
     {
         mmosal_free(client_context);
-        return MMAGIC_STATUS_ERROR;
+        return mmagic_mbedtls_return_code_to_mmagic_status(ret);
     }
 
-    if (mmagic_m2m_agent_open_stream(core, client_context,
-                                     &rsp_args->stream_id) != MMAGIC_STATUS_OK)
+    enum mmagic_status status =
+        mmagic_m2m_agent_open_stream(core, client_context, &rsp_args->stream_id);
+    if (status != MMAGIC_STATUS_OK)
     {
         mbedtls_net_close(client_context);
         mmosal_free(client_context);
-        return MMAGIC_STATUS_ERROR;
+        return status;
     }
 
     return MMAGIC_STATUS_OK;
@@ -302,7 +331,7 @@ enum mmagic_status mmagic_core_tcp_close(struct mmagic_data *core,
         mmagic_m2m_agent_get_stream_context(core, cmd_args->stream_id);
     if (tcp_context == NULL)
     {
-        return MMAGIC_STATUS_ERROR;
+        return MMAGIC_STATUS_INVALID_ARG;
     }
     mbedtls_net_close(tcp_context);
     mmagic_m2m_agent_close_stream(core, cmd_args->stream_id);

@@ -20,6 +20,8 @@ STD_C_TYPES = ['uint8_t', 'uint16_t', 'uint32_t', 'uint64_t',
 ''' Maximum allowed length of any config name, this includes the newline character '''
 MAX_CONFIG_NAME_LEN = 32
 
+NUM_RESERVED_COMMAND_IDS = 8
+
 TYPE_ARRAY_REGEX = re.compile(r'^array(?P<num>\d{1,4})_(?P<type>.*)')
 STRUCT_NAME_REGEX = re.compile(r'^struct_[\w\d]*$')
 ENUM_NAME_REGEX = re.compile(r'^enum_[\w\d]*$')
@@ -51,9 +53,12 @@ class Enum:
         readable_name = " ".join(self.name.split("_")[1:])
         return readable_name.capitalize()
 
+    def value_identifier(self, value):
+        return f"MMAGIC_{self.stripped_name.upper()}_{value.name.upper()}"
+
     def __post_init__(self):
-        stripped_name = re.sub('enum_(?P<name>.*)', '\\g<name>', self.name)
-        object.__setattr__(self, 'datatype', f'enum mmagic_{stripped_name}')
+        object.__setattr__(self, 'stripped_name', re.sub('enum_(?P<name>.*)', '\\g<name>', self.name))
+        object.__setattr__(self, 'datatype', f'enum mmagic_{self.stripped_name}')
         validate_name(self.name, ENUM_NAME_REGEX)
 
 
@@ -81,6 +86,7 @@ class Struct:
 @dataclass(frozen=False)
 class ConfigVar:
     name: str
+    id: int
     description: str
     type: str
 
@@ -95,10 +101,15 @@ class Argument:
 @dataclass(frozen=True)
 class Command:
     name: str
+    id: int
     description: str
     stream_type: bool = False
     command_args: List[Argument] = field(default_factory=list)
     response_args: List[Argument] = field(default_factory=list)
+
+    def __post_init__(self):
+        if self.id < NUM_RESERVED_COMMAND_IDS:
+            raise Exception(f"Command {self.name} uses reserved ID {self.id} (must be >= {NUM_RESERVED_COMMAND_IDS})")
 
 
 @dataclass(frozen=True)
@@ -125,10 +136,19 @@ class Module:
             if len(name) >= max_length:
                 raise Exception(f'Config string "{name}" length ({len(name)}) exceeds the max length ({max_length})')
 
+    def _validate_ids_unique(self, objects, object_type_name):
+        seen_ids = set()
+        for object in objects:
+            if object.id in seen_ids:
+                raise Exception(f"Multiple {object_type_name}s with ID {object.id} in {self.name}")
+            seen_ids.add(object.id)
+
     def __post_init__(self):
-        self.config = self.configs.sort(key=lambda x: x.name)
         if self.configs is not None:
             self._validate_config_name_lengths(MAX_CONFIG_NAME_LEN)
+        self._validate_ids_unique(self.configs, "config")
+        self._validate_ids_unique(self.commands, "command")
+        self._validate_ids_unique(self.events, "event")
 
 
 # ---------- Configuration ---------- #
@@ -139,12 +159,14 @@ class Configuration:
     modules: List[Module]
 
     def __post_init__(self):
+        object.__setattr__(self, 'std_c_types', STD_C_TYPES)
         object.__setattr__(self, 'copyright_year', datetime.now().year)
-        types_used = set()
+        struct_types_used = set()
         for module in self.modules:
             for var in module.configs:
-                types_used.add(var.type)
-        object.__setattr__(self, 'types_used', sorted(types_used))
+                if STRUCT_NAME_REGEX.match(var.type):
+                    struct_types_used.add(var.type)
+        object.__setattr__(self, 'struct_types_used', sorted(struct_types_used))
 
     def _find_struct(self, name: str):
         if 'struct' in name:

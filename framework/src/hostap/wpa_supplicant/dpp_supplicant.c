@@ -3,6 +3,7 @@
  * Copyright (c) 2017, Qualcomm Atheros, Inc.
  * Copyright (c) 2018-2020, The Linux Foundation
  * Copyright (c) 2021-2022, Qualcomm Innovation Center, Inc.
+ * Copyright 2022 Morse Micro
  *
  * This software may be distributed under the terms of the BSD license.
  * See README for more details.
@@ -2917,16 +2918,43 @@ static int wpas_dpp_allow_ir(struct wpa_supplicant *wpa_s, unsigned int freq)
 	return 0;
 }
 
+#if defined(CONFIG_IEEE80211AH)
+static int wpas_s1g_preferred_ht_announce_freq(struct wpa_supplicant *wpa_s)
+{
+	/* From '6.2.2 Generation of Channel List for Presence Announcement' in
+	 * Easy Connect Specification v2.0.0.6.
+	 *
+	 * Sub-1 GHz: Channel 37 (920.5 MHz) if local regulations permit use of global
+	 * operating class 68 (ITU Region 2, Australia, New Zealand, Singapore)
+	 * otherwise Channel 1 (863.5 MHz) if local regulations permit use of
+	 * global operating class 66 (Europe)
+	 */
+	int global_op_class = morse_s1g_country_to_global_op_class(wpa_s->conf->country);
+	int preferred_ann_chan_s1g =
+		(global_op_class == 68) ? 37 :
+		(global_op_class == 66) ? 1 : -1;
+	int ht_s1g_freq = ieee80211_channel_to_frequency(
+		morse_s1g_chan_to_ht_chan(preferred_ann_chan_s1g), NL80211_BAND_5GHZ);
+
+	/* S1G devices masquerading as 5G must convert back to a HT frequency */
+	return ht_s1g_freq;
+}
+#endif
+
 
 static int wpas_dpp_pkex_next_channel(struct wpa_supplicant *wpa_s,
 				      struct dpp_pkex *pkex)
 {
 #if defined(CONFIG_IEEE80211AH)
-	/* Following logic is not S1G compatible. Attempting PKEX on non-adjacent S1G channels
-	 * results in guaranteed failure.
-	 */
-	return -1;
-#endif
+	int preferred_s1g_ht_freq = wpas_s1g_preferred_ht_announce_freq(wpa_s);
+
+	if (preferred_s1g_ht_freq <= 0 || pkex->freq == (unsigned int) preferred_s1g_ht_freq)
+		return -1; /* no more channels to try */
+	else if (pkex->freq == 2437)
+		pkex->freq = preferred_s1g_ht_freq;
+	else
+		return -1;
+#else
 	if (pkex->freq == 2437)
 		pkex->freq = 5745;
 	else if (pkex->freq == 5745)
@@ -2935,6 +2963,7 @@ static int wpas_dpp_pkex_next_channel(struct wpa_supplicant *wpa_s,
 		pkex->freq = 60480;
 	else
 		return -1; /* no more channels to try */
+#endif
 
 	if (wpas_dpp_allow_ir(wpa_s, pkex->freq) == 1) {
 		wpa_printf(MSG_DEBUG, "DPP: Try to initiate on %u MHz",
@@ -3072,6 +3101,12 @@ static int wpas_dpp_pkex_init(struct wpa_supplicant *wpa_s,
 	if (wait_time > 2000)
 		wait_time = 2000;
 	pkex->freq = 2437;
+	if (!wpas_dpp_allow_ir(wpa_s, pkex->freq)) {
+		if (wpas_dpp_pkex_next_channel(wpa_s, pkex) < 0) {
+			wpa_printf(MSG_DEBUG, "DPP: Could not initiate (no channels to try)");
+			return -1;
+		}
+	}
 	wpa_msg(wpa_s, MSG_INFO, DPP_EVENT_TX "dst=" MACSTR
 		" freq=%u type=%d",
 		MAC2STR(broadcast), pkex->freq,
@@ -4513,7 +4548,7 @@ int wpas_dpp_check_connect(struct wpa_supplicant *wpa_s, struct wpa_ssid *ssid,
 
 	if (!(ssid->key_mgmt & WPA_KEY_MGMT_DPP) || !bss)
 		return 0; /* Not using DPP AKM - continue */
-	rsn = wpa_bss_get_ie(bss, WLAN_EID_RSN);
+	rsn = wpa_bss_get_rsne(wpa_s, bss, ssid, false);
 	if (rsn && wpa_parse_wpa_ie(rsn, 2 + rsn[1], &ied) == 0 &&
 	    !(ied.key_mgmt & WPA_KEY_MGMT_DPP))
 		return 0; /* AP does not support DPP AKM - continue */
@@ -4829,12 +4864,47 @@ static void wpas_dpp_chirp_forever(void *eloop_ctx, void *timeout_ctx);
 static void wpas_dpp_chirp_forever_start_after(struct wpa_supplicant *wpa_s,
 	unsigned int secs);
 
+static void wpas_dpp_set_key(struct wpa_supplicant *wpa_s, EC_KEY *eckey)
+{
+	unsigned char *der = NULL;
+	int der_len = i2d_ECPrivateKey(eckey, &der);
+	int i;
+	char *key = NULL;
+	char *cmd = NULL;
+	int size;
+
+	if (!der || der_len <= 0)
+		return;
+
+	key = malloc((der_len * 2) + 1);
+	if (!key)
+		goto exit;
+
+	for (i = 0; i < der_len; i++)
+		sprintf((char *)(key + i * 2), "%02X", der[i]);
+	key[i * 2] = '\0';
+
+	size = os_snprintf(NULL, 0, "type=qrcode mac="MACSTR" key=%s",
+		MAC2STR(wpa_s->own_addr), key);
+
+	cmd = malloc(size + 1);
+	if (!cmd)
+		goto exit;
+
+	os_snprintf(cmd, size+1, "type=qrcode mac="MACSTR" key=%s",
+		MAC2STR(wpa_s->own_addr), key);
+	dpp_bootstrap_gen(wpa_s->dpp, cmd);
+
+exit:
+	OPENSSL_free(der);
+	free(key);
+	free(cmd);
+}
+
 int wpas_dpp_init(struct wpa_supplicant *wpa_s)
 {
 	struct dpp_global_config config;
 	u8 adv_proto_id[7];
-	char *cmd;
-	int size;
 
 	adv_proto_id[0] = WLAN_EID_VENDOR_SPECIFIC;
 	adv_proto_id[1] = 5;
@@ -4856,47 +4926,24 @@ int wpas_dpp_init(struct wpa_supplicant *wpa_s)
 #ifdef CONFIG_DPP2
 	if (wpa_s->conf->dpp_key && wpa_s->dpp) {
 		BIO *bio;
-		EVP_PKEY *pkey;
 		EC_KEY *eckey;
-		int i;
-		unsigned char *der = NULL;
-		int der_len;
-		char *key;
+		EVP_PKEY *pkey;
 
 		bio = BIO_new_file(wpa_s->conf->dpp_key, "r");
 		if (!bio)
 			return -1;
 
-		pkey = PEM_read_bio_PrivateKey(bio, NULL, NULL,
-					       NULL);
+		pkey = PEM_read_bio_PrivateKey(bio, NULL, NULL, NULL);
 		BIO_free(bio);
 
 		eckey = EVP_PKEY_get1_EC_KEY(pkey);
+		EVP_PKEY_free(pkey);
 		if (!eckey)
 			return -1;
 
-		der_len = i2d_ECPrivateKey(eckey, &der);
-		if (der_len > 0) {
-			key = malloc((der_len * 2) + 1);
-			for (i = 0; i < der_len; i++)
-			{
-				sprintf((char*)(key + i * 2),"%02X", der[i]);
-			}
-			key[i*2] = '\0';
-		}
+		wpas_dpp_set_key(wpa_s, eckey);
 
-		size = os_snprintf(NULL, 0, "type=qrcode mac="MACSTR" key=%s",
-			MAC2STR(wpa_s->own_addr), key);
-		cmd = malloc(size + 1);
-		os_snprintf(cmd, size+1, "type=qrcode mac="MACSTR" key=%s",
-			MAC2STR(wpa_s->own_addr), key);
-		dpp_bootstrap_gen(wpa_s->dpp, cmd);
-
-		OPENSSL_free(der);
 		EC_KEY_free(eckey);
-		EVP_PKEY_free(pkey);
-		free(key);
-		free(cmd);
 	}
 	wpas_dpp_chirp_forever_start_after(wpa_s,
 		DEFAULT_CHIRP_FOREVER_START_DELAY_S);
@@ -5153,6 +5200,29 @@ static void wpas_dpp_chirp_start(struct wpa_supplicant *wpa_s)
 	wpabuf_free(announce);
 }
 
+static void log_dpp_presence_ann_channels(int *freqs)
+{
+	int i;
+	int n_freqs;
+
+	if (!freqs)
+		return;
+
+	n_freqs = int_array_len(freqs);
+	wpa_printf(MSG_DEBUG, "DPP: Announcing presence on %d channels", n_freqs);
+	for (i = 0; i < n_freqs; i++) {
+		int freq = freqs[i];
+#if defined(CONFIG_IEEE80211AH)
+		int chan_s1g = morse_ht_freq_to_s1g_chan(freq);
+		int op_bw_s1g = morse_s1g_chan_to_bw(chan_s1g);
+
+		wpa_printf(MSG_DEBUG, "DPP:    [%d] %d MHz (S1G operating:%d MHz)", chan_s1g,
+			   freq, op_bw_s1g);
+#else
+		wpa_printf(MSG_DEBUG, "DPP:    %d MHz", freq)
+#endif
+	}
+}
 
 static int * wpas_dpp_presence_ann_channels(struct wpa_supplicant *wpa_s,
 					    struct dpp_bootstrap_info *bi)
@@ -5173,7 +5243,6 @@ static int * wpas_dpp_presence_ann_channels(struct wpa_supplicant *wpa_s,
 	/* Preferred chirping channels */
 	mode = get_mode(wpa_s->hw.modes, wpa_s->hw.num_modes,
 			HOSTAPD_MODE_IEEE80211G, false);
-#if 0 // This channel is not flagged as disabled but kernel thinks it is when trying to send and cancels the chirp_forever
 	if (mode) {
 		for (c = 0; c < mode->num_channels; c++) {
 			struct hostapd_channel_data *chan = &mode->channels[c];
@@ -5187,52 +5256,41 @@ static int * wpas_dpp_presence_ann_channels(struct wpa_supplicant *wpa_s,
 	}
 	if (chan6)
 		int_array_add_unique(&freqs, 2437);
-#endif
+
 	mode = get_mode(wpa_s->hw.modes, wpa_s->hw.num_modes,
 			HOSTAPD_MODE_IEEE80211A, false);
 	if (mode) {
+#if defined(CONFIG_IEEE80211AH)
+		int preferred_s1g_ht_freq = wpas_s1g_preferred_ht_announce_freq(wpa_s);
+		int add_s1g_chan = 0;
+#else
 		int chan44 = 0, chan149 = 0;
-
+#endif
 		for (c = 0; c < mode->num_channels; c++) {
 			struct hostapd_channel_data *chan = &mode->channels[c];
-			int s1g_chan = 0;
-			static const int s1g_chirp_channels[] = {
-				/* 2MHz channels */
-				5190, 5230, 5270, 5310, 5510, 5550,
-				5630, 5670, 5755, 5795, 5835, 5875,
-				/* 1MHz channels */
-				5660, 5680, 5180, 5200, 5240, 5260,
-				5280, 5300, 5320, 5500, 5520, 5540,
-				5560, 5580, 5600, 5620, 5640, 5765,
-				5785, 5805, 5825, 5845, 5865, 5855
-			};
 
-			if (chan->flag & (HOSTAPD_CHAN_DISABLED | HOSTAPD_CHAN_RADAR))
+			if (chan->flag & (HOSTAPD_CHAN_DISABLED |
+					  HOSTAPD_CHAN_RADAR))
 				continue;
 #if defined(CONFIG_IEEE80211AH)
-			/* Adding channels 44 and 149 at end of scan list is not required
-			 * for HaLow
-			 */
+			if (chan->freq == preferred_s1g_ht_freq)
+				add_s1g_chan = 1;
 #else
 			if (chan->freq == 5220)
 				chan44 = 1;
 			if (chan->freq == 5745)
 				chan149 = 1;
 #endif
-
-			/* Morse - All 5GHz channels that are mapped to 1 MHz and 2 MHz.
-			 * Channels that aren't relevant to a regulatory domain will be
-			 * disabled and won't be included.
-			 */
-			for (s1g_chan = 0; s1g_chan < ARRAY_SIZE(s1g_chirp_channels); s1g_chan++) {
-				if (chan->freq == s1g_chirp_channels[s1g_chan])
-					int_array_add_unique(&freqs, chan->freq);
-			}
 		}
+#if defined(CONFIG_IEEE80211AH)
+		if (add_s1g_chan)
+			int_array_add_unique(&freqs, preferred_s1g_ht_freq);
+#else
 		if (chan149)
 			int_array_add_unique(&freqs, 5745);
 		else if (chan44)
 			int_array_add_unique(&freqs, 5220);
+#endif
 	}
 
 	mode = get_mode(wpa_s->hw.modes, wpa_s->hw.num_modes,
@@ -5273,6 +5331,7 @@ static void wpas_dpp_chirp_scan_res_handler(struct wpa_supplicant *wpa_s,
 
 	os_free(wpa_s->dpp_chirp_freqs);
 	wpa_s->dpp_chirp_freqs = wpas_dpp_presence_ann_channels(wpa_s, bi);
+	log_dpp_presence_ann_channels(wpa_s->dpp_chirp_freqs);
 
 	if (!wpa_s->dpp_chirp_freqs ||
 	    eloop_register_timeout(0, 0, wpas_dpp_chirp_next, wpa_s, NULL) < 0)
@@ -5792,6 +5851,7 @@ static void wpas_dpp_pb_scan_res_handler(struct wpa_supplicant *wpa_s,
 
 	os_free(wpa_s->dpp_pb_freqs);
 	wpa_s->dpp_pb_freqs = wpas_dpp_presence_ann_channels(wpa_s, NULL);
+	log_dpp_presence_ann_channels(wpa_s->dpp_pb_freqs);
 
 	wpa_printf(MSG_DEBUG, "DPP: Scan completed for PB discovery");
 	if (!wpa_s->dpp_pb_freqs ||

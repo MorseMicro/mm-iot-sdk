@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.6.4</span>
+   &#160;<span id="projectnumber">2.7.2</span>
    </div>
   </td>
  </tr>
@@ -179,6 +179,12 @@ Macros</h2></td></tr>
 <tr class="memitem:ga4f44eca015ebb4124bf45c4cd50192fb"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN.html#ga4f44eca015ebb4124bf45c4cd50192fb">DEFAULT_TWT_MIN_WAKE_DURATION_US</a>&#160;&#160;&#160;(65280)</td></tr>
 <tr class="memdesc:ga4f44eca015ebb4124bf45c4cd50192fb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default min Target Wake Time (TWT) duration in micro seconds.  <a href="group__MMWLAN.html#ga4f44eca015ebb4124bf45c4cd50192fb">More...</a><br /></td></tr>
 <tr class="separator:ga4f44eca015ebb4124bf45c4cd50192fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga4dc834cad2f429484a5eb050c833fb65"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN.html#ga4dc834cad2f429484a5eb050c833fb65">MMWLAN_DEFAULT_SCAN_INTERVAL_BASE_S</a>&#160;&#160;&#160;(2)</td></tr>
+<tr class="memdesc:ga4dc834cad2f429484a5eb050c833fb65"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default value for the <code>scan_interval_base_s</code> field of <a class="el" href="structmmwlan__sta__args.html">mmwlan_sta_args</a>.  <a href="group__MMWLAN.html#ga4dc834cad2f429484a5eb050c833fb65">More...</a><br /></td></tr>
+<tr class="separator:ga4dc834cad2f429484a5eb050c833fb65"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga07a32b3e9fb8b76fe4029cb20dc1af57"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN.html#ga07a32b3e9fb8b76fe4029cb20dc1af57">MMWLAN_DEFAULT_SCAN_INTERVAL_LIMIT_S</a>&#160;&#160;&#160;(512)</td></tr>
+<tr class="memdesc:ga07a32b3e9fb8b76fe4029cb20dc1af57"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default value for the <code>scan_interval_limit_s</code> field of <a class="el" href="structmmwlan__sta__args.html">mmwlan_sta_args</a>.  <a href="group__MMWLAN.html#ga07a32b3e9fb8b76fe4029cb20dc1af57">More...</a><br /></td></tr>
+<tr class="separator:ga07a32b3e9fb8b76fe4029cb20dc1af57"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga84f1a76137b3e5d01dd0942e2c4ee564"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN.html#ga84f1a76137b3e5d01dd0942e2c4ee564">MMWLAN_STANDBY_STATUS_FRAME_USER_PAYLOAD_MAXLEN</a>&#160;&#160;&#160;(64)</td></tr>
 <tr class="memdesc:ga84f1a76137b3e5d01dd0942e2c4ee564"><td class="mdescLeft">&#160;</td><td class="mdescRight">The maximum length of a user-specified payload (bytes) for Standby status frames.  <a href="group__MMWLAN.html#ga84f1a76137b3e5d01dd0942e2c4ee564">More...</a><br /></td></tr>
 <tr class="separator:ga84f1a76137b3e5d01dd0942e2c4ee564"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -333,6 +339,42 @@ Enumerations</h2></td></tr>
 
 </div>
 </div>
+<a id="ga4dc834cad2f429484a5eb050c833fb65" name="ga4dc834cad2f429484a5eb050c833fb65"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga4dc834cad2f429484a5eb050c833fb65">&#9670;&nbsp;</a></span>MMWLAN_DEFAULT_SCAN_INTERVAL_BASE_S</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define MMWLAN_DEFAULT_SCAN_INTERVAL_BASE_S&#160;&#160;&#160;(2)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Default value for the <code>scan_interval_base_s</code> field of <a class="el" href="structmmwlan__sta__args.html">mmwlan_sta_args</a>. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00114">114</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+
+</div>
+</div>
+<a id="ga07a32b3e9fb8b76fe4029cb20dc1af57" name="ga07a32b3e9fb8b76fe4029cb20dc1af57"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga07a32b3e9fb8b76fe4029cb20dc1af57">&#9670;&nbsp;</a></span>MMWLAN_DEFAULT_SCAN_INTERVAL_LIMIT_S</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define MMWLAN_DEFAULT_SCAN_INTERVAL_LIMIT_S&#160;&#160;&#160;(512)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Default value for the <code>scan_interval_limit_s</code> field of <a class="el" href="structmmwlan__sta__args.html">mmwlan_sta_args</a>. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00117">117</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+
+</div>
+</div>
 <a id="gad1f02bb330d9d2f4c831a1cf9d44ff1a" name="gad1f02bb330d9d2f4c831a1cf9d44ff1a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#gad1f02bb330d9d2f4c831a1cf9d44ff1a">&#9670;&nbsp;</a></span>MMWLAN_MAC_ADDR_LEN</h2>
 
@@ -455,7 +497,7 @@ Enumerations</h2></td></tr>
 
 <p>The maximum length of a user-specified payload (bytes) for Standby status frames. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00117">117</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00123">123</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -473,7 +515,7 @@ Enumerations</h2></td></tr>
 
 <p>The maximum allowed length of a user filter to apply to wake frames. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00120">120</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00126">126</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -498,7 +540,7 @@ Enumerations</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00152">152</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00158">158</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -522,7 +564,7 @@ Enumerations</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00143">143</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00149">149</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -546,7 +588,7 @@ Enumerations</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00134">134</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00140">140</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -572,7 +614,7 @@ Enumerations</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00123">123</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00129">129</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -644,7 +686,7 @@ Enumerations</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00165">165</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00171">171</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -670,7 +712,7 @@ Enumerations</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00176">176</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00182">182</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>

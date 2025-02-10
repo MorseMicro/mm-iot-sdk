@@ -4,6 +4,8 @@
  * Contact Information:
  * Intel Linux Wireless <ilw@linux.intel.com>
  * Intel Corporation, 5200 N.E. Elam Young Parkway, Hillsboro, OR 97124-6497
+
+ * Copyright 2023 Morse Micro
  *
  * This software may be distributed under the terms of the BSD license.
  * See README for more details.
@@ -532,7 +534,7 @@ size_t wpas_supp_s1g_op_class_ie(struct wpa_supplicant *wpa_s,
 {
 	struct wpabuf *buf;
 	u8 ht_chan;
-	u8 s1g_op_chan;
+	int s1g_op_chan = -1;
 	u8 *ie_len;
 	size_t res;
 	u8 s1g_op_ch_width;
@@ -602,8 +604,9 @@ size_t wpas_supp_s1g_op_class_ie(struct wpa_supplicant *wpa_s,
 			}
 			ht_chan = vht_oper->vht_op_info_chan_center_freq_seg0_idx;
 			s1g_op_chan = morse_ht_chan_to_s1g_chan(ht_chan);
-			if (morse_insert_supported_op_class(buf, country, s1g_op_ch_width, s1g_op_chan)
-								== MORSE_S1G_RETURN_ERROR) {
+			if (s1g_op_chan < 0 ||
+			    morse_insert_supported_op_class(buf, country, s1g_op_ch_width,
+							s1g_op_chan) < 0) {
 				wpa_printf(MSG_ERROR,"Failed to insert supported operating class"
 						"for operating bw 4/8 MHz");
 				res = 0;
@@ -615,7 +618,7 @@ size_t wpas_supp_s1g_op_class_ie(struct wpa_supplicant *wpa_s,
 	}
 
 	/* Get current operating class for s1g channel bw is 1MHz or 2MHz */
-	if (ht_ie && (!vht_ie || vht_use_ht)) {
+	if (ht_ie && (!vht_ie || vht_use_ht) && s1g_op_chan > 0) {
 		if ((ht_oper->ht_param & HT_INFO_HT_PARAM_STA_CHNL_WIDTH) && sec_chan) {
 			s1g_op_ch_width = 2;
 			s1g_op_chan += sec_chan;

@@ -1,6 +1,7 @@
 /*
  * WPA Supplicant / Configuration backend: text file
  * Copyright (c) 2003-2019, Jouni Malinen <j@w1.fi>
+ * Copyright 2022 Morse Micro
  *
  * This software may be distributed under the terms of the BSD license.
  * See README for more details.
@@ -381,6 +382,58 @@ static int wpa_config_process_blob(struct wpa_config *config, FILE *f,
 #endif /* CONFIG_NO_CONFIG_BLOBS */
 
 
+#ifdef CONFIG_IEEE80211AH
+/*
+ * Convert an S1G frequency to an HT frequency, for internal use by the kernel.
+ * The value will be converted back to S1G in the driver, for use by firmware.
+ */
+static int wpa_config_convert_s1g_freq_to_ht_freq(struct wpa_ssid *ssid, int idx,
+						  const char *country)
+{
+	int ht_freq;
+
+	wpa_printf(MSG_DEBUG, "Converting s1g freq %d to ht freq", ssid->scan_freq[idx]);
+	if (!country[0]) {
+		wpa_printf(MSG_ERROR,
+			"Country not configured - cannot convert s1g scan_freq %d",
+			ssid->scan_freq[idx]);
+		return -1;
+	}
+
+	ht_freq = morse_s1g_freq_and_cc_to_ht_freq(ssid->scan_freq[idx], country);
+	if (ht_freq <= 0) {
+		wpa_printf(MSG_INFO, "Failed to get ht freq for s1g freq %d",
+			ssid->scan_freq[idx]);
+		return -1;
+	}
+
+	wpa_printf(MSG_INFO, "Processing s1g freq %d internally as ht freq %d",
+		ssid->scan_freq[idx], ht_freq);
+	ssid->scan_freq[idx] = ht_freq;
+
+	return 0;
+}
+
+static int wpa_config_convert_s1g_freqs(struct wpa_config *config, struct wpa_ssid *ssid)
+{
+	int scan_freq_errors = 0;
+
+	if (!ssid->scan_freq)
+		return 0;
+
+	for (int i = 0; ssid->scan_freq[i] != 0; i++) {
+		if (ssid->scan_freq[i] >= MIN_S1G_FREQ_KHZ &&
+		    ssid->scan_freq[i] <= MAX_S1G_FREQ_KHZ) {
+			if (wpa_config_convert_s1g_freq_to_ht_freq(ssid,
+							i, config->country) < 0)
+				scan_freq_errors++;
+		}
+
+	}
+	return scan_freq_errors;
+}
+#endif
+
 struct wpa_config * wpa_config_read(const char *name, struct wpa_config *cfgp,
 				    bool ro)
 {
@@ -444,6 +497,8 @@ struct wpa_config * wpa_config_read(const char *name, struct wpa_config *cfgp,
 				errors++;
 				continue;
 			}
+			if (ssid->scan_freq)
+				errors += wpa_config_convert_s1g_freqs(config, ssid);
 		} else if (os_strcmp(pos, "cred={") == 0) {
 			cred = wpa_config_read_cred(f, &line, cred_id++);
 			if (cred == NULL) {
@@ -478,26 +533,6 @@ struct wpa_config * wpa_config_read(const char *name, struct wpa_config *cfgp,
 
 	fclose(f);
 
-#ifdef CONFIG_IEEE80211AH
-	/*
-	 * Map the overlapping JP channels to the corresponding lower 20MHz frequencies
-	 * for the 'scan_freq' parameter.
-	 * E.g. Channel 19 is mapped to 5300MHz & 5240MHz but scan_freq=5300 is invalid
-	 * due to the s1g<->ht pair mapping limitations.
-	 */
-	if (ssid->scan_freq && (strncmp(config->country, "JP", COUNTRY_CODE_LEN) == 0))
-		for (int i = 0; i < ARRAY_SIZE(ssid->scan_freq) && ssid->scan_freq[i]; i++) {
-			switch (ssid->scan_freq[i]) {
-			case 5300:
-			case 5280:
-			case 5260:
-				ssid->scan_freq[i] -= 60;
-				break;
-			default:
-				break;
-			}
-		}
-#endif
 
 	config->ssid = head;
 	wpa_config_debug_dump_networks(config);
@@ -1745,6 +1780,8 @@ static void wpa_config_write_global(FILE *f, struct wpa_config *config)
 	if (config->wowlan_disconnect_on_deinit)
 		fprintf(f, "wowlan_disconnect_on_deinit=%d\n",
 			config->wowlan_disconnect_on_deinit);
+	if (config->rsn_overriding)
+		fprintf(f, "rsn_overriding=%d\n", config->rsn_overriding);
 #ifdef CONFIG_TESTING_OPTIONS
 	if (config->mld_force_single_link)
 		fprintf(f, "mld_force_single_link=1\n");

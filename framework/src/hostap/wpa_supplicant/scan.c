@@ -945,9 +945,9 @@ static void wpa_add_scan_ssid(struct wpa_supplicant *wpa_s,
 }
 
 
-static void wpa_add_owe_scan_ssid(struct wpa_supplicant *wpa_s,
-				  struct wpa_driver_scan_params *params,
-				  struct wpa_ssid *ssid, size_t max_ssids)
+void wpa_add_owe_scan_ssid(struct wpa_supplicant *wpa_s,
+			   struct wpa_driver_scan_params *params,
+			   const struct wpa_ssid *ssid, size_t max_ssids)
 {
 #ifdef CONFIG_OWE
 	struct wpa_bss *bss;
@@ -959,8 +959,7 @@ static void wpa_add_owe_scan_ssid(struct wpa_supplicant *wpa_s,
 		   wpa_ssid_txt(ssid->ssid, ssid->ssid_len));
 
 	dl_list_for_each(bss, &wpa_s->bss, struct wpa_bss, list) {
-		const u8 *owe, *pos, *end;
-		const u8 *owe_ssid;
+		const u8 *owe, *owe_bssid, *owe_ssid;
 		size_t owe_ssid_len;
 
 		if (bss->ssid_len != ssid->ssid_len ||
@@ -971,21 +970,9 @@ static void wpa_add_owe_scan_ssid(struct wpa_supplicant *wpa_s,
 		if (!owe || owe[1] < 4)
 			continue;
 
-		pos = owe + 6;
-		end = owe + 2 + owe[1];
-
-		/* Must include BSSID and ssid_len */
-		if (end - pos < ETH_ALEN + 1)
-			return;
-
-		/* Skip BSSID */
-		pos += ETH_ALEN;
-		owe_ssid_len = *pos++;
-		owe_ssid = pos;
-
-		if ((size_t) (end - pos) < owe_ssid_len ||
-		    owe_ssid_len > SSID_MAX_LEN)
-			return;
+		if (wpas_get_owe_trans_network(owe, &owe_bssid, &owe_ssid,
+					       &owe_ssid_len))
+			continue;
 
 		wpa_printf(MSG_DEBUG,
 			   "OWE: scan_ssids: transition mode OWE ssid=%s",
@@ -1404,6 +1391,11 @@ static void wpa_supplicant_scan(void *eloop_ctx, void *timeout_ctx)
 		params.num_ssids++;
 		wpa_dbg(wpa_s, MSG_DEBUG, "Starting AP scan for wildcard "
 			"SSID");
+	}
+
+	if (wpa_s->next_scan_dwell_duration) {
+		params.duration = wpa_s->next_scan_dwell_duration;
+		wpa_s->next_scan_dwell_duration = 0;
 	}
 
 ssid_list_set:

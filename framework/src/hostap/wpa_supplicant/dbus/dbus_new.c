@@ -2396,6 +2396,10 @@ void wpas_dbus_signal_prop_changed(struct wpa_supplicant *wpa_s,
 	case WPAS_DBUS_PROP_ROAM_COMPLETE:
 		prop = "RoamComplete";
 		break;
+	case WPAS_DBUS_PROP_SCAN_IN_PROGRESS_6GHZ:
+		prop = "ScanInProgress6GHz";
+		flush = TRUE;
+		break;
 	case WPAS_DBUS_PROP_SESSION_LENGTH:
 		prop = "SessionLength";
 		break;
@@ -3984,6 +3988,12 @@ static const struct wpa_dbus_property_desc wpas_dbus_interface_properties[] = {
 	  NULL
 	},
 	{
+	  "ScanInProgress6GHz", WPAS_DBUS_NEW_IFACE_INTERFACE, "b",
+	  wpas_dbus_getter_scan_in_progress_6ghz,
+	  NULL,
+	  NULL
+	},
+	{
 	  "SessionLength", WPAS_DBUS_NEW_IFACE_INTERFACE, "u",
 	  wpas_dbus_getter_session_length,
 	  NULL,
@@ -4022,6 +4032,11 @@ static const struct wpa_dbus_property_desc wpas_dbus_interface_properties[] = {
 	  wpas_dbus_getter_mac_address,
 	  NULL,
 	  NULL,
+	},
+	{ "SignalChange", WPAS_DBUS_NEW_IFACE_INTERFACE, "a{sv}",
+	  wpas_dbus_getter_signal_change,
+	  NULL,
+	  NULL
 	},
 	{ NULL, NULL, NULL, NULL, NULL, NULL }
 };
@@ -4617,11 +4632,6 @@ static const struct wpa_dbus_property_desc wpas_dbus_p2p_peer_properties[] = {
 	},
 	{ "VSIE", WPAS_DBUS_NEW_IFACE_P2P_PEER, "ay",
 	  wpas_dbus_getter_p2p_peer_vsie,
-	  NULL,
-	  NULL
-	},
-	{ "SignalChange", WPAS_DBUS_NEW_IFACE_INTERFACE, "a{sv}",
-	  wpas_dbus_getter_signal_change,
 	  NULL,
 	  NULL
 	},

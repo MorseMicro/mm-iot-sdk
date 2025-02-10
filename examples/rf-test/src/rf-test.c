@@ -25,7 +25,6 @@
 #include "mmosal.h"
 #include "mmutils.h"
 #include "mmwlan.h"
-#include "mmwlan_regdb.def"
 #include "mm_app_common.h"
 #include "slip.h"
 

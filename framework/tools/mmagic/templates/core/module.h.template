@@ -14,7 +14,7 @@ struct mmagic_data;
 
 struct mmagic_{{data.name}}_config
 {
-    {%- for var in data.configs %}
+    {%- for var in data.configs | sort(attribute="id") %}
     /** {{var.description | wordwrap(80) | replace('\n', '\n * ') | indent(4)}} */
     {{config.find_datatype(var.type)}} {{var.name}}{{config.get_array_element(var.type)}};
     {%- endfor %}

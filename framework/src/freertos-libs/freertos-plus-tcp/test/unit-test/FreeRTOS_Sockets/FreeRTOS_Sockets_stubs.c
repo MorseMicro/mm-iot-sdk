@@ -1,5 +1,5 @@
 /*
- * FreeRTOS+TCP <DEVELOPMENT BRANCH>
+ * FreeRTOS+TCP V4.2.2
  * Copyright (C) 2022 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -53,6 +53,8 @@ BaseType_t xRNGStatus;
 
 BaseType_t xLocalReceiveCallback_Return;
 uint8_t xLocalReceiveCallback_Called = 0;
+
+BaseType_t xTCPWindowLoggingLevel = 0;
 
 /* ======================== Stub Callback Functions ========================= */
 

@@ -14,56 +14,67 @@ struct mmagic_data;
 
 struct mmagic_wlan_config
 {
-    /** Boolean value indicating whether AMPDU support should be enabled. */
-    bool ampdu_enabled;
-    /** BSSID of the ap to associate to, all 0x00 for any. */
-    struct struct_mac_addr bssid;
-    /** Whether Centralized Authentication Controlled is enabled on the STA. */
-    bool cac_enabled;
     /** Two character country code used to identify the regulatory domain. */
     struct struct_country_code country_code;
+    /** SSID of the AP to connect to, can be 1-32 characters long. */
+    struct struct_string_32 ssid;
+    /** Password used when associating, 1-32 characters long. */
+    struct struct_string_32 password;
+    /** Security type to used when associating. */
+    enum mmagic_security_type security;
+    /** Priority to request if raw is supported by the AP. Valid priorities are 0-7. -1
+     * disables RAW. */
+    int16_t raw_priority;
+    /** BSSID of the ap to associate to, all 0x00 for any. */
+    struct struct_mac_addr bssid;
+    /** Protected Management Frame mode to use (802.11w) */
+    enum mmagic_pmf_mode pmf_mode;
+    /** S1G non-AP STA type. */
+    enum mmagic_station_type station_type;
+    /** The RTS threshold (in octets) to set, or 0 to disable. */
+    uint32_t rts_threshold;
+    /** Boolean value indicating whether SGI support should be enabled. */
+    bool sgi_enabled;
+    /** Boolean value indicating whether sub-band support should be enabled. */
+    bool subbands_enabled;
+    /** Boolean value indicating whether AMPDU support should be enabled. */
+    bool ampdu_enabled;
+    /** Sets the 802.11 power save mode. */
+    enum mmagic_power_save_mode power_save_mode;
     /** Sets the 802.11 fragmentation threshold. The fragmentation threshold (in octets)
      * to set, or 0 to disable. */
     uint32_t fragment_threshold;
-    /** The maximum interval to wait after the last health check before triggering
-     * another. If this parameter is 0 then periodic health checks will be disabled.
-     * min_interval_ms must always be less than or equal to max_interval_ms. Set this
-     * to UINT32_MAX to have the maximum unbounded. If only max_health_check_intvl_ms
-     * is specified, then min_health_check_intvl_ms is assumed to be 0. */
-    uint32_t max_health_check_intvl_ms;
+    /** Whether Centralized Authentication Controlled is enabled on the STA. */
+    bool cac_enabled;
+    /** If true, enables ARP response offload which allows the Morse chip to directly
+     * respond to ARP requests without waking up the host processor. */
+    bool offload_arp_response;
+    /** If non zero, enables ARP refresh offload with the specified interval in seconds.
+     * Note: ARP response offload needs to be enabled for this feature to work. */
+    uint32_t offload_arp_refresh_s;
     /** The minimum interval to wait after the last health check before triggering
      * another. If this parameter is 0 then health checks will always happen at the
      * max_interval_ms value. min_interval_ms must always be less than or equal to
      * max_interval_ms. If only min_health_check_intvl_ms is specified, then
      * max_health_check_intvl_ms is assumed to be unbounded. */
     uint32_t min_health_check_intvl_ms;
-    /** If non zero, enables ARP refresh offload with the specified interval in seconds.
-     * Note: ARP response offload needs to be enabled for this feature to work. */
-    uint32_t offload_arp_refresh_s;
-    /** If true, enables ARP response offload which allows the Morse chip to directly
-     * respond to ARP requests without waking up the host processor. */
-    bool offload_arp_response;
-    /** Password used when associating, 1-32 characters long. */
-    struct struct_string_32 password;
-    /** Protected Management Frame mode to use (802.11w) */
-    enum mmagic_pmf_mode pmf_mode;
-    /** Sets the 802.11 power save mode. */
-    enum mmagic_power_save_mode power_save_mode;
-    /** Priority to request if raw is supported by the AP. Valid priorities are 0-7. -1
-     * disables RAW. */
-    int16_t raw_priority;
-    /** The RTS threshold (in octets) to set, or 0 to disable. */
-    uint32_t rts_threshold;
-    /** Security type to used when associating. */
-    enum mmagic_security_type security;
-    /** Boolean value indicating whether SGI support should be enabled. */
-    bool sgi_enabled;
-    /** SSID of the AP to connect to, can be 1-32 characters long. */
-    struct struct_string_32 ssid;
-    /** S1G non-AP STA type. */
-    enum mmagic_station_type station_type;
-    /** Boolean value indicating whether sub-band support should be enabled. */
-    bool subbands_enabled;
+    /** The maximum interval to wait after the last health check before triggering
+     * another. If this parameter is 0 then periodic health checks will be disabled.
+     * min_interval_ms must always be less than or equal to max_interval_ms. Set this
+     * to UINT32_MAX to have the maximum unbounded. If only max_health_check_intvl_ms
+     * is specified, then min_health_check_intvl_ms is assumed to be 0. */
+    uint32_t max_health_check_intvl_ms;
+    /** Boolean value indicating whether NDP probe support should be enabled. Will only
+     * take effect after a connect or scan command is sent. */
+    bool ndp_probe_enabled;
+    /** The base scan interval (in seconds) to use when (re)connecting. See
+     * documentation of mmwlan_sta_args.scan_interval_base_s for further details. Note
+     * that changes will only take effect on invocation of wlan-connect. */
+    uint16_t sta_scan_interval_base_s;
+    /** The maximum interval between scan attempts when (re)connecting. See
+     * documentation of mmwlan_sta_args.scan_interval_limit_s for further details. Note
+     * that changes will only take effect on invocation of wlan-connect. */
+    uint16_t sta_scan_interval_limit_s;
 };
 
 struct mmagic_wlan_data
@@ -115,6 +126,7 @@ enum mmagic_status mmagic_core_wlan_disconnect(
 /** Command arguments structure for wlan_scan */
 struct MM_PACKED mmagic_core_wlan_scan_cmd_args
 {
+    struct struct_string_32 ssid;
     uint32_t timeout;
 };
 

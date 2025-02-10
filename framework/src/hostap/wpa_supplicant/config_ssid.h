@@ -1431,11 +1431,6 @@ struct wpa_ssid {
 	 */
 	int *backoffs;
 
-	/**
-	 * backoff_cnt - Number of elements in the backoffs array
-	 */
-	int backoff_cnt;
-
 #endif /* CONFIG_IEEE80211AH */
 };
 

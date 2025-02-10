@@ -1731,6 +1731,7 @@ DBusMessage * wpas_dbus_handler_scan(DBusMessage *message,
 					reply = wpas_dbus_error_scan_error(
 						message,
 						"Scan request rejected");
+					goto out;
 				}
 			} else {
 				wpa_s->scan_req = MANUAL_SCAN_REQ;
@@ -1757,6 +1758,7 @@ DBusMessage * wpas_dbus_handler_scan(DBusMessage *message,
 						false)) {
 			reply = wpas_dbus_error_scan_error(
 				message, "Scan request rejected");
+			goto out;
 		}
 	} else {
 		wpa_printf(MSG_DEBUG, "%s[dbus]: Unknown scan type: %s",
@@ -3834,6 +3836,29 @@ dbus_bool_t wpas_dbus_getter_roam_complete(
 
 
 /**
+ * wpas_dbus_getter_scan_in_progress_6ghz - Get whether a 6 GHz scan is in
+ * progress
+ * @iter: Pointer to incoming dbus message iter
+ * @error: Location to store error on failure
+ * @user_data: Function specific data
+ * Returns: TRUE on success, FALSE on failure
+ *
+ * Getter function for "ScanInProgress6GHz" property.
+ */
+dbus_bool_t wpas_dbus_getter_scan_in_progress_6ghz(
+	const struct wpa_dbus_property_desc *property_desc,
+	DBusMessageIter *iter, DBusError *error, void *user_data)
+{
+	struct wpa_supplicant *wpa_s = user_data;
+	dbus_bool_t scan_in_progress_6ghz = wpa_s->scan_in_progress_6ghz ?
+		TRUE : FALSE;
+
+	return wpas_dbus_simple_property_getter(iter, DBUS_TYPE_BOOLEAN,
+						&scan_in_progress_6ghz, error);
+}
+
+
+/**
  * wpas_dbus_getter_session_length - Get most recent BSS session length
  * @iter: Pointer to incoming dbus message iter
  * @error: Location to store error on failure
@@ -5633,7 +5658,7 @@ dbus_bool_t wpas_dbus_getter_bss_rsn(
 		return FALSE;
 
 	os_memset(&wpa_data, 0, sizeof(wpa_data));
-	ie = wpa_bss_get_ie(res, WLAN_EID_RSN);
+	ie = wpa_bss_get_rsne(args->wpa_s, res, NULL, false);
 	if (ie && wpa_parse_wpa_ie(ie, 2 + ie[1], &wpa_data) < 0) {
 		dbus_set_error_const(error, DBUS_ERROR_FAILED,
 				     "failed to parse RSN IE");

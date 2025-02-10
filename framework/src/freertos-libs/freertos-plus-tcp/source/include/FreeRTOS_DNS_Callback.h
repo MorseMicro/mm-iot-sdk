@@ -1,5 +1,5 @@
 /*
- * FreeRTOS+TCP <DEVELOPMENT BRANCH>
+ * FreeRTOS+TCP V4.2.2
  * Copyright (C) 2022 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -53,12 +53,12 @@
     BaseType_t xDNSDoCallback( ParseSet_t * pxSet,
                                struct freertos_addrinfo * pxAddress );
 
-    void vDNSSetCallBack( const char * pcHostName,
-                          void * pvSearchID,
-                          FOnDNSEvent pCallbackFunction,
-                          TickType_t uxTimeout,
-                          TickType_t uxIdentifier,
-                          BaseType_t xIsIPv6 );
+    BaseType_t xDNSSetCallBack( const char * pcHostName,
+                                void * pvSearchID,
+                                FOnDNSEvent pCallbackFunction,
+                                TickType_t uxTimeout,
+                                TickType_t uxIdentifier,
+                                BaseType_t xIsIPv6 );
 
     void vDNSCheckCallBack( void * pvSearchID );
 

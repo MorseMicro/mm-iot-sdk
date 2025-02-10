@@ -30,15 +30,20 @@ static struct mmbuf *mmagic_m2m_ip_get(struct mmagic_m2m_agent *agent,
     struct mmagic_ip_data *data = mmagic_data_get_ip(&agent->core);
     switch (subcommand)
     {
-    case mmagic_ip_var_dhcp_enabled:
+    case mmagic_ip_var_ip_addr:
         return mmagic_m2m_create_response(mmagic_ip, mmagic_ip_cmd_get, subcommand,
-                                          MMAGIC_STATUS_OK, &data->config.dhcp_enabled,
-                                          sizeof(data->config.dhcp_enabled));
+                                          MMAGIC_STATUS_OK, &data->config.ip_addr,
+                                          sizeof(data->config.ip_addr));
 
-    case mmagic_ip_var_dhcp_offload:
+    case mmagic_ip_var_netmask:
         return mmagic_m2m_create_response(mmagic_ip, mmagic_ip_cmd_get, subcommand,
-                                          MMAGIC_STATUS_OK, &data->config.dhcp_offload,
-                                          sizeof(data->config.dhcp_offload));
+                                          MMAGIC_STATUS_OK, &data->config.netmask,
+                                          sizeof(data->config.netmask));
+
+    case mmagic_ip_var_gateway:
+        return mmagic_m2m_create_response(mmagic_ip, mmagic_ip_cmd_get, subcommand,
+                                          MMAGIC_STATUS_OK, &data->config.gateway,
+                                          sizeof(data->config.gateway));
 
     case mmagic_ip_var_dns_server0:
         return mmagic_m2m_create_response(mmagic_ip, mmagic_ip_cmd_get, subcommand,
@@ -50,20 +55,15 @@ static struct mmbuf *mmagic_m2m_ip_get(struct mmagic_m2m_agent *agent,
                                           MMAGIC_STATUS_OK, &data->config.dns_server1,
                                           sizeof(data->config.dns_server1));
 
-    case mmagic_ip_var_gateway:
+    case mmagic_ip_var_dhcp_enabled:
         return mmagic_m2m_create_response(mmagic_ip, mmagic_ip_cmd_get, subcommand,
-                                          MMAGIC_STATUS_OK, &data->config.gateway,
-                                          sizeof(data->config.gateway));
+                                          MMAGIC_STATUS_OK, &data->config.dhcp_enabled,
+                                          sizeof(data->config.dhcp_enabled));
 
-    case mmagic_ip_var_ip_addr:
+    case mmagic_ip_var_dhcp_offload:
         return mmagic_m2m_create_response(mmagic_ip, mmagic_ip_cmd_get, subcommand,
-                                          MMAGIC_STATUS_OK, &data->config.ip_addr,
-                                          sizeof(data->config.ip_addr));
-
-    case mmagic_ip_var_netmask:
-        return mmagic_m2m_create_response(mmagic_ip, mmagic_ip_cmd_get, subcommand,
-                                          MMAGIC_STATUS_OK, &data->config.netmask,
-                                          sizeof(data->config.netmask));
+                                          MMAGIC_STATUS_OK, &data->config.dhcp_offload,
+                                          sizeof(data->config.dhcp_offload));
 
     default:
         return mmagic_m2m_create_response(mmagic_ip, mmagic_ip_cmd_get, subcommand,
@@ -79,14 +79,20 @@ static struct mmbuf *mmagic_m2m_ip_set(struct mmagic_m2m_agent *agent,
     void *args = (void *)mmbuf_get_data_start(commandbuffer);
     switch (subcommand)
     {
-    case mmagic_ip_var_dhcp_enabled:
-        memcpy(&data->config.dhcp_enabled, args, sizeof(data->config.dhcp_enabled));
+    case mmagic_ip_var_ip_addr:
+        memcpy(&data->config.ip_addr, args, sizeof(data->config.ip_addr));
         return mmagic_m2m_create_response(mmagic_ip, mmagic_ip_cmd_set,
                                           subcommand, MMAGIC_STATUS_OK, NULL, 0);
         break;
 
-    case mmagic_ip_var_dhcp_offload:
-        memcpy(&data->config.dhcp_offload, args, sizeof(data->config.dhcp_offload));
+    case mmagic_ip_var_netmask:
+        memcpy(&data->config.netmask, args, sizeof(data->config.netmask));
+        return mmagic_m2m_create_response(mmagic_ip, mmagic_ip_cmd_set,
+                                          subcommand, MMAGIC_STATUS_OK, NULL, 0);
+        break;
+
+    case mmagic_ip_var_gateway:
+        memcpy(&data->config.gateway, args, sizeof(data->config.gateway));
         return mmagic_m2m_create_response(mmagic_ip, mmagic_ip_cmd_set,
                                           subcommand, MMAGIC_STATUS_OK, NULL, 0);
         break;
@@ -103,20 +109,14 @@ static struct mmbuf *mmagic_m2m_ip_set(struct mmagic_m2m_agent *agent,
                                           subcommand, MMAGIC_STATUS_OK, NULL, 0);
         break;
 
-    case mmagic_ip_var_gateway:
-        memcpy(&data->config.gateway, args, sizeof(data->config.gateway));
+    case mmagic_ip_var_dhcp_enabled:
+        memcpy(&data->config.dhcp_enabled, args, sizeof(data->config.dhcp_enabled));
         return mmagic_m2m_create_response(mmagic_ip, mmagic_ip_cmd_set,
                                           subcommand, MMAGIC_STATUS_OK, NULL, 0);
         break;
 
-    case mmagic_ip_var_ip_addr:
-        memcpy(&data->config.ip_addr, args, sizeof(data->config.ip_addr));
-        return mmagic_m2m_create_response(mmagic_ip, mmagic_ip_cmd_set,
-                                          subcommand, MMAGIC_STATUS_OK, NULL, 0);
-        break;
-
-    case mmagic_ip_var_netmask:
-        memcpy(&data->config.netmask, args, sizeof(data->config.netmask));
+    case mmagic_ip_var_dhcp_offload:
+        memcpy(&data->config.dhcp_offload, args, sizeof(data->config.dhcp_offload));
         return mmagic_m2m_create_response(mmagic_ip, mmagic_ip_cmd_set,
                                           subcommand, MMAGIC_STATUS_OK, NULL, 0);
         break;

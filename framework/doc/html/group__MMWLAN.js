@@ -16,6 +16,8 @@ var group__MMWLAN =
     [ "DEFAULT_BGSCAN_THRESHOLD_DBM", "group__MMWLAN.html#ga2cef4cdfd533a16d04030551141a0c47", null ],
     [ "DEFAULT_TWT_MIN_WAKE_DURATION_US", "group__MMWLAN.html#ga4f44eca015ebb4124bf45c4cd50192fb", null ],
     [ "DEFAULT_TWT_WAKE_INTERVAL_US", "group__MMWLAN.html#ga2a5c4c585eae555f4d5b0c3304e5e9e4", null ],
+    [ "MMWLAN_DEFAULT_SCAN_INTERVAL_BASE_S", "group__MMWLAN.html#ga4dc834cad2f429484a5eb050c833fb65", null ],
+    [ "MMWLAN_DEFAULT_SCAN_INTERVAL_LIMIT_S", "group__MMWLAN.html#ga07a32b3e9fb8b76fe4029cb20dc1af57", null ],
     [ "MMWLAN_MAC_ADDR_LEN", "group__MMWLAN.html#gad1f02bb330d9d2f4c831a1cf9d44ff1a", null ],
     [ "MMWLAN_MAX_EC_GROUPS", "group__MMWLAN.html#ga8e0c9525afa90a775d251a7dd785cb92", null ],
     [ "MMWLAN_OUI_SIZE", "group__MMWLAN.html#gaa9382290cddb08f42b62119a898c77de", null ],

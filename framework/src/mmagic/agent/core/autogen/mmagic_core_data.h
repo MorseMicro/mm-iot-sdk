@@ -44,6 +44,9 @@ struct mmagic_data
     struct mmagic_sys_data sys_data;
     struct mmagic_tcp_data tcp_data;
 
+    /** Reference to the regulatory database */
+    const struct mmwlan_regulatory_db *reg_db;
+
     /** Application version string. This is a null terminated string. */
     char app_version[MMAGIC_SYS_MAX_APP_VERSION_LENGTH + 1];
 

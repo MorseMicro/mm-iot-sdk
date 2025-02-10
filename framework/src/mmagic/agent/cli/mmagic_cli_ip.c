@@ -23,9 +23,12 @@ void mmagic_cli_ip_status(EmbeddedCli *cli, char *args, void *context)
     struct mmagic_cli *ctx = (struct mmagic_cli *)cli->appContext;
 
     struct mmagic_core_ip_status_rsp_args rsp;
-    if (mmagic_core_ip_status(&ctx->core, &rsp) != MMAGIC_STATUS_OK)
+    enum mmagic_status status;
+
+    status = mmagic_core_ip_status(&ctx->core, &rsp);
+    if (status != MMAGIC_STATUS_OK)
     {
-        embeddedCliPrint(cli, "Error retrieving IP status");
+        mmagic_cli_print_error(cli, "Retrieve IP status", status);
         return;
     }
 
@@ -37,23 +40,24 @@ void mmagic_cli_ip_status(EmbeddedCli *cli, char *args, void *context)
     int written = 0;
 
     written += snprintf(&buf[written], (len - written), "DHCP Enabled: ");
-    written += bool_to_string(&rsp.status.dhcp_enabled, &buf[written], (len - written));
+    written += mmagic_bool_to_string(&rsp.status.dhcp_enabled, &buf[written], (len - written));
     written += snprintf(&buf[written], (len - written), "\n");
 
     written += snprintf(&buf[written], (len - written), "IP Addr: ");
-    written += struct_ip_addr_to_string(&rsp.status.ip_addr, &buf[written], (len - written));
+    written += mmagic_struct_ip_addr_to_string(&rsp.status.ip_addr, &buf[written], (len - written));
     written += snprintf(&buf[written], (len - written), "\n");
 
     written += snprintf(&buf[written], (len - written), "Netmask: ");
-    written += struct_ip_addr_to_string(&rsp.status.netmask, &buf[written], (len - written));
+    written += mmagic_struct_ip_addr_to_string(&rsp.status.netmask, &buf[written], (len - written));
     written += snprintf(&buf[written], (len - written), "\n");
 
     written += snprintf(&buf[written], (len - written), "Gateway: ");
-    written += struct_ip_addr_to_string(&rsp.status.gateway, &buf[written], (len - written));
+    written += mmagic_struct_ip_addr_to_string(&rsp.status.gateway, &buf[written], (len - written));
     written += snprintf(&buf[written], (len - written), "\n");
 
     written += snprintf(&buf[written], (len - written), "Broadcast: ");
-    written += struct_ip_addr_to_string(&rsp.status.broadcast, &buf[written], (len - written));
+    written += mmagic_struct_ip_addr_to_string(&rsp.status.broadcast, &buf[written],
+                                               (len - written));
     written += snprintf(&buf[written], (len - written), "\n");
 
     for (ii = 0; ii < MM_ARRAY_COUNT(rsp.status.dns_servers); ii++)
@@ -61,8 +65,8 @@ void mmagic_cli_ip_status(EmbeddedCli *cli, char *args, void *context)
         if (rsp.status.dns_servers[ii].addr[0] != '\0')
         {
             written += snprintf(&buf[written], (len - written), "DNS server %u: ", ii);
-            written += struct_ip_addr_to_string(&rsp.status.dns_servers[ii], &buf[written],
-                                                (len - written));
+            written += mmagic_struct_ip_addr_to_string(&rsp.status.dns_servers[ii], &buf[written],
+                                                       (len - written));
             written += snprintf(&buf[written], (len - written), "\n");
             dns_servers_set = true;
         }
@@ -82,9 +86,10 @@ void mmagic_cli_ip_reload(EmbeddedCli *cli, char *args, void *context)
     MM_UNUSED(context);
     struct mmagic_cli *ctx = (struct mmagic_cli *)cli->appContext;
 
-    if (mmagic_core_ip_reload(&ctx->core) != MMAGIC_STATUS_OK)
+    enum mmagic_status status = mmagic_core_ip_reload(&ctx->core);
+    if (status != MMAGIC_STATUS_OK)
     {
-        embeddedCliPrint(cli, "Failed to set the IP configuration");
+        mmagic_cli_print_error(cli, "Set IP configuration", status);
         return;
     }
 
@@ -108,9 +113,10 @@ void mmagic_cli_ip_enable_tcp_keepalive_offload(EmbeddedCli *cli, char *args, vo
     cmd_args.retry_count = atoi(embeddedCliGetToken(args, 2));
     cmd_args.retry_interval_s = atoi(embeddedCliGetToken(args, 3));
 
-    if (mmagic_core_ip_enable_tcp_keepalive_offload(&ctx->core, &cmd_args) != MMAGIC_STATUS_OK)
+    enum mmagic_status status = mmagic_core_ip_enable_tcp_keepalive_offload(&ctx->core, &cmd_args);
+    if (status != MMAGIC_STATUS_OK)
     {
-        embeddedCliPrint(cli, "Error executing command");
+        mmagic_cli_print_error(cli, "TCP keepalive offload", status);
     }
 }
 
@@ -145,7 +151,7 @@ void mmagic_cli_ip_set_whitelist_filter(EmbeddedCli *cli, char *args, void *cont
 
     if (num_tokens >= 1)
     {
-        if (string_to_struct_ip_addr(&cmd_args.src_ip, embeddedCliGetToken(args, 1)) < 0)
+        if (mmagic_string_to_struct_ip_addr(&cmd_args.src_ip, embeddedCliGetToken(args, 1)) < 0)
         {
             embeddedCliPrint(cli, "Invalid source IP");
             return;
@@ -154,7 +160,7 @@ void mmagic_cli_ip_set_whitelist_filter(EmbeddedCli *cli, char *args, void *cont
 
     if (num_tokens >= 2)
     {
-        if (string_to_struct_ip_addr(&cmd_args.netmask, embeddedCliGetToken(args, 2)) < 0)
+        if (mmagic_string_to_struct_ip_addr(&cmd_args.netmask, embeddedCliGetToken(args, 2)) < 0)
         {
             embeddedCliPrint(cli, "Invalid netmask");
             return;
@@ -162,12 +168,12 @@ void mmagic_cli_ip_set_whitelist_filter(EmbeddedCli *cli, char *args, void *cont
     }
     else
     {
-        (void)string_to_struct_ip_addr(&cmd_args.netmask, "0.0.0.0");
+        (void)mmagic_string_to_struct_ip_addr(&cmd_args.netmask, "0.0.0.0");
     }
 
     if (num_tokens >= 3)
     {
-        if (string_to_struct_ip_addr(&cmd_args.dest_ip, embeddedCliGetToken(args, 3)) < 0)
+        if (mmagic_string_to_struct_ip_addr(&cmd_args.dest_ip, embeddedCliGetToken(args, 3)) < 0)
         {
             embeddedCliPrint(cli, "Invalid destination IP");
             return;
@@ -175,12 +181,12 @@ void mmagic_cli_ip_set_whitelist_filter(EmbeddedCli *cli, char *args, void *cont
     }
     else
     {
-        (void)string_to_struct_ip_addr(&cmd_args.dest_ip, "0.0.0.0");
+        (void)mmagic_string_to_struct_ip_addr(&cmd_args.dest_ip, "0.0.0.0");
     }
 
     if (num_tokens >= 4)
     {
-        if (string_to_uint16_t(&uint16val, embeddedCliGetToken(args, 4)) < 0)
+        if (mmagic_string_to_uint16_t(&uint16val, embeddedCliGetToken(args, 4)) < 0)
         {
             embeddedCliPrint(cli, "Invalid source port");
             return;
@@ -190,7 +196,7 @@ void mmagic_cli_ip_set_whitelist_filter(EmbeddedCli *cli, char *args, void *cont
 
     if (num_tokens >= 5)
     {
-        if (string_to_uint16_t(&uint16val, embeddedCliGetToken(args, 5)) < 0)
+        if (mmagic_string_to_uint16_t(&uint16val, embeddedCliGetToken(args, 5)) < 0)
         {
             embeddedCliPrint(cli, "Invalid destination port");
             return;
@@ -200,7 +206,7 @@ void mmagic_cli_ip_set_whitelist_filter(EmbeddedCli *cli, char *args, void *cont
 
     if (num_tokens >= 6)
     {
-        if (string_to_uint16_t(&uint16val, embeddedCliGetToken(args, 6)) < 0)
+        if (mmagic_string_to_uint16_t(&uint16val, embeddedCliGetToken(args, 6)) < 0)
         {
             embeddedCliPrint(cli, "Invalid IPv4 protocol");
             return;
@@ -210,7 +216,7 @@ void mmagic_cli_ip_set_whitelist_filter(EmbeddedCli *cli, char *args, void *cont
 
     if (num_tokens >= 7)
     {
-        if (string_to_uint16_t(&uint16val, embeddedCliGetToken(args, 7)) < 0)
+        if (mmagic_string_to_uint16_t(&uint16val, embeddedCliGetToken(args, 7)) < 0)
         {
             embeddedCliPrint(cli, "Invalid LLC protocol");
             return;
@@ -218,7 +224,11 @@ void mmagic_cli_ip_set_whitelist_filter(EmbeddedCli *cli, char *args, void *cont
         cmd_args.llc_protocol = uint16val;
     }
 
-    mmagic_core_ip_set_whitelist_filter(&ctx->core, &cmd_args);
+    enum mmagic_status status = mmagic_core_ip_set_whitelist_filter(&ctx->core, &cmd_args);
+    if (status != MMAGIC_STATUS_OK)
+    {
+        mmagic_cli_print_error(cli, "Set IP whitelist filter", status);
+    }
 }
 
 void mmagic_cli_ip_clear_whitelist_filter(EmbeddedCli *cli, char *args, void *context)
@@ -234,5 +244,9 @@ void mmagic_cli_ip_clear_whitelist_filter(EmbeddedCli *cli, char *args, void *co
         return;
     }
 
-    mmagic_core_ip_clear_whitelist_filter(&ctx->core);
+    enum mmagic_status status = mmagic_core_ip_clear_whitelist_filter(&ctx->core);
+    if (status != MMAGIC_STATUS_OK)
+    {
+        mmagic_cli_print_error(cli, "Clear IP whitelist filter", status);
+    }
 }

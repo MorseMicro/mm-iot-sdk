@@ -100,9 +100,46 @@ enums:
         value: 10
         description: Failed due to stream being closed from the other side.
 
-      - name: max
+      - name: channel_list_not_set
         value: 11
-        description: Maximum status value possible
+        description: WLAN operation failed because the channel list has not been set.
+
+      - name: shutdown_blocked
+        value: 12
+        description: WLAN shutdown failed.
+
+      - name: channel_invalid
+        value: 13
+        description: Attempted to tune to a channel that was not available.
+
+      - name: not_running
+        value: 14
+        description: Operation failed because the WLAN device was not booted.
+
+      - name: no_link
+        value: 15
+        description: Operation failed because the link was not up.
+
+      - name: unknown_host
+        value: 16
+        description: Failed to get an IP address for the given hostname
+
+      - name: socket_failed
+        value: 17
+        description: Failed to open the socket.
+
+      - name: socket_connect_failed
+        value: 18
+        description: Socket connection failed.
+
+      - name: socket_bind_failed
+        value: 19
+        description: Socket bind failed.
+
+      - name: socket_listen_failed
+        value: 20
+        description: Socket listen failed.
+
 
   - name: enum_iperf_mode
     description: Mode to use when running the iperf.
@@ -187,6 +224,12 @@ enums:
       - name: standby_exit_tcp_connection_lost
         value: 5
         description: An open TCP connection was lost.
+      - name: standby_exit_hw_scan_not_enabled
+        value: 6
+        description: Hardware scan was not enabled.
+      - name: standby_exit_hw_scan_failed_to_start
+        value: 7
+        description: Hardware scan failed to start.
 
 structs:
   - name: struct_packet_buffer
@@ -431,83 +474,101 @@ modules:
     description: Wireless LAN management
 
     configs:
+      - name: country_code
+        id: 0
+        description: Two character country code used to identify the regulatory domain.
+        type: struct_country_code
+
       - name: ssid
+        id: 1
         description: SSID of the AP to connect to, can be 1-32 characters long.
         type: struct_string_32
 
       - name: password
+        id: 2
         description: Password used when associating, 1-32 characters long.
         type: struct_string_32
 
       - name: security
+        id: 3
         description: Security type to used when associating.
         type: enum_security_type
 
       - name: raw_priority
+        id: 4
         description: >-
           Priority to request if raw is supported by the AP. Valid priorities are 0-7.
           -1 disables RAW.
         type: int16_t
 
       - name: bssid
+        id: 5
         description: BSSID of the ap to associate to, all 0x00 for any.
         type: struct_mac_addr
 
       - name: pmf_mode
+        id: 6
         description: Protected Management Frame mode to use (802.11w)
         type: enum_pmf_mode
 
       - name: station_type
+        id: 7
         description: S1G non-AP STA type.
         type: enum_station_type
 
-      - name: country_code
-        description: Two character country code used to identify the regulatory domain.
-        type: struct_country_code
-
       - name: rts_threshold
+        id: 8
         description: The RTS threshold (in octets) to set, or 0 to disable.
         type: uint32_t
 
       - name: sgi_enabled
+        id: 9
         description: Boolean value indicating whether SGI support should be enabled.
         type: bool
 
       - name: subbands_enabled
+        id: 10
         description: Boolean value indicating whether sub-band support should be enabled.
         type: bool
 
       - name: ampdu_enabled
+        id: 11
         description: Boolean value indicating whether AMPDU support should be enabled.
         type: bool
 
       - name: power_save_mode
+        id: 12
         description: Sets the 802.11 power save mode.
         type: enum_power_save_mode
 
       - name: fragment_threshold
+        id: 13
         description: >-
           Sets the 802.11 fragmentation threshold. The fragmentation threshold (in octets)
           to set, or 0 to disable.
         type: uint32_t
 
       - name: cac_enabled
+        id: 14
         description: Whether Centralized Authentication Controlled is enabled on the STA.
         type: bool
 
       - name: offload_arp_response
+        id: 15
         description: >-
           If true, enables ARP response offload which allows the Morse chip to directly respond
           to ARP requests without waking up the host processor.
         type: bool
 
       - name: offload_arp_refresh_s
+        id: 16
         description: >-
           If non zero, enables ARP refresh offload with the specified interval in seconds.
           Note: ARP response offload needs to be enabled for this feature to work.
         type: uint32_t
 
       - name: min_health_check_intvl_ms
+        id: 17
         description: >-
           The minimum interval to wait after the last health check before triggering another.
           If this parameter is 0 then health checks will always happen at the max_interval_ms
@@ -517,6 +578,7 @@ modules:
         type: uint32_t
 
       - name: max_health_check_intvl_ms
+        id: 18
         description: >-
           The maximum interval to wait after the last health check before triggering another.
           If this parameter is 0 then periodic health checks will be disabled. min_interval_ms
@@ -525,8 +587,32 @@ modules:
           then min_health_check_intvl_ms is assumed to be 0.
         type: uint32_t
 
+      - name: ndp_probe_enabled
+        id: 19
+        description: >-
+          Boolean value indicating whether NDP probe support should be enabled.
+          Will only take effect after a connect or scan command is sent.
+        type: bool
+
+      - name: sta_scan_interval_base_s
+        id: 20
+        description: >-
+            The base scan interval (in seconds) to use when (re)connecting. See documentation
+            of mmwlan_sta_args.scan_interval_base_s for further details.
+            Note that changes will only take effect on invocation of wlan-connect.
+        type: uint16_t
+
+      - name: sta_scan_interval_limit_s
+        id: 21
+        description: >-
+            The maximum interval between scan attempts when (re)connecting. See documentation
+            of mmwlan_sta_args.scan_interval_limit_s for further details.
+            Note that changes will only take effect on invocation of wlan-connect.
+        type: uint16_t
+
     commands:
       - name: connect
+        id: 8
         description: >-
           Brings up the WLAN interface and connects to the AP with configured parameters.
 
@@ -539,15 +625,21 @@ modules:
             type: uint32_t
 
       - name: disconnect
+        id: 9
         description: Disconnects and brings down the WLAN interface.
 
       - name: scan
+        id: 10
         description: Starts an undirected scan for available networks.
         command_args:
+          - name: ssid
+            type: struct_string_32
+            description: >-
+              Optional SSID to include in probe requests.
           - name: timeout
             description: >-
-              Duration in milliseconds to wait for scan to complete, if scan does not complete by
-              the timeout any available results will be returned and the scan aborted.
+              Optional duration in milliseconds to wait for scan to complete, if scan does not
+              complete by the timeout any available results will be returned and the scan aborted.
             type: uint32_t
         response_args:
           - name: results
@@ -555,6 +647,7 @@ modules:
             type: struct_scan_status
 
       - name: get_rssi
+        id: 11
         description: Retrieves the RSSI if the WLAN interface is up, else 0.
         response_args:
           - name: rssi
@@ -562,6 +655,7 @@ modules:
             type: int32_t
 
       - name: get_mac_addr
+        id: 12
         description: Retrieves the MAC address if the WLAN interface is up.
         response_args:
           - name: mac_addr
@@ -569,6 +663,7 @@ modules:
             type: struct_mac_addr
 
       - name: wnm_sleep
+        id: 13
         description: Requests entry or exit from extended sleep (wnm sleep) if the WLAN interface is up.
 
         command_args:
@@ -577,6 +672,7 @@ modules:
             type: bool
 
       - name: beacon_monitor_enable
+        id: 14
         description: >-
           Enable beacon monitoring with the given filter settings. If beacon monitoring is already
           enabled it will be reconfigured with the given arguments.
@@ -587,16 +683,19 @@ modules:
             type: struct_oui_list
 
       - name: beacon_monitor_disable
+        id: 15
         description: >-
           Disable beacon monitoring. If beacon monitor is not enabled then this has no effect.
 
       - name: standby_enter
+        id: 16
         description: >-
           This puts the Morse chip into standby mode allowing the host processor to go to sleep
           while the Morse chip takes over certain functionality to keep the connection alive with
           the provision to wake up the host processor when certain conditions are met.
 
       - name: standby_exit
+        id: 17
         description: >-
           Forces the Morse chip to exit standby mode. There may be certain instances such as a
           timer expiry, which cause the host chip to wake up independant of the Morse chip. In
@@ -604,6 +703,7 @@ modules:
           mode and return to normal operating mode.
 
       - name: standby_set_status_payload
+        id: 18
         description: >-
           Sets the user payload for the standby status packet. Once standby mode is enabled, the
           Morse chip will periodically emit a UDP standby status packet regardless of
@@ -617,6 +717,7 @@ modules:
             type: struct_buffer64
 
       - name: standby_set_wake_filter
+        id: 19
         description: >-
           Configures the standby mode UDP wake packet filter. The system can be woken up from
           standby mode by sending it a UDP wake packet. If a wake filter is set using this function
@@ -633,6 +734,7 @@ modules:
             type: uint32_t
 
       - name: standby_set_config
+        id: 20
         description: >-
           Sets the standby mode configuration parameters. If this command is not executed
           then the defaults are as specified.
@@ -710,24 +812,28 @@ modules:
 
     configs:
       - name: ip_addr
+        id: 0
         description: >-
           IP address to use for a static network connection. This will take effect when the reload
           command is successfully executed.
         type: struct_ip_addr
 
       - name: netmask
+        id: 1
         description: >-
           Netmask to use for a static network connection. This will take effect when the reload
           command is successfully executed.
         type: struct_ip_addr
 
       - name: gateway
+        id: 2
         description: >-
           Gateway to use for a static network connection. This will take effect when the reload
           command is successfully executed.
         type: struct_ip_addr
 
       - name: dns_server0
+        id: 3
         description: >-
           Primary DNS server IP address. If a value is specified this will override the primary
           DNS server provided by DHCP (if any). Changes will take effect when the reload command
@@ -735,6 +841,7 @@ modules:
         type: struct_ip_addr
 
       - name: dns_server1
+        id: 4
         description: >-
           Secondary DNS server IP address. If a value is specified this will override the secondary
           DNS server provided by DHCP (if any). Changes  will take effect when the reload command
@@ -742,6 +849,7 @@ modules:
         type: struct_ip_addr
 
       - name: dhcp_enabled
+        id: 5
         description: >-
           True to enable DHCP for IP address configuration, or false to use the static configuration
           given by ip_addr, netmask, and gateway. This will take effect when the reload command is
@@ -749,6 +857,7 @@ modules:
         type: bool
 
       - name: dhcp_offload
+        id: 6
         description: >-
           If true, enables DHCP offload which allows the Morse chip to directly handle
           DHCP discovery and leases without waking up the host processor. Note: this comes into
@@ -757,6 +866,7 @@ modules:
 
     commands:
       - name: status
+        id: 8
         description: >-
           Gets the status of the IP stack.
 
@@ -767,11 +877,13 @@ modules:
             type: struct_ip_status
 
       - name: reload
+        id: 9
         description: >-
           Reloads the IP stack network configuration based on the current values in the subsystem
           config.
 
       - name: enable_tcp_keepalive_offload
+        id: 10
         description: >-
           Enables sending periodic TCP keep-alive packets by the morse chip allowing the TCP
           connection to be maintained without waking up the host processor. This needs to be
@@ -790,9 +902,11 @@ modules:
             type: uint8_t
 
       - name: disable_tcp_keepalive_offload
+        id: 11
         description: Disables sending of TCP keepalive packets.
 
       - name: set_whitelist_filter
+        id: 12
         description: >-
           Sets the whitelist filter specifing which incoming packets can wake the system from
           standby mode.
@@ -824,6 +938,7 @@ modules:
             type: uint16_t
 
       - name: clear_whitelist_filter
+        id: 13
         description: Clears any applied whitelist filters.
 
   - name: ping
@@ -832,14 +947,17 @@ modules:
 
     configs:
       - name: target
+        id: 0
         description: The IP address of the ping target.
         type: struct_ip_addr
 
       - name: interval
+        id: 1
         description: The time interval between ping requests (in milliseconds).
         type: uint32_t
 
       - name: count
+        id: 2
         description: >-
           This specifies the number of ping requests to send before terminating
           the session. If this is zero or exceeds UINT16_MAX (65535) then it
@@ -848,6 +966,7 @@ modules:
 
     commands:
       - name: run
+        id: 8
         description: Commences a ping session using the current values in the the subsystem config.
         response_args:
           - name: status
@@ -861,22 +980,26 @@ modules:
 
     configs:
       - name: mode
+        id: 0
         description: >-
           The iperf mode to use. Valid values are udp_server, tcp_server, udp_client and tcp_client.
           If not set, defaults to udp_server.
         type: enum_iperf_mode
 
       - name: server
+        id: 1
         description: IP address of server to connect to when in client mode.
         type: struct_ip_addr
 
       - name: port
+        id: 2
         description: >-
           Specifies the local port to listen on when in server mode or the server port to send data
           to when in client mode.
         type: uint16_t
 
       - name: amount
+        id: 3
         description: >-
           This specifies the duration for client transfers specified either in seconds or bytes.
           If this is negative, it specifies a time in seconds; if positive, it specifies the number
@@ -885,6 +1008,7 @@ modules:
 
     commands:
       - name: run
+        id: 8
         description: Starts an iperf session using the current values in the the subsystem config.
 
         response_args:
@@ -899,9 +1023,11 @@ modules:
 
     commands:
       - name: reset
+        id: 8
         description: Performs a soft reset.
 
       - name: deep_sleep
+        id: 9
         description: Enters deep sleep mode.
         command_args:
           - name: mode
@@ -909,6 +1035,7 @@ modules:
             type: enum_deep_sleep_mode
 
       - name: get_version
+        id: 10
         description: Gets the device firmware and hardware versions.
         response_args:
           - name: results
@@ -922,6 +1049,7 @@ modules:
 
     commands:
       - name: connect
+        id: 8
         description: Opens a client TCP socket and returns its stream ID
         command_args:
           - name: url
@@ -938,6 +1066,7 @@ modules:
             type: uint8_t
 
       - name: bind
+        id: 9
         description: Opens a server TCP socket and returns its stream ID
         command_args:
           - name: port
@@ -950,6 +1079,7 @@ modules:
             type: uint8_t
 
       - name: recv
+        id: 10
         description: Reads from a socket
         stream_type: True
         command_args:
@@ -971,6 +1101,7 @@ modules:
             type: struct_packet_buffer
 
       - name: send
+        id: 11
         description: Writes to a socket
         stream_type: True
         command_args:
@@ -983,6 +1114,7 @@ modules:
             type: struct_packet_buffer
 
       - name: read_poll
+        id: 12
         description: Polls the socket till it is ready for reading
         stream_type: True
         command_args:
@@ -995,6 +1127,7 @@ modules:
             type: uint32_t
 
       - name: write_poll
+        id: 13
         description: Polls the socket till it is ready for writing
         stream_type: True
         command_args:
@@ -1007,6 +1140,7 @@ modules:
             type: uint32_t
 
       - name: accept
+        id: 14
         description: Waits for an incoming socket connection and returns a new stream ID.
         stream_type: True
         command_args:
@@ -1020,6 +1154,7 @@ modules:
             type: uint8_t
 
       - name: close
+        id: 15
         description: Closes and frees the socket
         command_args:
           - name: stream_id

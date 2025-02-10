@@ -30,9 +30,10 @@ void mmagic_cli_ping_run(EmbeddedCli *cli, char *args, void *context)
 
     /* Must zero befor use */
     struct mmagic_core_ping_run_rsp_args rsp = {};
-    if (mmagic_core_ping_run(&ctx->core, &rsp) != MMAGIC_STATUS_OK)
+    enum mmagic_status status = mmagic_core_ping_run(&ctx->core, &rsp);
+    if (status != MMAGIC_STATUS_OK)
     {
-        embeddedCliPrint(cli, "Failed to start ping session");
+        mmagic_cli_print_error(cli, "Start ping session", status);
         return;
     }
 

@@ -111,6 +111,8 @@ struct wpa_state_machine {
 	size_t wpa_ie_len;
 	u8 *rsnxe;
 	size_t rsnxe_len;
+	u8 *rsn_selection;
+	size_t rsn_selection_len;
 
 	enum {
 		WPA_VERSION_NO_WPA = 0 /* WPA not used */,
@@ -123,6 +125,9 @@ struct wpa_state_machine {
 
 	u32 dot11RSNAStatsTKIPLocalMICFailures;
 	u32 dot11RSNAStatsTKIPRemoteMICFailures;
+
+	bool rsn_override;
+	bool rsn_override_2;
 
 #ifdef CONFIG_IEEE80211R_AP
 	u8 xxkey[PMK_LEN_MAX]; /* PSK or the second 256 bits of MSK, or the

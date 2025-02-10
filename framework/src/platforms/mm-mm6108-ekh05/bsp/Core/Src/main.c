@@ -684,15 +684,20 @@ static void MX_GPIO_Init(void)
 {
   LL_EXTI_InitTypeDef EXTI_InitStruct = {0};
   LL_GPIO_InitTypeDef GPIO_InitStruct = {0};
+  LL_LPGPIO_InitTypeDef LPGPIO_InitStruct = {0};
 /* USER CODE BEGIN MX_GPIO_Init_1 */
 /* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
+  LL_AHB3_GRP1_EnableClock(LL_AHB3_GRP1_PERIPH_LPGPIO1);
   LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOC);
   LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOE);
   LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOB);
   LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOA);
   LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOD);
+
+  /**/
+  LL_GPIO_SetOutputPin(CAM_PWDN_GPIO_Port, CAM_PWDN_Pin);
 
   /**/
   LL_GPIO_ResetOutputPin(GPIOE, GPIO_LED_GREEN_Pin|GPIO_LED_BLUE_Pin|GPIO_LED_RED_Pin|RESET_N_Pin);
@@ -707,7 +712,8 @@ static void MX_GPIO_Init(void)
   LL_GPIO_ResetOutputPin(SPI_CS_GPIO_Port, SPI_CS_Pin);
 
   /**/
-  GPIO_InitStruct.Pin = GPIO_LED_GREEN_Pin|GPIO_LED_BLUE_Pin|GPIO_LED_RED_Pin|RESET_N_Pin;
+  GPIO_InitStruct.Pin = CAM_PWDN_Pin|GPIO_LED_GREEN_Pin|GPIO_LED_BLUE_Pin|GPIO_LED_RED_Pin
+                          |RESET_N_Pin;
   GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
   GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
   GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
@@ -743,6 +749,11 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
   GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
   LL_GPIO_Init(SPI_CS_GPIO_Port, &GPIO_InitStruct);
+
+  /**/
+  LPGPIO_InitStruct.Pin = LL_LPGPIO_PIN_15;
+  LPGPIO_InitStruct.Mode = LL_LPGPIO_MODE_OUTPUT;
+  LL_LPGPIO_Init(LPGPIO1, &LPGPIO_InitStruct);
 
   /**/
   LL_EXTI_SetEXTISource(LL_EXTI_EXTI_PORTB, LL_EXTI_EXTI_LINE15);

@@ -1,6 +1,7 @@
 /*
  * WPA Supplicant / Control interface (shared code for all backends)
  * Copyright (c) 2004-2024, Jouni Malinen <j@w1.fi>
+ * Copyright 2023 Morse Micro
  *
  * This software may be distributed under the terms of the BSD license.
  * See README for more details.
@@ -60,6 +61,10 @@
 #include "dpp_supplicant.h"
 #include "sme.h"
 #include "nan_usd.h"
+
+#ifdef CONFIG_IEEE80211AH
+#include "morse.h"
+#endif /* FIG_IEEE80211AH */
 
 #ifdef __NetBSD__
 #include <net/if_ether.h>
@@ -2574,6 +2579,20 @@ static int wpa_supplicant_ctrl_iface_status(struct wpa_supplicant *wpa_s,
 	}
 #endif /* CONFIG_SME */
 
+	if (wpa_s->ssid_verified) {
+		ret = os_snprintf(pos, end - pos, "ssid_verified=1\n");
+		if (os_snprintf_error(end - pos, ret))
+			return pos - buf;
+		pos += ret;
+	}
+
+	if (wpa_s->bigtk_set) {
+		ret = os_snprintf(pos, end - pos, "bigtk_set=1\n");
+		if (os_snprintf_error(end - pos, ret))
+			return pos - buf;
+		pos += ret;
+	}
+
 #ifdef ANDROID
 	/*
 	 * Allow using the STATUS command with default behavior, say for debug,
@@ -3111,12 +3130,12 @@ static int wpa_supplicant_ctrl_iface_scan_result(
 	ie = wpa_bss_get_vendor_ie(bss, WPA_IE_VENDOR_TYPE);
 	if (ie)
 		pos = wpa_supplicant_ie_txt(pos, end, "WPA", ie, 2 + ie[1]);
-	ie2 = wpa_bss_get_ie(bss, WLAN_EID_RSN);
+	ie2 = wpa_bss_get_rsne(wpa_s, bss, NULL, false);
 	if (ie2) {
 		pos = wpa_supplicant_ie_txt(pos, end, mesh ? "RSN" : "WPA2",
 					    ie2, 2 + ie2[1]);
 	}
-	rsnxe = wpa_bss_get_ie(bss, WLAN_EID_RSNX);
+	rsnxe = wpa_bss_get_rsnxe(wpa_s, bss, NULL, false);
 	if (ieee802_11_rsnx_capab(rsnxe, WLAN_RSNX_CAPAB_SAE_H2E)) {
 		ret = os_snprintf(pos, end - pos, "[SAE-H2E]");
 		if (os_snprintf_error(end - pos, ret))
@@ -5436,12 +5455,12 @@ static int print_bss_info(struct wpa_supplicant *wpa_s, struct wpa_bss *bss,
 		if (ie)
 			pos = wpa_supplicant_ie_txt(pos, end, "WPA", ie,
 						    2 + ie[1]);
-		ie2 = wpa_bss_get_ie(bss, WLAN_EID_RSN);
+		ie2 = wpa_bss_get_rsne(wpa_s, bss, NULL, false);
 		if (ie2)
 			pos = wpa_supplicant_ie_txt(pos, end,
 						    mesh ? "RSN" : "WPA2", ie2,
 						    2 + ie2[1]);
-		rsnxe = wpa_bss_get_ie(bss, WLAN_EID_RSNX);
+		rsnxe = wpa_bss_get_rsnxe(wpa_s, bss, NULL, false);
 		if (ieee802_11_rsnx_capab(rsnxe, WLAN_RSNX_CAPAB_SAE_H2E)) {
 			ret = os_snprintf(pos, end - pos, "[SAE-H2E]");
 			if (os_snprintf_error(end - pos, ret))
@@ -6027,7 +6046,7 @@ static int wpa_supplicant_ctrl_iface_roam(struct wpa_supplicant *wpa_s,
 		return -1;
 	}
 
-	bss = wpa_bss_get(wpa_s, bssid, ssid->ssid, ssid->ssid_len);
+	bss = wpa_bss_get_connection(wpa_s, bssid, ssid->ssid, ssid->ssid_len);
 	if (!bss) {
 		wpa_printf(MSG_DEBUG, "CTRL_IFACE ROAM: Target AP not found "
 			   "from BSS table");
@@ -6732,6 +6751,7 @@ static int p2p_ctrl_service_add_bonjour(struct wpa_supplicant *wpa_s,
 	char *pos;
 	size_t len;
 	struct wpabuf *query, *resp;
+	int ret;
 
 	pos = os_strchr(cmd, ' ');
 	if (pos == NULL)
@@ -6745,34 +6765,28 @@ static int p2p_ctrl_service_add_bonjour(struct wpa_supplicant *wpa_s,
 	query = wpabuf_alloc(len);
 	if (query == NULL)
 		return -1;
-	if (hexstr2bin(cmd, wpabuf_put(query, len), len) < 0) {
-		wpabuf_free(query);
-		return -1;
-	}
-
+	ret = hexstr2bin(cmd, wpabuf_put(query, len), len);
+	if (ret < 0)
+		goto err_query;
+	ret = -1;
 	len = os_strlen(pos);
-	if (len & 1) {
-		wpabuf_free(query);
-		return -1;
-	}
+	if (len & 1)
+		goto err_query;
 	len /= 2;
 	resp = wpabuf_alloc(len);
-	if (resp == NULL) {
-		wpabuf_free(query);
-		return -1;
-	}
-	if (hexstr2bin(pos, wpabuf_put(resp, len), len) < 0) {
-		wpabuf_free(query);
-		wpabuf_free(resp);
-		return -1;
-	}
+	if (!resp)
+		goto err_query;
+	ret = hexstr2bin(pos, wpabuf_put(resp, len), len);
+	if (ret < 0)
+		goto err_resp;
 
-	if (wpas_p2p_service_add_bonjour(wpa_s, query, resp) < 0) {
-		wpabuf_free(query);
-		wpabuf_free(resp);
-		return -1;
-	}
-	return 0;
+	ret = wpas_p2p_service_add_bonjour(wpa_s, query, resp);
+
+err_resp:
+	wpabuf_free(resp);
+err_query:
+	wpabuf_free(query);
+	return ret;
 }
 
 
@@ -7169,7 +7183,7 @@ static int p2p_ctrl_group_add_persistent(struct wpa_supplicant *wpa_s,
 		return -1;
 	}
 
-	return wpas_p2p_group_add_persistent(wpa_s, ssid, 0, freq, 0,
+	return wpas_p2p_group_add_persistent(wpa_s, ssid, 0, freq, freq,
 					     vht_center_freq2, ht40, vht,
 					     vht_chwidth, he, edmg,
 					     NULL, 0, 0, allow_6ghz, 0,
@@ -9233,6 +9247,7 @@ static void wpas_ctrl_scan(struct wpa_supplicant *wpa_s, char *params,
 	unsigned int scan_only = 0;
 	unsigned int scan_id_count = 0;
 	unsigned int manual_non_coloc_6ghz = 0;
+	unsigned int next_scan_dwell_duration = 0;
 	int scan_id[MAX_SCAN_ID];
 	void (*scan_res_handler)(struct wpa_supplicant *wpa_s,
 				 struct wpa_scan_results *scan_res);
@@ -9278,6 +9293,10 @@ static void wpas_ctrl_scan(struct wpa_supplicant *wpa_s, char *params,
 		pos = os_strstr(params, "passive=");
 		if (pos)
 			manual_scan_passive = !!atoi(pos + 8);
+
+		pos = os_strstr(params, "dwell=");
+		if (pos)
+			next_scan_dwell_duration = atoi(pos + 6);
 
 		pos = os_strstr(params, "use_id=");
 		if (pos)
@@ -9380,6 +9399,7 @@ static void wpas_ctrl_scan(struct wpa_supplicant *wpa_s, char *params,
 	    ((wpa_s->wpa_state <= WPA_SCANNING) ||
 	     (wpa_s->wpa_state == WPA_COMPLETED))) {
 		wpa_s->manual_scan_passive = manual_scan_passive;
+		wpa_s->next_scan_dwell_duration = next_scan_dwell_duration;
 		wpa_s->manual_scan_use_id = manual_scan_use_id;
 		wpa_s->manual_scan_only_new = manual_scan_only_new;
 		wpa_s->scan_id_count = scan_id_count;
@@ -9404,6 +9424,7 @@ static void wpas_ctrl_scan(struct wpa_supplicant *wpa_s, char *params,
 		}
 	} else if (wpa_s->sched_scanning) {
 		wpa_s->manual_scan_passive = manual_scan_passive;
+		wpa_s->next_scan_dwell_duration = next_scan_dwell_duration;
 		wpa_s->manual_scan_use_id = manual_scan_use_id;
 		wpa_s->manual_scan_only_new = manual_scan_only_new;
 		wpa_s->scan_id_count = scan_id_count;
@@ -12206,7 +12227,12 @@ static int wpas_ctrl_nan_publish(struct wpa_supplicant *wpa_s, char *cmd,
 	params.solicited = true;
 	/* USD shall require FSD without GAS */
 	params.fsd = true;
+#ifdef CONFIG_IEEE80211AH
+	params.freq = morse_s1g_get_first_center_freq_for_country(wpa_s->conf->country);
+	params.freq = morse_convert_s1g_freq_to_ht_freq(params.freq, wpa_s->conf->country);
+#else
 	params.freq = NAN_USD_DEFAULT_FREQ;
+#endif /* CONFIG_IEEE80211AH */
 
 	while ((token = str_token(cmd, " ", &context))) {
 		if (os_strncmp(token, "service_name=", 13) == 0) {
@@ -12221,6 +12247,10 @@ static int wpas_ctrl_nan_publish(struct wpa_supplicant *wpa_s, char *cmd,
 
 		if (os_strncmp(token, "freq=", 5) == 0) {
 			params.freq = atoi(token + 5);
+#ifdef CONFIG_IEEE80211AH
+			params.freq = morse_convert_s1g_freq_to_ht_freq(params.freq,
+								wpa_s->conf->country);
+#endif /* CONFIG_IEEE80211AH */
 			continue;
 		}
 
@@ -12228,14 +12258,24 @@ static int wpas_ctrl_nan_publish(struct wpa_supplicant *wpa_s, char *cmd,
 			char *pos = token + 10;
 
 			if (os_strcmp(pos, "all") == 0) {
+#ifdef CONFIG_IEEE80211AH
+				wpa_printf(MSG_INFO, "CTRL: 'freq_list=all' not supported");
+				goto fail;
+#else
 				os_free(freq_list);
 				freq_list = wpas_nan_usd_all_freqs(wpa_s);
 				params.freq_list = freq_list;
 				continue;
+#endif /* CONFIG_IEEE80211AH */
 			}
 
 			while (pos && pos[0]) {
-				int_array_add_unique(&freq_list, atoi(pos));
+				int freq = atoi(pos);
+#ifdef CONFIG_IEEE80211AH
+				freq = morse_convert_s1g_freq_to_ht_freq(freq,
+								wpa_s->conf->country);
+#endif /* CONFIG_IEEE80211AH */
+				int_array_add_unique(&freq_list, freq);
 				pos = os_strchr(pos, ',');
 				if (pos)
 					pos++;
@@ -12364,9 +12404,15 @@ static int wpas_ctrl_nan_subscribe(struct wpa_supplicant *wpa_s, char *cmd,
 	struct wpabuf *ssi = NULL;
 	int ret = -1;
 	enum nan_service_protocol_type srv_proto_type = 0;
+	int *freq_list = NULL;
 
 	os_memset(&params, 0, sizeof(params));
+#ifdef CONFIG_IEEE80211AH
+	params.freq = morse_s1g_get_first_center_freq_for_country(wpa_s->conf->country);
+	params.freq = morse_convert_s1g_freq_to_ht_freq(params.freq, wpa_s->conf->country);
+#else
 	params.freq = NAN_USD_DEFAULT_FREQ;
+#endif /* CONFIG_IEEE80211AH */
 
 	while ((token = str_token(cmd, " ", &context))) {
 		if (os_strncmp(token, "service_name=", 13) == 0) {
@@ -12386,6 +12432,41 @@ static int wpas_ctrl_nan_subscribe(struct wpa_supplicant *wpa_s, char *cmd,
 
 		if (os_strncmp(token, "freq=", 5) == 0) {
 			params.freq = atoi(token + 5);
+#ifdef CONFIG_IEEE80211AH
+			params.freq = morse_convert_s1g_freq_to_ht_freq(params.freq,
+									wpa_s->conf->country);
+#endif /* CONFIG_IEEE80211AH */
+			continue;
+		}
+
+		if (os_strncmp(token, "freq_list=", 10) == 0) {
+			char *pos = token + 10;
+
+			if (os_strcmp(pos, "all") == 0) {
+#ifdef CONFIG_IEEE80211AH
+				wpa_printf(MSG_INFO, "CTRL: 'freq_list=all' not supported");
+				goto fail;
+#else
+				os_free(freq_list);
+				freq_list = wpas_nan_usd_all_freqs(wpa_s);
+				params.freq_list = freq_list;
+				continue;
+#endif /* CONFIG_IEEE80211AH */
+			}
+
+			while (pos && pos[0]) {
+				int freq = atoi(pos);
+#ifdef CONFIG_IEEE80211AH
+				freq = morse_convert_s1g_freq_to_ht_freq(freq,
+									wpa_s->conf->country);
+#endif /* CONFIG_IEEE80211AH */
+				int_array_add_unique(&freq_list, freq);
+				pos = os_strchr(pos, ',');
+				if (pos)
+					pos++;
+			}
+
+			params.freq_list = freq_list;
 			continue;
 		}
 

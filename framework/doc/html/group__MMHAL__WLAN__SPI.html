@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.6.4</span>
+   &#160;<span id="projectnumber">2.7.2</span>
    </div>
   </td>
  </tr>
@@ -122,9 +122,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>mmhal_wlan_spi_cs_dea
 <tr class="memitem:ga6d257565b2e1f9c20b91a1c6d9c5fea1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMHAL__WLAN__SPI.html#ga6d257565b2e1f9c20b91a1c6d9c5fea1">mmhal_wlan_ext_xtal_init_is_required</a> (void)</td></tr>
 <tr class="memdesc:ga6d257565b2e1f9c20b91a1c6d9c5fea1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Invoked by the driver to check whether the external crystal initialization sequence is required.  <a href="group__MMHAL__WLAN__SPI.html#ga6d257565b2e1f9c20b91a1c6d9c5fea1">More...</a><br /></td></tr>
 <tr class="separator:ga6d257565b2e1f9c20b91a1c6d9c5fea1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaad912b080dc42cda5d2aa10194546044"><td class="memItemLeft" align="right" valign="top"><a id="gaad912b080dc42cda5d2aa10194546044" name="gaad912b080dc42cda5d2aa10194546044"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>mmhal_wlan_send_training_seq</b> (void)</td></tr>
-<tr class="memdesc:gaad912b080dc42cda5d2aa10194546044"><td class="mdescLeft">&#160;</td><td class="mdescRight">Issue the training sequence required to put the transceiver into SPI mode. <br /></td></tr>
+<tr class="memitem:gaad912b080dc42cda5d2aa10194546044"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMHAL__WLAN__SPI.html#gaad912b080dc42cda5d2aa10194546044">mmhal_wlan_send_training_seq</a> (void)</td></tr>
+<tr class="memdesc:gaad912b080dc42cda5d2aa10194546044"><td class="mdescLeft">&#160;</td><td class="mdescRight">Issue the training sequence.  <a href="group__MMHAL__WLAN__SPI.html#gaad912b080dc42cda5d2aa10194546044">More...</a><br /></td></tr>
 <tr class="separator:gaad912b080dc42cda5d2aa10194546044"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga09c917fa3c3d774654406e8922a6a8ad"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMHAL__WLAN__SPI.html#ga09c917fa3c3d774654406e8922a6a8ad">mmhal_wlan_register_spi_irq_handler</a> (<a class="el" href="group__MMHAL__WLAN.html#gaf0be313b72751f3657aba1e9177399e8">mmhal_irq_handler_t</a> handler)</td></tr>
 <tr class="memdesc:ga09c917fa3c3d774654406e8922a6a8ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register a handler for SPI interrupts.  <a href="group__MMHAL__WLAN__SPI.html#ga09c917fa3c3d774654406e8922a6a8ad">More...</a><br /></td></tr>
@@ -227,6 +226,28 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>mmhal_wlan_send_train
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="gaad912b080dc42cda5d2aa10194546044" name="gaad912b080dc42cda5d2aa10194546044"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaad912b080dc42cda5d2aa10194546044">&#9670;&nbsp;</a></span>mmhal_wlan_send_training_seq()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void mmhal_wlan_send_training_seq </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Issue the training sequence. </p>
+<p >During this at least 74 clock cycles must be supplied to the chip to allow it to prepare for the first command. This is only invoked when using SPI mode in which case the CS shall be held high (<code><a class="el" href="group__MMHAL__WLAN__SPI.html#gadcbb36b90f3253717bc5dda50b1e379b" title="Deassert the WLAN SPI chip select pin.">mmhal_wlan_spi_cs_deassert()</a></code>) during the 74 clock cycles.</p>
+<p >See section 6.4.1.1 of the SD spec "Physical Layer Simplified Specification Version 9.10" for more detail. </p>
 
 </div>
 </div>

@@ -3,6 +3,7 @@
  * Copyright (c) 2002-2004, Instant802 Networks, Inc.
  * Copyright (c) 2005-2006, Devicescape Software, Inc.
  * Copyright (c) 2008-2012, Jouni Malinen <j@w1.fi>
+ * Copyright 2023 Morse Micro
  *
  * This software may be distributed under the terms of the BSD license.
  * See README for more details.
@@ -404,6 +405,81 @@ static u8 * hostapd_get_osen_ie(struct hostapd_data *hapd, u8 *pos, size_t len)
 }
 
 
+static u8 * hostapd_get_rsne_override(struct hostapd_data *hapd, u8 *pos,
+				      size_t len)
+{
+	const u8 *ie;
+
+	ie = hostapd_vendor_wpa_ie(hapd, RSNE_OVERRIDE_IE_VENDOR_TYPE);
+	if (!ie || 2U + ie[1] > len)
+		return pos;
+
+	os_memcpy(pos, ie, 2 + ie[1]);
+	return pos + 2 + ie[1];
+}
+
+
+static u8 * hostapd_get_rsne_override_2(struct hostapd_data *hapd, u8 *pos,
+					size_t len)
+{
+	const u8 *ie;
+
+	ie = hostapd_vendor_wpa_ie(hapd, RSNE_OVERRIDE_2_IE_VENDOR_TYPE);
+	if (!ie || 2U + ie[1] > len)
+		return pos;
+
+	os_memcpy(pos, ie, 2 + ie[1]);
+	return pos + 2 + ie[1];
+}
+
+
+static u8 * hostapd_get_rsnxe_override(struct hostapd_data *hapd, u8 *pos,
+				       size_t len)
+{
+	const u8 *ie;
+
+	ie = hostapd_vendor_wpa_ie(hapd, RSNXE_OVERRIDE_IE_VENDOR_TYPE);
+	if (!ie || 2U + ie[1] > len)
+		return pos;
+
+	os_memcpy(pos, ie, 2 + ie[1]);
+	return pos + 2 + ie[1];
+}
+
+
+static size_t hostapd_get_rsne_override_len(struct hostapd_data *hapd)
+{
+	const u8 *ie;
+
+	ie = hostapd_vendor_wpa_ie(hapd, RSNE_OVERRIDE_IE_VENDOR_TYPE);
+	if (!ie)
+		return 0;
+	return 2 + ie[1];
+}
+
+
+static size_t hostapd_get_rsne_override_2_len(struct hostapd_data *hapd)
+{
+	const u8 *ie;
+
+	ie = hostapd_vendor_wpa_ie(hapd, RSNE_OVERRIDE_2_IE_VENDOR_TYPE);
+	if (!ie)
+		return 0;
+	return 2 + ie[1];
+}
+
+
+static size_t hostapd_get_rsnxe_override_len(struct hostapd_data *hapd)
+{
+	const u8 *ie;
+
+	ie = hostapd_vendor_wpa_ie(hapd, RSNXE_OVERRIDE_IE_VENDOR_TYPE);
+	if (!ie)
+		return 0;
+	return 2 + ie[1];
+}
+
+
 static u8 * hostapd_eid_csa(struct hostapd_data *hapd, u8 *eid)
 {
 #ifdef CONFIG_TESTING_OPTIONS
@@ -435,6 +511,35 @@ static u8 * hostapd_eid_ecsa(struct hostapd_data *hapd, u8 *eid)
 	*eid++ = hapd->iface->cs_oper_class;
 	*eid++ = hapd->cs_freq_params.channel;
 	*eid++ = hapd->cs_count;
+
+	return eid;
+}
+
+
+static u8 * hostapd_eid_max_cs_time(struct hostapd_data *hapd, u8 *eid)
+{
+#ifdef CONFIG_IEEE80211BE
+	u32 switch_time;
+
+	/* Add Max Channel Switch Time element only if this AP is affiliated
+	 * with an AP MLD and channel switch is in process. */
+	if (!hapd->conf->mld_ap || !hapd->cs_freq_params.channel)
+		return eid;
+
+	/* Switch time is basically time between CSA count 1 and CSA count
+	 * 0 (1 beacon interval) + time for interface restart + time to
+	 * send a Beacon frame in the new channel (1 beacon interval).
+	 *
+	 * TODO: Use dynamic interface restart time. For now, assume 1 sec.
+	 */
+	switch_time = USEC_TO_TU(1000 * 1000) + 2 * hapd->iconf->beacon_int;
+
+	*eid++ = WLAN_EID_EXTENSION;
+	*eid++ = 4;
+	*eid++ = WLAN_EID_EXT_MAX_CHANNEL_SWITCH_TIME;
+	WPA_PUT_LE24(eid, switch_time);
+	eid += 3;
+#endif /* CONFIG_IEEE80211BE */
 
 	return eid;
 }
@@ -607,7 +712,6 @@ struct probe_resp_params {
 	bool is_p2p;
 
 	/* Generated IEs will be included inside an ML element */
-	bool is_ml_sta_info;
 	struct hostapd_data *mld_ap;
 	struct mld_info *mld_info;
 
@@ -629,7 +733,7 @@ static void hostapd_free_probe_resp_params(struct probe_resp_params *params)
 #ifdef CONFIG_IEEE80211BE
 	if (!params)
 		return;
-	ap_sta_free_sta_profile(params->mld_info);
+
 	os_free(params->mld_info);
 	params->mld_info = NULL;
 #endif /* CONFIG_IEEE80211BE */
@@ -668,17 +772,21 @@ static size_t hostapd_probe_resp_elems_len(struct hostapd_data *hapd,
 
 #ifdef CONFIG_IEEE80211BE
 	if (hapd->iconf->ieee80211be && !hapd->conf->disable_11be) {
+		struct hostapd_data *ml_elem_ap =
+			params->mld_ap ? params->mld_ap : hapd;
+
 		buflen += hostapd_eid_eht_capab_len(hapd, IEEE80211_MODE_AP);
 		buflen += 3 + sizeof(struct ieee80211_eht_operation);
 		if (hapd->iconf->punct_bitmap)
 			buflen += EHT_OPER_DISABLED_SUBCHAN_BITMAP_SIZE;
 
-		if (!params->is_ml_sta_info && hapd->conf->mld_ap) {
-			struct hostapd_data *ml_elem_ap =
-				params->mld_ap ? params->mld_ap : hapd;
-
+		if (ml_elem_ap->conf->mld_ap) {
 			buflen += hostapd_eid_eht_ml_beacon_len(
 				ml_elem_ap, params->mld_info, !!params->mld_ap);
+
+			/* For Max Channel Switch Time element during channel
+			 * switch */
+			buflen += 6;
 		}
 	}
 #endif /* CONFIG_IEEE80211BE */
@@ -686,12 +794,13 @@ static size_t hostapd_probe_resp_elems_len(struct hostapd_data *hapd,
 	buflen += hostapd_eid_mbssid_len(hapd, WLAN_FC_STYPE_PROBE_RESP, NULL,
 					 params->known_bss,
 					 params->known_bss_len, NULL);
-	if (!params->is_ml_sta_info)
-		buflen += hostapd_eid_rnr_len(hapd, WLAN_FC_STYPE_PROBE_RESP,
-					      true);
+	buflen += hostapd_eid_rnr_len(hapd, WLAN_FC_STYPE_PROBE_RESP, true);
 	buflen += hostapd_mbo_ie_len(hapd);
 	buflen += hostapd_eid_owe_trans_len(hapd);
 	buflen += hostapd_eid_dpp_cc_len(hapd);
+	buflen += hostapd_get_rsne_override_len(hapd);
+	buflen += hostapd_get_rsne_override_2_len(hapd);
+	buflen += hostapd_get_rsnxe_override_len(hapd);
 
 	return buflen;
 }
@@ -706,13 +815,11 @@ static u8 * hostapd_probe_resp_fill_elems(struct hostapd_data *hapd,
 
 	epos = pos + len;
 
-	if (!params->is_ml_sta_info) {
-		*pos++ = WLAN_EID_SSID;
-		*pos++ = hapd->conf->ssid.ssid_len;
-		os_memcpy(pos, hapd->conf->ssid.ssid,
-			  hapd->conf->ssid.ssid_len);
-		pos += hapd->conf->ssid.ssid_len;
-	}
+	*pos++ = WLAN_EID_SSID;
+	*pos++ = hapd->conf->ssid.ssid_len;
+	os_memcpy(pos, hapd->conf->ssid.ssid,
+		  hapd->conf->ssid.ssid_len);
+	pos += hapd->conf->ssid.ssid_len;
 
 	/* Supported rates */
 	pos = hostapd_eid_supp_rates(hapd, pos);
@@ -725,18 +832,13 @@ static u8 * hostapd_probe_resp_fill_elems(struct hostapd_data *hapd,
 	/* Power Constraint element */
 	pos = hostapd_eid_pwr_constraint(hapd, pos);
 
-	/*
-	 * CSA IE
-	 * TODO: This should be included inside the ML sta profile
-	 */
-	if (!params->is_ml_sta_info) {
-		csa_pos = hostapd_eid_csa(hapd, pos);
-		if (csa_pos != pos)
-			params->csa_pos = csa_pos - 1;
-		else
-			params->csa_pos = NULL;
-		pos = csa_pos;
-	}
+	/* CSA element */
+	csa_pos = hostapd_eid_csa(hapd, pos);
+	if (csa_pos != pos)
+		params->csa_pos = csa_pos - 1;
+	else
+		params->csa_pos = NULL;
+	pos = csa_pos;
 
 	/* ERP Information element */
 	pos = hostapd_eid_erp_info(hapd, pos);
@@ -752,18 +854,13 @@ static u8 * hostapd_probe_resp_fill_elems(struct hostapd_data *hapd,
 	pos = hostapd_eid_rm_enabled_capab(hapd, pos, epos - pos);
 	pos = hostapd_get_mde(hapd, pos, epos - pos);
 
-	/*
-	 * eCSA IE
-	 * TODO: This should be included inside the ML sta profile
-	 */
-	if (!params->is_ml_sta_info) {
-		csa_pos = hostapd_eid_ecsa(hapd, pos);
-		if (csa_pos != pos)
-			params->ecsa_pos = csa_pos - 1;
-		else
-			params->ecsa_pos = NULL;
-		pos = csa_pos;
-	}
+	/* eCSA element */
+	csa_pos = hostapd_eid_ecsa(hapd, pos);
+	if (csa_pos != pos)
+		params->ecsa_pos = csa_pos - 1;
+	else
+		params->ecsa_pos = NULL;
+	pos = csa_pos;
 
 	pos = hostapd_eid_supported_op_classes(hapd, pos);
 	pos = hostapd_eid_ht_capabilities(hapd, pos);
@@ -805,12 +902,14 @@ static u8 * hostapd_probe_resp_fill_elems(struct hostapd_data *hapd,
 		pos = hostapd_eid_txpower_envelope(hapd, pos);
 #endif /* CONFIG_IEEE80211AX */
 
-	pos = hostapd_eid_wb_chsw_wrapper(hapd, pos);
+	pos = hostapd_eid_chsw_wrapper(hapd, pos);
 
-	if (!params->is_ml_sta_info)
-		pos = hostapd_eid_rnr(hapd, pos, WLAN_FC_STYPE_PROBE_RESP,
-				      true);
+	pos = hostapd_eid_rnr(hapd, pos, WLAN_FC_STYPE_PROBE_RESP, true);
 	pos = hostapd_eid_fils_indic(hapd, pos, 0);
+
+	/* Max Channel Switch Time element */
+	pos = hostapd_eid_max_cs_time(hapd, pos);
+
 	pos = hostapd_get_rsnxe(hapd, pos, epos - pos);
 
 #ifdef CONFIG_IEEE80211AX
@@ -891,6 +990,10 @@ static u8 * hostapd_probe_resp_fill_elems(struct hostapd_data *hapd,
 	pos = hostapd_eid_owe_trans(hapd, pos, epos - pos);
 	pos = hostapd_eid_dpp_cc(hapd, pos, epos - pos);
 
+	pos = hostapd_get_rsne_override(hapd, pos, epos - pos);
+	pos = hostapd_get_rsne_override_2(hapd, pos, epos - pos);
+	pos = hostapd_get_rsnxe_override(hapd, pos, epos - pos);
+
 	if (hapd->conf->vendor_elements) {
 		os_memcpy(pos, wpabuf_head(hapd->conf->vendor_elements),
 			  wpabuf_len(hapd->conf->vendor_elements));
@@ -963,7 +1066,6 @@ static void hostapd_fill_probe_resp_ml_params(struct hostapd_data *hapd,
 					      const struct ieee80211_mgmt *mgmt,
 					      int mld_id, u16 links)
 {
-	struct probe_resp_params sta_info_params;
 	struct hostapd_data *link;
 
 	params->mld_ap = NULL;
@@ -977,10 +1079,7 @@ static void hostapd_fill_probe_resp_ml_params(struct hostapd_data *hapd,
 
 	for_each_mld_link(link, hapd) {
 		struct mld_link_info *link_info;
-		size_t buflen;
 		u8 mld_link_id = link->mld_link_id;
-		u8 *epos;
-		u8 buf[EHT_ML_MAX_STA_PROF_LEN];
 
 		/*
 		 * Set mld_ap iff the ML probe request explicitly
@@ -1000,49 +1099,12 @@ static void hostapd_fill_probe_resp_ml_params(struct hostapd_data *hapd,
 			continue;
 
 		link_info = &params->mld_info->links[mld_link_id];
-
-		sta_info_params.req = params->req;
-		sta_info_params.is_p2p = false;
-		sta_info_params.is_ml_sta_info = true;
-		sta_info_params.mld_ap = NULL;
-		sta_info_params.mld_info = NULL;
-
-		buflen = MAX_PROBERESP_LEN;
-		buflen += hostapd_probe_resp_elems_len(link, &sta_info_params);
-
-		if (buflen > EHT_ML_MAX_STA_PROF_LEN) {
-			wpa_printf(MSG_DEBUG,
-				   "MLD: Not including link %d in ML probe response (%zu bytes is too long)",
-				   mld_link_id, buflen);
-			goto fail;
-		}
-
-		/*
-		 * NOTE: This does not properly handle inheritance and
-		 * various other things.
-		 */
-		link_info->valid = true;
-		epos = buf;
-
-		/* Capabilities is the only fixed parameter */
-		WPA_PUT_LE16(epos, hostapd_own_capab_info(hapd));
-		epos += 2;
-
-		epos = hostapd_probe_resp_fill_elems(
-			link, &sta_info_params, epos,
-			EHT_ML_MAX_STA_PROF_LEN - 2);
-		link_info->resp_sta_profile_len = epos - buf;
-		os_free(link_info->resp_sta_profile);
-		link_info->resp_sta_profile = os_memdup(
-			buf, link_info->resp_sta_profile_len);
-		if (!link_info->resp_sta_profile)
-			link_info->resp_sta_profile_len = 0;
-		os_memcpy(link_info->local_addr, link->own_addr, ETH_ALEN);
+		os_memcpy(link_info, &hapd->partner_links[mld_link_id],
+			  sizeof(hapd->partner_links[mld_link_id]));
 
 		wpa_printf(MSG_DEBUG,
-			   "MLD: ML probe response includes link sta info for %d: %u bytes (estimate %zu)",
-			   mld_link_id, link_info->resp_sta_profile_len,
-			   buflen);
+			   "MLD: ML probe response includes link STA info for %d: %u bytes",
+			   mld_link_id, link_info->resp_sta_profile_len);
 	}
 
 	if (mld_id != -1 && !params->mld_ap) {
@@ -1609,7 +1671,6 @@ void handle_probe_req(struct hostapd_data *hapd,
 	params.is_p2p = !!elems.p2p;
 	params.known_bss = elems.mbssid_known_bss;
 	params.known_bss_len = elems.mbssid_known_bss_len;
-	params.is_ml_sta_info = false;
 
 	hostapd_gen_probe_resp(hapd, &params);
 
@@ -1690,7 +1751,6 @@ static u8 * hostapd_probe_resp_offloads(struct hostapd_data *hapd,
 	params.is_p2p = false;
 	params.known_bss = NULL;
 	params.known_bss_len = 0;
-	params.is_ml_sta_info = false;
 	params.mld_ap = NULL;
 	params.mld_info = NULL;
 
@@ -1734,7 +1794,6 @@ u8 * hostapd_unsol_bcast_probe_resp(struct hostapd_data *hapd,
 	probe_params.is_p2p = false;
 	probe_params.known_bss = NULL;
 	probe_params.known_bss_len = 0;
-	probe_params.is_ml_sta_info = false;
 	probe_params.mld_ap = NULL;
 	probe_params.mld_info = NULL;
 
@@ -2112,7 +2171,7 @@ int ieee802_11_build_ap_params(struct hostapd_data *hapd,
 
 #ifdef NEED_AP_MLME
 #define BEACON_HEAD_BUF_SIZE 256
-#define BEACON_TAIL_BUF_SIZE 512
+#define BEACON_TAIL_BUF_SIZE 1500
 	head = os_zalloc(BEACON_HEAD_BUF_SIZE);
 	tail_len = BEACON_TAIL_BUF_SIZE;
 #ifdef CONFIG_WPS
@@ -2151,8 +2210,13 @@ int ieee802_11_build_ap_params(struct hostapd_data *hapd,
 		 * long based on the common info and number of per
 		 * station profiles. For now use 256.
 		 */
-		if (hapd->conf->mld_ap)
+		if (hapd->conf->mld_ap) {
 			tail_len += 256;
+
+			/* for Max Channel Switch Time element during channel
+			 * switch */
+			tail_len += 6;
+		}
 	}
 #endif /* CONFIG_IEEE80211BE */
 
@@ -2163,6 +2227,9 @@ int ieee802_11_build_ap_params(struct hostapd_data *hapd,
 	tail_len += hostapd_mbo_ie_len(hapd);
 	tail_len += hostapd_eid_owe_trans_len(hapd);
 	tail_len += hostapd_eid_dpp_cc_len(hapd);
+	tail_len += hostapd_get_rsne_override_len(hapd);
+	tail_len += hostapd_get_rsne_override_2_len(hapd);
+	tail_len += hostapd_get_rsnxe_override_len(hapd);
 
 	tailpos = tail = os_malloc(tail_len);
 	if (head == NULL || tail == NULL) {
@@ -2293,10 +2360,14 @@ int ieee802_11_build_ap_params(struct hostapd_data *hapd,
 		tailpos = hostapd_eid_txpower_envelope(hapd, tailpos);
 #endif /* CONFIG_IEEE80211AX */
 
-	tailpos = hostapd_eid_wb_chsw_wrapper(hapd, tailpos);
+	tailpos = hostapd_eid_chsw_wrapper(hapd, tailpos);
 
 	tailpos = hostapd_eid_rnr(hapd, tailpos, WLAN_FC_STYPE_BEACON, true);
 	tailpos = hostapd_eid_fils_indic(hapd, tailpos, 0);
+
+	/* Max Channel Switch Time element */
+	tailpos = hostapd_eid_max_cs_time(hapd, tailpos);
+
 	tailpos = hostapd_get_rsnxe(hapd, tailpos, tailend - tailpos);
 	tailpos = hostapd_eid_mbssid_config(hapd, tailpos,
 					    params->mbssid_elem_count);
@@ -2374,6 +2445,13 @@ int ieee802_11_build_ap_params(struct hostapd_data *hapd,
 					tail + tail_len - tailpos);
 	tailpos = hostapd_eid_dpp_cc(hapd, tailpos, tail + tail_len - tailpos);
 
+	tailpos = hostapd_get_rsne_override(hapd, tailpos,
+					    tail + tail_len - tailpos);
+	tailpos = hostapd_get_rsne_override_2(hapd, tailpos,
+					      tail + tail_len - tailpos);
+	tailpos = hostapd_get_rsnxe_override(hapd, tailpos,
+					     tail + tail_len - tailpos);
+
 	if (hapd->conf->vendor_elements) {
 		os_memcpy(tailpos, wpabuf_head(hapd->conf->vendor_elements),
 			  wpabuf_len(hapd->conf->vendor_elements));
@@ -2406,7 +2484,9 @@ int ieee802_11_build_ap_params(struct hostapd_data *hapd,
 	/* If SAE offload is enabled, provide password to lower layer for
 	 * SAE authentication and PMK generation.
 	 */
-	if (wpa_key_mgmt_sae(hapd->conf->wpa_key_mgmt) &&
+	if (wpa_key_mgmt_sae(hapd->conf->wpa_key_mgmt |
+			     hapd->conf->rsn_override_key_mgmt |
+			     hapd->conf->rsn_override_key_mgmt_2) &&
 	    (hapd->iface->drv_flags2 & WPA_DRIVER_FLAGS2_SAE_OFFLOAD_AP)) {
 		if (hostapd_sae_pk_in_use(hapd->conf)) {
 			wpa_printf(MSG_ERROR,
@@ -2451,7 +2531,9 @@ int ieee802_11_build_ap_params(struct hostapd_data *hapd,
 	else if (hapd->conf->wpa & WPA_PROTO_WPA)
 		params->pairwise_ciphers = hapd->conf->wpa_pairwise;
 	params->group_cipher = hapd->conf->wpa_group;
-	params->key_mgmt_suites = hapd->conf->wpa_key_mgmt;
+	params->key_mgmt_suites = hapd->conf->wpa_key_mgmt |
+		hapd->conf->rsn_override_key_mgmt |
+		hapd->conf->rsn_override_key_mgmt_2;
 	params->auth_algs = hapd->conf->auth_algs;
 	params->wpa_version = hapd->conf->wpa;
 	params->privacy = hapd->conf->wpa;
@@ -2685,12 +2767,438 @@ void ieee802_11_set_beacon_per_bss_only(struct hostapd_data *hapd)
 }
 
 
+#ifdef CONFIG_IEEE80211BE
+
+static int hostapd_get_probe_resp_tmpl(struct hostapd_data *hapd,
+				       struct probe_resp_params *params,
+				       bool is_ml_sta_info)
+{
+	os_memset(params, 0, sizeof(*params));
+	hostapd_gen_probe_resp(hapd, params);
+	if (!params->resp)
+		return -1;
+
+	/* The caller takes care of freeing params->resp. */
+	return 0;
+}
+
+
+static bool is_restricted_eid_in_sta_profile(u8 eid, bool tx_vap)
+{
+	switch (eid) {
+	case WLAN_EID_TIM:
+	case WLAN_EID_BSS_MAX_IDLE_PERIOD:
+	case WLAN_EID_MULTIPLE_BSSID:
+	case WLAN_EID_REDUCED_NEIGHBOR_REPORT:
+	case WLAN_EID_NEIGHBOR_REPORT:
+		return true;
+	case WLAN_EID_SSID:
+		/* SSID is not restricted for non-transmitted BSSID */
+		return tx_vap;
+	default:
+		return false;
+	}
+}
+
+
+static bool is_restricted_ext_eid_in_sta_profile(u8 ext_id)
+{
+	switch (ext_id) {
+	case WLAN_EID_EXT_MULTI_LINK:
+		return true;
+	default:
+		return false;
+	}
+}
+
+
+/* Create the link STA profiles based on inheritance from the reporting
+ * profile.
+ *
+ * NOTE: The same function is used for length calculation as well as filling
+ * data in the given buffer. This avoids risk of not updating the length
+ * function but filling function or vice versa.
+ */
+static size_t hostapd_add_sta_profile(struct ieee80211_mgmt *link_fdata,
+				      size_t link_data_len,
+				      struct ieee80211_mgmt *own_fdata,
+				      size_t own_data_len,
+				      u8 *sta_profile, bool tx_vap)
+{
+	const struct element *link_elem;
+	size_t sta_profile_len = 0;
+	const u8 *link_elem_data;
+	u8 link_ele_len;
+	u8 *link_data;
+	const struct element *own_elem;
+	u8 link_eid, own_eid, own_ele_len;
+	const u8 *own_elem_data;
+	u8 *own_data;
+	bool is_ext;
+	bool ie_found;
+	u8 non_inherit_ele_ext_list[256] = { 0 };
+	u8 non_inherit_ele_ext_list_len = 0;
+	u8 non_inherit_ele_list[256] = { 0 };
+	u8 non_inherit_ele_list_len = 0;
+	u8 num_link_elem_vendor_ies = 0, num_own_elem_vendor_ies = 0;
+	bool add_vendor_ies = false, is_identical_vendor_ies = true;
+	/* The bitmap of parsed EIDs. There are 256 EIDs and ext EIDs, so 32
+	 * bytes to store the bitmaps. */
+	u8 parsed_eid_bmap[32] = { 0 }, parsed_ext_eid_bmap[32] = { 0 };
+	/* extra len used in the logic includes the element id and len */
+	u8 extra_len = 2;
+
+	/* Include len for capab info */
+	sta_profile_len += sizeof(le16);
+	if (sta_profile) {
+		os_memcpy(sta_profile, &link_fdata->u.probe_resp.capab_info,
+			  sizeof(le16));
+		sta_profile += sizeof(le16);
+	}
+
+	own_data = own_fdata->u.probe_resp.variable;
+	link_data = link_fdata->u.probe_resp.variable;
+
+	/* The below logic takes the reporting BSS data and reported BSS data
+	 * and performs intersection to build the STA profile of the reported
+	 * BSS. Certain elements are not added to the STA profile as
+	 * recommended in standard. Matching element information in the
+	 * reporting BSS profile are ignored in the STA profile. Remaining
+	 * elements pertaining to the STA profile are appended at the end. */
+	for_each_element(own_elem, own_data, own_data_len) {
+		is_ext = false;
+		ie_found = false;
+
+		/* Pick one of own elements and get its EID and length */
+		own_elem_data = own_elem->data;
+		own_ele_len = own_elem->datalen;
+
+		if (own_elem->id == WLAN_EID_EXTENSION) {
+			is_ext = true;
+			own_eid = *(own_elem_data);
+			if (is_restricted_ext_eid_in_sta_profile(own_eid))
+				continue;
+		} else {
+			own_eid = own_elem->id;
+			if (is_restricted_eid_in_sta_profile(own_eid, tx_vap))
+				continue;
+		}
+
+		for_each_element(link_elem, link_data, link_data_len) {
+			/* If the element type mismatches, do not consider
+			 * this link element for comparison. */
+			if ((link_elem->id == WLAN_EID_EXTENSION &&
+			     !is_ext) ||
+			    (is_ext && link_elem->id != WLAN_EID_EXTENSION))
+				continue;
+
+			/* Comparison can be done so get the link element and
+			 * its EID and length. */
+			link_elem_data = link_elem->data;
+			link_ele_len = link_elem->datalen;
+
+			if (link_elem->id == WLAN_EID_EXTENSION)
+				link_eid = *(link_elem_data);
+			else
+				link_eid = link_elem->id;
+
+			/* Ignore if EID does not match */
+			if (own_eid != link_eid)
+				continue;
+
+			ie_found = true;
+
+			/* Ignore if the contents is identical. */
+			if (own_ele_len == link_ele_len &&
+			    os_memcmp(own_elem->data, link_elem->data,
+				      own_ele_len) == 0) {
+				if (own_eid == WLAN_EID_VENDOR_SPECIFIC) {
+					is_identical_vendor_ies = true;
+					num_own_elem_vendor_ies++;
+				}
+				continue;
+			}
+
+			/* No need to include this non-matching Vendor Specific
+			 * element explicitly at this point. */
+			if (own_eid == WLAN_EID_VENDOR_SPECIFIC) {
+				is_identical_vendor_ies = false;
+				continue;
+			}
+
+			/* This element is present in the reported profile
+			 * as well as present in the reporting profile.
+			 * However, there is a mismatch in the contents and
+			 * hence, include this in the per STA profile. */
+			sta_profile_len += link_ele_len + extra_len;
+			if (sta_profile) {
+				os_memcpy(sta_profile,
+					  link_elem->data - extra_len,
+					  link_ele_len + extra_len);
+				sta_profile += link_ele_len + extra_len;
+			}
+
+			/* Update the parsed EIDs bitmap */
+			if (is_ext)
+				parsed_ext_eid_bmap[own_eid / 8] |=
+					BIT(own_eid % 8);
+			else
+				parsed_eid_bmap[own_eid / 8] |=
+					BIT(own_eid % 8);
+			break;
+		}
+
+		/* We found at least one Vendor Specific element in reporting
+		 * link which is not same (or present) in the reported link. We
+		 * need to include all Vendor Specific elements from the
+		 * reported link. */
+		if (!is_identical_vendor_ies)
+			add_vendor_ies = true;
+
+		/* This is a unique element in the reporting profile which is
+		 * not present in the reported profile. Update the
+		 * non-inheritance list. */
+		if (!ie_found) {
+			u8 idx;
+
+			if (is_ext) {
+				idx = non_inherit_ele_ext_list_len++;
+				non_inherit_ele_ext_list[idx] = own_eid;
+			} else {
+				idx = non_inherit_ele_list_len++;
+				non_inherit_ele_list[idx] = own_eid;
+			}
+		}
+	}
+
+	/* Parse the remaining elements in the reported profile */
+	for_each_element(link_elem, link_data, link_data_len) {
+		link_elem_data = link_elem->data;
+		link_ele_len = link_elem->datalen;
+
+		/* No need to check this Vendor Specific element at this point.
+		 * Just take the count and continue. */
+		if (link_elem->id == WLAN_EID_VENDOR_SPECIFIC) {
+			num_link_elem_vendor_ies++;
+			continue;
+		}
+
+		if (link_elem->id == WLAN_EID_EXTENSION) {
+			link_eid = *(link_elem_data);
+
+			if ((parsed_ext_eid_bmap[link_eid / 8] &
+			     BIT(link_eid % 8)) ||
+			    is_restricted_ext_eid_in_sta_profile(link_eid))
+				continue;
+		} else {
+			link_eid = link_elem->id;
+
+			if ((parsed_eid_bmap[link_eid / 8] &
+			     BIT(link_eid % 8)) ||
+			    is_restricted_eid_in_sta_profile(link_eid, tx_vap))
+				continue;
+		}
+
+		sta_profile_len += link_ele_len + extra_len;
+		if (sta_profile) {
+			os_memcpy(sta_profile, link_elem_data - extra_len,
+				  link_ele_len + extra_len);
+			sta_profile += link_ele_len + extra_len;
+		}
+	}
+
+	/* Handle Vendor Specific elements
+	 * Add all the Vendor Specific elements of the reported link if
+	 *  a. There is at least one non-matching Vendor Specific element, or
+	 *  b. The number of Vendor Specific elements in reporting and reported
+	 *     link is not same. */
+	if (add_vendor_ies ||
+	    num_own_elem_vendor_ies != num_link_elem_vendor_ies) {
+		for_each_element(link_elem, link_data, link_data_len) {
+			link_elem_data = link_elem->data;
+			link_ele_len = link_elem->datalen;
+
+			if (link_elem->id != WLAN_EID_VENDOR_SPECIFIC)
+				continue;
+
+			sta_profile_len += link_ele_len + extra_len;
+			if (sta_profile) {
+				os_memcpy(sta_profile,
+					  link_elem_data - extra_len,
+					  link_ele_len + extra_len);
+				sta_profile += link_ele_len + extra_len;
+			}
+		}
+	}
+
+	/* Handle non-inheritance
+	 * Non-Inheritance element:
+	 *      Element ID Ext: 1 octet
+	 *	Length: 1 octet
+	 *	Ext tag number: 1 octet
+	 *	Length of Elements ID list: 1 octet
+	 *	Elements ID list: variable
+	 *      Length of Elements ID Extension list: 1 octet
+	 *	Elements ID extensions list: variable
+	 */
+	if (non_inherit_ele_list_len || non_inherit_ele_ext_list_len)
+		sta_profile_len += 3 + 2 + non_inherit_ele_list_len +
+			non_inherit_ele_ext_list_len;
+
+	if (sta_profile &&
+	    (non_inherit_ele_list_len || non_inherit_ele_ext_list_len)) {
+		*sta_profile++ = WLAN_EID_EXTENSION;
+		*sta_profile++ = non_inherit_ele_list_len +
+			non_inherit_ele_ext_list_len + 3;
+		*sta_profile++ = WLAN_EID_EXT_NON_INHERITANCE;
+		*sta_profile++ = non_inherit_ele_list_len;
+		os_memcpy(sta_profile, non_inherit_ele_list,
+			  non_inherit_ele_list_len);
+		sta_profile += non_inherit_ele_list_len;
+		*sta_profile++ = non_inherit_ele_ext_list_len;
+		os_memcpy(sta_profile, non_inherit_ele_ext_list,
+			  non_inherit_ele_ext_list_len);
+		sta_profile += non_inherit_ele_ext_list_len;
+	}
+
+	return sta_profile_len;
+}
+
+
+static u8 * hostapd_gen_sta_profile(struct ieee80211_mgmt *link_data,
+				    size_t link_data_len,
+				    struct ieee80211_mgmt *own_data,
+				    size_t own_data_len,
+				    size_t *sta_profile_len, bool tx_vap)
+{
+	u8 *sta_profile;
+
+	/* Get the length first */
+	*sta_profile_len = hostapd_add_sta_profile(link_data, link_data_len,
+						   own_data, own_data_len,
+						   NULL, tx_vap);
+	if (!(*sta_profile_len) || *sta_profile_len > EHT_ML_MAX_STA_PROF_LEN)
+		return NULL;
+
+	sta_profile = os_zalloc(*sta_profile_len);
+	if (!sta_profile)
+		return NULL;
+
+	/* Now fill in the data */
+	hostapd_add_sta_profile(link_data, link_data_len, own_data,
+				own_data_len, sta_profile, tx_vap);
+
+	/* The caller takes care of freeing the returned sta_profile */
+	return sta_profile;
+}
+
+
+static void hostapd_gen_per_sta_profiles(struct hostapd_data *hapd)
+{
+	bool tx_vap = hapd == hostapd_mbssid_get_tx_bss(hapd);
+	size_t link_data_len, sta_profile_len;
+	size_t own_data_len;
+	struct probe_resp_params link_params;
+	struct probe_resp_params own_params;
+	struct ieee80211_mgmt *link_data;
+	struct ieee80211_mgmt *own_data;
+	struct mld_link_info *link_info;
+	struct hostapd_data *link_bss;
+	u8 link_id, *sta_profile;
+
+	if (!hapd->conf->mld_ap)
+		return;
+
+	wpa_printf(MSG_DEBUG, "MLD: Generating per STA profiles for MLD %s",
+		   hapd->conf->iface);
+
+	wpa_printf(MSG_DEBUG, "MLD: Reporting link %d", hapd->mld_link_id);
+
+	/* Generate a Probe Response template for self */
+	if (hostapd_get_probe_resp_tmpl(hapd, &own_params, false)) {
+		wpa_printf(MSG_ERROR,
+			   "MLD: Error in building per STA profiles");
+		return;
+	}
+
+	own_data = own_params.resp;
+	own_data_len = own_params.resp_len;
+
+	/* Consider the length of the variable fields */
+	own_data_len -= offsetof(struct ieee80211_mgmt, u.probe_resp.variable);
+
+	for_each_mld_link(link_bss, hapd) {
+		if (link_bss == hapd || !link_bss->started)
+			continue;
+
+		link_id = link_bss->mld_link_id;
+		if (link_id > MAX_NUM_MLD_LINKS)
+			continue;
+
+		sta_profile = NULL;
+		sta_profile_len = 0;
+
+		/* Generate a Probe Response frame template for partner link */
+		if (hostapd_get_probe_resp_tmpl(link_bss, &link_params, true)) {
+			wpa_printf(MSG_ERROR,
+				   "MLD: Could not get link STA probe response template for link %d",
+				   link_id);
+			continue;
+		}
+
+		link_data = link_params.resp;
+		link_data_len = link_params.resp_len;
+
+		/* Consider length of the variable fields */
+		link_data_len -= offsetof(struct ieee80211_mgmt,
+					  u.probe_resp.variable);
+
+		sta_profile = hostapd_gen_sta_profile(link_data, link_data_len,
+						      own_data, own_data_len,
+						      &sta_profile_len, tx_vap);
+		if (!sta_profile) {
+			wpa_printf(MSG_ERROR,
+				   "MLD: Could not generate link STA profile for link %d",
+				   link_id);
+			continue;
+		}
+
+		link_info = &hapd->partner_links[link_id];
+		link_info->valid = true;
+
+		os_free(link_info->resp_sta_profile);
+		link_info->resp_sta_profile_len = sta_profile_len;
+
+		link_info->resp_sta_profile = os_memdup(sta_profile,
+							sta_profile_len);
+		if (!link_info->resp_sta_profile)
+			link_info->resp_sta_profile_len = 0;
+
+		os_memcpy(link_info->local_addr, link_bss->own_addr, ETH_ALEN);
+
+		wpa_printf(MSG_DEBUG,
+			   "MLD: Reported link STA info for %d: %u bytes",
+			   link_id, link_info->resp_sta_profile_len);
+
+		os_free(sta_profile);
+		os_free(link_params.resp);
+	}
+
+	os_free(own_params.resp);
+}
+
+#endif /* CONFIG_IEEE80211BE */
+
+
 int ieee802_11_set_beacon(struct hostapd_data *hapd)
 {
 	struct hostapd_iface *iface = hapd->iface;
 	int ret;
 	size_t i, j;
 	bool is_6g, hapd_mld = false;
+#ifdef CONFIG_IEEE80211BE
+	struct hostapd_data *link_bss;
+#endif /* CONFIG_IEEE80211BE */
 
 	ret = __ieee802_11_set_beacon(hapd);
 	if (ret != 0)
@@ -2730,6 +3238,15 @@ int ieee802_11_set_beacon(struct hostapd_data *hapd)
 				__ieee802_11_set_beacon(other->bss[i]);
 		}
 	}
+
+#ifdef CONFIG_IEEE80211BE
+	if (!hapd_mld)
+		return 0;
+
+	/* Generate per STA profiles for each affiliated APs */
+	for_each_mld_link(link_bss, hapd)
+		hostapd_gen_per_sta_profiles(link_bss);
+#endif /* CONFIG_IEEE80211BE */
 
 	return 0;
 }

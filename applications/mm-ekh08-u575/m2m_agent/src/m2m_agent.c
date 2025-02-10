@@ -18,6 +18,7 @@
 #include "mmosal.h"
 #include "mmutils.h"
 #include "mmagic.h"
+#include "mm_app_regdb.h"
 
 #if !defined(MBEDTLS_CONFIG_FILE)
 #include "mbedtls/mbedtls_config.h"
@@ -48,6 +49,7 @@ void app_init(void)
 
     const struct mmagic_m2m_agent_init_args init_args = {
         .app_version = APPLICATION_VERSION,
+        .reg_db = get_regulatory_db(),
     };
     struct mmagic_m2m_agent *m2m_agent = mmagic_m2m_agent_init(&init_args);
     MM_UNUSED(m2m_agent);

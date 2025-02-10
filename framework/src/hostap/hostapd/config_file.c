@@ -2461,6 +2461,31 @@ static int get_u16(const char *pos, int line, u16 *ret_val)
 #endif /* CONFIG_IEEE80211BE */
 
 
+#ifdef CONFIG_TESTING_OPTIONS
+static bool get_hexstream(const char *val, struct wpabuf **var,
+			  const char *name, int line)
+{
+	struct wpabuf *tmp;
+	size_t len = os_strlen(val) / 2;
+
+	tmp = wpabuf_alloc(len);
+	if (!tmp)
+		return false;
+
+	if (hexstr2bin(val, wpabuf_put(tmp, len), len)) {
+		wpabuf_free(tmp);
+		wpa_printf(MSG_ERROR, "Line %d: Invalid %s '%s'",
+			   line, name, val);
+		return false;
+	}
+
+	wpabuf_free(*var);
+	*var = tmp;
+	return true;
+}
+#endif /* CONFIG_TESTING_OPTIONS */
+
+
 static int hostapd_config_fill(struct hostapd_config *conf,
 			       struct hostapd_bss_config *bss,
 			       const char *buf, char *pos, int line)
@@ -3015,6 +3040,9 @@ static int hostapd_config_fill(struct hostapd_config *conf,
 #endif /* CONFIG_RADIUS_TLS */
 	} else if (os_strcmp(buf, "radius_retry_primary_interval") == 0) {
 		bss->radius->retry_primary_interval = atoi(pos);
+	} else if (os_strcmp(buf,
+			     "radius_require_message_authenticator") == 0) {
+		bss->radius_require_message_authenticator = atoi(pos);
 	} else if (os_strcmp(buf, "radius_acct_interim_interval") == 0) {
 		bss->acct_interim_interval = atoi(pos);
 	} else if (os_strcmp(buf, "radius_request_cui") == 0) {
@@ -3180,6 +3208,16 @@ static int hostapd_config_fill(struct hostapd_config *conf,
 		bss->wpa_key_mgmt = hostapd_config_parse_key_mgmt(line, pos);
 		if (bss->wpa_key_mgmt == -1)
 			return 1;
+	} else if (os_strcmp(buf, "rsn_override_key_mgmt") == 0) {
+		bss->rsn_override_key_mgmt =
+			hostapd_config_parse_key_mgmt(line, pos);
+		if (bss->rsn_override_key_mgmt == -1)
+			return 1;
+	} else if (os_strcmp(buf, "rsn_override_key_mgmt_2") == 0) {
+		bss->rsn_override_key_mgmt_2 =
+			hostapd_config_parse_key_mgmt(line, pos);
+		if (bss->rsn_override_key_mgmt_2 == -1)
+			return 1;
 	} else if (os_strcmp(buf, "wpa_psk_radius") == 0) {
 		bss->wpa_psk_radius = atoi(pos);
 		if (bss->wpa_psk_radius != PSK_RADIUS_IGNORED &&
@@ -3211,6 +3249,32 @@ static int hostapd_config_fill(struct hostapd_config *conf,
 				   line, pos);
 			return 1;
 		}
+	} else if (os_strcmp(buf, "rsn_override_pairwise") == 0) {
+		bss->rsn_override_pairwise =
+			hostapd_config_parse_cipher(line, pos);
+		if (bss->rsn_override_pairwise == -1 ||
+		    bss->rsn_override_pairwise == 0)
+			return 1;
+		if (bss->rsn_override_pairwise &
+		    (WPA_CIPHER_NONE | WPA_CIPHER_WEP40 | WPA_CIPHER_WEP104)) {
+			wpa_printf(MSG_ERROR,
+				   "Line %d: unsupported pairwise cipher suite '%s'",
+				   line, pos);
+			return 1;
+		}
+	} else if (os_strcmp(buf, "rsn_override_pairwise_2") == 0) {
+		bss->rsn_override_pairwise_2 =
+			hostapd_config_parse_cipher(line, pos);
+		if (bss->rsn_override_pairwise_2 == -1 ||
+		    bss->rsn_override_pairwise_2 == 0)
+			return 1;
+		if (bss->rsn_override_pairwise_2 &
+		    (WPA_CIPHER_NONE | WPA_CIPHER_WEP40 | WPA_CIPHER_WEP104)) {
+			wpa_printf(MSG_ERROR,
+				   "Line %d: unsupported pairwise cipher suite '%s'",
+				   line, pos);
+			return 1;
+		}
 	} else if (os_strcmp(buf, "group_cipher") == 0) {
 		bss->group_cipher = hostapd_config_parse_cipher(line, pos);
 		if (bss->group_cipher == -1 || bss->group_cipher == 0)
@@ -3232,6 +3296,8 @@ static int hostapd_config_fill(struct hostapd_config *conf,
 		os_free(bss->rsn_preauth_interfaces);
 		bss->rsn_preauth_interfaces = os_strdup(pos);
 #endif /* CONFIG_RSN_PREAUTH */
+	} else if (os_strcmp(buf, "rsn_override_omit_rsnxe") == 0) {
+		bss->rsn_override_omit_rsnxe = atoi(pos);
 	} else if (os_strcmp(buf, "peerkey") == 0) {
 		wpa_printf(MSG_INFO,
 			   "Line %d: Obsolete peerkey parameter ignored", line);
@@ -3668,6 +3734,10 @@ static int hostapd_config_fill(struct hostapd_config *conf,
 		conf->use_driver_iface_addr = atoi(pos);
 	} else if (os_strcmp(buf, "ieee80211w") == 0) {
 		bss->ieee80211w = atoi(pos);
+	} else if (os_strcmp(buf, "rsn_override_mfp") == 0) {
+		bss->rsn_override_mfp = atoi(pos);
+	} else if (os_strcmp(buf, "rsn_override_mfp_2") == 0) {
+		bss->rsn_override_mfp_2 = atoi(pos);
 	} else if (os_strcmp(buf, "group_mgmt_cipher") == 0) {
 		if (os_strcmp(pos, "AES-128-CMAC") == 0) {
 			bss->group_mgmt_cipher = WPA_CIPHER_AES_128_CMAC;
@@ -4505,23 +4575,29 @@ static int hostapd_config_fill(struct hostapd_config *conf,
 			bss->radio_measurements[0] |=
 				WLAN_RRM_CAPS_NEIGHBOR_REPORT;
 	} else if (os_strcmp(buf, "own_ie_override") == 0) {
-		struct wpabuf *tmp;
-		size_t len = os_strlen(pos) / 2;
-
-		tmp = wpabuf_alloc(len);
-		if (!tmp)
+		if (!get_hexstream(pos, &bss->own_ie_override,
+				   "own_ie_override", line))
 			return 1;
-
-		if (hexstr2bin(pos, wpabuf_put(tmp, len), len)) {
-			wpabuf_free(tmp);
-			wpa_printf(MSG_ERROR,
-				   "Line %d: Invalid own_ie_override '%s'",
-				   line, pos);
+	} else if (os_strcmp(buf, "rsne_override") == 0) {
+		if (!get_hexstream(pos, &bss->rsne_override,
+				   "rsne_override", line))
 			return 1;
-		}
-
-		wpabuf_free(bss->own_ie_override);
-		bss->own_ie_override = tmp;
+	} else if (os_strcmp(buf, "rsnoe_override") == 0) {
+		if (!get_hexstream(pos, &bss->rsnoe_override,
+				   "rsnoe_override", line))
+			return 1;
+	} else if (os_strcmp(buf, "rsno2e_override") == 0) {
+		if (!get_hexstream(pos, &bss->rsno2e_override,
+				   "rsno2e_override", line))
+			return 1;
+	} else if (os_strcmp(buf, "rsnxe_override") == 0) {
+		if (!get_hexstream(pos, &bss->rsnxe_override,
+				   "rsnxe_override", line))
+			return 1;
+	} else if (os_strcmp(buf, "rsnxoe_override") == 0) {
+		if (!get_hexstream(pos, &bss->rsnxoe_override,
+				   "rsnxoe_override", line))
+			return 1;
 	} else if (os_strcmp(buf, "sae_reflection_attack") == 0) {
 		bss->sae_reflection_attack = atoi(pos);
 	} else if (os_strcmp(buf, "sae_commit_status") == 0) {
@@ -4583,6 +4659,8 @@ static int hostapd_config_fill(struct hostapd_config *conf,
 			return 1;
 	} else if (os_strcmp(buf, "eapol_m3_no_encrypt") == 0) {
 		bss->eapol_m3_no_encrypt = atoi(pos);
+	} else if (os_strcmp(buf, "eapol_key_reserved_random") == 0) {
+		bss->eapol_key_reserved_random = atoi(pos);
 	} else if (os_strcmp(buf, "test_assoc_comeback_type") == 0) {
 		bss->test_assoc_comeback_type = atoi(pos);
 	} else if (os_strcmp(buf, "presp_elements") == 0) {
@@ -5152,6 +5230,134 @@ static int hostapd_config_fill(struct hostapd_config *conf,
 	return 0;
 }
 
+#ifdef CONFIG_IEEE80211AH
+/* Validate country, operating class, channel configuration */
+int hostapd_config_s1g_val(struct hostapd_config *conf)
+{
+	int op_class_idx;
+	int channel = 0;
+	int chan_width;
+	int errors = 0;
+
+	morse_set_s1g_ht_chan_pairs(conf->country);
+
+	if (conf->acs) {
+		/* validate op class, country */
+		op_class_idx = morse_s1g_verify_op_class_country(
+				conf->op_class, conf->country, conf->s1g_prim_1mhz_chan_index);
+
+		wpa_printf(MSG_DEBUG, "s1g oper class: %d, validated: %d",
+				conf->op_class, op_class_idx);
+
+		if (op_class_idx < 0) {
+			wpa_printf(MSG_ERROR,
+				"Invalid 802.11ah S1G config of oper class and country code");
+			errors++;
+		}
+
+	} else {
+		op_class_idx = morse_s1g_verify_op_class_country_channel(conf->op_class,
+				conf->country, conf->channel, conf->s1g_prim_1mhz_chan_index);
+
+		wpa_printf(MSG_DEBUG, "s1g oper class: %d, validated: %d",
+				conf->op_class, op_class_idx);
+		wpa_printf(MSG_DEBUG, "s1g channel %u", conf->channel);
+
+		if (op_class_idx < 0) {
+			wpa_printf(MSG_ERROR,
+				"Invalid s1g config of oper class, country code and channel");
+			errors++;
+		}
+
+		/* Update the channel from s1g to ht */
+		channel = morse_s1g_chan_to_ht_chan(conf->channel);
+		wpa_printf(MSG_INFO, "s1g mapped ht channel %u", channel);
+
+		if (channel < 0) {
+			wpa_printf(MSG_ERROR, "S1G to ht channel mapping failed");
+			errors++;
+		}
+	}
+
+	/* Update the operating class to S1G regional specific */
+	conf->s1g_op_class = (u8)op_class_idx;
+
+	/* Reset internal op_class to not trigger other actions */
+	conf->op_class = 0;
+
+	/* Enable 80211n mode */
+	conf->ieee80211n = 1;
+
+	chan_width = morse_s1g_op_class_to_ch_width(conf->s1g_op_class);
+
+	if (chan_width != 1)
+		conf->secondary_channel = (conf->s1g_prim_1mhz_chan_index % 2 ? -1 : 1);
+
+	if (conf->s1g_capab & (S1G_CAP0_SGI_1MHZ | S1G_CAP0_SGI_2MHZ))
+		conf->ht_capab |= (HT_CAP_INFO_SHORT_GI20MHZ | HT_CAP_INFO_SHORT_GI40MHZ);
+	else
+		conf->ht_capab &= ~(HT_CAP_INFO_SHORT_GI40MHZ | HT_CAP_INFO_SHORT_GI20MHZ);
+
+	/* Enable ieee80211ac regardless, so that we can use VHT capabilities mapped
+	 * to S1G capabilities.
+	 */
+	conf->ieee80211ac = 1;
+
+	/* If S1G SGI cap is supported, enable VHT SGI caps also */
+	if (conf->s1g_capab & S1G_CAP0_SGI_4MHZ)
+		conf->vht_capab |= VHT_CAP_SHORT_GI_80;
+
+	switch (chan_width) {
+	case 1:
+		break;
+	case 2:
+		conf->ht_capab |= HT_CAP_INFO_SUPP_CHANNEL_WIDTH_SET;
+		break;
+	case 4:
+		conf->ht_capab |= HT_CAP_INFO_SUPP_CHANNEL_WIDTH_SET;
+
+		/* Based on the WLAN channel allocation, the  HT control
+		 * channel is offset by 6 from the VHT80 channel index
+		 */
+		conf->vht_oper_chwidth = 1;
+		conf->vht_oper_centr_freq_seg0_idx = channel;
+		break;
+	case 8:
+		conf->ht_capab |= HT_CAP_INFO_SUPP_CHANNEL_WIDTH_SET;
+		conf->vht_capab |= VHT_CAP_SUPP_CHAN_WIDTH_160MHZ;
+		if (conf->s1g_capab & S1G_CAP0_SGI_8MHZ)
+			conf->vht_capab |= VHT_CAP_SHORT_GI_160;
+
+		/* valid 8MHz channel - map to 160MHz */
+		wpa_printf(MSG_INFO,
+			"Automatically configuring VHT due to 160MHz chan selection");
+		conf->vht_oper_chwidth = 2;
+
+		/* Based on the WLAN channel allocation, the HT control
+		 * channel is offset by 14 from the VHT160 channel index
+		 */
+		conf->vht_oper_centr_freq_seg0_idx = channel;
+		break;
+	default:
+		errors++;
+		break;
+	}
+
+	if (!conf->acs) {
+		conf->channel = morse_ht_center_chan_to_ht_chan(conf, channel);
+		wpa_printf(MSG_DEBUG, "ht channel set as %u", conf->channel);
+	}
+
+	/* Maintain a backup of country code to be used later for ECSA and country IEs */
+	os_memcpy(conf->op_country, conf->country, 2);
+
+	/* Use a special region ZZ with Linux, so we don't trigger any other 5G rules */
+	conf->country[0] = 'Z';
+	conf->country[1] = 'Z';
+
+	return errors;
+}
+#endif
 
 /**
  * hostapd_config_read - Read and parse a configuration file
@@ -5167,7 +5373,6 @@ struct hostapd_config * hostapd_config_read(const char *fname)
 	int errors = 0;
 	size_t i;
 #if CONFIG_IEEE80211AH
-	int ii;
 	bool in_raw = false;
 	int raw_num = -1;
 #endif
@@ -5375,125 +5580,7 @@ struct hostapd_config * hostapd_config_read(const char *fname)
 	fclose(f);
 
 #ifdef CONFIG_IEEE80211AH
-	/* Validate country, operating class, channel configuration */
-	{
-		int op_class_idx;
-		int channel;
-		int chan_width;
-
-		morse_set_s1g_ht_chan_pairs(conf->country);
-
-		if (conf->acs) {
-			/* validate op class, country */
-			op_class_idx = morse_s1g_verify_op_class_country(
-					conf->op_class, conf->country, conf->s1g_prim_1mhz_chan_index);
-
-			wpa_printf(MSG_DEBUG, "s1g oper class: %d, validated: %d", conf->op_class, op_class_idx);
-
-			if (op_class_idx < 0) {
-				wpa_printf(MSG_ERROR, "invalid 802.11ah S1G configuration of operating class and country code");
-				errors++;
-			}
-
-		} else {
-			op_class_idx = morse_s1g_verify_op_class_country_channel(
-					conf->op_class, conf->country, conf->channel, conf->s1g_prim_1mhz_chan_index);
-
-			wpa_printf(MSG_DEBUG, "s1g oper class: %d, validated: %d", conf->op_class, op_class_idx);
-			wpa_printf(MSG_DEBUG, "s1g channel %u", conf->channel);
-
-			if (op_class_idx < 0) {
-				wpa_printf(MSG_ERROR, "invalid 802.11ah S1G configuration of operating class, country code and channel");
-				errors++;
-			}
-
-			/* Update the channel from s1g to ht */
-			channel = morse_s1g_chan_to_ht_chan(conf->channel);
-			wpa_printf(MSG_INFO, "s1g mapped ht channel %u", channel);
-
-			if (channel < 0) {
-				wpa_printf(MSG_ERROR, "S1G to ht channel mapping failed");
-				errors++;
-			}
-		}
-
-		/* Update the operating class to S1G regional specific */
-		conf->s1g_op_class = (u8) op_class_idx;
-		/* Reset internal op_class to not trigger other actions */
-		conf->op_class = 0;
-
-		/* Enable 80211n mode */
-		conf->ieee80211n = 1;
-
-		chan_width = morse_s1g_op_class_to_ch_width(conf->s1g_op_class);
-
-		if (chan_width != 1)
-			conf->secondary_channel = (conf->s1g_prim_1mhz_chan_index % 2 ? -1 : 1);
-
-		{
-			if (conf->s1g_capab & (S1G_CAP0_SGI_1MHZ | S1G_CAP0_SGI_2MHZ)) {
-				conf->ht_capab |= (HT_CAP_INFO_SHORT_GI20MHZ | HT_CAP_INFO_SHORT_GI40MHZ);
-			} else {
-				conf->ht_capab &= ~(HT_CAP_INFO_SHORT_GI40MHZ | HT_CAP_INFO_SHORT_GI20MHZ);
-			}
-			/* Enable ieee80211ac regardless, so that we can use VHT capabilities mapped
-			 * to S1G capabilities.
-			 */
-			conf->ieee80211ac = 1;
-			/* If S1G SGI cap is supported, enable VHT SGI caps also */
-			if (conf->s1g_capab & S1G_CAP0_SGI_4MHZ)
-				conf->vht_capab |= VHT_CAP_SHORT_GI_80;
-
-			if (conf->s1g_capab & S1G_CAP0_SGI_8MHZ)
-				conf->vht_capab |= VHT_CAP_SHORT_GI_160;
-
-			conf->vht_capab |= VHT_CAP_SUPP_CHAN_WIDTH_160MHZ;
-
-			switch (chan_width) {
-				case 1:
-					break;
-				case 2:
-					conf->ht_capab |= HT_CAP_INFO_SUPP_CHANNEL_WIDTH_SET;
-					break;
-				case 4:
-					conf->ht_capab |= HT_CAP_INFO_SUPP_CHANNEL_WIDTH_SET;
-
-					/* Based on the WLAN channel allocation, the  HT control
-					* channel is offset by 6 from the VHT80 channel index
-					*/
-					conf->vht_oper_chwidth = 1;
-					conf->vht_oper_centr_freq_seg0_idx = channel;
-					break;
-				case 8:
-
-					conf->ht_capab |= HT_CAP_INFO_SUPP_CHANNEL_WIDTH_SET;
-
-					/* valid 8MHz channel - map to 160MHz */
-					wpa_printf(MSG_INFO, "Automatically configuring VHT "
-							"due to 160MHz channel selection");
-					conf->vht_oper_chwidth = 2;
-					/* Based on the WLAN channel allocation, the HT control
-					* channel is offset by 14 from the VHT160 channel index
-					*/
-					conf->vht_oper_centr_freq_seg0_idx = channel;
-					break;
-				default:
-					errors++;
-					break;
-			}
-		}
-		if (!conf->acs) {
-			conf->channel = morse_ht_center_chan_to_ht_chan(conf, channel);
-			wpa_printf(MSG_DEBUG, "ht channel set as %u", conf->channel);
-		}
-
-		/* Maintain a backup of country code to be used later for ecsa and country ie's  */
-		os_memcpy(conf->op_country, conf->country, 2);
-
-		/* Use a special region ZZ with Linux, so we don't trigger any other 5G rules */
-		conf->country[0] = 'Z';
-		conf->country[1] = 'Z';
-	}
+	errors += hostapd_config_s1g_val(conf);
 #endif
 
 	for (i = 0; i < conf->num_bss; i++)

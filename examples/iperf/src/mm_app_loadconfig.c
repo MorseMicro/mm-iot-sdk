@@ -19,7 +19,7 @@
 #include "mmipal.h"
 #include "mmosal.h"
 #include "mm_app_loadconfig.h"
-#include "mmwlan_regdb.def"
+#include "mm_app_regdb.h"
 
 #ifndef COUNTRY_CODE
 #define COUNTRY_CODE "??"
@@ -275,6 +275,16 @@ void load_mmwlan_sta_args(struct mmwlan_sta_args *sta_config)
     if (mmconfig_read_int("wlan.raw_priority", &intval) == MMCONFIG_OK)
     {
         sta_config->raw_sta_priority = (int16_t) intval;
+    }
+
+    /* Load scan interval parameters, if specified */
+    if (mmconfig_read_int("wlan.sta_scan_interval_base_s", &intval) == MMCONFIG_OK)
+    {
+        sta_config->scan_interval_base_s = (int16_t)intval;
+    }
+    if (mmconfig_read_int("wlan.sta_scan_interval_limit_s", &intval) == MMCONFIG_OK)
+    {
+        sta_config->scan_interval_limit_s = (int16_t)intval;
     }
 }
 

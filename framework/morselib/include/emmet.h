@@ -91,7 +91,7 @@ void emmet_start(void);
  *
  * @param reg_db                The regulatory database to use. Must remain valid in memory.
  *
- * @returns @c WWLAN_SUCCESS on success, or another relevant error code.
+ * @returns @c MMWLAN_SUCCESS on success, or another relevant error code.
  */
 enum mmwlan_status emmet_set_reg_db(const struct mmwlan_regulatory_db *reg_db);
 

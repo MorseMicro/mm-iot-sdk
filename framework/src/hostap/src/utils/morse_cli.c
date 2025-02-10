@@ -1,5 +1,8 @@
 /*
  * Copyright 2022 Morse Micro
+ *
+ * This software may be distributed under the terms of the BSD license.
+ * See README for more details.
  */
 
 #include "morse.h"
@@ -29,11 +32,11 @@ int morse_cli(const char *ifname, const char *args_fmt, ...)
 	if (ret < 0)
 		return ret;
 
-	if (ret >= sizeof(morse_cli_cmdline))
+	if ((unsigned int)ret >= sizeof(morse_cli_cmdline))
 		return -1; /* Buffer too small */
 
-	buf += ret;
-	spc -= ret;
+	buf += (unsigned int)ret;
+	spc -= (unsigned int)ret;
 
 	va_start(vargs, args_fmt);
 	ret = vsnprintf(buf, spc, args_fmt, vargs);
@@ -42,7 +45,7 @@ int morse_cli(const char *ifname, const char *args_fmt, ...)
 	if (ret < 0)
 		return ret;
 
-	if (ret >= sizeof(morse_cli_cmdline))
+	if ((unsigned int)ret >= sizeof(morse_cli_cmdline))
 		return -1; /* Buffer too small */
 
 	wpa_printf(MSG_DEBUG, "morse: execute %s", morse_cli_cmdline);
@@ -98,13 +101,13 @@ int morse_set_channel(const char *ifname, int oper_freq, int oper_chwidth, u8 pr
 
 int morse_set_ecsa_params(const char *ifname, u8 global_oper_class, u8 prim_chwidth,
 				int oper_chwidth, int oper_freq, u8 prim_1mhz_ch_idx,
-				u8 prim_global_op_class)
+				u8 prim_global_op_class, u32 s1g_capab)
 {
 	int ret;
 
-	ret = morse_cli(ifname, "ecsa_info -g %d -p %u -n %d -o %d -c %d -l %d",
+	ret = morse_cli(ifname, "ecsa_info -g %d -p %u -n %d -o %d -c %d -l %d -s %d",
 				global_oper_class, prim_chwidth, prim_1mhz_ch_idx,
-				oper_chwidth, oper_freq, prim_global_op_class);
+				oper_chwidth, oper_freq, prim_global_op_class, s1g_capab);
 	if (ret != 0)
 		wpa_printf(MSG_WARNING,
 			"morse: Failed to execute morse_cli to set ecsa parameters on ifname %s",
@@ -233,8 +236,11 @@ int morse_set_mesh_dynamic_peering(const char *ifname, bool enabled, u8 rssi_mar
 	int ret;
 	const char *operation = enabled ? "enable" : "disable";
 
-	ret = morse_cli(ifname, "dynamic_peering %s -r %u -t %u", operation, rssi_margin,
-		blacklist_timeout);
+	if (enabled)
+		ret = morse_cli(ifname, "dynamic_peering %s -r %u -t %u", operation, rssi_margin,
+			blacklist_timeout);
+	else
+		ret = morse_cli(ifname, "dynamic_peering %s", operation);
 	if (ret != 0)
 		wpa_printf(MSG_WARNING,
 			"%s: Failed to execute morse_cli dynamic_peering command on ifname %s",
@@ -284,8 +290,9 @@ int morse_raw_priority_enable(const char *ifname, bool enable, u8 prio, u32 star
 	u8 praw_period, u8 praw_start_offset)
 {
 	int ret;
-	uint8_t buff[64] = {0};
-	uint16_t aid_start, aid_end;
+	char buff[64] = {0};
+	uint16_t aid_start = 0;
+	uint16_t aid_end = 0;
 
 	if (enable) {
 		morse_raw_prio_to_aid_range(prio, &aid_start, &aid_end);

@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.6.4</span>
+   &#160;<span id="projectnumber">2.7.2</span>
    </div>
   </td>
  </tr>
@@ -118,12 +118,12 @@ Beacon Stuffing Overview</h1>
 Application Overview</h1>
 <p >This application connects and then installs one OUI to filter on. It will then log how many times it sees the Vendor Specific IE and the most recent data received.</p>
 <p >Additionally, if the length of the vendor specific content is greater than or equal to <a class="el" href="beacon__stuffing_8c.html#ac65bb652e154b13982cf8b0e6911a17e">RGB_DATA_LENGTH_BYTES</a> this application will treat it as intensity levels for the red, green and blue LEDs. These will be set in the callback using <a class="el" href="group__MMHAL.html#gac25caf50d17ead605f05658a7555ab7c">mmhal_set_led()</a>.</p>
-<p >To add a Vendor Specific IE using a Morse Micro AP the following command can be used. </p><div class="fragment"><div class="line">morse_cli -a 4D4D42FF00FF -b</div>
+<p >To add a Vendor Specific IE using a Morse Micro AP the following command can be used. </p><div class="fragment"><div class="line">morse_cli vendor_ie -a 4D4D42FF00FF -b</div>
 </div><!-- fragment --><p >This will add a Vendor Specific IE with</p><ul>
 <li>OUI = <code>0x4D4D42</code> </li>
 <li>Vendor Specific Content = <code>0xFF00FF</code> </li>
 </ul>
-<p >To clear the Vendor Specific IEs. </p><div class="fragment"><div class="line">morse_cli -c -b</div>
+<p >To clear the Vendor Specific IEs. </p><div class="fragment"><div class="line">morse_cli vendor_ie -c -b</div>
 </div><!-- fragment --><dl class="section note"><dt>Note</dt><dd>A beacon may contain multiple Vendor IEs with the same OUI. The handling of these is application specific. In this example application, only the first matching Vendor IE is processed and subsequent Vendor IEs with the same OUI, if present, are ignored.</dd></dl>
 <h1><a class="anchor" id="autotoc_md16"></a>
 Configuration</h1>
@@ -455,7 +455,7 @@ Variables</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_cddc6ecb1abce9511317e8c5cc90cd4c.html">examples</a></li><li class="navelem"><a class="el" href="dir_e88843ab947bbb7e4cbc74b73d447f19.html">beacon_stuffing</a></li><li class="navelem"><a class="el" href="dir_15a1d163dc15ef21638ac58826c6b1be.html">src</a></li><li class="navelem"><a class="el" href="beacon__stuffing_8c.html">beacon_stuffing.c</a></li>
+    <li class="navelem"><a class="el" href="dir_d570c7de7a367bd1f24cd66faf59ca3f.html">examples</a></li><li class="navelem"><a class="el" href="dir_8b9712de9959404a0a444a51526d8834.html">beacon_stuffing</a></li><li class="navelem"><a class="el" href="dir_267e91be724ecfd1d81ec4825ba0a7ab.html">src</a></li><li class="navelem"><a class="el" href="beacon__stuffing_8c.html">beacon_stuffing.c</a></li>
     <li class="footer">Copyright 2021 Morse Micro </li>
   </ul>
 </div>

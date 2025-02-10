@@ -256,6 +256,7 @@ struct mmagic_m2m_agent *mmagic_m2m_agent_init(const struct mmagic_m2m_agent_ini
 
     mmosal_safer_strcpy(agent->core.app_version, args->app_version,
                         sizeof(agent->core.app_version));
+    agent->core.reg_db = args->reg_db;
     agent->core.event_fn = mmagic_m2m_event_handler;
     agent->core.event_fn_arg = agent;
 

@@ -1,5 +1,5 @@
 /*
- * FreeRTOS+TCP <DEVELOPMENT BRANCH>
+ * FreeRTOS+TCP V4.2.2
  * Copyright (C) 2022 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -153,6 +153,10 @@ BaseType_t FreeRTOS_getaddrinfo( const char * pcName,                      /* Th
  * FreeRTOS_freeaddrinfo().
  */
 void FreeRTOS_freeaddrinfo( struct freertos_addrinfo * pxInfo );
+
+/* Sets the DNS IP preference while doing DNS lookup to indicate the preference
+ * for a DNS server: either IPv4 or IPv6. Defaults to xPreferenceIPv4 */
+BaseType_t FreeRTOS_SetDNSIPPreference( IPPreference_t eIPPreference );
 
 #if ( ipconfigDNS_USE_CALLBACKS == 1 )
 

@@ -99,9 +99,9 @@
  * @endcode
  *
  * ## Testing the TCP Echo Server
- * In addition to an example TCP client that connects to the @c morsemicro.com web server and
- * the beacon monitor example, the @c m2m_controller also demonstrates how to use TCP server
- * sockets to serve multiple incoming TCP client connections.
+ * In addition to an example TCP client that connects to a web server and the beacon monitor
+ * example, the @c m2m_controller also demonstrates how to use TCP server sockets to serve
+ * multiple incoming TCP client connections.
  *
  * ### Using Telnet ###
  * - Note the IP address assigned to the system (Agent + Controller is the system) in the Link Up
@@ -185,7 +185,7 @@
 #define STRINGIFY(x) _STRINGIFY(x)
 
 /** Duration to wait for the link to be established after WLAN reports connected. */
-#define LINK_STATE_TIMEOUT_MS 10000
+#define LINK_STATE_TIMEOUT_MS 20000
 
 /** Port the the TCP echo server will bind to. */
 #define TCP_ECHCO_SERVER_PORT 5000
@@ -263,12 +263,12 @@ static bool wlan_connect(struct mmagic_controller *controller)
             printf("Netmask: %s, ", ip_status_rsp_args.status.netmask.addr);
             printf("Gateway: %s", ip_status_rsp_args.status.gateway.addr);
             printf("\n");
-            break;
+            return true;
         }
         mmosal_task_sleep(500);
     }
 
-    return (status == MMAGIC_STATUS_OK) ? true : false;
+    return false;
 }
 
 /**
@@ -372,7 +372,7 @@ static void tcp_client_example(struct mmagic_controller *controller)
     enum mmagic_status status;
 
     struct mmagic_core_tcp_connect_cmd_args tcp_connect_args = {
-        .url = {.data = "morsemicro.com", .len = strlen("morsemicro.com")},
+        .url = {.data = "google.com", .len = strlen("google.com")},
         .port = 80
     };
     struct mmagic_core_tcp_connect_rsp_args tcp_rsp_args = {};
@@ -410,7 +410,8 @@ static void tcp_client_example(struct mmagic_controller *controller)
     }
     else
     {
-        printf("Received:\n%.*s\n", tcp_recv_rsp_args.buffer.len, tcp_recv_rsp_args.buffer.data);
+        printf("Received: %.12s, Length %u\n", tcp_recv_rsp_args.buffer.data,
+               tcp_recv_rsp_args.buffer.len);
     }
 
     struct mmagic_core_tcp_close_cmd_args tcp_close_cmd_args = {.stream_id = tcp_stream_id};

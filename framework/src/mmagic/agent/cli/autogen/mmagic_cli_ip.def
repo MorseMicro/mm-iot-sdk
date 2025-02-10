@@ -19,146 +19,6 @@
 
 /********* Getters **********/
 
-int mmagic_cli_ip_get_dhcp_enabled(struct mmagic_data *core, EmbeddedCli *cli)
-{
-    struct mmagic_ip_data *data = mmagic_data_get_ip(core);
-
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
-    /* -1 to allow for a NULL terminator at the end */
-    int len = MMAGIC_CLI_PRINT_BUF_LEN - 1;
-    int written = 0;
-
-    written = snprintf(&buf[written], len, "%-30s", "ip.dhcp_enabled");
-    if (written < 0 || written > len)
-    {
-        return -1;
-    }
-    len -= written;
-
-    written = bool_to_string(&data->config.dhcp_enabled, &buf[written], len);
-    if (written < 0 || written > len)
-    {
-        return -1;
-    }
-    len -= written;
-
-    embeddedCliPrint(cli, buf);
-
-    return 0;
-}
-
-int mmagic_cli_ip_get_dhcp_offload(struct mmagic_data *core, EmbeddedCli *cli)
-{
-    struct mmagic_ip_data *data = mmagic_data_get_ip(core);
-
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
-    /* -1 to allow for a NULL terminator at the end */
-    int len = MMAGIC_CLI_PRINT_BUF_LEN - 1;
-    int written = 0;
-
-    written = snprintf(&buf[written], len, "%-30s", "ip.dhcp_offload");
-    if (written < 0 || written > len)
-    {
-        return -1;
-    }
-    len -= written;
-
-    written = bool_to_string(&data->config.dhcp_offload, &buf[written], len);
-    if (written < 0 || written > len)
-    {
-        return -1;
-    }
-    len -= written;
-
-    embeddedCliPrint(cli, buf);
-
-    return 0;
-}
-
-int mmagic_cli_ip_get_dns_server0(struct mmagic_data *core, EmbeddedCli *cli)
-{
-    struct mmagic_ip_data *data = mmagic_data_get_ip(core);
-
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
-    /* -1 to allow for a NULL terminator at the end */
-    int len = MMAGIC_CLI_PRINT_BUF_LEN - 1;
-    int written = 0;
-
-    written = snprintf(&buf[written], len, "%-30s", "ip.dns_server0");
-    if (written < 0 || written > len)
-    {
-        return -1;
-    }
-    len -= written;
-
-    written = struct_ip_addr_to_string(&data->config.dns_server0, &buf[written], len);
-    if (written < 0 || written > len)
-    {
-        return -1;
-    }
-    len -= written;
-
-    embeddedCliPrint(cli, buf);
-
-    return 0;
-}
-
-int mmagic_cli_ip_get_dns_server1(struct mmagic_data *core, EmbeddedCli *cli)
-{
-    struct mmagic_ip_data *data = mmagic_data_get_ip(core);
-
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
-    /* -1 to allow for a NULL terminator at the end */
-    int len = MMAGIC_CLI_PRINT_BUF_LEN - 1;
-    int written = 0;
-
-    written = snprintf(&buf[written], len, "%-30s", "ip.dns_server1");
-    if (written < 0 || written > len)
-    {
-        return -1;
-    }
-    len -= written;
-
-    written = struct_ip_addr_to_string(&data->config.dns_server1, &buf[written], len);
-    if (written < 0 || written > len)
-    {
-        return -1;
-    }
-    len -= written;
-
-    embeddedCliPrint(cli, buf);
-
-    return 0;
-}
-
-int mmagic_cli_ip_get_gateway(struct mmagic_data *core, EmbeddedCli *cli)
-{
-    struct mmagic_ip_data *data = mmagic_data_get_ip(core);
-
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
-    /* -1 to allow for a NULL terminator at the end */
-    int len = MMAGIC_CLI_PRINT_BUF_LEN - 1;
-    int written = 0;
-
-    written = snprintf(&buf[written], len, "%-30s", "ip.gateway");
-    if (written < 0 || written > len)
-    {
-        return -1;
-    }
-    len -= written;
-
-    written = struct_ip_addr_to_string(&data->config.gateway, &buf[written], len);
-    if (written < 0 || written > len)
-    {
-        return -1;
-    }
-    len -= written;
-
-    embeddedCliPrint(cli, buf);
-
-    return 0;
-}
-
 int mmagic_cli_ip_get_ip_addr(struct mmagic_data *core, EmbeddedCli *cli)
 {
     struct mmagic_ip_data *data = mmagic_data_get_ip(core);
@@ -174,8 +34,7 @@ int mmagic_cli_ip_get_ip_addr(struct mmagic_data *core, EmbeddedCli *cli)
         return -1;
     }
     len -= written;
-
-    written = struct_ip_addr_to_string(&data->config.ip_addr, &buf[written], len);
+    written = mmagic_struct_ip_addr_to_string(&data->config.ip_addr, &buf[written], len);
     if (written < 0 || written > len)
     {
         return -1;
@@ -202,8 +61,142 @@ int mmagic_cli_ip_get_netmask(struct mmagic_data *core, EmbeddedCli *cli)
         return -1;
     }
     len -= written;
+    written = mmagic_struct_ip_addr_to_string(&data->config.netmask, &buf[written], len);
+    if (written < 0 || written > len)
+    {
+        return -1;
+    }
+    len -= written;
 
-    written = struct_ip_addr_to_string(&data->config.netmask, &buf[written], len);
+    embeddedCliPrint(cli, buf);
+
+    return 0;
+}
+
+int mmagic_cli_ip_get_gateway(struct mmagic_data *core, EmbeddedCli *cli)
+{
+    struct mmagic_ip_data *data = mmagic_data_get_ip(core);
+
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    /* -1 to allow for a NULL terminator at the end */
+    int len = MMAGIC_CLI_PRINT_BUF_LEN - 1;
+    int written = 0;
+
+    written = snprintf(&buf[written], len, "%-30s", "ip.gateway");
+    if (written < 0 || written > len)
+    {
+        return -1;
+    }
+    len -= written;
+    written = mmagic_struct_ip_addr_to_string(&data->config.gateway, &buf[written], len);
+    if (written < 0 || written > len)
+    {
+        return -1;
+    }
+    len -= written;
+
+    embeddedCliPrint(cli, buf);
+
+    return 0;
+}
+
+int mmagic_cli_ip_get_dns_server0(struct mmagic_data *core, EmbeddedCli *cli)
+{
+    struct mmagic_ip_data *data = mmagic_data_get_ip(core);
+
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    /* -1 to allow for a NULL terminator at the end */
+    int len = MMAGIC_CLI_PRINT_BUF_LEN - 1;
+    int written = 0;
+
+    written = snprintf(&buf[written], len, "%-30s", "ip.dns_server0");
+    if (written < 0 || written > len)
+    {
+        return -1;
+    }
+    len -= written;
+    written = mmagic_struct_ip_addr_to_string(&data->config.dns_server0, &buf[written], len);
+    if (written < 0 || written > len)
+    {
+        return -1;
+    }
+    len -= written;
+
+    embeddedCliPrint(cli, buf);
+
+    return 0;
+}
+
+int mmagic_cli_ip_get_dns_server1(struct mmagic_data *core, EmbeddedCli *cli)
+{
+    struct mmagic_ip_data *data = mmagic_data_get_ip(core);
+
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    /* -1 to allow for a NULL terminator at the end */
+    int len = MMAGIC_CLI_PRINT_BUF_LEN - 1;
+    int written = 0;
+
+    written = snprintf(&buf[written], len, "%-30s", "ip.dns_server1");
+    if (written < 0 || written > len)
+    {
+        return -1;
+    }
+    len -= written;
+    written = mmagic_struct_ip_addr_to_string(&data->config.dns_server1, &buf[written], len);
+    if (written < 0 || written > len)
+    {
+        return -1;
+    }
+    len -= written;
+
+    embeddedCliPrint(cli, buf);
+
+    return 0;
+}
+
+int mmagic_cli_ip_get_dhcp_enabled(struct mmagic_data *core, EmbeddedCli *cli)
+{
+    struct mmagic_ip_data *data = mmagic_data_get_ip(core);
+
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    /* -1 to allow for a NULL terminator at the end */
+    int len = MMAGIC_CLI_PRINT_BUF_LEN - 1;
+    int written = 0;
+
+    written = snprintf(&buf[written], len, "%-30s", "ip.dhcp_enabled");
+    if (written < 0 || written > len)
+    {
+        return -1;
+    }
+    len -= written;
+    written = mmagic_bool_to_string(data->config.dhcp_enabled, &buf[written], len);
+    if (written < 0 || written > len)
+    {
+        return -1;
+    }
+    len -= written;
+
+    embeddedCliPrint(cli, buf);
+
+    return 0;
+}
+
+int mmagic_cli_ip_get_dhcp_offload(struct mmagic_data *core, EmbeddedCli *cli)
+{
+    struct mmagic_ip_data *data = mmagic_data_get_ip(core);
+
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    /* -1 to allow for a NULL terminator at the end */
+    int len = MMAGIC_CLI_PRINT_BUF_LEN - 1;
+    int written = 0;
+
+    written = snprintf(&buf[written], len, "%-30s", "ip.dhcp_offload");
+    if (written < 0 || written > len)
+    {
+        return -1;
+    }
+    len -= written;
+    written = mmagic_bool_to_string(data->config.dhcp_offload, &buf[written], len);
     if (written < 0 || written > len)
     {
         return -1;
@@ -218,81 +211,11 @@ int mmagic_cli_ip_get_netmask(struct mmagic_data *core, EmbeddedCli *cli)
 
 /********* Setters **********/
 
-int mmagic_cli_ip_set_dhcp_enabled(struct mmagic_data *core, EmbeddedCli *cli, const char *val)
-{
-    struct mmagic_ip_data *data = mmagic_data_get_ip(core);
-
-    if (string_to_bool(&data->config.dhcp_enabled, val))
-    {
-        return -1;
-    }
-
-    mmagic_cli_ip_get_dhcp_enabled(core, cli);
-
-    return 0;
-}
-
-int mmagic_cli_ip_set_dhcp_offload(struct mmagic_data *core, EmbeddedCli *cli, const char *val)
-{
-    struct mmagic_ip_data *data = mmagic_data_get_ip(core);
-
-    if (string_to_bool(&data->config.dhcp_offload, val))
-    {
-        return -1;
-    }
-
-    mmagic_cli_ip_get_dhcp_offload(core, cli);
-
-    return 0;
-}
-
-int mmagic_cli_ip_set_dns_server0(struct mmagic_data *core, EmbeddedCli *cli, const char *val)
-{
-    struct mmagic_ip_data *data = mmagic_data_get_ip(core);
-
-    if (string_to_struct_ip_addr(&data->config.dns_server0, val))
-    {
-        return -1;
-    }
-
-    mmagic_cli_ip_get_dns_server0(core, cli);
-
-    return 0;
-}
-
-int mmagic_cli_ip_set_dns_server1(struct mmagic_data *core, EmbeddedCli *cli, const char *val)
-{
-    struct mmagic_ip_data *data = mmagic_data_get_ip(core);
-
-    if (string_to_struct_ip_addr(&data->config.dns_server1, val))
-    {
-        return -1;
-    }
-
-    mmagic_cli_ip_get_dns_server1(core, cli);
-
-    return 0;
-}
-
-int mmagic_cli_ip_set_gateway(struct mmagic_data *core, EmbeddedCli *cli, const char *val)
-{
-    struct mmagic_ip_data *data = mmagic_data_get_ip(core);
-
-    if (string_to_struct_ip_addr(&data->config.gateway, val))
-    {
-        return -1;
-    }
-
-    mmagic_cli_ip_get_gateway(core, cli);
-
-    return 0;
-}
-
 int mmagic_cli_ip_set_ip_addr(struct mmagic_data *core, EmbeddedCli *cli, const char *val)
 {
     struct mmagic_ip_data *data = mmagic_data_get_ip(core);
 
-    if (string_to_struct_ip_addr(&data->config.ip_addr, val))
+    if (mmagic_string_to_struct_ip_addr(&data->config.ip_addr, val))
     {
         return -1;
     }
@@ -306,7 +229,7 @@ int mmagic_cli_ip_set_netmask(struct mmagic_data *core, EmbeddedCli *cli, const 
 {
     struct mmagic_ip_data *data = mmagic_data_get_ip(core);
 
-    if (string_to_struct_ip_addr(&data->config.netmask, val))
+    if (mmagic_string_to_struct_ip_addr(&data->config.netmask, val))
     {
         return -1;
     }
@@ -316,8 +239,82 @@ int mmagic_cli_ip_set_netmask(struct mmagic_data *core, EmbeddedCli *cli, const 
     return 0;
 }
 
+int mmagic_cli_ip_set_gateway(struct mmagic_data *core, EmbeddedCli *cli, const char *val)
+{
+    struct mmagic_ip_data *data = mmagic_data_get_ip(core);
 
-/********* Dictionary **********/
+    if (mmagic_string_to_struct_ip_addr(&data->config.gateway, val))
+    {
+        return -1;
+    }
+
+    mmagic_cli_ip_get_gateway(core, cli);
+
+    return 0;
+}
+
+int mmagic_cli_ip_set_dns_server0(struct mmagic_data *core, EmbeddedCli *cli, const char *val)
+{
+    struct mmagic_ip_data *data = mmagic_data_get_ip(core);
+
+    if (mmagic_string_to_struct_ip_addr(&data->config.dns_server0, val))
+    {
+        return -1;
+    }
+
+    mmagic_cli_ip_get_dns_server0(core, cli);
+
+    return 0;
+}
+
+int mmagic_cli_ip_set_dns_server1(struct mmagic_data *core, EmbeddedCli *cli, const char *val)
+{
+    struct mmagic_ip_data *data = mmagic_data_get_ip(core);
+
+    if (mmagic_string_to_struct_ip_addr(&data->config.dns_server1, val))
+    {
+        return -1;
+    }
+
+    mmagic_cli_ip_get_dns_server1(core, cli);
+
+    return 0;
+}
+
+int mmagic_cli_ip_set_dhcp_enabled(struct mmagic_data *core, EmbeddedCli *cli, const char *val)
+{
+    struct mmagic_ip_data *data = mmagic_data_get_ip(core);
+
+    if (mmagic_string_to_bool(&data->config.dhcp_enabled, val))
+    {
+        return -1;
+    }
+
+    mmagic_cli_ip_get_dhcp_enabled(core, cli);
+
+    return 0;
+}
+
+int mmagic_cli_ip_set_dhcp_offload(struct mmagic_data *core, EmbeddedCli *cli, const char *val)
+{
+    struct mmagic_ip_data *data = mmagic_data_get_ip(core);
+
+    if (mmagic_string_to_bool(&data->config.dhcp_offload, val))
+    {
+        return -1;
+    }
+
+    mmagic_cli_ip_get_dhcp_offload(core, cli);
+
+    return 0;
+}
+
+
+/********* Dictionary **********
+ *
+ * This list must be in alphabetical order as @c mmagic_cli_element_search() is implemented using
+ * a binary search which requires an ordered list.
+ */
 struct mmagic_cli_config_elem ip_cli_config_vars[] = {
     {"dhcp_enabled", mmagic_cli_ip_get_dhcp_enabled, mmagic_cli_ip_set_dhcp_enabled},
     {"dhcp_offload", mmagic_cli_ip_get_dhcp_offload, mmagic_cli_ip_set_dhcp_offload},
@@ -353,7 +350,7 @@ void mmagic_cli_ip_get(struct mmagic_cli *ctx, EmbeddedCli *cli, const char *con
     struct mmagic_cli_config_elem *elem = mmagic_cli_element_search(ip_cli_config_vars, num_elements, config_var);
     if (elem == NULL)
     {
-        embeddedCliPrint(cli, "Unable to find config variable");
+        mmagic_cli_printf(cli, "Unable to find config variable 'ip.%s'", config_var);
         return;
     }
 
@@ -378,7 +375,7 @@ void mmagic_cli_ip_set(struct mmagic_cli *ctx, EmbeddedCli *cli, const char *con
     struct mmagic_cli_config_elem *elem = mmagic_cli_element_search(ip_cli_config_vars, num_elements, config_var);
     if (elem == NULL)
     {
-        mmagic_cli_printf(cli, "Unable to find config variable ip.%s", config_var);
+        mmagic_cli_printf(cli, "Unable to find config variable 'ip.%s'", config_var);
         return;
     }
 
@@ -404,6 +401,7 @@ void mmagic_cli_ip_commit(struct mmagic_cli *ctx, EmbeddedCli *cli, const char *
     }
 
     mmagic_core_ip_save_all(&ctx->core);
+    embeddedCliPrint(cli, "Succesfully committed 'ip' variables");
     
 }
 

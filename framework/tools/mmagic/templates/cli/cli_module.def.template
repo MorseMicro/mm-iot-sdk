@@ -18,7 +18,7 @@
 #define MAX_VAL_LEN     32
 
 /********* Getters **********/
-{% for var in data.configs %}
+{% for var in data.configs | sort(attribute="id") %}
 int mmagic_cli_{{data.name}}_get_{{var.name}}(struct mmagic_data *core, EmbeddedCli *cli)
 {
     struct mmagic_{{data.name}}_data *data = mmagic_data_get_{{data.name}}(core);
@@ -35,7 +35,12 @@ int mmagic_cli_{{data.name}}_get_{{var.name}}(struct mmagic_data *core, Embedded
     }
     len -= written;
 
-    written = {{var.type}}_to_string(&data->config.{{var.name}}, &buf[written], len);
+    {%- if var.type.startswith("struct") %}
+        {%- set ref = "&" %}
+    {%- else %}
+        {%- set ref = "" %}
+    {%- endif %}
+    written = mmagic_{{var.type}}_to_string({{ref}}data->config.{{var.name}}, &buf[written], len);
     if (written < 0 || written > len)
     {
         return -1;
@@ -49,12 +54,12 @@ int mmagic_cli_{{data.name}}_get_{{var.name}}(struct mmagic_data *core, Embedded
 {% endfor %}
 
 /********* Setters **********/
-{% for var in data.configs %}
+{% for var in data.configs | sort(attribute="id") %}
 int mmagic_cli_{{data.name}}_set_{{var.name}}(struct mmagic_data *core, EmbeddedCli *cli, const char *val)
 {
     struct mmagic_{{data.name}}_data *data = mmagic_data_get_{{data.name}}(core);
 
-    if (string_to_{{var.type}}(&data->config.{{var.name}}, val))
+    if (mmagic_string_to_{{var.type}}(&data->config.{{var.name}}, val))
     {
         return -1;
     }
@@ -65,9 +70,13 @@ int mmagic_cli_{{data.name}}_set_{{var.name}}(struct mmagic_data *core, Embedded
 }
 {% endfor %}
 
-/********* Dictionary **********/
+/********* Dictionary **********
+ *
+ * This list must be in alphabetical order as @c mmagic_cli_element_search() is implemented using
+ * a binary search which requires an ordered list.
+ */
 struct mmagic_cli_config_elem {{data.name}}_cli_config_vars[] = {
-{%- for var in data.configs %}
+{%- for var in data.configs | sort(attribute="name") %}
     {"{{var.name}}", mmagic_cli_{{data.name}}_get_{{var.name}}, mmagic_cli_{{data.name}}_set_{{var.name}}},
 {%- endfor %}
 };
@@ -97,7 +106,7 @@ void mmagic_cli_{{data.name}}_get(struct mmagic_cli *ctx, EmbeddedCli *cli, cons
     struct mmagic_cli_config_elem *elem = mmagic_cli_element_search({{data.name}}_cli_config_vars, num_elements, config_var);
     if (elem == NULL)
     {
-        embeddedCliPrint(cli, "Unable to find config variable");
+        mmagic_cli_printf(cli, "Unable to find config variable '{{data.name}}.%s'", config_var);
         return;
     }
 
@@ -122,7 +131,7 @@ void mmagic_cli_{{data.name}}_set(struct mmagic_cli *ctx, EmbeddedCli *cli, cons
     struct mmagic_cli_config_elem *elem = mmagic_cli_element_search({{data.name}}_cli_config_vars, num_elements, config_var);
     if (elem == NULL)
     {
-        mmagic_cli_printf(cli, "Unable to find config variable {{data.name}}.%s", config_var);
+        mmagic_cli_printf(cli, "Unable to find config variable '{{data.name}}.%s'", config_var);
         return;
     }
 
@@ -149,6 +158,7 @@ void mmagic_cli_{{data.name}}_commit(struct mmagic_cli *ctx, EmbeddedCli *cli, c
 
     {% if data.configs -%}
     mmagic_core_{{data.name}}_save_all(&ctx->core);
+    embeddedCliPrint(cli, "Succesfully committed '{{data.name}}' variables");
     {% else %}
     MM_UNUSED(ctx);
     {%- endif %}

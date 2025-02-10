@@ -18,6 +18,7 @@
 #include "mmutils.h"
 
 #include "mmagic.h"
+#include "mm_app_regdb.h"
 
 #if !defined(MBEDTLS_CONFIG_FILE)
 #include "mbedtls/mbedtls_config.h"
@@ -123,6 +124,7 @@ void app_init(void)
             .app_version = APPLICATION_VERSION,
             .tx_cb = cli_tx_handler,
             .set_deep_sleep_mode_cb = cli_set_deep_sleep_mode_handler,
+            .reg_db = get_regulatory_db(),
         };
         mmagic_cli_ctx = mmagic_cli_init(&init_args);
         printf("CLI interface enabled\n");
@@ -131,6 +133,7 @@ void app_init(void)
     {
         const struct mmagic_m2m_agent_init_args init_args = {
             .app_version = APPLICATION_VERSION,
+            .reg_db = get_regulatory_db(),
         };
         struct mmagic_m2m_agent *mmagic_m2m_agent = mmagic_m2m_agent_init(&init_args);
         MM_UNUSED(mmagic_m2m_agent);

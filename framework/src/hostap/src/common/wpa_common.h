@@ -144,6 +144,7 @@ WPA_CIPHER_BIP_CMAC_256)
 #define WFA_KEY_DATA_IP_ADDR_ALLOC RSN_SELECTOR(0x50, 0x6f, 0x9a, 5)
 #define WFA_KEY_DATA_TRANSITION_DISABLE RSN_SELECTOR(0x50, 0x6f, 0x9a, 0x20)
 #define WFA_KEY_DATA_DPP RSN_SELECTOR(0x50, 0x6f, 0x9a, 0x21)
+#define WFA_KEY_DATA_RSN_OVERRIDE_LINK RSN_SELECTOR(0x50, 0x6f, 0x9a, 0x2d)
 
 #define WPA_OUI_TYPE RSN_SELECTOR(0x00, 0x50, 0xf2, 1)
 
@@ -643,6 +644,14 @@ struct wpa_pasn_params_data {
 #define WPA_PASN_PUBKEY_COMPRESSED_1 0x03
 #define WPA_PASN_PUBKEY_UNCOMPRESSED 0x04
 
+/* WPA3 specification - RSN Selection element */
+enum rsn_selection_variant {
+	RSN_SELECTION_RSNE = 0,
+	RSN_SELECTION_RSNE_OVERRIDE = 1,
+	RSN_SELECTION_RSNE_OVERRIDE_2 = 2,
+};
+
+
 int wpa_ft_parse_ies(const u8 *ies, size_t ies_len, struct wpa_ft_ies *parse,
 		     int key_mgmt, bool reassoc_resp);
 void wpa_ft_parse_ies_free(struct wpa_ft_ies *parse);
@@ -704,6 +713,14 @@ struct wpa_eapol_ie_parse {
 	u16 aid;
 	const u8 *wmm;
 	size_t wmm_len;
+	const u8 *rsn_selection;
+	size_t rsn_selection_len;
+	const u8 *rsne_override;
+	size_t rsne_override_len;
+	const u8 *rsne_override_2;
+	size_t rsne_override_2_len;
+	const u8 *rsnxe_override;
+	size_t rsnxe_override_len;
 #ifndef MAX_NUM_MLO_LINKS
 #define MAX_NUM_MLO_LINKS 15
 #endif
@@ -719,6 +736,8 @@ struct wpa_eapol_ie_parse {
 	u16 valid_mlo_links; /* bitmap of valid MLO link KDEs */
 	const u8 *mlo_link[MAX_NUM_MLD_LINKS];
 	size_t mlo_link_len[MAX_NUM_MLD_LINKS];
+	const u8 *rsn_override_link[MAX_NUM_MLD_LINKS];
+	size_t rsn_override_link_len[MAX_NUM_MLD_LINKS];
 };
 
 int wpa_parse_kde_ies(const u8 *buf, size_t len, struct wpa_eapol_ie_parse *ie);
@@ -789,5 +808,8 @@ int wpa_pasn_parse_parameter_ie(const u8 *data, u8 len, bool from_ap,
 
 void wpa_pasn_add_rsnxe(struct wpabuf *buf, u16 capab);
 int wpa_pasn_add_extra_ies(struct wpabuf *buf, const u8 *extra_ies, size_t len);
+
+void rsn_set_snonce_cookie(u8 *snonce);
+bool rsn_is_snonce_cookie(const u8 *snonce);
 
 #endif /* WPA_COMMON_H */

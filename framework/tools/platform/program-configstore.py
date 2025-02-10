@@ -521,6 +521,10 @@ class ConfigStoreOpenOCDProgrammer:
                     f"Failed to read config store partition {i} at 0x{address:08x}: {e}")
         return ConfigStore(partitions)
 
+    def dump_config_store_binary(self, filename):
+        self.dutif.read_mem(filename, self.configstore_base_address,
+                            self.configstore_base_address + self.configstore_size)
+
     def write_config_store(self, config_store):
         if not config_store.has_staged_changes():
             logging.info("Skipping update as no change in config store")
@@ -639,7 +643,7 @@ def _expand_filename_in_json(json_filename, filename):
     return filename
 
 
-def _app_setup_args(parser, all_supported_platforms):
+def _app_setup_args(parser):
     parser.add_argument("-v", "--verbose",
                         action="count",
                         default=0,
@@ -659,8 +663,9 @@ def _app_setup_args(parser, all_supported_platforms):
                         default=DEFAULT_TCL_PORT,
                         type=int,
                         help="OpenOCD TCL port to use (only applies if -H flag is specified)")
+    parser.add_argument("-C", "--config-json", default=f"{SCRIPT_DIR}/configstore.json",
+                        help="Specifies the path to the configstore.json configuration file.")
     parser.add_argument("-p", "--platform",
-                        choices=all_supported_platforms,
                         help="""
                         Specifies platform configuration to be used. If left blank the script will
                         attempt to auto-detect the configuration to use.
@@ -672,6 +677,8 @@ def _app_setup_args(parser, all_supported_platforms):
     parser.add_argument("-d", "--dump",
                         action="store_true",
                         help="If specified, dumps the contents of config store")
+    parser.add_argument("-D", "--dump-binary",
+                        help="If specified, dumps the binary contents to the given file")
     parser.add_argument("-b", "--bcf",
                         help="Specifies the path to the BCF that is to be loaded into "
                              "the configstore. ***DEPRECATED***, use write-file instead.")
@@ -856,9 +863,22 @@ def _handle_delete_key(args, programmer):
     return config_store
 
 
-def _app_main(args, platform_configstore_args):
+def _app_main(args):
     if args.debug_host is not None:
         programmer_class = ConfigStoreOpenOCDProgrammer
+        logging.debug("Loading platform configuration from %s", args.config_json)
+        with open(args.config_json, "r") as f:
+            platform_configstore_args = hjson.load(f)
+        if args.platform is not None:
+            supported_platforms = set()
+            for v in platform_configstore_args.values():
+                supported_platforms.update(v["supported_platforms"])
+            if args.platform not in supported_platforms:
+                logging.error("Unsupported platform %s. Supported platforms:", args.platform)
+                for platform in sorted(supported_platforms):
+                    logging.error("    - %s", platform)
+                sys.exit(2)
+
         programmer_args = [
             args.debug_host, args.gdb_port, args.tcl_port, platform_configstore_args, args.platform
         ]
@@ -879,30 +899,26 @@ def _app_main(args, platform_configstore_args):
             try:
                 config_store = args.func(args, programmer)
             except AttributeError:
-                if not args.dump:
+                if not args.dump and not args.dump_binary:
                     logging.error("You likely forgot to specify a sub-command.")
                     sys.exit(1)
 
                 config_store = programmer.read_config_store()
 
-        if args.dump and config_store is not None:
-            logging.info("Dumping contents of config store")
-            config_store.dump()
+        if config_store is not None:
+            if args.dump:
+                logging.info("Dumping contents of config store")
+                config_store.dump()
+
+            if args.dump_binary:
+                logging.info("Dumping binary contents of config store to %s", args.dump_binary)
+                programmer.dump_config_store_binary(args.dump_binary)
 
 
 def _main():
-    PLATFORM_CONFIGSTORE_PARAMS_FILE = f"{SCRIPT_DIR}/configstore.json"
-    with open(PLATFORM_CONFIGSTORE_PARAMS_FILE, "r") as f:
-        PLATFORM_CONFIGSTORE_PARAMS = hjson.load(f)
-
-    # Aggregate all the supported platform to put in the list of choices
-    all_supported_platforms = []
-    for target, params in PLATFORM_CONFIGSTORE_PARAMS.items():
-        all_supported_platforms.extend(params["supported_platforms"])
-
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter,
                                      description=__doc__)
-    _app_setup_args(parser, all_supported_platforms)
+    _app_setup_args(parser)
 
     args = parser.parse_args()
 
@@ -928,7 +944,7 @@ def _main():
     except ImportError:
         logging.debug("coloredlogs not installed")
 
-    _app_main(args, PLATFORM_CONFIGSTORE_PARAMS)
+    _app_main(args)
 
 
 if __name__ == "__main__":

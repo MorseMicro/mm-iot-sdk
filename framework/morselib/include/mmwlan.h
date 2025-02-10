@@ -110,6 +110,12 @@ enum mmwlan_status
 /** Default min Target Wake Time (TWT) duration in micro seconds. */
 #define DEFAULT_TWT_MIN_WAKE_DURATION_US    (65280)
 
+/** Default value for the @c scan_interval_base_s field of @ref mmwlan_sta_args. */
+#define MMWLAN_DEFAULT_SCAN_INTERVAL_BASE_S (2)
+
+/** Default value for the @c scan_interval_limit_s field of @ref mmwlan_sta_args. */
+#define MMWLAN_DEFAULT_SCAN_INTERVAL_LIMIT_S (512)
+
 /**
  * The maximum length of a user-specified payload (bytes) for Standby status
  * frames.
@@ -508,10 +514,23 @@ struct mmwlan_scan_config
      * @note This does not affect scans requested with the @ref mmwlan_scan_request().
      */
     uint32_t dwell_time_ms;
+
+    /**
+     * Boolean value indicating whether NDP probe support should be enabled.
+     *
+     * NDP probe requests are smaller than regular probe requests and will save energy when
+     * scanning.
+     *
+     * @warning Be careful when enabling NDP probe requests. Some APs may not respond to NDP probe
+     *          requests if the CSSID (Compressed SSID) field is not populated. When using the
+     *          @ref mmwlan_scan_request() API with NDP probe requests enabled, it is advisable to
+     *          include an SSID in the scan arguments (see @ref mmwlan_scan_args.ssid).
+     */
+    bool ndp_probe_enabled;
 };
 
 /** Initializer for @ref mmwlan_scan_config. */
-#define MMWLAN_SCAN_CONFIG_INIT { MMWLAN_SCAN_DEFAULT_DWELL_TIME_MS }
+#define MMWLAN_SCAN_CONFIG_INIT { MMWLAN_SCAN_DEFAULT_DWELL_TIME_MS, false }
 
 /**
  * Update the scan configuration with the given settings.
@@ -760,6 +779,24 @@ struct mmwlan_sta_args
     mmwlan_scan_rx_cb_t scan_rx_cb;
     /** Opaque argument to be passed to @ref scan_rx_cb. */
     void *scan_rx_cb_arg;
+    /**
+     * The base scan interval (in seconds) to use when (re)connecting. An exponential back off
+     * is applied such that if the AP is not found during the first scan, we will wait for
+     * @c scan_interval_base_s seconds before attempting the second scan, then
+     * @c scan_interval_base_s squared seconds before attempting for the next scan, and so
+     * on until @c scan_interval_limit_s is reached.
+     *
+     * If this is 0 then the @ref MMWLAN_DEFAULT_SCAN_INTERVAL_BASE_S will be used.
+     */
+    uint16_t scan_interval_base_s;
+    /**
+     * The maximum interval between scan attempts when (re)connecting. The scan algorithm will
+     * begin with an interval of @c scan_interval_base_s between scans and increase the interval
+     * exponentially until this limit is reached.
+     *
+     * If this is 0 then the @ref MMWLAN_DEFAULT_SCAN_INTERVAL_LIMIT_S will be used.
+     */
+    uint16_t scan_interval_limit_s;
 };
 
 /**
@@ -770,7 +807,8 @@ struct mmwlan_sta_args
 #define MMWLAN_STA_ARGS_INIT                                                                       \
     { { 0 }, 0, { 0 }, MMWLAN_OPEN, { 0 }, 0, MMWLAN_PMF_REQUIRED, -1, MMWLAN_STA_TYPE_NON_SENSOR, \
       { 0 }, MMWLAN_CAC_DISABLED, DEFAULT_BGSCAN_SHORT_INTERVAL_S, DEFAULT_BGSCAN_THRESHOLD_DBM,   \
-      DEFAULT_BGSCAN_LONG_INTERVAL_S, NULL, NULL }
+      DEFAULT_BGSCAN_LONG_INTERVAL_S, NULL, NULL,                                                  \
+      MMWLAN_DEFAULT_SCAN_INTERVAL_BASE_S, MMWLAN_DEFAULT_SCAN_INTERVAL_LIMIT_S }
 
 /**
  * Enable station mode.
@@ -1278,6 +1316,10 @@ enum mmwlan_standby_exit_reason
     MMWLAN_STANDBY_EXIT_REASON_WHITELIST_PKT,
     /** TCP connection lost */
     MMWLAN_STANDBY_EXIT_REASON_TCP_CONNECTION_LOST,
+    /** HW scan is not enabled */
+    MMWLAN_STANDBY_EXIT_REASON_HW_SCAN_NOT_ENABLED,
+    /** HW scan failed to start */
+    MMWLAN_STANDBY_EXIT_REASON_HW_SCAN_FAILED_TO_START,
 };
 
 /**
@@ -1530,8 +1572,8 @@ struct mmwlan_set_wnm_sleep_enabled_args
  *
  * @param args  WNM sleep arguments - see @ref mmwlan_set_wnm_sleep_enabled_args.
  *
- * @return @ref MMWLAN_SUCCESS on success, MMWLAN_UNAVAILABLE if already requested,
- *              else an appropriate error code.
+ * @return @ref MMWLAN_SUCCESS on success, MMWLAN_UNAVAILABLE if already requested or if not
+ *              currently connected, else an appropriate error code.
  *         @ref MMWLAN_TIMED_OUT if the maximum retry request reached. For WNM sleep exit request,
  *              this means that the device exited WNM sleep but failed to inform the AP.
  */
@@ -1558,8 +1600,8 @@ enum mmwlan_status mmwlan_set_wnm_sleep_enabled_ext(
  *
  * @param wnm_sleep_enabled   Boolean indicating whether WNM sleep is enabled.
  *
- * @return @ref MMWLAN_SUCCESS on success, MMWLAN_UNAVAILABLE if already requested,
- *              else an appropriate error code.
+ * @return @ref MMWLAN_SUCCESS on success, MMWLAN_UNAVAILABLE if already requested or if not
+ *              currently connected, else an appropriate error code.
  *         @ref MMWLAN_TIMED_OUT if the maximum retry request reached. For WNM sleep exit request,
  *              this means that the device exited WNM sleep but failed to inform the AP.
  */

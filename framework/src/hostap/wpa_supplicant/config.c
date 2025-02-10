@@ -2463,59 +2463,26 @@ static char * wpa_config_write_mac_value(const struct parse_data *data,
 
 
 static int wpa_config_parse_backoffs(const struct parse_data *data,
-				      struct wpa_ssid *ssid, int line,
-				      const char *value)
+				     struct wpa_ssid *ssid, int line,
+				     const char *value)
 {
-	int *backoffs;
-
-	backoffs = wpa_config_parse_int_array(value);
-	if (!backoffs)
+	ssid->backoffs = wpa_config_parse_int_array(value);
+	if (!ssid->backoffs)
 		return -1;
-	if (backoffs[0] == 0) {
-		os_free(backoffs);
-		backoffs = NULL;
+	if (ssid->backoffs[0] == 0) {
+		free(ssid->backoffs);
+		ssid->backoffs = NULL;
+		return -1;
 	}
-	os_free(ssid->backoffs);
-	ssid->backoffs = backoffs;
 
 	return 0;
 }
 
 #ifndef NO_CONFIG_WRITE
-#define MAX_INT_STRING_LEN 10
 static char *wpa_config_write_backoffs(const struct parse_data *data,
 					 struct wpa_ssid *ssid)
 {
-	const int *backoffs = ssid->backoffs;
-	char *buf, *pos, *end;
-	int i, ret;
-	size_t count = 0;
-
-	if (!backoffs)
-		return NULL;
-
-	for (i = 0; backoffs[i]; i++)
-		count++;
-
-	buf = os_zalloc(MAX_INT_STRING_LEN * count + 1);
-	if (!buf)
-		return NULL;
-
-	end = buf + MAX_INT_STRING_LEN * count + 1;
-
-	pos = buf;
-	for (i = 0; backoffs[i]; i++) {
-		ret = os_snprintf(pos, end - pos, "%s%u",
-				  i == 0 ? "" : " ", backoffs[i]);
-		if (os_snprintf_error(end - pos, ret)) {
-			end[-1] = '\0';
-			return buf;
-		}
-		pos += ret;
-	}
-	ssid->backoff_cnt = count;
-
-	return buf;
+	return wpa_config_write_freqs(data, ssid->backoffs);
 }
 #endif /* NO_CONFIG_WRITE */
 
@@ -5745,8 +5712,9 @@ static const struct global_parse_data global_fields[] = {
 	{ INT_RANGE(extended_key_id, 0, 1), 0 },
 #endif /* CONFIG_WNM */
 	{ INT_RANGE(wowlan_disconnect_on_deinit, 0, 1), 0},
+	{ INT_RANGE(rsn_overriding, 0, 2), 0},
 #ifdef CONFIG_MORSE_STANDBY_MODE
-	{ STR(standby_session_dir) },
+	{ STR(standby_session_dir), 0 },
 #endif
 #ifdef CONFIG_MORSE_KEEP_ALIVE_OFFLOAD
 	{ INT_RANGE(vendor_keep_alive_offload, 0, 1), 0},

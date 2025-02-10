@@ -1,6 +1,7 @@
 /*
  * Internal WPA/RSN supplicant state machine definitions
  * Copyright (c) 2004-2018, Jouni Malinen <j@w1.fi>
+ * Copyright 2022 Morse Micro
  *
  * This software may be distributed under the terms of the BSD license.
  * See README for more details.
@@ -120,6 +121,9 @@ struct wpa_sm {
 	size_t assoc_rsnxe_len;
 	u8 *ap_wpa_ie, *ap_rsn_ie, *ap_rsnxe;
 	size_t ap_wpa_ie_len, ap_rsn_ie_len, ap_rsnxe_len;
+	u8 *ap_rsne_override, *ap_rsne_override_2, *ap_rsnxe_override;
+	size_t ap_rsne_override_len, ap_rsne_override_2_len,
+		ap_rsnxe_override_len;
 
 #ifdef CONFIG_TDLS
 	struct wpa_tdls_peer *tdls;
@@ -230,6 +234,9 @@ struct wpa_sm {
 	bool wmm_enabled;
 	bool driver_bss_selection;
 	bool ft_prepend_pmkid;
+
+	bool rsn_override_support;
+	enum wpa_rsn_override rsn_override;
 };
 
 
@@ -519,6 +526,12 @@ wpa_sm_notify_pmksa_cache_entry(struct wpa_sm *sm,
 		sm->ctx->notify_pmksa_cache_entry(sm->ctx->ctx, entry);
 }
 
+static inline void wpa_sm_ssid_verified(struct wpa_sm *sm)
+{
+	if (sm->ctx->ssid_verified)
+		sm->ctx->ssid_verified(sm->ctx->ctx);
+}
+
 int wpa_eapol_key_send(struct wpa_sm *sm, struct wpa_ptk *ptk,
 		       int ver, const u8 *dest, u16 proto,
 		       u8 *msg, size_t msg_len, u8 *key_mic);
@@ -537,5 +550,6 @@ int wpa_derive_ptk_ft(struct wpa_sm *sm, const unsigned char *src_addr,
 
 void wpa_tdls_assoc(struct wpa_sm *sm);
 void wpa_tdls_disassoc(struct wpa_sm *sm);
+bool wpa_sm_rsn_overriding_supported(struct wpa_sm *sm);
 
 #endif /* WPA_I_H */

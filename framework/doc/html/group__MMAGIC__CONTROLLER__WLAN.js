@@ -5,6 +5,7 @@ var group__MMAGIC__CONTROLLER__WLAN =
       [ "timeout", "structmmagic__core__wlan__connect__cmd__args.html#a786c5e40487d5706009f1bf876b4a903", null ]
     ] ],
     [ "mmagic_core_wlan_scan_cmd_args", "structmmagic__core__wlan__scan__cmd__args.html", [
+      [ "ssid", "structmmagic__core__wlan__scan__cmd__args.html#a8cf308c111c34508129392ac2a22f0e7", null ],
       [ "timeout", "structmmagic__core__wlan__scan__cmd__args.html#a755445c39f80ea89db14bb26a06104a1", null ]
     ] ],
     [ "mmagic_core_wlan_scan_rsp_args", "structmmagic__core__wlan__scan__rsp__args.html", [

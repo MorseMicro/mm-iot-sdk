@@ -141,6 +141,23 @@ static int ieee802_11_parse_vendor_specific(const u8 *pos, size_t elen,
 			elems->sae_pk = pos + 4;
 			elems->sae_pk_len = elen - 4;
 			break;
+		case WFA_RSNE_OVERRIDE_OUI_TYPE:
+			elems->rsne_override = pos;
+			elems->rsne_override_len = elen;
+			break;
+		case WFA_RSNE_OVERRIDE_2_OUI_TYPE:
+			elems->rsne_override_2 = pos;
+			elems->rsne_override_2_len = elen;
+			break;
+		case WFA_RSN_SELECTION_OUI_TYPE:
+			if (elen < 4 + 1) {
+				wpa_printf(MSG_DEBUG,
+					   "Too short RSN Selection element ignored");
+				return -1;
+			}
+			elems->rsn_selection = pos + 4;
+			elems->rsn_selection_len = elen - 4;
+			break;
 		default:
 			wpa_printf(MSG_MSGDUMP, "Unknown WFA "
 				   "information element ignored "
@@ -3166,8 +3183,12 @@ bool ieee802_11_rsnx_capab_len(const u8 *rsnxe, size_t rsnxe_len,
 
 bool ieee802_11_rsnx_capab(const u8 *rsnxe, unsigned int capab)
 {
-	return ieee802_11_rsnx_capab_len(rsnxe ? rsnxe + 2 : NULL,
-					 rsnxe ? rsnxe[1] : 0, capab);
+	if (!rsnxe)
+		return false;
+	if (rsnxe[0] == WLAN_EID_VENDOR_SPECIFIC && rsnxe[1] >= 4 + 1)
+		return ieee802_11_rsnx_capab_len(rsnxe + 2 + 4, rsnxe[1] - 4,
+						 capab);
+	return ieee802_11_rsnx_capab_len(rsnxe + 2, rsnxe[1], capab);
 }
 
 

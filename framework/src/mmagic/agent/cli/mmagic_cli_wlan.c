@@ -26,15 +26,22 @@ void mmagic_cli_wlan_connect(EmbeddedCli *cli, char *args, void *context)
     MM_UNUSED(context);
     struct mmagic_cli *ctx = (struct mmagic_cli *)cli->appContext;
 
-    embeddedCliPrint(cli, "Attempting to connect, may take up to 30 seconds");
     struct mmagic_core_wlan_connect_cmd_args cmd = {
         .timeout = MMAGIC_CLI_WLAN_CMD_TIMEOUT_MS
     };
+
+    {
+        char msg[80];
+        snprintf(msg, sizeof(msg), "Attempting to connect, may take up to %lu seconds",
+                 cmd.timeout / 1000);
+        embeddedCliPrint(cli, msg);
+    }
+
     enum mmagic_status status = mmagic_core_wlan_connect(&ctx->core, &cmd);
 
     if (status != MMAGIC_STATUS_OK)
     {
-        embeddedCliPrint(cli, "Failed to connect to AP");
+        mmagic_cli_print_error(cli, "Connect to AP", status);
         return;
     }
 
@@ -61,12 +68,46 @@ void mmagic_cli_wlan_scan(EmbeddedCli *cli, char *args, void *context)
         .timeout = MMAGIC_CLI_WLAN_CMD_TIMEOUT_MS,
     };
     struct mmagic_core_wlan_scan_rsp_args rsp = { };
-    embeddedCliPrint(cli, "Starting Scan");
+
+    const char *timeout = embeddedCliGetToken(args, 1);
+    const char *ssid = embeddedCliGetToken(args, 2);
+
+    if (timeout != NULL)
+    {
+        int timeout_s = atoi(timeout);
+        if (timeout_s != 0)
+        {
+            cmd.timeout = timeout_s;
+        }
+    }
+
+    if (ssid != NULL)
+    {
+        size_t ssid_len = strlen(ssid);
+        if (ssid_len > sizeof(cmd.ssid.data))
+        {
+            embeddedCliPrint(cli, "SSID too long");
+            return;
+        }
+        memcpy(cmd.ssid.data, ssid, ssid_len);
+        cmd.ssid.len = ssid_len;
+    }
+
+    char msg[48];
+    if (ssid != NULL)
+    {
+        snprintf(msg, sizeof(msg), "Starting Scan for %s (%lu ms timeout)", ssid, cmd.timeout);
+    }
+    else
+    {
+        snprintf(msg, sizeof(msg), "Starting Scan (%lu ms timeout)", cmd.timeout);
+    }
+    embeddedCliPrint(cli, msg);
     enum mmagic_status status = mmagic_core_wlan_scan(&ctx->core, &cmd, &rsp);
 
     if (status != MMAGIC_STATUS_OK)
     {
-        embeddedCliPrint(cli, "Scan Failed");
+        mmagic_cli_print_error(cli, "Scan", status);
     }
 
     mmagic_cli_printf(cli, "%2s %-6s %-8s %s", "ID", "RSSI", "BSSID", "SSID");
@@ -75,8 +116,9 @@ void mmagic_cli_wlan_scan(EmbeddedCli *cli, char *args, void *context)
         char bssid_str[31];
         char ssid_str[33];
 
-        struct_mac_addr_to_string(&rsp.results.results[i].bssid, bssid_str, sizeof(bssid_str));
-        struct_string_32_to_string(&rsp.results.results[i].ssid, ssid_str, sizeof(ssid_str));
+        mmagic_struct_mac_addr_to_string(&rsp.results.results[i].bssid, bssid_str,
+                                         sizeof(bssid_str));
+        mmagic_struct_string_32_to_string(&rsp.results.results[i].ssid, ssid_str, sizeof(ssid_str));
 
         mmagic_cli_printf(cli, "%2d %ddBm %-8s %s",
                           i, rsp.results.results[i].rssi, bssid_str, ssid_str);
@@ -95,7 +137,7 @@ void mmagic_cli_wlan_get_rssi(EmbeddedCli *cli, char *args, void *context)
 
     if (status != MMAGIC_STATUS_OK)
     {
-        embeddedCliPrint(cli, "Unable to retrieve RSSI");
+        mmagic_cli_print_error(cli, "Retrieve RSSI", status);
     }
     else
     {
@@ -115,7 +157,7 @@ void mmagic_cli_wlan_get_mac_addr(EmbeddedCli *cli, char *args, void *context)
 
     if (status != MMAGIC_STATUS_OK)
     {
-        embeddedCliPrint(cli, "Unable to retrieve MAC address");
+        mmagic_cli_print_error(cli, "Retrieve MAC address", status);
     }
 
     mmagic_cli_printf(cli, MM_MAC_ADDR_FMT, MM_MAC_ADDR_VAL(rsp.mac_addr.addr));
@@ -159,7 +201,9 @@ void mmagic_cli_wlan_wnm_sleep(EmbeddedCli *cli, char *args, void *context)
 
     if (status != MMAGIC_STATUS_OK)
     {
-        mmagic_cli_printf(cli, "Failed to %s WNM sleep", argument);
+        char msg[20];
+        snprintf(msg, sizeof(msg), "WNM sleep %s", argument);
+        mmagic_cli_print_error(cli, msg, status);
     }
     else
     {
@@ -252,7 +296,7 @@ void mmagic_cli_wlan_beacon_monitor_enable(EmbeddedCli *cli, char *args, void *c
     status = mmagic_core_wlan_beacon_monitor_enable(&ctx->core, &cmd_args);
     if (status != MMAGIC_STATUS_OK)
     {
-        embeddedCliPrint(cli, "Failed to configure beacon monitoring");
+        mmagic_cli_print_error(cli, "Configure beacon monitoring", status);
         return;
     }
 }
@@ -267,7 +311,7 @@ void mmagic_cli_wlan_beacon_monitor_disable(EmbeddedCli *cli, char *args, void *
     enum mmagic_status status = mmagic_core_wlan_beacon_monitor_disable(&ctx->core);
     if (status != MMAGIC_STATUS_OK)
     {
-        embeddedCliPrint(cli, "Failed to disable beacon monitoring");
+        mmagic_cli_print_error(cli, "Disable beacon monitoring", status);
         return;
     }
 }
@@ -478,7 +522,7 @@ void mmagic_cli_wlan_standby_set_wake_filter(EmbeddedCli *cli, char *args, void 
 
     if (num_tokens == 2)
     {
-        (void)string_to_uint32_t(&uint32val, embeddedCliGetToken(args, 2));
+        (void)mmagic_string_to_uint32_t(&uint32val, embeddedCliGetToken(args, 2));
         cmd_args.offset = uint32val;
     }
 
@@ -501,54 +545,54 @@ void mmagic_cli_wlan_standby_set_config(EmbeddedCli *cli, char *args, void *cont
         return;
     }
 
-    if (string_to_uint32_t(&uint32val, embeddedCliGetToken(args, 1)) < 0)
+    if (mmagic_string_to_uint32_t(&uint32val, embeddedCliGetToken(args, 1)) < 0)
     {
         embeddedCliPrint(cli, "Invalid notify period");
         return;
     }
     cmd_args.notify_period_s = uint32val;
 
-    if (string_to_struct_ip_addr(&cmd_args.src_ip, embeddedCliGetToken(args, 2)) < 0)
+    if (mmagic_string_to_struct_ip_addr(&cmd_args.src_ip, embeddedCliGetToken(args, 2)) < 0)
     {
         embeddedCliPrint(cli, "Invalid source IP");
         return;
     }
 
-    if (string_to_struct_ip_addr(&cmd_args.dst_ip, embeddedCliGetToken(args, 3)) < 0)
+    if (mmagic_string_to_struct_ip_addr(&cmd_args.dst_ip, embeddedCliGetToken(args, 3)) < 0)
     {
         embeddedCliPrint(cli, "Invalid destination IP");
         return;
     }
 
-    if (string_to_uint16_t(&uint16val, embeddedCliGetToken(args, 4)) < 0)
+    if (mmagic_string_to_uint16_t(&uint16val, embeddedCliGetToken(args, 4)) < 0)
     {
         embeddedCliPrint(cli, "Invalid destination port");
         return;
     }
     cmd_args.dst_port = uint16val;
 
-    if (string_to_uint32_t(&uint32val, embeddedCliGetToken(args, 5)) < 0)
+    if (mmagic_string_to_uint32_t(&uint32val, embeddedCliGetToken(args, 5)) < 0)
     {
         embeddedCliPrint(cli, "Invalid BSS inactivity");
         return;
     }
     cmd_args.bss_inactivity_s = uint32val;
 
-    if (string_to_uint32_t(&uint32val, embeddedCliGetToken(args, 6)) < 0)
+    if (mmagic_string_to_uint32_t(&uint32val, embeddedCliGetToken(args, 6)) < 0)
     {
         embeddedCliPrint(cli, "Invalid snooze interval");
         return;
     }
     cmd_args.snooze_period_s = uint32val;
 
-    if (string_to_uint32_t(&uint32val, embeddedCliGetToken(args, 7)) < 0)
+    if (mmagic_string_to_uint32_t(&uint32val, embeddedCliGetToken(args, 7)) < 0)
     {
         embeddedCliPrint(cli, "Invalid snooze increment");
         return;
     }
     cmd_args.snooze_increment_s = uint32val;
 
-    if (string_to_uint32_t(&uint32val, embeddedCliGetToken(args, 8)) < 0)
+    if (mmagic_string_to_uint32_t(&uint32val, embeddedCliGetToken(args, 8)) < 0)
     {
         embeddedCliPrint(cli, "Invalid snooze max interval");
         return;

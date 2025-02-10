@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.6.4</span>
+   &#160;<span id="projectnumber">2.7.2</span>
    </div>
   </td>
  </tr>
@@ -101,7 +101,7 @@ $(document).ready(function(){initNavTree('m2m__controller_8c.html',''); initResi
 <p>The <a class="el" href="m2m__agent_8c.html">m2m_agent.c</a> and <a class="el" href="m2m__controller_8c.html">m2m_controller.c</a> example applications demonstrate how to use the MMAGIC M2M interface.</p>
 <h1><a class="anchor" id="M2M_GETTING_STARTED"></a>
 Getting Started</h1>
-<h2><a class="anchor" id="autotoc_md30"></a>
+<h2><a class="anchor" id="autotoc_md33"></a>
 Setup</h2>
 <p >To setup this demonstration you will need the following:</p><ul>
 <li>One <code>mm-ekh08-u575</code> reference platform (See <a class="el" href="MMPLATFORMS.html">Morse Micro IoT Reference Platforms</a>) - this includes a ST <code>NUCLEO-U575ZI-Q</code> board as the motherboard.</li>
@@ -124,10 +124,10 @@ Setup</h2>
 <td class="markdownTableBodyNone"><code>GND</code>   </td><td class="markdownTableBodyNone">Any convenient <code>GND</code> pin   </td><td class="markdownTableBodyNone">Any convenient <code>GND</code> pin   </td></tr>
 </table>
 <p >For an example of M2M communications over UART, see the <a class="el" href="cli_8c.html">cli.c</a> application which has an M2M mode.</p>
-<h2><a class="anchor" id="autotoc_md31"></a>
+<h2><a class="anchor" id="autotoc_md34"></a>
 Building</h2>
 <p >The <code>Wi-Fi</code> SSID and password are hard coded in <a class="el" href="m2m__controller_8c.html">m2m_controller.c</a> as this application is very basic and does not support saving settings using persistent store. The controller application is kept simple to allow easy porting of the controller to any platform. Update <code>SSID</code> and <code>SAE_PASSPHRASE</code> as appropriate for your test setup and build the <code>m2m_agent</code> and the <code>m2m_controller</code> applications as shown in <a class="el" href="GETTING_STARTED.html#BUILDING_FIRMWARE">Building Firmware</a>.</p>
-<h2><a class="anchor" id="autotoc_md32"></a>
+<h2><a class="anchor" id="autotoc_md35"></a>
 Running</h2>
 <ul>
 <li>Load the built <code>m2m_agent.elf</code> firmware into the <code>mm-ekh08-u575</code> device as explained in <a class="el" href="GETTING_STARTED.html#PROGRAMMING_FIRMWARE">Programming</a>. Ensure you have loaded the Board Configuration File (BCF) and set the 2 letter country code in the <code>wlan.country_code</code> setting in persistent storage as described in <a class="el" href="GETTING_STARTED.html#SET_APP_CONFIGURATION">Setting Application Configuration</a>.</li>
@@ -163,10 +163,10 @@ Running</h2>
 </div><!-- fragment --></li>
 </ul>
 </dd></dl>
-<h2><a class="anchor" id="autotoc_md33"></a>
+<h2><a class="anchor" id="autotoc_md36"></a>
 Testing the TCP Echo Server</h2>
-<p >In addition to an example TCP client that connects to the <code>morsemicro.com</code> web server and the beacon monitor example, the <code>m2m_controller</code> also demonstrates how to use TCP server sockets to serve multiple incoming TCP client connections.</p>
-<h3><a class="anchor" id="autotoc_md34"></a>
+<p >In addition to an example TCP client that connects to a web server and the beacon monitor example, the <code>m2m_controller</code> also demonstrates how to use TCP server sockets to serve multiple incoming TCP client connections.</p>
+<h3><a class="anchor" id="autotoc_md37"></a>
 Using Telnet</h3>
 <ul>
 <li>Note the IP address assigned to the system (Agent + Controller is the system) in the Link Up message displayed by the controller.</li>
@@ -186,7 +186,7 @@ Using Telnet</h3>
 <li>Every time you close a telnet session, you should see the following message on the controller: <div class="fragment"><div class="line">Closed TCP socket</div>
 </div><!-- fragment --></li>
 </ul>
-<h3><a class="anchor" id="autotoc_md35"></a>
+<h3><a class="anchor" id="autotoc_md38"></a>
 Using a Python script</h3>
 <p >For stress testing the TCP echo server, we provide you a <code>tcp_echo_client.py</code> file that you can run to open multiple connections to the TCP echo server on the controller and rapidly send and receive data from it. This script can also open multiple TCP connections in parallel if requested.</p>
 <p >If your AP is configured in bridge mode, then you can run this script from any computer in the network. If not, you will need to copy this script to the access point and run it from a terminal session in the access point.</p>
@@ -251,7 +251,7 @@ Macros</h2></td></tr>
 <tr class="memitem:a6df1d22fb5f09eccc23b9f399670cfd7"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="m2m__controller_8c.html#a6df1d22fb5f09eccc23b9f399670cfd7">STRINGIFY</a>(x)&#160;&#160;&#160;<a class="el" href="m2m__controller_8c.html#a9466bf92a0218030cd2dd54cca715e87">_STRINGIFY</a>(x)</td></tr>
 <tr class="memdesc:a6df1d22fb5f09eccc23b9f399670cfd7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert the content of the given macro to a string.  <a href="m2m__controller_8c.html#a6df1d22fb5f09eccc23b9f399670cfd7">More...</a><br /></td></tr>
 <tr class="separator:a6df1d22fb5f09eccc23b9f399670cfd7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa523388767f01a20584004266c7cea12"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="m2m__controller_8c.html#aa523388767f01a20584004266c7cea12">LINK_STATE_TIMEOUT_MS</a>&#160;&#160;&#160;10000</td></tr>
+<tr class="memitem:aa523388767f01a20584004266c7cea12"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="m2m__controller_8c.html#aa523388767f01a20584004266c7cea12">LINK_STATE_TIMEOUT_MS</a>&#160;&#160;&#160;20000</td></tr>
 <tr class="memdesc:aa523388767f01a20584004266c7cea12"><td class="mdescLeft">&#160;</td><td class="mdescRight">Duration to wait for the link to be established after WLAN reports connected.  <a href="m2m__controller_8c.html#aa523388767f01a20584004266c7cea12">More...</a><br /></td></tr>
 <tr class="separator:aa523388767f01a20584004266c7cea12"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a32dd5e132b45725c3986857077e33751"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="m2m__controller_8c.html#a32dd5e132b45725c3986857077e33751">TCP_ECHCO_SERVER_PORT</a>&#160;&#160;&#160;5000</td></tr>
@@ -325,7 +325,7 @@ Variables</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define LINK_STATE_TIMEOUT_MS&#160;&#160;&#160;10000</td>
+          <td class="memname">#define LINK_STATE_TIMEOUT_MS&#160;&#160;&#160;20000</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -473,7 +473,7 @@ Variables</h2></td></tr>
 <p>Main entry point to the application. </p>
 <p >This will be invoked in a thread once operating system and hardware initialization has completed. It may return, but it does not have to. </p>
 
-<p class="definition">Definition at line <a class="el" href="m2m__controller_8c_source.html#l00602">602</a> of file <a class="el" href="m2m__controller_8c_source.html">m2m_controller.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="m2m__controller_8c_source.html#l00603">603</a> of file <a class="el" href="m2m__controller_8c_source.html">m2m_controller.c</a>.</p>
 
 </div>
 </div>
@@ -585,7 +585,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="m2m__controller_8c_source.html#l00570">570</a> of file <a class="el" href="m2m__controller_8c_source.html">m2m_controller.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="m2m__controller_8c_source.html#l00571">571</a> of file <a class="el" href="m2m__controller_8c_source.html">m2m_controller.c</a>.</p>
 
 </div>
 </div>
@@ -659,7 +659,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="m2m__controller_8c_source.html#l00512">512</a> of file <a class="el" href="m2m__controller_8c_source.html">m2m_controller.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="m2m__controller_8c_source.html#l00513">513</a> of file <a class="el" href="m2m__controller_8c_source.html">m2m_controller.c</a>.</p>
 
 </div>
 </div>
@@ -695,7 +695,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="m2m__controller_8c_source.html#l00442">442</a> of file <a class="el" href="m2m__controller_8c_source.html">m2m_controller.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="m2m__controller_8c_source.html#l00443">443</a> of file <a class="el" href="m2m__controller_8c_source.html">m2m_controller.c</a>.</p>
 
 </div>
 </div>
@@ -769,7 +769,7 @@ Variables</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_d138b6e526abaf28ea8a67143596e651.html">applications</a></li><li class="navelem"><a class="el" href="dir_c19022350bbebe37c74d765164f53811.html">mm-ekh08-u575</a></li><li class="navelem"><a class="el" href="dir_a15e1324c33f694f9130ff2ab1360104.html">m2m_controller</a></li><li class="navelem"><a class="el" href="dir_d8a2a8d24c62adc37e560b6e51bd8d0c.html">src</a></li><li class="navelem"><a class="el" href="m2m__controller_8c.html">m2m_controller.c</a></li>
+    <li class="navelem"><a class="el" href="dir_6582a8495d7b9ff15877d9412ab2e32b.html">applications</a></li><li class="navelem"><a class="el" href="dir_7ab533786368c6af89871a1470579ae6.html">mm-ekh08-u575</a></li><li class="navelem"><a class="el" href="dir_798a330a4fd9ce7d42689c4aad32d53a.html">m2m_controller</a></li><li class="navelem"><a class="el" href="dir_fe4e2255648125ac2f2da8e8ae4efba7.html">src</a></li><li class="navelem"><a class="el" href="m2m__controller_8c.html">m2m_controller.c</a></li>
     <li class="footer">Copyright 2021 Morse Micro </li>
   </ul>
 </div>

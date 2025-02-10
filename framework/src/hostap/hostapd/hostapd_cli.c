@@ -22,7 +22,7 @@
 
 static const char *const hostapd_cli_version =
 "hostapd_cli v" VERSION_STR "\n"
-"Copyright (c) 2004-2022, Jouni Malinen <j@w1.fi> and contributors";
+"Copyright (c) 2004-2024, Jouni Malinen <j@w1.fi> and contributors";
 
 static struct wpa_ctrl *ctrl_conn;
 static int hostapd_cli_quit = 0;
@@ -1597,6 +1597,50 @@ static int hostapd_cli_cmd_dpp_push_button(struct wpa_ctrl *ctrl, int argc,
 #endif /* CONFIG_DPP */
 
 
+#ifdef CONFIG_NAN_USD
+static int hostapd_cli_cmd_nan_publish(struct wpa_ctrl *ctrl, int argc,
+				       char *argv[])
+{
+	return hostapd_cli_cmd(ctrl, "NAN_PUBLISH", 1, argc, argv);
+}
+
+
+static int hostapd_cli_cmd_nan_cancel_publish(struct wpa_ctrl *ctrl, int argc,
+					      char *argv[])
+{
+	return hostapd_cli_cmd(ctrl, "NAN_CANCEL_PUBLISH", 1, argc, argv);
+}
+
+
+static int hostapd_cli_cmd_nan_update_publish(struct wpa_ctrl *ctrl, int argc,
+					      char *argv[])
+{
+	return hostapd_cli_cmd(ctrl, "NAN_UPDATE_PUBLISH", 1, argc, argv);
+}
+
+
+static int hostapd_cli_cmd_nan_subscribe(struct wpa_ctrl *ctrl, int argc,
+					 char *argv[])
+{
+	return hostapd_cli_cmd(ctrl, "NAN_SUBSCRIBE", 1, argc, argv);
+}
+
+
+static int hostapd_cli_cmd_nan_cancel_subscribe(struct wpa_ctrl *ctrl, int argc,
+						char *argv[])
+{
+	return hostapd_cli_cmd(ctrl, "NAN_CANCEL_SUBSCRIBE", 1, argc, argv);
+}
+
+
+static int hostapd_cli_cmd_nan_transmit(struct wpa_ctrl *ctrl, int argc,
+					char *argv[])
+{
+	return hostapd_cli_cmd(ctrl, "NAN_TRANSMIT", 3, argc, argv);
+}
+#endif /* CONFIG_NAN_USD */
+
+
 static int hostapd_cli_cmd_accept_macacl(struct wpa_ctrl *ctrl, int argc,
 					 char *argv[])
 {
@@ -1878,6 +1922,22 @@ static const struct hostapd_cli_cmd hostapd_cli_commands[] = {
 	  "= press DPP push button" },
 #endif /* CONFIG_DPP3 */
 #endif /* CONFIG_DPP */
+
+#ifdef CONFIG_NAN_USD
+	{ "nan_publish", hostapd_cli_cmd_nan_publish, NULL,
+	  "service_name=<name> [ttl=<time to live in sec>] [srv_proto_type=<type>] [ssi=<service specific information (hexdump)>] [p2p=1] [solicited=0] [unsolicited=0] [fsd=0] = Publish USD Service"},
+	{ "nan_cancel_publish", hostapd_cli_cmd_nan_cancel_publish, NULL,
+	  "publish_id=<id from NAN_PUBLISH> = Cancel USD Service"},
+	{ "nan_update_publish", hostapd_cli_cmd_nan_update_publish, NULL,
+	  "publish_id=<id from NAN_PUBLISH> [ssi=<service specific information (hexdump)>] = Update USD Service"},
+	{ "nan_subscribe", hostapd_cli_cmd_nan_subscribe, NULL,
+	  "service_name=<name> [active=1] [ttl=<time to live in sec>] [srv_proto_type=<type>] [ssi=<service specific information (hexdump)>] [p2p=1] = Subscribe to a USD Service"},
+	{ "nan_cancel_subscribe", hostapd_cli_cmd_nan_cancel_subscribe, NULL,
+	  "subscribe_id=<id from NAN_SUBSCRIBE> = Un-subscribe from a USD Service"},
+	{ "nan_transmit", hostapd_cli_cmd_nan_transmit, NULL,
+	  "handle=<id from NAN_PUBLISH or NAN_SUBSCRIBE> req_instance_id=<peer's id> address=<peer's MAC address> [ssi=<service specific information (hexdump)>] = Send a USD transmit message to the given peer"},
+#endif /* CONFIG_NAN_USD */
+
 	{ "accept_acl", hostapd_cli_cmd_accept_macacl, NULL,
 	  "=Add/Delete/Show/Clear accept MAC ACL" },
 	{ "deny_acl", hostapd_cli_cmd_deny_macacl, NULL,

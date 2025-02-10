@@ -1,5 +1,5 @@
 /*
- * FreeRTOS+TCP <DEVELOPMENT BRANCH>
+ * FreeRTOS+TCP V4.2.2
  * Copyright (C) 2022 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -29,8 +29,12 @@
 #define LIST_MACRO_H
 
 #include <FreeRTOS.h>
+#include <FreeRTOS_IP.h>
 #include <portmacro.h>
 #include <list.h>
+
+#undef listGET_HEAD_ENTRY
+ListItem_t * listGET_HEAD_ENTRY( List_t * pxList );
 
 #undef listSET_LIST_ITEM_OWNER
 void listSET_LIST_ITEM_OWNER( ListItem_t * pxListItem,

@@ -74,18 +74,23 @@ void mmagic_cli_sys_get_version(EmbeddedCli *cli, char *args, void *context)
     struct mmagic_core_sys_get_version_rsp_args rsp = { };
     char str32[33];
 
-    mmagic_core_sys_get_version(&ctx->core, &rsp);
+    enum mmagic_status status = mmagic_core_sys_get_version(&ctx->core, &rsp);
+    if (status != MMAGIC_STATUS_OK)
+    {
+        mmagic_cli_print_error(cli, "Get version", status);
+        return;
+    }
 
-    struct_string_32_to_string(&rsp.results.application_version, str32, sizeof(str32));
+    mmagic_struct_string_32_to_string(&rsp.results.application_version, str32, sizeof(str32));
     mmagic_cli_printf(cli, "Application Version: %s", str32);
-    struct_string_32_to_string(&rsp.results.bootloader_version, str32, sizeof(str32));
+    mmagic_struct_string_32_to_string(&rsp.results.bootloader_version, str32, sizeof(str32));
     mmagic_cli_printf(cli, "Bootloader Version: %s", str32);
-    struct_string_32_to_string(&rsp.results.user_hardware_version, str32, sizeof(str32));
+    mmagic_struct_string_32_to_string(&rsp.results.user_hardware_version, str32, sizeof(str32));
     mmagic_cli_printf(cli, "User Hardware Version: %s", str32);
-    struct_string_32_to_string(&rsp.results.morse_firmware_version, str32, sizeof(str32));
+    mmagic_struct_string_32_to_string(&rsp.results.morse_firmware_version, str32, sizeof(str32));
     mmagic_cli_printf(cli, "Morse FW Version: %s", str32);
-    struct_string_32_to_string(&rsp.results.morselib_version, str32, sizeof(str32));
+    mmagic_struct_string_32_to_string(&rsp.results.morselib_version, str32, sizeof(str32));
     mmagic_cli_printf(cli, "Morse SDK Version: %s", str32);
-    struct_string_32_to_string(&rsp.results.morse_hardware_version, str32, sizeof(str32));
+    mmagic_struct_string_32_to_string(&rsp.results.morse_hardware_version, str32, sizeof(str32));
     mmagic_cli_printf(cli, "Morse HW Version: %s", str32);
 }

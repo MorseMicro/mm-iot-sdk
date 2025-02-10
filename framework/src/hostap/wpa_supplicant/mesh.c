@@ -1,6 +1,7 @@
 /*
  * WPA Supplicant - Basic mesh mode routines
  * Copyright (c) 2013-2014, cozybit, Inc.  All rights reserved.
+ * Copyright 2023 Morse Micro
  *
  * This software may be distributed under the terms of the BSD license.
  * See README for more details.
@@ -691,7 +692,7 @@ int wpa_supplicant_join_mesh(struct wpa_supplicant *wpa_s,
 	struct hostapd_config *conf = hostapd_config_defaults();
 
 	channel_or_frequency = ssid->channel;
-#endif	
+#endif
 	if (!ssid || !ssid->ssid || !ssid->ssid_len || !channel_or_frequency || !params) {
 		ret = -ENOENT;
 		os_free(params);

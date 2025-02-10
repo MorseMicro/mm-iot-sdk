@@ -73,7 +73,7 @@
 #include <string.h>
 #include "mmosal.h"
 #include "mmwlan.h"
-#include "mmwlan_regdb.def"
+#include "mm_app_regdb.h"
 #include "emmet.h"
 #include "mm_app_loadconfig.h"
 #include "mm_app_common.h"
@@ -137,6 +137,6 @@ void app_init(void)
     mmipal_set_link_status_callback(link_status_callback);
 
     /* Configure and start Emmet so that we can begin receiving commands from the host. */
-    emmet_set_reg_db(&regulatory_db);
+    emmet_set_reg_db(get_regulatory_db());
     emmet_start();
 }

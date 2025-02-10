@@ -213,7 +213,7 @@ enum mmagic_{{module.name}}_cmd
     {{mm.cmd_label(config, module, "commit")}} = 3,
     {%- for command in module.commands %}
     /** {{command.description }} */
-    {{mm.cmd_label(config, module, command.name)}} = {{loop.index0+4}},
+    {{mm.cmd_label(config, module, command.name)}} = {{command.id}},
     {%- endfor %}
 };
 {% endfor %}

@@ -27,23 +27,6 @@ static mmhal_irq_handler_t spi_irq_handler = NULL;
 /** busy interrupt handler. Must be set before enabling irq */
 static mmhal_irq_handler_t busy_irq_handler = NULL;
 
-/** Deep sleep veto IDs used by mmhal. These must be in the range between
- *  MMHAL_VETO_ID_HAL_MIN and MMHAL_VETO_ID_HAL_MAX (inclusive). */
-enum mmhal_wlan_deep_sleep_veto_id
-{
-    /**
-     * SPI Interrupt deep sleep veto.
-     *
-     * This veto is to prevent entry to deep sleep when the SPI IRQ is enabled. On the U575 it was
-     * found that if the SPI_IRQ fired at approximately the same time as the WFI instruction (within
-     * ~100ns) when we were entering deep sleep the MCU would lock up completely and require a
-     * physical hard reset. Based on RM0456 Rev 3, Table 93 we would expect the Stop mode entry
-     * procedure to be ignored and the program execution to continue. However, from testing this
-     * does not appear to be the case in the instance described above.
-     */
-    MMHAL_WLAN_SPI_IRQ = MMHAL_VETO_ID_HAL_MIN,
-};
-
 void mmhal_wlan_hard_reset(void)
 {
     LL_GPIO_ResetOutputPin(RESET_N_GPIO_Port, RESET_N_Pin);
@@ -245,7 +228,6 @@ void mmhal_wlan_set_spi_irq_enabled(bool enabled)
 {
     if (enabled)
     {
-        mmhal_set_deep_sleep_veto(MMHAL_WLAN_SPI_IRQ);
         LL_EXTI_EnableIT_0_31(SPI_IRQ_LINE);
         LL_EXTI_EnableEvent_0_31(SPI_IRQ_LINE);
 
@@ -268,7 +250,6 @@ void mmhal_wlan_set_spi_irq_enabled(bool enabled)
 
         LL_EXTI_DisableIT_0_31(SPI_IRQ_LINE);
         LL_EXTI_DisableEvent_0_31(SPI_IRQ_LINE);
-        mmhal_clear_deep_sleep_veto(MMHAL_WLAN_SPI_IRQ);
     }
 }
 

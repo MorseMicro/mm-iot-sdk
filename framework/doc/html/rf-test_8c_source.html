@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.6.4</span>
+   &#160;<span id="projectnumber">2.7.2</span>
    </div>
   </td>
  </tr>
@@ -105,176 +105,175 @@ $(document).ready(function(){initNavTree('rf-test_8c_source.html',''); initResiz
 <div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="preprocessor">#include &quot;mmosal.h&quot;</span></div>
 <div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="preprocessor">#include &quot;mmutils.h&quot;</span></div>
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="preprocessor">#include &quot;mmwlan.h&quot;</span></div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="preprocessor">#include &quot;mmwlan_regdb.def&quot;</span></div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="preprocessor">#include &quot;<a class="code" href="mm__app__common_8h.html">mm_app_common.h</a>&quot;</span></div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="preprocessor">#include &quot;slip.h&quot;</span></div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span> </div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno"><a class="line" href="rf-test_8c.html#ade6f6a3d32e71a6f195b684d2c35e5a4">   33</a></span><span class="preprocessor">#define SEQ_NUM_LEN         (4)</span></div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno"><a class="line" href="rf-test_8c.html#a87c9dde477023307eb0245984d0546e7">   35</a></span><span class="preprocessor">#define COMMAND_MAX_LEN     (252)</span></div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno"><a class="line" href="rf-test_8c.html#a9056847765f10bf5682b0ad153181b11">   37</a></span><span class="preprocessor">#define RESPONSE_MAX_LEN    (2048)</span></div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno"><a class="line" href="rf-test_8c.html#a0904cc0f3eb6b66e338ab9616dc4ff20">   39</a></span><span class="preprocessor">#define RESPONSE_HDR_LEN    (12)</span></div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span> </div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno"><a class="line" href="rf-test_8c.html#afc1d7081d64ee9ac4421d2755dc58ee7">   49</a></span><span class="keyword">static</span> <span class="keywordtype">int</span> <a class="code hl_function" href="rf-test_8c.html#afc1d7081d64ee9ac4421d2755dc58ee7">slip_tx_handler</a>(uint8_t c, <span class="keywordtype">void</span> *arg)</div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>{</div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>    <a class="code hl_define" href="group__MMUTILS.html#ga0157597bdd038d83fbb0f2f488e6e4ee">MM_UNUSED</a>(arg);</div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>    <a class="code hl_function" href="group__MMHAL__UART.html#ga22114935cff34ea4bdf3d714acdda560">mmhal_uart_tx</a>(&amp;c, 1);</div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    <span class="keywordflow">return</span> 0;</div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>}</div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span> </div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno"><a class="line" href="rf-test_8c.html#a96ae79b97b427a858a03918853796278">   61</a></span><span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code hl_function" href="rf-test_8c.html#a96ae79b97b427a858a03918853796278">rf_test_handle_command</a>(<span class="keyword">struct</span> <a class="code hl_struct" href="structmmbuf.html">mmbuf</a> *cmd_buf)</div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>{</div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>    uint8_t *seq_num;</div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>    <span class="keyword">struct </span><a class="code hl_struct" href="structmmbuf.html">mmbuf</a> *rsp_buf = NULL;</div>
-<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>    uint32_t response_len;</div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>    <span class="keyword">enum</span> <a class="code hl_enumeration" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a> status;</div>
-<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>    <span class="keywordtype">int</span> ret;</div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    uint16_t crc;</div>
-<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span> </div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>    seq_num = <a class="code hl_function" href="group__MMBUF.html#ga3b6217e681c8471b6bd04b64a6386fc5">mmbuf_remove_from_end</a>(cmd_buf, <a class="code hl_define" href="rf-test_8c.html#ade6f6a3d32e71a6f195b684d2c35e5a4">SEQ_NUM_LEN</a>);</div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>    <span class="keywordflow">if</span> (seq_num == NULL)</div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>    {</div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>        printf(<span class="stringliteral">&quot;Received command packet too short\n&quot;</span>);</div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>        <span class="keywordflow">goto</span> exit;</div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>    }</div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span> </div>
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>    rsp_buf = <a class="code hl_function" href="group__MMBUF.html#ga6c9830a6c70f13ee9a4cf812d8dcdd00">mmbuf_alloc_on_heap</a>(0, <a class="code hl_define" href="rf-test_8c.html#ade6f6a3d32e71a6f195b684d2c35e5a4">SEQ_NUM_LEN</a> + <a class="code hl_define" href="rf-test_8c.html#a9056847765f10bf5682b0ad153181b11">RESPONSE_MAX_LEN</a>);</div>
-<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span> </div>
-<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>    <span class="comment">/*</span></div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span><span class="comment">     * `response_len` is initialized to the size of the response buffer before</span></div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span><span class="comment">     * `mmwlan_ate_execute_command()` is invoked and will be set to the actual length of the</span></div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span><span class="comment">     * response on success</span></div>
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span><span class="comment">     */</span></div>
-<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>    response_len = <a class="code hl_define" href="rf-test_8c.html#a9056847765f10bf5682b0ad153181b11">RESPONSE_MAX_LEN</a>;</div>
-<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span> </div>
-<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>    printf(<span class="stringliteral">&quot;Executing command...\n&quot;</span>);</div>
-<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>    status = <a class="code hl_function" href="group__MMWLAN__TEST.html#ga9c6f77ec164d316302624fa08af7e692">mmwlan_ate_execute_command</a>(</div>
-<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>        <a class="code hl_function" href="group__MMBUF.html#gacd57987e486baa1f132aa6ec5fcc5b79">mmbuf_get_data_start</a>(cmd_buf), <a class="code hl_function" href="group__MMBUF.html#ga22e261dc6696c64897d155148df77131">mmbuf_get_data_length</a>(cmd_buf),</div>
-<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>        <a class="code hl_function" href="group__MMBUF.html#ga1453bc61150ddd2e6e2c8959359118f1">mmbuf_append</a>(rsp_buf, 0), &amp;response_len);</div>
-<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span> </div>
-<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>    <span class="keywordflow">if</span> (status == <a class="code hl_enumvalue" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a>)</div>
-<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>    {</div>
-<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>        (void)<a class="code hl_function" href="group__MMBUF.html#ga1453bc61150ddd2e6e2c8959359118f1">mmbuf_append</a>(rsp_buf, response_len);</div>
-<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>        printf(<span class="stringliteral">&quot;Command executed successfully. Sending response...\n&quot;</span>);</div>
-<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>    }</div>
-<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>    <span class="keywordflow">else</span></div>
-<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>    {</div>
-<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>        uint8_t *hdr;</div>
-<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>        uint8_t result_code[4] = {};</div>
-<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span> </div>
-<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>        printf(<span class="stringliteral">&quot;Failed to execute command. Status code %d\n&quot;</span>, status);</div>
-<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span> </div>
-<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>        <span class="keywordflow">switch</span> (status)</div>
-<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>        {</div>
-<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a71049f2f8b9d9f1caef990fe6f4cb261">MMWLAN_NO_MEM</a>:</div>
-<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>            result_code[0] = MM_ENOMEM;</div>
-<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>            <span class="keywordflow">break</span>;</div>
-<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span> </div>
-<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086af8311c13f95546d0b338ea2b86384a00">MMWLAN_UNAVAILABLE</a>:</div>
-<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>            result_code[0] = MM_ENODEV;</div>
-<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>            <span class="keywordflow">break</span>;</div>
-<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span> </div>
-<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a037f99a316830d62111d270fc08407e5">MMWLAN_INVALID_ARGUMENT</a>:</div>
-<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>            result_code[0] = MM_EINVAL;</div>
-<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>            <span class="keywordflow">break</span>;</div>
-<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span> </div>
-<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a44ca87b719a15e19375cbcddd81bc152">MMWLAN_TIMED_OUT</a>:</div>
-<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>            result_code[0] = MM_ETIMEDOUT;</div>
-<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>            <span class="keywordflow">break</span>;</div>
-<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span> </div>
-<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>        <span class="keywordflow">default</span>:</div>
-<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>            result_code[0] = MM_EFAULT;</div>
-<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>            <span class="keywordflow">break</span>;</div>
-<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>        }</div>
-<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span> </div>
-<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span>        <span class="comment">/* Craft a response with an errno based error code in the response buffer. */</span></div>
-<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>        hdr = <a class="code hl_function" href="group__MMBUF.html#ga1453bc61150ddd2e6e2c8959359118f1">mmbuf_append</a>(rsp_buf, <a class="code hl_define" href="rf-test_8c.html#a0904cc0f3eb6b66e338ab9616dc4ff20">RESPONSE_HDR_LEN</a>);</div>
-<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>        memset(hdr, 0, <a class="code hl_define" href="rf-test_8c.html#a0904cc0f3eb6b66e338ab9616dc4ff20">RESPONSE_HDR_LEN</a>);</div>
-<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>        <a class="code hl_function" href="group__MMBUF.html#ga9bd7b55ee32f2e7bcc8a581397f0fd2c">mmbuf_append_data</a>(rsp_buf, result_code, <span class="keyword">sizeof</span>(result_code));</div>
-<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span>    }</div>
-<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span> </div>
-<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>    <a class="code hl_function" href="group__MMBUF.html#ga9bd7b55ee32f2e7bcc8a581397f0fd2c">mmbuf_append_data</a>(rsp_buf, seq_num, <a class="code hl_define" href="rf-test_8c.html#ade6f6a3d32e71a6f195b684d2c35e5a4">SEQ_NUM_LEN</a>);</div>
-<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>    crc = htole16(<a class="code hl_function" href="group__MMCRC.html#gacf9e224e87ff15ec90f91ec09561fc24">mmcrc_16_xmodem</a>(0, <a class="code hl_function" href="group__MMBUF.html#gacd57987e486baa1f132aa6ec5fcc5b79">mmbuf_get_data_start</a>(rsp_buf),</div>
-<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>                                  <a class="code hl_function" href="group__MMBUF.html#ga22e261dc6696c64897d155148df77131">mmbuf_get_data_length</a>(rsp_buf)));</div>
-<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>    <a class="code hl_function" href="group__MMBUF.html#ga9bd7b55ee32f2e7bcc8a581397f0fd2c">mmbuf_append_data</a>(rsp_buf, (uint8_t*)&amp;crc, <span class="keyword">sizeof</span>(crc));</div>
-<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span> </div>
-<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span>    ret = <a class="code hl_function" href="group__SLIP.html#ga6745989126f61ab425a9c4a081faf393">slip_tx</a>(<a class="code hl_function" href="rf-test_8c.html#afc1d7081d64ee9ac4421d2755dc58ee7">slip_tx_handler</a>, NULL,</div>
-<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span>                  <a class="code hl_function" href="group__MMBUF.html#gacd57987e486baa1f132aa6ec5fcc5b79">mmbuf_get_data_start</a>(rsp_buf), <a class="code hl_function" href="group__MMBUF.html#ga22e261dc6696c64897d155148df77131">mmbuf_get_data_length</a>(rsp_buf));</div>
-<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span>    <span class="keywordflow">if</span> (ret != 0)</div>
-<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span>    {</div>
-<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span>        printf(<span class="stringliteral">&quot;Failed to send response (%d)\n&quot;</span>, ret);</div>
-<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span>    }</div>
-<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span>    <span class="keywordflow">else</span></div>
-<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span>    {</div>
-<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span>        printf(<span class="stringliteral">&quot;Response sent\n&quot;</span>);</div>
-<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span>    }</div>
-<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>exit:</div>
-<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span>    <a class="code hl_function" href="group__MMBUF.html#ga86e90caf51d675377ddf2bbe7b799bad">mmbuf_release</a>(cmd_buf);</div>
-<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span>    <a class="code hl_function" href="group__MMBUF.html#ga86e90caf51d675377ddf2bbe7b799bad">mmbuf_release</a>(rsp_buf);</div>
-<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span>}</div>
-<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span> </div>
-<div class="line"><a id="l00159" name="l00159"></a><span class="lineno"><a class="line" href="rf-test_8c.html#aa3dc9a737309865b54769cda5d93242b">  159</a></span><span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code hl_function" href="rf-test_8c.html#aa3dc9a737309865b54769cda5d93242b">uart_rx_handler</a>(<span class="keyword">const</span> uint8_t *data, <span class="keywordtype">size_t</span> length, <span class="keywordtype">void</span> *arg)</div>
-<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span>{</div>
-<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span>    <span class="keywordtype">size_t</span> ii;</div>
-<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span>    <span class="keyword">enum</span> <a class="code hl_enumeration" href="group__SLIP.html#ga8b3d9f67bf20876006c9bd36b72e2009">slip_rx_status</a> status;</div>
-<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span>    <span class="keyword">struct </span><a class="code hl_struct" href="structslip__rx__state.html">slip_rx_state</a> *slip_state = (<span class="keyword">struct </span><a class="code hl_struct" href="structslip__rx__state.html">slip_rx_state</a> *)arg;</div>
-<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span> </div>
-<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span>    <span class="keywordflow">for</span> (ii = 0; ii &lt; <a class="code hl_variable" href="structslip__rx__state.html#acfc7fe628e6f74370414e179b39b7b19">length</a>; ii++)</div>
-<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>    {</div>
-<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span>        status = <a class="code hl_function" href="group__SLIP.html#ga0b6ccde54d6cabd5d25d9319114bac08">slip_rx</a>(slip_state, data[ii]);</div>
-<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>        <span class="keywordflow">if</span> (status == <a class="code hl_enumvalue" href="group__SLIP.html#gga8b3d9f67bf20876006c9bd36b72e2009ab03bd156d377590fa9870a46a6311ea6">SLIP_RX_COMPLETE</a>)</div>
-<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span>        {</div>
-<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span>            uint16_t crc;</div>
-<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span> </div>
-<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span>            <span class="keywordflow">if</span> (slip_state-&gt;<a class="code hl_variable" href="structslip__rx__state.html#acfc7fe628e6f74370414e179b39b7b19">length</a> &lt; <span class="keyword">sizeof</span>(uint16_t))</div>
-<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>            {</div>
-<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span>                printf(<span class="stringliteral">&quot;Received command packet too short. Ignoring...\n&quot;</span>);</div>
-<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span>                <span class="keywordflow">continue</span>;</div>
-<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>            }</div>
-<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span> </div>
-<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>            crc = <a class="code hl_function" href="group__MMCRC.html#gacf9e224e87ff15ec90f91ec09561fc24">mmcrc_16_xmodem</a>(0, slip_state-&gt;<a class="code hl_variable" href="structslip__rx__state.html#a71e234f23a3e1138d3607de8cb809b14">buffer</a>, slip_state-&gt;<a class="code hl_variable" href="structslip__rx__state.html#acfc7fe628e6f74370414e179b39b7b19">length</a> - <span class="keyword">sizeof</span>(uint16_t));</div>
-<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>            <span class="keywordflow">if</span> ((slip_state-&gt;<a class="code hl_variable" href="structslip__rx__state.html#a71e234f23a3e1138d3607de8cb809b14">buffer</a>[slip_state-&gt;<a class="code hl_variable" href="structslip__rx__state.html#acfc7fe628e6f74370414e179b39b7b19">length</a> - 2] == (crc &amp; 0xFF)) &amp;&amp;</div>
-<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>                (slip_state-&gt;<a class="code hl_variable" href="structslip__rx__state.html#a71e234f23a3e1138d3607de8cb809b14">buffer</a>[slip_state-&gt;<a class="code hl_variable" href="structslip__rx__state.html#acfc7fe628e6f74370414e179b39b7b19">length</a> - 1] == (crc &gt;&gt; 8)))</div>
-<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span>            {</div>
-<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>                <span class="comment">/* CRC matches, so allocate an mmbuf and pass to command handler function. */</span></div>
-<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>                <span class="keyword">struct </span><a class="code hl_struct" href="structmmbuf.html">mmbuf</a>* mmbuffer = <a class="code hl_function" href="group__MMBUF.html#ga6c9830a6c70f13ee9a4cf812d8dcdd00">mmbuf_alloc_on_heap</a>(0, slip_state-&gt;<a class="code hl_variable" href="structslip__rx__state.html#acfc7fe628e6f74370414e179b39b7b19">length</a>);</div>
-<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span>                <span class="keywordflow">if</span> (mmbuffer == NULL)</div>
-<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>                {</div>
-<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span>                    <span class="comment">/* Insufficient memory to receive packet */</span></div>
-<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span>                    slip_state-&gt;<a class="code hl_variable" href="structslip__rx__state.html#acfc7fe628e6f74370414e179b39b7b19">length</a> = 0;</div>
-<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>                    printf(<span class="stringliteral">&quot;Error: memory allocation failure\n&quot;</span>);</div>
-<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>                    <span class="keywordflow">continue</span>;</div>
-<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span>                }</div>
-<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span>                <a class="code hl_function" href="group__MMBUF.html#ga9bd7b55ee32f2e7bcc8a581397f0fd2c">mmbuf_append_data</a>(mmbuffer, slip_state-&gt;<a class="code hl_variable" href="structslip__rx__state.html#a71e234f23a3e1138d3607de8cb809b14">buffer</a>,</div>
-<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span>                                  slip_state-&gt;<a class="code hl_variable" href="structslip__rx__state.html#acfc7fe628e6f74370414e179b39b7b19">length</a>);</div>
-<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span>                <a class="code hl_function" href="group__MMBUF.html#ga3b6217e681c8471b6bd04b64a6386fc5">mmbuf_remove_from_end</a>(mmbuffer, <span class="keyword">sizeof</span>(uint16_t));</div>
-<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span>                <a class="code hl_function" href="rf-test_8c.html#a96ae79b97b427a858a03918853796278">rf_test_handle_command</a>(mmbuffer);</div>
-<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span>            }</div>
-<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span>            <span class="keywordflow">else</span></div>
-<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span>            {</div>
-<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span>                printf(<span class="stringliteral">&quot;CRC validation failure\n&quot;</span>);</div>
-<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span>            }</div>
-<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span>            slip_state-&gt;<a class="code hl_variable" href="structslip__rx__state.html#acfc7fe628e6f74370414e179b39b7b19">length</a> = 0;</div>
-<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span>        }</div>
-<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span>    }</div>
-<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span>}</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="preprocessor">#include &quot;<a class="code" href="mm__app__common_8h.html">mm_app_common.h</a>&quot;</span></div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="preprocessor">#include &quot;slip.h&quot;</span></div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span> </div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno"><a class="line" href="rf-test_8c.html#ade6f6a3d32e71a6f195b684d2c35e5a4">   32</a></span><span class="preprocessor">#define SEQ_NUM_LEN         (4)</span></div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno"><a class="line" href="rf-test_8c.html#a87c9dde477023307eb0245984d0546e7">   34</a></span><span class="preprocessor">#define COMMAND_MAX_LEN     (252)</span></div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno"><a class="line" href="rf-test_8c.html#a9056847765f10bf5682b0ad153181b11">   36</a></span><span class="preprocessor">#define RESPONSE_MAX_LEN    (2048)</span></div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno"><a class="line" href="rf-test_8c.html#a0904cc0f3eb6b66e338ab9616dc4ff20">   38</a></span><span class="preprocessor">#define RESPONSE_HDR_LEN    (12)</span></div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span> </div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno"><a class="line" href="rf-test_8c.html#afc1d7081d64ee9ac4421d2755dc58ee7">   48</a></span><span class="keyword">static</span> <span class="keywordtype">int</span> <a class="code hl_function" href="rf-test_8c.html#afc1d7081d64ee9ac4421d2755dc58ee7">slip_tx_handler</a>(uint8_t c, <span class="keywordtype">void</span> *arg)</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>{</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>    <a class="code hl_define" href="group__MMUTILS.html#ga0157597bdd038d83fbb0f2f488e6e4ee">MM_UNUSED</a>(arg);</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>    <a class="code hl_function" href="group__MMHAL__UART.html#ga22114935cff34ea4bdf3d714acdda560">mmhal_uart_tx</a>(&amp;c, 1);</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>    <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>}</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span> </div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno"><a class="line" href="rf-test_8c.html#a96ae79b97b427a858a03918853796278">   60</a></span><span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code hl_function" href="rf-test_8c.html#a96ae79b97b427a858a03918853796278">rf_test_handle_command</a>(<span class="keyword">struct</span> <a class="code hl_struct" href="structmmbuf.html">mmbuf</a> *cmd_buf)</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>{</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>    uint8_t *seq_num;</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>    <span class="keyword">struct </span><a class="code hl_struct" href="structmmbuf.html">mmbuf</a> *rsp_buf = NULL;</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>    uint32_t response_len;</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>    <span class="keyword">enum</span> <a class="code hl_enumeration" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a> status;</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>    <span class="keywordtype">int</span> ret;</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>    uint16_t crc;</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span> </div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    seq_num = <a class="code hl_function" href="group__MMBUF.html#ga3b6217e681c8471b6bd04b64a6386fc5">mmbuf_remove_from_end</a>(cmd_buf, <a class="code hl_define" href="rf-test_8c.html#ade6f6a3d32e71a6f195b684d2c35e5a4">SEQ_NUM_LEN</a>);</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>    <span class="keywordflow">if</span> (seq_num == NULL)</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>    {</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>        printf(<span class="stringliteral">&quot;Received command packet too short\n&quot;</span>);</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>        <span class="keywordflow">goto</span> exit;</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>    }</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span> </div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>    rsp_buf = <a class="code hl_function" href="group__MMBUF.html#ga6c9830a6c70f13ee9a4cf812d8dcdd00">mmbuf_alloc_on_heap</a>(0, <a class="code hl_define" href="rf-test_8c.html#ade6f6a3d32e71a6f195b684d2c35e5a4">SEQ_NUM_LEN</a> + <a class="code hl_define" href="rf-test_8c.html#a9056847765f10bf5682b0ad153181b11">RESPONSE_MAX_LEN</a>);</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span> </div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>    <span class="comment">/*</span></div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span><span class="comment">     * `response_len` is initialized to the size of the response buffer before</span></div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span><span class="comment">     * `mmwlan_ate_execute_command()` is invoked and will be set to the actual length of the</span></div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span><span class="comment">     * response on success</span></div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span><span class="comment">     */</span></div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>    response_len = <a class="code hl_define" href="rf-test_8c.html#a9056847765f10bf5682b0ad153181b11">RESPONSE_MAX_LEN</a>;</div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span> </div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>    printf(<span class="stringliteral">&quot;Executing command...\n&quot;</span>);</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>    status = <a class="code hl_function" href="group__MMWLAN__TEST.html#ga9c6f77ec164d316302624fa08af7e692">mmwlan_ate_execute_command</a>(</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>        <a class="code hl_function" href="group__MMBUF.html#gacd57987e486baa1f132aa6ec5fcc5b79">mmbuf_get_data_start</a>(cmd_buf), <a class="code hl_function" href="group__MMBUF.html#ga22e261dc6696c64897d155148df77131">mmbuf_get_data_length</a>(cmd_buf),</div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>        <a class="code hl_function" href="group__MMBUF.html#ga1453bc61150ddd2e6e2c8959359118f1">mmbuf_append</a>(rsp_buf, 0), &amp;response_len);</div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span> </div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>    <span class="keywordflow">if</span> (status == <a class="code hl_enumvalue" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a>)</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>    {</div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>        (void)<a class="code hl_function" href="group__MMBUF.html#ga1453bc61150ddd2e6e2c8959359118f1">mmbuf_append</a>(rsp_buf, response_len);</div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>        printf(<span class="stringliteral">&quot;Command executed successfully. Sending response...\n&quot;</span>);</div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>    }</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>    <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>    {</div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>        uint8_t *hdr;</div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>        uint8_t result_code[4] = {};</div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span> </div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>        printf(<span class="stringliteral">&quot;Failed to execute command. Status code %d\n&quot;</span>, status);</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span> </div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>        <span class="keywordflow">switch</span> (status)</div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>        {</div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a71049f2f8b9d9f1caef990fe6f4cb261">MMWLAN_NO_MEM</a>:</div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>            result_code[0] = MM_ENOMEM;</div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>            <span class="keywordflow">break</span>;</div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span> </div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086af8311c13f95546d0b338ea2b86384a00">MMWLAN_UNAVAILABLE</a>:</div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>            result_code[0] = MM_ENODEV;</div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>            <span class="keywordflow">break</span>;</div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span> </div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a037f99a316830d62111d270fc08407e5">MMWLAN_INVALID_ARGUMENT</a>:</div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>            result_code[0] = MM_EINVAL;</div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>            <span class="keywordflow">break</span>;</div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span> </div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>        <span class="keywordflow">case</span> <a class="code hl_enumvalue" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a44ca87b719a15e19375cbcddd81bc152">MMWLAN_TIMED_OUT</a>:</div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>            result_code[0] = MM_ETIMEDOUT;</div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>            <span class="keywordflow">break</span>;</div>
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span> </div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>        <span class="keywordflow">default</span>:</div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>            result_code[0] = MM_EFAULT;</div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>            <span class="keywordflow">break</span>;</div>
+<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>        }</div>
+<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span> </div>
+<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span>        <span class="comment">/* Craft a response with an errno based error code in the response buffer. */</span></div>
+<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span>        hdr = <a class="code hl_function" href="group__MMBUF.html#ga1453bc61150ddd2e6e2c8959359118f1">mmbuf_append</a>(rsp_buf, <a class="code hl_define" href="rf-test_8c.html#a0904cc0f3eb6b66e338ab9616dc4ff20">RESPONSE_HDR_LEN</a>);</div>
+<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>        memset(hdr, 0, <a class="code hl_define" href="rf-test_8c.html#a0904cc0f3eb6b66e338ab9616dc4ff20">RESPONSE_HDR_LEN</a>);</div>
+<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>        <a class="code hl_function" href="group__MMBUF.html#ga9bd7b55ee32f2e7bcc8a581397f0fd2c">mmbuf_append_data</a>(rsp_buf, result_code, <span class="keyword">sizeof</span>(result_code));</div>
+<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>    }</div>
+<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span> </div>
+<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span>    <a class="code hl_function" href="group__MMBUF.html#ga9bd7b55ee32f2e7bcc8a581397f0fd2c">mmbuf_append_data</a>(rsp_buf, seq_num, <a class="code hl_define" href="rf-test_8c.html#ade6f6a3d32e71a6f195b684d2c35e5a4">SEQ_NUM_LEN</a>);</div>
+<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>    crc = htole16(<a class="code hl_function" href="group__MMCRC.html#gacf9e224e87ff15ec90f91ec09561fc24">mmcrc_16_xmodem</a>(0, <a class="code hl_function" href="group__MMBUF.html#gacd57987e486baa1f132aa6ec5fcc5b79">mmbuf_get_data_start</a>(rsp_buf),</div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>                                  <a class="code hl_function" href="group__MMBUF.html#ga22e261dc6696c64897d155148df77131">mmbuf_get_data_length</a>(rsp_buf)));</div>
+<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>    <a class="code hl_function" href="group__MMBUF.html#ga9bd7b55ee32f2e7bcc8a581397f0fd2c">mmbuf_append_data</a>(rsp_buf, (uint8_t*)&amp;crc, <span class="keyword">sizeof</span>(crc));</div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span> </div>
+<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>    ret = <a class="code hl_function" href="group__SLIP.html#ga6745989126f61ab425a9c4a081faf393">slip_tx</a>(<a class="code hl_function" href="rf-test_8c.html#afc1d7081d64ee9ac4421d2755dc58ee7">slip_tx_handler</a>, NULL,</div>
+<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span>                  <a class="code hl_function" href="group__MMBUF.html#gacd57987e486baa1f132aa6ec5fcc5b79">mmbuf_get_data_start</a>(rsp_buf), <a class="code hl_function" href="group__MMBUF.html#ga22e261dc6696c64897d155148df77131">mmbuf_get_data_length</a>(rsp_buf));</div>
+<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span>    <span class="keywordflow">if</span> (ret != 0)</div>
+<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span>    {</div>
+<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span>        printf(<span class="stringliteral">&quot;Failed to send response (%d)\n&quot;</span>, ret);</div>
+<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span>    }</div>
+<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span>    <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span>    {</div>
+<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span>        printf(<span class="stringliteral">&quot;Response sent\n&quot;</span>);</div>
+<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span>    }</div>
+<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span>exit:</div>
+<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>    <a class="code hl_function" href="group__MMBUF.html#ga86e90caf51d675377ddf2bbe7b799bad">mmbuf_release</a>(cmd_buf);</div>
+<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span>    <a class="code hl_function" href="group__MMBUF.html#ga86e90caf51d675377ddf2bbe7b799bad">mmbuf_release</a>(rsp_buf);</div>
+<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span>}</div>
+<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span> </div>
+<div class="line"><a id="l00158" name="l00158"></a><span class="lineno"><a class="line" href="rf-test_8c.html#aa3dc9a737309865b54769cda5d93242b">  158</a></span><span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code hl_function" href="rf-test_8c.html#aa3dc9a737309865b54769cda5d93242b">uart_rx_handler</a>(<span class="keyword">const</span> uint8_t *data, <span class="keywordtype">size_t</span> length, <span class="keywordtype">void</span> *arg)</div>
+<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span>{</div>
+<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span>    <span class="keywordtype">size_t</span> ii;</div>
+<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span>    <span class="keyword">enum</span> <a class="code hl_enumeration" href="group__SLIP.html#ga8b3d9f67bf20876006c9bd36b72e2009">slip_rx_status</a> status;</div>
+<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span>    <span class="keyword">struct </span><a class="code hl_struct" href="structslip__rx__state.html">slip_rx_state</a> *slip_state = (<span class="keyword">struct </span><a class="code hl_struct" href="structslip__rx__state.html">slip_rx_state</a> *)arg;</div>
+<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span> </div>
+<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span>    <span class="keywordflow">for</span> (ii = 0; ii &lt; <a class="code hl_variable" href="structslip__rx__state.html#acfc7fe628e6f74370414e179b39b7b19">length</a>; ii++)</div>
+<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span>    {</div>
+<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>        status = <a class="code hl_function" href="group__SLIP.html#ga0b6ccde54d6cabd5d25d9319114bac08">slip_rx</a>(slip_state, data[ii]);</div>
+<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span>        <span class="keywordflow">if</span> (status == <a class="code hl_enumvalue" href="group__SLIP.html#gga8b3d9f67bf20876006c9bd36b72e2009ab03bd156d377590fa9870a46a6311ea6">SLIP_RX_COMPLETE</a>)</div>
+<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>        {</div>
+<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span>            uint16_t crc;</div>
+<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span> </div>
+<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span>            <span class="keywordflow">if</span> (slip_state-&gt;<a class="code hl_variable" href="structslip__rx__state.html#acfc7fe628e6f74370414e179b39b7b19">length</a> &lt; <span class="keyword">sizeof</span>(uint16_t))</div>
+<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span>            {</div>
+<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>                printf(<span class="stringliteral">&quot;Received command packet too short. Ignoring...\n&quot;</span>);</div>
+<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span>                <span class="keywordflow">continue</span>;</div>
+<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span>            }</div>
+<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span> </div>
+<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span>            crc = <a class="code hl_function" href="group__MMCRC.html#gacf9e224e87ff15ec90f91ec09561fc24">mmcrc_16_xmodem</a>(0, slip_state-&gt;<a class="code hl_variable" href="structslip__rx__state.html#a71e234f23a3e1138d3607de8cb809b14">buffer</a>, slip_state-&gt;<a class="code hl_variable" href="structslip__rx__state.html#acfc7fe628e6f74370414e179b39b7b19">length</a> - <span class="keyword">sizeof</span>(uint16_t));</div>
+<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>            <span class="keywordflow">if</span> ((slip_state-&gt;<a class="code hl_variable" href="structslip__rx__state.html#a71e234f23a3e1138d3607de8cb809b14">buffer</a>[slip_state-&gt;<a class="code hl_variable" href="structslip__rx__state.html#acfc7fe628e6f74370414e179b39b7b19">length</a> - 2] == (crc &amp; 0xFF)) &amp;&amp;</div>
+<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>                (slip_state-&gt;<a class="code hl_variable" href="structslip__rx__state.html#a71e234f23a3e1138d3607de8cb809b14">buffer</a>[slip_state-&gt;<a class="code hl_variable" href="structslip__rx__state.html#acfc7fe628e6f74370414e179b39b7b19">length</a> - 1] == (crc &gt;&gt; 8)))</div>
+<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>            {</div>
+<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span>                <span class="comment">/* CRC matches, so allocate an mmbuf and pass to command handler function. */</span></div>
+<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>                <span class="keyword">struct </span><a class="code hl_struct" href="structmmbuf.html">mmbuf</a>* mmbuffer = <a class="code hl_function" href="group__MMBUF.html#ga6c9830a6c70f13ee9a4cf812d8dcdd00">mmbuf_alloc_on_heap</a>(0, slip_state-&gt;<a class="code hl_variable" href="structslip__rx__state.html#acfc7fe628e6f74370414e179b39b7b19">length</a>);</div>
+<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>                <span class="keywordflow">if</span> (mmbuffer == NULL)</div>
+<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span>                {</div>
+<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>                    <span class="comment">/* Insufficient memory to receive packet */</span></div>
+<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span>                    slip_state-&gt;<a class="code hl_variable" href="structslip__rx__state.html#acfc7fe628e6f74370414e179b39b7b19">length</a> = 0;</div>
+<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span>                    printf(<span class="stringliteral">&quot;Error: memory allocation failure\n&quot;</span>);</div>
+<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>                    <span class="keywordflow">continue</span>;</div>
+<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>                }</div>
+<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span>                <a class="code hl_function" href="group__MMBUF.html#ga9bd7b55ee32f2e7bcc8a581397f0fd2c">mmbuf_append_data</a>(mmbuffer, slip_state-&gt;<a class="code hl_variable" href="structslip__rx__state.html#a71e234f23a3e1138d3607de8cb809b14">buffer</a>,</div>
+<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span>                                  slip_state-&gt;<a class="code hl_variable" href="structslip__rx__state.html#acfc7fe628e6f74370414e179b39b7b19">length</a>);</div>
+<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span>                <a class="code hl_function" href="group__MMBUF.html#ga3b6217e681c8471b6bd04b64a6386fc5">mmbuf_remove_from_end</a>(mmbuffer, <span class="keyword">sizeof</span>(uint16_t));</div>
+<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span>                <a class="code hl_function" href="rf-test_8c.html#a96ae79b97b427a858a03918853796278">rf_test_handle_command</a>(mmbuffer);</div>
+<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span>            }</div>
+<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span>            <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span>            {</div>
+<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span>                printf(<span class="stringliteral">&quot;CRC validation failure\n&quot;</span>);</div>
+<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span>            }</div>
+<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span>            slip_state-&gt;<a class="code hl_variable" href="structslip__rx__state.html#acfc7fe628e6f74370414e179b39b7b19">length</a> = 0;</div>
+<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span>        }</div>
+<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span>    }</div>
+<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span>}</div>
+<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span> </div>
 <div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span> </div>
-<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span> </div>
-<div class="line"><a id="l00207" name="l00207"></a><span class="lineno"><a class="line" href="rf-test_8c.html#ab5eda394424d5302fdc376b519cb9629">  207</a></span><span class="keyword">static</span> uint8_t <a class="code hl_variable" href="rf-test_8c.html#ab5eda394424d5302fdc376b519cb9629">slip_rx_buffer</a>[<a class="code hl_define" href="group__SLIP.html#ga9e17e8236b045af9f97c7f5121a31117">SLIP_RX_BUFFER_SIZE</a>];</div>
-<div class="line"><a id="l00209" name="l00209"></a><span class="lineno"><a class="line" href="rf-test_8c.html#aa261ac1ecad5b19cc32bb7ff36f7769c">  209</a></span><span class="keyword">static</span> <span class="keyword">struct </span><a class="code hl_struct" href="structslip__rx__state.html">slip_rx_state</a> <a class="code hl_variable" href="rf-test_8c.html#aa261ac1ecad5b19cc32bb7ff36f7769c">rx_slip_state</a> =</div>
-<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span>    <a class="code hl_define" href="group__SLIP.html#ga58b6b036a6d81cf1f7ad252406b9bb93">SLIP_RX_STATE_INIT</a>(<a class="code hl_variable" href="rf-test_8c.html#ab5eda394424d5302fdc376b519cb9629">slip_rx_buffer</a>, <span class="keyword">sizeof</span>(<a class="code hl_variable" href="rf-test_8c.html#ab5eda394424d5302fdc376b519cb9629">slip_rx_buffer</a>));</div>
-<div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span> </div>
-<div class="line"><a id="l00216" name="l00216"></a><span class="lineno"><a class="line" href="rf-test_8c.html#add3190cf715f513666f4be42874d91e2">  216</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="rf-test_8c.html#add3190cf715f513666f4be42874d91e2">app_init</a>(<span class="keywordtype">void</span>)</div>
-<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span>{</div>
-<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span>    <span class="comment">/* RF-test application does not need to worry about power saving. Take a deep sleep</span></div>
-<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span><span class="comment">     * veto and never release it so that we do not enter deep sleep. */</span></div>
-<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span>    <a class="code hl_function" href="group__MMHAL.html#ga3e8f1b40b2a974a117bbb7fb51682633">mmhal_set_deep_sleep_veto</a>(<a class="code hl_enumvalue" href="group__MMHAL.html#ggaac79b1527fe06a43a80df65ca4b39e94af1ac39d44848259e25b2fab02d03ea27">MMHAL_VETO_ID_APP_MIN</a>);</div>
-<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span> </div>
-<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span>    printf(<span class="stringliteral">&quot;\n\nRF Test Application (Built &quot;</span>__DATE__ <span class="stringliteral">&quot; &quot;</span> __TIME__ <span class="stringliteral">&quot;)\n\n&quot;</span>);</div>
-<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span> </div>
-<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span>    <a class="code hl_function" href="mm__app__common_8h.html#ac74a7d993e4fd372d18ee5d2f2570fb9">app_wlan_init</a>();</div>
-<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span> </div>
-<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span>    <a class="code hl_function" href="group__MMHAL__UART.html#gad368f1afcc9094ac2ff4c85a1be3c4c0">mmhal_uart_init</a>(<a class="code hl_function" href="rf-test_8c.html#aa3dc9a737309865b54769cda5d93242b">uart_rx_handler</a>, &amp;<a class="code hl_variable" href="rf-test_8c.html#aa261ac1ecad5b19cc32bb7ff36f7769c">rx_slip_state</a>);</div>
-<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span>}</div>
+<div class="line"><a id="l00206" name="l00206"></a><span class="lineno"><a class="line" href="rf-test_8c.html#ab5eda394424d5302fdc376b519cb9629">  206</a></span><span class="keyword">static</span> uint8_t <a class="code hl_variable" href="rf-test_8c.html#ab5eda394424d5302fdc376b519cb9629">slip_rx_buffer</a>[<a class="code hl_define" href="group__SLIP.html#ga9e17e8236b045af9f97c7f5121a31117">SLIP_RX_BUFFER_SIZE</a>];</div>
+<div class="line"><a id="l00208" name="l00208"></a><span class="lineno"><a class="line" href="rf-test_8c.html#aa261ac1ecad5b19cc32bb7ff36f7769c">  208</a></span><span class="keyword">static</span> <span class="keyword">struct </span><a class="code hl_struct" href="structslip__rx__state.html">slip_rx_state</a> <a class="code hl_variable" href="rf-test_8c.html#aa261ac1ecad5b19cc32bb7ff36f7769c">rx_slip_state</a> =</div>
+<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>    <a class="code hl_define" href="group__SLIP.html#ga58b6b036a6d81cf1f7ad252406b9bb93">SLIP_RX_STATE_INIT</a>(<a class="code hl_variable" href="rf-test_8c.html#ab5eda394424d5302fdc376b519cb9629">slip_rx_buffer</a>, <span class="keyword">sizeof</span>(<a class="code hl_variable" href="rf-test_8c.html#ab5eda394424d5302fdc376b519cb9629">slip_rx_buffer</a>));</div>
+<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span> </div>
+<div class="line"><a id="l00215" name="l00215"></a><span class="lineno"><a class="line" href="rf-test_8c.html#add3190cf715f513666f4be42874d91e2">  215</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="rf-test_8c.html#add3190cf715f513666f4be42874d91e2">app_init</a>(<span class="keywordtype">void</span>)</div>
+<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span>{</div>
+<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span>    <span class="comment">/* RF-test application does not need to worry about power saving. Take a deep sleep</span></div>
+<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span><span class="comment">     * veto and never release it so that we do not enter deep sleep. */</span></div>
+<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span>    <a class="code hl_function" href="group__MMHAL.html#ga3e8f1b40b2a974a117bbb7fb51682633">mmhal_set_deep_sleep_veto</a>(<a class="code hl_enumvalue" href="group__MMHAL.html#ggaac79b1527fe06a43a80df65ca4b39e94af1ac39d44848259e25b2fab02d03ea27">MMHAL_VETO_ID_APP_MIN</a>);</div>
+<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span> </div>
+<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>    printf(<span class="stringliteral">&quot;\n\nRF Test Application (Built &quot;</span>__DATE__ <span class="stringliteral">&quot; &quot;</span> __TIME__ <span class="stringliteral">&quot;)\n\n&quot;</span>);</div>
+<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span> </div>
+<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span>    <a class="code hl_function" href="mm__app__common_8h.html#ac74a7d993e4fd372d18ee5d2f2570fb9">app_wlan_init</a>();</div>
+<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span> </div>
+<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span>    <a class="code hl_function" href="group__MMHAL__UART.html#gad368f1afcc9094ac2ff4c85a1be3c4c0">mmhal_uart_init</a>(<a class="code hl_function" href="rf-test_8c.html#aa3dc9a737309865b54769cda5d93242b">uart_rx_handler</a>, &amp;<a class="code hl_variable" href="rf-test_8c.html#aa261ac1ecad5b19cc32bb7ff36f7769c">rx_slip_state</a>);</div>
+<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span>}</div>
 <div class="ttc" id="agroup__MMBUF_html_ga1453bc61150ddd2e6e2c8959359118f1"><div class="ttname"><a href="group__MMBUF.html#ga1453bc61150ddd2e6e2c8959359118f1">mmbuf_append</a></div><div class="ttdeci">static uint8_t * mmbuf_append(struct mmbuf *mmbuf, uint32_t len)</div><div class="ttdoc">Reserves space immediately after the data currently in the given mmbuf and returns a pointer to this ...</div><div class="ttdef"><b>Definition:</b> <a href="mmbuf_8h_source.html#l00239">mmbuf.h:239</a></div></div>
 <div class="ttc" id="agroup__MMBUF_html_ga22e261dc6696c64897d155148df77131"><div class="ttname"><a href="group__MMBUF.html#ga22e261dc6696c64897d155148df77131">mmbuf_get_data_length</a></div><div class="ttdeci">static uint32_t mmbuf_get_data_length(struct mmbuf *mmbuf)</div><div class="ttdoc">Gets the length of the data currently in the mmbuf.</div><div class="ttdef"><b>Definition:</b> <a href="mmbuf_8h_source.html#l00159">mmbuf.h:159</a></div></div>
 <div class="ttc" id="agroup__MMBUF_html_ga3b6217e681c8471b6bd04b64a6386fc5"><div class="ttname"><a href="group__MMBUF.html#ga3b6217e681c8471b6bd04b64a6386fc5">mmbuf_remove_from_end</a></div><div class="ttdeci">static uint8_t * mmbuf_remove_from_end(struct mmbuf *mmbuf, uint32_t len)</div><div class="ttdoc">Remove data from the end of the mmbuf.</div><div class="ttdef"><b>Definition:</b> <a href="mmbuf_8h_source.html#l00295">mmbuf.h:295</a></div></div>
@@ -303,15 +302,15 @@ $(document).ready(function(){initNavTree('rf-test_8c_source.html',''); initResiz
 <div class="ttc" id="agroup__SLIP_html_gga8b3d9f67bf20876006c9bd36b72e2009ab03bd156d377590fa9870a46a6311ea6"><div class="ttname"><a href="group__SLIP.html#gga8b3d9f67bf20876006c9bd36b72e2009ab03bd156d377590fa9870a46a6311ea6">SLIP_RX_COMPLETE</a></div><div class="ttdeci">@ SLIP_RX_COMPLETE</div><div class="ttdoc">A complete packet with length &gt; 0 has been received.</div><div class="ttdef"><b>Definition:</b> <a href="slip_8h_source.html#l00081">slip.h:81</a></div></div>
 <div class="ttc" id="amm__app__common_8h_html"><div class="ttname"><a href="mm__app__common_8h.html">mm_app_common.h</a></div><div class="ttdoc">Morse Micro application helper routines for initializing/de-initializing the Wireless LAN interface a...</div></div>
 <div class="ttc" id="amm__app__common_8h_html_ac74a7d993e4fd372d18ee5d2f2570fb9"><div class="ttname"><a href="mm__app__common_8h.html#ac74a7d993e4fd372d18ee5d2f2570fb9">app_wlan_init</a></div><div class="ttdeci">void app_wlan_init(void)</div><div class="ttdoc">Initializes the WLAN interface (and dependencies) using settings specified in the config store.</div></div>
-<div class="ttc" id="arf-test_8c_html_a0904cc0f3eb6b66e338ab9616dc4ff20"><div class="ttname"><a href="rf-test_8c.html#a0904cc0f3eb6b66e338ab9616dc4ff20">RESPONSE_HDR_LEN</a></div><div class="ttdeci">#define RESPONSE_HDR_LEN</div><div class="ttdoc">Length of a response header (excluding status field).</div><div class="ttdef"><b>Definition:</b> <a href="rf-test_8c_source.html#l00039">rf-test.c:39</a></div></div>
-<div class="ttc" id="arf-test_8c_html_a9056847765f10bf5682b0ad153181b11"><div class="ttname"><a href="rf-test_8c.html#a9056847765f10bf5682b0ad153181b11">RESPONSE_MAX_LEN</a></div><div class="ttdeci">#define RESPONSE_MAX_LEN</div><div class="ttdoc">Maximum possible length of a response that we may wish to send.</div><div class="ttdef"><b>Definition:</b> <a href="rf-test_8c_source.html#l00037">rf-test.c:37</a></div></div>
-<div class="ttc" id="arf-test_8c_html_a96ae79b97b427a858a03918853796278"><div class="ttname"><a href="rf-test_8c.html#a96ae79b97b427a858a03918853796278">rf_test_handle_command</a></div><div class="ttdeci">static void rf_test_handle_command(struct mmbuf *cmd_buf)</div><div class="ttdoc">Callback to handle reception of a command packet from the data-link HAL.</div><div class="ttdef"><b>Definition:</b> <a href="rf-test_8c_source.html#l00061">rf-test.c:61</a></div></div>
-<div class="ttc" id="arf-test_8c_html_aa261ac1ecad5b19cc32bb7ff36f7769c"><div class="ttname"><a href="rf-test_8c.html#aa261ac1ecad5b19cc32bb7ff36f7769c">rx_slip_state</a></div><div class="ttdeci">static struct slip_rx_state rx_slip_state</div><div class="ttdoc">State data for SLIP processing on receive path.</div><div class="ttdef"><b>Definition:</b> <a href="rf-test_8c_source.html#l00209">rf-test.c:209</a></div></div>
-<div class="ttc" id="arf-test_8c_html_aa3dc9a737309865b54769cda5d93242b"><div class="ttname"><a href="rf-test_8c.html#aa3dc9a737309865b54769cda5d93242b">uart_rx_handler</a></div><div class="ttdeci">static void uart_rx_handler(const uint8_t *data, size_t length, void *arg)</div><div class="ttdoc">Handler for UART HAL RX callback.</div><div class="ttdef"><b>Definition:</b> <a href="rf-test_8c_source.html#l00159">rf-test.c:159</a></div></div>
-<div class="ttc" id="arf-test_8c_html_ab5eda394424d5302fdc376b519cb9629"><div class="ttname"><a href="rf-test_8c.html#ab5eda394424d5302fdc376b519cb9629">slip_rx_buffer</a></div><div class="ttdeci">static uint8_t slip_rx_buffer[SLIP_RX_BUFFER_SIZE]</div><div class="ttdoc">Buffer for SLIP processing on receive path.</div><div class="ttdef"><b>Definition:</b> <a href="rf-test_8c_source.html#l00207">rf-test.c:207</a></div></div>
-<div class="ttc" id="arf-test_8c_html_add3190cf715f513666f4be42874d91e2"><div class="ttname"><a href="rf-test_8c.html#add3190cf715f513666f4be42874d91e2">app_init</a></div><div class="ttdeci">void app_init(void)</div><div class="ttdoc">Main entry point to the application.</div><div class="ttdef"><b>Definition:</b> <a href="rf-test_8c_source.html#l00216">rf-test.c:216</a></div></div>
-<div class="ttc" id="arf-test_8c_html_ade6f6a3d32e71a6f195b684d2c35e5a4"><div class="ttname"><a href="rf-test_8c.html#ade6f6a3d32e71a6f195b684d2c35e5a4">SEQ_NUM_LEN</a></div><div class="ttdeci">#define SEQ_NUM_LEN</div><div class="ttdoc">Length of the sequence number field appended to command/response packets.</div><div class="ttdef"><b>Definition:</b> <a href="rf-test_8c_source.html#l00033">rf-test.c:33</a></div></div>
-<div class="ttc" id="arf-test_8c_html_afc1d7081d64ee9ac4421d2755dc58ee7"><div class="ttname"><a href="rf-test_8c.html#afc1d7081d64ee9ac4421d2755dc58ee7">slip_tx_handler</a></div><div class="ttdeci">static int slip_tx_handler(uint8_t c, void *arg)</div><div class="ttdoc">TX callback handler for SLIP.</div><div class="ttdef"><b>Definition:</b> <a href="rf-test_8c_source.html#l00049">rf-test.c:49</a></div></div>
+<div class="ttc" id="arf-test_8c_html_a0904cc0f3eb6b66e338ab9616dc4ff20"><div class="ttname"><a href="rf-test_8c.html#a0904cc0f3eb6b66e338ab9616dc4ff20">RESPONSE_HDR_LEN</a></div><div class="ttdeci">#define RESPONSE_HDR_LEN</div><div class="ttdoc">Length of a response header (excluding status field).</div><div class="ttdef"><b>Definition:</b> <a href="rf-test_8c_source.html#l00038">rf-test.c:38</a></div></div>
+<div class="ttc" id="arf-test_8c_html_a9056847765f10bf5682b0ad153181b11"><div class="ttname"><a href="rf-test_8c.html#a9056847765f10bf5682b0ad153181b11">RESPONSE_MAX_LEN</a></div><div class="ttdeci">#define RESPONSE_MAX_LEN</div><div class="ttdoc">Maximum possible length of a response that we may wish to send.</div><div class="ttdef"><b>Definition:</b> <a href="rf-test_8c_source.html#l00036">rf-test.c:36</a></div></div>
+<div class="ttc" id="arf-test_8c_html_a96ae79b97b427a858a03918853796278"><div class="ttname"><a href="rf-test_8c.html#a96ae79b97b427a858a03918853796278">rf_test_handle_command</a></div><div class="ttdeci">static void rf_test_handle_command(struct mmbuf *cmd_buf)</div><div class="ttdoc">Callback to handle reception of a command packet from the data-link HAL.</div><div class="ttdef"><b>Definition:</b> <a href="rf-test_8c_source.html#l00060">rf-test.c:60</a></div></div>
+<div class="ttc" id="arf-test_8c_html_aa261ac1ecad5b19cc32bb7ff36f7769c"><div class="ttname"><a href="rf-test_8c.html#aa261ac1ecad5b19cc32bb7ff36f7769c">rx_slip_state</a></div><div class="ttdeci">static struct slip_rx_state rx_slip_state</div><div class="ttdoc">State data for SLIP processing on receive path.</div><div class="ttdef"><b>Definition:</b> <a href="rf-test_8c_source.html#l00208">rf-test.c:208</a></div></div>
+<div class="ttc" id="arf-test_8c_html_aa3dc9a737309865b54769cda5d93242b"><div class="ttname"><a href="rf-test_8c.html#aa3dc9a737309865b54769cda5d93242b">uart_rx_handler</a></div><div class="ttdeci">static void uart_rx_handler(const uint8_t *data, size_t length, void *arg)</div><div class="ttdoc">Handler for UART HAL RX callback.</div><div class="ttdef"><b>Definition:</b> <a href="rf-test_8c_source.html#l00158">rf-test.c:158</a></div></div>
+<div class="ttc" id="arf-test_8c_html_ab5eda394424d5302fdc376b519cb9629"><div class="ttname"><a href="rf-test_8c.html#ab5eda394424d5302fdc376b519cb9629">slip_rx_buffer</a></div><div class="ttdeci">static uint8_t slip_rx_buffer[SLIP_RX_BUFFER_SIZE]</div><div class="ttdoc">Buffer for SLIP processing on receive path.</div><div class="ttdef"><b>Definition:</b> <a href="rf-test_8c_source.html#l00206">rf-test.c:206</a></div></div>
+<div class="ttc" id="arf-test_8c_html_add3190cf715f513666f4be42874d91e2"><div class="ttname"><a href="rf-test_8c.html#add3190cf715f513666f4be42874d91e2">app_init</a></div><div class="ttdeci">void app_init(void)</div><div class="ttdoc">Main entry point to the application.</div><div class="ttdef"><b>Definition:</b> <a href="rf-test_8c_source.html#l00215">rf-test.c:215</a></div></div>
+<div class="ttc" id="arf-test_8c_html_ade6f6a3d32e71a6f195b684d2c35e5a4"><div class="ttname"><a href="rf-test_8c.html#ade6f6a3d32e71a6f195b684d2c35e5a4">SEQ_NUM_LEN</a></div><div class="ttdeci">#define SEQ_NUM_LEN</div><div class="ttdoc">Length of the sequence number field appended to command/response packets.</div><div class="ttdef"><b>Definition:</b> <a href="rf-test_8c_source.html#l00032">rf-test.c:32</a></div></div>
+<div class="ttc" id="arf-test_8c_html_afc1d7081d64ee9ac4421d2755dc58ee7"><div class="ttname"><a href="rf-test_8c.html#afc1d7081d64ee9ac4421d2755dc58ee7">slip_tx_handler</a></div><div class="ttdeci">static int slip_tx_handler(uint8_t c, void *arg)</div><div class="ttdoc">TX callback handler for SLIP.</div><div class="ttdef"><b>Definition:</b> <a href="rf-test_8c_source.html#l00048">rf-test.c:48</a></div></div>
 <div class="ttc" id="astructmmbuf_html"><div class="ttname"><a href="structmmbuf.html">mmbuf</a></div><div class="ttdoc">Core mmbuf data structure.</div><div class="ttdef"><b>Definition:</b> <a href="mmbuf_8h_source.html#l00052">mmbuf.h:53</a></div></div>
 <div class="ttc" id="astructslip__rx__state_html"><div class="ttname"><a href="structslip__rx__state.html">slip_rx_state</a></div><div class="ttdoc">Structure used to contain the current state for the SLIP receiver.</div><div class="ttdef"><b>Definition:</b> <a href="slip_8h_source.html#l00042">slip.h:43</a></div></div>
 <div class="ttc" id="astructslip__rx__state_html_a71e234f23a3e1138d3607de8cb809b14"><div class="ttname"><a href="structslip__rx__state.html#a71e234f23a3e1138d3607de8cb809b14">slip_rx_state::buffer</a></div><div class="ttdeci">uint8_t * buffer</div><div class="ttdoc">Reference to buffer where processed bytes are received.</div><div class="ttdef"><b>Definition:</b> <a href="slip_8h_source.html#l00044">slip.h:44</a></div></div>
@@ -322,7 +321,7 @@ $(document).ready(function(){initNavTree('rf-test_8c_source.html',''); initResiz
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_cddc6ecb1abce9511317e8c5cc90cd4c.html">examples</a></li><li class="navelem"><a class="el" href="dir_e2f795bab23b5c1d2aeca45af1f2eca5.html">rf-test</a></li><li class="navelem"><a class="el" href="dir_8cd68eaf84b43a9b7e4fb6df47a9d083.html">src</a></li><li class="navelem"><a class="el" href="rf-test_8c.html">rf-test.c</a></li>
+    <li class="navelem"><a class="el" href="dir_d570c7de7a367bd1f24cd66faf59ca3f.html">examples</a></li><li class="navelem"><a class="el" href="dir_b5d2fe762edbfb77fa924c24a4eeb703.html">rf-test</a></li><li class="navelem"><a class="el" href="dir_604737abf281672233de97ded33dd765.html">src</a></li><li class="navelem"><a class="el" href="rf-test_8c.html">rf-test.c</a></li>
     <li class="footer">Copyright 2021 Morse Micro </li>
   </ul>
 </div>

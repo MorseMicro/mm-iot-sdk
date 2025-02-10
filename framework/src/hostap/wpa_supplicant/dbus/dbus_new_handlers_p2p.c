@@ -473,7 +473,7 @@ DBusMessage * wpas_dbus_handler_p2p_group_add(DBusMessage *message,
 		if (ssid == NULL || ssid->disabled != 2)
 			goto inv_args;
 
-		if (wpas_p2p_group_add_persistent(wpa_s, ssid, 0, freq, 0,
+		if (wpas_p2p_group_add_persistent(wpa_s, ssid, 0, freq, freq,
 						  freq2, ht40, vht,
 						  max_oper_chwidth, he, edmg,
 						  NULL, 0, 0, allow_6ghz,
@@ -2778,20 +2778,20 @@ DBusMessage * wpas_dbus_handler_p2p_add_service(DBusMessage *message,
 
 		if (wpas_p2p_service_add_bonjour(wpa_s, query, resp) < 0)
 			goto error;
-		query = NULL;
-		resp = NULL;
 	} else
 		goto error;
 
+out:
 	os_free(service);
+	wpabuf_free(query);
+	wpabuf_free(resp);
+
 	return reply;
 error_clear:
 	wpa_dbus_dict_entry_clear(&entry);
 error:
-	os_free(service);
-	wpabuf_free(query);
-	wpabuf_free(resp);
-	return wpas_dbus_error_invalid_args(message, NULL);
+	reply = wpas_dbus_error_invalid_args(message, NULL);
+	goto out;
 }
 
 
@@ -2925,6 +2925,7 @@ DBusMessage * wpas_dbus_handler_p2p_service_sd_req(
 			if (entry.type != DBUS_TYPE_ARRAY ||
 			    entry.array_type != DBUS_TYPE_BYTE)
 				goto error_clear;
+			wpabuf_free(tlv);
 			tlv = wpabuf_alloc_copy(entry.bytearray_value,
 						entry.array_len);
 		} else
@@ -2952,7 +2953,6 @@ DBusMessage * wpas_dbus_handler_p2p_service_sd_req(
 		if (tlv == NULL)
 			goto error;
 		ref = wpas_p2p_sd_request(wpa_s, addr, tlv);
-		wpabuf_free(tlv);
 	}
 
 	if (ref != 0) {
@@ -2964,14 +2964,13 @@ DBusMessage * wpas_dbus_handler_p2p_service_sd_req(
 			message, "Unable to send SD request");
 	}
 out:
+	wpabuf_free(tlv);
 	os_free(service);
 	os_free(peer_object_path);
 	return reply;
 error_clear:
 	wpa_dbus_dict_entry_clear(&entry);
 error:
-	if (tlv)
-		wpabuf_free(tlv);
 	reply = wpas_dbus_error_invalid_args(message, NULL);
 	goto out;
 }
@@ -3013,6 +3012,7 @@ DBusMessage * wpas_dbus_handler_p2p_service_sd_res(
 			if (entry.type != DBUS_TYPE_ARRAY ||
 			    entry.array_type != DBUS_TYPE_BYTE)
 				goto error_clear;
+			wpabuf_free(tlv);
 			tlv = wpabuf_alloc_copy(entry.bytearray_value,
 						entry.array_len);
 		} else
@@ -3026,8 +3026,8 @@ DBusMessage * wpas_dbus_handler_p2p_service_sd_res(
 		goto error;
 
 	wpas_p2p_sd_response(wpa_s, freq, addr, (u8) dlg_tok, tlv);
-	wpabuf_free(tlv);
 out:
+	wpabuf_free(tlv);
 	os_free(peer_object_path);
 	return reply;
 error_clear:

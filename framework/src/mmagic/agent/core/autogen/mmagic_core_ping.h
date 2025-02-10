@@ -14,14 +14,14 @@ struct mmagic_data;
 
 struct mmagic_ping_config
 {
+    /** The IP address of the ping target. */
+    struct struct_ip_addr target;
+    /** The time interval between ping requests (in milliseconds). */
+    uint32_t interval;
     /** This specifies the number of ping requests to send before terminating the
      * session. If this is zero or exceeds UINT16_MAX (65535) then it it will be set to
      * UINT16_MAX. */
     uint32_t count;
-    /** The time interval between ping requests (in milliseconds). */
-    uint32_t interval;
-    /** The IP address of the ping target. */
-    struct struct_ip_addr target;
 };
 
 struct mmagic_ping_data

@@ -332,6 +332,7 @@ struct hostapd_bss_config {
 	struct hostapd_ip_addr own_ip_addr;
 	char *nas_identifier;
 	struct hostapd_radius_servers *radius;
+	int radius_require_message_authenticator;
 	int acct_interim_interval;
 	int radius_request_cui;
 	struct hostapd_radius_attr *radius_auth_req_attr;
@@ -380,7 +381,11 @@ struct hostapd_bss_config {
 	int wpa; /* bitfield of WPA_PROTO_WPA, WPA_PROTO_RSN */
 	int extended_key_id;
 	int wpa_key_mgmt;
+	int rsn_override_key_mgmt;
+	int rsn_override_key_mgmt_2;
 	enum mfp_options ieee80211w;
+	enum mfp_options rsn_override_mfp;
+	enum mfp_options rsn_override_mfp_2;
 	int group_mgmt_cipher;
 	int beacon_prot;
 	/* dot11AssociationSAQueryMaximumTimeout (in TUs) */
@@ -409,8 +414,12 @@ struct hostapd_bss_config {
 	u32 wpa_pairwise_update_count;
 	int wpa_disable_eapol_key_retries;
 	int rsn_pairwise;
+	int rsn_override_pairwise;
+	int rsn_override_pairwise_2;
 	int rsn_preauth;
 	char *rsn_preauth_interfaces;
+
+	int rsn_override_omit_rsnxe;
 
 #ifdef CONFIG_IEEE80211R_AP
 	/* IEEE 802.11r - Fast BSS Transition */
@@ -710,6 +719,11 @@ struct hostapd_bss_config {
 	u8 bss_load_test[5];
 	u8 bss_load_test_set;
 	struct wpabuf *own_ie_override;
+	struct wpabuf *rsne_override;
+	struct wpabuf *rsnoe_override;
+	struct wpabuf *rsno2e_override;
+	struct wpabuf *rsnxe_override;
+	struct wpabuf *rsnxoe_override;
 	int sae_reflection_attack;
 	int sae_commit_status;
 	int sae_pk_omit;
@@ -734,6 +748,7 @@ struct hostapd_bss_config {
 	struct wpabuf *eapol_m1_elements;
 	struct wpabuf *eapol_m3_elements;
 	bool eapol_m3_no_encrypt;
+	bool eapol_key_reserved_random;
 	int test_assoc_comeback_type;
 	struct wpabuf *presp_elements;
 

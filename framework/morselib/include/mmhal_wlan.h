@@ -292,7 +292,12 @@ void mmhal_wlan_hard_reset(void);
 bool mmhal_wlan_ext_xtal_init_is_required(void);
 
 /**
- * Issue the training sequence required to put the transceiver into SPI mode.
+ * Issue the training sequence. During this at least 74 clock cycles must be supplied to the chip
+ * to allow it to prepare for the first command. This is only invoked when using SPI mode in which
+ * case the CS shall be held high (@c mmhal_wlan_spi_cs_deassert()) during the 74 clock cycles.
+ *
+ * See section 6.4.1.1 of the SD spec "Physical Layer Simplified Specification Version 9.10" for
+ * more detail.
  */
 void mmhal_wlan_send_training_seq(void);
 
@@ -425,6 +430,18 @@ struct mmpkt *mmhal_wlan_alloc_mmpkt_for_tx(uint8_t pkt_class,
 struct mmpkt *mmhal_wlan_alloc_mmpkt_for_rx(uint32_t capacity, uint32_t metadata_length);
 
 /** @} */
+
+/**
+ * This value represents the maximum size of a TX packet that can be allocated
+ * within the TX pool. It includes the packet size and the TX metadata.
+ */
+#define MMHAL_WLAN_MMPKT_TX_MAX_SIZE    (1664)
+
+/**
+ * This value represents the maximum size of a RX packet that can be allocated
+ * within the RX pool. It includes the packet size and the RX metadata
+ */
+#define MMHAL_WLAN_MMPKT_RX_MAX_SIZE    (1668)
 
 /**
  * @defgroup MMHAL_WLAN_SDIO WLAN HAL API for SDIO interface

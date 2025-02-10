@@ -230,7 +230,8 @@ enum qca_radiotap_vendor_ids {
  *
  * @QCA_NL80211_VENDOR_SUBCMD_GET_FEATURES: Command to get the features
  *	supported by the driver. enum qca_wlan_vendor_features defines
- *	the possible features.
+ *	the possible features that are encoded in
+ *	QCA_WLAN_VENDOR_ATTR_FEATURE_FLAGS.
  *
  * @QCA_NL80211_VENDOR_SUBCMD_DFS_OFFLOAD_CAC_STARTED: Event used by driver,
  *	which supports DFS offloading, to indicate a channel availability check
@@ -1132,6 +1133,39 @@ enum qca_radiotap_vendor_ids {
  *	Uses the attributes defined in
  *	enum qca_wlan_vendor_attr_tdls_disc_rsp_ext.
  *
+ * @QCA_NL80211_VENDOR_SUBCMD_AUDIO_TRANSPORT_SWITCH: This vendor subcommand is
+ *	used to configure and indicate the audio transport switch in both
+ *	command and event paths. This is used when two or more audio transports
+ *	(e.g., WLAN and Bluetooth) are available between peers.
+ *
+ *	If the driver needs to perform operations like scan, connection,
+ *	roaming, RoC, etc. and AP concurrency policy is set to either
+ *	QCA_WLAN_CONCURRENT_AP_POLICY_GAMING_AUDIO or
+ *	QCA_WLAN_CONCURRENT_AP_POLICY_LOSSLESS_AUDIO_STREAMING, the driver sends
+ *	audio transport switch event to userspace. Userspace application upon
+ *	receiving the event, can try to switch to the requested audio transport.
+ *	The userspace uses this command to send the status of transport
+ *	switching (either confirm or reject) to the driver using this
+ *	subcommand. The driver continues with the pending operation either upon
+ *	receiving the command from userspace or after waiting for a timeout from
+ *	sending the event to userspace. The driver can request userspace to
+ *	switch to WLAN upon availability of WLAN audio transport once after the
+ *	concurrent operations are completed.
+ *
+ *	Userspace can also request audio transport switch from non-WLAN to WLAN
+ *	using this subcommand to the driver. The driver can accept or reject
+ *	depending on other concurrent operations in progress. The driver returns
+ *	success if it can allow audio transport when it receives the command or
+ *	appropriate kernel error code otherwise. Userspace indicates the audio
+ *	transport switch from WLAN to non-WLAN using this subcommand and the
+ *	driver can do other concurrent operations without needing to send any
+ *	event to userspace. This subcommand is used by userspace only when the
+ *	driver advertises support for
+ *	QCA_WLAN_VENDOR_FEATURE_ENHANCED_AUDIO_EXPERIENCE_OVER_WLAN.
+ *
+ *	The attributes used with this command are defined in enum
+ *	qca_wlan_vendor_attr_audio_transport_switch.
+ *
  * @QCA_NL80211_VENDOR_SUBCMD_TX_LATENCY: This vendor subcommand is used to
  *	configure, retrieve, and report per-link transmit latency statistics.
  *
@@ -1227,6 +1261,29 @@ enum qca_radiotap_vendor_ids {
  *	collection of these statistics has been enabled by the command
  *	@QCA_NL80211_VENDOR_SUBCMD_ASYNC_STATS_POLICY. The attributes for this
  *	event are defined in enum qca_wlan_vendor_attr_flow_stats.
+ *
+ * @QCA_NL80211_VENDOR_SUBCMD_USD: Vendor subcommand to implement unsynchronized
+ *	service discovery (USD). Based on the type of the USD subcommand the USD
+ *	operation to publish, subscribe, update publish, cancel publish, or
+ *	cancel subscribe is triggered.
+ *
+ *	When used as an event, the driver notifies the status of an USD command.
+ *
+ *	The attributes used with this command are defined in
+ *	enum qca_wlan_vendor_attr_usd.
+ *
+ * @QCA_NL80211_VENDOR_SUBCMD_CONNECT_EXT: This is an extension to
+ *	%NL80211_CMD_CONNECT command. Userspace can use this to indicate
+ *	additional information to be considered for the subsequent
+ *	(re)association request attempts with %NL80211_CMD_CONNECT. The
+ *	additional information sent with this command is applicable for the
+ *	entire duration of the connection established with %NL80211_CMD_CONNECT,
+ *	including the roams triggered by the driver internally due to other
+ *	vendor interfaces, driver internal logic, and BTM requests from the
+ *	connected AP.
+ *
+ *	The attributes used with this command are defined in
+ *	enum qca_wlan_vendor_attr_connect_ext.
  */
 enum qca_nl80211_vendor_subcmds {
 	QCA_NL80211_VENDOR_SUBCMD_UNSPEC = 0,
@@ -1442,7 +1499,7 @@ enum qca_nl80211_vendor_subcmds {
 	QCA_NL80211_VENDOR_SUBCMD_TID_TO_LINK_MAP = 229,
 	QCA_NL80211_VENDOR_SUBCMD_LINK_RECONFIG = 230,
 	QCA_NL80211_VENDOR_SUBCMD_TDLS_DISC_RSP_EXT = 231,
-	/* 232 - reserved for QCA */
+	QCA_NL80211_VENDOR_SUBCMD_AUDIO_TRANSPORT_SWITCH = 232,
 	QCA_NL80211_VENDOR_SUBCMD_TX_LATENCY = 233,
 	/* 234 - reserved for QCA */
 	QCA_NL80211_VENDOR_SUBCMD_SDWF_PHY_OPS = 235,
@@ -1459,6 +1516,8 @@ enum qca_nl80211_vendor_subcmds {
 	QCA_NL80211_VENDOR_SUBCMD_FLOW_CLASSIFY_RESULT = 246,
 	QCA_NL80211_VENDOR_SUBCMD_ASYNC_STATS_POLICY = 247,
 	QCA_NL80211_VENDOR_SUBCMD_CLASSIFIED_FLOW_REPORT = 248,
+	QCA_NL80211_VENDOR_SUBCMD_USD = 249,
+	QCA_NL80211_VENDOR_SUBCMD_CONNECT_EXT = 250,
 };
 
 /* Compatibility defines for previously used subcmd names.
@@ -1485,7 +1544,11 @@ enum qca_wlan_vendor_attr {
 	 */
 	QCA_WLAN_VENDOR_ATTR_ROAMING_POLICY = 5,
 	QCA_WLAN_VENDOR_ATTR_MAC_ADDR = 6,
-	/* used by QCA_NL80211_VENDOR_SUBCMD_GET_FEATURES */
+	/* Feature flags contained in a byte array. The feature flags are
+	 * identified by their bit index (see &enum qca_wlan_vendor_features)
+	 * with the first byte being the least significant one and the last one
+	 * being the most significant one. Used by
+	 * QCA_NL80211_VENDOR_SUBCMD_GET_FEATURES. */
 	QCA_WLAN_VENDOR_ATTR_FEATURE_FLAGS = 7,
 	QCA_WLAN_VENDOR_ATTR_TEST = 8,
 	/* used by QCA_NL80211_VENDOR_SUBCMD_GET_FEATURES */
@@ -2180,6 +2243,15 @@ enum qca_wlan_vendor_acs_hw_mode {
  *	that the device supports enhanced audio experience over WLAN feature.
  * @QCA_WLAN_VENDOR_FEATURE_HT_VHT_TWT_RESPONDER: Flag indicates that the device
  *	in AP mode supports TWT responder mode in HT and VHT modes.
+ *
+ * @QCA_WLAN_VENDOR_FEATURE_RSN_OVERRIDE_STA: Flag indicates that the device
+ *	supports RSNE/RSNXE overriding in STA mode. Supplicant should enable
+ *	RSN overriding elements use only when the driver indicates this feature
+ *	flag. For BSS selection offload to the driver case, the driver shall
+ *	strip/modify the RSN Selection element indicated in connect request
+ *	elements or add that element if none was provided based on the BSS
+ *	selected by the driver.
+ *
  * @NUM_QCA_WLAN_VENDOR_FEATURES: Number of assigned feature bits
  */
 enum qca_wlan_vendor_features {
@@ -2208,6 +2280,7 @@ enum qca_wlan_vendor_features {
 	QCA_WLAN_VENDOR_FEATURE_AP_ALLOWED_FREQ_LIST = 22,
 	QCA_WLAN_VENDOR_FEATURE_ENHANCED_AUDIO_EXPERIENCE_OVER_WLAN = 23,
 	QCA_WLAN_VENDOR_FEATURE_HT_VHT_TWT_RESPONDER = 24,
+	QCA_WLAN_VENDOR_FEATURE_RSN_OVERRIDE_STA = 25,
 	NUM_QCA_WLAN_VENDOR_FEATURES /* keep last */
 };
 
@@ -2627,6 +2700,9 @@ enum qca_wlan_vendor_scan_priority {
  *	when AP is operating as MLD to specify which link is requesting the
  *	scan or which link the scan result is for. No need of this attribute
  *	in other cases.
+ * @QCA_WLAN_VENDOR_ATTR_SCAN_SKIP_CHANNEL_RECENCY_PERIOD: Optional (u32). Skip
+ *	scanning channels which are scanned recently within configured time
+ *	(in ms).
  */
 enum qca_wlan_vendor_attr_scan {
 	QCA_WLAN_VENDOR_ATTR_SCAN_INVALID_PARAM = 0,
@@ -2645,6 +2721,7 @@ enum qca_wlan_vendor_attr_scan {
 	QCA_WLAN_VENDOR_ATTR_SCAN_PRIORITY = 13,
 	QCA_WLAN_VENDOR_ATTR_SCAN_PAD = 14,
 	QCA_WLAN_VENDOR_ATTR_SCAN_LINK_ID = 15,
+	QCA_WLAN_VENDOR_ATTR_SCAN_SKIP_CHANNEL_RECENCY_PERIOD = 16,
 	QCA_WLAN_VENDOR_ATTR_SCAN_AFTER_LAST,
 	QCA_WLAN_VENDOR_ATTR_SCAN_MAX =
 	QCA_WLAN_VENDOR_ATTR_SCAN_AFTER_LAST - 1
@@ -7417,6 +7494,10 @@ enum qca_wlan_vendor_attr_external_acs_event {
 	 * for External ACS
 	 */
 	QCA_WLAN_VENDOR_ATTR_EXTERNAL_ACS_EVENT_AFC_CAPABILITY = 15,
+	/* Link ID attibute (u8) is used to identify a specific link affiliated
+	 * to an AP MLD.
+	 */
+	QCA_WLAN_VENDOR_ATTR_EXTERNAL_ACS_EVENT_LINK_ID = 16,
 
 	/* keep last */
 	QCA_WLAN_VENDOR_ATTR_EXTERNAL_ACS_EVENT_LAST,
@@ -12410,6 +12491,12 @@ enum qca_wlan_vendor_attr_add_sta_node_params {
 	 * MLD STA node.
 	 */
 	QCA_WLAN_VENDOR_ATTR_ADD_STA_NODE_IS_ML = 3,
+
+	/*
+	 * This is u8 attribute used to identify a specific link affiliated
+	 * to an AP MLD.
+	 */
+	QCA_WLAN_VENDOR_ATTR_ADD_STA_NODE_LINK_ID = 4,
 
 	/* keep last */
 	QCA_WLAN_VENDOR_ATTR_ADD_STA_NODE_PARAM_AFTER_LAST,
@@ -17847,6 +17934,285 @@ enum qca_wlan_intf_offload_type {
 	QCA_WLAN_INTF_OFFLOAD_TYPE_SFE = 1,
 	QCA_WLAN_INTF_OFFLOAD_TYPE_ACTIVE_VP = 2,
 	QCA_WLAN_INTF_OFFLOAD_TYPE_PPE_DS = 3,
+};
+
+/**
+ * enum qca_wlan_vendor_attr_usd_op_type: Attribute values for
+ * %QCA_WLAN_VENDOR_ATTR_USD_OP_TYPE to the vendor subcmd
+ * %QCA_NL80211_VENDOR_SUBCMD_USD. This is a mandatory u8 attribute which
+ * represents the USD command type.
+ *
+ * @QCA_WLAN_VENDOR_USD_OP_TYPE_FLUSH: Indicates USD tear down of all active
+ *	publish and subscribe sessions.
+ *
+ * @QCA_WLAN_VENDOR_USD_OP_TYPE_PUBLISH: Indicates USD solicited publish
+ *	operation that enables to offer a service for other devices based on
+ *	given parameters.
+ *
+ * @QCA_WLAN_VENDOR_USD_OP_TYPE_SUBSCRIBE: Indicates USD active subscribe
+ *	operation that requests for a given service with given parameters from
+ *	other devices that offer the service.
+ *
+ * @QCA_WLAN_VENDOR_USD_OP_TYPE_UPDATE_PUBLISH: Indicates update of an instance
+ *	of the publish function of given publish id.
+ *
+ * @QCA_WLAN_VENDOR_USD_OP_TYPE_CANCEL_PUBLISH: Indicates cancellation of an
+ *	instance of the publish function.
+ *
+ * @QCA_WLAN_VENDOR_USD_OP_TYPE_CANCEL_SUBSCRIBE: Indicates cancellation of an
+ *	instance of the subscribe function.
+ */
+enum qca_wlan_vendor_attr_an_usd_op_type {
+	QCA_WLAN_VENDOR_USD_OP_TYPE_FLUSH = 0,
+	QCA_WLAN_VENDOR_USD_OP_TYPE_PUBLISH = 1,
+	QCA_WLAN_VENDOR_USD_OP_TYPE_SUBSCRIBE = 2,
+	QCA_WLAN_VENDOR_USD_OP_TYPE_UPDATE_PUBLISH = 3,
+	QCA_WLAN_VENDOR_USD_OP_TYPE_CANCEL_PUBLISH = 4,
+	QCA_WLAN_VENDOR_USD_OP_TYPE_CANCEL_SUBSCRIBE = 5,
+};
+
+/**
+ * enum qca_wlan_vendor_attr_usd_service_protocol_type: Attribute values for
+ * %QCA_WLAN_VENDOR_ATTR_USD_SERVICE_PROTOCOL_TYPE to the vendor subcmd
+ * %QCA_NL80211_VENDOR_SUBCMD_USD. This is a u8 attribute which represents the
+ * USD service protocol type for service specific information.
+ *
+ * @QCA_WLAN_VENDOR_USD_SERVICE_PROTOCOL_TYPE_BONJOUR: Indicates SSI info is
+ *	of type Bonjour
+ * @QCA_WLAN_VENDOR_USD_SERVICE_PROTOCOL_TYPE_GENERIC: Indicates SSI info is
+ *	of type generic
+ * @QCA_WLAN_VENDOR_USD_SERVICE_PROTOCOL_TYPE_CSA_MATTER: Indicates SSI info
+ *	is of type CSA/Matter
+ */
+enum qca_wlan_vendor_attr_usd_service_protocol_type {
+	QCA_WLAN_VENDOR_USD_SERVICE_PROTOCOL_TYPE_BONJOUR = 1,
+	QCA_WLAN_VENDOR_USD_SERVICE_PROTOCOL_TYPE_GENERIC = 2,
+	QCA_WLAN_VENDOR_USD_SERVICE_PROTOCOL_TYPE_CSA_MATTER = 3,
+};
+
+/**
+ * enum qca_wlan_vendor_attr_usd_chan_config - Attributes used inside nested
+ *	attribute %QCA_WLAN_VENDOR_ATTR_USD_CHAN_CONFIG.
+ *
+ * @QCA_WLAN_VENDOR_ATTR_USD_CHAN_CONFIG_DEFAULT_FREQ: Required
+ *	u32 attribute containing the default channel frequency (MHz).
+ *
+ * @QCA_WLAN_VENDOR_ATTR_USD_CHAN_CONFIG_FREQ_LIST: Optional array of channel
+ *	frequencies in MHz (u32) to publish or subscribe.
+ */
+enum qca_wlan_vendor_attr_usd_chan_config {
+	QCA_WLAN_VENDOR_ATTR_USD_CHAN_CONFIG_INVALID = 0,
+	QCA_WLAN_VENDOR_ATTR_USD_CHAN_CONFIG_DEFAULT_FREQ = 1,
+	QCA_WLAN_VENDOR_ATTR_USD_CHAN_CONFIG_FREQ_LIST = 2,
+
+	QCA_WLAN_VENDOR_ATTR_USD_CHAN_CONFIG_AFTER_LAST,
+	QCA_WLAN_VENDOR_ATTR_USD_CHAN_CONFIG_MAX =
+	QCA_WLAN_VENDOR_ATTR_USD_CHAN_CONFIG_AFTER_LAST - 1,
+};
+
+/**
+ * enum qca_wlan_vendor_attr_usd_status
+ *
+ * @QCA_WLAN_VENDOR_ATTR_USD_STATUS_SUCCESS: USD request success status.
+ * @QCA_WLAN_VENDOR_ATTR_USD_STATUS_FAILED: USD request failed status.
+ */
+enum qca_wlan_vendor_attr_usd_status {
+	QCA_WLAN_VENDOR_ATTR_USD_STATUS_SUCCESS,
+	QCA_WLAN_VENDOR_ATTR_USD_STATUS_FAILED,
+};
+
+/* enum qca_wlan_vendor_attr_usd: Attributes used by vendor command
+ *	%QCA_NL80211_VENDOR_SUBCMD_USD.
+ *
+ * @QCA_WLAN_VENDOR_ATTR_USD_SRC_ADDR: 6-byte source MAC address
+ *	Mandatory attribute used with type
+ *	%QCA_WLAN_VENDOR_USD_OP_TYPE_PUBLISH and
+ *	%QCA_WLAN_VENDOR_USD_OP_TYPE_SUBSCRIBE.
+ *
+ * @QCA_WLAN_VENDOR_ATTR_USD_OP_TYPE: Required u8 attribute.
+ *	It indicates the type of the USD command. It uses values defined in enum
+ *	qca_wlan_vendor_attr_usd_op_type.
+ *
+ * @QCA_WLAN_VENDOR_ATTR_USD_INSTANCE_ID: Required u8 attribute.
+ *	It contains the publisher/subscribe id that is specific to the
+ *	publish/subscribe instance.
+ *
+ * @QCA_WLAN_VENDOR_ATTR_USD_SERVICE_ID: Required 6-byte attribute.
+ *	It contains the service id that is specific to the service being
+ *	published/subscribed.
+ *
+ * @QCA_WLAN_VENDOR_ATTR_USD_SERVICE_PROTOCOL_TYPE: u8 attribute that indicates
+ *	the service protocol type of service specific info. It uses values
+ *	defined in enum qca_wlan_vendor_attr_usd_service_protocol_type. It is
+ *	applicable when %QCA_WLAN_VENDOR_ATTR_USD_SSI is present.
+ *
+ * @QCA_WLAN_VENDOR_ATTR_USD_SSI: u8 array containing service specific
+ *	information that has to be conveyed in publish/subscribe message.
+ *	Optional attribute used with type
+ *	%QCA_WLAN_VENDOR_USD_OP_TYPE_PUBLISH,
+ *	%QCA_WLAN_VENDOR_USD_OP_TYPE_SUBSCRIBE, and
+ *	%QCA_WLAN_VENDOR_USD_OP_TYPE_UPDATE_PUBLISH.
+ *
+ * @QCA_WLAN_VENDOR_ATTR_USD_CHAN_CONFIG: Nested attribute containing USD
+ *	channel configuration parameters.
+ *	Required for type %QCA_WLAN_VENDOR_USD_OP_TYPE_PUBLISH and
+ *	%QCA_WLAN_VENDOR_USD_OP_TYPE_SUBSCRIBE.
+ *	See enum qca_wlan_vendor_attr_usd_chan_config for nested attributes.
+ *
+ * @QCA_WLAN_VENDOR_ATTR_USD_ELEMENT_CONTAINER: u8 array containing a USD
+ *	element container buffer that has to be conveyed in publish/subscribe
+ *	message.
+ *	Required for type %QCA_WLAN_VENDOR_USD_OP_TYPE_PUBLISH and
+ *	%QCA_WLAN_VENDOR_USD_OP_TYPE_SUBSCRIBE.
+ *
+ * @QCA_WLAN_VENDOR_ATTR_USD_TTL: u16 attribute. Indicates the timeout
+ *	for each request in seconds. Timeout value 0 represents single time
+ *	operation.
+ *
+ * @QCA_WLAN_VENDOR_ATTR_USD_STATUS: u8 attribute. Status received in event
+ *	indicating whether the underlying driver/firmware has started the USD
+ *	operation as indicated by attributes
+ *	%QCA_WLAN_VENDOR_ATTR_USD_OP_TYPE and
+ *	%QCA_WLAN_VENDOR_ATTR_USD_INSTANCE_ID.
+ *	enum qca_wlan_vendor_attr_usd_status indicates status values.
+ */
+enum qca_wlan_vendor_attr_usd {
+	QCA_WLAN_VENDOR_ATTR_USD_INVALID = 0,
+	QCA_WLAN_VENDOR_ATTR_USD_SRC_ADDR = 1,
+	QCA_WLAN_VENDOR_ATTR_USD_OP_TYPE = 2,
+	QCA_WLAN_VENDOR_ATTR_USD_INSTANCE_ID = 3,
+	QCA_WLAN_VENDOR_ATTR_USD_SERVICE_ID = 4,
+	QCA_WLAN_VENDOR_ATTR_USD_SERVICE_PROTOCOL_TYPE = 5,
+	QCA_WLAN_VENDOR_ATTR_USD_SSI = 6,
+	QCA_WLAN_VENDOR_ATTR_USD_CHAN_CONFIG = 7,
+	QCA_WLAN_VENDOR_ATTR_USD_ELEMENT_CONTAINER = 8,
+	QCA_WLAN_VENDOR_ATTR_USD_TTL = 9,
+	QCA_WLAN_VENDOR_ATTR_USD_STATUS = 10,
+
+	QCA_WLAN_VENDOR_ATTR_USD_AFTER_LAST,
+	QCA_WLAN_VENDOR_ATTR_USD_MAX =
+	QCA_WLAN_VENDOR_ATTR_USD_AFTER_LAST - 1,
+};
+
+/**
+ * enum qca_wlan_audio_transport_switch_type - Represents the possible transport
+ * switch types.
+ *
+ * @QCA_WLAN_AUDIO_TRANSPORT_SWITCH_TYPE_NON_WLAN: Request to route audio data
+ * via non-WLAN transport (e.g., Bluetooth).
+ *
+ * @QCA_WLAN_AUDIO_TRANSPORT_SWITCH_TYPE_WLAN: Request to route audio data via
+ * WLAN transport.
+ */
+enum qca_wlan_audio_transport_switch_type {
+	QCA_WLAN_AUDIO_TRANSPORT_SWITCH_TYPE_NON_WLAN = 0,
+	QCA_WLAN_AUDIO_TRANSPORT_SWITCH_TYPE_WLAN = 1,
+};
+
+/**
+ * enum qca_wlan_audio_transport_switch_status - Represents the status of audio
+ * transport switch request.
+ *
+ * @QCA_WLAN_AUDIO_TRANSPORT_SWITCH_STATUS_REJECTED: Request to switch transport
+ * has been rejected. For example, when transport switch is requested from WLAN
+ * to non-WLAN transport, user space modules and peers would evaluate the switch
+ * request and may not be ready for switch and hence switch to non-WLAN
+ * transport gets rejected.
+ *
+ * @QCA_WLAN_AUDIO_TRANSPORT_SWITCH_STATUS_COMPLETED: Request to switch
+ * transport has been completed. This is sent only in the command path. For
+ * example, when the driver had requested for audio transport switch and
+ * userspace modules as well as peers are ready for the switch, userspace module
+ * switches the transport and sends the subcommand with status completed to the
+ * driver.
+ */
+enum qca_wlan_audio_transport_switch_status {
+	QCA_WLAN_AUDIO_TRANSPORT_SWITCH_STATUS_REJECTED = 0,
+	QCA_WLAN_AUDIO_TRANSPORT_SWITCH_STATUS_COMPLETED = 1,
+};
+
+/**
+ * enum qca_wlan_audio_transport_switch_reason - Represents the reason of audio
+ * transport switch request.
+ *
+ * @QCA_WLAN_AUDIO_TRANSPORT_SWITCH_REASON_TERMINATING: Requester transport is
+ * terminating. After this indication, requester module may not be available to
+ * process further request on its transport. For example, to handle a high
+ * priority concurrent interface, WLAN transport needs to terminate and hence
+ * indicates switch to a non-WLAN transport with reason terminating. User space
+ * modules switch to non-WLAN immediately without waiting for further
+ * confirmation.
+ */
+enum qca_wlan_audio_transport_switch_reason {
+	QCA_WLAN_AUDIO_TRANSPORT_SWITCH_REASON_TERMINATING = 0,
+};
+
+/**
+ * enum qca_wlan_vendor_attr_audio_transport_switch - Attributes used by
+ * %QCA_NL80211_VENDOR_SUBCMD_AUDIO_TRANSPORT_SWITCH vendor command.
+ *
+ * @QCA_WLAN_VENDOR_ATTR_AUDIO_TRANSPORT_SWITCH_TYPE: u8 attribute. Indicates
+ * the transport switch type from one of the values in enum
+ * qca_wlan_audio_transport_switch_type. This is mandatory attribute in both
+ * command and event path. This attribute is included in both requests and
+ * responses.
+ *
+ * @QCA_WLAN_VENDOR_ATTR_AUDIO_TRANSPORT_SWITCH_STATUS: u8 attribute. Indicates
+ * the transport switch status from one of the values in enum
+ * qca_wlan_audio_transport_switch_status. This is optional attribute and used
+ * in both command and event path. This attribute must not be included in
+ * requests.
+ *
+ * @QCA_WLAN_VENDOR_ATTR_AUDIO_TRANSPORT_SWITCH_REASON: u8 attribute. Indicates
+ * the transport switch reason from one of the values in enum
+ * qca_wlan_audio_transport_switch_reason. This is optional attribute and used
+ * in both command and event path.
+ */
+enum qca_wlan_vendor_attr_audio_transport_switch {
+	QCA_WLAN_VENDOR_ATTR_AUDIO_TRANSPORT_SWITCH_INVALID = 0,
+	QCA_WLAN_VENDOR_ATTR_AUDIO_TRANSPORT_SWITCH_TYPE = 1,
+	QCA_WLAN_VENDOR_ATTR_AUDIO_TRANSPORT_SWITCH_STATUS = 2,
+	QCA_WLAN_VENDOR_ATTR_AUDIO_TRANSPORT_SWITCH_REASON = 3,
+
+	/* keep last */
+	QCA_WLAN_VENDOR_ATTR_AUDIO_TRANSPORT_SWITCH_AFTER_LAST,
+	QCA_WLAN_VENDOR_ATTR_AUDIO_TRANSPORT_SWITCH_MAX =
+	QCA_WLAN_VENDOR_ATTR_AUDIO_TRANSPORT_SWITCH_AFTER_LAST - 1,
+};
+
+
+/**
+ * enum qca_wlan_connect_ext_features - Feature flags for
+ * %QCA_WLAN_VENDOR_ATTR_CONNECT_EXT_FEATURES
+ *
+ * @QCA_CONNECT_EXT_FEATURE_RSNO: Flag attribute. This indicates supplicant
+ * support for RSN overriding. The driver shall enable RSN overriding in the
+ * (re)association attempts only if this flag is indicated. This functionality
+ * is available only when the driver indicates support for
+ * @QCA_WLAN_VENDOR_FEATURE_RSN_OVERRIDE_STA.
+ *
+ * @NUM_QCA_WLAN_VENDOR_FEATURES: Number of assigned feature bits.
+ */
+enum qca_wlan_connect_ext_features {
+	QCA_CONNECT_EXT_FEATURE_RSNO	= 0,
+	NUM_QCA_CONNECT_EXT_FEATURES /* keep last */
+};
+
+/* enum qca_wlan_vendor_attr_connect_ext: Attributes used by vendor command
+ * %QCA_NL80211_VENDOR_SUBCMD_CONNECT_EXT.
+ *
+ * @QCA_WLAN_VENDOR_ATTR_CONNECT_EXT_FEATURES: Feature flags contained in a byte
+ * array. The feature flags are identified by their bit index (see &enum
+ * qca_wlan_connect_ext_features) with the first byte being the least
+ * significant one and the last one being the most significant one.
+ */
+enum qca_wlan_vendor_attr_connect_ext {
+	QCA_WLAN_VENDOR_ATTR_CONNECT_EXT_INVALID = 0,
+	QCA_WLAN_VENDOR_ATTR_CONNECT_EXT_FEATURES = 1,
+
+	QCA_WLAN_VENDOR_ATTR_CONNECT_EXT_AFTER_LAST,
+	QCA_WLAN_VENDOR_ATTR_CONNECT_EXT_MAX =
+	QCA_WLAN_VENDOR_ATTR_CONNECT_EXT_AFTER_LAST - 1,
 };
 
 #endif /* QCA_VENDOR_H */

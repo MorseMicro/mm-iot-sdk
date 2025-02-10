@@ -19,7 +19,7 @@
 
 /********* Getters **********/
 
-int mmagic_cli_ping_get_count(struct mmagic_data *core, EmbeddedCli *cli)
+int mmagic_cli_ping_get_target(struct mmagic_data *core, EmbeddedCli *cli)
 {
     struct mmagic_ping_data *data = mmagic_data_get_ping(core);
 
@@ -28,14 +28,13 @@ int mmagic_cli_ping_get_count(struct mmagic_data *core, EmbeddedCli *cli)
     int len = MMAGIC_CLI_PRINT_BUF_LEN - 1;
     int written = 0;
 
-    written = snprintf(&buf[written], len, "%-30s", "ping.count");
+    written = snprintf(&buf[written], len, "%-30s", "ping.target");
     if (written < 0 || written > len)
     {
         return -1;
     }
     len -= written;
-
-    written = uint32_t_to_string(&data->config.count, &buf[written], len);
+    written = mmagic_struct_ip_addr_to_string(&data->config.target, &buf[written], len);
     if (written < 0 || written > len)
     {
         return -1;
@@ -62,8 +61,7 @@ int mmagic_cli_ping_get_interval(struct mmagic_data *core, EmbeddedCli *cli)
         return -1;
     }
     len -= written;
-
-    written = uint32_t_to_string(&data->config.interval, &buf[written], len);
+    written = mmagic_uint32_t_to_string(data->config.interval, &buf[written], len);
     if (written < 0 || written > len)
     {
         return -1;
@@ -75,7 +73,7 @@ int mmagic_cli_ping_get_interval(struct mmagic_data *core, EmbeddedCli *cli)
     return 0;
 }
 
-int mmagic_cli_ping_get_target(struct mmagic_data *core, EmbeddedCli *cli)
+int mmagic_cli_ping_get_count(struct mmagic_data *core, EmbeddedCli *cli)
 {
     struct mmagic_ping_data *data = mmagic_data_get_ping(core);
 
@@ -84,14 +82,13 @@ int mmagic_cli_ping_get_target(struct mmagic_data *core, EmbeddedCli *cli)
     int len = MMAGIC_CLI_PRINT_BUF_LEN - 1;
     int written = 0;
 
-    written = snprintf(&buf[written], len, "%-30s", "ping.target");
+    written = snprintf(&buf[written], len, "%-30s", "ping.count");
     if (written < 0 || written > len)
     {
         return -1;
     }
     len -= written;
-
-    written = struct_ip_addr_to_string(&data->config.target, &buf[written], len);
+    written = mmagic_uint32_t_to_string(data->config.count, &buf[written], len);
     if (written < 0 || written > len)
     {
         return -1;
@@ -106,39 +103,11 @@ int mmagic_cli_ping_get_target(struct mmagic_data *core, EmbeddedCli *cli)
 
 /********* Setters **********/
 
-int mmagic_cli_ping_set_count(struct mmagic_data *core, EmbeddedCli *cli, const char *val)
-{
-    struct mmagic_ping_data *data = mmagic_data_get_ping(core);
-
-    if (string_to_uint32_t(&data->config.count, val))
-    {
-        return -1;
-    }
-
-    mmagic_cli_ping_get_count(core, cli);
-
-    return 0;
-}
-
-int mmagic_cli_ping_set_interval(struct mmagic_data *core, EmbeddedCli *cli, const char *val)
-{
-    struct mmagic_ping_data *data = mmagic_data_get_ping(core);
-
-    if (string_to_uint32_t(&data->config.interval, val))
-    {
-        return -1;
-    }
-
-    mmagic_cli_ping_get_interval(core, cli);
-
-    return 0;
-}
-
 int mmagic_cli_ping_set_target(struct mmagic_data *core, EmbeddedCli *cli, const char *val)
 {
     struct mmagic_ping_data *data = mmagic_data_get_ping(core);
 
-    if (string_to_struct_ip_addr(&data->config.target, val))
+    if (mmagic_string_to_struct_ip_addr(&data->config.target, val))
     {
         return -1;
     }
@@ -148,8 +117,40 @@ int mmagic_cli_ping_set_target(struct mmagic_data *core, EmbeddedCli *cli, const
     return 0;
 }
 
+int mmagic_cli_ping_set_interval(struct mmagic_data *core, EmbeddedCli *cli, const char *val)
+{
+    struct mmagic_ping_data *data = mmagic_data_get_ping(core);
 
-/********* Dictionary **********/
+    if (mmagic_string_to_uint32_t(&data->config.interval, val))
+    {
+        return -1;
+    }
+
+    mmagic_cli_ping_get_interval(core, cli);
+
+    return 0;
+}
+
+int mmagic_cli_ping_set_count(struct mmagic_data *core, EmbeddedCli *cli, const char *val)
+{
+    struct mmagic_ping_data *data = mmagic_data_get_ping(core);
+
+    if (mmagic_string_to_uint32_t(&data->config.count, val))
+    {
+        return -1;
+    }
+
+    mmagic_cli_ping_get_count(core, cli);
+
+    return 0;
+}
+
+
+/********* Dictionary **********
+ *
+ * This list must be in alphabetical order as @c mmagic_cli_element_search() is implemented using
+ * a binary search which requires an ordered list.
+ */
 struct mmagic_cli_config_elem ping_cli_config_vars[] = {
     {"count", mmagic_cli_ping_get_count, mmagic_cli_ping_set_count},
     {"interval", mmagic_cli_ping_get_interval, mmagic_cli_ping_set_interval},
@@ -181,7 +182,7 @@ void mmagic_cli_ping_get(struct mmagic_cli *ctx, EmbeddedCli *cli, const char *c
     struct mmagic_cli_config_elem *elem = mmagic_cli_element_search(ping_cli_config_vars, num_elements, config_var);
     if (elem == NULL)
     {
-        embeddedCliPrint(cli, "Unable to find config variable");
+        mmagic_cli_printf(cli, "Unable to find config variable 'ping.%s'", config_var);
         return;
     }
 
@@ -206,7 +207,7 @@ void mmagic_cli_ping_set(struct mmagic_cli *ctx, EmbeddedCli *cli, const char *c
     struct mmagic_cli_config_elem *elem = mmagic_cli_element_search(ping_cli_config_vars, num_elements, config_var);
     if (elem == NULL)
     {
-        mmagic_cli_printf(cli, "Unable to find config variable ping.%s", config_var);
+        mmagic_cli_printf(cli, "Unable to find config variable 'ping.%s'", config_var);
         return;
     }
 
@@ -232,6 +233,7 @@ void mmagic_cli_ping_commit(struct mmagic_cli *ctx, EmbeddedCli *cli, const char
     }
 
     mmagic_core_ping_save_all(&ctx->core);
+    embeddedCliPrint(cli, "Succesfully committed 'ping' variables");
     
 }
 

@@ -5,6 +5,7 @@
  * Copyright (c) 2005-2006, Devicescape Software, Inc.
  * Copyright (c) 2007, Johannes Berg <johannes@sipsolutions.net>
  * Copyright (c) 2009-2010, Atheros Communications
+ * Copyright 2022 Morse Micro
  *
  * This software may be distributed under the terms of the BSD license.
  * See README for more details.
@@ -67,7 +68,7 @@ struct i802_bss {
 
 	u16 valid_links;
 	struct i802_link links[MAX_NUM_MLD_LINKS];
-	struct i802_link *flink;
+	struct i802_link *flink, *scan_link;
 
 	int ifindex;
 	int br_ifindex;
@@ -205,6 +206,7 @@ struct wpa_driver_nl80211_data {
 	unsigned int secure_ranging_ctx_vendor_cmd_avail:1;
 	unsigned int puncturing:1;
 	unsigned int qca_ap_allowed_freqs:1;
+	unsigned int connect_ext_vendor_cmd_avail:1;
 
 	u32 ignore_next_local_disconnect;
 	u32 ignore_next_local_deauth;
@@ -357,6 +359,8 @@ const char * nl80211_iftype_str(enum nl80211_iftype mode);
 
 void nl80211_restore_ap_mode(struct i802_bss *bss);
 struct i802_link * nl80211_get_link(struct i802_bss *bss, s8 link_id);
+u8 nl80211_get_link_id_from_link(struct i802_bss *bss, struct i802_link *link);
+int nl80211_remove_link(struct i802_bss *bss, int link_id);
 
 static inline bool nl80211_link_valid(u16 links, s8 link_id)
 {
@@ -414,5 +418,7 @@ int wpa_driver_nl80211_abort_scan(void *priv, u64 scan_cookie);
 int wpa_driver_nl80211_vendor_scan(struct i802_bss *bss,
 				   struct wpa_driver_scan_params *params);
 int nl80211_set_default_scan_ies(void *priv, const u8 *ies, size_t ies_len);
+struct hostapd_multi_hw_info *
+nl80211_get_multi_hw_info(struct i802_bss *bss, unsigned int *num_multi_hws);
 
 #endif /* DRIVER_NL80211_H */

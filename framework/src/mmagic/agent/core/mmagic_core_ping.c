@@ -13,6 +13,7 @@
 #include "core/autogen/mmagic_core_data.h"
 #include "core/autogen/mmagic_core_ping.h"
 #include "mmagic.h"
+#include "mmagic_core_utils.h"
 
 /* This should be included after all the header files */
 #include "core/autogen/mmagic_core_ping.def"
@@ -41,7 +42,7 @@ enum mmagic_status mmagic_core_ping_run(struct mmagic_data *core,
 {
     struct mmagic_ping_data *data = mmagic_data_get_ping(core);
     struct mmping_args ping_args = MMPING_ARGS_DEFAULT;
-    enum mmipal_status ret;
+    enum mmipal_status status;
     struct mmping_stats stats;
 
     if (!rsp_args->status.session_id)
@@ -52,11 +53,11 @@ enum mmagic_status mmagic_core_ping_run(struct mmagic_data *core,
                                   (sizeof(data->config.target.addr) /
                                    sizeof(data->config.target.addr[1])));
 
-        ret = mmipal_get_local_addr(ping_args.ping_src, ping_args.ping_target);
-        if (ret != MMIPAL_SUCCESS)
+        status = mmipal_get_local_addr(ping_args.ping_src, ping_args.ping_target);
+        if (status != MMIPAL_SUCCESS)
         {
             printf("Failed to get local address for PING\n");
-            return MMAGIC_STATUS_ERROR;
+            return mmagic_mmipal_status_to_mmagic_status(status);
         }
 
         rsp_args->status.session_id = mmping_start(&ping_args);

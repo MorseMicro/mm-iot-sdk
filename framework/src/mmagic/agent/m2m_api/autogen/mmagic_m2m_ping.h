@@ -14,9 +14,9 @@
 /********* Enumerations **********/
 enum mmagic_ping_vars
 {
-    mmagic_ping_var_count,
-    mmagic_ping_var_interval,
-    mmagic_ping_var_target,
+    mmagic_ping_var_target   = 0,
+    mmagic_ping_var_interval = 1,
+    mmagic_ping_var_count    = 2,
 };
 
 /**

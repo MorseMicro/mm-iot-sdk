@@ -38,6 +38,8 @@ BUILD_DEFINES += CONFIG_NO_CONFIG_WRITE=1
 BUILD_DEFINES += OS_NO_C_LIB_DEFINES=1
 BUILD_DEFINES += CONFIG_BGSCAN=1
 BUILD_DEFINES += CONFIG_BGSCAN_SIMPLE=1
+BUILD_DEFINES += CONFIG_AUTOSCAN=1
+BUILD_DEFINES += CONFIG_AUTOSCAN_EXPONENTIAL=1
 BUILD_DEFINES += CONFIG_S1G_TWT=1
 BUILD_DEFINES += MAX_NUM_MLD_LINKS=1
 BUILD_DEFINES += MAX_NUM_MLO_LINKS=1
@@ -84,6 +86,7 @@ SUPP_SRCS_C += src/rsn_supp/preauth.c
 SUPP_SRCS_C += src/rsn_supp/pmksa_cache.c
 SUPP_SRCS_C += src/rsn_supp/wpa.c
 SUPP_SRCS_C += src/rsn_supp/wpa_ie.c
+SUPP_SRCS_C += src/utils/crc32.c
 SUPP_SRCS_C += src/utils/bitfield.c
 SUPP_SRCS_C += src/utils/common.c
 SUPP_SRCS_C += src/utils/wpa_debug.c
@@ -91,6 +94,8 @@ SUPP_SRCS_C += src/utils/wpabuf.c
 SUPP_SRCS_C += src/utils/morse.c
 SUPP_SRCS_C += wpa_supplicant/bgscan.c
 SUPP_SRCS_C += wpa_supplicant/bgscan_simple.c
+SUPP_SRCS_C += wpa_supplicant/autoscan.c
+SUPP_SRCS_C += wpa_supplicant/autoscan_exponential.c
 SUPP_SRCS_C += wpa_supplicant/bss.c
 SUPP_SRCS_C += wpa_supplicant/config.c
 SUPP_SRCS_C += wpa_supplicant/eap_register.c

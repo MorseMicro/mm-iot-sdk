@@ -554,7 +554,9 @@ int mesh_rsn_protect_frame(struct mesh_rsn *rsn, struct sta_info *sta,
 			   const u8 *cat, struct wpabuf *buf)
 {
 	struct ieee80211_ampe_ie *ampe;
+#ifndef CONFIG_IEEE80211AH
 	u8 const *ie = wpabuf_head_u8(buf) + wpabuf_len(buf);
+#endif
 	u8 *ampe_ie, *pos, *mic_payload;
 	const u8 *aad[] = { rsn->wpa_s->own_addr, sta->addr, cat };
 #ifdef CONFIG_IEEE80211AH

@@ -106,7 +106,7 @@ void mmagic_cli_iperf_run(EmbeddedCli *cli, char *args, void *context)
     enum mmagic_status status = mmagic_core_iperf_run(&ctx->core, &rsp);
     if (status != MMAGIC_STATUS_OK)
     {
-        mmagic_cli_printf(cli, "Iperf session failed with status %d", status);
+        mmagic_cli_print_error(cli, "Iperf session", status);
     }
     else
     {

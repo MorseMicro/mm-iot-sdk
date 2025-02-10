@@ -1,5 +1,5 @@
 /*
- * FreeRTOS+TCP <DEVELOPMENT BRANCH>
+ * FreeRTOS+TCP V4.2.2
  * Copyright (C) 2022 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -1064,7 +1064,7 @@ static BaseType_t prvFindCacheEntry( const MACAddress_t * pxMACAddress,
                 }
                 else
                 {
-                    ulAddressToLookup = *pulIPAddress;
+                    ulAddressToLookup = 0U;
                 }
             }
         }

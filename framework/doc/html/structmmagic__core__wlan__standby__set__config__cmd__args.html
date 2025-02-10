@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.6.4</span>
+   &#160;<span id="projectnumber">2.7.2</span>
    </div>
   </td>
  </tr>
@@ -95,7 +95,7 @@ $(document).ready(function(){initNavTree('structmmagic__core__wlan__standby__set
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Command arguments structure for wlan_standby_set_config. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l02169">2169</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l02368">2368</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 </div>
 <p><code>#include &lt;<a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>&gt;</code></p>
 <table class="memberdecls">
@@ -142,7 +142,7 @@ Data Fields</h2></td></tr>
 <p>The interval in seconds to wait after beacon loss before entering snooze mode. </p>
 <p >In snooze mode the Morse chip stops listening for beacons to save power. (Default 120s) </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l02182">2182</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l02381">2381</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -161,7 +161,7 @@ Data Fields</h2></td></tr>
 <p>Destination IP address for the standby status packets. </p>
 <p >(Default 0.0.0.0) </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l02176">2176</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l02375">2375</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -180,7 +180,7 @@ Data Fields</h2></td></tr>
 <p>Destination UDP Port for the standby status packets, also used the source port for outgoing UDP port for outgoing UDP packets. </p>
 <p >(Default 22000) </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l02179">2179</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l02378">2378</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -199,7 +199,7 @@ Data Fields</h2></td></tr>
 <p>Interval in seconds for transmitting Standby status packets. </p>
 <p >(Default 15s) </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l02172">2172</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l02371">2371</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -218,7 +218,7 @@ Data Fields</h2></td></tr>
 <p>The amount in seconds to increase successive snooze intervals. </p>
 <p >This saves power by snoozing for longer before checking for beacons again if no beacons are found. (Default 0s) </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l02189">2189</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l02388">2388</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -237,7 +237,7 @@ Data Fields</h2></td></tr>
 <p>The maximum time in seconds to snooze for after increments. </p>
 <p >(Default unlimited) </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l02191">2191</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l02390">2390</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -256,7 +256,7 @@ Data Fields</h2></td></tr>
 <p>The interval in seconds to wake periodically from snooze mode and check for beacons. </p>
 <p >If no beacons are found then the Morse chip will re-enter snooze mode. If beacons are found then the Morse chip will exit standby mode so the host can reassociate. (Default 60s) </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l02186">2186</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l02385">2385</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -275,7 +275,7 @@ Data Fields</h2></td></tr>
 <p>Source IP address to use for the standby status packets. </p>
 <p >(Default 0.0.0.0) </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l02174">2174</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l02373">2373</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>

@@ -85,6 +85,11 @@ void mmagic_cli_get(EmbeddedCli *cli, char *args, void *context)
             break;
         }
     }
+
+    if (!accessor)
+    {
+        mmagic_cli_printf(cli, "Unable to find module '%.*s'", module_len, var);
+    }
 }
 
 void mmagic_cli_set(EmbeddedCli *cli, char *args, void *context)
@@ -125,6 +130,11 @@ void mmagic_cli_set(EmbeddedCli *cli, char *args, void *context)
             accessor->set(ctx, ctx->cli, variable, val);
             break;
         }
+    }
+
+    if (!accessor)
+    {
+        mmagic_cli_printf(cli, "Unable to find module '%.*s'", module_len, var);
     }
 }
 
@@ -188,6 +198,11 @@ void mmagic_cli_commit(EmbeddedCli *cli, char *args, void *context)
                 break;
             }
         }
+
+        if (!accessor)
+        {
+            mmagic_cli_printf(cli, "Unable to find module '%.*s'", module_len, var);
+        }
     }
 }
 
@@ -242,6 +257,7 @@ struct mmagic_cli *mmagic_cli_init(const struct mmagic_cli_init_args *args)
     memset(&cli_ctx, 0, sizeof(cli_ctx));
 
     mmosal_safer_strcpy(ctx->core.app_version, args->app_version, sizeof(ctx->core.app_version));
+    ctx->core.reg_db = args->reg_db;
     ctx->core.set_deep_sleep_mode_cb = args->set_deep_sleep_mode_cb;
     ctx->core.set_deep_sleep_mode_cb_arg = args->set_deep_sleep_mode_cb_arg;
     ctx->core.event_fn = mmagic_cli_handle_event;
@@ -283,4 +299,13 @@ struct mmagic_cli *mmagic_cli_init(const struct mmagic_cli_init_args *args)
     embeddedCliPrint(ctx->cli, "\n\nMorse Micro CLI (Built " __DATE__ " " __TIME__ ")\n\n");
 
     return ctx;
+}
+
+void mmagic_cli_print_error(EmbeddedCli *cli, const char *base_msg, enum mmagic_status status)
+{
+    char msg[80];
+    int offset;
+    offset = snprintf(msg, sizeof(msg), "%s failed with status ", base_msg);
+    offset += mmagic_enum_status_to_string(status, msg + offset, sizeof(msg) - offset);
+    embeddedCliPrint(cli, msg);
 }

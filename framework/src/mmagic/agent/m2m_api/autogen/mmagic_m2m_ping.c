@@ -31,20 +31,20 @@ static struct mmbuf *mmagic_m2m_ping_get(struct mmagic_m2m_agent *agent,
     struct mmagic_ping_data *data = mmagic_data_get_ping(&agent->core);
     switch (subcommand)
     {
-    case mmagic_ping_var_count:
+    case mmagic_ping_var_target:
         return mmagic_m2m_create_response(mmagic_ping, mmagic_ping_cmd_get, subcommand,
-                                          MMAGIC_STATUS_OK, &data->config.count,
-                                          sizeof(data->config.count));
+                                          MMAGIC_STATUS_OK, &data->config.target,
+                                          sizeof(data->config.target));
 
     case mmagic_ping_var_interval:
         return mmagic_m2m_create_response(mmagic_ping, mmagic_ping_cmd_get, subcommand,
                                           MMAGIC_STATUS_OK, &data->config.interval,
                                           sizeof(data->config.interval));
 
-    case mmagic_ping_var_target:
+    case mmagic_ping_var_count:
         return mmagic_m2m_create_response(mmagic_ping, mmagic_ping_cmd_get, subcommand,
-                                          MMAGIC_STATUS_OK, &data->config.target,
-                                          sizeof(data->config.target));
+                                          MMAGIC_STATUS_OK, &data->config.count,
+                                          sizeof(data->config.count));
 
     default:
         return mmagic_m2m_create_response(mmagic_ping, mmagic_ping_cmd_get, subcommand,
@@ -61,8 +61,8 @@ static struct mmbuf *mmagic_m2m_ping_set(struct mmagic_m2m_agent *agent,
     void *args = (void *)mmbuf_get_data_start(commandbuffer);
     switch (subcommand)
     {
-    case mmagic_ping_var_count:
-        memcpy(&data->config.count, args, sizeof(data->config.count));
+    case mmagic_ping_var_target:
+        memcpy(&data->config.target, args, sizeof(data->config.target));
         return mmagic_m2m_create_response(mmagic_ping, mmagic_ping_cmd_set,
                                           subcommand, MMAGIC_STATUS_OK, NULL, 0);
         break;
@@ -73,8 +73,8 @@ static struct mmbuf *mmagic_m2m_ping_set(struct mmagic_m2m_agent *agent,
                                           subcommand, MMAGIC_STATUS_OK, NULL, 0);
         break;
 
-    case mmagic_ping_var_target:
-        memcpy(&data->config.target, args, sizeof(data->config.target));
+    case mmagic_ping_var_count:
+        memcpy(&data->config.count, args, sizeof(data->config.count));
         return mmagic_m2m_create_response(mmagic_ping, mmagic_ping_cmd_set,
                                           subcommand, MMAGIC_STATUS_OK, NULL, 0);
         break;

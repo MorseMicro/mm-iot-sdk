@@ -14,18 +14,18 @@ struct mmagic_data;
 
 struct mmagic_iperf_config
 {
+    /** The iperf mode to use. Valid values are udp_server, tcp_server, udp_client and
+     * tcp_client. If not set, defaults to udp_server. */
+    enum mmagic_iperf_mode mode;
+    /** IP address of server to connect to when in client mode. */
+    struct struct_ip_addr server;
+    /** Specifies the local port to listen on when in server mode or the server port to
+     * send data to when in client mode. */
+    uint16_t port;
     /** This specifies the duration for client transfers specified either in seconds or
      * bytes. If this is negative, it specifies a time in seconds; if positive, it
      * specifies the number of bytes to transmit. */
     int32_t amount;
-    /** The iperf mode to use. Valid values are udp_server, tcp_server, udp_client and
-     * tcp_client. If not set, defaults to udp_server. */
-    enum mmagic_iperf_mode mode;
-    /** Specifies the local port to listen on when in server mode or the server port to
-     * send data to when in client mode. */
-    uint16_t port;
-    /** IP address of server to connect to when in client mode. */
-    struct struct_ip_addr server;
 };
 
 struct mmagic_iperf_data

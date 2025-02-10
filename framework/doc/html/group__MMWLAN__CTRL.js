@@ -14,7 +14,8 @@ var group__MMWLAN__CTRL =
       [ "version", "structmmwlan__bcf__metadata.html#adf230bcb317ee6f9fce43d306c9c7cbf", null ]
     ] ],
     [ "mmwlan_scan_config", "structmmwlan__scan__config.html", [
-      [ "dwell_time_ms", "structmmwlan__scan__config.html#abb7f68897da19247834438a46a7f18bd", null ]
+      [ "dwell_time_ms", "structmmwlan__scan__config.html#abb7f68897da19247834438a46a7f18bd", null ],
+      [ "ndp_probe_enabled", "structmmwlan__scan__config.html#a4f536d9249c4383cbd4c58e348505a4a", null ]
     ] ],
     [ "mmwlan_twt_config_args", "structmmwlan__twt__config__args.html", [
       [ "twt_min_wake_duration_us", "structmmwlan__twt__config__args.html#a7545c83f890b1a1799d8fe1380121866", null ],
@@ -52,6 +53,8 @@ var group__MMWLAN__CTRL =
       [ "pmf_mode", "structmmwlan__sta__args.html#a5f424a8f2c9ea4906a99fcc87dc5553f", null ],
       [ "raw_sta_priority", "structmmwlan__sta__args.html#a203987678cafb13e43d58f70564d78a2", null ],
       [ "sae_owe_ec_groups", "structmmwlan__sta__args.html#a210625043c5195cb38c203b2d51f3e3f", null ],
+      [ "scan_interval_base_s", "structmmwlan__sta__args.html#a273e51fd31b3331e73b33f2c3d3de775", null ],
+      [ "scan_interval_limit_s", "structmmwlan__sta__args.html#afa7e7842511277605c7681b339c06429", null ],
       [ "scan_rx_cb", "structmmwlan__sta__args.html#a125f53ea8950b80c3a114e206e299b25", null ],
       [ "scan_rx_cb_arg", "structmmwlan__sta__args.html#ad2ab0fd59f84e5f035fb40c1b9a3a11e", null ],
       [ "security_type", "structmmwlan__sta__args.html#a6bcc064f22d95a72f600901eec121440", null ],

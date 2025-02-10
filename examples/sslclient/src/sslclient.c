@@ -41,7 +41,7 @@
  * @endcode
  *
  * We then load and parse the CA Root certificate, Client certificate and client keys.
- * These certificates and keys are stored in the file @ref certs.c.  Test certificates
+ * These certificates and keys are stored in the file @ref default_certs.h. Test certificates
  * have been used in this example, but you may generate and use your own certificates
  * and keys.
  * @code
@@ -163,8 +163,8 @@
 #include "mbedtls/entropy.h"
 #include "mbedtls/ctr_drbg.h"
 #include "mbedtls/debug.h"
-#include "certs.h"
 #include "mm_app_common.h"
+#include "default_certs.h"
 
 /** HTTPS port number to connect to */
 #define DEFAULT_PORT "443"
@@ -252,7 +252,7 @@ void app_init(void)
     /*
      * 1. Load & setup certificates
      */
-    allocptr = (uint8_t*)mbedtls_test_cas_pem;
+    allocptr = (uint8_t*)DEFAULT_ROOT_CERT;
     len =  mmconfig_read_bytes("sslclient.rootca", NULL, 0, 0);
     if (len > 0)
     {
@@ -273,7 +273,7 @@ void app_init(void)
     }
     else
     {
-        len = mbedtls_test_cas_pem_len;
+        len = sizeof(DEFAULT_ROOT_CERT);
     }
     printf("Loading the CA root certificate ...");
     ret = mbedtls_x509_crt_parse(&cacert, allocptr, len);
@@ -284,7 +284,7 @@ void app_init(void)
     }
     printf(" ok\n");
 
-    allocptr = (uint8_t*) mbedtls_test_cli_crt;
+    allocptr = (uint8_t*)DEFAULT_CLIENT_CERT;
     len =  mmconfig_read_bytes("sslclient.clientcert", NULL, 0, 0);
     if (len > 0)
     {
@@ -305,7 +305,7 @@ void app_init(void)
     }
     else
     {
-        len = mbedtls_test_cli_crt_len;
+        len = sizeof(DEFAULT_CLIENT_CERT);
     }
     printf("Loading the client cert...");
     ret = mbedtls_x509_crt_parse(&clicert, allocptr, len);
@@ -316,7 +316,7 @@ void app_init(void)
     }
     printf(" ok\n");
 
-    allocptr = (uint8_t*) mbedtls_test_cli_key;
+    allocptr = (uint8_t*)DEFAULT_CLIENT_KEY;
     len =  mmconfig_read_bytes("sslclient.clientkey", NULL, 0, 0);
     if (len > 0)
     {
@@ -337,7 +337,7 @@ void app_init(void)
     }
     else
     {
-        len = mbedtls_test_cli_key_len;
+        len = sizeof(DEFAULT_CLIENT_KEY);
     }
     printf("Loading the client key...");
     ret = mbedtls_pk_parse_key(&pkey, allocptr, len, NULL, 0, mbedtls_ctr_drbg_random, &ctr_drbg);
@@ -376,7 +376,11 @@ void app_init(void)
         printf(" failed %d in mbedtls_ssl_setup()\n\n", ret);
         goto exit;
     }
-    if ((ret = mbedtls_ssl_set_hostname(&ssl, "test.morsemicro.com")) != 0)
+
+    static char sslclient_server[64];
+    strncpy(sslclient_server, DEFAULT_SERVER, sizeof(sslclient_server));
+    mmconfig_read_string("sslclient.server", sslclient_server, sizeof(sslclient_server));
+    if ((ret = mbedtls_ssl_set_hostname(&ssl, sslclient_server)) != 0)
     {
         printf(" failed %d\n\n", ret);
         goto exit;
@@ -387,11 +391,8 @@ void app_init(void)
      * 3. Start the connection
      */
     /* First parse the URL to extract the server, port and resource */
-    static char sslclient_server[64];
     static char sslclient_port[8];
-    strncpy(sslclient_server, DEFAULT_SERVER, sizeof(sslclient_server));
     strncpy(sslclient_port, DEFAULT_PORT, sizeof(sslclient_port));
-    mmconfig_read_string("sslclient.server", sslclient_server, sizeof(sslclient_server));
     mmconfig_read_string("sslclient.port", sslclient_port, sizeof(sslclient_port));
 
     printf("Connecting to %s:%s...", sslclient_server, sslclient_port);

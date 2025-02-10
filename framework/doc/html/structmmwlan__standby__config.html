@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.6.4</span>
+   &#160;<span id="projectnumber">2.7.2</span>
    </div>
   </td>
  </tr>
@@ -96,7 +96,7 @@ $(document).ready(function(){initNavTree('structmmwlan__standby__config.html',''
 <div class="textblock"><p >Standby mode configuration parameters. </p>
 <p >If the <a class="el" href="group__MMWLAN__STANDBY.html#ga4257935124aaf2cbea29296256a04f81">mmwlan_standby_set_config()</a> function is not called, then the defaults are as specified. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01406">1406</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01448">1448</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 </div>
 <p><code>#include &lt;<a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>&gt;</code></p>
 <table class="memberdecls">
@@ -143,7 +143,7 @@ Data Fields</h2></td></tr>
 <p>The interval in seconds to wait after beacon loss before entering snooze. </p>
 <p >In snooze mode the chip stops listening for beacons to save power. (Default 120s) </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01423">1423</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01465">1465</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -162,7 +162,7 @@ Data Fields</h2></td></tr>
 <p>Destination IP address for the standby status packets. </p>
 <p >(Default 0.0.0.0) </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01413">1413</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01455">1455</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -181,7 +181,7 @@ Data Fields</h2></td></tr>
 <p>Destination UDP Port for the standby status packets, also used the source port for outgoing UDP port for outgoing UDP packets. </p>
 <p >(Default 22000) </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01418">1418</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01460">1460</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -200,7 +200,7 @@ Data Fields</h2></td></tr>
 <p>Interval in seconds for transmitting Standby status packets. </p>
 <p >(Default 15s) </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01409">1409</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01451">1451</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -219,7 +219,7 @@ Data Fields</h2></td></tr>
 <p>The amount in seconds to increase successive snooze intervals. </p>
 <p >This saves power by sleeping for longer before checking for beacons again if no beacons are found. (Default 0s) </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01435">1435</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01477">1477</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -238,7 +238,7 @@ Data Fields</h2></td></tr>
 <p>The maximum time in seconds to snooze for after increments. </p>
 <p >(Default <code>UINT32_MAX</code>) </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01437">1437</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01479">1479</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -257,7 +257,7 @@ Data Fields</h2></td></tr>
 <p>The interval in seconds to wake periodically from snooze and check for beacons. </p>
 <p >If no beacons are found then the chip will re-enter snooze. If beacons are found then the chip will exit standby mode so the host can re-associate. (Default 60s) </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01429">1429</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01471">1471</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -276,7 +276,7 @@ Data Fields</h2></td></tr>
 <p>Source IP address to use for the standby status packets. </p>
 <p >(Default 0.0.0.0) </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01411">1411</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01453">1453</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>

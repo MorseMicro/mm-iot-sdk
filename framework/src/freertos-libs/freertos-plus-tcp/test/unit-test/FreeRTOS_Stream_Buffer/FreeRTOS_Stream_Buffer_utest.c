@@ -1,5 +1,5 @@
 /*
- * FreeRTOS+TCP <DEVELOPMENT BRANCH>
+ * FreeRTOS+TCP V4.2.2
  * Copyright (C) 2022 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -35,7 +35,6 @@
 #include <stdint.h>
 
 #include "mock_task.h"
-#include "mock_semphr.h"
 
 #include "mock_FreeRTOS_IP.h"
 #include "mock_FreeRTOS_Sockets.h"

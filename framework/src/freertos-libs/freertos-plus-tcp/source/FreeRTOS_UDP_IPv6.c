@@ -1,5 +1,5 @@
 /*
- * FreeRTOS+TCP <DEVELOPMENT BRANCH>
+ * FreeRTOS+TCP V4.2.2
  * Copyright (C) 2022 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -64,10 +64,6 @@
 /* *INDENT-OFF* */
     #if( ipconfigUSE_IPv6 != 0 )
 /* *INDENT-ON* */
-
-
-/** @brief The expected IP version and header length coded into the IP header itself. */
-#define ipIP_VERSION_AND_HEADER_LENGTH_BYTE    ( ( uint8_t ) 0x45 )
 
 /*-----------------------------------------------------------*/
 

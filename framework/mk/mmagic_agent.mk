@@ -19,7 +19,8 @@ MMAGIC_AGENT_SRCS_H += core/autogen/mmagic_core_sys.h
 MMAGIC_AGENT_SRCS_H += core/autogen/mmagic_core_tcp.h
 
 MMAGIC_AGENT_SRCS_C += core/autogen/mmagic_core_data.c
-MMAGIC_AGENT_SRCS_C += core/mmagic_core_types.c
+MMAGIC_AGENT_SRCS_C += core/autogen/mmagic_core_types.c
+MMAGIC_AGENT_SRCS_C += core/mmagic_core_utils.c
 MMAGIC_AGENT_SRCS_C += core/mmagic_core_wlan.c
 MMAGIC_AGENT_SRCS_C += core/mmagic_core_ip.c
 MMAGIC_AGENT_SRCS_C += core/mmagic_core_ping.c

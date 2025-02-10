@@ -10,6 +10,7 @@
 #include <stdbool.h>
 
 #include "core/autogen/mmagic_core_types.h"
+#include "mmwlan.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -257,6 +258,8 @@ struct mmagic_cli_init_args
     void *set_deep_sleep_mode_cb_arg;
     /** Set deep sleep mode callback */
     mmagic_set_deep_sleep_mode_cb_t set_deep_sleep_mode_cb;
+    /** Reference to the regulatory database, used to initialize wlan */
+    const struct mmwlan_regulatory_db *reg_db;
 };
 
 /**
@@ -290,12 +293,14 @@ struct mmagic_m2m_agent_init_args
 {
     /** Application version string. This is a null terminated string. */
     char app_version[MMAGIC_SYS_MAX_APP_VERSION_LENGTH + 1];
+    /** Reference to the regulatory database, used to initialize wlan */
+    const struct mmwlan_regulatory_db *reg_db;
 };
 
 /**
  * Initialize the M2M agent.
  *
- * @note this may block whilst the controller is noftifed that the agent has started.
+ * @note this may block whilst the controller is notified that the agent has started.
  *
  * @param  args Initialization arguments.
  *

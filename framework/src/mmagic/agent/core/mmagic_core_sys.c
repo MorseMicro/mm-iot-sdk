@@ -15,6 +15,7 @@
 #include "core/autogen/mmagic_core_data.h"
 #include "core/autogen/mmagic_core_sys.h"
 #include "mmagic.h"
+#include "mmagic_core_utils.h"
 
 /* This should be included after all the header files */
 #include "core/autogen/mmagic_core_sys.def"
@@ -99,7 +100,7 @@ enum mmagic_status mmagic_core_sys_get_version(
     status = mmwlan_get_version(&version);
     if (status != MMWLAN_SUCCESS)
     {
-        return MMAGIC_STATUS_ERROR;
+        return mmagic_mmwlan_status_to_mmagic_status(status);
     }
 
     /* Copy firmware version */

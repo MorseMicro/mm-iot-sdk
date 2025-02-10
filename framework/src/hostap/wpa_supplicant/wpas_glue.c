@@ -148,6 +148,7 @@ static int wpa_supplicant_eapol_send(void *ctx, int type, const u8 *buf,
 {
 	struct wpa_supplicant *wpa_s = ctx;
 	u8 *msg, *dst, bssid[ETH_ALEN];
+	struct driver_sta_mlo_info drv_mlo;
 	size_t msglen;
 	int res;
 
@@ -197,11 +198,16 @@ static int wpa_supplicant_eapol_send(void *ctx, int type, const u8 *buf,
 	if (is_zero_ether_addr(wpa_s->bssid)) {
 		wpa_printf(MSG_DEBUG, "BSSID not set when trying to send an "
 			   "EAPOL frame");
+		os_memset(&drv_mlo, 0, sizeof(drv_mlo));
 		if (wpa_drv_get_bssid(wpa_s, bssid) == 0 &&
+		    (!wpa_s->valid_links ||
+		     wpas_drv_get_sta_mlo_info(wpa_s, &drv_mlo) == 0) &&
 		    !is_zero_ether_addr(bssid)) {
-			dst = bssid;
-			wpa_printf(MSG_DEBUG, "Using current BSSID " MACSTR
+			dst = drv_mlo.valid_links ? drv_mlo.ap_mld_addr : bssid;
+			wpa_printf(MSG_DEBUG, "Using current %s " MACSTR
 				   " from the driver as the EAPOL destination",
+				   drv_mlo.valid_links ? "AP MLD MAC address" :
+				   "BSSID",
 				   MAC2STR(dst));
 		} else {
 			dst = wpa_s->last_eapol_src;
@@ -211,9 +217,10 @@ static int wpa_supplicant_eapol_send(void *ctx, int type, const u8 *buf,
 				   MAC2STR(dst));
 		}
 	} else {
-		/* BSSID was already set (from (Re)Assoc event, so use it as
-		 * the EAPOL destination. */
-		dst = wpa_s->bssid;
+		/* BSSID was already set (from (Re)Assoc event, so use BSSID or
+		 * AP MLD MAC address (in the case of MLO connection) as the
+		 * EAPOL destination. */
+		dst = wpa_s->valid_links ? wpa_s->ap_mld_addr : wpa_s->bssid;
 	}
 
 	msg = wpa_alloc_eapol(wpa_s, type, buf, len, &msglen, NULL);
@@ -432,6 +439,22 @@ static int wpa_get_beacon_ie(struct wpa_supplicant *wpa_s)
 		ie = wpa_bss_get_ie(curr, WLAN_EID_RSNX);
 		if (wpa_sm_set_ap_rsnxe(wpa_s->wpa, ie, ie ? 2 + ie[1] : 0))
 			ret = -1;
+
+		ie = wpa_bss_get_vendor_ie(curr, RSNE_OVERRIDE_IE_VENDOR_TYPE);
+		if (wpa_sm_set_ap_rsne_override(wpa_s->wpa, ie,
+						ie ? 2 + ie[1] : 0))
+			ret = -1;
+
+		ie = wpa_bss_get_vendor_ie(curr,
+					   RSNE_OVERRIDE_2_IE_VENDOR_TYPE);
+		if (wpa_sm_set_ap_rsne_override_2(wpa_s->wpa, ie,
+						  ie ? 2 + ie[1] : 0))
+			ret = -1;
+
+		ie = wpa_bss_get_vendor_ie(curr, RSNXE_OVERRIDE_IE_VENDOR_TYPE);
+		if (wpa_sm_set_ap_rsnxe_override(wpa_s->wpa, ie,
+						 ie ? 2 + ie[1] : 0))
+			ret = -1;
 	} else {
 		ret = -1;
 	}
@@ -534,6 +557,8 @@ static int wpa_supplicant_set_key(void *_wpa_s, int link_id, enum wpa_alg alg,
 				  enum key_flag key_flag)
 {
 	struct wpa_supplicant *wpa_s = _wpa_s;
+	int ret;
+
 	if (alg == WPA_ALG_TKIP && key_idx == 0 && key_len == 32) {
 		/* Clear the MIC error counter when setting a new PTK. */
 		wpa_s->mic_errors_seen = 0;
@@ -556,8 +581,14 @@ static int wpa_supplicant_set_key(void *_wpa_s, int link_id, enum wpa_alg alg,
 		wpa_s->last_tk_len = key_len;
 	}
 #endif /* CONFIG_TESTING_OPTIONS */
-	return wpa_drv_set_key(wpa_s, link_id, alg, addr, key_idx, set_tx, seq,
-			       seq_len, key, key_len, key_flag);
+
+	ret = wpa_drv_set_key(wpa_s, link_id, alg, addr, key_idx, set_tx, seq,
+			      seq_len, key, key_len, key_flag);
+	if (ret == 0 && (key_idx == 6 || key_idx == 7) &&
+	    alg != WPA_ALG_NONE && key_len > 0)
+		wpa_s->bigtk_set = true;
+
+	return ret;
 }
 
 
@@ -1415,6 +1446,15 @@ wpa_supplicant_notify_pmksa_cache_entry(void *_wpa_s,
 }
 
 
+static void wpa_supplicant_ssid_verified(void *_wpa_s)
+{
+	struct wpa_supplicant *wpa_s = _wpa_s;
+
+	wpa_s->ssid_verified = true;
+	wpa_msg(wpa_s, MSG_INFO, "RSN: SSID matched expected value");
+}
+
+
 int wpa_supplicant_init_wpa(struct wpa_supplicant *wpa_s)
 {
 #ifndef CONFIG_NO_WPA
@@ -1481,6 +1521,7 @@ int wpa_supplicant_init_wpa(struct wpa_supplicant *wpa_s)
 	ctx->set_ltf_keyseed = wpa_supplicant_set_ltf_keyseed;
 #endif /* CONFIG_PASN */
 	ctx->notify_pmksa_cache_entry = wpa_supplicant_notify_pmksa_cache_entry;
+	ctx->ssid_verified = wpa_supplicant_ssid_verified;
 
 	wpa_s->wpa = wpa_sm_init(ctx);
 	if (wpa_s->wpa == NULL) {

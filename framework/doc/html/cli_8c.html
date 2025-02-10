@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.6.4</span>
+   &#160;<span id="projectnumber">2.7.2</span>
    </div>
   </td>
  </tr>
@@ -102,34 +102,36 @@ $(document).ready(function(){initNavTree('cli_8c.html',''); initResizable(); });
 <code>#include &quot;mmhal_uart.h&quot;</code><br />
 <code>#include &quot;mmutils.h&quot;</code><br />
 <code>#include &quot;mmagic.h&quot;</code><br />
+<code>#include &quot;mm_app_regdb.h&quot;</code><br />
 <code>#include &quot;mbedtls/mbedtls_config.h&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for cli.c:</div>
 <div class="dyncontent">
 <div class="center"><img src="cli_8c__incl.png" border="0" usemap="#acli_8c" alt=""/></div>
 <map name="acli_8c" id="acli_8c">
-<area shape="rect" title="Example command line interface (CLI) over UART." alt="" coords="1027,5,1075,32"/>
-<area shape="rect" href="mmconfig_8h_source.html" title=" " alt="" coords="70,379,169,405"/>
-<area shape="rect" href="mmhal__uart_8h_source.html" title=" " alt="" coords="612,80,725,107"/>
-<area shape="rect" href="mmutils_8h_source.html" title=" " alt="" coords="1201,461,1289,487"/>
-<area shape="rect" href="mmagic_8h_source.html" title=" " alt="" coords="748,379,835,405"/>
-<area shape="rect" title=" " alt="" coords="1465,80,1656,107"/>
-<area shape="rect" title=" " alt="" coords="294,461,369,487"/>
-<area shape="rect" title=" " alt="" coords="239,543,322,569"/>
-<area shape="rect" title=" " alt="" coords="649,543,720,569"/>
-<area shape="rect" href="mmhal_8h_source.html" title=" " alt="" coords="347,155,427,181"/>
-<area shape="rect" href="mmosal_8h_source.html" title=" " alt="" coords="1039,461,1125,487"/>
-<area shape="rect" title=" " alt="" coords="355,304,419,331"/>
-<area shape="rect" href="mmhal__flash_8h_source.html" title=" " alt="" coords="193,379,312,405"/>
-<area shape="rect" href="mmhal__wlan_8h_source.html" title=" " alt="" coords="448,229,567,256"/>
-<area shape="rect" href="mmpkt_8h_source.html" title=" " alt="" coords="489,379,571,405"/>
-<area shape="rect" href="mmwlan_8h_source.html" title=" " alt="" coords="987,304,1078,331"/>
-<area shape="rect" title=" " alt="" coords="1042,543,1109,569"/>
-<area shape="rect" title=" " alt="" coords="1133,543,1204,569"/>
-<area shape="rect" title=" " alt="" coords="1228,543,1299,569"/>
-<area shape="rect" title=" " alt="" coords="931,543,1017,569"/>
-<area shape="rect" title=" " alt="" coords="1334,543,1409,569"/>
-<area shape="rect" title=" " alt="" coords="748,453,912,495"/>
+<area shape="rect" title="Example command line interface (CLI) over UART." alt="" coords="1393,5,1441,32"/>
+<area shape="rect" href="mmconfig_8h_source.html" title=" " alt="" coords="491,393,589,420"/>
+<area shape="rect" href="mmhal__uart_8h_source.html" title=" " alt="" coords="498,80,611,107"/>
+<area shape="rect" href="mmutils_8h_source.html" title=" " alt="" coords="1237,468,1325,495"/>
+<area shape="rect" href="mmagic_8h_source.html" title=" " alt="" coords="1017,229,1103,256"/>
+<area shape="rect" title=" " alt="" coords="1481,80,1615,107"/>
+<area shape="rect" title=" " alt="" coords="1639,80,1830,107"/>
+<area shape="rect" title=" " alt="" coords="365,468,440,495"/>
+<area shape="rect" title=" " alt="" coords="560,543,643,569"/>
+<area shape="rect" title=" " alt="" coords="865,543,935,569"/>
+<area shape="rect" href="mmhal_8h_source.html" title=" " alt="" coords="381,155,461,181"/>
+<area shape="rect" href="mmosal_8h_source.html" title=" " alt="" coords="1075,468,1162,495"/>
+<area shape="rect" title=" " alt="" coords="389,311,453,338"/>
+<area shape="rect" href="mmhal__flash_8h_source.html" title=" " alt="" coords="145,393,263,420"/>
+<area shape="rect" href="mmhal__wlan_8h_source.html" title=" " alt="" coords="482,229,601,256"/>
+<area shape="rect" href="mmpkt_8h_source.html" title=" " alt="" coords="715,393,797,420"/>
+<area shape="rect" href="mmwlan_8h_source.html" title=" " alt="" coords="973,311,1064,338"/>
+<area shape="rect" title=" " alt="" coords="1079,543,1145,569"/>
+<area shape="rect" title=" " alt="" coords="1170,543,1241,569"/>
+<area shape="rect" title=" " alt="" coords="1265,543,1335,569"/>
+<area shape="rect" title=" " alt="" coords="967,543,1054,569"/>
+<area shape="rect" title=" " alt="" coords="1371,543,1445,569"/>
+<area shape="rect" title=" " alt="" coords="1139,304,1303,345"/>
 </map>
 </div>
 </div>
@@ -176,7 +178,7 @@ Variables</h2></td></tr>
 <p>Main entry point to the application. </p>
 <p >This will be invoked in a thread once operating system and hardware initialization has completed. It may return, but it does not have to. </p>
 
-<p class="definition">Definition at line <a class="el" href="cli_8c_source.html#l00106">106</a> of file <a class="el" href="cli_8c_source.html">cli.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cli_8c_source.html#l00107">107</a> of file <a class="el" href="cli_8c_source.html">cli.c</a>.</p>
 
 </div>
 </div>
@@ -216,7 +218,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>true on success, false on failure. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="cli_8c_source.html#l00077">77</a> of file <a class="el" href="cli_8c_source.html">cli.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cli_8c_source.html#l00078">78</a> of file <a class="el" href="cli_8c_source.html">cli.c</a>.</p>
 
 </div>
 </div>
@@ -262,7 +264,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="cli_8c_source.html#l00063">63</a> of file <a class="el" href="cli_8c_source.html">cli.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cli_8c_source.html#l00064">64</a> of file <a class="el" href="cli_8c_source.html">cli.c</a>.</p>
 
 </div>
 </div>
@@ -308,7 +310,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="cli_8c_source.html#l00046">46</a> of file <a class="el" href="cli_8c_source.html">cli.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cli_8c_source.html#l00047">47</a> of file <a class="el" href="cli_8c_source.html">cli.c</a>.</p>
 
 </div>
 </div>
@@ -327,7 +329,7 @@ Variables</h2></td></tr>
 
 <p>Pointer to context for CLI receive callback. </p>
 
-<p class="definition">Definition at line <a class="el" href="cli_8c_source.html#l00037">37</a> of file <a class="el" href="cli_8c_source.html">cli.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cli_8c_source.html#l00038">38</a> of file <a class="el" href="cli_8c_source.html">cli.c</a>.</p>
 
 </div>
 </div>
@@ -337,7 +339,7 @@ Variables</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_cddc6ecb1abce9511317e8c5cc90cd4c.html">examples</a></li><li class="navelem"><a class="el" href="dir_c85e296673e002d13fa9d02f815e192a.html">cli</a></li><li class="navelem"><a class="el" href="dir_91234bc9f3ea218519b388834179703d.html">src</a></li><li class="navelem"><a class="el" href="cli_8c.html">cli.c</a></li>
+    <li class="navelem"><a class="el" href="dir_d570c7de7a367bd1f24cd66faf59ca3f.html">examples</a></li><li class="navelem"><a class="el" href="dir_f1474538520fa7f3681357272315868f.html">cli</a></li><li class="navelem"><a class="el" href="dir_9aee41560d63114144162076b6514736.html">src</a></li><li class="navelem"><a class="el" href="cli_8c.html">cli.c</a></li>
     <li class="footer">Copyright 2021 Morse Micro </li>
   </ul>
 </div>

@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.6.4</span>
+   &#160;<span id="projectnumber">2.7.2</span>
    </div>
   </td>
  </tr>
@@ -95,7 +95,7 @@ $(document).ready(function(){initNavTree('structmmagic__cli__init__args.html',''
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >CLI initialization arguments structure. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic_8h_source.html#l00248">248</a> of file <a class="el" href="mmagic_8h_source.html">mmagic.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic_8h_source.html#l00249">249</a> of file <a class="el" href="mmagic_8h_source.html">mmagic.h</a>.</p>
 </div>
 <p><code>#include &lt;<a class="el" href="mmagic_8h_source.html">mmagic.h</a>&gt;</code></p>
 <table class="memberdecls">
@@ -116,6 +116,9 @@ Data Fields</h2></td></tr>
 <tr class="memitem:a70aa8bfd2b5f537d22e09d441cda4b5e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__MMAGIC__AGENT__COMMON.html#gabc07fe9b2d5f96145d897b2229b74fcd">mmagic_set_deep_sleep_mode_cb_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmagic__cli__init__args.html#a70aa8bfd2b5f537d22e09d441cda4b5e">set_deep_sleep_mode_cb</a></td></tr>
 <tr class="memdesc:a70aa8bfd2b5f537d22e09d441cda4b5e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set deep sleep mode callback.  <a href="structmmagic__cli__init__args.html#a70aa8bfd2b5f537d22e09d441cda4b5e">More...</a><br /></td></tr>
 <tr class="separator:a70aa8bfd2b5f537d22e09d441cda4b5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1317fcbac5cde8f608a8719a9f00f39e"><td class="memItemLeft" align="right" valign="top">const struct <a class="el" href="structmmwlan__regulatory__db.html">mmwlan_regulatory_db</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmagic__cli__init__args.html#a1317fcbac5cde8f608a8719a9f00f39e">reg_db</a></td></tr>
+<tr class="memdesc:a1317fcbac5cde8f608a8719a9f00f39e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reference to the regulatory database, used to initialize wlan.  <a href="structmmagic__cli__init__args.html#a1317fcbac5cde8f608a8719a9f00f39e">More...</a><br /></td></tr>
+<tr class="separator:a1317fcbac5cde8f608a8719a9f00f39e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Field Documentation</h2>
 <a id="a1bb65a2fbd8ab2521bfba887fd55c314" name="a1bb65a2fbd8ab2521bfba887fd55c314"></a>
@@ -133,7 +136,25 @@ Data Fields</h2></td></tr>
 <p>Application version string. </p>
 <p >This is a null terminated string. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic_8h_source.html#l00251">251</a> of file <a class="el" href="mmagic_8h_source.html">mmagic.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic_8h_source.html#l00252">252</a> of file <a class="el" href="mmagic_8h_source.html">mmagic.h</a>.</p>
+
+</div>
+</div>
+<a id="a1317fcbac5cde8f608a8719a9f00f39e" name="a1317fcbac5cde8f608a8719a9f00f39e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1317fcbac5cde8f608a8719a9f00f39e">&#9670;&nbsp;</a></span>reg_db</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const struct <a class="el" href="structmmwlan__regulatory__db.html">mmwlan_regulatory_db</a>* mmagic_cli_init_args::reg_db</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Reference to the regulatory database, used to initialize wlan. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmagic_8h_source.html#l00262">262</a> of file <a class="el" href="mmagic_8h_source.html">mmagic.h</a>.</p>
 
 </div>
 </div>
@@ -151,7 +172,7 @@ Data Fields</h2></td></tr>
 
 <p>Set deep sleep mode callback. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic_8h_source.html#l00259">259</a> of file <a class="el" href="mmagic_8h_source.html">mmagic.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic_8h_source.html#l00260">260</a> of file <a class="el" href="mmagic_8h_source.html">mmagic.h</a>.</p>
 
 </div>
 </div>
@@ -169,7 +190,7 @@ Data Fields</h2></td></tr>
 
 <p>Opaque arg to pass to <code>set_deep_sleep_mode_cb</code>. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic_8h_source.html#l00257">257</a> of file <a class="el" href="mmagic_8h_source.html">mmagic.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic_8h_source.html#l00258">258</a> of file <a class="el" href="mmagic_8h_source.html">mmagic.h</a>.</p>
 
 </div>
 </div>
@@ -187,7 +208,7 @@ Data Fields</h2></td></tr>
 
 <p>Transmit callback. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic_8h_source.html#l00255">255</a> of file <a class="el" href="mmagic_8h_source.html">mmagic.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic_8h_source.html#l00256">256</a> of file <a class="el" href="mmagic_8h_source.html">mmagic.h</a>.</p>
 
 </div>
 </div>
@@ -205,7 +226,7 @@ Data Fields</h2></td></tr>
 
 <p>Opaque arg to pass to <code>tx_cb</code>. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic_8h_source.html#l00253">253</a> of file <a class="el" href="mmagic_8h_source.html">mmagic.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic_8h_source.html#l00254">254</a> of file <a class="el" href="mmagic_8h_source.html">mmagic.h</a>.</p>
 
 </div>
 </div>
