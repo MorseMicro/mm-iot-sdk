@@ -38,8 +38,10 @@ def _main():
     parser.add_argument("-t", "--tcl-port", default=DEFAULT_TCL_PORT, type=int,
                         help="OpenOCD TCL port to use")
 
-    parser.add_argument("-d", "--dwell-time-ms", type=int,
+    parser.add_argument("-d", "--dwell-time-ms", type=int, default=105,
                         help="The dwell time to set (in milliseconds)")
+    parser.add_argument("-e", "--ndp-probe-enabled", action=argparse.BooleanOptionalAction,
+                        default=False, help="Enable NDP probe support")
 
     args = parser.parse_args()
 
@@ -47,8 +49,11 @@ def _main():
 
     dutif = DutIf(debug_host=args.debug_host, gdb_port=args.gdb_port, tcl_port=args.tcl_port)
 
-    dutif.exec("wlan/set_scan_config", dwell_time_ms=args.dwell_time_ms)
-    print(f"Scan dwell time set to {args.dwell_time_ms} ms")
+    dutif.exec("wlan/set_scan_config", dwell_time_ms=args.dwell_time_ms,
+               ndp_probe_enabled=args.ndp_probe_enabled)
+    status = "enabled" if args.ndp_probe_enabled else "disabled"
+    print(f"Scan dwell time set to {args.dwell_time_ms} ms.")
+    print(f"NDP Probe support {status}")
 
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 # Static code analysis for FreeRTOS-Plus-TCP library
 This directory is made for the purpose of statically testing the MISRA C:2012 compliance of FreeRTOS+TCP using
-[Synopsys Coverity](https://www.synopsys.com/software-integrity/security-testing/static-analysis-sast.html) static analysis tool.
+[Synopsys Coverity](https://www.blackduck.com/static-analysis-tools-sast/coverity.html) static analysis tool.
 To that end, this directory provides a [CMake](https://github.com/FreeRTOS/FreeRTOS-Plus-TCP/blob/main/test/Coverity/CMakeLists.txt)
 file and [configuration files](https://github.com/FreeRTOS/FreeRTOS-Plus-TCP/tree/main/test/Coverity/ConfigFiles) required to build
 an application for the tool to analyze.
@@ -13,7 +13,7 @@ see the [MISRA.md](https://github.com/FreeRTOS/FreeRTOS-Plus-TCP/blob/main/MISRA
 
 ## Getting Started
 ### Prerequisites
-You can run this on a platform supported by Coverity. The list and other details can be found [here](https://sig-docs.synopsys.com/polaris/topics/c_coverity-compatible-platforms.html).
+You can run this on a platform supported by Coverity. The list and other details can be found [here](https://documentation.blackduck.com/bundle/coverity-docs/page/deploy-install-guide/topics/supported_platforms_for_coverity_analysis.html).
 To compile and run the Coverity target successfully, you must have the following:
 
 1. CMake version > 3.13.0 (You can check whether you have this by typing `cmake --version`)

@@ -20,6 +20,7 @@
 #include "common/dpp.h"
 #include "common/sae.h"
 #include "common/hw_features_common.h"
+#include "common/nan_de.h"
 #include "crypto/random.h"
 #include "p2p/p2p.h"
 #include "wps/wps.h"
@@ -1800,8 +1801,8 @@ static void hostapd_action_rx(struct hostapd_data *hapd,
 		pos = mgmt->u.action.u.vs_public_action.variable;
 		end = drv_mgmt->frame + drv_mgmt->frame_len;
 		pos++;
-		hostapd_nan_usd_rx_sdf(hapd, mgmt->sa, drv_mgmt->freq,
-				       pos, end - pos);
+		hostapd_nan_usd_rx_sdf(hapd, mgmt->sa, mgmt->bssid,
+				       drv_mgmt->freq, pos, end - pos);
 		return;
 	}
 #endif /* CONFIG_NAN_USD */
@@ -1868,6 +1869,11 @@ static struct hostapd_data * get_hapd_bssid(struct hostapd_iface *iface,
 	if (bssid[0] == 0xff && bssid[1] == 0xff && bssid[2] == 0xff &&
 	    bssid[3] == 0xff && bssid[4] == 0xff && bssid[5] == 0xff)
 		return HAPD_BROADCAST;
+#ifdef CONFIG_NAN_USD
+	if (nan_de_is_nan_network_id(bssid))
+		return HAPD_BROADCAST; /* Process NAN Network ID like broadcast
+					*/
+#endif /* CONFIG_NAN_USD */
 
 	for (i = 0; i < iface->num_bss; i++) {
 		struct hostapd_data *hapd;

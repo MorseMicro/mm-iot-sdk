@@ -5576,7 +5576,8 @@ static void wpas_event_rx_mgmt_action(struct wpa_supplicant *wpa_s,
 	    WPA_GET_BE32(&payload[1]) == NAN_SDF_VENDOR_TYPE) {
 		payload += 5;
 		plen -= 5;
-		wpas_nan_usd_rx_sdf(wpa_s, mgmt->sa, freq, payload, plen);
+		wpas_nan_usd_rx_sdf(wpa_s, mgmt->sa, mgmt->bssid, freq,
+				    payload, plen);
 		return;
 	}
 #endif /* CONFIG_NAN_USD */
@@ -6160,6 +6161,37 @@ static void wpas_link_reconfig(struct wpa_supplicant *wpa_s)
 }
 
 
+#ifdef CONFIG_PASN
+static int wpas_pasn_auth(struct wpa_supplicant *wpa_s,
+			  const struct ieee80211_mgmt *mgmt, size_t len,
+			  int freq)
+{
+#ifdef CONFIG_P2P
+	struct ieee802_11_elems elems;
+
+	if (len < 24) {
+		wpa_printf(MSG_DEBUG, "nl80211: Too short Management frame");
+		return -2;
+	}
+
+	if (ieee802_11_parse_elems(mgmt->u.auth.variable,
+				   len - offsetof(struct ieee80211_mgmt,
+						  u.auth.variable),
+				   &elems, 1) == ParseFailed) {
+		wpa_printf(MSG_DEBUG,
+			   "PASN: Failed parsing Authentication frame");
+		return -2;
+	}
+
+	if (elems.p2p2_ie && elems.p2p2_ie_len)
+		return wpas_p2p_pasn_auth_rx(wpa_s, mgmt, len, freq);
+#endif /* CONFIG_P2P */
+
+	return wpas_pasn_auth_rx(wpa_s, mgmt, len);
+}
+#endif /* CONFIG_PASN */
+
+
 void wpa_supplicant_event(void *ctx, enum wpa_event_type event,
 			  union wpa_event_data *data)
 {
@@ -6666,8 +6698,8 @@ void wpa_supplicant_event(void *ctx, enum wpa_event_type event,
 			}
 #ifdef CONFIG_PASN
 			if (stype == WLAN_FC_STYPE_AUTH &&
-			    wpas_pasn_auth_rx(wpa_s, mgmt,
-					      data->rx_mgmt.frame_len) != -2)
+			    wpas_pasn_auth(wpa_s, mgmt, data->rx_mgmt.frame_len,
+					   data->rx_mgmt.freq) != -2)
 				break;
 #endif /* CONFIG_PASN */
 
@@ -6970,7 +7002,8 @@ void wpa_supplicant_event(void *ctx, enum wpa_event_type event,
 		 * either if timed out or PNO schedule scan is pending.
 		 */
 		if (wpa_s->sched_scan_timed_out) {
-			wpa_supplicant_req_sched_scan(wpa_s);
+			if (wpa_supplicant_req_sched_scan(wpa_s))
+				wpa_supplicant_req_scan(wpa_s, 1, 0);
 		} else if (wpa_s->pno_sched_pending) {
 			wpa_s->pno_sched_pending = 0;
 			wpas_start_pno(wpa_s);
@@ -7098,6 +7131,9 @@ void wpa_supplicant_event(void *ctx, enum wpa_event_type event,
 #ifdef CONFIG_DPP
 		wpas_dpp_tx_wait_expire(wpa_s);
 #endif /* CONFIG_DPP */
+#ifdef CONFIG_DPP3
+		wpas_dpp_push_button_tx_wait_expire(wpa_s);
+#endif /* CONFIG_DPP3 */
 #ifdef CONFIG_NAN_USD
 		wpas_nan_usd_tx_wait_expire(wpa_s);
 #endif /* CONFIG_NAN_USD */

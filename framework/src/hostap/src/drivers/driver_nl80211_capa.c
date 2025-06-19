@@ -1453,6 +1453,8 @@ static void qca_nl80211_get_features(struct wpa_driver_nl80211_data *drv)
 			   "The driver supports RSN overriding in STA mode");
 		drv->capa.flags2 |= WPA_DRIVER_FLAGS2_RSN_OVERRIDE_STA;
 	}
+	if (check_feature(QCA_WLAN_VENDOR_FEATURE_NAN_USD_OFFLOAD, &info))
+		drv->capa.flags2 |= WPA_DRIVER_FLAGS2_NAN_OFFLOAD;
 
 	os_free(info.flags);
 }
@@ -2779,10 +2781,9 @@ static int phy_multi_hw_info_parse(struct hostapd_multi_hw_info *hw_info,
 		hw_info->hw_idx = nla_get_u32(radio_attr);
 		return NL_OK;
 	case NL80211_WIPHY_RADIO_ATTR_FREQ_RANGE:
-		nla_parse_nested(tb_freq, NL80211_WIPHY_RADIO_FREQ_ATTR_MAX,
-				 radio_attr, NULL);
-
-		if (!tb_freq[NL80211_WIPHY_RADIO_FREQ_ATTR_START] ||
+		if (nla_parse_nested(tb_freq, NL80211_WIPHY_RADIO_FREQ_ATTR_MAX,
+				     radio_attr, NULL) ||
+		    !tb_freq[NL80211_WIPHY_RADIO_FREQ_ATTR_START] ||
 		    !tb_freq[NL80211_WIPHY_RADIO_FREQ_ATTR_END])
 			return NL_STOP;
 

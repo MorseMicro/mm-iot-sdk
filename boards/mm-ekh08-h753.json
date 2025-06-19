@@ -23,7 +23,7 @@
     "frameworks": [
       "mm_iot"
     ],
-    "name": "EKH08-H753 (STM32H753ZI)",
+    "name": "EKH08-H753",
     "upload": {
       "maximum_ram_size": 524288,
       "maximum_size": 2097152,

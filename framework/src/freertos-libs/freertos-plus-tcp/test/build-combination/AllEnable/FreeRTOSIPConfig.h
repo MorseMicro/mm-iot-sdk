@@ -1,5 +1,5 @@
 /*
- * FreeRTOS+TCP V4.2.2
+ * FreeRTOS+TCP V4.3.1
  * Copyright (C) 2022 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -130,7 +130,7 @@
 /* If ipconfigUSE_NETWORK_EVENT_HOOK is set to 1 then FreeRTOS+TCP will call the
  * network event hook at the appropriate times.  If ipconfigUSE_NETWORK_EVENT_HOOK
  * is not set to 1 then the network event hook will never be called. See:
- * http://www.FreeRTOS.org/FreeRTOS-Plus/FreeRTOS_Plus_UDP/API/vApplicationIPNetworkEventHook.shtml.
+ * https://freertos.org/Documentation/03-Libraries/02-FreeRTOS-plus/02-FreeRTOS-plus-TCP/09-API-reference/57-vApplicationIPNetworkEventHook.
  */
 #define ipconfigUSE_NETWORK_EVENT_HOOK             1
 

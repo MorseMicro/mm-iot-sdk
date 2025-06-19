@@ -26,9 +26,9 @@
   "frameworks": [
 	"mm_iot"
   ],
-  "name": "EKH08-WB55 (STM32WB55RG)",
+  "name": "EKH08-WB55",
   "upload": {
-    "maximum_ram_size": 262144,
+    "maximum_ram_size": 196600,
     "maximum_size": 1048576,
     "protocol": "stlink",
     "protocols": [

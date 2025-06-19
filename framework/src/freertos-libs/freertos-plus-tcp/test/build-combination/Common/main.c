@@ -1,5 +1,5 @@
 /*
- * FreeRTOS+TCP V4.2.2
+ * FreeRTOS+TCP V4.3.1
  * Copyright (C) 2022 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -38,6 +38,7 @@
 #include "FreeRTOS_IP.h"
 #include "FreeRTOS_Sockets.h"
 #include "FreeRTOS_DHCP.h"
+#include "FreeRTOS_Routing.h"
 
 #include <string.h>
 #include <stdarg.h>

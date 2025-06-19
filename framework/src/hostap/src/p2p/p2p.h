@@ -12,6 +12,16 @@
 #include "common/ieee802_11_defs.h"
 #include "wps/wps.h"
 
+#define DEVICE_IDENTITY_KEY_MAX_LEN 64
+#define DEVICE_IDENTITY_KEY_LEN 16
+#define DEVICE_IDENTITY_TAG_LEN 8
+#define DEVICE_IDENTITY_NONCE_LEN 8
+#define DEVICE_MAX_HASH_LEN 32
+#define DIR_STR_LEN 3
+
+/* DIRA Cipher versions */
+#define DIRA_CIPHER_VERSION_128 0
+
 struct weighted_pcl;
 
 /* P2P ASP Setup Capability */
@@ -321,6 +331,50 @@ enum p2p_scan_type {
 #define P2P_MAX_WPS_VENDOR_EXT 10
 
 /**
+ * struct p2p_pairing_config - P2P pairing configuration
+ */
+struct p2p_pairing_config {
+	/**
+	 * Pairing capable
+	 */
+	bool pairing_capable;
+
+	/**
+	 * Enable P2P pairing setup
+	 */
+	bool enable_pairing_setup;
+
+	/**
+	 * Enable pairing cache to allow verification
+	 */
+	bool enable_pairing_cache;
+
+	/**
+	 * Enable P2P pairing verification with cached NIK/NPK
+	 */
+	bool enable_pairing_verification;
+
+	/**
+	 * P2P bootstrapping methods supported
+	 */
+	u16 bootstrap_methods;
+
+	/**
+	 * Bitmap of supported PASN types
+	 */
+	u8 pasn_type;
+
+	/* Cipher version type */
+	int dik_cipher;
+
+	/* Buffer to hold the DevIK */
+	u8 dik_data[DEVICE_IDENTITY_KEY_MAX_LEN];
+
+	/* Length of DevIK in octets */
+	size_t dik_len;
+};
+
+/**
  * struct p2p_peer_info - P2P peer information
  */
 struct p2p_peer_info {
@@ -411,6 +465,21 @@ struct p2p_peer_info {
 	 * p2ps_instance - P2PS Application Service Info
 	 */
 	struct wpabuf *p2ps_instance;
+
+	/**
+	 * pcea_cap_info - Capability info in PCEA
+	 */
+	u16 pcea_cap_info;
+
+	/**
+	 * The regulatory info encoding for operation in 6 GHz band
+	 */
+	u8 reg_info;
+
+	/**
+	 * p2p_pairing_config - P2P pairing configuration
+	 */
+	struct p2p_pairing_config pairing_config;
 };
 
 enum p2p_prov_disc_status {
@@ -588,6 +657,33 @@ struct p2p_config {
 	 * generated at the GO.
 	 */
 	unsigned int passphrase_len;
+
+	/**
+	 * p2p_pairing_config - P2P pairing configuration
+	 */
+	struct p2p_pairing_config pairing_config;
+
+	/**
+	 * reg_info - Regulatory info encoding for operation in 6 GHz band
+	 */
+	u8 reg_info;
+
+	/**
+	 * dfs_owner - Enable P2P GO to act as DFS Owner
+	 */
+	bool dfs_owner;
+
+	/**
+	 * twt_power_mgmt - Enable TWT based power management for P2P
+	 */
+	bool twt_power_mgmt;
+
+	/**
+	 * comeback_after - Bootstrap request unauthorized for peer
+	 *
+	 * Ask to come back after this many TUs.
+	 */
+	u16 comeback_after;
 
 	/**
 	 * cb_ctx - Context to use with callback functions
@@ -1084,7 +1180,8 @@ struct p2p_config {
 	 * When P2PS provisioning completes (successfully or not) we must
 	 * transmit all of the results to the upper layers.
 	 */
-	void (*p2ps_prov_complete)(void *ctx, u8 status, const u8 *dev,
+	void (*p2ps_prov_complete)(void *ctx, enum p2p_status_code status,
+				   const u8 *dev,
 				   const u8 *adv_mac, const u8 *ses_mac,
 				   const u8 *grp_mac, u32 adv_id, u32 ses_id,
 				   u8 conncap, int passwd_id,
@@ -1136,6 +1233,44 @@ struct p2p_config {
 	int (*get_pref_freq_list)(void *ctx, int go,
 				  unsigned int *len,
 				  struct weighted_pcl *freq_list);
+
+	/**
+	 * register_bootstrap_comeback - Register timeout to initiate bootstrap
+	 *	comeback request
+	 * @ctx: Callback context from cb_ctx
+	 * @addr: P2P Device Address to which comeback request is to be sent
+	 * @comeback_after: Time in TUs after which comeback request is sent
+	 *
+	 * This function can be used to send comeback request after given
+	 * timeout.
+	 */
+	void (*register_bootstrap_comeback)(void *ctx, const u8 *addr,
+					    u16 comeback_after);
+
+	/**
+	 * bootstrap_req_rx - Indicate bootstrap request from a P2P peer
+	 * @ctx: Callback context from cb_ctx
+	 * @addr: P2P device address from which bootstrap request was received
+	 * @bootstrap_method: Bootstrapping method request by the peer device
+	 *
+	 * This function can be used to notify that bootstrap request is
+	 * received from a P2P peer.
+	 */
+	void (*bootstrap_req_rx)(void *ctx, const u8 *addr,
+				 u16 bootstrap_method);
+
+	/**
+	 * bootstrap_completed - Indicate bootstrapping completed with P2P peer
+	 * @ctx: Callback context from cb_ctx
+	 * @addr: P2P device address with which bootstrapping is completed
+	 * @status: P2P Status Code of bootstrapping handshake
+	 * @freq: Frequency in which bootstrapping is done
+	 *
+	 * This function can be used to notify the status of bootstrapping
+	 * handshake.
+	 */
+	void (*bootstrap_completed)(void *ctx, const u8 *addr,
+				    enum p2p_status_code status, int freq);
 };
 
 
@@ -1319,6 +1454,10 @@ void p2p_stop_listen(struct p2p_data *p2p);
  *	formation
  * @pref_freq: Preferred operating frequency in MHz or 0 (this is only used if
  *	force_freq == 0)
+ * @oob_pw_id: OOB password identifier
+ * @p2p2: Device supports P2P2 features
+ * @bootstrap: Bootstrapping method requested for P2P2 provision discovery
+ * @password: P2P2 pairing password or %NULL for opportunistic method
  * Returns: 0 on success, -1 on failure
  */
 int p2p_connect(struct p2p_data *p2p, const u8 *peer_addr,
@@ -1326,7 +1465,8 @@ int p2p_connect(struct p2p_data *p2p, const u8 *peer_addr,
 		int go_intent, const u8 *own_interface_addr,
 		unsigned int force_freq, int persistent_group,
 		const u8 *force_ssid, size_t force_ssid_len,
-		int pd_before_go_neg, unsigned int pref_freq, u16 oob_pw_id);
+		int pd_before_go_neg, unsigned int pref_freq, u16 oob_pw_id,
+		bool p2p2, u16 bootstrap, const char *password);
 
 /**
  * p2p_authorize - Authorize P2P group formation (GO negotiation)
@@ -1344,6 +1484,9 @@ int p2p_connect(struct p2p_data *p2p, const u8 *peer_addr,
  * @force_ssid_len: Length of $force_ssid buffer
  * @pref_freq: Preferred operating frequency in MHz or 0 (this is only used if
  *	force_freq == 0)
+ * @oob_pw_id: OOB password identifier
+ * @bootstrap: Bootstrapping method requested for P2P2 provision discovery
+ * @password: P2P2 pairing password or %NULL for opportunistic method
  * Returns: 0 on success, -1 on failure
  *
  * This is like p2p_connect(), but the actual group negotiation is not
@@ -1354,7 +1497,8 @@ int p2p_authorize(struct p2p_data *p2p, const u8 *peer_addr,
 		  int go_intent, const u8 *own_interface_addr,
 		  unsigned int force_freq, int persistent_group,
 		  const u8 *force_ssid, size_t force_ssid_len,
-		  unsigned int pref_freq, u16 oob_pw_id);
+		  unsigned int pref_freq, u16 oob_pw_id, u16 bootstrap,
+		  const char *password);
 
 /**
  * p2p_reject - Reject peer device (explicitly block connection attempts)
@@ -2429,5 +2573,10 @@ bool is_p2p_allow_6ghz(struct p2p_data *p2p);
 void set_p2p_allow_6ghz(struct p2p_data *p2p, bool value);
 int p2p_remove_6ghz_channels(struct weighted_pcl *pref_freq_list, int size);
 int p2p_channel_to_freq(int op_class, int channel);
+struct wpabuf * p2p_usd_elems(struct p2p_data *p2p);
+void p2p_process_usd_elems(struct p2p_data *p2p, const u8 *ies, u16 ies_len,
+			   const u8 *peer_addr, unsigned int freq);
+int p2p_pasn_auth_rx(struct p2p_data *p2p, const struct ieee80211_mgmt *mgmt,
+		     size_t len, int freq);
 
 #endif /* P2P_H */

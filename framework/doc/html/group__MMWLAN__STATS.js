@@ -1,5 +1,6 @@
 var group__MMWLAN__STATS =
 [
+    [ "UMAC Stats", "group__MMWLAN__UMAC__STATS.html", "group__MMWLAN__UMAC__STATS" ],
     [ "mmwlan_rc_stats", "structmmwlan__rc__stats.html", [
       [ "n_entries", "structmmwlan__rc__stats.html#a530131112bc6f1f5bc60548ea74aaac9", null ],
       [ "rate_info", "structmmwlan__rc__stats.html#aa7d07c5d689bf0d710dcd46f9f1d27ed", null ],

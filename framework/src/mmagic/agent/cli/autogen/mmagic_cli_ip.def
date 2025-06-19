@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Morse Micro
+ * Copyright 2025 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -401,7 +401,7 @@ void mmagic_cli_ip_commit(struct mmagic_cli *ctx, EmbeddedCli *cli, const char *
     }
 
     mmagic_core_ip_save_all(&ctx->core);
-    embeddedCliPrint(cli, "Succesfully committed 'ip' variables");
+    embeddedCliPrint(cli, "Successfully committed 'ip' variables");
     
 }
 

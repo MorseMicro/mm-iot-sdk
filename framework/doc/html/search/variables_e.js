@@ -27,5 +27,7 @@ var searchData=
   ['pkt_5fspacing_5fus_24',['pkt_spacing_us',['../structmmwlan__s1g__channel.html#ad7f9820f7f7a5ca14956351e4af683af',1,'mmwlan_s1g_channel']]],
   ['platform_5finfo_25',['platform_info',['../structmmosal__failure__info.html#af79798ad1c78868c7262b5bb5013e633',1,'mmosal_failure_info']]],
   ['pmf_5fmode_26',['pmf_mode',['../structmmwlan__sta__args.html#a5f424a8f2c9ea4906a99fcc87dc5553f',1,'mmwlan_sta_args']]],
-  ['port_27',['port',['../structmmagic__core__tcp__connect__cmd__args.html#a7638284f7d05745198c30fcd1bf35c75',1,'mmagic_core_tcp_connect_cmd_args::port()'],['../structmmagic__core__tcp__bind__cmd__args.html#a7d5b6757773d8c2ea50c4bd69ea7ddb8',1,'mmagic_core_tcp_bind_cmd_args::port()']]]
+  ['port_27',['port',['../structmmagic__core__tcp__connect__cmd__args.html#a7638284f7d05745198c30fcd1bf35c75',1,'mmagic_core_tcp_connect_cmd_args::port()'],['../structmmagic__core__tcp__bind__cmd__args.html#a7d5b6757773d8c2ea50c4bd69ea7ddb8',1,'mmagic_core_tcp_bind_cmd_args::port()']]],
+  ['primary_5fchannel_5fnumber_28',['primary_channel_number',['../structmm__s1g__operation.html#aa5fb23e1b2bf0fb22d82a02d07517bcb',1,'mm_s1g_operation']]],
+  ['primary_5fchannel_5fwidth_5fmhz_29',['primary_channel_width_mhz',['../structmm__s1g__operation.html#a1a51c442a5ac11bbaa20e39557507605',1,'mm_s1g_operation']]]
 ];

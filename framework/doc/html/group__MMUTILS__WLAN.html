@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.7.2</span>
+   &#160;<span id="projectnumber">2.8.2</span>
    </div>
   </td>
  </tr>
@@ -103,6 +103,9 @@ Data Structures</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmm__rsn__information.html">mm_rsn_information</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Data structure to represent information extracted from an RSN information element.  <a href="structmm__rsn__information.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmm__s1g__operation.html">mm_s1g_operation</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Data structure to represent information extracted from an S1G Operation information element.  <a href="structmm__s1g__operation.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
@@ -118,6 +121,9 @@ Macros</h2></td></tr>
 <tr class="memitem:ga9ba673fc80d2ecbf449f344629be6a29"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMUTILS__WLAN.html#ga9ba673fc80d2ecbf449f344629be6a29">MM_VENDOR_SPECIFIC_IE_TYPE</a>&#160;&#160;&#160;(221)</td></tr>
 <tr class="memdesc:ga9ba673fc80d2ecbf449f344629be6a29"><td class="mdescLeft">&#160;</td><td class="mdescRight">Tag number of the Vendor Specific information element.  <a href="group__MMUTILS__WLAN.html#ga9ba673fc80d2ecbf449f344629be6a29">More...</a><br /></td></tr>
 <tr class="separator:ga9ba673fc80d2ecbf449f344629be6a29"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga9dee8eb7462203439607cacc1e453c4f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMUTILS__WLAN.html#ga9dee8eb7462203439607cacc1e453c4f">MM_S1G_OPERATION_IE_TYPE</a>&#160;&#160;&#160;(232)</td></tr>
+<tr class="memdesc:ga9dee8eb7462203439607cacc1e453c4f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Tag number of the S1G Operation information element.  <a href="group__MMUTILS__WLAN.html#ga9dee8eb7462203439607cacc1e453c4f">More...</a><br /></td></tr>
+<tr class="separator:ga9dee8eb7462203439607cacc1e453c4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -169,6 +175,9 @@ Functions</h2></td></tr>
 <tr class="memitem:gacae95f09408e208f9c8a0cf7b7ebe53d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMUTILS__WLAN.html#gacae95f09408e208f9c8a0cf7b7ebe53d">mm_parse_rsn_information</a> (const uint8_t *ies, uint32_t ies_len, struct <a class="el" href="structmm__rsn__information.html">mm_rsn_information</a> *output)</td></tr>
 <tr class="memdesc:gacae95f09408e208f9c8a0cf7b7ebe53d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Search through the given list of information elements to find the RSN IE then parse it to extract relevant information into an instance of <a class="el" href="structmm__rsn__information.html">mm_rsn_information</a>.  <a href="group__MMUTILS__WLAN.html#gacae95f09408e208f9c8a0cf7b7ebe53d">More...</a><br /></td></tr>
 <tr class="separator:gacae95f09408e208f9c8a0cf7b7ebe53d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga764f142f61dcb585663b33137faeda1f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMUTILS__WLAN.html#ga764f142f61dcb585663b33137faeda1f">mm_parse_s1g_operation</a> (const uint8_t *ies, uint32_t ies_len, struct <a class="el" href="structmm__s1g__operation.html">mm_s1g_operation</a> *output)</td></tr>
+<tr class="memdesc:ga764f142f61dcb585663b33137faeda1f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Find the S1G Operation information element from within a block of IEs and extract useful information from it.  <a href="group__MMUTILS__WLAN.html#ga764f142f61dcb585663b33137faeda1f">More...</a><br /></td></tr>
+<tr class="separator:ga764f142f61dcb585663b33137faeda1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="gae2fbd328d6e13febd3049da4b58bd587" name="gae2fbd328d6e13febd3049da4b58bd587"></a>
@@ -185,7 +194,7 @@ Functions</h2></td></tr>
 
 <p>Tag number of the RSN information element, in which we can find security details of the AP. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00174">174</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00179">179</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
 
 </div>
 </div>
@@ -203,7 +212,7 @@ Functions</h2></td></tr>
 
 <p>Maximum number of AKM suites our parser will process. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00170">170</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00175">175</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
 
 </div>
 </div>
@@ -221,7 +230,25 @@ Functions</h2></td></tr>
 
 <p>Maximum number of pairwise cipher suites our parser will process. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00165">165</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00170">170</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
+
+</div>
+</div>
+<a id="ga9dee8eb7462203439607cacc1e453c4f" name="ga9dee8eb7462203439607cacc1e453c4f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga9dee8eb7462203439607cacc1e453c4f">&#9670;&nbsp;</a></span>MM_S1G_OPERATION_IE_TYPE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define MM_S1G_OPERATION_IE_TYPE&#160;&#160;&#160;(232)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Tag number of the S1G Operation information element. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00183">183</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
 
 </div>
 </div>
@@ -239,7 +266,7 @@ Functions</h2></td></tr>
 
 <p>Tag number of the Vendor Specific information element. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00176">176</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00181">181</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
 
 </div>
 </div>
@@ -270,7 +297,7 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00140">140</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00145">145</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
 
 </div>
 </div>
@@ -294,7 +321,7 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00155">155</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00160">160</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
 
 </div>
 </div>
@@ -313,7 +340,7 @@ Functions</h2></td></tr>
 <p>Explicitly defined errno values to obviate the need to include errno.h. </p>
 <p >MM prefix to avoid namespace collision in case errno.h gets included. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00180">180</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00187">187</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
 
 </div>
 </div>
@@ -396,7 +423,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>If the information element is found, the offset of the start of the IE within <code>ies</code>; if no match is found then -1; if the IE is found but is malformed then -2. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00251">251</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00258">258</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
 
 </div>
 </div>
@@ -443,7 +470,7 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">ies</td><td>Buffer containing the information elements. </td></tr>
-    <tr><td class="paramname">ies_len</td><td>Length of <code>ies</code> </td></tr>
+    <tr><td class="paramname">ies_len</td><td>Length of <code>ies</code>. </td></tr>
     <tr><td class="paramname">search_offset</td><td>Offset to start searching from. This <b>must</b> point to a IE header. </td></tr>
     <tr><td class="paramname">ie_type</td><td>The type of the IE to look for.</td></tr>
   </table>
@@ -503,7 +530,7 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">ies</td><td>Buffer containing the information elements. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">ies_len</td><td>Length of <code>ies</code> </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">ies_len</td><td>Length of <code>ies</code>. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">id</td><td>Buffer containing the IE ID, usually OUI+TYPE. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">id_len</td><td>Length of the ID.</td></tr>
   </table>
@@ -511,7 +538,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>If the information element is found, the offset of the start of the IE within <code>ies</code>; if no match is found then -1; if the IE is found but is malformed then -2. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00288">288</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00295">295</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
 
 </div>
 </div>
@@ -564,7 +591,7 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">ies</td><td>Buffer containing the information elements. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">ies_len</td><td>Length of <code>ies</code> </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">ies_len</td><td>Length of <code>ies</code>. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">search_offset</td><td>Offset to start searching from. This <b>must</b> point to a IE header. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">id</td><td>Buffer containing the IE ID, usually OUI+TYPE. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">id_len</td><td>Length of the ID.</td></tr>
@@ -611,12 +638,57 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">ies</td><td>Buffer containing the information elements. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">ies_len</td><td>Length of <code>ies</code> </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">ies_len</td><td>Length of <code>ies</code>. </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">output</td><td>Pointer to an instance of <a class="el" href="structmm__rsn__information.html">mm_rsn_information</a> to receive output.</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>-2 on parse error, -1 if the RSN IE was not found, 0 if the RSN IE was found. </dd></dl>
+
+</div>
+</div>
+<a id="ga764f142f61dcb585663b33137faeda1f" name="ga764f142f61dcb585663b33137faeda1f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga764f142f61dcb585663b33137faeda1f">&#9670;&nbsp;</a></span>mm_parse_s1g_operation()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int mm_parse_s1g_operation </td>
+          <td>(</td>
+          <td class="paramtype">const uint8_t *&#160;</td>
+          <td class="paramname"><em>ies</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>ies_len</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">struct <a class="el" href="structmm__s1g__operation.html">mm_s1g_operation</a> *&#160;</td>
+          <td class="paramname"><em>output</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Find the S1G Operation information element from within a block of IEs and extract useful information from it. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">ies</td><td>Buffer containing the information elements. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">ies_len</td><td>Length of <code>ies</code>. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">output</td><td>Pointer to an instance of <a class="el" href="structmm__rsn__information.html">mm_rsn_information</a> to receive output.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>-2 on parse error, -1 if the S1G Opration IE was not found, 0 on success. </dd></dl>
 
 </div>
 </div>

@@ -33,6 +33,7 @@ ruff = "== 0.4.4"
 # for more details.
 pyserial = "*"
 crc = "*"
+jsonschema = "*"
 
 [power-measurement]
 joulescope-ui = "~=0.10.13"

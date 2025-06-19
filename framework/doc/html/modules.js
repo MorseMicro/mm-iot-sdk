@@ -6,7 +6,6 @@ var modules =
     [ "Morse Micro Packet Buffer (mmpkt) API", "group__MMPKT.html", "group__MMPKT" ],
     [ "Morse Micro Wireless LAN (mmwlan) API", "group__MMWLAN.html", "group__MMWLAN" ],
     [ "Morse Micro Embedded Test Engine (Emmet)", "group__EMMET.html", "group__EMMET" ],
-    [ "LwIP wrapper for Morse Micro Wireless LAN", "group__LWIP__MMWLAN.html", "group__LWIP__MMWLAN" ],
     [ "Morse Micro IP Stack Abstraction Layer (MMIPAL) API", "group__MMIPAL.html", "group__MMIPAL" ],
     [ "Morse Micro Persistent Configuration Store", "group__MMCONFIG.html", "group__MMCONFIG" ],
     [ "Morse Micro Utilities", "group__MMUTILS.html", "group__MMUTILS" ],

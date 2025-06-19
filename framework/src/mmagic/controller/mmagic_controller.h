@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Morse Micro
+ * Copyright 2025 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -69,6 +69,17 @@ enum mmagic_power_save_mode
     MMAGIC_POWER_SAVE_MODE_DISABLED = 0,
     /** Power save enabled. */
     MMAGIC_POWER_SAVE_MODE_ENABLED  = 1,
+};
+
+/** Enumeration of MCS10 modes. */
+enum mmagic_mcs10_mode
+{
+    /** MCS10 is not used. */
+    MMAGIC_MCS10_MODE_DISABLED = 0,
+    /** MCS10 is always used instead of MCS0 when the bandwidth is 1 MHz. */
+    MMAGIC_MCS10_MODE_FORCED   = 1,
+    /** MCS10 is used on retries instead of MCS0 when the bandwidth is 1 MHz. */
+    MMAGIC_MCS10_MODE_AUTO     = 2,
 };
 
 /** Enumeration of S1G non-AP STA types. */
@@ -554,6 +565,35 @@ enum mmagic_wlan_var
      * mmwlan_sta_args.scan_interval_limit_s for further details. Note that changes will only take
      * effect on invocation of wlan-connect. */
     MMAGIC_WLAN_VAR_STA_SCAN_INTERVAL_LIMIT_S = 21,
+    /** The default QoS queue configuration for Access Category 0 (AC_BE) that is active while the
+     * station is connecting to an Access Point. This is a string containing the following comma
+     * separated integer values (in order): `aifs,cw_min,cw_max,txop_max_us`. For example:
+     * `3,15,1023,15008`. More information about the individual parameters can be found in the API
+     * documentation for `mmwlan_qos_queue_params`. */
+    MMAGIC_WLAN_VAR_QOS_0_PARAMS              = 22,
+    /** The default QoS queue configuration for Access Category 1 (AC_BK) that is active while the
+     * station is connecting to an Access Point. This is a string containing the following comma
+     * separated integer values (in order): `aifs,cw_min,cw_max,txop_max_us`. For example:
+     * `7,15,1023,15008`. More information about the individual parameters can be found in the API
+     * documentation for `mmwlan_qos_queue_params`. */
+    MMAGIC_WLAN_VAR_QOS_1_PARAMS              = 23,
+    /** The default QoS queue configuration for Access Category 2 (AC_VI) that is active while the
+     * station is connecting to an Access Point. This is a string containing the following comma
+     * separated integer values (in order): `aifs,cw_min,cw_max,txop_max_us`. For example:
+     * `2,7,15,15008`. More information about the individual parameters can be found in the API
+     * documentation for `mmwlan_qos_queue_params`. */
+    MMAGIC_WLAN_VAR_QOS_2_PARAMS              = 24,
+    /** The default QoS queue configuration for Access Category 3 (AC_VO) that is active while the
+     * station is connecting to an Access Point. This is a string containing the following comma
+     * separated integer values (in order): `aifs,cw_min,cw_max,txop_max_us`. For example:
+     * `2,3,7,15008`. More information about the individual parameters can be found in the API
+     * documentation for `mmwlan_qos_queue_params`. */
+    MMAGIC_WLAN_VAR_QOS_3_PARAMS              = 25,
+    /** The currently configured MCS10 behavior. This only takes effect after calling the WLAN
+     * connect command. This is an enum with 3 modes: disabled, which will never use MCS10, forced,
+     * which will always use MCS10 instead of MCS0 if the bandwidth is 1 MHz, and auto, which will
+     * use MCS10 on retries instead of MCS0 when the bandwidth is 1 MHz. */
+    MMAGIC_WLAN_VAR_MCS10_MODE                = 26,
 };
 
 /** wlan configuration command IDs */
@@ -1948,6 +1988,330 @@ static inline enum mmagic_status mmagic_controller_set_wlan_sta_scan_interval_li
 }
 
 /**
+ * Gets @c qos_0_params setting for module @c wlan.
+ *
+ * The default QoS queue configuration for Access Category 0 (AC_BE) that is active while the
+ * station is connecting to an Access Point. This is a string containing the following comma
+ * separated integer values (in order): `aifs,cw_min,cw_max,txop_max_us`. For example:
+ * `3,15,1023,15008`. More information about the individual parameters can be found in the API
+ * documentation for `mmwlan_qos_queue_params`.
+ *
+ * @param  controller Reference to the controller handle.
+ * @param  var        Reference to the @c struct_string_32 to place the received data in.
+ *
+ * @return            MMAGIC_STATUS_OK on success, else an error code.
+ */
+static inline enum mmagic_status mmagic_controller_get_wlan_qos_0_params(
+    struct mmagic_controller *controller, struct struct_string_32 *var)
+{
+    enum mmagic_status status;
+    status = mmagic_controller_tx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET,
+                                  MMAGIC_WLAN_VAR_QOS_0_PARAMS, NULL, 0);
+    if (status != MMAGIC_STATUS_OK)
+    {
+        return status;
+    }
+    status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET,
+                                  MMAGIC_WLAN_VAR_QOS_0_PARAMS, (uint8_t *)var, sizeof(*var));
+    return status;
+}
+
+/**
+ * Sets @c qos_0_params setting for module @c wlan.
+ *
+ * The default QoS queue configuration for Access Category 0 (AC_BE) that is active while the
+ * station is connecting to an Access Point. This is a string containing the following comma
+ * separated integer values (in order): `aifs,cw_min,cw_max,txop_max_us`. For example:
+ * `3,15,1023,15008`. More information about the individual parameters can be found in the API
+ * documentation for `mmwlan_qos_queue_params`.
+ *
+ * @param  controller Reference to the controller handle.
+ * @param  var        The @c struct_string_32 to write.
+ *
+ * @return            MMAGIC_STATUS_OK on success, else an error code.
+ */
+static inline enum mmagic_status mmagic_controller_set_wlan_qos_0_params(
+    struct mmagic_controller *controller, const char *var)
+{
+    struct struct_string_32 var_val;
+    enum mmagic_status status;
+    var_val.len = strlen(var);
+    if (var_val.len > sizeof(var_val.data) - 1)
+    {
+        return MMAGIC_STATUS_INVALID_ARG;
+    }
+    memcpy(var_val.data, (const uint8_t *)var, var_val.len);
+    memset(var_val.data + var_val.len, 0, sizeof(var_val.data) - var_val.len);
+    status = mmagic_controller_tx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_SET,
+                                  MMAGIC_WLAN_VAR_QOS_0_PARAMS, (uint8_t *)&var_val,
+                                  sizeof(var_val));
+    if (status != MMAGIC_STATUS_OK)
+    {
+        return status;
+    }
+    status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_SET,
+                                  MMAGIC_WLAN_VAR_QOS_0_PARAMS, NULL, 0);
+    return status;
+}
+
+/**
+ * Gets @c qos_1_params setting for module @c wlan.
+ *
+ * The default QoS queue configuration for Access Category 1 (AC_BK) that is active while the
+ * station is connecting to an Access Point. This is a string containing the following comma
+ * separated integer values (in order): `aifs,cw_min,cw_max,txop_max_us`. For example:
+ * `7,15,1023,15008`. More information about the individual parameters can be found in the API
+ * documentation for `mmwlan_qos_queue_params`.
+ *
+ * @param  controller Reference to the controller handle.
+ * @param  var        Reference to the @c struct_string_32 to place the received data in.
+ *
+ * @return            MMAGIC_STATUS_OK on success, else an error code.
+ */
+static inline enum mmagic_status mmagic_controller_get_wlan_qos_1_params(
+    struct mmagic_controller *controller, struct struct_string_32 *var)
+{
+    enum mmagic_status status;
+    status = mmagic_controller_tx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET,
+                                  MMAGIC_WLAN_VAR_QOS_1_PARAMS, NULL, 0);
+    if (status != MMAGIC_STATUS_OK)
+    {
+        return status;
+    }
+    status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET,
+                                  MMAGIC_WLAN_VAR_QOS_1_PARAMS, (uint8_t *)var, sizeof(*var));
+    return status;
+}
+
+/**
+ * Sets @c qos_1_params setting for module @c wlan.
+ *
+ * The default QoS queue configuration for Access Category 1 (AC_BK) that is active while the
+ * station is connecting to an Access Point. This is a string containing the following comma
+ * separated integer values (in order): `aifs,cw_min,cw_max,txop_max_us`. For example:
+ * `7,15,1023,15008`. More information about the individual parameters can be found in the API
+ * documentation for `mmwlan_qos_queue_params`.
+ *
+ * @param  controller Reference to the controller handle.
+ * @param  var        The @c struct_string_32 to write.
+ *
+ * @return            MMAGIC_STATUS_OK on success, else an error code.
+ */
+static inline enum mmagic_status mmagic_controller_set_wlan_qos_1_params(
+    struct mmagic_controller *controller, const char *var)
+{
+    struct struct_string_32 var_val;
+    enum mmagic_status status;
+    var_val.len = strlen(var);
+    if (var_val.len > sizeof(var_val.data) - 1)
+    {
+        return MMAGIC_STATUS_INVALID_ARG;
+    }
+    memcpy(var_val.data, (const uint8_t *)var, var_val.len);
+    memset(var_val.data + var_val.len, 0, sizeof(var_val.data) - var_val.len);
+    status = mmagic_controller_tx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_SET,
+                                  MMAGIC_WLAN_VAR_QOS_1_PARAMS, (uint8_t *)&var_val,
+                                  sizeof(var_val));
+    if (status != MMAGIC_STATUS_OK)
+    {
+        return status;
+    }
+    status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_SET,
+                                  MMAGIC_WLAN_VAR_QOS_1_PARAMS, NULL, 0);
+    return status;
+}
+
+/**
+ * Gets @c qos_2_params setting for module @c wlan.
+ *
+ * The default QoS queue configuration for Access Category 2 (AC_VI) that is active while the
+ * station is connecting to an Access Point. This is a string containing the following comma
+ * separated integer values (in order): `aifs,cw_min,cw_max,txop_max_us`. For example:
+ * `2,7,15,15008`. More information about the individual parameters can be found in the API
+ * documentation for `mmwlan_qos_queue_params`.
+ *
+ * @param  controller Reference to the controller handle.
+ * @param  var        Reference to the @c struct_string_32 to place the received data in.
+ *
+ * @return            MMAGIC_STATUS_OK on success, else an error code.
+ */
+static inline enum mmagic_status mmagic_controller_get_wlan_qos_2_params(
+    struct mmagic_controller *controller, struct struct_string_32 *var)
+{
+    enum mmagic_status status;
+    status = mmagic_controller_tx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET,
+                                  MMAGIC_WLAN_VAR_QOS_2_PARAMS, NULL, 0);
+    if (status != MMAGIC_STATUS_OK)
+    {
+        return status;
+    }
+    status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET,
+                                  MMAGIC_WLAN_VAR_QOS_2_PARAMS, (uint8_t *)var, sizeof(*var));
+    return status;
+}
+
+/**
+ * Sets @c qos_2_params setting for module @c wlan.
+ *
+ * The default QoS queue configuration for Access Category 2 (AC_VI) that is active while the
+ * station is connecting to an Access Point. This is a string containing the following comma
+ * separated integer values (in order): `aifs,cw_min,cw_max,txop_max_us`. For example:
+ * `2,7,15,15008`. More information about the individual parameters can be found in the API
+ * documentation for `mmwlan_qos_queue_params`.
+ *
+ * @param  controller Reference to the controller handle.
+ * @param  var        The @c struct_string_32 to write.
+ *
+ * @return            MMAGIC_STATUS_OK on success, else an error code.
+ */
+static inline enum mmagic_status mmagic_controller_set_wlan_qos_2_params(
+    struct mmagic_controller *controller, const char *var)
+{
+    struct struct_string_32 var_val;
+    enum mmagic_status status;
+    var_val.len = strlen(var);
+    if (var_val.len > sizeof(var_val.data) - 1)
+    {
+        return MMAGIC_STATUS_INVALID_ARG;
+    }
+    memcpy(var_val.data, (const uint8_t *)var, var_val.len);
+    memset(var_val.data + var_val.len, 0, sizeof(var_val.data) - var_val.len);
+    status = mmagic_controller_tx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_SET,
+                                  MMAGIC_WLAN_VAR_QOS_2_PARAMS, (uint8_t *)&var_val,
+                                  sizeof(var_val));
+    if (status != MMAGIC_STATUS_OK)
+    {
+        return status;
+    }
+    status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_SET,
+                                  MMAGIC_WLAN_VAR_QOS_2_PARAMS, NULL, 0);
+    return status;
+}
+
+/**
+ * Gets @c qos_3_params setting for module @c wlan.
+ *
+ * The default QoS queue configuration for Access Category 3 (AC_VO) that is active while the
+ * station is connecting to an Access Point. This is a string containing the following comma
+ * separated integer values (in order): `aifs,cw_min,cw_max,txop_max_us`. For example:
+ * `2,3,7,15008`. More information about the individual parameters can be found in the API
+ * documentation for `mmwlan_qos_queue_params`.
+ *
+ * @param  controller Reference to the controller handle.
+ * @param  var        Reference to the @c struct_string_32 to place the received data in.
+ *
+ * @return            MMAGIC_STATUS_OK on success, else an error code.
+ */
+static inline enum mmagic_status mmagic_controller_get_wlan_qos_3_params(
+    struct mmagic_controller *controller, struct struct_string_32 *var)
+{
+    enum mmagic_status status;
+    status = mmagic_controller_tx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET,
+                                  MMAGIC_WLAN_VAR_QOS_3_PARAMS, NULL, 0);
+    if (status != MMAGIC_STATUS_OK)
+    {
+        return status;
+    }
+    status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET,
+                                  MMAGIC_WLAN_VAR_QOS_3_PARAMS, (uint8_t *)var, sizeof(*var));
+    return status;
+}
+
+/**
+ * Sets @c qos_3_params setting for module @c wlan.
+ *
+ * The default QoS queue configuration for Access Category 3 (AC_VO) that is active while the
+ * station is connecting to an Access Point. This is a string containing the following comma
+ * separated integer values (in order): `aifs,cw_min,cw_max,txop_max_us`. For example:
+ * `2,3,7,15008`. More information about the individual parameters can be found in the API
+ * documentation for `mmwlan_qos_queue_params`.
+ *
+ * @param  controller Reference to the controller handle.
+ * @param  var        The @c struct_string_32 to write.
+ *
+ * @return            MMAGIC_STATUS_OK on success, else an error code.
+ */
+static inline enum mmagic_status mmagic_controller_set_wlan_qos_3_params(
+    struct mmagic_controller *controller, const char *var)
+{
+    struct struct_string_32 var_val;
+    enum mmagic_status status;
+    var_val.len = strlen(var);
+    if (var_val.len > sizeof(var_val.data) - 1)
+    {
+        return MMAGIC_STATUS_INVALID_ARG;
+    }
+    memcpy(var_val.data, (const uint8_t *)var, var_val.len);
+    memset(var_val.data + var_val.len, 0, sizeof(var_val.data) - var_val.len);
+    status = mmagic_controller_tx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_SET,
+                                  MMAGIC_WLAN_VAR_QOS_3_PARAMS, (uint8_t *)&var_val,
+                                  sizeof(var_val));
+    if (status != MMAGIC_STATUS_OK)
+    {
+        return status;
+    }
+    status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_SET,
+                                  MMAGIC_WLAN_VAR_QOS_3_PARAMS, NULL, 0);
+    return status;
+}
+
+/**
+ * Gets @c mcs10_mode setting for module @c wlan.
+ *
+ * The currently configured MCS10 behavior. This only takes effect after calling the WLAN connect
+ * command. This is an enum with 3 modes: disabled, which will never use MCS10, forced, which will
+ * always use MCS10 instead of MCS0 if the bandwidth is 1 MHz, and auto, which will use MCS10 on
+ * retries instead of MCS0 when the bandwidth is 1 MHz.
+ *
+ * @param  controller Reference to the controller handle.
+ * @param  var        Reference to the @c enum_mcs10_mode to place the received data in.
+ *
+ * @return            MMAGIC_STATUS_OK on success, else an error code.
+ */
+static inline enum mmagic_status mmagic_controller_get_wlan_mcs10_mode(
+    struct mmagic_controller *controller, enum mmagic_mcs10_mode *var)
+{
+    enum mmagic_status status;
+    status = mmagic_controller_tx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET,
+                                  MMAGIC_WLAN_VAR_MCS10_MODE, NULL, 0);
+    if (status != MMAGIC_STATUS_OK)
+    {
+        return status;
+    }
+    status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET,
+                                  MMAGIC_WLAN_VAR_MCS10_MODE, (uint8_t *)var, sizeof(*var));
+    return status;
+}
+
+/**
+ * Sets @c mcs10_mode setting for module @c wlan.
+ *
+ * The currently configured MCS10 behavior. This only takes effect after calling the WLAN connect
+ * command. This is an enum with 3 modes: disabled, which will never use MCS10, forced, which will
+ * always use MCS10 instead of MCS0 if the bandwidth is 1 MHz, and auto, which will use MCS10 on
+ * retries instead of MCS0 when the bandwidth is 1 MHz.
+ *
+ * @param  controller Reference to the controller handle.
+ * @param  var        The @c enum_mcs10_mode to write.
+ *
+ * @return            MMAGIC_STATUS_OK on success, else an error code.
+ */
+static inline enum mmagic_status mmagic_controller_set_wlan_mcs10_mode(
+    struct mmagic_controller *controller, enum mmagic_mcs10_mode var)
+{
+    enum mmagic_status status;
+    status = mmagic_controller_tx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_SET,
+                                  MMAGIC_WLAN_VAR_MCS10_MODE, (uint8_t *)&var, sizeof(var));
+    if (status != MMAGIC_STATUS_OK)
+    {
+        return status;
+    }
+    status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_SET,
+                                  MMAGIC_WLAN_VAR_MCS10_MODE, NULL, 0);
+    return status;
+}
+
+/**
  * Saves all settings from persistent store.
  *
  * @param  controller Reference to the controller handle.
@@ -2376,8 +2740,7 @@ struct MM_PACKED mmagic_core_wlan_standby_set_config_cmd_args
     /** Destination UDP Port for the standby status packets, also used the source port for outgoing
      * UDP port for outgoing UDP packets. (Default 22000) */
     uint16_t dst_port;
-    /** The interval in seconds to wait after beacon loss before entering snooze mode. In snooze
-     * mode the Morse chip stops listening for beacons to save power. (Default 120s) */
+    /** Deprecated. This parameter is no longer used and will be removed in a future release. */
     uint32_t bss_inactivity_s;
     /** The interval in seconds to wake periodically from snooze mode and check for beacons. If no
      * beacons are found then the Morse chip will re-enter snooze mode. If beacons are found then

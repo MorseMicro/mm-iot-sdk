@@ -1,9 +1,11 @@
 /*
- * Copyright 2023-2024 Morse Micro
+ * Copyright 2023-2025 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  *
  */
+
+#include <errno.h>
 
 #include "mmosal.h"
 #include "mmutils.h"
@@ -40,7 +42,7 @@ void mmagic_cli_ip_status(EmbeddedCli *cli, char *args, void *context)
     int written = 0;
 
     written += snprintf(&buf[written], (len - written), "DHCP Enabled: ");
-    written += mmagic_bool_to_string(&rsp.status.dhcp_enabled, &buf[written], (len - written));
+    written += mmagic_bool_to_string(rsp.status.dhcp_enabled, &buf[written], (len - written));
     written += snprintf(&buf[written], (len - written), "\n");
 
     written += snprintf(&buf[written], (len - written), "IP Addr: ");
@@ -101,23 +103,56 @@ void mmagic_cli_ip_enable_tcp_keepalive_offload(EmbeddedCli *cli, char *args, vo
     MM_UNUSED(context);
     struct mmagic_cli *ctx = (struct mmagic_cli *)cli->appContext;
 
+    enum { EXPECTED_ARGS = 3 };
+
     uint16_t num_tokens = embeddedCliGetTokenCount(args);
-    if (num_tokens != 3)
+    if (num_tokens != EXPECTED_ARGS)
     {
         embeddedCliPrint(cli, "Invalid number of arguments");
         return;
     }
-    struct mmagic_core_ip_enable_tcp_keepalive_offload_cmd_args cmd_args = {};
 
-    cmd_args.period_s = atoi(embeddedCliGetToken(args, 1));
-    cmd_args.retry_count = atoi(embeddedCliGetToken(args, 2));
-    cmd_args.retry_interval_s = atoi(embeddedCliGetToken(args, 3));
+    long tokens[EXPECTED_ARGS] = { 0 }; // NOLINT(runtime/int)
+    enum mmagic_status status = MMAGIC_STATUS_OK;
+    for (int i = 0; i < EXPECTED_ARGS; ++i)
+    {
+        const char *arg_start = embeddedCliGetToken(args, 1);
+        char *endptr = NULL;
+        errno = 0;
+        tokens[i] = strtol(arg_start, &endptr, 10); /* Tokens are in base 10 */
+        /* Validate strtol operation */
+        if (errno != 0 || endptr == arg_start)
+        {
+            /* Argument not valid. */
+            status = MMAGIC_STATUS_INVALID_ARG;
+            break;
+        }
+    }
 
-    enum mmagic_status status = mmagic_core_ip_enable_tcp_keepalive_offload(&ctx->core, &cmd_args);
+    struct mmagic_core_ip_enable_tcp_keepalive_offload_cmd_args cmd_args =
+    {
+        .period_s = (uint16_t)(tokens[0]),
+        .retry_count = (uint8_t)(tokens[1]),
+        .retry_interval_s = (uint8_t)(tokens[2]),
+    };
+
+    /* Verify input arguments were valid and in range */
+    if (status != MMAGIC_STATUS_OK ||
+        cmd_args.period_s != tokens[0] ||
+        cmd_args.retry_count != tokens[1] ||
+        cmd_args.retry_interval_s != tokens[2])
+    {
+        embeddedCliPrint(cli, "Invalid argument/s provided");
+        return;
+    }
+
+    status = mmagic_core_ip_enable_tcp_keepalive_offload(&ctx->core, &cmd_args);
     if (status != MMAGIC_STATUS_OK)
     {
         mmagic_cli_print_error(cli, "TCP keepalive offload", status);
     }
+
+    return;
 }
 
 void mmagic_cli_ip_disable_tcp_keepalive_offload(EmbeddedCli *cli, char *args, void *context)

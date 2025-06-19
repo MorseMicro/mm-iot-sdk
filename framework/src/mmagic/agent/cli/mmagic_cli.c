@@ -26,11 +26,24 @@ static void mmagic_cli_writeChar(EmbeddedCli *cli, char c)
 
 void mmagic_cli_rx(struct mmagic_cli *ctx, const char *buf, size_t num)
 {
-    for (; num > 0; num--)
+    /* Assumes rxBuffer is empty on function entry - this is a valid assumption as chars
+     * are only pushed on here, and the buffer is cleared after calling embeddedCliProcess
+     *
+     * (SIZE - 1) -> ring buffer keeps one space empty
+     */
+    const size_t buffer_space = (MMAGIC_CLI_RX_BUFFER_SIZE - 1);
+    do
     {
-        embeddedCliReceiveChar(ctx->cli, *buf++);
-    }
-    embeddedCliProcess(ctx->cli);
+        int chars_to_process = num > buffer_space ? buffer_space : num;
+        num -= chars_to_process;
+
+        for (; chars_to_process > 0; --chars_to_process)
+        {
+            embeddedCliReceiveChar(ctx->cli, *buf++);
+        }
+
+        embeddedCliProcess(ctx->cli);
+    } while ((int)num > 0);
 }
 
 void mmagic_cli_get(EmbeddedCli *cli, char *args, void *context)
@@ -192,7 +205,7 @@ void mmagic_cli_commit(EmbeddedCli *cli, char *args, void *context)
         for (accessor = ctx->config_accessors;
              accessor != NULL; accessor = accessor->next)
         {
-            if (!strncmp(accessor->name, var, module_len))
+            if (strlen(accessor->name) == module_len && !strncmp(accessor->name, var, module_len))
             {
                 accessor->commit(ctx, cli, variable);
                 break;

@@ -64,7 +64,7 @@
 #define ipconfigCOMPATIBLE_WITH_SINGLE             0
 #define ipconfigIGNORE_UNKNOWN_PACKETS             1
 #define ipconfigCHECK_IP_QUEUE_SPACE               1
-#define ipconfigUDP_MAX_RX_PACKETS                 1
+#define ipconfigUDP_MAX_RX_PACKETS                 0
 #define ipconfigETHERNET_MINIMUM_PACKET_BYTES      1
 #define ipconfigTCP_IP_SANITY                      1
 #define ipconfigSUPPORT_NETWORK_DOWN_EVENT         1
@@ -332,5 +332,10 @@
 
 // This is a temporary workaround as it is not provided by our current version of FreeRTOS
 #define pdFREERTOS_ERRNO_EAFNOSUPPORT           ( 97 )
+
+/* Significantly increase gratuitous ARP period to reduce idle power consumption. */
+#ifndef arpGRATUITOUS_ARP_PERIOD
+#define arpGRATUITOUS_ARP_PERIOD                ( 0x7fffffff )
+#endif
 
 #endif /* FREERTOS_IP_CONFIG_H */

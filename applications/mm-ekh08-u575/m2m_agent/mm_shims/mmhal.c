@@ -486,11 +486,11 @@ void mmhal_reset(void)
 
 void LPTIM1_IRQHandler(void)
 {
+    NVIC_ClearPendingIRQ(LPTIM1_IRQn);
     /* Check whether Compare match 1 interrupt is pending */
     if (LL_LPTIM_IsActiveFlag_CC1(LPTIM1))
     {
         LL_LPTIM_ClearFLAG_CC1(LPTIM1);
-        NVIC_ClearPendingIRQ(LPTIM1_IRQn);
     }
 }
 

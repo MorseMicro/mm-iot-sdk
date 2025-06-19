@@ -6387,6 +6387,10 @@ static int p2p_ctrl_connect(struct wpa_supplicant *wpa_s, char *cmd,
 	size_t group_ssid_len = 0;
 	int he;
 	bool allow_6ghz;
+	bool p2p2;
+	u16 bootstrap = 0;
+	const char *password = NULL;
+	char *token, *context = NULL;
 
 	if (!wpa_s->global->p2p_init_wpa_s)
 		return -1;
@@ -6396,10 +6400,12 @@ static int p2p_ctrl_connect(struct wpa_supplicant *wpa_s, char *cmd,
 		wpa_s = wpa_s->global->p2p_init_wpa_s;
 	}
 
-	/* <addr> <"pbc" | "pin" | PIN> [label|display|keypad|p2ps]
+	/* <addr> <"pbc" | "pin" | "pair" | PIN> [label|display|keypad|p2ps]
 	 * [persistent|persistent=<network id>]
 	 * [join] [auth] [go_intent=<0..15>] [freq=<in MHz>] [provdisc]
-	 * [ht40] [vht] [he] [edmg] [auto] [ssid=<hexdump>] */
+	 * [ht40] [vht] [he] [edmg] [auto] [ssid=<hexdump>]
+	 * [p2p2] [bstrapmethod=<value>] [password=<string>]
+	 */
 
 	if (hwaddr_aton(cmd, addr))
 		return -1;
@@ -6433,6 +6439,7 @@ static int p2p_ctrl_connect(struct wpa_supplicant *wpa_s, char *cmd,
 		vht;
 	he = (os_strstr(cmd, " he") != NULL) || wpa_s->conf->p2p_go_he;
 	edmg = (os_strstr(cmd, " edmg") != NULL) || wpa_s->conf->p2p_go_edmg;
+	p2p2 = os_strstr(pos, " p2p2") != NULL;
 
 	pos2 = os_strstr(pos, " go_intent=");
 	if (pos2) {
@@ -6488,6 +6495,8 @@ static int p2p_ctrl_connect(struct wpa_supplicant *wpa_s, char *cmd,
 		wps_method = WPS_PBC;
 	} else if (os_strstr(pos, "p2ps") != NULL) {
 		wps_method = WPS_P2PS;
+	} else if (os_strncmp(pos, "pair", 4) == 0 && p2p2) {
+		wps_method = WPS_NOT_READY;
 	} else {
 		pin = pos;
 		pos = os_strchr(pin, ' ');
@@ -6503,11 +6512,26 @@ static int p2p_ctrl_connect(struct wpa_supplicant *wpa_s, char *cmd,
 		}
 	}
 
+	pos2 = os_strstr(pos, "bstrapmethod=");
+	if (pos2) {
+		pos2 += 13;
+		bootstrap = atoi(pos2);
+		pd = true;
+	}
+
+	while ((token = str_token(pos, " ", &context))) {
+		if (os_strncmp(token, "password=", 9) == 0) {
+			password = token + 9;
+			continue;
+		}
+	}
+
 	new_pin = wpas_p2p_connect(wpa_s, addr, pin, wps_method,
 				   persistent_group, automatic, join,
 				   auth, go_intent, freq, freq2, persistent_id,
 				   pd, ht40, vht, max_oper_chwidth, he, edmg,
-				   group_ssid, group_ssid_len, allow_6ghz);
+				   group_ssid, group_ssid_len, allow_6ghz, p2p2,
+				   bootstrap, password);
 	if (new_pin == -2) {
 		os_memcpy(buf, "FAIL-CHANNEL-UNAVAILABLE\n", 25);
 		return 25;
@@ -12220,6 +12244,7 @@ static int wpas_ctrl_nan_publish(struct wpa_supplicant *wpa_s, char *cmd,
 	int ret = -1;
 	enum nan_service_protocol_type srv_proto_type = 0;
 	int *freq_list = NULL;
+	bool p2p = false;
 
 	os_memset(&params, 0, sizeof(params));
 	/* USD shall use both solicited and unsolicited transmissions */
@@ -12299,6 +12324,11 @@ static int wpas_ctrl_nan_publish(struct wpa_supplicant *wpa_s, char *cmd,
 			continue;
 		}
 
+		if (os_strcmp(token, "p2p=1") == 0) {
+			p2p = true;
+			continue;
+		}
+
 		if (os_strcmp(token, "solicited=0") == 0) {
 			params.solicited = false;
 			continue;
@@ -12320,7 +12350,7 @@ static int wpas_ctrl_nan_publish(struct wpa_supplicant *wpa_s, char *cmd,
 	}
 
 	publish_id = wpas_nan_usd_publish(wpa_s, service_name, srv_proto_type,
-					  ssi, &params);
+					  ssi, &params, p2p);
 	if (publish_id > 0)
 		ret = os_snprintf(buf, buflen, "%d", publish_id);
 fail:
@@ -12405,6 +12435,7 @@ static int wpas_ctrl_nan_subscribe(struct wpa_supplicant *wpa_s, char *cmd,
 	int ret = -1;
 	enum nan_service_protocol_type srv_proto_type = 0;
 	int *freq_list = NULL;
+	bool p2p = false;
 
 	os_memset(&params, 0, sizeof(params));
 #ifdef CONFIG_IEEE80211AH
@@ -12470,6 +12501,27 @@ static int wpas_ctrl_nan_subscribe(struct wpa_supplicant *wpa_s, char *cmd,
 			continue;
 		}
 
+		if (os_strncmp(token, "freq_list=", 10) == 0) {
+			char *pos = token + 10;
+
+			if (os_strcmp(pos, "all") == 0) {
+				os_free(freq_list);
+				freq_list = wpas_nan_usd_all_freqs(wpa_s);
+				params.freq_list = freq_list;
+				continue;
+			}
+
+			while (pos && pos[0]) {
+				int_array_add_unique(&freq_list, atoi(pos));
+				pos = os_strchr(pos, ',');
+				if (pos)
+					pos++;
+			}
+
+			params.freq_list = freq_list;
+			continue;
+		}
+
 		if (os_strncmp(token, "srv_proto_type=", 15) == 0) {
 			srv_proto_type = atoi(token + 15);
 			continue;
@@ -12484,6 +12536,11 @@ static int wpas_ctrl_nan_subscribe(struct wpa_supplicant *wpa_s, char *cmd,
 			continue;
 		}
 
+		if (os_strcmp(token, "p2p=1") == 0) {
+			p2p = true;
+			continue;
+		}
+
 		wpa_printf(MSG_INFO,
 			   "CTRL: Invalid NAN_SUBSCRIBE parameter: %s",
 			   token);
@@ -12492,11 +12549,12 @@ static int wpas_ctrl_nan_subscribe(struct wpa_supplicant *wpa_s, char *cmd,
 
 	subscribe_id = wpas_nan_usd_subscribe(wpa_s, service_name,
 					      srv_proto_type, ssi,
-					      &params);
+					      &params, p2p);
 	if (subscribe_id > 0)
 		ret = os_snprintf(buf, buflen, "%d", subscribe_id);
 fail:
 	wpabuf_free(ssi);
+	os_free(freq_list);
 	return ret;
 }
 

@@ -3,7 +3,7 @@ var group__MMHAL__WLAN__PKT =
     [ "mmhal_wlan_pktmem_init_args", "structmmhal__wlan__pktmem__init__args.html", [
       [ "tx_flow_control_cb", "structmmhal__wlan__pktmem__init__args.html#a0fad02ebf4e2120c9fe04f0c226990a4", null ]
     ] ],
-    [ "mmhal_wlan_pktmem_tx_flow_control_cb_t", "group__MMHAL__WLAN__PKT.html#ga120238fb739b6eaf99a8ee7af588c0b5", null ],
+    [ "mmhal_wlan_pktmem_tx_flow_control_cb_t", "group__MMHAL__WLAN__PKT.html#ga15b4dc1283f9b42c4845fe35e642585c", null ],
     [ "mmhal_wlan_pkt_class", "group__MMHAL__WLAN__PKT.html#ga57259722c16839819429d89f302f2791", [
       [ "MMHAL_WLAN_PKT_DATA_TID0", "group__MMHAL__WLAN__PKT.html#gga57259722c16839819429d89f302f2791af4abe584c3664409914937720ec105a8", null ],
       [ "MMHAL_WLAN_PKT_DATA_TID1", "group__MMHAL__WLAN__PKT.html#gga57259722c16839819429d89f302f2791afcf25ed28b1e9098d75b74e40933e7a5", null ],
@@ -16,8 +16,9 @@ var group__MMHAL__WLAN__PKT =
       [ "MMHAL_WLAN_PKT_MANAGEMENT", "group__MMHAL__WLAN__PKT.html#gga57259722c16839819429d89f302f2791a943c82ac460078b7ed33a1aed36bfa51", null ],
       [ "MMHAL_WLAN_PKT_COMMAND", "group__MMHAL__WLAN__PKT.html#gga57259722c16839819429d89f302f2791aa4118778de388b6586a693c6aab054b4", null ]
     ] ],
-    [ "mmhal_wlan_alloc_mmpkt_for_rx", "group__MMHAL__WLAN__PKT.html#gaf4e67166e7906c05856b0fc1c5e1868f", null ],
+    [ "mmhal_wlan_alloc_mmpkt_for_rx", "group__MMHAL__WLAN__PKT.html#gaf87322d202abc6826125f1f44c6a6b72", null ],
     [ "mmhal_wlan_alloc_mmpkt_for_tx", "group__MMHAL__WLAN__PKT.html#ga2ba7a26f89a1322a41a79aa012518583", null ],
     [ "mmhal_wlan_pktmem_deinit", "group__MMHAL__WLAN__PKT.html#ga8f13329ada7ff34874581379a986b6e8", null ],
-    [ "mmhal_wlan_pktmem_init", "group__MMHAL__WLAN__PKT.html#ga3be752e89ee0004b7631183bf47469a2", null ]
+    [ "mmhal_wlan_pktmem_init", "group__MMHAL__WLAN__PKT.html#ga3be752e89ee0004b7631183bf47469a2", null ],
+    [ "mmhal_wlan_pktmem_tx_flow_control_state", "group__MMHAL__WLAN__PKT.html#ga2a066858f2da1e42d054c6bd1a9077a6", null ]
 ];

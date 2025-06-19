@@ -304,6 +304,33 @@ def import_mm_iot_components(env, base_dir, components, env_vars):
         )
 
 
+def import_morse_fw_bin(env, base_dir, component):
+    """
+    Convert Morse firmware binary into an object file that we can link
+    """
+    MORSE_FW_RE = re.compile(r"^FW_MBIN.*?([\w\-\.]+\.mbin)", re.MULTILINE)
+    fw_makefile = os.path.join(base_dir, "mk", f"{component}.mk")
+    fw_mbin = ""
+    with open(fw_makefile, "r") as f:
+        match = re.search(MORSE_FW_RE, f.read())
+        fw_mbin = match.group(1) if match else ""
+
+    morse_fw_bin = os.path.join(base_dir, "morsefirmware", fw_mbin)
+    if not os.path.isfile(morse_fw_bin):
+        raise FileNotFoundError(f"Morse FW mbin not found: {morse_fw_bin}")
+
+    morse_fw_obj = env.Command(
+        os.path.join("$BUILD_DIR", "mmfw.o"),
+        morse_fw_bin,
+        action="$OBJCOPY -I binary -O elf32-littlearm -B ARM $SOURCE $TARGET "
+               "--redefine-sym _binary_${PATH_IDENTIFIER}_start=firmware_binary_start "
+               "--redefine-sym _binary_${PATH_IDENTIFIER}_end=firmware_binary_end "
+               "--rename-section .data=.rodata,CONTENTS,ALLOC,LOAD,READONLY,DATA",
+        PATH_IDENTIFIER=re.sub(r"[^a-zA-Z0-9]", "_", morse_fw_bin)
+    )
+    env.Append(PIOBUILDFILES=[morse_fw_obj])
+
+
 def openocd_start(env):
     platform = env.PioPlatform()
     board = env.BoardConfig()

@@ -13,9 +13,13 @@
 #include "common/defs.h"
 #include "common/ieee802_11_defs.h"
 #include "common/ieee802_11_common.h"
+#include "common/wpa_common.h"
 #include "common/wpa_ctrl.h"
+#include "common/sae.h"
 #include "crypto/sha256.h"
+#include "crypto/sha384.h"
 #include "crypto/crypto.h"
+#include "pasn/pasn_common.h"
 #include "wps/wps_i.h"
 #include "p2p_i.h"
 #include "p2p.h"
@@ -954,6 +958,7 @@ static void p2p_device_free(struct p2p_data *p2p, struct p2p_device *dev)
 		dev->info.wps_vendor_ext[i] = NULL;
 	}
 
+	os_free(dev->bootstrap_params);
 	wpabuf_free(dev->info.wfd_subelems);
 	wpabuf_free(dev->info.vendor_elems);
 	wpabuf_free(dev->go_neg_conf);
@@ -1599,7 +1604,8 @@ int p2p_connect(struct p2p_data *p2p, const u8 *peer_addr,
 		int go_intent, const u8 *own_interface_addr,
 		unsigned int force_freq, int persistent_group,
 		const u8 *force_ssid, size_t force_ssid_len,
-		int pd_before_go_neg, unsigned int pref_freq, u16 oob_pw_id)
+		int pd_before_go_neg, unsigned int pref_freq, u16 oob_pw_id,
+		bool p2p2, u16 bootstrap, const char *password)
 {
 	struct p2p_device *dev;
 
@@ -1683,6 +1689,10 @@ int p2p_connect(struct p2p_data *p2p, const u8 *peer_addr,
 
 	dev->wps_method = wps_method;
 	dev->oob_pw_id = oob_pw_id;
+	dev->p2p2 = p2p2;
+	dev->req_bootstrap_method = bootstrap;
+	if (password && os_strlen(password) < sizeof(dev->password))
+		os_strlcpy(dev->password, password, sizeof(dev->password));
 	dev->status = P2P_SC_SUCCESS;
 
 	if (p2p->p2p_scan_running) {
@@ -1701,7 +1711,8 @@ int p2p_authorize(struct p2p_data *p2p, const u8 *peer_addr,
 		  int go_intent, const u8 *own_interface_addr,
 		  unsigned int force_freq, int persistent_group,
 		  const u8 *force_ssid, size_t force_ssid_len,
-		  unsigned int pref_freq, u16 oob_pw_id)
+		  unsigned int pref_freq, u16 oob_pw_id, u16 bootstrap,
+		  const char *password)
 {
 	struct p2p_device *dev;
 
@@ -1735,6 +1746,10 @@ int p2p_authorize(struct p2p_data *p2p, const u8 *peer_addr,
 	dev->flags &= ~P2P_DEV_USER_REJECTED;
 	dev->go_neg_req_sent = 0;
 	dev->go_state = UNKNOWN_GO;
+	dev->req_bootstrap_method = bootstrap;
+
+	if (password && os_strlen(password) < sizeof(dev->password))
+		os_strlcpy(dev->password, password, sizeof(dev->password));
 	p2p_set_dev_persistent(dev, persistent_group);
 	p2p->go_intent = go_intent;
 	os_memcpy(p2p->intended_addr, own_interface_addr, ETH_ALEN);
@@ -1908,26 +1923,25 @@ static void p2p_rx_p2p_action(struct p2p_data *p2p, const u8 *sa,
 
 	switch (data[0]) {
 	case P2P_GO_NEG_REQ:
-		p2p_process_go_neg_req(p2p, sa, data + 1, len - 1, rx_freq);
+		p2p_handle_go_neg_req(p2p, sa, data + 1, len - 1, rx_freq);
 		break;
 	case P2P_GO_NEG_RESP:
-		p2p_process_go_neg_resp(p2p, sa, data + 1, len - 1, rx_freq);
+		p2p_handle_go_neg_resp(p2p, sa, data + 1, len - 1, rx_freq);
 		break;
 	case P2P_GO_NEG_CONF:
-		p2p_process_go_neg_conf(p2p, sa, data + 1, len - 1);
+		p2p_handle_go_neg_conf(p2p, sa, data + 1, len - 1, false);
 		break;
 	case P2P_INVITATION_REQ:
-		p2p_process_invitation_req(p2p, sa, data + 1, len - 1,
-					   rx_freq);
+		p2p_handle_invitation_req(p2p, sa, data + 1, len - 1, rx_freq);
 		break;
 	case P2P_INVITATION_RESP:
 		p2p_process_invitation_resp(p2p, sa, data + 1, len - 1);
 		break;
 	case P2P_PROV_DISC_REQ:
-		p2p_process_prov_disc_req(p2p, sa, data + 1, len - 1, rx_freq);
+		p2p_handle_prov_disc_req(p2p, sa, data + 1, len - 1, rx_freq);
 		break;
 	case P2P_PROV_DISC_RESP:
-		p2p_process_prov_disc_resp(p2p, sa, data + 1, len - 1);
+		p2p_handle_prov_disc_resp(p2p, sa, data + 1, len - 1, rx_freq);
 		break;
 	case P2P_DEV_DISC_REQ:
 		p2p_process_dev_disc_req(p2p, sa, data + 1, len - 1, rx_freq);
@@ -2968,6 +2982,52 @@ bool is_p2p_6ghz_disabled(struct p2p_data *p2p)
 }
 
 
+static void p2p_pairing_info_deinit(struct p2p_data *p2p)
+{
+#ifdef CONFIG_PASN
+	pasn_initiator_pmksa_cache_deinit(p2p->initiator_pmksa);
+	pasn_responder_pmksa_cache_deinit(p2p->responder_pmksa);
+#endif /* CONFIG_PASN */
+	os_free(p2p->pairing_info);
+}
+
+
+static int p2p_pairing_info_init(struct p2p_data *p2p)
+{
+	struct p2p_pairing_info *pairing_info;
+
+	if (p2p->cfg->pairing_config.dik_len > DEVICE_IDENTITY_KEY_MAX_LEN)
+		return -1;
+
+	pairing_info = os_zalloc(sizeof(struct p2p_pairing_info));
+	if (!pairing_info)
+		return -1;
+
+	pairing_info->enable_pairing_setup =
+		p2p->cfg->pairing_config.enable_pairing_setup;
+	pairing_info->enable_pairing_cache =
+		p2p->cfg->pairing_config.enable_pairing_cache;
+	pairing_info->supported_bootstrap =
+		p2p->cfg->pairing_config.bootstrap_methods;
+
+	pairing_info->dev_ik.cipher_version =
+		p2p->cfg->pairing_config.dik_cipher;
+	pairing_info->dev_ik.dik_len = p2p->cfg->pairing_config.dik_len;
+	os_memcpy(pairing_info->dev_ik.dik_data,
+		  p2p->cfg->pairing_config.dik_data,
+		  p2p->cfg->pairing_config.dik_len);
+
+	p2p_pairing_info_deinit(p2p);
+	p2p->pairing_info = pairing_info;
+#ifdef CONFIG_PASN
+	p2p->initiator_pmksa = pasn_initiator_pmksa_cache_init();
+	p2p->responder_pmksa = pasn_responder_pmksa_cache_init();
+#endif /* CONFIG_PASN */
+
+	return 0;
+}
+
+
 struct p2p_data * p2p_init(const struct p2p_config *cfg)
 {
 	struct p2p_data *p2p;
@@ -3023,6 +3083,10 @@ struct p2p_data * p2p_init(const struct p2p_config *cfg)
 	p2p->go_timeout = 100;
 	p2p->client_timeout = 20;
 	p2p->num_p2p_sd_queries = 0;
+	/* Default comeback after one second */
+	if (!p2p->cfg->comeback_after)
+		p2p->cfg->comeback_after = 977; /* TUs */
+	p2p_pairing_info_init(p2p);
 
 	p2p_dbg(p2p, "initialized");
 	p2p_channels_dump(p2p, "channels", &p2p->cfg->channels);
@@ -3066,6 +3130,7 @@ void p2p_deinit(struct p2p_data *p2p)
 	p2p_remove_wps_vendor_extensions(p2p);
 	os_free(p2p->no_go_freq.range);
 	p2p_service_flush_asp(p2p);
+	p2p_pairing_info_deinit(p2p);
 
 	os_free(p2p);
 }
@@ -3399,7 +3464,7 @@ static void p2p_retry_pd(struct p2p_data *p2p)
 		if (!ether_addr_equal(p2p->pending_pd_devaddr,
 				      dev->info.p2p_device_addr))
 			continue;
-		if (!dev->req_config_methods)
+		if (!dev->req_config_methods && !dev->req_bootstrap_method)
 			continue;
 
 		p2p_dbg(p2p, "Send pending Provision Discovery Request to "
@@ -4917,8 +4982,13 @@ int p2p_get_interface_addr(struct p2p_data *p2p, const u8 *dev_addr,
 			   u8 *iface_addr)
 {
 	struct p2p_device *dev = p2p_get_device(p2p, dev_addr);
-	if (dev == NULL || is_zero_ether_addr(dev->interface_addr))
+
+	if (!dev || is_zero_ether_addr(dev->interface_addr)) {
+		p2p_dbg(p2p,
+			"P2P: Failed to get interface address from device addr "
+			MACSTR, MAC2STR(dev_addr));
 		return -1;
+	}
 	os_memcpy(iface_addr, dev->interface_addr, ETH_ALEN);
 	return 0;
 }
@@ -4928,8 +4998,13 @@ int p2p_get_dev_addr(struct p2p_data *p2p, const u8 *iface_addr,
 			   u8 *dev_addr)
 {
 	struct p2p_device *dev = p2p_get_device_interface(p2p, iface_addr);
-	if (dev == NULL)
+
+	if (!dev) {
+		p2p_dbg(p2p,
+			"P2P: Failed to get device address from interface address "
+			MACSTR, MAC2STR(iface_addr));
 		return -1;
+	}
 	os_memcpy(dev_addr, dev->info.p2p_device_addr, ETH_ALEN);
 	return 0;
 }
@@ -5688,3 +5763,193 @@ void set_p2p_allow_6ghz(struct p2p_data *p2p, bool value)
 {
 	p2p->allow_6ghz = value;
 }
+
+
+static int p2p_derive_nonce_tag(struct p2p_data *p2p)
+{
+	u8 dira_nonce[DEVICE_IDENTITY_NONCE_LEN];
+	u8 dira_tag[DEVICE_MAX_HASH_LEN];
+	u8 data[DIR_STR_LEN + DEVICE_IDENTITY_NONCE_LEN + ETH_ALEN];
+	struct p2p_id_key *dev_ik;
+
+	dev_ik = &p2p->pairing_info->dev_ik;
+
+	if (dev_ik->cipher_version != DIRA_CIPHER_VERSION_128) {
+		wpa_printf(MSG_INFO,
+			   "P2P: Unsupported DIRA Cipher version = %d",
+			   dev_ik->cipher_version);
+		return -1;
+	}
+
+	if (dev_ik->dik_len != DEVICE_IDENTITY_KEY_LEN) {
+		wpa_printf(MSG_INFO, "P2P: Invalid DIK length = %zu",
+			   dev_ik->dik_len);
+		return -1;
+	}
+
+	os_memset(data, 0, sizeof(data));
+
+	if (os_get_random(dira_nonce, DEVICE_IDENTITY_NONCE_LEN) < 0) {
+		wpa_printf(MSG_ERROR, "P2P: Failed to generate DIRA nonce");
+		return -1;
+	}
+
+	/* Tag = Truncate-64(HMAC-SHA-256(DevIK,
+	 *                                "DIR" || P2P Device Address || Nonce))
+	 */
+	os_memcpy(data, "DIR", DIR_STR_LEN);
+	os_memcpy(&data[DIR_STR_LEN], p2p->cfg->dev_addr, ETH_ALEN);
+	os_memcpy(&data[DIR_STR_LEN + ETH_ALEN], dira_nonce,
+		  DEVICE_IDENTITY_NONCE_LEN);
+
+	if (hmac_sha256(dev_ik->dik_data, dev_ik->dik_len, data, sizeof(data),
+			dira_tag) < 0) {
+		wpa_printf(MSG_ERROR, "P2P: Could not derive DIRA tag");
+		return -1;
+	}
+
+	dev_ik->dira_nonce_len = DEVICE_IDENTITY_NONCE_LEN;
+	os_memcpy(dev_ik->dira_nonce, dira_nonce, DEVICE_IDENTITY_NONCE_LEN);
+	dev_ik->dira_tag_len = DEVICE_IDENTITY_TAG_LEN;
+	os_memcpy(dev_ik->dira_tag, dira_tag, DEVICE_IDENTITY_TAG_LEN);
+
+	wpa_hexdump_key(MSG_DEBUG, "P2P: DIK", dev_ik->dik_data,
+			dev_ik->dik_len);
+	wpa_hexdump_key(MSG_DEBUG, "P2P: DIRA-NONCE", dev_ik->dira_nonce,
+			dev_ik->dira_nonce_len);
+	wpa_hexdump_key(MSG_DEBUG, "P2P: DIRA-TAG", dev_ik->dira_tag,
+			dev_ik->dira_tag_len);
+	return 0;
+}
+
+
+struct wpabuf * p2p_usd_elems(struct p2p_data *p2p)
+{
+	struct wpabuf *buf;
+	u8 *len;
+	u8 group_capab;
+
+	buf = wpabuf_alloc(1000);
+	if (!buf)
+		return NULL;
+
+	len = p2p_buf_add_ie_hdr(buf);
+
+	/* P2P Capability attribute */
+	group_capab = 0;
+	if (p2p->num_groups) {
+		group_capab |= P2P_GROUP_CAPAB_GROUP_OWNER;
+		if ((p2p->dev_capab & P2P_DEV_CAPAB_CONCURRENT_OPER) &&
+		    (p2p->dev_capab & P2P_DEV_CAPAB_INFRA_MANAGED) &&
+		    p2p->cross_connect)
+			group_capab |= P2P_GROUP_CAPAB_CROSS_CONN;
+	}
+	if (p2p->cfg->p2p_intra_bss)
+		group_capab |= P2P_GROUP_CAPAB_INTRA_BSS_DIST;
+	p2p_buf_add_capability(buf, p2p->dev_capab &
+			       ~P2P_DEV_CAPAB_CLIENT_DISCOVERABILITY,
+			       group_capab);
+
+	/* P2P Device Info attribute */
+	p2p_buf_add_device_info(buf, p2p, NULL);
+
+	p2p_buf_update_ie_hdr(buf, len);
+
+	len = p2p_buf_add_p2p2_ie_hdr(buf);
+
+	/* P2P Capability Extension attribute */
+	p2p_buf_add_pcea(buf, p2p);
+
+	/* P2P Pairing Bootstrapping Method attribute */
+	p2p_buf_add_pbma(buf, p2p->cfg->pairing_config.bootstrap_methods, NULL,
+			 0, 0);
+
+	/* P2P Device Identity Resolution attribute */
+	if (p2p->pairing_info &&
+	    p2p->cfg->pairing_config.pairing_capable &&
+	    p2p->cfg->pairing_config.enable_pairing_cache &&
+	    p2p->cfg->pairing_config.enable_pairing_verification &&
+	    p2p_derive_nonce_tag(p2p) == 0)
+		p2p_buf_add_dira(buf, p2p);
+
+	p2p_buf_update_ie_hdr(buf, len);
+
+	return buf;
+}
+
+
+void p2p_process_usd_elems(struct p2p_data *p2p, const u8 *ies, u16 ies_len,
+			   const u8 *peer_addr, unsigned int freq)
+{
+	struct p2p_device *dev;
+	struct p2p_message msg;
+	const u8 *p2p_dev_addr;
+
+	os_memset(&msg, 0, sizeof(msg));
+	if (p2p_parse_ies(ies, ies_len, &msg)) {
+		p2p_dbg(p2p, "Failed to parse P2P IE for a device entry");
+		p2p_parse_free(&msg);
+		return;
+	}
+	if (msg.p2p_device_addr)
+		p2p_dev_addr = msg.p2p_device_addr;
+	else
+		p2p_dev_addr = peer_addr;
+
+	dev = p2p_create_device(p2p, p2p_dev_addr);
+	if (!dev) {
+		p2p_parse_free(&msg);
+		p2p_dbg(p2p, "Failed to add a peer P2P Device");
+		return;
+	}
+
+	dev->p2p2 = true;
+	/* Reset info from old IEs */
+	dev->info.reg_info = 0;
+	os_memset(&dev->info.pairing_config, 0,
+		  sizeof(struct p2p_pairing_config));
+
+	os_get_reltime(&dev->last_seen);
+	dev->listen_freq = freq;
+	dev->oper_freq = freq;
+
+	if (msg.capability) {
+		/*
+		 * P2P Client Discoverability bit is reserved in all frames
+		 * that use this function, so do not change its value here.
+		 */
+		dev->info.dev_capab &= P2P_DEV_CAPAB_CLIENT_DISCOVERABILITY;
+		dev->info.dev_capab |= msg.capability[0] &
+			~P2P_DEV_CAPAB_CLIENT_DISCOVERABILITY;
+		dev->info.group_capab = msg.capability[1];
+	}
+
+	if (msg.pcea_info && msg.pcea_info_len >= 2)
+		p2p_process_pcea(p2p, &msg, dev);
+
+	if (msg.pbma_info && msg.pbma_info_len == 2)
+		dev->info.pairing_config.bootstrap_methods =
+			WPA_GET_LE16(msg.pbma_info);
+
+	if (!ether_addr_equal(peer_addr, p2p_dev_addr))
+		os_memcpy(dev->interface_addr, peer_addr, ETH_ALEN);
+
+	p2p_dbg(p2p, "Updated device entry based on USD frame: " MACSTR
+		" dev_capab=0x%x group_capab=0x%x listen_freq=%d",
+		MAC2STR(dev->info.p2p_device_addr), dev->info.dev_capab,
+		dev->info.group_capab, dev->listen_freq);
+
+	p2p->cfg->dev_found(p2p->cfg->cb_ctx, dev->info.p2p_device_addr,
+			    &dev->info, !(dev->flags & P2P_DEV_REPORTED_ONCE));
+
+	p2p_parse_free(&msg);
+}
+
+
+#ifdef CONFIG_PASN
+int p2p_pasn_auth_rx(struct p2p_data *p2p, const struct ieee80211_mgmt *mgmt,
+		     size_t len, int freq)
+{
+	return -1; /* TODO */
+}
+#endif /* CONFIG_PASN */

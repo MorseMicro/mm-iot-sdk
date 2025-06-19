@@ -1,5 +1,5 @@
 /*
- * FreeRTOS+TCP V4.2.2
+ * FreeRTOS+TCP V4.3.1
  * Copyright (C) 2022 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -381,7 +381,7 @@
                 else
             #endif /* if ( ipconfigUSE_IPv6 != 0 ) */
             {
-                pxEndPoint = FreeRTOS_FindEndPointOnNetMask( pxAddress->sin_address.ulIP_IPv4, 9999 );
+                pxEndPoint = FreeRTOS_FindEndPointOnNetMask( pxAddress->sin_address.ulIP_IPv4 );
 
                 if( pxEndPoint != NULL )
                 {

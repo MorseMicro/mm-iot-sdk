@@ -3188,6 +3188,7 @@ void wpa_config_free(struct wpa_config *config)
 	os_free(config->dpp_extra_conf_req_name);
 	os_free(config->dpp_extra_conf_req_value);
 	os_free(config->dpp_key);
+	wpabuf_free(config->dik);
 #ifdef CONFIG_MORSE_STANDBY_MODE
 	os_free(config->standby_session_dir);
 #endif
@@ -5616,6 +5617,8 @@ static const struct global_parse_data global_fields[] = {
 	{ FUNC(p2p_device_persistent_mac_addr), 0 },
 	{ INT(p2p_interface_random_mac_addr), 0 },
 	{ INT(p2p_6ghz_disable), 0 },
+	{ INT(dik_cipher), 0},
+	{ BIN(dik), 0 },
 #endif /* CONFIG_P2P */
 	{ FUNC(country), CFG_CHANGED_COUNTRY },
 	{ INT(bss_max_count), 0 },

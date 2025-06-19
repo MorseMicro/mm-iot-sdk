@@ -9,9 +9,17 @@ var group__MMUTILS__WLAN =
       [ "rsn_capabilities", "structmm__rsn__information.html#a8409a05509c9ec9a2cd7f074de2403e9", null ],
       [ "version", "structmm__rsn__information.html#a48470713afc679e6de9c08043fbdc373", null ]
     ] ],
+    [ "mm_s1g_operation", "structmm__s1g__operation.html", [
+      [ "operating_channel_number", "structmm__s1g__operation.html#a0a67b66bcce56f709c34011e255391a7", null ],
+      [ "operating_channel_width_mhz", "structmm__s1g__operation.html#a00befba96c2431fb7ec0117ee035f3b9", null ],
+      [ "operating_class", "structmm__s1g__operation.html#aa8a33f475919e467146e208a762c6a0e", null ],
+      [ "primary_channel_number", "structmm__s1g__operation.html#aa5fb23e1b2bf0fb22d82a02d07517bcb", null ],
+      [ "primary_channel_width_mhz", "structmm__s1g__operation.html#a1a51c442a5ac11bbaa20e39557507605", null ]
+    ] ],
     [ "MM_RSN_INFORMATION_IE_TYPE", "group__MMUTILS__WLAN.html#gae2fbd328d6e13febd3049da4b58bd587", null ],
     [ "MM_RSN_INFORMATION_MAX_AKM_SUITES", "group__MMUTILS__WLAN.html#ga0740251f6384f959b97be29c792ec494", null ],
     [ "MM_RSN_INFORMATION_MAX_PAIRWISE_CIPHER_SUITES", "group__MMUTILS__WLAN.html#gadfb933b6a22a4f04dccb2913e4131591", null ],
+    [ "MM_S1G_OPERATION_IE_TYPE", "group__MMUTILS__WLAN.html#ga9dee8eb7462203439607cacc1e453c4f", null ],
     [ "MM_VENDOR_SPECIFIC_IE_TYPE", "group__MMUTILS__WLAN.html#ga9ba673fc80d2ecbf449f344629be6a29", null ],
     [ "mm_akm_suite_oui", "group__MMUTILS__WLAN.html#ga17aef4cfb2a7b065d016e047ebb13dc2", [
       [ "MM_AKM_SUITE_NONE", "group__MMUTILS__WLAN.html#gga17aef4cfb2a7b065d016e047ebb13dc2a359573c7513443b0692063bd04d730a6", null ],
@@ -30,5 +38,6 @@ var group__MMUTILS__WLAN =
     [ "mm_find_ie_from_offset", "group__MMUTILS__WLAN.html#gaee0b491755f8074b58823922a1476551", null ],
     [ "mm_find_vendor_specific_ie", "group__MMUTILS__WLAN.html#ga0e68dafaaae1487f57f31513e8a0b423", null ],
     [ "mm_find_vendor_specific_ie_from_offset", "group__MMUTILS__WLAN.html#gaa09630ac598efaef8ef2ecb039a19074", null ],
-    [ "mm_parse_rsn_information", "group__MMUTILS__WLAN.html#gacae95f09408e208f9c8a0cf7b7ebe53d", null ]
+    [ "mm_parse_rsn_information", "group__MMUTILS__WLAN.html#gacae95f09408e208f9c8a0cf7b7ebe53d", null ],
+    [ "mm_parse_s1g_operation", "group__MMUTILS__WLAN.html#ga764f142f61dcb585663b33137faeda1f", null ]
 ];

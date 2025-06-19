@@ -1,5 +1,5 @@
 /*
- * FreeRTOS+TCP V4.2.2
+ * FreeRTOS+TCP V4.3.1
  * Copyright (C) 2022 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -50,9 +50,7 @@ NetworkEndPoint_t * FreeRTOS_FindEndPointOnIP_IPv6( const IPv6_Address_t * pxIPA
 /*
  * Find the best fitting end-point to reach a given IP-address.
  * Find an end-point whose IP-address is in the same network as the IP-address provided.
- * 'ulWhere' is temporary and or debugging only.
  */
-NetworkEndPoint_t * FreeRTOS_FindEndPointOnNetMask( uint32_t ulIPAddress,
-                                                    uint32_t ulWhere );
+NetworkEndPoint_t * FreeRTOS_FindEndPointOnNetMask( uint32_t ulIPAddress );
 
 #endif /* ifndef LIST_MACRO_H */

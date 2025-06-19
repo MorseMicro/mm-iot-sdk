@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Morse Micro
+ * Copyright 2025 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -147,6 +147,54 @@ int mmagic_string_to_enum_power_save_mode(enum mmagic_power_save_mode *value, co
         if (strcasecmp(buf, enum_power_save_mode_string_lut[ii].string_value) == 0)
         {
             *value = enum_power_save_mode_string_lut[ii].enum_value;
+            return 0;
+        }
+    }
+    return -1;
+}
+
+static const struct enum_mcs10_mode_string_lut
+{
+    const char *string_value;
+    enum mmagic_mcs10_mode enum_value;
+} enum_mcs10_mode_string_lut[] = {
+    {
+        .string_value = "disabled",
+        .enum_value = MMAGIC_MCS10_MODE_DISABLED,
+    },
+    {
+        .string_value = "forced",
+        .enum_value = MMAGIC_MCS10_MODE_FORCED,
+    },
+    {
+        .string_value = "auto",
+        .enum_value = MMAGIC_MCS10_MODE_AUTO,
+    },
+};
+
+int mmagic_enum_mcs10_mode_to_string(enum mmagic_mcs10_mode value, char *buf, size_t len)
+{
+    size_t ii;
+    for (ii = 0; ii < (sizeof(enum_mcs10_mode_string_lut) / sizeof(enum_mcs10_mode_string_lut[0]));
+         ii++)
+    {
+        if (enum_mcs10_mode_string_lut[ii].enum_value == value)
+        {
+            return snprintf(buf, len, "%s", enum_mcs10_mode_string_lut[ii].string_value);
+        }
+    }
+    return -1;
+}
+
+int mmagic_string_to_enum_mcs10_mode(enum mmagic_mcs10_mode *value, const char *buf)
+{
+    size_t ii;
+    for (ii = 0; ii < (sizeof(enum_mcs10_mode_string_lut) / sizeof(enum_mcs10_mode_string_lut[0]));
+         ii++)
+    {
+        if (strcasecmp(buf, enum_mcs10_mode_string_lut[ii].string_value) == 0)
+        {
+            *value = enum_mcs10_mode_string_lut[ii].enum_value;
             return 0;
         }
     }

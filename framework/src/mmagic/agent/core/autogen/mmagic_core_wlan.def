@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Morse Micro
+ * Copyright 2025 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -127,6 +127,31 @@ void mmagic_core_wlan_load_all(struct mmagic_data *core)
         (void)mmagic_string_to_uint16_t(&data->config.sta_scan_interval_limit_s, val);
     }
 
+    if (mmconfig_read_string("wlan.qos_0_params", val, sizeof(val)) > 0)
+    {
+        (void)mmagic_string_to_struct_string_32(&data->config.qos_0_params, val);
+    }
+
+    if (mmconfig_read_string("wlan.qos_1_params", val, sizeof(val)) > 0)
+    {
+        (void)mmagic_string_to_struct_string_32(&data->config.qos_1_params, val);
+    }
+
+    if (mmconfig_read_string("wlan.qos_2_params", val, sizeof(val)) > 0)
+    {
+        (void)mmagic_string_to_struct_string_32(&data->config.qos_2_params, val);
+    }
+
+    if (mmconfig_read_string("wlan.qos_3_params", val, sizeof(val)) > 0)
+    {
+        (void)mmagic_string_to_struct_string_32(&data->config.qos_3_params, val);
+    }
+
+    if (mmconfig_read_string("wlan.mcs10_mode", val, sizeof(val)) > 0)
+    {
+        (void)mmagic_string_to_enum_mcs10_mode(&data->config.mcs10_mode, val);
+    }
+
 }
 
 void mmagic_core_wlan_save_all(struct mmagic_data *core)
@@ -198,6 +223,21 @@ void mmagic_core_wlan_save_all(struct mmagic_data *core)
 
     mmagic_uint16_t_to_string(data->config.sta_scan_interval_limit_s, val, sizeof(val));
     mmconfig_write_string("wlan.sta_scan_interval_limit_s", val);
+
+    mmagic_struct_string_32_to_string(&data->config.qos_0_params, val, sizeof(val));
+    mmconfig_write_string("wlan.qos_0_params", val);
+
+    mmagic_struct_string_32_to_string(&data->config.qos_1_params, val, sizeof(val));
+    mmconfig_write_string("wlan.qos_1_params", val);
+
+    mmagic_struct_string_32_to_string(&data->config.qos_2_params, val, sizeof(val));
+    mmconfig_write_string("wlan.qos_2_params", val);
+
+    mmagic_struct_string_32_to_string(&data->config.qos_3_params, val, sizeof(val));
+    mmconfig_write_string("wlan.qos_3_params", val);
+
+    mmagic_enum_mcs10_mode_to_string(data->config.mcs10_mode, val, sizeof(val));
+    mmconfig_write_string("wlan.mcs10_mode", val);
 
 }
 

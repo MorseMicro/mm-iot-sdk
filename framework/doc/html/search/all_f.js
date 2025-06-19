@@ -37,5 +37,7 @@ var searchData=
   ['pmf_5fmode_34',['pmf_mode',['../structmmwlan__sta__args.html#a5f424a8f2c9ea4906a99fcc87dc5553f',1,'mmwlan_sta_args']]],
   ['port_35',['port',['../structmmagic__core__tcp__connect__cmd__args.html#a7638284f7d05745198c30fcd1bf35c75',1,'mmagic_core_tcp_connect_cmd_args::port()'],['../structmmagic__core__tcp__bind__cmd__args.html#a7d5b6757773d8c2ea50c4bd69ea7ddb8',1,'mmagic_core_tcp_bind_cmd_args::port()']]],
   ['porting_5fassistant_2ec_36',['porting_assistant.c',['../porting__assistant_8c.html',1,'']]],
-  ['post_5fping_5fdelay_5fms_37',['POST_PING_DELAY_MS',['../ping_8c.html#aa74a8e27191a3077ea4cf00ea7507962',1,'POST_PING_DELAY_MS():&#160;ping.c'],['../wnm__sleep_8c.html#aa74a8e27191a3077ea4cf00ea7507962',1,'POST_PING_DELAY_MS():&#160;wnm_sleep.c']]]
+  ['post_5fping_5fdelay_5fms_37',['POST_PING_DELAY_MS',['../ping_8c.html#aa74a8e27191a3077ea4cf00ea7507962',1,'POST_PING_DELAY_MS():&#160;ping.c'],['../wnm__sleep_8c.html#aa74a8e27191a3077ea4cf00ea7507962',1,'POST_PING_DELAY_MS():&#160;wnm_sleep.c']]],
+  ['primary_5fchannel_5fnumber_38',['primary_channel_number',['../structmm__s1g__operation.html#aa5fb23e1b2bf0fb22d82a02d07517bcb',1,'mm_s1g_operation']]],
+  ['primary_5fchannel_5fwidth_5fmhz_39',['primary_channel_width_mhz',['../structmm__s1g__operation.html#a1a51c442a5ac11bbaa20e39557507605',1,'mm_s1g_operation']]]
 ];

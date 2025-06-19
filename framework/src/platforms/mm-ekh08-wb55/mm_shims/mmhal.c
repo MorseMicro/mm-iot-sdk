@@ -505,11 +505,11 @@ bool mmhal_get_hardware_version(char * version_buffer, size_t version_buffer_len
 
 void LPTIM1_IRQHandler(void)
 {
+    NVIC_ClearPendingIRQ(LPTIM1_IRQn);
     /* Check whether Compare match interrupt is pending */
     if (LL_LPTIM_IsActiveFlag_CMPM(LPTIM1))
     {
         LL_LPTIM_ClearFLAG_CMPM(LPTIM1);
-        NVIC_ClearPendingIRQ(LPTIM1_IRQn);
     }
 }
 

@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.7.2</span>
+   &#160;<span id="projectnumber">2.8.2</span>
    </div>
   </td>
  </tr>
@@ -134,6 +134,12 @@ Macros</h2></td></tr>
 <tr class="memitem:gaef90c75c78b18e507e1be247c716b94a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMHAL__WLAN.html#gaef90c75c78b18e507e1be247c716b94a">MMHAL_WLAN_MMPKT_RX_MAX_SIZE</a>&#160;&#160;&#160;(1668)</td></tr>
 <tr class="memdesc:gaef90c75c78b18e507e1be247c716b94a"><td class="mdescLeft">&#160;</td><td class="mdescRight">This value represents the maximum size of a RX packet that can be allocated within the RX pool.  <a href="group__MMHAL__WLAN.html#gaef90c75c78b18e507e1be247c716b94a">More...</a><br /></td></tr>
 <tr class="separator:gaef90c75c78b18e507e1be247c716b94a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf018baf42f8adbfe1b697527450876ee"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMHAL__WLAN.html#gaf018baf42f8adbfe1b697527450876ee">MMPKTMEM_TX_POOL_N_BLOCKS</a>&#160;&#160;&#160;(20)</td></tr>
+<tr class="memdesc:gaf018baf42f8adbfe1b697527450876ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Size of the TX pool in blocks.  <a href="group__MMHAL__WLAN.html#gaf018baf42f8adbfe1b697527450876ee">More...</a><br /></td></tr>
+<tr class="separator:gaf018baf42f8adbfe1b697527450876ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga2903742172a31c8687c4f66ed12343ab"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMHAL__WLAN.html#ga2903742172a31c8687c4f66ed12343ab">MMPKTMEM_RX_POOL_N_BLOCKS</a>&#160;&#160;&#160;(23)</td></tr>
+<tr class="memdesc:ga2903742172a31c8687c4f66ed12343ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Size of the RX pool in blocks.  <a href="group__MMHAL__WLAN.html#ga2903742172a31c8687c4f66ed12343ab">More...</a><br /></td></tr>
+<tr class="separator:ga2903742172a31c8687c4f66ed12343ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
@@ -210,7 +216,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>mmhal_wlan_wake_deass
 <p>This value represents the maximum size of a RX packet that can be allocated within the RX pool. </p>
 <p >It includes the packet size and the RX metadata </p>
 
-<p class="definition">Definition at line <a class="el" href="mmhal__wlan_8h_source.html#l00444">444</a> of file <a class="el" href="mmhal__wlan_8h_source.html">mmhal_wlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmhal__wlan_8h_source.html#l00456">456</a> of file <a class="el" href="mmhal__wlan_8h_source.html">mmhal_wlan.h</a>.</p>
 
 </div>
 </div>
@@ -229,7 +235,44 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>mmhal_wlan_wake_deass
 <p>This value represents the maximum size of a TX packet that can be allocated within the TX pool. </p>
 <p >It includes the packet size and the TX metadata. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmhal__wlan_8h_source.html#l00438">438</a> of file <a class="el" href="mmhal__wlan_8h_source.html">mmhal_wlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmhal__wlan_8h_source.html#l00450">450</a> of file <a class="el" href="mmhal__wlan_8h_source.html">mmhal_wlan.h</a>.</p>
+
+</div>
+</div>
+<a id="ga2903742172a31c8687c4f66ed12343ab" name="ga2903742172a31c8687c4f66ed12343ab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga2903742172a31c8687c4f66ed12343ab">&#9670;&nbsp;</a></span>MMPKTMEM_RX_POOL_N_BLOCKS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define MMPKTMEM_RX_POOL_N_BLOCKS&#160;&#160;&#160;(23)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Size of the RX pool in blocks. </p>
+<dl class="section note"><dt>Note</dt><dd>Values less than 23 may result in instability. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="mmhal__wlan_8h_source.html#l00471">471</a> of file <a class="el" href="mmhal__wlan_8h_source.html">mmhal_wlan.h</a>.</p>
+
+</div>
+</div>
+<a id="gaf018baf42f8adbfe1b697527450876ee" name="gaf018baf42f8adbfe1b697527450876ee"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaf018baf42f8adbfe1b697527450876ee">&#9670;&nbsp;</a></span>MMPKTMEM_TX_POOL_N_BLOCKS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define MMPKTMEM_TX_POOL_N_BLOCKS&#160;&#160;&#160;(20)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Size of the TX pool in blocks. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmhal__wlan_8h_source.html#l00462">462</a> of file <a class="el" href="mmhal__wlan_8h_source.html">mmhal_wlan.h</a>.</p>
 
 </div>
 </div>

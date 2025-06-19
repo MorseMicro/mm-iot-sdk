@@ -25,6 +25,13 @@ var group__MMWLAN__CTRL =
       [ "twt_wake_interval_mantissa", "structmmwlan__twt__config__args.html#ab648764d85bbedbb630d287402527692", null ],
       [ "twt_wake_interval_us", "structmmwlan__twt__config__args.html#a6a97a8053c5ae2ba54401ab417f854b8", null ]
     ] ],
+    [ "mmwlan_qos_queue_params", "structmmwlan__qos__queue__params.html", [
+      [ "aci", "structmmwlan__qos__queue__params.html#a4a0016a33d19a5bc0be2aed37a5484ad", null ],
+      [ "aifs", "structmmwlan__qos__queue__params.html#ae7f7398780a0759f84bc30aad91f0494", null ],
+      [ "cw_max", "structmmwlan__qos__queue__params.html#af8dc64b2aff22ab5237326b5e6f847a2", null ],
+      [ "cw_min", "structmmwlan__qos__queue__params.html#ad652c2d94f6afaa0fcb1bdb77a57d329", null ],
+      [ "txop_max_us", "structmmwlan__qos__queue__params.html#a8ccffd8fbab6955b1af8bfa9f05731d1", null ]
+    ] ],
     [ "mmwlan_boot_args", "structmmwlan__boot__args.html", [
       [ "reserved", "structmmwlan__boot__args.html#ad1b87292b086d2c5338c47d78b6b3b24", null ]
     ] ],
@@ -81,6 +88,7 @@ var group__MMWLAN__CTRL =
     [ "MMWLAN_FW_VERSION_MAXLEN", "group__MMWLAN__CTRL.html#gaf7c939fcdd4732b574e6fe208685b94e", null ],
     [ "MMWLAN_MINIMUM_FRAGMENT_THRESHOLD", "group__MMWLAN__CTRL.html#gaa4c8937e0880bf35546f5e7189b02ffa", null ],
     [ "MMWLAN_MORSELIB_VERSION_MAXLEN", "group__MMWLAN__CTRL.html#gaf872a95115a7e2e29a05e2bc0ea63835", null ],
+    [ "MMWLAN_QOS_QUEUE_NUM_ACIS", "group__MMWLAN__CTRL.html#ga8a1de0d1c2f0d85bd31d683c754e6f31", null ],
     [ "MMWLAN_SCAN_ARGS_INIT", "group__MMWLAN__CTRL.html#ga185c90a221a8b25584fa41b8f33c2783", null ],
     [ "MMWLAN_SCAN_CONFIG_INIT", "group__MMWLAN__CTRL.html#ga5b478017f60cfcc091f5ca8e2b4d98a6", null ],
     [ "MMWLAN_SCAN_DEFAULT_DWELL_TIME_MS", "group__MMWLAN__CTRL.html#ga2b5fd4f717491b6907140de51aa01509", null ],
@@ -91,6 +99,11 @@ var group__MMWLAN__CTRL =
     [ "mmwlan_scan_complete_cb_t", "group__MMWLAN__CTRL.html#ga922c47564250dd1ab133822d0f00353d", null ],
     [ "mmwlan_scan_rx_cb_t", "group__MMWLAN__CTRL.html#ga0be3546ed78651924960e3e947bbe3d9", null ],
     [ "mmwlan_sta_status_cb_t", "group__MMWLAN__CTRL.html#ga659a0eb950178f650d5909e27d8c773f", null ],
+    [ "mmwlan_mcs10_mode", "group__MMWLAN__CTRL.html#ga967e2eed2478965f08fbbefe088587ca", [
+      [ "MMWLAN_MCS10_MODE_DISABLED", "group__MMWLAN__CTRL.html#gga967e2eed2478965f08fbbefe088587caaefd64afce27421b5891ef436c89436d4", null ],
+      [ "MMWLAN_MCS10_MODE_FORCED", "group__MMWLAN__CTRL.html#gga967e2eed2478965f08fbbefe088587caa8fd5f26d7005a42a3f5bfbf3942f789b", null ],
+      [ "MMWLAN_MCS10_MODE_AUTO", "group__MMWLAN__CTRL.html#gga967e2eed2478965f08fbbefe088587caa7f45b47a969590fed779a4a7d7505a22", null ]
+    ] ],
     [ "mmwlan_scan_state", "group__MMWLAN__CTRL.html#ga099b3d1bfda216a73f6412101207e9d6", [
       [ "MMWLAN_SCAN_SUCCESSFUL", "group__MMWLAN__CTRL.html#gga099b3d1bfda216a73f6412101207e9d6ab50b83ceac5501a693221a3de53aae2b", null ],
       [ "MMWLAN_SCAN_TERMINATED", "group__MMWLAN__CTRL.html#gga099b3d1bfda216a73f6412101207e9d6adc09547b669a0f43827cae6492d65370", null ],
@@ -110,7 +123,9 @@ var group__MMWLAN__CTRL =
     [ "mmwlan_scan_abort", "group__MMWLAN__CTRL.html#ga2f0467c120b215c2844ff0fdab5b2aa0", null ],
     [ "mmwlan_scan_request", "group__MMWLAN__CTRL.html#gacf6def12dc1c130f80670fc79f30211d", null ],
     [ "mmwlan_set_ampdu_enabled", "group__MMWLAN__CTRL.html#ga386145bf3af470b46dc3ce6d641aa3ba", null ],
+    [ "mmwlan_set_default_qos_queue_params", "group__MMWLAN__CTRL.html#gac733a5b4ead17e4a3cbeef6a8cd482b1", null ],
     [ "mmwlan_set_fragment_threshold", "group__MMWLAN__CTRL.html#gaae5ae711e6ff47f16c93bdf3fd777d83", null ],
+    [ "mmwlan_set_mcs10_mode", "group__MMWLAN__CTRL.html#gafe66561227e5eb9c5132b0c8341ec950", null ],
     [ "mmwlan_set_power_save_mode", "group__MMWLAN__CTRL.html#ga8771bfc0223d560f1d27d61e69b88d64", null ],
     [ "mmwlan_set_rts_threshold", "group__MMWLAN__CTRL.html#gac5e16f1c3015bc6c577d9be6aec11764", null ],
     [ "mmwlan_set_scan_config", "group__MMWLAN__CTRL.html#ga632ecb9c29d782148d7c9af9395762b6", null ],

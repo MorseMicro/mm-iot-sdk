@@ -67,7 +67,7 @@ fi
 
 # Add location of the python user site-pakages to PATH. This allows for excution of packages
 # installed using pip
-export PATH=$HOME/.local/bin/:$PATH
+export PATH=$HOME/.local/bin:$PATH
 
 # MM-IoT-SDK Version
-export MMIOT_VERSION="2.7.2"
+export MMIOT_VERSION="2.8.2"

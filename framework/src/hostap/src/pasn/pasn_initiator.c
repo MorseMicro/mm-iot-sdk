@@ -26,6 +26,65 @@
 #include "pasn_common.h"
 
 
+struct rsn_pmksa_cache * pasn_initiator_pmksa_cache_init(void)
+{
+	return pmksa_cache_init(NULL, NULL, NULL, NULL, NULL);
+}
+
+
+void pasn_initiator_pmksa_cache_deinit(struct rsn_pmksa_cache *pmksa)
+{
+	return pmksa_cache_deinit(pmksa);
+}
+
+
+int pasn_initiator_pmksa_cache_add(struct rsn_pmksa_cache *pmksa,
+				   const u8 *own_addr, const u8 *bssid, u8 *pmk,
+				   size_t pmk_len, u8 *pmkid)
+{
+	if (pmksa_cache_add(pmksa, pmk, pmk_len, pmkid, NULL, 0, bssid,
+			    own_addr, NULL, WPA_KEY_MGMT_SAE, 0))
+		return 0;
+	return -1;
+}
+
+
+void pasn_initiator_pmksa_cache_remove(struct rsn_pmksa_cache *pmksa,
+				       const u8 *bssid)
+{
+	struct rsn_pmksa_cache_entry *entry;
+
+	entry = pmksa_cache_get(pmksa, bssid, NULL, NULL, NULL, 0);
+	if (!entry)
+		return;
+
+	pmksa_cache_remove(pmksa, entry);
+}
+
+
+int pasn_initiator_pmksa_cache_get(struct rsn_pmksa_cache *pmksa,
+				   const u8 *bssid, u8 *pmkid, u8 *pmk,
+				   size_t *pmk_len)
+{
+	struct rsn_pmksa_cache_entry *entry;
+
+	entry = pmksa_cache_get(pmksa, bssid, NULL, NULL, NULL, 0);
+	if (entry) {
+		os_memcpy(pmkid, entry->pmkid, PMKID_LEN);
+		os_memcpy(pmk, entry->pmk, entry->pmk_len);
+		*pmk_len = entry->pmk_len;
+		return 0;
+	}
+	return -1;
+}
+
+
+void pasn_initiator_pmksa_cache_flush(struct rsn_pmksa_cache *pmksa)
+{
+	return pmksa_cache_flush(pmksa, NULL, NULL, 0, false);
+}
+
+
 void pasn_set_initiator_pmksa(struct pasn_data *pasn,
 			      struct rsn_pmksa_cache *pmksa)
 {
@@ -587,7 +646,10 @@ static struct wpabuf * wpas_pasn_build_auth_1(struct pasn_data *pasn,
 	if (wpa_pasn_add_wrapped_data(buf, wrapped_data_buf) < 0)
 		goto fail;
 
-	wpa_pasn_add_rsnxe(buf, pasn->rsnxe_capab);
+	if (pasn->rsnxe_ie)
+		wpabuf_put_data(buf, pasn->rsnxe_ie, 2 + pasn->rsnxe_ie[1]);
+	else
+		wpa_pasn_add_rsnxe(buf, pasn->rsnxe_capab);
 
 	wpa_pasn_add_extra_ies(buf, pasn->extra_ies, pasn->extra_ies_len);
 
@@ -747,6 +809,7 @@ void wpa_pasn_reset(struct pasn_data *pasn)
 	pasn->derive_kdk = false;
 	pasn->rsn_ie = NULL;
 	pasn->rsn_ie_len = 0;
+	os_free(pasn->rsnxe_ie);
 	pasn->rsnxe_ie = NULL;
 	pasn->custom_pmkid_valid = false;
 
@@ -1233,7 +1296,7 @@ int wpa_pasn_auth_rx(struct pasn_data *pasn, const u8 *data, size_t len,
 			      pasn->own_addr, pasn->peer_addr,
 			      wpabuf_head(secret), wpabuf_len(secret),
 			      &pasn->ptk, pasn->akmp, pasn->cipher,
-			      pasn->kdk_len);
+			      pasn->kdk_len, pasn->kek_len);
 	if (ret) {
 		wpa_printf(MSG_DEBUG, "PASN: Failed to derive PTK");
 		goto fail;

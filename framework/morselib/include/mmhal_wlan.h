@@ -354,10 +354,8 @@ void mmhal_wlan_clear_spi_irq(void);
 /**
  * Flow control callback that can be invoked by the transmit packet memory manager to pause
  * and resume the data path in response to resource availability.
- *
- * @param state Current flow control state.
  */
-typedef void (*mmhal_wlan_pktmem_tx_flow_control_cb_t)(enum mmwlan_tx_flow_control_state state);
+typedef void (*mmhal_wlan_pktmem_tx_flow_control_cb_t)(void);
 
 /** Initialization arguments passed to @ref mmhal_wlan_pktmem_init().  */
 struct mmhal_wlan_pktmem_init_args
@@ -379,6 +377,13 @@ void mmhal_wlan_pktmem_init(struct mmhal_wlan_pktmem_init_args *args);
  * This can free reserved memory and check for memory leaks.
  */
 void mmhal_wlan_pktmem_deinit(void);
+
+/**
+ * Gets the current TX flow control state.
+ *
+ * @return The current flow control state.
+ */
+enum mmwlan_tx_flow_control_state mmhal_wlan_pktmem_tx_flow_control_state(void);
 
 /**
  * Enumeration of packet classes used by @ref mmhal_wlan_alloc_mmpkt_for_tx().
@@ -421,13 +426,20 @@ struct mmpkt *mmhal_wlan_alloc_mmpkt_for_tx(uint8_t pkt_class,
 /**
  * Allocates an mmpkt for reception.
  *
- * @param capacity          Amount of space to allocate for data.
+ * @param pkt_class         The class of packet (to allow for prioritization). Currently
+ *                          used values are @ref MMHAL_WLAN_PKT_DATA_TID0 for data and
+ *                          management frames, and @ref MMHAL_WLAN_PKT_COMMAND for critical
+ *                          buffers used internally by the driver (e.g., for command responses)
+ *                          where known.
+ * @param capacity          Amount of space to allocate for data. A value of @c UINT32_MAX
+ *                          should allocate the largest available mmpkt (if supported).
  * @param metadata_length   Amount of space to allocate for metadata (used internally by the
  *                          Morse driver).
  *
  * @returns a pointer to the allocated packet on success or @c NULL on allocation failure.
  */
-struct mmpkt *mmhal_wlan_alloc_mmpkt_for_rx(uint32_t capacity, uint32_t metadata_length);
+struct mmpkt *mmhal_wlan_alloc_mmpkt_for_rx(uint8_t pkt_class,
+                                            uint32_t capacity, uint32_t metadata_length);
 
 /** @} */
 
@@ -442,6 +454,23 @@ struct mmpkt *mmhal_wlan_alloc_mmpkt_for_rx(uint32_t capacity, uint32_t metadata
  * within the RX pool. It includes the packet size and the RX metadata
  */
 #define MMHAL_WLAN_MMPKT_RX_MAX_SIZE    (1668)
+
+/**
+ * Size of the TX pool in blocks.
+ */
+#ifndef MMPKTMEM_TX_POOL_N_BLOCKS
+#define MMPKTMEM_TX_POOL_N_BLOCKS       (20)
+#endif
+
+/**
+ * Size of the RX pool in blocks.
+ *
+ * @note Values less than 23 may result in instability.
+ */
+#ifndef MMPKTMEM_RX_POOL_N_BLOCKS
+#define MMPKTMEM_RX_POOL_N_BLOCKS       (23)
+#endif
+
 
 /**
  * @defgroup MMHAL_WLAN_SDIO WLAN HAL API for SDIO interface

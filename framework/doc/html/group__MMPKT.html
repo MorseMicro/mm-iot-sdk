@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.7.2</span>
+   &#160;<span id="projectnumber">2.8.2</span>
    </div>
   </td>
  </tr>
@@ -174,6 +174,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ga39f3da203ad9ef916c8995c4ea904e05"><td class="memItemLeft" align="right" valign="top">static union <a class="el" href="unionmmpkt__metadata__ptr.html">mmpkt_metadata_ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMPKT.html#ga39f3da203ad9ef916c8995c4ea904e05">mmpkt_get_metadata</a> (struct <a class="el" href="structmmpkt.html">mmpkt</a> *<a class="el" href="structmmpkt.html">mmpkt</a>)</td></tr>
 <tr class="memdesc:ga39f3da203ad9ef916c8995c4ea904e05"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieve a reference to the metadata associated with the given mmpkt.  <a href="group__MMPKT.html#ga39f3da203ad9ef916c8995c4ea904e05">More...</a><br /></td></tr>
 <tr class="separator:ga39f3da203ad9ef916c8995c4ea904e05"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga52da3c2453402d5635e6e20d8ebcbf87"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMPKT.html#ga52da3c2453402d5635e6e20d8ebcbf87">mmpkt_adjust_start_offset</a> (struct <a class="el" href="structmmpkt.html">mmpkt</a> *<a class="el" href="structmmpkt.html">mmpkt</a>, int32_t delta)</td></tr>
+<tr class="memdesc:ga52da3c2453402d5635e6e20d8ebcbf87"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adjust the start offset of an mmpkt.  <a href="group__MMPKT.html#ga52da3c2453402d5635e6e20d8ebcbf87">More...</a><br /></td></tr>
+<tr class="separator:ga52da3c2453402d5635e6e20d8ebcbf87"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gacda18b62ce4c62c53d51a3f330dc5869"><td class="memItemLeft" align="right" valign="top">static uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMPKT.html#gacda18b62ce4c62c53d51a3f330dc5869">mmpkt_remove_from_start</a> (struct mmpktview *view, uint32_t len)</td></tr>
 <tr class="memdesc:gacda18b62ce4c62c53d51a3f330dc5869"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove data from the start of the mmpkt.  <a href="group__MMPKT.html#gacda18b62ce4c62c53d51a3f330dc5869">More...</a><br /></td></tr>
 <tr class="separator:gacda18b62ce4c62c53d51a3f330dc5869"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -228,6 +231,54 @@ Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="ga52da3c2453402d5635e6e20d8ebcbf87" name="ga52da3c2453402d5635e6e20d8ebcbf87"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga52da3c2453402d5635e6e20d8ebcbf87">&#9670;&nbsp;</a></span>mmpkt_adjust_start_offset()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void mmpkt_adjust_start_offset </td>
+          <td>(</td>
+          <td class="paramtype">struct <a class="el" href="structmmpkt.html">mmpkt</a> *&#160;</td>
+          <td class="paramname"><em>mmpkt</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int32_t&#160;</td>
+          <td class="paramname"><em>delta</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Adjust the start offset of an mmpkt. </p>
+<p >This is only allowable when the mmpkt is empty (i.e., <code>data_len</code> is 0).</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">mmpkt</td><td>The mmpkt to operate on. </td></tr>
+    <tr><td class="paramname">delta</td><td>Difference between the current start offset and the new start offset (this may be negative, but the new start offset must not be less than 0). </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="mmpkt_8h_source.html#l00439">439</a> of file <a class="el" href="mmpkt_8h_source.html">mmpkt.h</a>.</p>
+
+</div>
+</div>
 <a id="ga05c0e63a58984eaa8e676ec1d5430dc3" name="ga05c0e63a58984eaa8e676ec1d5430dc3"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga05c0e63a58984eaa8e676ec1d5430dc3">&#9670;&nbsp;</a></span>mmpkt_alloc_on_heap()</h2>
 
@@ -320,7 +371,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>a pointer to the place in the buffer where the data should be put. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmpkt_8h_source.html#l00377">377</a> of file <a class="el" href="mmpkt_8h_source.html">mmpkt.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmpkt_8h_source.html#l00395">395</a> of file <a class="el" href="mmpkt_8h_source.html">mmpkt.h</a>.</p>
 
 </div>
 </div>
@@ -375,7 +426,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="mmpkt_8h_source.html#l00395">395</a> of file <a class="el" href="mmpkt_8h_source.html">mmpkt.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmpkt_8h_source.html#l00413">413</a> of file <a class="el" href="mmpkt_8h_source.html">mmpkt.h</a>.</p>
 
 </div>
 </div>
@@ -412,7 +463,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the available space in bytes. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmpkt_8h_source.html#l00319">319</a> of file <a class="el" href="mmpkt_8h_source.html">mmpkt.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmpkt_8h_source.html#l00337">337</a> of file <a class="el" href="mmpkt_8h_source.html">mmpkt.h</a>.</p>
 
 </div>
 </div>
@@ -449,7 +500,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the available space in bytes. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmpkt_8h_source.html#l00306">306</a> of file <a class="el" href="mmpkt_8h_source.html">mmpkt.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmpkt_8h_source.html#l00324">324</a> of file <a class="el" href="mmpkt_8h_source.html">mmpkt.h</a>.</p>
 
 </div>
 </div>
@@ -485,7 +536,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="mmpkt_8h_source.html#l00229">229</a> of file <a class="el" href="mmpkt_8h_source.html">mmpkt.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmpkt_8h_source.html#l00247">247</a> of file <a class="el" href="mmpkt_8h_source.html">mmpkt.h</a>.</p>
 
 </div>
 </div>
@@ -534,7 +585,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>true if the pointer points into the buffer. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmpkt_8h_source.html#l00515">515</a> of file <a class="el" href="mmpkt_8h_source.html">mmpkt.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmpkt_8h_source.html#l00548">548</a> of file <a class="el" href="mmpkt_8h_source.html">mmpkt.h</a>.</p>
 
 </div>
 </div>
@@ -571,7 +622,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the underlying mmpkt. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmpkt_8h_source.html#l00241">241</a> of file <a class="el" href="mmpkt_8h_source.html">mmpkt.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmpkt_8h_source.html#l00259">259</a> of file <a class="el" href="mmpkt_8h_source.html">mmpkt.h</a>.</p>
 
 </div>
 </div>
@@ -608,7 +659,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>a pointer to the end of the data in the mmpkt. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmpkt_8h_source.html#l00266">266</a> of file <a class="el" href="mmpkt_8h_source.html">mmpkt.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmpkt_8h_source.html#l00284">284</a> of file <a class="el" href="mmpkt_8h_source.html">mmpkt.h</a>.</p>
 
 </div>
 </div>
@@ -645,7 +696,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the length of the data currently in the mmpkt (note that this is different from the length of the available buffer space). </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmpkt_8h_source.html#l00293">293</a> of file <a class="el" href="mmpkt_8h_source.html">mmpkt.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmpkt_8h_source.html#l00311">311</a> of file <a class="el" href="mmpkt_8h_source.html">mmpkt.h</a>.</p>
 
 </div>
 </div>
@@ -682,7 +733,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>a pointer to the start of the data in the mmpkt. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmpkt_8h_source.html#l00253">253</a> of file <a class="el" href="mmpkt_8h_source.html">mmpkt.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmpkt_8h_source.html#l00271">271</a> of file <a class="el" href="mmpkt_8h_source.html">mmpkt.h</a>.</p>
 
 </div>
 </div>
@@ -719,7 +770,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>a reference to the mmpkt metadata. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmpkt_8h_source.html#l00408">408</a> of file <a class="el" href="mmpkt_8h_source.html">mmpkt.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmpkt_8h_source.html#l00426">426</a> of file <a class="el" href="mmpkt_8h_source.html">mmpkt.h</a>.</p>
 
 </div>
 </div>
@@ -757,7 +808,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>pointer to the next mmpkt in the chain (may be NULL). </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmpkt_8h_source.html#l00486">486</a> of file <a class="el" href="mmpkt_8h_source.html">mmpkt.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmpkt_8h_source.html#l00519">519</a> of file <a class="el" href="mmpkt_8h_source.html">mmpkt.h</a>.</p>
 
 </div>
 </div>
@@ -941,7 +992,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>a pointer representing the opened view. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmpkt_8h_source.html#l00218">218</a> of file <a class="el" href="mmpkt_8h_source.html">mmpkt.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmpkt_8h_source.html#l00236">236</a> of file <a class="el" href="mmpkt_8h_source.html">mmpkt.h</a>.</p>
 
 </div>
 </div>
@@ -978,7 +1029,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the length of the data currently in the mmpkt (note that this is different from the length of the available buffer space). </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmpkt_8h_source.html#l00280">280</a> of file <a class="el" href="mmpkt_8h_source.html">mmpkt.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmpkt_8h_source.html#l00298">298</a> of file <a class="el" href="mmpkt_8h_source.html">mmpkt.h</a>.</p>
 
 </div>
 </div>
@@ -1028,7 +1079,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>a pointer to the place in the buffer where the data should be put. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmpkt_8h_source.html#l00338">338</a> of file <a class="el" href="mmpkt_8h_source.html">mmpkt.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmpkt_8h_source.html#l00356">356</a> of file <a class="el" href="mmpkt_8h_source.html">mmpkt.h</a>.</p>
 
 </div>
 </div>
@@ -1085,7 +1136,7 @@ The memory area pointed to by data must not overlap with the mmpkt data.</dd></d
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="mmpkt_8h_source.html#l00358">358</a> of file <a class="el" href="mmpkt_8h_source.html">mmpkt.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmpkt_8h_source.html#l00376">376</a> of file <a class="el" href="mmpkt_8h_source.html">mmpkt.h</a>.</p>
 
 </div>
 </div>
@@ -1160,7 +1211,7 @@ The memory area pointed to by data must not overlap with the mmpkt data.</dd></d
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>a pointer to the removed data or NULL if the mmpkt data length was less than <code>len</code>. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmpkt_8h_source.html#l00447">447</a> of file <a class="el" href="mmpkt_8h_source.html">mmpkt.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmpkt_8h_source.html#l00480">480</a> of file <a class="el" href="mmpkt_8h_source.html">mmpkt.h</a>.</p>
 
 </div>
 </div>
@@ -1208,7 +1259,7 @@ The memory area pointed to by data must not overlap with the mmpkt data.</dd></d
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>a pointer to the removed data or NULL if the mmpkt data length was less than <code>len</code>. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmpkt_8h_source.html#l00421">421</a> of file <a class="el" href="mmpkt_8h_source.html">mmpkt.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmpkt_8h_source.html#l00454">454</a> of file <a class="el" href="mmpkt_8h_source.html">mmpkt.h</a>.</p>
 
 </div>
 </div>
@@ -1256,7 +1307,7 @@ The memory area pointed to by data must not overlap with the mmpkt data.</dd></d
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="mmpkt_8h_source.html#l00499">499</a> of file <a class="el" href="mmpkt_8h_source.html">mmpkt.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmpkt_8h_source.html#l00532">532</a> of file <a class="el" href="mmpkt_8h_source.html">mmpkt.h</a>.</p>
 
 </div>
 </div>
@@ -1303,7 +1354,7 @@ The memory area pointed to by data must not overlap with the mmpkt data.</dd></d
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="mmpkt_8h_source.html#l00471">471</a> of file <a class="el" href="mmpkt_8h_source.html">mmpkt.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmpkt_8h_source.html#l00504">504</a> of file <a class="el" href="mmpkt_8h_source.html">mmpkt.h</a>.</p>
 
 </div>
 </div>

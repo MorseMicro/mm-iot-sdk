@@ -1,5 +1,5 @@
 /*
- * FreeRTOS+TCP V4.2.2
+ * FreeRTOS+TCP V4.3.1
  * Copyright (C) 2022 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -43,8 +43,11 @@
 #include "mock_event_groups.h"
 
 #include "mock_FreeRTOS_IP.h"
+#include "mock_FreeRTOS_IP_Private.h"
 #include "mock_FreeRTOS_IPv6.h"
 #include "mock_FreeRTOS_Sockets.h"
+#include "mock_FreeRTOS_ARP.h"
+#include "mock_FreeRTOS_ND.h"
 
 #include "FreeRTOS_Routing.h"
 
@@ -65,7 +68,6 @@
 /* Default IPv4 netmask is 192.168.123.1, which is 0x017BA8C0. */
 #define IPV4_DEFAULT_DNS_SERVER    ( 0x017BA8C0 )
 
-extern RoutingStats_t xRoutingStatistics;
 const struct xIPv6_Address FreeRTOS_in6addr_any;
 const struct xIPv6_Address FreeRTOS_in6addr_loopback;
 
@@ -1331,7 +1333,7 @@ void test_FreeRTOS_FindEndPointOnIP_IPv4_HappyPath( void )
 
     pxNetworkEndPoints = &xEndPoint;
 
-    pxEndPoint = FreeRTOS_FindEndPointOnIP_IPv4( IPV4_DEFAULT_ADDRESS, 0 );
+    pxEndPoint = FreeRTOS_FindEndPointOnIP_IPv4( IPV4_DEFAULT_ADDRESS );
     TEST_ASSERT_EQUAL( &xEndPoint, pxEndPoint );
 }
 
@@ -1352,7 +1354,6 @@ void test_FreeRTOS_FindEndPointOnIP_IPv4_NotFound( void )
 {
     NetworkEndPoint_t xEndPoint[ 2 ];
     NetworkEndPoint_t * pxEndPoint = NULL;
-    uint32_t ulWhere;
 
     /* Initialize e0. */
     memset( &xEndPoint[ 0 ], 0, sizeof( NetworkEndPoint_t ) );
@@ -1365,9 +1366,7 @@ void test_FreeRTOS_FindEndPointOnIP_IPv4_NotFound( void )
     xEndPoint[ 1 ].bits.bIPv6 = pdTRUE;
     pxNetworkEndPoints->pxNext = &xEndPoint[ 1 ];
 
-    /* Set ulWhere to boundary of array size to toggle corner case. */
-    ulWhere = sizeof( xRoutingStatistics.ulLocationsIP ) / sizeof( xRoutingStatistics.ulLocationsIP[ 0 ] );
-    pxEndPoint = FreeRTOS_FindEndPointOnIP_IPv4( IPV4_DEFAULT_GATEWAY, ulWhere );
+    pxEndPoint = FreeRTOS_FindEndPointOnIP_IPv4( IPV4_DEFAULT_GATEWAY );
     TEST_ASSERT_EQUAL( NULL, pxEndPoint );
 }
 
@@ -1399,13 +1398,13 @@ void test_FreeRTOS_FindEndPointOnIP_IPv4_MultipleEndpoints( void )
     xEndPoint[ 1 ].ipv4_settings.ulIPAddress = IPV4_DEFAULT_GATEWAY;
     pxNetworkEndPoints->pxNext = &xEndPoint[ 1 ];
 
-    pxEndPoint = FreeRTOS_FindEndPointOnIP_IPv4( IPV4_DEFAULT_ADDRESS, 0 );
+    pxEndPoint = FreeRTOS_FindEndPointOnIP_IPv4( IPV4_DEFAULT_ADDRESS );
     TEST_ASSERT_EQUAL( &xEndPoint[ 0 ], pxEndPoint );
 
-    pxEndPoint = FreeRTOS_FindEndPointOnIP_IPv4( IPV4_DEFAULT_GATEWAY, 0 );
+    pxEndPoint = FreeRTOS_FindEndPointOnIP_IPv4( IPV4_DEFAULT_GATEWAY );
     TEST_ASSERT_EQUAL( &xEndPoint[ 1 ], pxEndPoint );
 
-    pxEndPoint = FreeRTOS_FindEndPointOnIP_IPv4( IPV4_DEFAULT_DNS_SERVER, 0 );
+    pxEndPoint = FreeRTOS_FindEndPointOnIP_IPv4( IPV4_DEFAULT_DNS_SERVER );
     TEST_ASSERT_EQUAL( NULL, pxEndPoint );
 }
 
@@ -1433,7 +1432,7 @@ void test_FreeRTOS_FindEndPointOnIP_IPv4_AnyEndpoint( void )
     xEndPoint[ 1 ].ipv4_settings.ulIPAddress = IPV4_DEFAULT_GATEWAY;
     pxNetworkEndPoints->pxNext = &xEndPoint[ 1 ];
 
-    pxEndPoint = FreeRTOS_FindEndPointOnIP_IPv4( 0, 0 );
+    pxEndPoint = FreeRTOS_FindEndPointOnIP_IPv4( 0 );
     TEST_ASSERT_EQUAL( &xEndPoint[ 0 ], pxEndPoint );
 }
 
@@ -1444,11 +1443,15 @@ void test_FreeRTOS_FindEndPointOnIP_IPv4_AnyEndpoint( void )
  * pxNetworkEndPoints is a global variable using in FreeRTOS_Routing as link list head of all endpoints.
  *
  * Test step:
- *  - Create 1 endpoint with IP address 0 and add it to the list.
+ *  - Create 1 endpoint with IP address 0xAB12CD34 and add it to the list.
+ *  - Call FreeRTOS_FindEndPointOnIP_IPv4 to query with 0xAB12CD34.
+ *  - Check if returned endpoint is same.
+ *  - Call FreeRTOS_FindEndPointOnIP_IPv4 to query with 0.
+ *  - Check if returned endpoint is same.
  *  - Call FreeRTOS_FindEndPointOnIP_IPv4 to query with IPV4_DEFAULT_ADDRESS.
- *  - Check if returned endpoint is same.
+ *  - Check if returned endpoint is NULL.
  *  - Call FreeRTOS_FindEndPointOnIP_IPv4 to query with IPV4_DEFAULT_GATEWAY.
- *  - Check if returned endpoint is same.
+ *  - Check if returned endpoint is NULL.
  */
 void test_FreeRTOS_FindEndPointOnIP_IPv4_ZeroAddressEndpoint( void )
 {
@@ -1456,13 +1459,17 @@ void test_FreeRTOS_FindEndPointOnIP_IPv4_ZeroAddressEndpoint( void )
     NetworkEndPoint_t * pxEndPoint = NULL;
 
     memset( &xEndPoint, 0, sizeof( NetworkEndPoint_t ) );
-    xEndPoint.ipv4_settings.ulIPAddress = 0;
+    xEndPoint.ipv4_settings.ulIPAddress = 0xAB12CD34;
     pxNetworkEndPoints = &xEndPoint;
 
-    pxEndPoint = FreeRTOS_FindEndPointOnIP_IPv4( IPV4_DEFAULT_ADDRESS, 0 );
+    pxEndPoint = FreeRTOS_FindEndPointOnIP_IPv4( 0xAB12CD34 );
     TEST_ASSERT_EQUAL( &xEndPoint, pxEndPoint );
-    pxEndPoint = FreeRTOS_FindEndPointOnIP_IPv4( IPV4_DEFAULT_GATEWAY, 0 );
+    pxEndPoint = FreeRTOS_FindEndPointOnIP_IPv4( 0 );
     TEST_ASSERT_EQUAL( &xEndPoint, pxEndPoint );
+    pxEndPoint = FreeRTOS_FindEndPointOnIP_IPv4( IPV4_DEFAULT_ADDRESS );
+    TEST_ASSERT_EQUAL( NULL, pxEndPoint );
+    pxEndPoint = FreeRTOS_FindEndPointOnIP_IPv4( IPV4_DEFAULT_GATEWAY );
+    TEST_ASSERT_EQUAL( NULL, pxEndPoint );
 }
 
 /**
@@ -1794,7 +1801,7 @@ void test_FreeRTOS_FindEndPointOnNetMask_HappyPath( void )
     pxNetworkEndPoints = &xEndPoint;
 
     /* IPV4_DEFAULT_DNS_SERVER is 192.168.123.1 within the network region. */
-    pxEndPoint = FreeRTOS_FindEndPointOnNetMask( IPV4_DEFAULT_DNS_SERVER, 0 );
+    pxEndPoint = FreeRTOS_FindEndPointOnNetMask( IPV4_DEFAULT_DNS_SERVER );
     TEST_ASSERT_EQUAL( &xEndPoint, pxEndPoint );
 }
 
@@ -1823,7 +1830,7 @@ void test_FreeRTOS_FindEndPointOnNetMask_NotFound( void )
     pxNetworkEndPoints = &xEndPoint;
 
     /* 192.168.1.1 is 0x0101A8C0. */
-    pxEndPoint = FreeRTOS_FindEndPointOnNetMask( 0x0101A8C0, 0 );
+    pxEndPoint = FreeRTOS_FindEndPointOnNetMask( 0x0101A8C0 );
     TEST_ASSERT_EQUAL( NULL, pxEndPoint );
 }
 
@@ -1921,7 +1928,6 @@ void test_FreeRTOS_InterfaceEndPointOnNetMask_HappyPath( void )
     NetworkEndPoint_t xEndPoint;
     NetworkEndPoint_t * pxEndPoint = NULL;
     NetworkInterface_t xNetworkInterface;
-    uint32_t ulWhere;
 
     /* Initialize network interface and add it to the list. */
     memset( &xNetworkInterface, 0, sizeof( NetworkInterface_t ) );
@@ -1934,10 +1940,8 @@ void test_FreeRTOS_InterfaceEndPointOnNetMask_HappyPath( void )
     xEndPoint.pxNetworkInterface = &xNetworkInterface;
     pxNetworkEndPoints = &xEndPoint;
 
-    /* Set ulWhere to boundary of array size to toggle corner case. */
-    ulWhere = sizeof( xRoutingStatistics.ulLocations ) / sizeof( xRoutingStatistics.ulLocations[ 0 ] );
     /* IPV4_DEFAULT_ADDRESS is 192.168.123.1 within the network region. */
-    pxEndPoint = FreeRTOS_InterfaceEndPointOnNetMask( &xNetworkInterface, IPV4_DEFAULT_DNS_SERVER, ulWhere );
+    pxEndPoint = FreeRTOS_InterfaceEndPointOnNetMask( &xNetworkInterface, IPV4_DEFAULT_DNS_SERVER );
     TEST_ASSERT_EQUAL( &xEndPoint, pxEndPoint );
 }
 
@@ -1964,7 +1968,6 @@ void test_FreeRTOS_InterfaceEndPointOnNetMask_DifferentInterface( void )
     NetworkEndPoint_t xEndPoint[ 2 ];
     NetworkEndPoint_t * pxEndPoint = NULL;
     NetworkInterface_t xNetworkInterface[ 2 ];
-    uint32_t ulWhere;
     /* 192.168.124.223 is 0xDF7CA8C0. */
     uint32_t ulE1IPAddress = 0xDF7CA8C0;
     /* 192.168.124.1 is 0x017CA8C0. */
@@ -1990,10 +1993,8 @@ void test_FreeRTOS_InterfaceEndPointOnNetMask_DifferentInterface( void )
     xEndPoint[ 1 ].pxNetworkInterface = &xNetworkInterface[ 1 ];
     pxNetworkEndPoints->pxNext = &xEndPoint[ 1 ];
 
-    /* Set ulWhere to boundary of array size to toggle corner case. */
-    ulWhere = sizeof( xRoutingStatistics.ulLocations ) / sizeof( xRoutingStatistics.ulLocations[ 0 ] );
     /* IPV4_DEFAULT_ADDRESS is 192.168.123.1 within the network region. */
-    pxEndPoint = FreeRTOS_InterfaceEndPointOnNetMask( &xNetworkInterface[ 1 ], ulQueryIPAddress, ulWhere );
+    pxEndPoint = FreeRTOS_InterfaceEndPointOnNetMask( &xNetworkInterface[ 1 ], ulQueryIPAddress );
     TEST_ASSERT_EQUAL( &xEndPoint[ 1 ], pxEndPoint );
 }
 
@@ -2031,7 +2032,7 @@ void test_FreeRTOS_InterfaceEndPointOnNetMask_NotFound( void )
     pxNetworkEndPoints = &xEndPoint;
 
     /* IPV4_DEFAULT_ADDRESS is 192.168.123.1 within the network region. */
-    pxEndPoint = FreeRTOS_InterfaceEndPointOnNetMask( &xNetworkInterface, IPV4_DEFAULT_DNS_SERVER, 0 );
+    pxEndPoint = FreeRTOS_InterfaceEndPointOnNetMask( &xNetworkInterface, IPV4_DEFAULT_DNS_SERVER );
     TEST_ASSERT_EQUAL( NULL, pxEndPoint );
 }
 
@@ -2078,7 +2079,7 @@ void test_FreeRTOS_InterfaceEndPointOnNetMask_Broadcast( void )
     pxNetworkEndPoints->pxNext = &xEndPoint[ 1 ];
 
     /* IPV4_DEFAULT_ADDRESS is 192.168.123.1 within the network region. */
-    pxEndPoint = FreeRTOS_InterfaceEndPointOnNetMask( &xNetworkInterface, 0xFFFFFFFF, 0 );
+    pxEndPoint = FreeRTOS_InterfaceEndPointOnNetMask( &xNetworkInterface, 0xFFFFFFFF );
     TEST_ASSERT_EQUAL( &xEndPoint[ 1 ], pxEndPoint );
 }
 
@@ -3671,6 +3672,50 @@ void test_FreeRTOS_MatchingEndpoint_MatchCustomFrameType()
 
     pxEndPoint = FreeRTOS_MatchingEndpoint( &xNetworkInterface, ( const uint8_t * ) ( pxProtocolPacket ) );
     TEST_ASSERT_EQUAL( NULL, pxEndPoint );
+}
+
+void test_xCheckRequiresResolution( void )
+{
+    struct xNetworkEndPoint xEndPoint = { 0 };
+    NetworkBufferDescriptor_t xNetworkBuffer, * pxNetworkBuffer;
+    uint8_t ucEthernetBuffer[ ipconfigNETWORK_MTU ];
+    BaseType_t xResult;
+    NetworkInterface_t xInterface;
+
+    pxNetworkBuffer = &xNetworkBuffer;
+    pxNetworkBuffer->pucEthernetBuffer = ucEthernetBuffer;
+
+    IPPacket_t * pxIPPacket = ( ( IPPacket_t * ) pxNetworkBuffer->pucEthernetBuffer );
+    IPHeader_t * pxIPHeader = &( pxIPPacket->xIPHeader );
+
+    xEndPoint.ipv4_settings.ulIPAddress = 0xABCD1234;
+
+    xEndPoint.ipv4_settings.ulNetMask = 0xFFFFFF00;
+    xNetworkBuffer.pxEndPoint = &xEndPoint;
+
+    /* Make sure there is no match. */
+    pxIPHeader->ulSourceIPAddress = ~( xEndPoint.ipv4_settings.ulIPAddress & xEndPoint.ipv4_settings.ulNetMask );
+
+    uxIPHeaderSizePacket_IgnoreAndReturn( ipSIZE_OF_IPv4_HEADER );
+    xCheckRequiresARPResolution_IgnoreAndReturn( pdFALSE );
+
+    xResult = xCheckRequiresResolution( pxNetworkBuffer );
+
+    TEST_ASSERT_EQUAL( pdFALSE, xResult );
+
+    uxIPHeaderSizePacket_IgnoreAndReturn( ipSIZE_OF_IPv6_HEADER );
+    xCheckRequiresNDResolution_IgnoreAndReturn( pdFALSE );
+
+    xResult = xCheckRequiresResolution( pxNetworkBuffer );
+
+    TEST_ASSERT_EQUAL( pdFALSE, xResult );
+
+    uxIPHeaderSizePacket_IgnoreAndReturn( 1 );
+    xCheckRequiresNDResolution_IgnoreAndReturn( pdFALSE );
+
+    xResult = xCheckRequiresResolution( pxNetworkBuffer );
+
+    TEST_ASSERT_EQUAL( pdFALSE, xResult );
 }
 
 /**

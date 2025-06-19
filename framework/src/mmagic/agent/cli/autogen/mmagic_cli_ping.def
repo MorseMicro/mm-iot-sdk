@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Morse Micro
+ * Copyright 2025 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -233,7 +233,7 @@ void mmagic_cli_ping_commit(struct mmagic_cli *ctx, EmbeddedCli *cli, const char
     }
 
     mmagic_core_ping_save_all(&ctx->core);
-    embeddedCliPrint(cli, "Succesfully committed 'ping' variables");
+    embeddedCliPrint(cli, "Successfully committed 'ping' variables");
     
 }
 

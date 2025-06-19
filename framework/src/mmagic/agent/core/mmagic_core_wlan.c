@@ -35,6 +35,10 @@ static struct mmagic_wlan_config default_config =
     .fragment_threshold = 0,
     .cac_enabled = false,
     .ndp_probe_enabled = false,
+    .qos_0_params = {.data = "", .len = 0},
+    .qos_1_params = {.data = "", .len = 0},
+    .qos_2_params = {.data = "", .len = 0},
+    .qos_3_params = {.data = "", .len = 0},
 };
 
 static void mmagic_core_wlan_init_mmwlan(
@@ -114,6 +118,40 @@ void mmagic_core_wlan_start(struct mmagic_data *core)
     sta_status = mmosal_semb_create("sta_status");
 }
 
+/**
+ * Helper function to convert the qos queue parameters from csv format
+ * to the @ref mmwlan_qos_queue_params format.
+ *
+ * @param  params A pointer to the params data structure to copy the data into
+ * @param  data   The string buffer that contains the comma separated values
+ *
+ * @return        @c 0 if successful else @c -1
+ */
+static enum mmagic_status mmagic_core_wlan_parse_qos_params(struct mmwlan_qos_queue_params *params,
+                                                            char *data)
+{
+    uint32_t aifs;
+    uint32_t cw_min;
+    uint32_t cw_max;
+    uint32_t txop_max_us;
+
+    int ret = sscanf(data, "%lu,%lu,%lu,%lu", &aifs, &cw_max, &cw_min, &txop_max_us);
+
+    if (ret != 4)
+    {
+        printf("Error setting QoS queue %u params to %s, number of values != 4\n",
+               params->aci, data);
+        return MMAGIC_STATUS_INVALID_ARG;
+    }
+
+    params->aifs = (uint8_t)aifs;
+    params->cw_max = (uint16_t)cw_max;
+    params->cw_min = (uint16_t)cw_min;
+    params->txop_max_us = txop_max_us;
+
+    return MMAGIC_STATUS_OK;
+}
+
 /********* MMAGIC Core WLAN ops **********/
 
 enum mmagic_status mmagic_core_wlan_connect(
@@ -161,12 +199,95 @@ enum mmagic_status mmagic_core_wlan_connect(
         args.sta_type = MMWLAN_STA_TYPE_NON_SENSOR; break;
     }
 
+    enum mmwlan_mcs10_mode mode;
+    switch (data->config.mcs10_mode)
+    {
+    case MMAGIC_MCS10_MODE_FORCED:
+        mode = MMWLAN_MCS10_MODE_FORCED; break;
+
+    case MMAGIC_MCS10_MODE_AUTO:
+        mode = MMWLAN_MCS10_MODE_AUTO; break;
+
+    case MMAGIC_MCS10_MODE_DISABLED:
+    default:
+        mode = MMWLAN_MCS10_MODE_DISABLED; break;
+    }
+
+    mmwlan_set_mcs10_mode(mode);
+
     args.scan_interval_base_s = data->config.sta_scan_interval_base_s;
     args.scan_interval_limit_s = data->config.sta_scan_interval_limit_s;
 
     struct mmwlan_scan_config scan_config = MMWLAN_SCAN_CONFIG_INIT;
     scan_config.ndp_probe_enabled = data->config.ndp_probe_enabled;
     mmwlan_set_scan_config(&scan_config);
+
+    struct mmwlan_qos_queue_params qos_params[4];
+    enum mmagic_status qos_status;
+    int n_updated = 0;
+
+    struct mmwlan_qos_queue_params *params;
+    if (data->config.qos_0_params.len > 0)
+    {
+        params = &qos_params[n_updated];
+        params->aci = 0;
+        qos_status = mmagic_core_wlan_parse_qos_params(params,
+                                                       (char *)data->config.qos_0_params.data);
+
+        if (qos_status != MMAGIC_STATUS_OK)
+        {
+            return qos_status;
+        }
+
+        n_updated++;
+    }
+
+    if (data->config.qos_1_params.len > 0)
+    {
+        params = &qos_params[n_updated];
+        params->aci = 1;
+        qos_status = mmagic_core_wlan_parse_qos_params(params,
+                                                       (char *)data->config.qos_1_params.data);
+
+        if (qos_status != MMAGIC_STATUS_OK)
+        {
+            return qos_status;
+        }
+
+        n_updated++;
+    }
+
+    if (data->config.qos_2_params.len > 0)
+    {
+        params = &qos_params[n_updated];
+        params->aci = 2;
+        qos_status = mmagic_core_wlan_parse_qos_params(params,
+                                                       (char *)data->config.qos_2_params.data);
+
+        if (qos_status != MMAGIC_STATUS_OK)
+        {
+            return qos_status;
+        }
+        n_updated++;
+    }
+
+    if (data->config.qos_3_params.len > 0)
+    {
+        params = &qos_params[n_updated];
+        params->aci = 3;
+        qos_status = mmagic_core_wlan_parse_qos_params(params,
+                                                       (char *)data->config.qos_3_params.data);
+
+        if (qos_status != MMAGIC_STATUS_OK)
+        {
+            return qos_status;
+        }
+        n_updated++;
+    }
+    if (n_updated > 0)
+    {
+        mmwlan_set_default_qos_queue_params(qos_params, n_updated);
+    }
 
     enum mmwlan_status status = mmwlan_sta_enable(&args, mmagic_core_wlan_shim_sta_status_cb);
     if (status != MMWLAN_SUCCESS)

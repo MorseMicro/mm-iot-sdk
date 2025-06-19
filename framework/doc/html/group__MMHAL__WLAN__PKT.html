@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.7.2</span>
+   &#160;<span id="projectnumber">2.8.2</span>
    </div>
   </td>
  </tr>
@@ -107,9 +107,9 @@ Data Structures</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
-<tr class="memitem:ga120238fb739b6eaf99a8ee7af588c0b5"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMHAL__WLAN__PKT.html#ga120238fb739b6eaf99a8ee7af588c0b5">mmhal_wlan_pktmem_tx_flow_control_cb_t</a>) (enum <a class="el" href="group__MMWLAN__DATA.html#ga95367ed3c4c32b60401e48504396410e">mmwlan_tx_flow_control_state</a> state)</td></tr>
-<tr class="memdesc:ga120238fb739b6eaf99a8ee7af588c0b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flow control callback that can be invoked by the transmit packet memory manager to pause and resume the data path in response to resource availability.  <a href="group__MMHAL__WLAN__PKT.html#ga120238fb739b6eaf99a8ee7af588c0b5">More...</a><br /></td></tr>
-<tr class="separator:ga120238fb739b6eaf99a8ee7af588c0b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga15b4dc1283f9b42c4845fe35e642585c"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMHAL__WLAN__PKT.html#ga15b4dc1283f9b42c4845fe35e642585c">mmhal_wlan_pktmem_tx_flow_control_cb_t</a>) (void)</td></tr>
+<tr class="memdesc:ga15b4dc1283f9b42c4845fe35e642585c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flow control callback that can be invoked by the transmit packet memory manager to pause and resume the data path in response to resource availability.  <a href="group__MMHAL__WLAN__PKT.html#ga15b4dc1283f9b42c4845fe35e642585c">More...</a><br /></td></tr>
+<tr class="separator:ga15b4dc1283f9b42c4845fe35e642585c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -139,35 +139,32 @@ Functions</h2></td></tr>
 <tr class="memitem:ga8f13329ada7ff34874581379a986b6e8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMHAL__WLAN__PKT.html#ga8f13329ada7ff34874581379a986b6e8">mmhal_wlan_pktmem_deinit</a> (void)</td></tr>
 <tr class="memdesc:ga8f13329ada7ff34874581379a986b6e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Invoked by the driver to deinitialize the packet memory in the HAL.  <a href="group__MMHAL__WLAN__PKT.html#ga8f13329ada7ff34874581379a986b6e8">More...</a><br /></td></tr>
 <tr class="separator:ga8f13329ada7ff34874581379a986b6e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga2a066858f2da1e42d054c6bd1a9077a6"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMWLAN__DATA.html#ga95367ed3c4c32b60401e48504396410e">mmwlan_tx_flow_control_state</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMHAL__WLAN__PKT.html#ga2a066858f2da1e42d054c6bd1a9077a6">mmhal_wlan_pktmem_tx_flow_control_state</a> (void)</td></tr>
+<tr class="memdesc:ga2a066858f2da1e42d054c6bd1a9077a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the current TX flow control state.  <a href="group__MMHAL__WLAN__PKT.html#ga2a066858f2da1e42d054c6bd1a9077a6">More...</a><br /></td></tr>
+<tr class="separator:ga2a066858f2da1e42d054c6bd1a9077a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga2ba7a26f89a1322a41a79aa012518583"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structmmpkt.html">mmpkt</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMHAL__WLAN__PKT.html#ga2ba7a26f89a1322a41a79aa012518583">mmhal_wlan_alloc_mmpkt_for_tx</a> (uint8_t pkt_class, uint32_t space_at_start, uint32_t space_at_end, uint32_t metadata_length)</td></tr>
 <tr class="memdesc:ga2ba7a26f89a1322a41a79aa012518583"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocates an mmpkt for transmission.  <a href="group__MMHAL__WLAN__PKT.html#ga2ba7a26f89a1322a41a79aa012518583">More...</a><br /></td></tr>
 <tr class="separator:ga2ba7a26f89a1322a41a79aa012518583"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaf4e67166e7906c05856b0fc1c5e1868f"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structmmpkt.html">mmpkt</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMHAL__WLAN__PKT.html#gaf4e67166e7906c05856b0fc1c5e1868f">mmhal_wlan_alloc_mmpkt_for_rx</a> (uint32_t capacity, uint32_t metadata_length)</td></tr>
-<tr class="memdesc:gaf4e67166e7906c05856b0fc1c5e1868f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocates an mmpkt for reception.  <a href="group__MMHAL__WLAN__PKT.html#gaf4e67166e7906c05856b0fc1c5e1868f">More...</a><br /></td></tr>
-<tr class="separator:gaf4e67166e7906c05856b0fc1c5e1868f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf87322d202abc6826125f1f44c6a6b72"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structmmpkt.html">mmpkt</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMHAL__WLAN__PKT.html#gaf87322d202abc6826125f1f44c6a6b72">mmhal_wlan_alloc_mmpkt_for_rx</a> (uint8_t pkt_class, uint32_t capacity, uint32_t metadata_length)</td></tr>
+<tr class="memdesc:gaf87322d202abc6826125f1f44c6a6b72"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocates an mmpkt for reception.  <a href="group__MMHAL__WLAN__PKT.html#gaf87322d202abc6826125f1f44c6a6b72">More...</a><br /></td></tr>
+<tr class="separator:gaf87322d202abc6826125f1f44c6a6b72"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Typedef Documentation</h2>
-<a id="ga120238fb739b6eaf99a8ee7af588c0b5" name="ga120238fb739b6eaf99a8ee7af588c0b5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga120238fb739b6eaf99a8ee7af588c0b5">&#9670;&nbsp;</a></span>mmhal_wlan_pktmem_tx_flow_control_cb_t</h2>
+<a id="ga15b4dc1283f9b42c4845fe35e642585c" name="ga15b4dc1283f9b42c4845fe35e642585c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga15b4dc1283f9b42c4845fe35e642585c">&#9670;&nbsp;</a></span>mmhal_wlan_pktmem_tx_flow_control_cb_t</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">typedef void(* mmhal_wlan_pktmem_tx_flow_control_cb_t) (enum <a class="el" href="group__MMWLAN__DATA.html#ga95367ed3c4c32b60401e48504396410e">mmwlan_tx_flow_control_state</a> state)</td>
+          <td class="memname">typedef void(* mmhal_wlan_pktmem_tx_flow_control_cb_t) (void)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>Flow control callback that can be invoked by the transmit packet memory manager to pause and resume the data path in response to resource availability. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">state</td><td>Current flow control state. </td></tr>
-  </table>
-  </dd>
-</dl>
 
-<p class="definition">Definition at line <a class="el" href="mmhal__wlan_8h_source.html#l00360">360</a> of file <a class="el" href="mmhal__wlan_8h_source.html">mmhal_wlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmhal__wlan_8h_source.html#l00358">358</a> of file <a class="el" href="mmhal__wlan_8h_source.html">mmhal_wlan.h</a>.</p>
 
 </div>
 </div>
@@ -209,13 +206,13 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmhal__wlan_8h_source.html#l00387">387</a> of file <a class="el" href="mmhal__wlan_8h_source.html">mmhal_wlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmhal__wlan_8h_source.html#l00392">392</a> of file <a class="el" href="mmhal__wlan_8h_source.html">mmhal_wlan.h</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="gaf4e67166e7906c05856b0fc1c5e1868f" name="gaf4e67166e7906c05856b0fc1c5e1868f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gaf4e67166e7906c05856b0fc1c5e1868f">&#9670;&nbsp;</a></span>mmhal_wlan_alloc_mmpkt_for_rx()</h2>
+<a id="gaf87322d202abc6826125f1f44c6a6b72" name="gaf87322d202abc6826125f1f44c6a6b72"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaf87322d202abc6826125f1f44c6a6b72">&#9670;&nbsp;</a></span>mmhal_wlan_alloc_mmpkt_for_rx()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -223,6 +220,12 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">struct <a class="el" href="structmmpkt.html">mmpkt</a> * mmhal_wlan_alloc_mmpkt_for_rx </td>
           <td>(</td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>pkt_class</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype">uint32_t&#160;</td>
           <td class="paramname"><em>capacity</em>, </td>
         </tr>
@@ -243,7 +246,8 @@ Functions</h2></td></tr>
 <p>Allocates an mmpkt for reception. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">capacity</td><td>Amount of space to allocate for data. </td></tr>
+    <tr><td class="paramname">pkt_class</td><td>The class of packet (to allow for prioritization). Currently used values are <a class="el" href="group__MMHAL__WLAN__PKT.html#gga57259722c16839819429d89f302f2791af4abe584c3664409914937720ec105a8">MMHAL_WLAN_PKT_DATA_TID0</a> for data and management frames, and <a class="el" href="group__MMHAL__WLAN__PKT.html#gga57259722c16839819429d89f302f2791aa4118778de388b6586a693c6aab054b4">MMHAL_WLAN_PKT_COMMAND</a> for critical buffers used internally by the driver (e.g., for command responses) where known. </td></tr>
+    <tr><td class="paramname">capacity</td><td>Amount of space to allocate for data. A value of <code>UINT32_MAX</code> should allocate the largest available mmpkt (if supported). </td></tr>
     <tr><td class="paramname">metadata_length</td><td>Amount of space to allocate for metadata (used internally by the Morse driver).</td></tr>
   </table>
   </dd>
@@ -349,6 +353,27 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="ga2a066858f2da1e42d054c6bd1a9077a6" name="ga2a066858f2da1e42d054c6bd1a9077a6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga2a066858f2da1e42d054c6bd1a9077a6">&#9670;&nbsp;</a></span>mmhal_wlan_pktmem_tx_flow_control_state()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__MMWLAN__DATA.html#ga95367ed3c4c32b60401e48504396410e">mmwlan_tx_flow_control_state</a> mmhal_wlan_pktmem_tx_flow_control_state </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Gets the current TX flow control state. </p>
+<dl class="section return"><dt>Returns</dt><dd>The current flow control state. </dd></dl>
 
 </div>
 </div>

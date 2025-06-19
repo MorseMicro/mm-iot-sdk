@@ -10,7 +10,6 @@ endif
 
 LWIP_DIR = src/lwip
 
-LWIP_SRCS_C += port/lwip_mmwlan.c
 LWIP_SRCS_C += port/arch/sys_arch.c
 LWIP_SRCS_C += src/apps/snmp/snmp_asn1.c
 LWIP_SRCS_C += src/apps/snmp/snmp_core.c
@@ -94,7 +93,6 @@ LWIP_SRCS_C += src/core/timeouts.c
 LWIP_SRCS_C += src/core/udp.c
 
 LWIP_SRCS_H += port/lwipopts.h
-LWIP_SRCS_H += port/lwip_mmwlan.h
 LWIP_SRCS_H += port/arch/cc.h
 LWIP_SRCS_H += port/arch/sys_arch.h
 LWIP_SRCS_H += src/apps/snmp/snmpv3_priv.h

@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.7.2</span>
+   &#160;<span id="projectnumber">2.8.2</span>
    </div>
   </td>
  </tr>
@@ -92,7 +92,7 @@ $(document).ready(function(){initNavTree('MM_EKH08_WB55_BLE_README.html',''); in
 <div class="contents">
 <div class="textblock"><p ><a class="anchor" id="md__root_workspace_build_mhs_binaries_mhs_platforms_arm_cortex_m4f_mm_ekh08_wb55_ble_readme"></a></p>
 <p ><b>Copyright 2023-2024 Morse Micro</b></p>
-<h1><a class="anchor" id="autotoc_md132"></a>
+<h1><a class="anchor" id="autotoc_md129"></a>
 Summary</h1>
 <p >This directory contains all of the hardware dependent code needed to use a STM32 Nucleo-64 development board with STM32WB55RG MCU configured for BLE operation.</p>
 <blockquote class="doxtable">
@@ -103,13 +103,13 @@ Summary</h1>
 <h2><a class="anchor" id="WB55BLE_Recommended_Reading"></a>
 Recommended Reading</h2>
 <p >It is highly recommended to read the following application notes provided by ST before developing on this platform.</p>
-<h3><a class="anchor" id="autotoc_md133"></a>
+<h3><a class="anchor" id="autotoc_md130"></a>
 General Documents</h3>
 <p >These are useful as a reference for the general operation of the MCU.</p><ul>
 <li><a href="https://www.st.com/resource/en/reference_manual/rm0434-multiprotocol-wireless-32bit-mcu-armbased-cortexm4-with-fpu-bluetooth-lowenergy-and-802154-radio-solution-stmicroelectronics.pdf">RM-434 Reference Manual</a></li>
 <li><a href="https://www.st.com/resource/en/datasheet/stm32wb55cc.pdf">Datasheet</a></li>
 </ul>
-<h2><a class="anchor" id="autotoc_md134"></a>
+<h2><a class="anchor" id="autotoc_md131"></a>
 BLE Specific Documents</h2>
 <p >These documents go over the BLE portions of the MCU in greater detail.</p><ul>
 <li><a href="https://www.st.com/resource/en/application_note/an5289-building-wireless-applications-with-stm32wb-series-mcus-stmicroelectronics.pdf">Building wireless applications with STM32WB Series microcontrollers - AN5289</a></li>
@@ -117,9 +117,9 @@ BLE Specific Documents</h2>
 <li><a href="https://www.st.com/resource/en/application_note/an5185-st-firmware-upgrade-services-for-stm32wb-series-stmicroelectronics.pdf">ST firmware upgrade services for STM32WB Series - AN5185</a></li>
 <li><a href="https://www.st.com/resource/en/application_note/an5270-stm32wb-bluetooth-low-energy-wireless-interface-stmicroelectronics.pdf">STM32WB Bluetooth® Low Energy wireless interface - AN5270</a></li>
 </ul>
-<h2><a class="anchor" id="autotoc_md135"></a>
+<h2><a class="anchor" id="autotoc_md132"></a>
 Board Support Package (BSP) directory overview</h2>
-<h3><a class="anchor" id="autotoc_md136"></a>
+<h3><a class="anchor" id="autotoc_md133"></a>
 Core</h3>
 <p >The <code>Core</code> directory contains all of the setup and configuration code for the board. This will need to be modified to select and provide initialization endpoints for the peripherals. The following files are modified slightly for the BLE application but serve a similar purpose to the non-BLE BSP.</p>
 <ul>
@@ -130,7 +130,7 @@ Core</h3>
 <li>Core/Src/main.c Main program</li>
 <li>Core/Src/system_stm32wbxx.c stm32wbxx system source file</li>
 </ul>
-<h4><a class="anchor" id="autotoc_md137"></a>
+<h4><a class="anchor" id="autotoc_md134"></a>
 BLE Specific files</h4>
 <p >These are all files included specifically for the BLE portion of the application. Care should be taken when modifying defines as not all will work but have been left in to make running a diff with the reference application easier.</p>
 <ul>
@@ -144,7 +144,7 @@ BLE Specific files</h4>
 <li>Core/Src/hw_timerserver.c Timer Server based on RTC</li>
 <li>Core/Src/hw_uart.c UART Driver</li>
 </ul>
-<h3><a class="anchor" id="autotoc_md138"></a>
+<h3><a class="anchor" id="autotoc_md135"></a>
 STM32_WPAN</h3>
 <p >This directory contains all the logic for running the BLE application.</p>
 <ul>
@@ -158,10 +158,10 @@ STM32_WPAN</h3>
 <li>STM32_WPAN/App/hrs_app.c Heart Rate Service application</li>
 <li>STM32_WPAN/Target/hw_ipcc.c IPCC Driver</li>
 </ul>
-<h3><a class="anchor" id="autotoc_md139"></a>
+<h3><a class="anchor" id="autotoc_md136"></a>
 mm_shims</h3>
 <p >The files in the <code>mm_shims</code> directory (<code>mmhal.c</code>, <code>mmport.h</code>, <code>wlan_hal.c</code>) are where the board specific API functions used by morselib are implemented.</p>
-<h2><a class="anchor" id="autotoc_md140"></a>
+<h2><a class="anchor" id="autotoc_md137"></a>
 Getting the BLE Stack running</h2>
 <p >This is a very basic overview on how to get the BLE stack running. It is highly recommend to review the documents in the <a class="el" href="MM_EKH08_WB55_BLE_README.html#WB55BLE_Recommended_Reading">Recommended Reading</a> section for more details.</p>
 <p >As an overview the STM32WB55RG has two CPU cores.</p>
@@ -169,7 +169,7 @@ Getting the BLE Stack running</h2>
 <li>CPU1 (ARM Cortex M4) is where the application code that we write will run.</li>
 <li>CPU2 (ARM Cortex M0+) is responsible for the BLE stack provided by ST. This is referred to as the wireless coprocessor.</li>
 </ul>
-<h3><a class="anchor" id="autotoc_md141"></a>
+<h3><a class="anchor" id="autotoc_md138"></a>
 Loading the code.</h3>
 <p >For BLE operation ST has provided a number of pre-compiled binaries. For this example platform the <code>stm32wb5x_BLE_Stack_light_fw.bin</code> binary has been used to minimize the amount of flash memory that it uses. This binary is loaded in to the bottom portion of the flash using the firmware upgrade services (FUS) available on STM32WB series MCUs. Instructions on how to load this can be found in the <a href="https://github.com/STMicroelectronics/STM32CubeWB/blob/v1.14.1/Projects/STM32WB_Copro_Wireless_Binaries/STM32WB5x/Release_Notes.html">releases notes</a> for the coprocessor binaries. We provide a local copy on the necessary files here <code>bsps/stm32cubewb/Projects/STM32WB_Copro_Wireless_Binaries/STM32WB5x/</code></p>
 <p >Before loading the co-processor binary please ensure that you have the latest FUS FW version installed, currently <code>v1.2.0</code>. Install steps for this can also be found in the release notes. If this is not done first it will wipe the co-processor binary.</p>
@@ -177,7 +177,7 @@ Loading the code.</h3>
 <p >&zwj;The provided linker script has been configured to leave enough space for the <code>stm32wb5x_BLE_Stack_light_fw.bin</code> binary. If you wish to use another binary this will need to be adjusted. </p>
 </blockquote>
 <p>Once the wireless coprocessor binary has been loaded using the steps provided by ST the example applications can be loaded on as per the usual steps. Note that the wireless coprocessor binary only needs to be loaded once.</p>
-<h3><a class="anchor" id="autotoc_md142"></a>
+<h3><a class="anchor" id="autotoc_md139"></a>
 Running the code</h3>
 <p >Once the code has been load and starts running the applications will behave as per the other platform. The BLE processes will have their own threads in the background that will handle running the Heart Rate Monitor application.</p>
 <p >For the BLE we can follow the steps provided by ST, <a href="https://github.com/STMicroelectronics/STM32CubeWB/blob/v1.14.1/Projects/P-NUCLEO-WB55.Nucleo/Applications/BLE/BLE_HeartRateFreeRTOS/readme.txt">Heart Rate Readme</a>.</p>
@@ -194,12 +194,12 @@ Running the code</h3>
 <li>Select the HRSTM in the device list</li>
 </ul>
 <p >You should now see a simulated heart beat value updating every 1 second.</p>
-<h3><a class="anchor" id="autotoc_md143"></a>
+<h3><a class="anchor" id="autotoc_md140"></a>
 Debug Messages</h3>
 <p >The debug infrastructure provided by ST for the BLE module is not compatible with the rest of the MM-IoT-SDK without significant changes. As stated above this has been left in to enabled easy comparisons to the ST application.</p>
 <p >That being said we have provided a method of printing the BLE debug messages. If you comment out the define provided in <code>Core/Inc/app_conf.h</code> you will see the debug messages printed out the UART. </p><pre class="fragment">/* Comment out the below line to enable debug logging for BLE */
 // #define APP_DBG_MSG(...)        do{printf("[%s]", "BLE");printf(__VA_ARGS__);}while(0);
-</pre> <h2><a class="anchor" id="autotoc_md144"></a>
+</pre> <h2><a class="anchor" id="autotoc_md141"></a>
 Pinout MMECH08</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">

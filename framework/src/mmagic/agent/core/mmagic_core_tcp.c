@@ -39,6 +39,9 @@ enum mmagic_status mmagic_mbedtls_return_code_to_mmagic_status(int ret)
     case MBEDTLS_ERR_NET_LISTEN_FAILED:
         return MMAGIC_STATUS_SOCKET_LISTEN_FAILED;
 
+    case MBEDTLS_ERR_NET_CONN_RESET:
+        return MMAGIC_STATUS_CLOSED;
+
     default:
         return MMAGIC_STATUS_ERROR;
     }
@@ -171,10 +174,13 @@ enum mmagic_status mmagic_core_tcp_recv(struct mmagic_data *core,
         rsp_args->buffer.len = 0;
         return MMAGIC_STATUS_TIMEOUT;
     }
-    else if (len == 0)
+    else if (len == 0 || len == MBEDTLS_ERR_NET_CONN_RESET)
     {
         /* Special case, when we haven't timed out but we receive a length of 0,
-         * it means that the other side has closed the connection */
+         * it means that the other side has closed the connection.
+         * This will also be triggered if there is an explicit status
+         * indicating the other side has closed the connection.
+         */
         rsp_args->buffer.len = 0;
         return MMAGIC_STATUS_CLOSED;
     }
@@ -301,6 +307,8 @@ enum mmagic_status mmagic_core_tcp_accept(struct mmagic_data *core,
     {
         return MMAGIC_STATUS_NO_MEM;
     }
+
+    mbedtls_net_init(client_context);
 
     int ret = mbedtls_net_accept(tcp_context, client_context, NULL, 0, NULL);
     if (ret != 0)

@@ -88,6 +88,23 @@ static void scan_rx_callback(const struct mmwlan_scan_result *result, void *arg)
     {
         printf("    Invalid RSN IE in probe response\n");
     }
+
+    struct mm_s1g_operation s1g_operation;
+    ret = mm_parse_s1g_operation(result->ies, result->ies_len, &s1g_operation);
+    if (ret == 0)
+    {
+        printf("    S1G Operation:\n");
+        printf("        Operating class: %u\n",
+               s1g_operation.operating_class);
+        printf("        Primary channel: %u\n",
+               s1g_operation.primary_channel_number);
+        printf("        Primary channel width: %u MHz\n",
+               s1g_operation.primary_channel_width_mhz);
+        printf("        Operating channel: %u\n",
+               s1g_operation.operating_channel_number);
+        printf("        Operating channel width: %u MHz\n",
+               s1g_operation.operating_channel_width_mhz);
+    }
 }
 
 /**

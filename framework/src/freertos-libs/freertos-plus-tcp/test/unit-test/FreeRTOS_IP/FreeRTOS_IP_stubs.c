@@ -1,5 +1,5 @@
 /*
- * FreeRTOS+TCP V4.2.2
+ * FreeRTOS+TCP V4.3.1
  * Copyright (C) 2022 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -52,6 +52,12 @@ struct xNetworkInterface * pxNetworkInterfaces = NULL;
 struct xNetworkEndPoint * pxNetworkEndPoints = NULL;
 
 const MACAddress_t xLLMNR_MacAddress = { { 0x01, 0x00, 0x5e, 0x00, 0x00, 0xfc } };
+
+const MACAddress_t xLLMNR_MacAddressIPv6 = { { 0x33, 0x33, 0x00, 0x01, 0x00, 0x03 } };
+
+const MACAddress_t xMDNS_MacAddress = { { 0x01, 0x00, 0x5e, 0x00, 0x00, 0xfb } };
+
+const MACAddress_t xMDNS_MacAddressIPv6 = { { 0x33, 0x33, 0x00, 0x00, 0x00, 0xFB } };
 
 void vPortEnterCritical( void )
 {

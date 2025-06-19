@@ -136,7 +136,7 @@
 /** @brief Override the default FreeRTOS + TCP receive socket timeouts,
  *  as the test server can be slow to respond.
  */
-#ifdef ipconfigSOCK_DEFAULT_RECIEVE_BLOCK_TIME
+#ifdef ipconfigSOCK_DEFAULT_RECEIVE_BLOCK_TIME
     #define ipconfigSOCK_DEFAULT_RECEIVE_BLOCK_TIME    (10000)
 #endif
 

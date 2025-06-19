@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['link_5fstatus_5fcb_5ffn_5ft_0',['link_status_cb_fn_t',['../group__LWIP__MMWLAN.html#gad32ced7c206a50c92c75b1bcfc0964f8',1,'lwip_mmwlan.h']]]
+  ['slip_5ftransport_5ftx_5ffn_0',['slip_transport_tx_fn',['../group__SLIP.html#gacccb685b1cd94bb7b3d14f832d65469f',1,'slip.h']]]
 ];

@@ -12,7 +12,10 @@ var searchData=
   ['chip_5fpowerdown_5fenabled_9',['chip_powerdown_enabled',['../structmmwlan__set__wnm__sleep__enabled__args.html#a64b5fbce597c0860ed0e715b90a803c0',1,'mmwlan_set_wnm_sleep_enabled_args']]],
   ['chunk_5fsize_10',['chunk_size',['../structmbin__deflated__segment__hdr.html#a4db6aae785999514a9841a3a9f84fdab',1,'mbin_deflated_segment_hdr']]],
   ['cmd_11',['cmd',['../unionmmpkt__metadata__ptr.html#ab4242efa9637d9a7e22723d925668c59',1,'mmpkt_metadata_ptr']]],
-  ['controller_12',['controller',['../structbeacon__monitor__thread__args.html#addfbd76e21aa96db189dc5f96f077cf5',1,'beacon_monitor_thread_args::controller()'],['../structtcp__echo__server__thread__args.html#aabf7017893084511f25ce28dfbeb2207',1,'tcp_echo_server_thread_args::controller()']]],
-  ['count_13',['count',['../structstruct__oui__list.html#a9eb43060ec5193798093994560e738d2',1,'struct_oui_list']]],
-  ['country_5fcode_14',['country_code',['../structmbin__regdom__hdr.html#a198c657c31c9ad4baf50bea71e0dc5ba',1,'mbin_regdom_hdr::country_code()'],['../structmmwlan__s1g__channel__list.html#a7f72b6a918f5621a0709f87bfb8c9efc',1,'mmwlan_s1g_channel_list::country_code()'],['../structstruct__country__code.html#ad4c58f089041d6044036c89e480abacd',1,'struct_country_code::country_code()']]]
+  ['connect_5ftimestamp_12',['connect_timestamp',['../structmmwlan__stats__umac__data.html#ada5d8a8c8ecc9824a2292256266d959e',1,'mmwlan_stats_umac_data']]],
+  ['controller_13',['controller',['../structbeacon__monitor__thread__args.html#addfbd76e21aa96db189dc5f96f077cf5',1,'beacon_monitor_thread_args::controller()'],['../structtcp__echo__server__thread__args.html#aabf7017893084511f25ce28dfbeb2207',1,'tcp_echo_server_thread_args::controller()']]],
+  ['count_14',['count',['../structstruct__oui__list.html#a9eb43060ec5193798093994560e738d2',1,'struct_oui_list']]],
+  ['country_5fcode_15',['country_code',['../structmbin__regdom__hdr.html#a198c657c31c9ad4baf50bea71e0dc5ba',1,'mbin_regdom_hdr::country_code()'],['../structmmwlan__s1g__channel__list.html#a7f72b6a918f5621a0709f87bfb8c9efc',1,'mmwlan_s1g_channel_list::country_code()'],['../structstruct__country__code.html#ad4c58f089041d6044036c89e480abacd',1,'struct_country_code::country_code()']]],
+  ['cw_5fmax_16',['cw_max',['../structmmwlan__qos__queue__params.html#af8dc64b2aff22ab5237326b5e6f847a2',1,'mmwlan_qos_queue_params']]],
+  ['cw_5fmin_17',['cw_min',['../structmmwlan__qos__queue__params.html#ad652c2d94f6afaa0fcb1bdb77a57d329',1,'mmwlan_qos_queue_params']]]
 ];

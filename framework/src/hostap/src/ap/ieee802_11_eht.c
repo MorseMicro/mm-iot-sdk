@@ -871,6 +871,8 @@ sae_commit_skip_fixed_fields(const struct ieee80211_mgmt *mgmt, size_t len,
 
 	wpa_printf(MSG_DEBUG, "EHT: SAE scalar length is %zu", prime_len);
 
+	if (len - 2 < prime_len * (ec ? 3 : 2))
+		goto truncated;
 	/* scalar */
 	pos += prime_len;
 
@@ -882,6 +884,7 @@ sae_commit_skip_fixed_fields(const struct ieee80211_mgmt *mgmt, size_t len,
 	}
 
 	if (pos - mgmt->u.auth.variable > (int) len) {
+	truncated:
 		wpa_printf(MSG_DEBUG,
 			   "EHT: Too short SAE commit Authentication frame");
 		return NULL;
@@ -905,16 +908,38 @@ sae_confirm_skip_fixed_fields(struct hostapd_data *hapd,
 		return pos;
 
 	/* send confirm integer */
+	if (len < 2)
+		goto truncated;
 	pos += 2;
 
 	/*
 	 * At this stage we should already have an MLD station and actually SA
-	 * will be replaced with the MLD MAC address by the driver.
+	 * will be replaced with the MLD MAC address by the driver. However,
+	 * there is at least a theoretical race condition in a case where the
+	 * peer sends the SAE confirm message quickly enough for the driver
+	 * translation mechanism to not be available to update the SAE confirm
+	 * message addresses. Work around that by searching for the STA entry
+	 * using the link address of the non-AP MLD if no match is found based
+	 * on the MLD MAC address.
 	 */
 	sta = ap_get_sta(hapd, mgmt->sa);
 	if (!sta) {
 		wpa_printf(MSG_DEBUG, "SAE: No MLD STA for SAE confirm");
-		return NULL;
+		for (sta = hapd->sta_list; sta; sta = sta->next) {
+			int link_id = hapd->mld_link_id;
+
+			if (!sta->mld_info.mld_sta ||
+			    sta->mld_info.links[link_id].valid ||
+			    !ether_addr_equal(
+				    mgmt->sa,
+				    sta->mld_info.links[link_id].peer_addr))
+				continue;
+			wpa_printf(MSG_DEBUG,
+				   "SAE: Found MLD STA for SAE confirm based on link address");
+			break;
+		}
+		if (!sta)
+			return NULL;
 	}
 
 	if (!sta->sae || sta->sae->state < SAE_COMMITTED || !sta->sae->tmp) {
@@ -929,9 +954,12 @@ sae_confirm_skip_fixed_fields(struct hostapd_data *hapd,
 	wpa_printf(MSG_DEBUG, "SAE: confirm: kck_len=%zu",
 		   sta->sae->tmp->kck_len);
 
+	if (len - 2 < sta->sae->tmp->kck_len)
+		goto truncated;
 	pos += sta->sae->tmp->kck_len;
 
 	if (pos - mgmt->u.auth.variable > (int) len) {
+	truncated:
 		wpa_printf(MSG_DEBUG,
 			   "EHT: Too short SAE confirm Authentication frame");
 		return NULL;

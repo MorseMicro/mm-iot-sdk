@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Morse Micro
+ * Copyright 2025 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -136,6 +136,17 @@ enum mmagic_power_save_mode
     MMAGIC_POWER_SAVE_MODE_DISABLED = 0,
     /** Power save enabled. */
     MMAGIC_POWER_SAVE_MODE_ENABLED  = 1,
+};
+
+/** Enumeration of MCS10 modes. */
+enum mmagic_mcs10_mode
+{
+    /** MCS10 is not used. */
+    MMAGIC_MCS10_MODE_DISABLED = 0,
+    /** MCS10 is always used instead of MCS0 when the bandwidth is 1 MHz. */
+    MMAGIC_MCS10_MODE_FORCED   = 1,
+    /** MCS10 is used on retries instead of MCS0 when the bandwidth is 1 MHz. */
+    MMAGIC_MCS10_MODE_AUTO     = 2,
 };
 
 /** Enumeration of S1G non-AP STA types. */
@@ -867,6 +878,35 @@ int mmagic_enum_power_save_mode_to_string(enum mmagic_power_save_mode value, cha
  * @return       On success 0. On error a negative value is returned.
  */
 int mmagic_string_to_enum_power_save_mode(enum mmagic_power_save_mode *value, const char *buf);
+
+/**
+ * Convert from @c enum_mcs10_mode to a string.
+ *
+ * @param  value Enum value to convert.
+ * @param  buf   Reference to the buffer where string is to be placed
+ * @param  len   Length of the buffer provided in bytes
+ *
+ * @return       On success the number of bytes characters written (excluding the
+ *         null byte). A return value of @c len or more means that the output was
+ *         truncated. On error a negative value is returned.
+ *
+ * @note The behaviour is the same as @c snprintf() . This will not write more than @c len in bytes
+ *       (including the terminating null byte). If the output was truncated due to this limit, then
+ *       the return value is the  number of characters (excluding the terminating null byte) which
+ *       would have been written to the final string if enough space had been available.
+ */
+int mmagic_enum_mcs10_mode_to_string(enum mmagic_mcs10_mode value, char *buf, size_t len);
+
+/**
+ * Convert from a string to @c enum_mcs10_mode.
+ *
+ * @param  value Reference to the @c enum mmagic_mcs10_mode  that will be set to the parsed value on
+ *               success.
+ * @param  buf   Reference to a null terminated string to parse
+ *
+ * @return       On success 0. On error a negative value is returned.
+ */
+int mmagic_string_to_enum_mcs10_mode(enum mmagic_mcs10_mode *value, const char *buf);
 
 /**
  * Convert from @c enum_station_type to a string.

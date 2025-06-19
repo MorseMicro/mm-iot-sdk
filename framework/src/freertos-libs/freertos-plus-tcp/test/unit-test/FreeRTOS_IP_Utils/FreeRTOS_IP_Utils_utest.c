@@ -1,5 +1,5 @@
 /*
- * FreeRTOS+TCP V4.2.2
+ * FreeRTOS+TCP V4.3.1
  * Copyright (C) 2022 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -47,6 +47,7 @@
 #include "mock_FreeRTOS_IP_Private.h"
 #include "mock_FreeRTOS_IP_Timers.h"
 #include "mock_FreeRTOS_ARP.h"
+#include "mock_FreeRTOS_ND.h"
 #include "mock_FreeRTOS_DHCP.h"
 #include "mock_FreeRTOS_DHCPv6.h"
 #include "mock_FreeRTOS_Routing.h"
@@ -489,11 +490,13 @@ void test_prvProcessNetworkDownEvent_Pass( void )
     xEndPoint.bits.bCallDownHook = pdFALSE_UNSIGNED;
 
     vIPSetARPTimerEnableState_Expect( pdFALSE );
+    vIPSetNDTimerEnableState_Expect( pdFALSE );
 
     FreeRTOS_FirstEndPoint_IgnoreAndReturn( &xEndPoint );
     FreeRTOS_NextEndPoint_IgnoreAndReturn( NULL );
 
     FreeRTOS_ClearARP_ExpectAnyArgs();
+    FreeRTOS_ClearND_ExpectAnyArgs();
 
     vDHCPStop_Expect( &xEndPoint );
 
@@ -504,6 +507,7 @@ void test_prvProcessNetworkDownEvent_Pass( void )
     /* Run again to trigger a different path in the code. */
 
     vIPSetARPTimerEnableState_Expect( pdFALSE );
+    vIPSetNDTimerEnableState_Expect( pdFALSE );
 
     FreeRTOS_FirstEndPoint_IgnoreAndReturn( &xEndPoint );
     FreeRTOS_NextEndPoint_IgnoreAndReturn( NULL );
@@ -511,6 +515,7 @@ void test_prvProcessNetworkDownEvent_Pass( void )
     vApplicationIPNetworkEventHook_Multi_Expect( eNetworkDown, &xEndPoint );
 
     FreeRTOS_ClearARP_Expect( &xEndPoint );
+    FreeRTOS_ClearND_Expect( &xEndPoint );
 
     vDHCPStop_Expect( &xEndPoint );
 
@@ -535,11 +540,13 @@ void test_prvProcessNetworkDownEvent_Fail( void )
     xEndPoint.bits.bWantDHCP = pdFALSE_UNSIGNED;
 
     vIPSetARPTimerEnableState_Expect( pdFALSE );
+    vIPSetNDTimerEnableState_Expect( pdFALSE );
 
     FreeRTOS_FirstEndPoint_IgnoreAndReturn( &xEndPoint );
     FreeRTOS_NextEndPoint_IgnoreAndReturn( NULL );
 
     FreeRTOS_ClearARP_Expect( &xEndPoint );
+    FreeRTOS_ClearND_Expect( &xEndPoint );
 
     vIPNetworkUpCalls_Expect( &xEndPoint );
 
@@ -586,11 +593,13 @@ void test_prvProcessNetworkDownEvent_InterfaceInitFail( void )
     xEndPoint.bits.bCallDownHook = pdFALSE_UNSIGNED;
 
     vIPSetARPTimerEnableState_Expect( pdFALSE );
+    vIPSetNDTimerEnableState_Expect( pdFALSE );
 
     FreeRTOS_FirstEndPoint_IgnoreAndReturn( &xEndPoint );
     FreeRTOS_NextEndPoint_IgnoreAndReturn( NULL );
 
     FreeRTOS_ClearARP_ExpectAnyArgs();
+    FreeRTOS_ClearND_ExpectAnyArgs();
 
     vDHCPStop_Expect( &xEndPoint );
 
@@ -616,6 +625,7 @@ void test_prvProcessNetworkDownEvent_PassDHCPv6( void )
     xEndPoint.bits.bCallDownHook = pdFALSE_UNSIGNED;
 
     vIPSetARPTimerEnableState_Expect( pdFALSE );
+    vIPSetNDTimerEnableState_Expect( pdFALSE );
 
     FreeRTOS_FirstEndPoint_IgnoreAndReturn( &xEndPoint );
 
@@ -628,6 +638,7 @@ void test_prvProcessNetworkDownEvent_PassDHCPv6( void )
     FreeRTOS_NextEndPoint_IgnoreAndReturn( NULL );
 
     FreeRTOS_ClearARP_ExpectAnyArgs();
+    FreeRTOS_ClearND_ExpectAnyArgs();
 
     vDHCPv6Stop_Expect( &xEndPoint );
 
@@ -653,6 +664,7 @@ void test_prvProcessNetworkDownEvent_PassRA( void )
     xEndPoint.bits.bCallDownHook = pdFALSE_UNSIGNED;
 
     vIPSetARPTimerEnableState_Expect( pdFALSE );
+    vIPSetNDTimerEnableState_Expect( pdFALSE );
 
     FreeRTOS_FirstEndPoint_IgnoreAndReturn( &xEndPoint );
 
@@ -665,6 +677,7 @@ void test_prvProcessNetworkDownEvent_PassRA( void )
     FreeRTOS_NextEndPoint_IgnoreAndReturn( NULL );
 
     FreeRTOS_ClearARP_ExpectAnyArgs();
+    FreeRTOS_ClearND_ExpectAnyArgs();
 
     vIPSetDHCP_RATimerEnableState_Expect( &xEndPoint, pdFALSE );
 
@@ -692,6 +705,7 @@ void test_prvProcessNetworkDownEvent_PassStaticIP( void )
     memcpy( xEndPoint.ipv6_defaults.xIPAddress.ucBytes, xIPv6Address.ucBytes, ipSIZE_OF_IPv6_ADDRESS );
 
     vIPSetARPTimerEnableState_Expect( pdFALSE );
+    vIPSetNDTimerEnableState_Expect( pdFALSE );
 
     FreeRTOS_FirstEndPoint_IgnoreAndReturn( &xEndPoint );
 
@@ -704,6 +718,7 @@ void test_prvProcessNetworkDownEvent_PassStaticIP( void )
     FreeRTOS_NextEndPoint_IgnoreAndReturn( NULL );
 
     FreeRTOS_ClearARP_ExpectAnyArgs();
+    FreeRTOS_ClearND_ExpectAnyArgs();
 
     vIPNetworkUpCalls_Expect( &xEndPoint );
 
@@ -2909,6 +2924,65 @@ void test_FreeRTOS_min_size_t( void )
 }
 
 /**
+ * @brief test_FreeRTOS_add_int32
+ * To validate FreeRTOS_add_int32.
+ */
+void test_FreeRTOS_add_int32( void )
+{
+    int32_t lResult;
+
+    lResult = FreeRTOS_add_int32( 1, 2 );
+    TEST_ASSERT_EQUAL( 3, lResult );
+
+    lResult = FreeRTOS_add_int32( ipINT32_MAX_VALUE, 1 );
+    TEST_ASSERT_EQUAL( ipINT32_MAX_VALUE, lResult );
+
+    lResult = FreeRTOS_add_int32( ipINT32_MIN_VALUE, -1 );
+    TEST_ASSERT_EQUAL( ipINT32_MIN_VALUE, lResult );
+
+    lResult = FreeRTOS_add_int32( -1, 1 );
+    TEST_ASSERT_EQUAL( 0, lResult );
+}
+
+/**
+ * @brief test_FreeRTOS_multiply_int32
+ * To validate FreeRTOS_multiply_int32.
+ */
+void test_FreeRTOS_multiply_int32( void )
+{
+    int32_t lResult;
+
+    /* a > 0 */
+    lResult = FreeRTOS_multiply_int32( ipINT32_MAX_VALUE, ipINT32_MAX_VALUE );
+    TEST_ASSERT_EQUAL( ipINT32_MAX_VALUE, lResult );
+
+    lResult = FreeRTOS_multiply_int32( 10, ipINT32_MIN_VALUE );
+    TEST_ASSERT_EQUAL( ipINT32_MIN_VALUE, lResult );
+
+    lResult = FreeRTOS_multiply_int32( 10, 10 );
+    TEST_ASSERT_EQUAL( 100, lResult );
+
+    lResult = FreeRTOS_multiply_int32( 10, -1 );
+    TEST_ASSERT_EQUAL( -10, lResult );
+
+    lResult = FreeRTOS_multiply_int32( 10, 0 );
+    TEST_ASSERT_EQUAL( 0, lResult );
+
+    /* a <= 0 */
+    lResult = FreeRTOS_multiply_int32( ipINT32_MIN_VALUE, 10 );
+    TEST_ASSERT_EQUAL( ipINT32_MIN_VALUE, lResult );
+
+    lResult = FreeRTOS_multiply_int32( ipINT32_MIN_VALUE, ipINT32_MIN_VALUE );
+    TEST_ASSERT_EQUAL( ipINT32_MAX_VALUE, lResult );
+
+    lResult = FreeRTOS_multiply_int32( -1, 10 );
+    TEST_ASSERT_EQUAL( -10, lResult );
+
+    lResult = FreeRTOS_multiply_int32( -2, -2 );
+    TEST_ASSERT_EQUAL( 4, lResult );
+}
+
+/**
  * @brief test_FreeRTOS_round_up
  * To validate FreeRTOS_round_up.
  */
@@ -3128,6 +3202,7 @@ static void prvProcessNetworkDownEvent_Generic( const uint8_t * pucAddress,
     }
 
     vIPSetARPTimerEnableState_Expect( pdFALSE );
+    vIPSetNDTimerEnableState_Expect( pdFALSE );
 
     FreeRTOS_FirstEndPoint_IgnoreAndReturn( &xEndPoint );
 
@@ -3141,6 +3216,7 @@ static void prvProcessNetworkDownEvent_Generic( const uint8_t * pucAddress,
 
 
     FreeRTOS_ClearARP_Expect( &xEndPoint );
+    FreeRTOS_ClearND_Expect( &xEndPoint );
 
     vIPNetworkUpCalls_Expect( &xEndPoint );
 

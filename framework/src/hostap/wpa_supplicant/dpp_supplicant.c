@@ -1426,6 +1426,17 @@ static struct wpa_ssid * wpas_dpp_add_network(struct wpa_supplicant *wpa_s,
 	os_memcpy(ssid->ssid, conf->ssid, conf->ssid_len);
 	ssid->ssid_len = conf->ssid_len;
 
+#ifdef CONFIG_DPP3
+	if (conf->akm == DPP_AKM_SAE && conf->password_id[0]) {
+		size_t len = os_strlen(conf->password_id);
+
+		ssid->sae_password_id = os_zalloc(len + 1);
+		if (!ssid->sae_password_id)
+			goto fail;
+		os_memcpy(ssid->sae_password_id, conf->password_id, len);
+	}
+#endif /* CONFIG_DPP3 */
+
 	if (conf->connector) {
 		if (dpp_akm_dpp(conf->akm)) {
 			ssid->key_mgmt = WPA_KEY_MGMT_DPP;
@@ -1483,11 +1494,16 @@ static struct wpa_ssid * wpas_dpp_add_network(struct wpa_supplicant *wpa_s,
 			ssid->ieee80211w = MGMT_FRAME_PROTECTION_OPTIONAL;
 		else
 			ssid->ieee80211w = MGMT_FRAME_PROTECTION_REQUIRED;
-		if (conf->passphrase[0]) {
+		if (conf->passphrase[0] && dpp_akm_psk(conf->akm)) {
 			if (wpa_config_set_quoted(ssid, "psk",
 						  conf->passphrase) < 0)
 				goto fail;
 			wpa_config_update_psk(ssid);
+			ssid->export_keys = 1;
+		} else if (conf->passphrase[0] && dpp_akm_sae(conf->akm)) {
+			if (wpa_config_set_quoted(ssid, "sae_password",
+						  conf->passphrase) < 0)
+				goto fail;
 			ssid->export_keys = 1;
 		} else {
 			ssid->psk_set = conf->psk_set;
@@ -1699,6 +1715,12 @@ static int wpas_dpp_handle_config_obj(struct wpa_supplicant *wpa_s,
 		wpa_msg(wpa_s, MSG_INFO, DPP_EVENT_CONFOBJ_PSK "%s",
 			hex);
 	}
+#ifdef CONFIG_DPP3
+	if (conf->password_id[0]) {
+		wpa_msg(wpa_s, MSG_INFO, DPP_EVENT_CONFOBJ_IDPASS "%s",
+			conf->password_id);
+	}
+#endif /* CONFIG_DPP3 */
 	if (conf->c_sign_key) {
 		char *hex;
 		size_t hexlen;
@@ -5652,6 +5674,16 @@ int wpas_dpp_ca_set(struct wpa_supplicant *wpa_s, const char *cmd)
 static int wpas_dpp_pb_announce(struct wpa_supplicant *wpa_s, int freq);
 static void wpas_dpp_pb_next(void *eloop_ctx, void *timeout_ctx);
 
+void wpas_dpp_push_button_tx_wait_expire(struct wpa_supplicant *wpa_s)
+{
+	if (!wpa_s->dpp_pb_announcement || wpa_s->dpp_pb_discovery_done)
+		return;
+
+	wpa_printf(MSG_DEBUG, "DPP: Failed to send push button announcement");
+	if (eloop_register_timeout(0, 0, wpas_dpp_pb_next, wpa_s, NULL) < 0)
+		wpas_dpp_push_button_stop(wpa_s);
+}
+
 
 static void wpas_dpp_pb_tx_status(struct wpa_supplicant *wpa_s,
 				  unsigned int freq, const u8 *dst,
@@ -5910,6 +5942,7 @@ int wpas_dpp_push_button(struct wpa_supplicant *wpa_s, const char *cmd)
 		   "DPP: Scan to create channel list for PB discovery");
 	wpa_s->scan_req = MANUAL_SCAN_REQ;
 	wpa_s->scan_res_handler = wpas_dpp_pb_scan_res_handler;
+	wpa_supplicant_cancel_sched_scan(wpa_s);
 	wpa_supplicant_req_scan(wpa_s, 0, 0);
 	wpa_msg(wpa_s, MSG_INFO, DPP_EVENT_PB_STATUS "started");
 

@@ -41,6 +41,7 @@
 void mbedtls_net_init(mbedtls_net_context *ctx)
 {
     memset(ctx, 0, sizeof(*ctx));
+    ctx->freertos.socket_set = FreeRTOS_CreateSocketSet();
 }
 
 
@@ -158,13 +159,6 @@ static int net_bind_dns_callback(mbedtls_net_context *ctx, struct freertos_addri
         return MBEDTLS_ERR_NET_SOCKET_FAILED;
     }
 
-    int n = 1;
-    if (FreeRTOS_setsockopt(ctx->socket, 0, FREERTOS_SO_REUSE_LISTEN_SOCKET, &n, sizeof(n)) != 0)
-    {
-        FreeRTOS_closesocket(ctx->socket);
-        return MBEDTLS_ERR_NET_SOCKET_FAILED;
-    }
-
     /* Set receive timeout to a high value, by default this is 0 */
     struct timeval t;
     t.tv_sec = INT32_MAX / 1000;
@@ -181,8 +175,6 @@ static int net_bind_dns_callback(mbedtls_net_context *ctx, struct freertos_addri
         FreeRTOS_closesocket(ctx->socket);
         return MBEDTLS_ERR_NET_BIND_FAILED;
     }
-
-    ctx->freertos.socket_set = FreeRTOS_CreateSocketSet();
 
     /* Listen only makes sense for TCP */
     if (ctx->freertos.type == FREERTOS_SOCK_STREAM)
@@ -235,11 +227,6 @@ int mbedtls_net_accept(mbedtls_net_context *bind_ctx,
         {
             return MBEDTLS_ERR_NET_BIND_FAILED;
         }
-        /*
-         * Add the socket set to the client to allow the client
-         * and host sockets to queue events between each other
-         */
-        client_ctx->freertos.socket_set = bind_ctx->freertos.socket_set;
     }
     else
     {
@@ -318,12 +305,18 @@ int mbedtls_net_poll(mbedtls_net_context *ctx, uint32_t rw, uint32_t timeout)
 
     event_bits = FreeRTOS_select(ctx->freertos.socket_set, pdMS_TO_TICKS(timeout));
 
+    if (event_bits & eSELECT_EXCEPT)
+    {
+        return MBEDTLS_ERR_NET_CONN_RESET;
+    }
+
     ret = 0;
 
     if (event_bits & eSELECT_READ)
     {
         ret |= MBEDTLS_NET_POLL_READ;
     }
+
     if (event_bits & eSELECT_WRITE)
     {
         ret |= MBEDTLS_NET_POLL_WRITE;
@@ -394,7 +387,8 @@ int mbedtls_net_recv_timeout(void *vctx, unsigned char *buf,
     }
 
     ret = mbedtls_net_poll(ctx, MBEDTLS_NET_POLL_READ, timeout);
-    if (ret <= 0)
+
+    if (ret < 0)
     {
         return ret;
     }

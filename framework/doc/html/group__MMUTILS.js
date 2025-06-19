@@ -3,6 +3,7 @@ var group__MMUTILS =
     [ "Serial Line Internet Protocol (SLIP) implementation.", "group__SLIP.html", "group__SLIP" ],
     [ "WLAN Utilities", "group__MMUTILS__WLAN.html", "group__MMUTILS__WLAN" ],
     [ "MM_ARRAY_COUNT", "group__MMUTILS.html#gae620c8867523894d4dae229f5e6ec0d2", null ],
+    [ "MM_FALLTHROUGH", "group__MMUTILS.html#ga6b1d6a408a5d817670408172c09c516d", null ],
     [ "MM_FAST_ROUND_UP", "group__MMUTILS.html#ga695315db4f1a49abe1178b6869356265", null ],
     [ "MM_MAX", "group__MMUTILS.html#ga794e1b1e074758195cf4baad3674f33b", null ],
     [ "MM_MIN", "group__MMUTILS.html#ga784ce5fcd4e6f4d10eab385b8af7997c", null ],

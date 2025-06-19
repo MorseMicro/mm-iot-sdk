@@ -28,6 +28,9 @@ struct pasn_data * pasn_data_init(void)
 
 void pasn_data_deinit(struct pasn_data *pasn)
 {
+	if (!pasn)
+		return;
+	os_free(pasn->rsnxe_ie);
 	bin_clear_free(pasn, sizeof(struct pasn_data));
 }
 
@@ -157,7 +160,7 @@ void pasn_set_rsnxe_ie(struct pasn_data *pasn, const u8 *rsnxe_ie)
 {
 	if (!pasn || !rsnxe_ie)
 		return;
-	pasn->rsnxe_ie = rsnxe_ie;
+	pasn->rsnxe_ie = os_memdup(rsnxe_ie, 2 + rsnxe_ie[1]);
 }
 
 
@@ -189,6 +192,14 @@ int pasn_set_extra_ies(struct pasn_data *pasn, const u8 *extra_ies,
 	}
 	pasn->extra_ies_len = extra_ies_len;
 	return 0;
+}
+
+
+void pasn_set_noauth(struct pasn_data *pasn, bool noauth)
+{
+	if (!pasn)
+		return;
+	pasn->noauth = noauth;
 }
 
 

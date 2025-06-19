@@ -5,10 +5,14 @@
 #
 import logging
 import os
-import re
 
 from SCons.Script import DefaultEnvironment
-from utils import erase_configstore, import_mm_iot_components, program_configstore
+from utils import (
+    erase_configstore,
+    import_mm_iot_components,
+    import_morse_fw_bin,
+    program_configstore,
+)
 
 env = DefaultEnvironment()
 platform = env.PioPlatform()
@@ -125,6 +129,8 @@ components += env.GetProjectOption("custom_mm_iot_components", default="").split
 # morsefirmware component is a special case -- do not import the makefile fragment
 components = [component for component in components if component != "morsefirmware"]
 
+import_morse_fw_bin(env, FRAMEWORK_DIR, "morsefirmware")
+
 #
 # Load components and update Platform IOO Environment
 #
@@ -137,22 +143,6 @@ import_mm_iot_components(env, FRAMEWORK_DIR, components, env_vars={
     "MM_SHIM_OS_SRCS_C": env.GetProjectOption("mm_shim_os", default=None),
     "BSP_SRCS_MAIN_C": env.GetProjectOption("bsp_srcs_main", default=None),
 })
-
-#
-# Convert Morse firmware binary into an object file that we can link
-#
-
-morse_fw_bin = os.path.join(FRAMEWORK_DIR, "morsefirmware", "mm6108.mbin")
-morse_fw_obj = env.Command(
-    os.path.join("$BUILD_DIR", "mmfw.o"),
-    morse_fw_bin,
-    action="$OBJCOPY -I binary -O elf32-littlearm -B ARM $SOURCE $TARGET "
-           "--redefine-sym _binary_${PATH_IDENTIFIER}_start=firmware_binary_start "
-           "--redefine-sym _binary_${PATH_IDENTIFIER}_end=firmware_binary_end "
-           "--rename-section .data=.rodata,CONTENTS,ALLOC,LOAD,READONLY,DATA",
-    PATH_IDENTIFIER=re.sub(r"[^a-zA-Z0-9]", "_", morse_fw_bin)
-)
-env.Append(PIOBUILDFILES=[morse_fw_obj])
 
 #
 # Config Store

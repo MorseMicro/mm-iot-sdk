@@ -1,5 +1,5 @@
 /*
- * FreeRTOS+TCP V4.2.2
+ * FreeRTOS+TCP V4.3.1
  * Copyright (C) 2022 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -43,6 +43,7 @@
 volatile BaseType_t xInsideInterrupt = pdFALSE;
 
 NetworkBufferDescriptor_t * pxARPWaitingNetworkBuffer;
+NetworkBufferDescriptor_t * pxNDWaitingNetworkBuffer;
 
 struct xNetworkEndPoint * pxNetworkEndPoints;
 struct xNetworkInterface * pxNetworkInterfaces;

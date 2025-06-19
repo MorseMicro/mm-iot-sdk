@@ -1,5 +1,5 @@
 /*
- * FreeRTOS+TCP V4.2.2
+ * FreeRTOS+TCP V4.3.1
  * Copyright (C) 2022 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -557,6 +557,36 @@ void test_prvSingleStepTCPHeaderOptions_Invalid_Length_WS( void )
     TEST_ASSERT_EQUAL( -1, result );
 }
 
+/* Test for prvSingleStepTCPHeaderOptions function with valid WSopt value. */
+void test_prvSingleStepTCPHeaderOptions_Valid_WS( void )
+{
+    int32_t result;
+
+    /* Setup TCP option for tests */
+    pxNetworkBuffer = &xNetworkBuffer;
+    pxNetworkBuffer->pucEthernetBuffer = ucEthernetBuffer;
+    size_t uxTCPHeaderOffset = ipSIZE_OF_ETH_HEADER + ipSIZE_OF_IPv4_HEADER;
+
+    ProtocolHeaders_t * pxProtocolHeader = ( ( ProtocolHeaders_t * )
+                                             &( pxNetworkBuffer->pucEthernetBuffer[ ( size_t ) ipSIZE_OF_ETH_HEADER + ipSIZE_OF_IPv4_HEADER ] ) );
+    TCPHeader_t * pxTCPHeader = &( pxProtocolHeader->xTCPHeader );
+
+    pxTCPHeader->ucTCPOffset = 0x80;
+    pxNetworkBuffer->xDataLength = 0x50;
+    /* Input TCP option is tcpTCP_OPT_WSOPT, length 3 bytes, and the value is 6. */
+    uint8_t ucTCPOptions[] = { 0x03, 0x03, 0x06 };
+    memcpy( ( void * ) pxTCPHeader->ucOptdata, ( void * ) &ucTCPOptions, sizeof( ucTCPOptions ) );
+
+    result = prvSingleStepTCPHeaderOptions(
+        pxTCPHeader->ucOptdata,
+        3,
+        pxSocket,
+        pdTRUE );
+
+    TEST_ASSERT_EQUAL( 3, result );
+    TEST_ASSERT_EQUAL( 6, pxSocket->u.xTCP.ucPeerWinScaleFactor );
+}
+
 static uint32_t ulCalled = 0;
 static void xLocalFunctionPointer( Socket_t xSocket,
                                    size_t xLength )
@@ -786,7 +816,7 @@ void test_prvCheckRxData_URG_On( void )
     TEST_ASSERT_EQUAL( 4, result );
 }
 
-/* Test for prvStorexData function. */
+/* Test for prvStoreRxData function. */
 void test_prvStoreRxData_Happy_Path( void )
 {
     int32_t result;
@@ -827,7 +857,7 @@ void test_prvStoreRxData_Happy_Path( void )
     TEST_ASSERT_EQUAL( 0, xResult );
 }
 
-/* Test for prvStorexData function. */
+/* Test for prvStoreRxData function. */
 void test_prvStoreRxData_Wrong_State( void )
 {
     int32_t result;
@@ -859,7 +889,7 @@ void test_prvStoreRxData_Wrong_State( void )
     TEST_ASSERT_EQUAL( 0, xResult );
 }
 
-/* Test for prvStorexData function. */
+/* Test for prvStoreRxData function. */
 void test_prvStoreRxData_Zero_Length( void )
 {
     int32_t result;
@@ -901,7 +931,7 @@ void test_prvStoreRxData_Zero_Length( void )
 }
 
 
-/* Test for prvStorexData function. */
+/* Test for prvStoreRxData function. */
 void test_prvStoreRxData_Null_RxStream( void )
 {
     int32_t result;
@@ -938,7 +968,7 @@ void test_prvStoreRxData_Null_RxStream( void )
     TEST_ASSERT_EQUAL( -1, xResult );
 }
 
-/* Test for prvStorexData function. */
+/* Test for prvStoreRxData function. */
 void test_prvStoreRxData_Negative_Offset( void )
 {
     int32_t result;
@@ -975,7 +1005,7 @@ void test_prvStoreRxData_Negative_Offset( void )
     TEST_ASSERT_EQUAL( 0, xResult );
 }
 
-/* Test for prvStorexData function. */
+/* Test for prvStoreRxData function. */
 void test_prvStoreRxData_None_Zero_Skipcount( void )
 {
     int32_t result;

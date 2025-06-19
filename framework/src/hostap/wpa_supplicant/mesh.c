@@ -762,6 +762,15 @@ int wpa_supplicant_join_mesh(struct wpa_supplicant *wpa_s,
 		params->dtim_period = ssid->dtim_period;
 	else if (wpa_s->conf->dtim_period > 0)
 		params->dtim_period = wpa_s->conf->dtim_period;
+
+#if CONFIG_IEEE80211AH
+	if (params->dtim_period != 1) {
+		wpa_msg(wpa_s, MSG_ERROR, "Invalid DTIM period (%d) for Mesh, set (1)",
+			params->dtim_period);
+		ret = -1;
+		goto out;
+	}
+#endif
 	params->conf.max_peer_links = wpa_s->conf->max_peer_links;
 	if (ssid->mesh_rssi_threshold < DEFAULT_MESH_RSSI_THRESHOLD) {
 		params->conf.rssi_threshold = ssid->mesh_rssi_threshold;
@@ -786,6 +795,11 @@ int wpa_supplicant_join_mesh(struct wpa_supplicant *wpa_s,
 	/* Always explicitely set forwarding to on or off for now */
 	params->conf.flags |= WPA_DRIVER_MESH_CONF_FLAG_FORWARDING;
 	params->conf.forwarding = ssid->mesh_fwding;
+
+	if (!ssid->mesh_fwding) {
+		params->conf.flags |= WPA_DRIVER_MESH_CONF_FLAG_NOLEARN;
+		params->conf.nolearn = true;
+	}
 
 	if (ssid->dot11MeshHWMPRootMode > MESH_HWMP_NOROOT) {
 		params->conf.flags |= WPA_DRIVER_MESH_CONF_FLAG_ROOTMODE;

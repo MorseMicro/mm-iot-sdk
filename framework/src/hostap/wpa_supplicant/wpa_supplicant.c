@@ -78,11 +78,7 @@
 #endif
 
 const char *const wpa_supplicant_version =
-#ifdef MORSE_VERSION_STR
-"wpa_supplicant v" VERSION_STR " - " MORSE_VERSION_STR "\n"
-#else
 "wpa_supplicant v" VERSION_STR "\n"
-#endif
 "Copyright (c) 2003-2024, Jouni Malinen <j@w1.fi> and contributors";
 
 const char *const wpa_supplicant_license =
@@ -2937,6 +2933,11 @@ void morse_ibss_mesh_setup_freq(struct wpa_supplicant *wpa_s,
 	conf->op_country[0] = ssid->country[0];
 	conf->op_country[1] = ssid->country[1];
 	conf->op_country[2] = ' ';
+
+#ifdef CONFIG_MESH
+	if (ssid->mode == WPAS_MODE_MESH)
+		ssid->mesh_fwding = wpa_s->conf->mesh_fwding;
+#endif
 
 	if (ssid->disable_s1g_sgi)
 		conf->s1g_capab &= ~S1G_CAP0_SGI_ALL;

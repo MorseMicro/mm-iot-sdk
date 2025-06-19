@@ -13,7 +13,6 @@
 #include "mmosal.h"
 #include "mmwlan.h"
 #include "mmutils.h"
-#include "lwip_mmwlan.h"
 #include "lwip/opt.h"
 #include "lwip/sockets.h"
 #include "lwip/sys.h"

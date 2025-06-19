@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Morse Micro
+ * Copyright 2025 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -75,6 +75,40 @@ struct mmagic_wlan_config
      * documentation of mmwlan_sta_args.scan_interval_limit_s for further details. Note
      * that changes will only take effect on invocation of wlan-connect. */
     uint16_t sta_scan_interval_limit_s;
+    /** The default QoS queue configuration for Access Category 0 (AC_BE) that is active
+     * while the station is connecting to an Access Point. This is a string containing
+     * the following comma separated integer values (in order):
+     * `aifs,cw_min,cw_max,txop_max_us`. For example: `3,15,1023,15008`. More
+     * information about the individual parameters can be found in the API
+     * documentation for `mmwlan_qos_queue_params`. */
+    struct struct_string_32 qos_0_params;
+    /** The default QoS queue configuration for Access Category 1 (AC_BK) that is active
+     * while the station is connecting to an Access Point. This is a string containing
+     * the following comma separated integer values (in order):
+     * `aifs,cw_min,cw_max,txop_max_us`. For example: `7,15,1023,15008`. More
+     * information about the individual parameters can be found in the API
+     * documentation for `mmwlan_qos_queue_params`. */
+    struct struct_string_32 qos_1_params;
+    /** The default QoS queue configuration for Access Category 2 (AC_VI) that is active
+     * while the station is connecting to an Access Point. This is a string containing
+     * the following comma separated integer values (in order):
+     * `aifs,cw_min,cw_max,txop_max_us`. For example: `2,7,15,15008`. More information
+     * about the individual parameters can be found in the API documentation for
+     * `mmwlan_qos_queue_params`. */
+    struct struct_string_32 qos_2_params;
+    /** The default QoS queue configuration for Access Category 3 (AC_VO) that is active
+     * while the station is connecting to an Access Point. This is a string containing
+     * the following comma separated integer values (in order):
+     * `aifs,cw_min,cw_max,txop_max_us`. For example: `2,3,7,15008`. More information
+     * about the individual parameters can be found in the API documentation for
+     * `mmwlan_qos_queue_params`. */
+    struct struct_string_32 qos_3_params;
+    /** The currently configured MCS10 behavior. This only takes effect after calling
+     * the WLAN connect command. This is an enum with 3 modes: disabled, which will
+     * never use MCS10, forced, which will always use MCS10 instead of MCS0 if the
+     * bandwidth is 1 MHz, and auto, which will use MCS10 on retries instead of MCS0
+     * when the bandwidth is 1 MHz. */
+    enum mmagic_mcs10_mode mcs10_mode;
 };
 
 struct mmagic_wlan_data

@@ -514,7 +514,7 @@ bool mmhal_get_hardware_version(char * version_buffer, size_t version_buffer_len
     /* Note: You need to identify the correct hardware and or version
      *       here using whatever means available (GPIO's, version number stored in EEPROM, etc)
      *       and return the correct string here. */
-    return !mmosal_safer_strcpy(version_buffer, "MM-EKH08-H723 V1.0", version_buffer_length);
+    return !mmosal_safer_strcpy(version_buffer, "MM-EKH08-H753 V1.0", version_buffer_length);
 }
 
 const struct mmhal_flash_partition_config* mmhal_get_mmconfig_partition(void)

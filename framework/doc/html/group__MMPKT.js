@@ -24,6 +24,7 @@ var group__MMPKT =
       [ "tail", "structmmpkt__list.html#a37b50fb1f0f13b7cef8999518b0c6c61", null ]
     ] ],
     [ "MM_FAST_ROUND_UP", "group__MMPKT.html#ga695315db4f1a49abe1178b6869356265", null ],
+    [ "mmpkt_adjust_start_offset", "group__MMPKT.html#ga52da3c2453402d5635e6e20d8ebcbf87", null ],
     [ "mmpkt_alloc_on_heap", "group__MMPKT.html#ga05c0e63a58984eaa8e676ec1d5430dc3", null ],
     [ "mmpkt_append", "group__MMPKT.html#gab864161ae5cc4e40f4c9d61831538c3b", null ],
     [ "mmpkt_append_data", "group__MMPKT.html#ga107042fcf64419dbfe0ecbbb57837250", null ],

@@ -63,7 +63,7 @@ int mmhal_flash_write(uint32_t write_address, const uint8_t *data, size_t size)
 
     if ((write_address >= FLASH_BASE) && (write_address + size < FLASH_BASE + FLASH_SIZE))
     {
-        /* H723 flash words are 32 bytes, expecting a word aligned source */
+        /* H753 flash words are 32 bytes, expecting a word aligned source */
         if (write_address & 0x1F)
         {
             /* Calculate the flash word aligned address */

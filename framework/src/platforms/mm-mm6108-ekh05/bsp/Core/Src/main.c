@@ -58,10 +58,10 @@ static void MX_GPIO_Init(void);
 static void MX_GPDMA1_Init(void);
 static void MX_SPI2_Init(void);
 static void MX_ICACHE_Init(void);
-static void MX_LPTIM1_Init(void);
 static void MX_LPUART1_UART_Init(void);
 static void MX_RNG_Init(void);
 static void MX_RTC_Init(void);
+static void MX_LPTIM1_Init(void);
 /* USER CODE BEGIN PFP */
 void app_init(void);
 /* USER CODE END PFP */
@@ -106,10 +106,10 @@ int main(void)
   MX_GPDMA1_Init();
   MX_SPI2_Init();
   MX_ICACHE_Init();
-  MX_LPTIM1_Init();
   MX_LPUART1_UART_Init();
   MX_RNG_Init();
   MX_RTC_Init();
+  MX_LPTIM1_Init();
   /* USER CODE BEGIN 2 */
 #ifdef ENABLE_ITM_LOG
   LL_GPIO_InitTypeDef swo_pin_init = {
@@ -690,8 +690,8 @@ static void MX_GPIO_Init(void)
 
   /* GPIO Ports Clock Enable */
   LL_AHB3_GRP1_EnableClock(LL_AHB3_GRP1_PERIPH_LPGPIO1);
-  LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOC);
   LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOE);
+  LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOC);
   LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOB);
   LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOA);
   LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOD);

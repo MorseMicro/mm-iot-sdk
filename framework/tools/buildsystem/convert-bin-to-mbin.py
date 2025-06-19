@@ -28,6 +28,7 @@ FIELD_TYPE_BCF_BOARD_CONFIG = 0x8100
 FIELD_TYPE_BCF_REGDOM = 0x8101
 FIELD_TYPE_BCF_BOARD_DESC = 0x8102
 FIELD_TYPE_BCF_BUILD_VER = 0x8103
+FIELD_TYPE_BCF_CHIPS = 0x8104
 # To avoid confusion host firmware is refered to as 'software'
 FIELD_TYPE_SW_SEGMENT = 0x8201
 FIELD_TYPE_SW_SEGMENT_DEFLATED = 0x8202
@@ -44,6 +45,13 @@ DEFAULT_COMPRESSION_CHUNK_SIZE = 8 * 1024
 MAX_SEGMENT_DATA_SIZE = 0x8000
 
 REGDOM_RE = re.compile(r".regdom_(?P<domain>[A-Z]{2})")
+
+SECTION_MAPPINGS = {
+    ".board_config": FIELD_TYPE_BCF_BOARD_CONFIG,
+    ".board_desc": FIELD_TYPE_BCF_BOARD_DESC,
+    ".build_ver": FIELD_TYPE_BCF_BUILD_VER,
+    ".chips": FIELD_TYPE_BCF_CHIPS,
+}
 
 
 class MbinFile:
@@ -197,15 +205,9 @@ def _app_main(args):
                     else:
                         tlv_filter = None
                     outbin.add_tlv_block(section.data(), tlv_filter)
-                elif section.name == ".board_config":
-                    logging.debug("Adding .board_config TLV")
-                    outbin.add_tlv(FIELD_TYPE_BCF_BOARD_CONFIG, _pad_data(section.data()))
-                elif section.name == ".board_desc":
-                    logging.debug("Adding .board_desc TLV")
-                    outbin.add_tlv(FIELD_TYPE_BCF_BOARD_DESC, _pad_data(section.data()))
-                elif section.name == ".build_ver":
-                    logging.debug("Adding .build_ver TLV")
-                    outbin.add_tlv(FIELD_TYPE_BCF_BUILD_VER, _pad_data(section.data()))
+                elif section.name in SECTION_MAPPINGS:
+                    logging.debug("Adding %s TLV", section.name)
+                    outbin.add_tlv(SECTION_MAPPINGS[section.name], _pad_data(section.data()))
                 else:
                     match = REGDOM_RE.match(section.name)
                     if match:
@@ -216,6 +218,8 @@ def _app_main(args):
                         logging.debug("Adding .regdom TLV for %s", domain)
                         outbin.add_tlv(FIELD_TYPE_BCF_REGDOM,
                                        domain.encode("utf-8") + b"\0\0" + _pad_data(section.data()))
+                    elif section.name and section.name not in [".shstrtab"]:
+                        logging.info("Ignoring section %s", section.name)
 
             # Now find and add all loadable segments
             if file_type != "bcf":

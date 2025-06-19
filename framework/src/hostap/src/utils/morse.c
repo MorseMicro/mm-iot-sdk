@@ -1634,7 +1634,7 @@ int morse_s1g_freq_and_cc_to_ht_freq(int s1g_frequency, const char *cc)
 	for (i = 0; i < S1G_OP_CLASSES_LEN; i++) {
 		const struct ah_class *class = s1g_op_classes[i];
 
-		if (morse_s1g_op_class_has_cc(class, cc)) {
+		if (class && morse_s1g_op_class_has_cc(class, cc)) {
 			int ht_freq;
 
 			ht_freq = morse_s1g_freq_to_ht_freq(s1g_frequency, class, false);

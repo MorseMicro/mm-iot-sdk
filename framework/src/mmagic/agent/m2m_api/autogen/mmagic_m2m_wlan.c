@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Morse Micro
+ * Copyright 2025 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -140,6 +140,31 @@ static struct mmbuf *mmagic_m2m_wlan_get(struct mmagic_m2m_agent *agent,
         return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_get, subcommand,
                                           MMAGIC_STATUS_OK, &data->config.sta_scan_interval_limit_s,
                                           sizeof(data->config.sta_scan_interval_limit_s));
+
+    case mmagic_wlan_var_qos_0_params:
+        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_get, subcommand,
+                                          MMAGIC_STATUS_OK, &data->config.qos_0_params,
+                                          sizeof(data->config.qos_0_params));
+
+    case mmagic_wlan_var_qos_1_params:
+        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_get, subcommand,
+                                          MMAGIC_STATUS_OK, &data->config.qos_1_params,
+                                          sizeof(data->config.qos_1_params));
+
+    case mmagic_wlan_var_qos_2_params:
+        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_get, subcommand,
+                                          MMAGIC_STATUS_OK, &data->config.qos_2_params,
+                                          sizeof(data->config.qos_2_params));
+
+    case mmagic_wlan_var_qos_3_params:
+        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_get, subcommand,
+                                          MMAGIC_STATUS_OK, &data->config.qos_3_params,
+                                          sizeof(data->config.qos_3_params));
+
+    case mmagic_wlan_var_mcs10_mode:
+        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_get, subcommand,
+                                          MMAGIC_STATUS_OK, &data->config.mcs10_mode,
+                                          sizeof(data->config.mcs10_mode));
 
     default:
         return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_get, subcommand,
@@ -289,6 +314,36 @@ static struct mmbuf *mmagic_m2m_wlan_set(struct mmagic_m2m_agent *agent,
     case mmagic_wlan_var_sta_scan_interval_limit_s:
         memcpy(&data->config.sta_scan_interval_limit_s, args,
                sizeof(data->config.sta_scan_interval_limit_s));
+        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_set,
+                                          subcommand, MMAGIC_STATUS_OK, NULL, 0);
+        break;
+
+    case mmagic_wlan_var_qos_0_params:
+        memcpy(&data->config.qos_0_params, args, sizeof(data->config.qos_0_params));
+        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_set,
+                                          subcommand, MMAGIC_STATUS_OK, NULL, 0);
+        break;
+
+    case mmagic_wlan_var_qos_1_params:
+        memcpy(&data->config.qos_1_params, args, sizeof(data->config.qos_1_params));
+        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_set,
+                                          subcommand, MMAGIC_STATUS_OK, NULL, 0);
+        break;
+
+    case mmagic_wlan_var_qos_2_params:
+        memcpy(&data->config.qos_2_params, args, sizeof(data->config.qos_2_params));
+        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_set,
+                                          subcommand, MMAGIC_STATUS_OK, NULL, 0);
+        break;
+
+    case mmagic_wlan_var_qos_3_params:
+        memcpy(&data->config.qos_3_params, args, sizeof(data->config.qos_3_params));
+        return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_set,
+                                          subcommand, MMAGIC_STATUS_OK, NULL, 0);
+        break;
+
+    case mmagic_wlan_var_mcs10_mode:
+        memcpy(&data->config.mcs10_mode, args, sizeof(data->config.mcs10_mode));
         return mmagic_m2m_create_response(mmagic_wlan, mmagic_wlan_cmd_set,
                                           subcommand, MMAGIC_STATUS_OK, NULL, 0);
         break;

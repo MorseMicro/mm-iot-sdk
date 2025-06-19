@@ -35,5 +35,6 @@ var searchData=
   ['tx_5fcb_5farg_32',['tx_cb_arg',['../structmmagic__cli__init__args.html#a03775cd69e4bffee5c7b80b56d9b308a',1,'mmagic_cli_init_args']]],
   ['tx_5fflow_5fcontrol_5fcb_33',['tx_flow_control_cb',['../structmmhal__wlan__pktmem__init__args.html#a0fad02ebf4e2120c9fe04f0c226990a4',1,'mmhal_wlan_pktmem_init_args']]],
   ['tx_5fframes_34',['tx_frames',['../structmmiperf__report.html#ae6f8f0fdc17c77d8e8e4987343512081',1,'mmiperf_report']]],
-  ['type_35',['type',['../structmbin__tlv__hdr.html#acdf5a55bc4057b67582e3e45f0bab180',1,'mbin_tlv_hdr::type()'],['../structtlv__header.html#a81357708c9dc76d0fa3af73fcf8ace1b',1,'tlv_header::type()']]]
+  ['txop_5fmax_5fus_35',['txop_max_us',['../structmmwlan__qos__queue__params.html#a8ccffd8fbab6955b1af8bfa9f05731d1',1,'mmwlan_qos_queue_params']]],
+  ['type_36',['type',['../structmbin__tlv__hdr.html#acdf5a55bc4057b67582e3e45f0bab180',1,'mbin_tlv_hdr::type()'],['../structtlv__header.html#a81357708c9dc76d0fa3af73fcf8ace1b',1,'tlv_header::type()']]]
 ];

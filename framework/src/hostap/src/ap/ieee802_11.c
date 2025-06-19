@@ -27,6 +27,7 @@
 #include "common/wpa_common.h"
 #include "common/wpa_ctrl.h"
 #include "common/ptksa_cache.h"
+#include "common/nan_de.h"
 #include "radius/radius.h"
 #include "radius/radius_client.h"
 #include "p2p/p2p.h"
@@ -2487,7 +2488,8 @@ static void pasn_fils_auth_resp(struct hostapd_data *hapd,
 			      wpabuf_head(pasn->secret),
 			      wpabuf_len(pasn->secret),
 			      pasn_get_ptk(sta->pasn), pasn_get_akmp(sta->pasn),
-			      pasn_get_cipher(sta->pasn), sta->pasn->kdk_len);
+			      pasn_get_cipher(sta->pasn), sta->pasn->kdk_len,
+			      sta->pasn->kek_len);
 	if (ret) {
 		wpa_printf(MSG_DEBUG, "PASN: FILS: Failed to derive PTK");
 		goto fail;
@@ -2856,7 +2858,7 @@ static void handle_auth_pasn(struct hostapd_data *hapd, struct sta_info *sta,
 
 		hapd_pasn_update_params(hapd, sta, mgmt, len);
 		if (handle_auth_pasn_1(sta->pasn, hapd->own_addr,
-				       sta->addr, mgmt, len) < 0)
+				       sta->addr, mgmt, len, false) < 0)
 			ap_free_sta(hapd, sta);
 	} else if (trans_seq == 3) {
 		if (!sta->pasn) {
@@ -6233,8 +6235,8 @@ static int handle_action(struct hostapd_data *hapd,
 			pos = mgmt->u.action.u.vs_public_action.variable;
 			end = ((const u8 *) mgmt) + len;
 			pos++;
-			hostapd_nan_usd_rx_sdf(hapd, mgmt->sa, freq,
-					       pos, end - pos);
+			hostapd_nan_usd_rx_sdf(hapd, mgmt->sa, mgmt->bssid,
+					       freq, pos, end - pos);
 			return 1;
 		}
 #endif /* CONFIG_NAN_USD */
@@ -6380,6 +6382,9 @@ int ieee802_11_mgmt(struct hostapd_data *hapd, const u8 *buf, size_t len,
 	}
 
 	if (!is_broadcast_ether_addr(mgmt->bssid) &&
+#ifdef CONFIG_NAN_USD
+	    !nan_de_is_nan_network_id(mgmt->bssid) &&
+#endif /* CONFIG_NAN_USD */
 #ifdef CONFIG_P2P
 	    /* Invitation responses can be sent with the peer MAC as BSSID */
 	    !((hapd->conf->p2p & P2P_GROUP_OWNER) &&

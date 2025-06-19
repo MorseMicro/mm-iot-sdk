@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.7.2</span>
+   &#160;<span id="projectnumber">2.8.2</span>
    </div>
   </td>
  </tr>
@@ -121,7 +121,7 @@ Macros</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
-<tr class="memitem:ga6cc7ccec4d0fb93de1648c19487df6bb"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__DATA.html#ga6cc7ccec4d0fb93de1648c19487df6bb">mmwlan_link_state_cb_t</a>) (enum <a class="el" href="group__MMWLAN__DATA.html#gaa4658954c9c65429abd87da6998284c5">mmwlan_link_state</a> <a class="el" href="group__LWIP__MMWLAN.html#ga72f2acfcd4cb3c597e91b0da08bb06d6">link_state</a>, void *arg)</td></tr>
+<tr class="memitem:ga6cc7ccec4d0fb93de1648c19487df6bb"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__DATA.html#ga6cc7ccec4d0fb93de1648c19487df6bb">mmwlan_link_state_cb_t</a>) (enum <a class="el" href="group__MMWLAN__DATA.html#gaa4658954c9c65429abd87da6998284c5">mmwlan_link_state</a> link_state, void *arg)</td></tr>
 <tr class="memdesc:ga6cc7ccec4d0fb93de1648c19487df6bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prototype for link state change callbacks.  <a href="group__MMWLAN__DATA.html#ga6cc7ccec4d0fb93de1648c19487df6bb">More...</a><br /></td></tr>
 <tr class="separator:ga6cc7ccec4d0fb93de1648c19487df6bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gabd26309390e6939f003c4ca44128cce0"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__DATA.html#gabd26309390e6939f003c4ca44128cce0">mmwlan_rx_cb_t</a>) (uint8_t *header, unsigned header_len, uint8_t *payload, unsigned payload_len, void *arg)</td></tr>
@@ -192,7 +192,7 @@ Functions</h2></td></tr>
 
 <p>Maximum Traffic ID (TID) supported for QoS traffic. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01896">1896</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01934">1934</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -210,7 +210,7 @@ Functions</h2></td></tr>
 
 <p>Default QoS Traffic ID (TID) to use for transmit (<code><a class="el" href="group__MMWLAN__DATA.html#gac6b6e52154bfe307d15cae475df33df3" title="Transmit the given packet using MMWLAN_TX_DEFAULT_QOS_TID.">mmwlan_tx()</a></code>). </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01893">1893</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01931">1931</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -230,7 +230,7 @@ Functions</h2></td></tr>
 <p >Used by <a class="el" href="group__MMWLAN__DATA.html#gac6b6e52154bfe307d15cae475df33df3">mmwlan_tx()</a> and <a class="el" href="group__MMWLAN__DATA.html#ga0607aa5a4d5a1051c6316707c1abe5be">mmwlan_tx_tid()</a>. <br  />
  </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01890">1890</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01928">1928</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -248,7 +248,7 @@ Functions</h2></td></tr>
 
 <p>Initializer for <a class="el" href="structmmwlan__tx__metadata.html">mmwlan_tx_metadata</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01924">1924</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01962">1962</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -260,7 +260,7 @@ Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">typedef void(* mmwlan_link_state_cb_t) (enum <a class="el" href="group__MMWLAN__DATA.html#gaa4658954c9c65429abd87da6998284c5">mmwlan_link_state</a> <a class="el" href="group__LWIP__MMWLAN.html#ga72f2acfcd4cb3c597e91b0da08bb06d6">link_state</a>, void *arg)</td>
+          <td class="memname">typedef void(* mmwlan_link_state_cb_t) (enum <a class="el" href="group__MMWLAN__DATA.html#gaa4658954c9c65429abd87da6998284c5">mmwlan_link_state</a> link_state, void *arg)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -274,7 +274,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01795">1795</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01833">1833</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -302,7 +302,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01822">1822</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01860">1860</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -327,7 +327,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01848">1848</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01886">1886</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -355,7 +355,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> on success, else an appropriate error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02064">2064</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02102">2102</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -380,7 +380,7 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01783">1783</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01821">1821</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -404,7 +404,7 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02046">2046</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02084">2084</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -664,7 +664,7 @@ Only a single receive callback may be registered at a time.</dd></dl>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> on success, else an appropriate error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02037">2037</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02075">2075</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -783,7 +783,7 @@ This function is non-blocking. It will return immediately if the tx path is bloc
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> on success, else an appropriate error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01986">1986</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02024">2024</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>

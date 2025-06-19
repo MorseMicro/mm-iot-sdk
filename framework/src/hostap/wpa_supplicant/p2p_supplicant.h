@@ -39,7 +39,8 @@ int wpas_p2p_connect(struct wpa_supplicant *wpa_s, const u8 *peer_addr,
 		     int persistent_id, int pd, int ht40, int vht,
 		     unsigned int vht_chwidth, int he, int edmg,
 		     const u8 *group_ssid, size_t group_ssid_len,
-		     bool allow_6ghz);
+		     bool allow_6ghz, bool p2p2, u16 bootstrap,
+		     const char *password);
 int wpas_p2p_handle_frequency_conflicts(struct wpa_supplicant *wpa_s,
                                           int freq, struct wpa_ssid *ssid);
 int wpas_p2p_group_add(struct wpa_supplicant *wpa_s, int persistent_group,
@@ -178,6 +179,9 @@ int wpas_p2p_nfc_tag_enabled(struct wpa_supplicant *wpa_s, int enabled);
 void wpas_p2p_pbc_overlap_cb(void *eloop_ctx, void *timeout_ctx);
 int wpas_p2p_try_edmg_channel(struct wpa_supplicant *wpa_s,
 			      struct p2p_go_neg_results *params);
+void wpas_p2p_process_usd_elems(struct wpa_supplicant *wpa_s, const u8 *buf,
+				u16 buf_len, const u8 *peer_addr,
+				unsigned int freq);
 
 #ifdef CONFIG_P2P
 
@@ -225,6 +229,10 @@ int wpas_p2p_lo_start(struct wpa_supplicant *wpa_s, unsigned int freq,
 		      unsigned int count);
 int wpas_p2p_lo_stop(struct wpa_supplicant *wpa_s);
 int wpas_p2p_mac_setup(struct wpa_supplicant *wpa_s);
+struct wpabuf * wpas_p2p_usd_elems(struct wpa_supplicant *wpa_s);
+int wpas_p2p_pasn_auth_rx(struct wpa_supplicant *wpa_s,
+			  const struct ieee80211_mgmt *mgmt, size_t len,
+			  int freq);
 
 #else /* CONFIG_P2P */
 
@@ -349,6 +357,11 @@ static inline int wpas_p2p_group_remove(struct wpa_supplicant *wpa_s,
 					const char *ifname)
 {
 	return 0;
+}
+
+static inline struct wpabuf * wpas_p2p_usd_elems(struct wpa_supplicant *wpa_s)
+{
+	return NULL;
 }
 
 #endif /* CONFIG_P2P */

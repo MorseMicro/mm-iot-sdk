@@ -13,6 +13,7 @@
 #include "FreeRTOS_IPv4_Sockets.h"
 #include "FreeRTOS_IPv6_Sockets.h"
 #include "FreeRTOS_ND.h"
+#include "FreeRTOS_ARP.h"
 
 /** If ping interval is >= this threshold then per-packet log messages will be displayed. */
 #define PING_DISPLAY_THRESHOLD_MS   (1000)

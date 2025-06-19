@@ -1,5 +1,5 @@
 /*
- * FreeRTOS+TCP V4.2.2
+ * FreeRTOS+TCP V4.3.1
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -42,7 +42,6 @@
 #include "FreeRTOS_Sockets.h"
 #include "FreeRTOS_IP_Private.h"
 #include "FreeRTOS_IP_Timers.h"
-#include "FreeRTOS_ARP.h"
 #include "FreeRTOS_UDP_IP.h"
 #include "FreeRTOS_Routing.h"
 #include "FreeRTOS_ND.h"
@@ -509,7 +508,7 @@
                 }
 
                 /* Now call vIPNetworkUpCalls() to send the network-up event and
-                 * start the ARP timer. */
+                 * start the Resolution timer. */
                 vIPNetworkUpCalls( pxEndPoint );
             }
         }

@@ -23,7 +23,7 @@
  * | ------------ | ------- |
  * | AU | Australia |
  * | CA | Canada |
- * | EU | EU |
+ * | EU | User Assigned EU |
  * | IN | India |
  * | JP | Japan |
  * | KR | South Korea |
@@ -128,7 +128,7 @@ const struct mmwlan_s1g_channel_list s1g_channel_list_CA = {
     .channels = s1g_channels_CA,
 };
 
-/** List of valid S1G channels for EU. */
+/** List of valid S1G channels for User Assigned EU. */
 const struct mmwlan_s1g_channel s1g_channels_EU[] = {
     /* Ctr Freq (Hz), Duty Cycle (%/100), Omit Control Response, Global Op Class, S1G Op Class, S1G Chan #, Op BW, Max Tx EIRP (dBm), Min Packet Spacing Window (microsec), airtime_min (microsec), airtime_max (microsec) */
     {  863500000,   280, false, 66,  6,  1,  1,  16, 0, 0, 0 },
@@ -138,7 +138,7 @@ const struct mmwlan_s1g_channel s1g_channels_EU[] = {
     {  867500000,   280, false, 66,  6,  9,  1,  16, 0, 0, 0 },
 };
 
-/** Channel list structure for EU. */
+/** Channel list structure for User Assigned EU. */
 const struct mmwlan_s1g_channel_list s1g_channel_list_EU = {
     .country_code = "EU",
     .num_channels = (sizeof(s1g_channels_EU)/sizeof(s1g_channels_EU[0])),

@@ -173,7 +173,7 @@ static void tx_data_pool_pkt_free(void *mmpkt)
         atomic_uint_fast8_t old_tx_paused = atomic_exchange(&pktmem.tx_data_pool_tx_paused, 0);
         if (old_tx_paused)
         {
-            pktmem.tx_flow_control_cb(MMWLAN_TX_READY);
+            pktmem.tx_flow_control_cb();
         }
     }
 }
@@ -223,11 +223,16 @@ struct mmpkt *mmhal_wlan_alloc_mmpkt_for_tx(uint8_t pkt_class,
         atomic_uint_fast8_t old_tx_paused = atomic_exchange(&pktmem.tx_data_pool_tx_paused, 1);
         if (!old_tx_paused)
         {
-            pktmem.tx_flow_control_cb(MMWLAN_TX_PAUSED);
+            pktmem.tx_flow_control_cb();
         }
     }
 
     return mmpkt;
+}
+
+enum mmwlan_tx_flow_control_state mmhal_wlan_pktmem_tx_flow_control_state(void)
+{
+    return pktmem.tx_data_pool_tx_paused ? MMWLAN_TX_PAUSED : MMWLAN_TX_READY;
 }
 
 static void rx_pkt_free(void *mmpkt)
@@ -243,10 +248,17 @@ static const struct mmpkt_ops mmpkt_rx_ops = {
     .free_mmpkt = rx_pkt_free
 };
 
-struct mmpkt *mmhal_wlan_alloc_mmpkt_for_rx(uint32_t capacity, uint32_t metadata_length)
+struct mmpkt *mmhal_wlan_alloc_mmpkt_for_rx(uint8_t pkt_class,
+                                            uint32_t capacity, uint32_t metadata_length)
 {
     atomic_int_least32_t old_value;
     struct mmpkt *mmpkt;
+
+    if (pkt_class == MMHAL_WLAN_PKT_COMMAND)
+    {
+        /* If the packet class is COMMAND then the allocation limits do not apply. */
+        return mmpkt_alloc_on_heap(0, capacity, metadata_length);
+    }
 
     old_value = atomic_fetch_add(&pktmem.rx_pool_allocated, 1);
 
@@ -257,7 +269,6 @@ struct mmpkt *mmhal_wlan_alloc_mmpkt_for_rx(uint32_t capacity, uint32_t metadata
         return NULL;
     }
 
-    /* For now we do not put an explicit limit on the of packets buffers on the RX path. */
     mmpkt = mmpkt_alloc_on_heap(0, capacity, metadata_length);
     if (mmpkt == NULL)
     {

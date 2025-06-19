@@ -1,3 +1,4 @@
+
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
@@ -105,6 +106,7 @@ void HAL_RNG_MspInit(RNG_HandleTypeDef* hrng)
   /* USER CODE BEGIN RNG_MspInit 1 */
 
   /* USER CODE END RNG_MspInit 1 */
+
   }
 
 }
@@ -186,6 +188,7 @@ void HAL_SD_MspInit(SD_HandleTypeDef* hsd)
   /* USER CODE BEGIN SDMMC2_MspInit 1 */
 
   /* USER CODE END SDMMC2_MspInit 1 */
+
   }
 
 }

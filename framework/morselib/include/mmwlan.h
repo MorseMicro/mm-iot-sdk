@@ -593,6 +593,66 @@ struct mmwlan_twt_config_args
 enum mmwlan_status mmwlan_twt_add_configuration(
     const struct mmwlan_twt_config_args *twt_config_args);
 
+/** The total number of @ref mmwlan_qos_queue_params that exist. */
+#define MMWLAN_QOS_QUEUE_NUM_ACIS 4
+
+/** Structure for storing QoS queue parameters  */
+struct mmwlan_qos_queue_params
+{
+    /** Access Category Index [0..3]. */
+    uint8_t aci;
+    /** Arbitration Inter-frame Space [2..255] */
+    uint8_t aifs;
+    /** Minimum Contention Window */
+    uint16_t cw_min;
+    /** Maximum Contention Window */
+    uint16_t cw_max;
+    /** Maximum burst time in microseconds, 0 meaning disabled. */
+    uint32_t txop_max_us;
+};
+
+/**
+ * Updates the default QoS queue configuration to the given values.
+ * These values will be made active while the station is connecting to an Access Point.
+ *
+ * @note Although the active configuration will be changed to the Access Point's configurations
+ *       for these values after connecting, these default values will not be overwritten and will
+ *       be reactivated after the station disconnects.
+ *
+ * @param params Array of QoS queue parameters. This array does not need to be sorted in Access
+ *               Category Index (ACI) order, since the ACI is specified as part of the
+ *               @c mmwlan_qos_queue_params structure. The same ACI must not be specified more
+ *               than once in this array. If a parameter for a given ACI is not included in this
+ *               list then its configuration will be left unchanged.
+ *
+ * @param count  The number of elements in the @c params array.
+ *               Must be at least 1 and no more than @ref MMWLAN_QOS_QUEUE_NUM_ACIS.
+ *
+ * @return @ref MMWLAN_SUCCESS on success, else an appropriate error code.
+ */
+enum mmwlan_status mmwlan_set_default_qos_queue_params(const struct mmwlan_qos_queue_params *params,
+                                                       size_t count);
+
+/** Enumeration of configuration states for MCS10 behavior. */
+enum mmwlan_mcs10_mode
+{
+    /** MCS10 is disabled. */
+    MMWLAN_MCS10_MODE_DISABLED = 0x00,
+    /** Always use MCS10 instead of MCS 0 if the bandwidth is 1 MHz. */
+    MMWLAN_MCS10_MODE_FORCED = 0x01,
+    /** Use MCS10 on retries instead of MCS 0 if the bandwidth is 1 MHz. */
+    MMWLAN_MCS10_MODE_AUTO = 0x02
+};
+
+/**
+ * Configure the rate adaptation behavior around selecting MCS10.
+ *
+ * @param mcs10_mode   Sets the MCS10 mode. See @ref mmwlan_mcs10_mode for what each mode means.
+ *
+ * @return @ref MMWLAN_SUCCESS on success, else an appropriate error code.
+ */
+enum mmwlan_status mmwlan_set_mcs10_mode(enum mmwlan_mcs10_mode mcs10_mode);
+
 /**
  * Arguments data structure for @ref mmwlan_boot().
  *
@@ -1459,8 +1519,7 @@ struct mmwlan_standby_config
      */
     uint16_t dst_port;
     /**
-     * The interval in seconds to wait after beacon loss before entering snooze. In
-     * snooze mode the chip stops listening for beacons to save power. (Default 120s)
+     * @deprecated This parameter is no longer used and will be removed in a future release.
      */
     uint32_t bss_inactivity_before_snooze_s;
     /**
@@ -1724,43 +1783,22 @@ void mmwlan_deinit(void);
 
 /**
  * The default minimum interval to wait after the last health check before triggering another.
- * If this is 0 then health checks will always happen at the
- * @ref MMWLAN_DEFAULT_MAX_HEALTH_CHECK_INTERVAL_MS value.
- * @ref MMWLAN_DEFAULT_MIN_HEALTH_CHECK_INTERVAL_MS must always be less than or equal to
- * @ref MMWLAN_DEFAULT_MAX_HEALTH_CHECK_INTERVAL_MS.
  */
 #define MMWLAN_DEFAULT_MIN_HEALTH_CHECK_INTERVAL_MS 60000
 
 /**
  * The default maximum interval to wait after the last health check before triggering another.
- * If this parameter is 0 then periodic health checks will be disabled.
- * @ref MMWLAN_DEFAULT_MIN_HEALTH_CHECK_INTERVAL_MS must always be less than or equal to
- * @ref MMWLAN_DEFAULT_MAX_HEALTH_CHECK_INTERVAL_MS. Set this to @c UINT32_MAX to have the
- * maximum unbounded.
  */
 #define MMWLAN_DEFAULT_MAX_HEALTH_CHECK_INTERVAL_MS 120000
 
 /**
- * Specify the periodic health check intervals.
+ * Specify the upper and lower bound for the periodic health check interval. To guarantee a specific
+ * interval set both @c min_interval_ms and @c max_interval_ms to the same value.
  *
- * The system will always schedule the periodic health check for the @c max_interval_ms
- * interval. It will however monitor system activity and opportunistically perform health
- * checks after @c min_interval_ms time has passed and some activity was detected. If no
- * activity was detected then the health check will be performed after @c max_interval_ms
- * as originally scheduled. Every time the health check is performed, the next one will be
- * rescheduled to occur after @c max_interval_ms. If both @c min_interval_ms and
- * @c max_interval_ms are set to 0, then periodic health checks will be disabled.
+ * @note To disable periodic health checks entirely set both values to zero (0).
  *
- * @param min_interval_ms  The minimum interval to wait after the last health check before
- *                         triggering another. If this parameter is 0 then health checks will
- *                         always happen at the @c max_interval_ms value. @c min_interval_ms
- *                         must always be less than or equal to @c max_interval_ms.
- *
- * @param max_interval_ms  The maximum interval to wait after the last health check before
- *                         triggering another. If this parameter is 0 then periodic health checks
- *                         will be disabled. @c min_interval_ms must always be less than or
- *                         equal to @c max_interval_ms. Set this to @c UINT32_MAX to have the
- *                         maximum unbounded.
+ * @param min_interval_ms Minimum value that the interval can be.
+ * @param max_interval_ms Maximum value that the interval can be.
  *
  * @return @ref MMWLAN_SUCCESS on success, else an appropriate error code.
  */
@@ -2174,6 +2212,28 @@ struct mmwlan_morse_stats *mmwlan_get_morse_stats(uint32_t core_num, bool reset)
  * @param stats     The instance to free. May be @ NULL.
  */
 void mmwlan_free_morse_stats(struct mmwlan_morse_stats *stats);
+
+/**
+ * The data for this struct is auto-generated, so it is stored externally.
+ * See mmwlan_stats.h for definition.
+ */
+struct mmwlan_stats_umac_data;
+
+/** @ingroup MMWLAN_UMAC_STATS */
+
+/** @{ */
+
+/**
+ * Gets the current values of the UMAC statistics.
+ *
+ * @param stats_dest An @c mmwlan_umac_stats pointer where the data will be stored.
+ *
+ * @return @ref MMWLAN_SUCCESS if stats retrieved or @ref MMWLAN_INVALID_ARGUMENT
+ *          if the buffer is NULL.
+ */
+enum mmwlan_status mmwlan_get_umac_stats(struct mmwlan_stats_umac_data *stats_dest);
+
+/** @} */
 
 /** @} */
 

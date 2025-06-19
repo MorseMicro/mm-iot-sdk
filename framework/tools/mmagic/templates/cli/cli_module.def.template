@@ -158,7 +158,7 @@ void mmagic_cli_{{data.name}}_commit(struct mmagic_cli *ctx, EmbeddedCli *cli, c
 
     {% if data.configs -%}
     mmagic_core_{{data.name}}_save_all(&ctx->core);
-    embeddedCliPrint(cli, "Succesfully committed '{{data.name}}' variables");
+    embeddedCliPrint(cli, "Successfully committed '{{data.name}}' variables");
     {% else %}
     MM_UNUSED(ctx);
     {%- endif %}

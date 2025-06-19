@@ -1,5 +1,5 @@
 /*
- * FreeRTOS+TCP V4.2.2
+ * FreeRTOS+TCP V4.3.1
  * Copyright (C) 2022 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -28,7 +28,7 @@
 /*****************************************************************************
 *
 * See the following URL for an explanation of this file:
-* http://www.FreeRTOS.org/FreeRTOS-Plus/FreeRTOS_Plus_TCP/Embedded_Compiler_Porting.html
+* https://freertos.org/Documentation/03-Libraries/02-FreeRTOS-plus/02-FreeRTOS-plus-TCP/10-Porting/02-Embedded_Compiler_Porting
 *
 *****************************************************************************/
 __attribute__( ( packed ) );

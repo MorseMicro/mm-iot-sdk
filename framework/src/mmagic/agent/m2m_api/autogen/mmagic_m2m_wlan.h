@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Morse Micro
+ * Copyright 2025 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -36,6 +36,11 @@ enum mmagic_wlan_vars
     mmagic_wlan_var_ndp_probe_enabled         = 19,
     mmagic_wlan_var_sta_scan_interval_base_s  = 20,
     mmagic_wlan_var_sta_scan_interval_limit_s = 21,
+    mmagic_wlan_var_qos_0_params              = 22,
+    mmagic_wlan_var_qos_1_params              = 23,
+    mmagic_wlan_var_qos_2_params              = 24,
+    mmagic_wlan_var_qos_3_params              = 25,
+    mmagic_wlan_var_mcs10_mode                = 26,
 };
 
 /**

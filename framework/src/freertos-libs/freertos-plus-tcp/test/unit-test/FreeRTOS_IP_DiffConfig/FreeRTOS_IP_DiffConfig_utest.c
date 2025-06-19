@@ -1,5 +1,5 @@
 /*
- * FreeRTOS+TCP V4.2.2
+ * FreeRTOS+TCP V4.3.1
  * Copyright (C) 2022 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -383,7 +383,7 @@ void test_vReturnEthernetFrame_DuplicationSuccess( void )
 
     FreeRTOS_FindEndPointOnNetMask_IgnoreAndReturn( pxEndPoint );
 
-    eARPGetCacheEntry_ExpectAnyArgsAndReturn( eARPCacheMiss );
+    eARPGetCacheEntry_ExpectAnyArgsAndReturn( eResolutionCacheMiss );
 
     xIsCallingFromIPTask_ExpectAndReturn( pdTRUE );
 
@@ -438,7 +438,7 @@ void test_vReturnEthernetFrame_DuplicationSuccessCacheHit( void )
 
     FreeRTOS_FindEndPointOnNetMask_IgnoreAndReturn( pxEndPoint );
 
-    eARPGetCacheEntry_ExpectAnyArgsAndReturn( eARPCacheHit );
+    eARPGetCacheEntry_ExpectAnyArgsAndReturn( eResolutionCacheHit );
     eARPGetCacheEntry_ReturnMemThruPtr_pxMACAddress( &xCacheMACAddress, sizeof( MACAddress_t ) );
 
     xIsCallingFromIPTask_ExpectAndReturn( pdTRUE );

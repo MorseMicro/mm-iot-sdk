@@ -825,9 +825,11 @@ void embeddedCliProcess(EmbeddedCli *cli) {
 
     if (!IS_FLAG_SET(impl->flags, CLI_FLAG_INIT_COMPLETE)) {
         SET_FLAG(impl->flags, CLI_FLAG_INIT_COMPLETE);
+        clearCurrentLine(cli);
         writeToOutput(cli, impl->invitation);
     }
 
+    bool print_auto_complete = fifoBufAvailable(&impl->rxBuffer);
     while (fifoBufAvailable(&impl->rxBuffer)) {
         char c = fifoBufPop(&impl->rxBuffer);
 
@@ -842,13 +844,17 @@ void embeddedCliProcess(EmbeddedCli *cli) {
             onCharInput(cli, c);
         }
 
-        printLiveAutocompletion(cli);
-
         impl->lastChar = c;
+    }
+
+    if (print_auto_complete) {
+        printLiveAutocompletion(cli);
     }
 
     // discard unfinished command if overflow happened
     if (IS_FLAG_SET(impl->flags, CLI_FLAG_OVERFLOW)) {
+        clearCurrentLine(cli);
+        writeToOutput(cli, impl->invitation);
         impl->cmdSize = 0;
         impl->cmdBuffer[impl->cmdSize] = '\0';
         UNSET_U8FLAG(impl->flags, CLI_FLAG_OVERFLOW);
@@ -1296,8 +1302,13 @@ static void printLiveAutocompletion(EmbeddedCli *cli) {
 
     AutocompletedCommand cmd = getAutocompletedCommand(cli, impl->cmdBuffer);
 
+    bool reprint_required = true;
+
     if (cmd.candidateCount == 0) {
+        // No autocomplete result.
         cmd.autocompletedLen = impl->cmdSize;
+        // Re-print only required if there are trailing characters from a previous auto completion
+        reprint_required = (cmd.autocompletedLen < impl->inputLineLength);
     }
 
     // print live autocompletion (or nothing, if it doesn't exist)
@@ -1309,6 +1320,12 @@ static void printLiveAutocompletion(EmbeddedCli *cli) {
         cli->writeChar(cli, ' ');
     }
     impl->inputLineLength = cmd.autocompletedLen;
+
+    if (!reprint_required)
+    {
+        return;
+    }
+
     cli->writeChar(cli, '\r');
     // print current command again so cursor is moved to initial place
     writeToOutput(cli, impl->invitation);

@@ -54,7 +54,7 @@ struct pasn_data {
 	int wpa_key_mgmt;
 	int rsn_pairwise;
 	u16 rsnxe_capab;
-	const u8 *rsnxe_ie;
+	u8 *rsnxe_ie;
 	bool custom_pmkid_valid;
 	u8 custom_pmkid[PMKID_LEN];
 
@@ -66,6 +66,7 @@ struct pasn_data {
 	size_t extra_ies_len;
 
 	/* External modules do not access below variables */
+	size_t kek_len;
 	u16 group;
 	bool secure_ltf;
 	int freq;
@@ -174,7 +175,8 @@ int wpa_pasn_auth_tx_status(struct pasn_data *pasn,
 /* Responder */
 int handle_auth_pasn_1(struct pasn_data *pasn,
 		       const u8 *own_addr, const u8 *peer_addr,
-		       const struct ieee80211_mgmt *mgmt, size_t len);
+		       const struct ieee80211_mgmt *mgmt, size_t len,
+		       bool reject);
 int handle_auth_pasn_3(struct pasn_data *pasn, const u8 *own_addr,
 		       const u8 *peer_addr,
 		       const struct ieee80211_mgmt *mgmt, size_t len);
@@ -205,8 +207,20 @@ void pasn_set_initiator_pmksa(struct pasn_data *pasn,
 void pasn_set_responder_pmksa(struct pasn_data *pasn,
 			      struct rsn_pmksa_cache *pmksa);
 int pasn_set_pt(struct pasn_data *pasn, struct sae_pt *pt);
+struct rsn_pmksa_cache * pasn_initiator_pmksa_cache_init(void);
+void pasn_initiator_pmksa_cache_deinit(struct rsn_pmksa_cache *pmksa);
+int pasn_initiator_pmksa_cache_add(struct rsn_pmksa_cache *pmksa,
+				   const u8 *own_addr, const u8 *bssid, u8 *pmk,
+				   size_t pmk_len, u8 *pmkid);
+int pasn_initiator_pmksa_cache_get(struct rsn_pmksa_cache *pmksa,
+				   const u8 *bssid, u8 *pmkid, u8 *pmk,
+				   size_t *pmk_len);
+void pasn_initiator_pmksa_cache_remove(struct rsn_pmksa_cache *pmksa,
+				       const u8 *bssid);
+void pasn_initiator_pmksa_cache_flush(struct rsn_pmksa_cache *pmksa);
 
 /* Responder */
+void pasn_set_noauth(struct pasn_data *pasn, bool noauth);
 void pasn_set_password(struct pasn_data *pasn, const char *password);
 void pasn_set_wpa_key_mgmt(struct pasn_data *pasn, int key_mgmt);
 void pasn_set_rsn_pairwise(struct pasn_data *pasn, int rsn_pairwise);
@@ -215,6 +229,17 @@ void pasn_set_rsnxe_ie(struct pasn_data *pasn, const u8 *rsnxe_ie);
 void pasn_set_custom_pmkid(struct pasn_data *pasn, const u8 *pmkid);
 int pasn_set_extra_ies(struct pasn_data *pasn, const u8 *extra_ies,
 		       size_t extra_ies_len);
+struct rsn_pmksa_cache * pasn_responder_pmksa_cache_init(void);
+void pasn_responder_pmksa_cache_deinit(struct rsn_pmksa_cache *pmksa);
+int pasn_responder_pmksa_cache_add(struct rsn_pmksa_cache *pmksa,
+				   const u8 *own_addr, const u8 *bssid, u8 *pmk,
+				   size_t pmk_len, u8 *pmkid);
+int pasn_responder_pmksa_cache_get(struct rsn_pmksa_cache *pmksa,
+				   const u8 *bssid, u8 *pmkid, u8 *pmk,
+				   size_t *pmk_len);
+void pasn_responder_pmksa_cache_remove(struct rsn_pmksa_cache *pmksa,
+				       const u8 *bssid);
+void pasn_responder_pmksa_cache_flush(struct rsn_pmksa_cache *pmksa);
 
 int pasn_get_akmp(struct pasn_data *pasn);
 int pasn_get_cipher(struct pasn_data *pasn);

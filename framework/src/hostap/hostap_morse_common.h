@@ -66,6 +66,7 @@ struct in6_addr
  */
 const char *inet_ntop (int __af, const void *__cp, char *__buf, int __len);
 
+#if !defined(ENABLE_HOSTAP_CRYPTO_API_MANGLING) || ENABLE_HOSTAP_CRYPTO_API_MANGLING
 /* Rename crypto functions to match symbol name mangling in morselib for avoidance of namespace
  * collisions. */
 #define aes_decrypt mmint_aes_decrypt
@@ -148,3 +149,5 @@ const char *inet_ntop (int __af, const void *__cp, char *__buf, int __len);
 #define wpabuf_alloc_copy mmint_wpabuf_alloc_copy
 #define wpabuf_clear_free mmint_wpabuf_clear_free
 #define wpabuf_put mmint_wpabuf_put
+
+#endif /* ENABLE_HOSTAP_CRYPTO_API_MANGLING */

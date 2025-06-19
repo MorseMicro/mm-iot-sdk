@@ -1,5 +1,5 @@
 /*
- * FreeRTOS+TCP V4.2.2
+ * FreeRTOS+TCP V4.3.1
  * Copyright (C) 2022 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -1262,7 +1262,7 @@ void test_vProcessGeneratedUDPPacket_IPv4_ICMPPingCantSend()
 
     pxICMPPacket = ( ICMPPacket_t * ) pxNetworkBuffer->pucEthernetBuffer;
 
-    eARPGetCacheEntry_ExpectAndReturn( &( pxNetworkBuffer->xIPAddress.ulIP_IPv4 ), &( pxICMPPacket->xEthernetHeader.xDestinationAddress ), NULL, eCantSendPacket );
+    eARPGetCacheEntry_ExpectAndReturn( &( pxNetworkBuffer->xIPAddress.ulIP_IPv4 ), &( pxICMPPacket->xEthernetHeader.xDestinationAddress ), NULL, eResolutionFailed );
     eARPGetCacheEntry_IgnoreArg_ppxEndPoint();
     eARPGetCacheEntry_ReturnThruPtr_ppxEndPoint( &pxEndPoint );
     eARPGetCacheEntry_IgnoreArg_pulIPAddress();
@@ -1317,7 +1317,7 @@ void test_vProcessGeneratedUDPPacket_IPv4_ICMPPingCacheHit()
 
     pxICMPPacket = ( ICMPPacket_t * ) pxNetworkBuffer->pucEthernetBuffer;
 
-    eARPGetCacheEntry_ExpectAndReturn( &( pxNetworkBuffer->xIPAddress.ulIP_IPv4 ), &( pxICMPPacket->xEthernetHeader.xDestinationAddress ), NULL, eARPCacheHit );
+    eARPGetCacheEntry_ExpectAndReturn( &( pxNetworkBuffer->xIPAddress.ulIP_IPv4 ), &( pxICMPPacket->xEthernetHeader.xDestinationAddress ), NULL, eResolutionCacheHit );
     eARPGetCacheEntry_IgnoreArg_ppxEndPoint();
     eARPGetCacheEntry_ReturnThruPtr_ppxEndPoint( &pxEndPoint );
     eARPGetCacheEntry_IgnoreArg_pulIPAddress();
@@ -1350,7 +1350,7 @@ void test_vProcessGeneratedUDPPacket_IPv4_UDPCacheHit()
 
     pxUDPPacket = ( UDPPacket_t * ) pxNetworkBuffer->pucEthernetBuffer;
 
-    eARPGetCacheEntry_ExpectAndReturn( &( pxNetworkBuffer->xIPAddress.ulIP_IPv4 ), &( pxUDPPacket->xEthernetHeader.xDestinationAddress ), NULL, eARPCacheHit );
+    eARPGetCacheEntry_ExpectAndReturn( &( pxNetworkBuffer->xIPAddress.ulIP_IPv4 ), &( pxUDPPacket->xEthernetHeader.xDestinationAddress ), NULL, eResolutionCacheHit );
     eARPGetCacheEntry_IgnoreArg_ppxEndPoint();
     eARPGetCacheEntry_ReturnThruPtr_ppxEndPoint( &pxEndPoint );
     eARPGetCacheEntry_IgnoreArg_pulIPAddress();
@@ -1390,7 +1390,7 @@ void test_vProcessGeneratedUDPPacket_IPv4_UDPCacheHitLessBufferLength()
 
     pxUDPPacket = ( UDPPacket_t * ) pxNetworkBuffer->pucEthernetBuffer;
 
-    eARPGetCacheEntry_ExpectAndReturn( &( pxNetworkBuffer->xIPAddress.ulIP_IPv4 ), &( pxUDPPacket->xEthernetHeader.xDestinationAddress ), NULL, eARPCacheHit );
+    eARPGetCacheEntry_ExpectAndReturn( &( pxNetworkBuffer->xIPAddress.ulIP_IPv4 ), &( pxUDPPacket->xEthernetHeader.xDestinationAddress ), NULL, eResolutionCacheHit );
     eARPGetCacheEntry_IgnoreArg_ppxEndPoint();
     eARPGetCacheEntry_ReturnThruPtr_ppxEndPoint( &pxEndPoint );
     eARPGetCacheEntry_IgnoreArg_pulIPAddress();
@@ -1429,7 +1429,7 @@ void test_vProcessGeneratedUDPPacket_IPv4_UDPCacheHitDiffEndPoint()
 
     pxUDPPacket = ( UDPPacket_t * ) pxNetworkBuffer->pucEthernetBuffer;
 
-    eARPGetCacheEntry_ExpectAndReturn( &( pxNetworkBuffer->xIPAddress.ulIP_IPv4 ), &( pxUDPPacket->xEthernetHeader.xDestinationAddress ), NULL, eARPCacheHit );
+    eARPGetCacheEntry_ExpectAndReturn( &( pxNetworkBuffer->xIPAddress.ulIP_IPv4 ), &( pxUDPPacket->xEthernetHeader.xDestinationAddress ), NULL, eResolutionCacheHit );
     eARPGetCacheEntry_IgnoreArg_ppxEndPoint();
     eARPGetCacheEntry_ReturnThruPtr_ppxEndPoint( &pxDifferentEndPoint );
     eARPGetCacheEntry_IgnoreArg_pulIPAddress();
@@ -1466,7 +1466,7 @@ void test_vProcessGeneratedUDPPacket_IPv4_UDPCacheHitLLMNR()
 
     pxUDPPacket = ( UDPPacket_t * ) pxNetworkBuffer->pucEthernetBuffer;
 
-    eARPGetCacheEntry_ExpectAndReturn( &( pxNetworkBuffer->xIPAddress.ulIP_IPv4 ), &( pxUDPPacket->xEthernetHeader.xDestinationAddress ), NULL, eARPCacheHit );
+    eARPGetCacheEntry_ExpectAndReturn( &( pxNetworkBuffer->xIPAddress.ulIP_IPv4 ), &( pxUDPPacket->xEthernetHeader.xDestinationAddress ), NULL, eResolutionCacheHit );
     eARPGetCacheEntry_IgnoreArg_ppxEndPoint();
     eARPGetCacheEntry_ReturnThruPtr_ppxEndPoint( &pxEndPoint );
     eARPGetCacheEntry_IgnoreArg_pulIPAddress();
@@ -1505,7 +1505,7 @@ void test_vProcessGeneratedUDPPacket_IPv4_UDPCacheHitMDNS()
 
     pxUDPPacket = ( UDPPacket_t * ) pxNetworkBuffer->pucEthernetBuffer;
 
-    eARPGetCacheEntry_ExpectAndReturn( &( pxNetworkBuffer->xIPAddress.ulIP_IPv4 ), &( pxUDPPacket->xEthernetHeader.xDestinationAddress ), NULL, eARPCacheHit );
+    eARPGetCacheEntry_ExpectAndReturn( &( pxNetworkBuffer->xIPAddress.ulIP_IPv4 ), &( pxUDPPacket->xEthernetHeader.xDestinationAddress ), NULL, eResolutionCacheHit );
     eARPGetCacheEntry_IgnoreArg_ppxEndPoint();
     eARPGetCacheEntry_ReturnThruPtr_ppxEndPoint( &pxEndPoint );
     eARPGetCacheEntry_IgnoreArg_pulIPAddress();
@@ -1545,7 +1545,7 @@ void test_vProcessGeneratedUDPPacket_IPv4_UDPCacheHitNoInterface()
 
     pxUDPPacket = ( UDPPacket_t * ) pxNetworkBuffer->pucEthernetBuffer;
 
-    eARPGetCacheEntry_ExpectAndReturn( &( pxNetworkBuffer->xIPAddress.ulIP_IPv4 ), &( pxUDPPacket->xEthernetHeader.xDestinationAddress ), NULL, eARPCacheHit );
+    eARPGetCacheEntry_ExpectAndReturn( &( pxNetworkBuffer->xIPAddress.ulIP_IPv4 ), &( pxUDPPacket->xEthernetHeader.xDestinationAddress ), NULL, eResolutionCacheHit );
     eARPGetCacheEntry_IgnoreArg_ppxEndPoint();
     eARPGetCacheEntry_ReturnThruPtr_ppxEndPoint( &pxEndPoint );
     eARPGetCacheEntry_IgnoreArg_pulIPAddress();
@@ -1584,7 +1584,7 @@ void test_vProcessGeneratedUDPPacket_IPv4_UDPCacheHitInterfaceNoOutput()
 
     pxUDPPacket = ( UDPPacket_t * ) pxNetworkBuffer->pucEthernetBuffer;
 
-    eARPGetCacheEntry_ExpectAndReturn( &( pxNetworkBuffer->xIPAddress.ulIP_IPv4 ), &( pxUDPPacket->xEthernetHeader.xDestinationAddress ), NULL, eARPCacheHit );
+    eARPGetCacheEntry_ExpectAndReturn( &( pxNetworkBuffer->xIPAddress.ulIP_IPv4 ), &( pxUDPPacket->xEthernetHeader.xDestinationAddress ), NULL, eResolutionCacheHit );
     eARPGetCacheEntry_IgnoreArg_ppxEndPoint();
     eARPGetCacheEntry_ReturnThruPtr_ppxEndPoint( &pxEndPoint );
     eARPGetCacheEntry_IgnoreArg_pulIPAddress();
@@ -1618,7 +1618,7 @@ void test_vProcessGeneratedUDPPacket_IPv4_UDPCacheHitNoEndPoint()
 
     pxUDPPacket = ( UDPPacket_t * ) pxNetworkBuffer->pucEthernetBuffer;
 
-    eARPGetCacheEntry_ExpectAndReturn( &( pxNetworkBuffer->xIPAddress.ulIP_IPv4 ), &( pxUDPPacket->xEthernetHeader.xDestinationAddress ), NULL, eARPCacheHit );
+    eARPGetCacheEntry_ExpectAndReturn( &( pxNetworkBuffer->xIPAddress.ulIP_IPv4 ), &( pxUDPPacket->xEthernetHeader.xDestinationAddress ), NULL, eResolutionCacheHit );
     eARPGetCacheEntry_IgnoreArg_ppxEndPoint();
     eARPGetCacheEntry_ReturnThruPtr_ppxEndPoint( &pxEndPoint );
     eARPGetCacheEntry_IgnoreArg_pulIPAddress();
@@ -1652,14 +1652,13 @@ void test_vProcessGeneratedUDPPacket_IPv4_UDPCacheMissEndPointFound()
 
     pxUDPPacket = ( UDPPacket_t * ) pxNetworkBuffer->pucEthernetBuffer;
 
-    eARPGetCacheEntry_ExpectAndReturn( &( pxNetworkBuffer->xIPAddress.ulIP_IPv4 ), &( pxUDPPacket->xEthernetHeader.xDestinationAddress ), NULL, eARPCacheMiss );
+    eARPGetCacheEntry_ExpectAndReturn( &( pxNetworkBuffer->xIPAddress.ulIP_IPv4 ), &( pxUDPPacket->xEthernetHeader.xDestinationAddress ), NULL, eResolutionCacheMiss );
     eARPGetCacheEntry_IgnoreArg_ppxEndPoint();
     eARPGetCacheEntry_ReturnThruPtr_ppxEndPoint( &pxEndPointNull );
     eARPGetCacheEntry_IgnoreArg_pulIPAddress();
 
     vARPRefreshCacheEntry_Expect( NULL, pxNetworkBuffer->xIPAddress.ulIP_IPv4, NULL );
-    FreeRTOS_FindEndPointOnNetMask_ExpectAndReturn( pxNetworkBuffer->xIPAddress.ulIP_IPv4, 0, pxEndPoint );
-    FreeRTOS_FindEndPointOnNetMask_IgnoreArg_ulWhere();
+    FreeRTOS_FindEndPointOnNetMask_ExpectAndReturn( pxNetworkBuffer->xIPAddress.ulIP_IPv4, pxEndPoint );
 
     vARPGenerateRequestPacket_Expect( pxNetworkBuffer );
 
@@ -1685,14 +1684,13 @@ void test_vProcessGeneratedUDPPacket_IPv4_UDPCacheMissEndPointNotFound()
 
     pxUDPPacket = ( UDPPacket_t * ) pxNetworkBuffer->pucEthernetBuffer;
 
-    eARPGetCacheEntry_ExpectAndReturn( &( pxNetworkBuffer->xIPAddress.ulIP_IPv4 ), &( pxUDPPacket->xEthernetHeader.xDestinationAddress ), NULL, eARPCacheMiss );
+    eARPGetCacheEntry_ExpectAndReturn( &( pxNetworkBuffer->xIPAddress.ulIP_IPv4 ), &( pxUDPPacket->xEthernetHeader.xDestinationAddress ), NULL, eResolutionCacheMiss );
     eARPGetCacheEntry_IgnoreArg_ppxEndPoint();
     eARPGetCacheEntry_ReturnThruPtr_ppxEndPoint( &pxEndPointNull );
     eARPGetCacheEntry_IgnoreArg_pulIPAddress();
 
     vARPRefreshCacheEntry_Expect( NULL, pxNetworkBuffer->xIPAddress.ulIP_IPv4, NULL );
-    FreeRTOS_FindEndPointOnNetMask_ExpectAndReturn( pxNetworkBuffer->xIPAddress.ulIP_IPv4, 0, NULL );
-    FreeRTOS_FindEndPointOnNetMask_IgnoreArg_ulWhere();
+    FreeRTOS_FindEndPointOnNetMask_ExpectAndReturn( pxNetworkBuffer->xIPAddress.ulIP_IPv4, NULL );
     vReleaseNetworkBufferAndDescriptor_Expect( pxNetworkBuffer );
 
     vProcessGeneratedUDPPacket_IPv4( pxNetworkBuffer );

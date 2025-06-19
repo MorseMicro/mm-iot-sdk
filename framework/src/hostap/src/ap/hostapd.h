@@ -98,6 +98,8 @@ struct hapd_interfaces {
 #ifdef CONFIG_IEEE80211BE
 	struct hostapd_mld **mld;
 	size_t mld_count;
+	int (*mld_ctrl_iface_init)(struct hostapd_mld *mld);
+	void (*mld_ctrl_iface_deinit)(struct hostapd_mld *mld);
 #endif /* CONFIG_IEEE80211BE */
 };
 
@@ -517,6 +519,10 @@ struct hostapd_data {
 	/* Cached partner info for ML probe response */
 	struct mld_link_info partner_links[MAX_NUM_MLD_LINKS];
 
+	/* 5 characters for "_link", up to 2 characters for <link ID>, so in
+	 * total, additional 7 characters required. */
+	char ctrl_sock_iface[IFNAMSIZ + 7 + 1];
+
 #ifdef CONFIG_TESTING_OPTIONS
 	u8 eht_mld_link_removal_count;
 #endif /* CONFIG_TESTING_OPTIONS */
@@ -559,6 +565,10 @@ struct hostapd_mld {
 
 	struct hostapd_data *fbss;
 	struct dl_list links; /* List head of all affiliated links */
+
+	int ctrl_sock;
+	struct dl_list ctrl_dst;
+	char *ctrl_interface; /* Directory for UNIX domain sockets */
 };
 
 #define HOSTAPD_MLD_MAX_REF_COUNT      0xFF
@@ -799,7 +809,7 @@ void hostapd_chan_switch_config(struct hostapd_data *hapd,
 int hostapd_switch_channel(struct hostapd_data *hapd,
 			   struct csa_settings *settings);
 int hostapd_force_channel_switch(struct hostapd_iface *iface,
-				 struct csa_settings settings);
+				 struct csa_settings *settings);
 void
 hostapd_switch_channel_fallback(struct hostapd_iface *iface,
 				const struct hostapd_freq_params *freq_params);

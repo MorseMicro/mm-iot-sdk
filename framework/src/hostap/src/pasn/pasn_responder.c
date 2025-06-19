@@ -26,6 +26,65 @@
 #include "pasn_common.h"
 
 
+struct rsn_pmksa_cache * pasn_responder_pmksa_cache_init(void)
+{
+	return pmksa_cache_auth_init(NULL, NULL);
+}
+
+
+void pasn_responder_pmksa_cache_deinit(struct rsn_pmksa_cache *pmksa)
+{
+	return pmksa_cache_auth_deinit(pmksa);
+}
+
+
+int pasn_responder_pmksa_cache_add(struct rsn_pmksa_cache *pmksa,
+				   const u8 *own_addr, const u8 *bssid, u8 *pmk,
+				   size_t pmk_len, u8 *pmkid)
+{
+	if (pmksa_cache_auth_add(pmksa, pmk, pmk_len, pmkid, NULL, 0, own_addr,
+				 bssid, 0, NULL, WPA_KEY_MGMT_SAE))
+		return 0;
+	return -1;
+}
+
+
+int pasn_responder_pmksa_cache_get(struct rsn_pmksa_cache *pmksa,
+				   const u8 *bssid, u8 *pmkid, u8 *pmk,
+				   size_t *pmk_len)
+{
+	struct rsn_pmksa_cache_entry *entry;
+
+	entry = pmksa_cache_auth_get(pmksa, bssid, NULL);
+	if (entry) {
+		os_memcpy(pmkid, entry->pmkid, PMKID_LEN);
+		os_memcpy(pmk, entry->pmk, entry->pmk_len);
+		*pmk_len = entry->pmk_len;
+		return 0;
+	}
+	return -1;
+}
+
+
+void pasn_responder_pmksa_cache_remove(struct rsn_pmksa_cache *pmksa,
+				       const u8 *bssid)
+{
+	struct rsn_pmksa_cache_entry *entry;
+
+	entry = pmksa_cache_auth_get(pmksa, bssid, NULL);
+	if (!entry)
+		return;
+
+	pmksa_cache_free_entry(pmksa, entry);
+}
+
+
+void pasn_responder_pmksa_cache_flush(struct rsn_pmksa_cache *pmksa)
+{
+	return pmksa_cache_auth_flush(pmksa);
+}
+
+
 void pasn_set_responder_pmksa(struct pasn_data *pasn,
 			      struct rsn_pmksa_cache *pmksa)
 {
@@ -349,7 +408,7 @@ pasn_derive_keys(struct pasn_data *pasn,
 	ret = pasn_pmk_to_ptk(pmk, pmk_len, peer_addr, own_addr,
 			      wpabuf_head(secret), wpabuf_len(secret),
 			      &pasn->ptk, pasn->akmp,
-			      pasn->cipher, pasn->kdk_len);
+			      pasn->cipher, pasn->kdk_len, pasn->kek_len);
 	if (ret) {
 		wpa_printf(MSG_DEBUG, "PASN: Failed to derive PTK");
 		return -1;
@@ -414,7 +473,7 @@ static void handle_auth_pasn_comeback(struct pasn_data *pasn,
 		   "PASN: comeback: STA=" MACSTR, MAC2STR(peer_addr));
 
 	ret = pasn->send_mgmt(pasn->cb_ctx, wpabuf_head_u8(buf),
-			      wpabuf_len(buf), 0, 0, 0);
+			      wpabuf_len(buf), 0, pasn->freq, 0);
 	if (ret)
 		wpa_printf(MSG_INFO, "PASN: Failed to send comeback frame 2");
 
@@ -579,7 +638,7 @@ done:
 		   MAC2STR(peer_addr));
 
 	ret = pasn->send_mgmt(pasn->cb_ctx, wpabuf_head_u8(buf),
-			      wpabuf_len(buf), 0, 0, 0);
+			      wpabuf_len(buf), 0, pasn->freq, 0);
 	if (ret)
 		wpa_printf(MSG_INFO, "send_auth_reply: Send failed");
 
@@ -597,7 +656,8 @@ fail:
 
 int handle_auth_pasn_1(struct pasn_data *pasn,
 		       const u8 *own_addr, const u8 *peer_addr,
-		       const struct ieee80211_mgmt *mgmt, size_t len)
+		       const struct ieee80211_mgmt *mgmt, size_t len,
+		       bool reject)
 {
 	struct ieee802_11_elems elems;
 	struct wpa_ie_data rsn_data;
@@ -615,6 +675,12 @@ int handle_auth_pasn_1(struct pasn_data *pasn,
 
 	if (!groups)
 		groups = default_groups;
+
+	if (reject) {
+		wpa_printf(MSG_DEBUG, "PASN: Received Rejection");
+		status = WLAN_STATUS_UNSPECIFIED_FAILURE;
+		goto send_resp;
+	}
 
 	if (ieee802_11_parse_elems(mgmt->u.auth.variable,
 				   len - offsetof(struct ieee80211_mgmt,

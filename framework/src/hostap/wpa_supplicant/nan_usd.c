@@ -13,6 +13,8 @@
 #include "wpa_supplicant_i.h"
 #include "offchannel.h"
 #include "driver_i.h"
+#include "notify.h"
+#include "p2p_supplicant.h"
 #include "nan_usd.h"
 
 
@@ -241,19 +243,10 @@ wpas_nan_de_discovery_result(void *ctx, int subscribe_id,
 			     const u8 *peer_addr, bool fsd, bool fsd_gas)
 {
 	struct wpa_supplicant *wpa_s = ctx;
-	char *ssi_hex;
 
-	ssi_hex = os_zalloc(2 * ssi_len + 1);
-	if (!ssi_hex)
-		return;
-	if (ssi)
-		wpa_snprintf_hex(ssi_hex, 2 * ssi_len + 1, ssi, ssi_len);
-	wpa_msg(wpa_s, MSG_INFO, NAN_DISCOVERY_RESULT
-		"subscribe_id=%d publish_id=%d address=" MACSTR
-		" fsd=%d fsd_gas=%d srv_proto_type=%u ssi=%s",
-		subscribe_id, peer_publish_id, MAC2STR(peer_addr),
-		fsd, fsd_gas, srv_proto_type, ssi_hex);
-	os_free(ssi_hex);
+	wpas_notify_nan_discovery_result(wpa_s, srv_proto_type, subscribe_id,
+					 peer_publish_id, peer_addr, fsd,
+					 fsd_gas, ssi, ssi_len);
 }
 
 
@@ -263,34 +256,9 @@ static void wpas_nan_de_replied(void *ctx, int publish_id, const u8 *peer_addr,
 				const u8 *ssi, size_t ssi_len)
 {
 	struct wpa_supplicant *wpa_s = ctx;
-	char *ssi_hex;
 
-	ssi_hex = os_zalloc(2 * ssi_len + 1);
-	if (!ssi_hex)
-		return;
-	if (ssi)
-		wpa_snprintf_hex(ssi_hex, 2 * ssi_len + 1, ssi, ssi_len);
-	wpa_msg(wpa_s, MSG_INFO, NAN_REPLIED
-		"publish_id=%d address=" MACSTR
-		" subscribe_id=%d srv_proto_type=%u ssi=%s",
-		publish_id, MAC2STR(peer_addr), peer_subscribe_id,
-		srv_proto_type, ssi_hex);
-	os_free(ssi_hex);
-}
-
-
-static const char * nan_reason_txt(enum nan_de_reason reason)
-{
-	switch (reason) {
-	case NAN_DE_REASON_TIMEOUT:
-		return "timeout";
-	case NAN_DE_REASON_USER_REQUEST:
-		return "user-request";
-	case NAN_DE_REASON_FAILURE:
-		return "failure";
-	}
-
-	return "unknown";
+	wpas_notify_nan_replied(wpa_s, srv_proto_type, publish_id,
+				peer_subscribe_id, peer_addr, ssi, ssi_len);
 }
 
 
@@ -299,9 +267,7 @@ static void wpas_nan_de_publish_terminated(void *ctx, int publish_id,
 {
 	struct wpa_supplicant *wpa_s = ctx;
 
-	wpa_msg(wpa_s, MSG_INFO, NAN_PUBLISH_TERMINATED
-		"publish_id=%d reason=%s",
-		publish_id, nan_reason_txt(reason));
+	wpas_notify_nan_publish_terminated(wpa_s, publish_id, reason);
 }
 
 
@@ -310,9 +276,7 @@ static void wpas_nan_de_subscribe_terminated(void *ctx, int subscribe_id,
 {
 	struct wpa_supplicant *wpa_s = ctx;
 
-	wpa_msg(wpa_s, MSG_INFO, NAN_SUBSCRIBE_TERMINATED
-		"subscribe_id=%d reason=%s",
-		subscribe_id, nan_reason_txt(reason));
+	wpas_notify_nan_subscribe_terminated(wpa_s, subscribe_id, reason);
 }
 
 
@@ -321,23 +285,28 @@ static void wpas_nan_de_receive(void *ctx, int id, int peer_instance_id,
 				const u8 *peer_addr)
 {
 	struct wpa_supplicant *wpa_s = ctx;
-	char *ssi_hex;
 
-	ssi_hex = os_zalloc(2 * ssi_len + 1);
-	if (!ssi_hex)
-		return;
-	if (ssi)
-		wpa_snprintf_hex(ssi_hex, 2 * ssi_len + 1, ssi, ssi_len);
-	wpa_msg(wpa_s, MSG_INFO, NAN_RECEIVE
-		"id=%d peer_instance_id=%d address=" MACSTR " ssi=%s",
-		id, peer_instance_id, MAC2STR(peer_addr), ssi_hex);
-	os_free(ssi_hex);
+	wpas_notify_nan_receive(wpa_s, id, peer_instance_id, peer_addr,
+				ssi, ssi_len);
 }
+
+
+#ifdef CONFIG_P2P
+static void wpas_nan_process_p2p_usd_elems(void *ctx, const u8 *buf,
+					   u16 buf_len, const u8 *peer_addr,
+					   unsigned int freq)
+{
+	struct wpa_supplicant *wpa_s = ctx;
+
+	wpas_p2p_process_usd_elems(wpa_s, buf, buf_len, peer_addr, freq);
+}
+#endif /* CONFIG_P2P */
 
 
 int wpas_nan_usd_init(struct wpa_supplicant *wpa_s)
 {
 	struct nan_callbacks cb;
+	bool offload = wpa_s->drv_flags2 & WPA_DRIVER_FLAGS2_NAN_OFFLOAD;
 
 	os_memset(&cb, 0, sizeof(cb));
 	cb.ctx = wpa_s;
@@ -348,8 +317,11 @@ int wpas_nan_usd_init(struct wpa_supplicant *wpa_s)
 	cb.publish_terminated = wpas_nan_de_publish_terminated;
 	cb.subscribe_terminated = wpas_nan_de_subscribe_terminated;
 	cb.receive = wpas_nan_de_receive;
+#ifdef CONFIG_P2P
+	cb.process_p2p_usd_elems = wpas_nan_process_p2p_usd_elems;
+#endif /* CONFIG_P2P */
 
-	wpa_s->nan_de = nan_de_init(wpa_s->own_addr, false, &cb);
+	wpa_s->nan_de = nan_de_init(wpa_s->own_addr, offload, false, &cb);
 	if (!wpa_s->nan_de)
 		return -1;
 	return 0;
@@ -364,11 +336,12 @@ void wpas_nan_usd_deinit(struct wpa_supplicant *wpa_s)
 
 
 void wpas_nan_usd_rx_sdf(struct wpa_supplicant *wpa_s, const u8 *src,
+			 const u8 *a3,
 			 unsigned int freq, const u8 *buf, size_t len)
 {
 	if (!wpa_s->nan_de)
 		return;
-	nan_de_rx_sdf(wpa_s->nan_de, src, freq, buf, len);
+	nan_de_rx_sdf(wpa_s->nan_de, src, a3, freq, buf, len);
 }
 
 
@@ -377,22 +350,42 @@ void wpas_nan_usd_flush(struct wpa_supplicant *wpa_s)
 	if (!wpa_s->nan_de)
 		return;
 	nan_de_flush(wpa_s->nan_de);
+	if (wpa_s->drv_flags2 & WPA_DRIVER_FLAGS2_NAN_OFFLOAD)
+		wpas_drv_nan_flush(wpa_s);
 }
 
 
 int wpas_nan_usd_publish(struct wpa_supplicant *wpa_s, const char *service_name,
 			 enum nan_service_protocol_type srv_proto_type,
 			 const struct wpabuf *ssi,
-			 struct nan_publish_params *params)
+			 struct nan_publish_params *params, bool p2p)
 {
 	int publish_id;
 	struct wpabuf *elems = NULL;
+	const u8 *addr;
 
 	if (!wpa_s->nan_de)
 		return -1;
 
+	if (p2p) {
+		elems = wpas_p2p_usd_elems(wpa_s);
+		addr = wpa_s->global->p2p_dev_addr;
+	} else {
+		addr = wpa_s->own_addr;
+	}
+
 	publish_id = nan_de_publish(wpa_s->nan_de, service_name, srv_proto_type,
-				    ssi, elems, params);
+				    ssi, elems, params, p2p);
+	if (publish_id >= 1 &&
+	    (wpa_s->drv_flags2 & WPA_DRIVER_FLAGS2_NAN_OFFLOAD) &&
+	    wpas_drv_nan_publish(wpa_s, addr, publish_id, service_name,
+				 nan_de_get_service_id(wpa_s->nan_de,
+						       publish_id),
+				 srv_proto_type, ssi, elems, params) < 0) {
+		nan_de_cancel_publish(wpa_s->nan_de, publish_id);
+		publish_id = -1;
+	}
+
 	wpabuf_free(elems);
 	return publish_id;
 }
@@ -403,15 +396,23 @@ void wpas_nan_usd_cancel_publish(struct wpa_supplicant *wpa_s, int publish_id)
 	if (!wpa_s->nan_de)
 		return;
 	nan_de_cancel_publish(wpa_s->nan_de, publish_id);
+	if (wpa_s->drv_flags2 & WPA_DRIVER_FLAGS2_NAN_OFFLOAD)
+		wpas_drv_nan_cancel_publish(wpa_s, publish_id);
 }
 
 
 int wpas_nan_usd_update_publish(struct wpa_supplicant *wpa_s, int publish_id,
 				const struct wpabuf *ssi)
 {
+	int ret;
+
 	if (!wpa_s->nan_de)
 		return -1;
-	return nan_de_update_publish(wpa_s->nan_de, publish_id, ssi);
+	ret = nan_de_update_publish(wpa_s->nan_de, publish_id, ssi);
+	if (ret == 0 && (wpa_s->drv_flags2 & WPA_DRIVER_FLAGS2_NAN_OFFLOAD) &&
+	    wpas_drv_nan_update_publish(wpa_s, publish_id, ssi) < 0)
+		return -1;
+	return ret;
 }
 
 
@@ -419,16 +420,35 @@ int wpas_nan_usd_subscribe(struct wpa_supplicant *wpa_s,
 			   const char *service_name,
 			   enum nan_service_protocol_type srv_proto_type,
 			   const struct wpabuf *ssi,
-			   struct nan_subscribe_params *params)
+			   struct nan_subscribe_params *params, bool p2p)
 {
 	int subscribe_id;
 	struct wpabuf *elems = NULL;
+	const u8 *addr;
 
 	if (!wpa_s->nan_de)
 		return -1;
 
+	if (p2p) {
+		elems = wpas_p2p_usd_elems(wpa_s);
+		addr = wpa_s->global->p2p_dev_addr;
+	} else {
+		addr = wpa_s->own_addr;
+	}
+
 	subscribe_id = nan_de_subscribe(wpa_s->nan_de, service_name,
-					srv_proto_type, ssi, elems, params);
+					srv_proto_type, ssi, elems, params,
+					p2p);
+	if (subscribe_id >= 1 &&
+	    (wpa_s->drv_flags2 & WPA_DRIVER_FLAGS2_NAN_OFFLOAD) &&
+	    wpas_drv_nan_subscribe(wpa_s, addr, subscribe_id, service_name,
+				   nan_de_get_service_id(wpa_s->nan_de,
+							 subscribe_id),
+				   srv_proto_type, ssi, elems, params) < 0) {
+		nan_de_cancel_subscribe(wpa_s->nan_de, subscribe_id);
+		subscribe_id = -1;
+	}
+
 	wpabuf_free(elems);
 	return subscribe_id;
 }
@@ -440,6 +460,8 @@ void wpas_nan_usd_cancel_subscribe(struct wpa_supplicant *wpa_s,
 	if (!wpa_s->nan_de)
 		return;
 	nan_de_cancel_subscribe(wpa_s->nan_de, subscribe_id);
+	if (wpa_s->drv_flags2 & WPA_DRIVER_FLAGS2_NAN_OFFLOAD)
+		wpas_drv_nan_cancel_subscribe(wpa_s, subscribe_id);
 }
 
 

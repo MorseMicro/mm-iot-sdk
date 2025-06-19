@@ -29,8 +29,10 @@ static int hostapd_nan_de_tx(void *ctx, unsigned int freq,
 		   wpabuf_len(buf));
 
 	/* TODO: Force use of OFDM */
-	return hostapd_drv_send_action(hapd, hapd->iface->freq, 0, dst,
-				       wpabuf_head(buf), wpabuf_len(buf));
+	return hostapd_drv_send_action_forced_addr3(hapd, hapd->iface->freq, 0,
+						    dst, bssid,
+						    wpabuf_head(buf),
+						    wpabuf_len(buf));
 }
 
 
@@ -158,7 +160,7 @@ int hostapd_nan_usd_init(struct hostapd_data *hapd)
 	cb.subscribe_terminated = hostapd_nan_de_subscribe_terminated;
 	cb.receive = hostapd_nan_de_receive;
 
-	hapd->nan_de = nan_de_init(hapd->own_addr, true, &cb);
+	hapd->nan_de = nan_de_init(hapd->own_addr, false, true, &cb);
 	if (!hapd->nan_de)
 		return -1;
 	return 0;
@@ -173,11 +175,12 @@ void hostapd_nan_usd_deinit(struct hostapd_data *hapd)
 
 
 void hostapd_nan_usd_rx_sdf(struct hostapd_data *hapd, const u8 *src,
-			    unsigned int freq, const u8 *buf, size_t len)
+			    const u8 *a3, unsigned int freq,
+			    const u8 *buf, size_t len)
 {
 	if (!hapd->nan_de)
 		return;
-	nan_de_rx_sdf(hapd->nan_de, src, freq, buf, len);
+	nan_de_rx_sdf(hapd->nan_de, src, a3, freq, buf, len);
 }
 
 
@@ -192,7 +195,7 @@ void hostapd_nan_usd_flush(struct hostapd_data *hapd)
 int hostapd_nan_usd_publish(struct hostapd_data *hapd, const char *service_name,
 			    enum nan_service_protocol_type srv_proto_type,
 			    const struct wpabuf *ssi,
-			    struct nan_publish_params *params)
+			    struct nan_publish_params *params, bool p2p)
 {
 	int publish_id;
 	struct wpabuf *elems = NULL;
@@ -201,7 +204,7 @@ int hostapd_nan_usd_publish(struct hostapd_data *hapd, const char *service_name,
 		return -1;
 
 	publish_id = nan_de_publish(hapd->nan_de, service_name, srv_proto_type,
-				    ssi, elems, params);
+				    ssi, elems, params, p2p);
 	wpabuf_free(elems);
 	return publish_id;
 }
@@ -231,7 +234,7 @@ int hostapd_nan_usd_subscribe(struct hostapd_data *hapd,
 			      const char *service_name,
 			      enum nan_service_protocol_type srv_proto_type,
 			      const struct wpabuf *ssi,
-			      struct nan_subscribe_params *params)
+			      struct nan_subscribe_params *params, bool p2p)
 {
 	int subscribe_id;
 	struct wpabuf *elems = NULL;
@@ -240,7 +243,7 @@ int hostapd_nan_usd_subscribe(struct hostapd_data *hapd,
 		return -1;
 
 	subscribe_id = nan_de_subscribe(hapd->nan_de, service_name,
-					srv_proto_type, ssi, elems, params);
+					srv_proto_type, ssi, elems, params, p2p);
 	wpabuf_free(elems);
 	return subscribe_id;
 }
@@ -258,7 +261,8 @@ void hostapd_nan_usd_cancel_subscribe(struct hostapd_data *hapd,
 int hostapd_nan_usd_transmit(struct hostapd_data *hapd, int handle,
 			     const struct wpabuf *ssi,
 			     const struct wpabuf *elems,
-			     const u8 *peer_addr, u8 req_instance_id)
+			     const u8 *peer_addr,
+			     u8 req_instance_id)
 {
 	if (!hapd->nan_de)
 		return -1;

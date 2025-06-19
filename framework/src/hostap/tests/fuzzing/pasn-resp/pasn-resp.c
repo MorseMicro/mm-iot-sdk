@@ -41,6 +41,30 @@ pmksa_cache_auth_get(struct rsn_pmksa_cache *pmksa,
 }
 
 
+struct rsn_pmksa_cache *
+pmksa_cache_auth_init(void (*free_cb)(struct rsn_pmksa_cache_entry *entry,
+				      void *ctx), void *ctx)
+{
+	return NULL;
+}
+
+
+void pmksa_cache_auth_deinit(struct rsn_pmksa_cache *pmksa)
+{
+}
+
+
+void pmksa_cache_free_entry(struct rsn_pmksa_cache *pmksa,
+			    struct rsn_pmksa_cache_entry *entry)
+{
+}
+
+
+void pmksa_cache_auth_flush(struct rsn_pmksa_cache *pmksa)
+{
+}
+
+
 static int pasn_send_mgmt(void *ctx, const u8 *data, size_t data_len,
 			  int noack, unsigned int freq, unsigned int wait)
 {
@@ -74,7 +98,8 @@ int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
 
 	wpa_printf(MSG_DEBUG, "TESTING: Try to parse as PASN Auth 1");
 	if (handle_auth_pasn_1(&pasn, own_addr, bssid,
-			       (const struct ieee80211_mgmt *) data, size))
+			       (const struct ieee80211_mgmt *) data, size,
+			       false))
 		wpa_printf(MSG_ERROR, "handle_auth_pasn_1 failed");
 
 	wpa_printf(MSG_DEBUG, "TESTING: Try to parse as PASN Auth 3");

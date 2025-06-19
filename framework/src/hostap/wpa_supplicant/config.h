@@ -1907,6 +1907,12 @@ struct wpa_config {
 
 	int mld_force_single_link;
 #endif /* CONFIG_TESTING_OPTIONS */
+
+	/* Cipher version type */
+	int dik_cipher;
+
+	/* DevIK */
+	struct wpabuf *dik;
 };
 
 

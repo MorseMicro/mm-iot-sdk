@@ -34,6 +34,7 @@ var searchData=
   ['buffer_31',['buffer',['../structmmagic__core__tcp__send__cmd__args.html#a414ee0a42bc51c15f42a02e8fab1f882',1,'mmagic_core_tcp_send_cmd_args::buffer()'],['../structmmagic__core__tcp__recv__rsp__args.html#a5068dd055df6bca7da77a3a155b88769',1,'mmagic_core_tcp_recv_rsp_args::buffer()'],['../structstruct__buffer64.html#a06793ba8429369dd7cf09a1fea40712c',1,'struct_buffer64::buffer()'],['../structslip__rx__state.html#a71e234f23a3e1138d3607de8cb809b14',1,'slip_rx_state::buffer()']]],
   ['buffer_5flength_32',['buffer_length',['../structslip__rx__state.html#ad17a0dd870f9a7150c047628413b6e27',1,'slip_rx_state']]],
   ['build_5fversion_33',['build_version',['../structmmwlan__bcf__metadata.html#af41f071a4fb5a0c1d7364ec66780b86f',1,'mmwlan_bcf_metadata']]],
-  ['bw_5fmhz_34',['bw_mhz',['../structmmwlan__scan__result.html#a002aad9d38c7520a3bea54ce37a2041d',1,'mmwlan_scan_result::bw_mhz()'],['../structmmwlan__s1g__channel.html#ae1c67d8e9b6ba9c9589763ab1ce4d6e7',1,'mmwlan_s1g_channel::bw_mhz()']]],
-  ['bytes_5ftransferred_35',['bytes_transferred',['../structstruct__iperf__status.html#a1c38f71ee2c913c749348bd36fad4d2a',1,'struct_iperf_status::bytes_transferred()'],['../structmmiperf__report.html#ae53846a3af43991755786549137a421a',1,'mmiperf_report::bytes_transferred()']]]
+  ['busy_5fgpio_5fnum_34',['busy_gpio_num',['../structchip__cfg.html#a71e1389ae2b09722e325b5f2209d4de8',1,'chip_cfg']]],
+  ['bw_5fmhz_35',['bw_mhz',['../structmmwlan__scan__result.html#a002aad9d38c7520a3bea54ce37a2041d',1,'mmwlan_scan_result::bw_mhz()'],['../structmmwlan__s1g__channel.html#ae1c67d8e9b6ba9c9589763ab1ce4d6e7',1,'mmwlan_s1g_channel::bw_mhz()']]],
+  ['bytes_5ftransferred_36',['bytes_transferred',['../structmmiperf__report.html#ae53846a3af43991755786549137a421a',1,'mmiperf_report::bytes_transferred()'],['../structstruct__iperf__status.html#a1c38f71ee2c913c749348bd36fad4d2a',1,'struct_iperf_status::bytes_transferred()']]]
 ];

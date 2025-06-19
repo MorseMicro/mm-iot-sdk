@@ -1,5 +1,5 @@
 /*
- * FreeRTOS+TCP V4.2.2
+ * FreeRTOS+TCP V4.3.1
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -161,7 +161,7 @@ static BaseType_t xPHY_Write( BaseType_t xAddress,
                               uint32_t ulValue );
 
 #if ( ipconfigDRIVER_INCLUDED_TX_IP_CHECKSUM == 1 ) && ( ipconfigHAS_TX_CRC_OFFLOADING == 0 )
-    void vGMACGenerateChecksum( uint8_t * apBuffer,
+    void vGMACGenerateChecksum( uint8_t * pucBuffer,
                                 size_t uxLength );
 #endif
 
@@ -787,7 +787,7 @@ static BaseType_t prvGMACInit( NetworkInterface_t * pxInterface )
 
         #if ( ipconfigUSE_MDNS == ipconfigENABLE )
         {
-            prvAddAllowedMACAddress( pxInterface, xMDNS_MACAddressIPv6.ucBytes );
+            prvAddAllowedMACAddress( pxInterface, xMDNS_MacAddressIPv6.ucBytes );
         }
         #endif /* ipconfigUSE_MDNS */
     }

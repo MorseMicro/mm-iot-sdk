@@ -41,6 +41,18 @@ enums:
       - name: enabled
         value: 1
         description: Power save enabled.
+  - name: enum_mcs10_mode
+    description: Enumeration of MCS10 modes.
+    values:
+      - name: disabled
+        value: 0
+        description: MCS10 is not used.
+      - name: forced
+        value: 1
+        description: MCS10 is always used instead of MCS0 when the bandwidth is 1 MHz.
+      - name: auto
+        value: 2
+        description: MCS10 is used on retries instead of MCS0 when the bandwidth is 1 MHz.
 
   - name: enum_station_type
     description: Enumeration of S1G non-AP STA types.
@@ -610,6 +622,55 @@ modules:
             Note that changes will only take effect on invocation of wlan-connect.
         type: uint16_t
 
+      - name: qos_0_params
+        id: 22
+        description: >-
+          The default QoS queue configuration for Access Category 0 (AC_BE) that is active
+          while the station is connecting to an Access Point. This is a string containing
+          the following comma separated integer values (in order): `aifs,cw_min,cw_max,txop_max_us`.
+          For example: `3,15,1023,15008`. More information about the individual parameters can be
+          found in the API documentation for `mmwlan_qos_queue_params`.
+        type: struct_string_32
+
+      - name: qos_1_params
+        id: 23
+        description: >-
+          The default QoS queue configuration for Access Category 1 (AC_BK) that is active
+          while the station is connecting to an Access Point. This is a string containing
+          the following comma separated integer values (in order): `aifs,cw_min,cw_max,txop_max_us`.
+          For example: `7,15,1023,15008`. More information about the individual parameters can be
+          found in the API documentation for `mmwlan_qos_queue_params`.
+        type: struct_string_32
+
+      - name: qos_2_params
+        id: 24
+        description: >-
+          The default QoS queue configuration for Access Category 2 (AC_VI) that is active
+          while the station is connecting to an Access Point. This is a string containing
+          the following comma separated integer values (in order): `aifs,cw_min,cw_max,txop_max_us`.
+          For example: `2,7,15,15008`. More information about the individual parameters can be
+          found in the API documentation for `mmwlan_qos_queue_params`.
+        type: struct_string_32
+
+      - name: qos_3_params
+        id: 25
+        description: >-
+          The default QoS queue configuration for Access Category 3 (AC_VO) that is active
+          while the station is connecting to an Access Point. This is a string containing
+          the following comma separated integer values (in order): `aifs,cw_min,cw_max,txop_max_us`.
+          For example: `2,3,7,15008`. More information about the individual parameters can be
+          found in the API documentation for `mmwlan_qos_queue_params`.
+        type: struct_string_32
+
+      - name: mcs10_mode
+        id: 26
+        description: >-
+          The currently configured MCS10 behavior. This only takes effect after calling the WLAN
+          connect command. This is an enum with 3 modes: disabled, which will never use MCS10,
+          forced, which will always use MCS10 instead of MCS0 if the bandwidth is 1 MHz, and auto,
+          which will use MCS10 on retries instead of MCS0 when the bandwidth is 1 MHz.
+        type: enum_mcs10_mode
+
     commands:
       - name: connect
         id: 8
@@ -756,9 +817,7 @@ modules:
             type: uint16_t
           - name: bss_inactivity_s
             description: >-
-              The interval in seconds to wait after beacon loss before entering snooze mode. In
-              snooze mode the Morse chip stops listening for beacons to save power.
-              (Default 120s)
+              Deprecated. This parameter is no longer used and will be removed in a future release.
             type: uint32_t
           - name: snooze_period_s
             description: >-

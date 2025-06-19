@@ -135,6 +135,9 @@ enum dpp_connector_key {
 #define DPP_MAX_SHARED_SECRET_LEN 66
 #define DPP_CP_LEN 64
 
+/* DPP Configuration Request - Enrollee Capabilities */
+#define DPP_ENROLLEE_CAPAB_SAE_PW_ID BIT(0)
+
 struct dpp_curve_params {
 	const char *name;
 	size_t hash_len;
@@ -261,6 +264,7 @@ struct dpp_configuration {
 
 	/* For legacy configuration */
 	char *passphrase;
+	char *idpass;
 	u8 psk[32];
 	int psk_set;
 
@@ -357,6 +361,9 @@ struct dpp_authentication {
 		u8 ssid_len;
 		int ssid_charset;
 		char passphrase[64];
+#ifdef CONFIG_DPP3
+		char password_id[64];
+#endif /* CONFIG_DPP3 */
 		u8 psk[PMK_LEN];
 		int psk_set;
 		enum dpp_akm akm;
@@ -394,6 +401,7 @@ struct dpp_authentication {
 	char *e_name;
 	char *e_mud_url;
 	int *e_band_support;
+	unsigned int enrollee_capabilities;
 #ifdef CONFIG_TESTING_OPTIONS
 	char *config_obj_override;
 	char *discovery_override;

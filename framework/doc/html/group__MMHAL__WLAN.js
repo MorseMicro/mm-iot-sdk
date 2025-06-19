@@ -12,6 +12,8 @@ var group__MMHAL__WLAN =
     [ "MMHAL_WLAN_FW_BCF_MIN_READ_LENGTH", "group__MMHAL__WLAN.html#ga3452be561de74ab1ca3c53759189a6e9", null ],
     [ "MMHAL_WLAN_MMPKT_RX_MAX_SIZE", "group__MMHAL__WLAN.html#gaef90c75c78b18e507e1be247c716b94a", null ],
     [ "MMHAL_WLAN_MMPKT_TX_MAX_SIZE", "group__MMHAL__WLAN.html#gae29bfe8e4f0ffb0584b66d29fffe572c", null ],
+    [ "MMPKTMEM_RX_POOL_N_BLOCKS", "group__MMHAL__WLAN.html#ga2903742172a31c8687c4f66ed12343ab", null ],
+    [ "MMPKTMEM_TX_POOL_N_BLOCKS", "group__MMHAL__WLAN.html#gaf018baf42f8adbfe1b697527450876ee", null ],
     [ "mmhal_irq_handler_t", "group__MMHAL__WLAN.html#gaf0be313b72751f3657aba1e9177399e8", null ],
     [ "mmhal_read_mac_addr", "group__MMHAL__WLAN.html#gacc9ed9533fb4a8005a9d054932f0f48e", null ],
     [ "mmhal_wlan_busy_is_asserted", "group__MMHAL__WLAN.html#gae8b13ec2ebe61f4594be256415a03803", null ],

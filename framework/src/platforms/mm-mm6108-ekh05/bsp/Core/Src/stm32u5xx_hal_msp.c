@@ -1,3 +1,4 @@
+
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
@@ -105,6 +106,7 @@ void HAL_RNG_MspInit(RNG_HandleTypeDef* hrng)
   /* USER CODE BEGIN RNG_MspInit 1 */
 
   /* USER CODE END RNG_MspInit 1 */
+
   }
 
 }
