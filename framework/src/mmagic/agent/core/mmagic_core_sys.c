@@ -17,9 +17,6 @@
 #include "mmagic.h"
 #include "mmagic_core_utils.h"
 
-/* This should be included after all the header files */
-#include "core/autogen/mmagic_core_sys.def"
-
 void mmagic_core_sys_init(struct mmagic_data *core)
 {
     MM_UNUSED(core);
@@ -63,6 +60,7 @@ enum mmagic_status mmagic_core_sys_deep_sleep(struct mmagic_data *core,
 enum mmagic_status mmagic_core_sys_get_version(
     struct mmagic_data *core, struct mmagic_core_sys_get_version_rsp_args *rsp_args)
 {
+    int ret;
     struct mmwlan_version version;
     enum mmwlan_status status;
 
@@ -82,11 +80,14 @@ enum mmagic_status mmagic_core_sys_get_version(
                sizeof(rsp_args->results.user_hardware_version.data) - 1);
 
     /* Get bootloader version from config store */
-    rsp_args->results.bootloader_version.len =
-        mmconfig_read_string("BOOTLOADER_VERSION",
-                             (char *)&rsp_args->results.bootloader_version.data,
-                             sizeof(rsp_args->results.bootloader_version.data) - 1);
-    if (rsp_args->results.bootloader_version.len <= 0)
+    ret = mmconfig_read_string("BOOTLOADER_VERSION",
+                               (char *)&rsp_args->results.bootloader_version.data,
+                               sizeof(rsp_args->results.bootloader_version.data) - 1);
+    if (ret > 0)
+    {
+        rsp_args->results.bootloader_version.len = ret;
+    }
+    else
     {
         /* Did not find bootloader version in config store */
         mmosal_safer_strcpy((char *)&rsp_args->results.bootloader_version.data, "N/A",

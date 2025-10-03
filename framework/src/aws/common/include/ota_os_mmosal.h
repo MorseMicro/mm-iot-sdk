@@ -24,7 +24,7 @@
  * Initialize the OTA events.
  * This function initializes the OTA events mechanism for Morse Micro platforms.
  * @param[pEventCtx]     Pointer to the OTA event context.
- * @return               @c OtaOsSuccess if success , other error code on failure.
+ * @return @c OtaOsSuccess if success , other error code on failure.
  */
 OtaOsStatus_t OtaInitEvent_MMOSAL(OtaEventContext_t *pEventCtx);
 
@@ -36,7 +36,7 @@ OtaOsStatus_t OtaInitEvent_MMOSAL(OtaEventContext_t *pEventCtx);
  * @param[pEventCtx]     Pointer to the OTA event context.
  * @param[pEventMsg]     Event to be sent to the OTA handler.
  * @param[timeout]       The maximum amount of time (milliseconds) the task should block.
- * @return               @c OtaOsSuccess if success , other error code on failure.
+ * @return @c OtaOsSuccess if success , other error code on failure.
  */
 OtaOsStatus_t OtaSendEvent_MMOSAL(OtaEventContext_t *pEventCtx,
                                   const void *pEventMsg,
@@ -50,7 +50,7 @@ OtaOsStatus_t OtaSendEvent_MMOSAL(OtaEventContext_t *pEventCtx,
  * @param[pEventCtx]     Pointer to the OTA event context.
  * @param[pEventMsg]     Pointer to store message.
  * @param[timeout]       The maximum amount of time the task should block.
- * @return               @c OtaOsSuccess if success , other error code on failure.
+ * @return @c OtaOsSuccess if success , other error code on failure.
  */
 OtaOsStatus_t OtaReceiveEvent_MMOSAL(OtaEventContext_t *pEventCtx,
                                      void *pEventMsg,
@@ -63,10 +63,9 @@ OtaOsStatus_t OtaReceiveEvent_MMOSAL(OtaEventContext_t *pEventCtx,
  * used on Morse Micro platforms.
  *
  * @param[pEventCtx]     Pointer to the OTA event context.
- * @return               @c OtaOsSuccess if success , other error code on failure.
+ * @return @c OtaOsSuccess if success , other error code on failure.
  */
 OtaOsStatus_t OtaDeinitEvent_MMOSAL(OtaEventContext_t *pEventCtx);
-
 
 /**
  * Start timer.
@@ -77,7 +76,7 @@ OtaOsStatus_t OtaDeinitEvent_MMOSAL(OtaEventContext_t *pEventCtx);
  * @param[pTimerName]       Timer name.
  * @param[timeout]          Timeout for the timer.
  * @param[callback]         Callback to be called when timer expires.
- * @return                  @c OtaOsSuccess if success , other error code on failure.
+ * @return @c OtaOsSuccess if success , other error code on failure.
  */
 OtaOsStatus_t OtaStartTimer_MMOSAL(OtaTimerId_t otaTimerId,
                                    const char * const pTimerName,
@@ -90,7 +89,7 @@ OtaOsStatus_t OtaStartTimer_MMOSAL(OtaTimerId_t otaTimerId,
  * This function stops the timer on Morse Micro platforms.
  *
  * @param[otaTimerId]     Timer ID of type @c otaTimerId_t.
- * @return                @c OtaOsSuccess if success , other error code on failure.
+ * @return @c OtaOsSuccess if success , other error code on failure.
  */
 OtaOsStatus_t OtaStopTimer_MMOSAL(OtaTimerId_t otaTimerId);
 
@@ -100,21 +99,22 @@ OtaOsStatus_t OtaStopTimer_MMOSAL(OtaTimerId_t otaTimerId);
  * This function deletes a timer for Morse Micro platforms.
  *
  * @param[otaTimerId]       Timer ID of type @c otaTimerId_t.
- * @return                  @c OtaOsSuccess if success , other error code on failure.
+ * @return @c OtaOsSuccess if success , other error code on failure.
  */
 OtaOsStatus_t OtaDeleteTimer_MMOSAL(OtaTimerId_t otaTimerId);
 
 /**
  * Allocate memory.
  *
- * This function allocates the requested memory and returns a pointer to it on Morse Micro platforms.
+ * This function allocates the requested memory and returns a pointer to it on Morse Micro
+ * platforms.
  *
  * @param[size]        This is the size of the memory block, in bytes..
- * @return             This function returns a pointer to the allocated memory, or NULL if
+ * @return This function returns a pointer to the allocated memory, or NULL if
  *                     the request fails.
  */
 
-void* Malloc_MMOSAL(size_t size);
+void *Malloc_MMOSAL(size_t size);
 
 /**
  * Free memory.
@@ -123,7 +123,8 @@ void* Malloc_MMOSAL(size_t size);
  * function of type @c OtaMalloc_t on Morse Micro platforms.
  *
  * @param[ptr]         This is the pointer to a memory block previously allocated with function
- *                     of type @c OtaMalloc_t. If a null pointer is passed as an argument, no action occurs.
+ *                     of type @c OtaMalloc_t. If a null pointer is passed as an argument, no action
+ * occurs.
  */
 
 void Free_MMOSAL(void *ptr);

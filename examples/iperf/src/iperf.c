@@ -46,11 +46,6 @@ enum iperf_type
 #define IPERF_TYPE                      IPERF_UDP_SERVER
 #endif
 
-#ifndef IPERF_SERVER_IP
-/** IP address of server to connect to when in client mode. */
-#define IPERF_SERVER_IP                 "192.168.1.1"
-#endif
-
 #ifndef IPERF_TIME_AMOUNT
 /**
  * Duration for client transfers specified either in seconds or bytes.
@@ -76,10 +71,10 @@ static const char units[] = {' ', 'K', 'M', 'G', 'T'};
  * @warning This uses power of 10 units (kilo, mega, giga, etc). Not to be confused with power of 2
  *          units (kibi, mebi, gibi, etc).
  *
- * @param[in]   bytes       Original number of bytes
- * @param[out]  unit_index  Index into the @ref units array. Must not be NULL
+ * @param[in]  bytes      Original number of bytes
+ * @param[out] unit_index Index into the @ref units array. Must not be NULL
  *
- * @return Number of bytes formatted to the appropriate unit given by the unit index.
+ * @return                Number of bytes formatted to the appropriate unit given by the unit index.
  */
 static uint32_t format_bytes(uint64_t bytes, uint8_t *unit_index)
 {
@@ -98,9 +93,9 @@ static uint32_t format_bytes(uint64_t bytes, uint8_t *unit_index)
 /**
  * Handle a report at the end of an iperf transfer.
  *
- * @param report    The iperf report.
- * @param arg       Opaque argument specified when iperf was started.
- * @param handle    The iperf instance handle returned when iperf was started.
+ * @param report The iperf report.
+ * @param arg    Opaque argument specified when iperf was started.
+ * @param handle The iperf instance handle returned when iperf was started.
  */
 static void iperf_report_handler(const struct mmiperf_report *report, void *arg,
                                  mmiperf_handle_t handle)
@@ -134,12 +129,25 @@ static void start_tcp_client(void)
     struct mmiperf_client_args args = MMIPERF_CLIENT_ARGS_DEFAULT;
 
     /* Get the Server IP */
-    strncpy(args.server_addr, IPERF_SERVER_IP, sizeof(args.server_addr));
-    mmconfig_read_string("iperf.server", args.server_addr, sizeof(args.server_addr));
+    struct mmipal_ip_config ip_config = MMIPAL_IP_CONFIG_DEFAULT;
+    enum mmipal_status status = mmipal_get_ip_config(&ip_config);
+    if (status == MMIPAL_SUCCESS)
+    {
+        memcpy(args.server_addr, ip_config.gateway_addr, sizeof(ip_config.gateway_addr));
+    }
+    else
+    {
+        printf("Failed to retrieve IP config\n");
+    }
+    /* If iperf.server is set, we use it as an override */
+    (void)mmconfig_read_string("iperf.server", args.server_addr, sizeof(args.server_addr));
 
     mmconfig_read_uint32("iperf.port", &server_port);
     MMOSAL_ASSERT(server_port <= UINT16_MAX);
     args.server_port = server_port;
+
+    printf("Attempting to connect to %s:%d over TCP\n", args.server_addr,
+           args.server_port == 0 ? MMIPERF_DEFAULT_PORT : args.server_port);
 
     int amount = IPERF_TIME_AMOUNT;
     (void)mmconfig_read_int("iperf.amount", &amount);
@@ -160,12 +168,26 @@ static void start_udp_client(void)
     uint32_t server_port = 0;
     struct mmiperf_client_args args = MMIPERF_CLIENT_ARGS_DEFAULT;
 
-    strncpy(args.server_addr, IPERF_SERVER_IP, sizeof(args.server_addr));
-    mmconfig_read_string("iperf.server", args.server_addr, sizeof(args.server_addr));
+    /* Get the Server IP */
+    struct mmipal_ip_config ip_config = MMIPAL_IP_CONFIG_DEFAULT;
+    enum mmipal_status status = mmipal_get_ip_config(&ip_config);
+    if (status == MMIPAL_SUCCESS)
+    {
+        memcpy(args.server_addr, ip_config.gateway_addr, sizeof(ip_config.gateway_addr));
+    }
+    else
+    {
+        printf("Failed to retrieve IP config\n");
+    }
+    /* If iperf.server is set, we use it as an override */
+    (void)mmconfig_read_string("iperf.server", args.server_addr, sizeof(args.server_addr));
 
     mmconfig_read_uint32("iperf.port", &server_port);
     MMOSAL_ASSERT(server_port <= UINT16_MAX);
     args.server_port = server_port;
+
+    printf("Attempting to connect to %s:%d over UDP\n", args.server_addr,
+           args.server_port == 0 ? MMIPERF_DEFAULT_PORT : args.server_port);
 
     int amount = IPERF_TIME_AMOUNT;
     (void)mmconfig_read_int("iperf.amount", &amount);
@@ -187,7 +209,7 @@ static void start_tcp_server(void)
 
     uint32_t local_port = IPERF_SERVER_PORT;
     mmconfig_read_uint32("iperf.port", &local_port);
-    args.local_port = (uint16_t) local_port;
+    args.local_port = (uint16_t)local_port;
 
     args.report_fn = iperf_report_handler;
 
@@ -223,7 +245,7 @@ static void start_udp_server(void)
 
     uint32_t local_port = IPERF_SERVER_PORT;
     mmconfig_read_uint32("iperf.port", &local_port);
-    args.local_port = (uint16_t) local_port;
+    args.local_port = (uint16_t)local_port;
 
     args.report_fn = iperf_report_handler;
 

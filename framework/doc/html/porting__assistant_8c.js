@@ -5,7 +5,6 @@ var porting__assistant_8c =
     [ "result_code_to_string", "porting__assistant_8c.html#aedcb0efe71b17040326527ecc5b2a835", null ],
     [ "run_test_steps", "porting__assistant_8c.html#ac7c23a3495071e5795d7720887167666", null ],
     [ "test_step_bulk_write_read", "porting__assistant_8c.html#a75e008674a87e3eb2fb3d227d982ffb0", null ],
-    [ "test_step_enable_leds", "porting__assistant_8c.html#a99fc640e86caff4a9029c53b9673611e", null ],
     [ "test_step_mmhal_wlan_hard_reset", "porting__assistant_8c.html#aa5ba534559ea01f2b5d522508189e15e", null ],
     [ "test_step_mmhal_wlan_init", "porting__assistant_8c.html#ae7e4e54271f9f691de54d84661d7dbd4", null ],
     [ "test_step_mmhal_wlan_sdio_startup", "porting__assistant_8c.html#a4eb970665d2c5381c353e3cd7649346e", null ],

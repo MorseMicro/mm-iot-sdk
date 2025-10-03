@@ -1417,13 +1417,17 @@ enum hostapd_hw_mode ieee80211_freq_to_chan(int freq, u8 *channel)
  */
 enum hostapd_hw_mode
 ieee80211_freq_to_channel_ext(unsigned int freq, int sec_channel,
-			      enum oper_chan_width chanwidth,
-			      u8 *op_class, u8 *channel)
+				  enum oper_chan_width chanwidth,
+				  u8 *op_class, u8 *channel)
 {
+	if (is_s1g_freq(MHZ_TO_KHZ(freq))) {
+		*op_class = 0;
+		*channel = 0;
+		return HOSTAPD_MODE_IEEE80211AH;
+	}
+
 #ifndef MM_IOT
 	u8 vht_opclass;
-
-	/* TODO: more operating classes */
 
 	if (sec_channel > 1 || sec_channel < -1)
 		return NUM_HOSTAPD_MODES;
@@ -2014,6 +2018,8 @@ static int ieee80211_chan_to_freq_global(u8 op_class, u8 chan)
 		return -1;
 	}
 }
+#endif /* MM_IOT */
+
 
 /**
  * ieee80211_chan_to_freq - Convert channel info to frequency
@@ -2024,6 +2030,7 @@ static int ieee80211_chan_to_freq_global(u8 op_class, u8 chan)
  */
 int ieee80211_chan_to_freq(const char *country, u8 op_class, u8 chan)
 {
+#ifndef MM_IOT
 	int freq;
 
 	if (country_match(us_op_class_cc, country)) {
@@ -2051,8 +2058,11 @@ int ieee80211_chan_to_freq(const char *country, u8 op_class, u8 chan)
 	}
 
 	return ieee80211_chan_to_freq_global(op_class, chan);
-}
+#else
+	return -1;
 #endif /* MM_IOT */
+}
+
 
 
 int ieee80211_is_dfs(int freq, const struct hostapd_hw_modes *modes,
@@ -3004,6 +3014,12 @@ bool is_6ghz_psc_frequency(int freq)
 
 #else /* MM_IOT */
 
+bool is_6ghz_op_class(u8 op_class)
+{
+    (void)op_class;
+	return false;
+}
+
 bool is_6ghz_freq(int freq)
 {
 	(void)freq;
@@ -3040,6 +3056,15 @@ int get_6ghz_sec_channel(int channel)
 	if (((channel - 1) / 4) % 2)
 		return -1;
 	return 1;
+}
+
+
+bool is_s1g_freq(int freq_khz)
+{
+	if (freq_khz < 1000000 && freq_khz > 0)
+		return true;
+
+	return false;
 }
 
 
@@ -3201,7 +3226,6 @@ bool ieee802_11_rsnx_capab(const u8 *rsnxe, unsigned int capab)
 }
 
 
-#ifndef MM_IOT
 void hostapd_encode_edmg_chan(int edmg_enable, u8 edmg_channel,
 			      int primary_channel,
 			      struct ieee80211_edmg_config *edmg)
@@ -3211,7 +3235,7 @@ void hostapd_encode_edmg_chan(int edmg_enable, u8 edmg_channel,
 		edmg->bw_config = 0;
 		return;
 	}
-
+#ifndef MM_IOT
 	/* Only EDMG CB1 and EDMG CB2 contiguous channels supported for now */
 	switch (edmg_channel) {
 	case EDMG_CHANNEL_9:
@@ -3244,6 +3268,7 @@ void hostapd_encode_edmg_chan(int edmg_enable, u8 edmg_channel,
 		}
 		break;
 	}
+#endif
 }
 
 
@@ -3252,6 +3277,7 @@ void hostapd_encode_edmg_chan(int edmg_enable, u8 edmg_channel,
 int ieee802_edmg_is_allowed(struct ieee80211_edmg_config allowed,
 			    struct ieee80211_edmg_config requested)
 {
+#ifndef MM_IOT
 	/*
 	 * The validation check if the requested EDMG configuration
 	 * is a subset of the allowed EDMG configuration:
@@ -3271,12 +3297,42 @@ int ieee802_edmg_is_allowed(struct ieee80211_edmg_config allowed,
 		return 0;
 
 	return 1;
+#else
+	return 0;
+#endif
 }
 
 
 int op_class_to_bandwidth(u8 op_class)
 {
 	switch (op_class) {
+	/* Start: S1G op class - channels differ per regulatory domain
+	 * Mappings retrieved from IEEE Std 802.11-2020: Table E-5
+	 * */
+	case 66:
+		return 1;
+	case 67:
+		return 2;
+	case 68:
+		return 1;
+	case 69:
+		return 2;
+	case 70:
+		return 4;
+	case 71:
+		return 8;
+	case 72:
+		return 16;
+	case 73:
+	case 74:
+		return 1;
+	case 75:
+		return 2;
+	case 76:
+		return 4;
+	case 77:
+		return 1;
+	/* End: S1G op class */
 	case 81:
 	case 82:
 		return 20;
@@ -3399,8 +3455,6 @@ enum oper_chan_width op_class_to_ch_width(u8 op_class)
 		return CONF_OPER_CHWIDTH_USE_HT;
 	}
 }
-#endif /* MM_IOT */
-
 
 /**
  * chwidth_freq2_to_ch_width - Determine channel width as enum oper_chan_width

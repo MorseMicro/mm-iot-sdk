@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.8.2</span>
+   &#160;<span id="projectnumber">2.9.7</span>
    </div>
   </td>
  </tr>
@@ -89,31 +89,31 @@ $(document).ready(function(){initNavTree('structmmagic__wlan__beacon__rx__event_
 <div class="header">
   <div class="summary">
 <a href="#pub-attribs">Data Fields</a>  </div>
-  <div class="headertitle"><div class="title">mmagic_wlan_beacon_rx_event_args Struct Reference<div class="ingroups"><a class="el" href="group__MMAGIC.html">MMAGIC: CLI and Machine-to-Machine interface infrastructure</a> &raquo; <a class="el" href="group__MMAGIC__CONTROLLER.html">Morse M2M Interface Controller API</a> &raquo; <a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html">Wireless LAN management subsystem (wlan)</a></div></div></div>
+  <div class="headertitle"><div class="title">mmagic_wlan_beacon_rx_event_args Struct Reference<div class="ingroups"><a class="el" href="group__MMAGIC.html">MMAGIC: CLI and Machine-to-Machine interface infrastructure</a> &raquo; <a class="el" href="group__MMAGIC__CONTROLLER.html">Morse M2M Interface Controller API</a> &raquo; <a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html">Module wlan: Wireless LAN management.</a></div></div></div>
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Event arguments structure for wlan_beacon_rx. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l02785">2785</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03270">3270</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 </div>
 <p><code>#include &lt;<a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Data Fields</h2></td></tr>
-<tr class="memitem:a76186ce9b159eaed80fbadd2835d54cf"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structstruct__packet__buffer.html">struct_packet_buffer</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmagic__wlan__beacon__rx__event__args.html#a76186ce9b159eaed80fbadd2835d54cf">vendor_ies</a></td></tr>
-<tr class="memdesc:a76186ce9b159eaed80fbadd2835d54cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Raw octet string of Vendor Information Elements contained in the beacon.  <a href="structmmagic__wlan__beacon__rx__event__args.html#a76186ce9b159eaed80fbadd2835d54cf">More...</a><br /></td></tr>
-<tr class="separator:a76186ce9b159eaed80fbadd2835d54cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0a4f69ade03f3b5f9cccfa5009bdea0a"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structraw1536.html">raw1536</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmagic__wlan__beacon__rx__event__args.html#a0a4f69ade03f3b5f9cccfa5009bdea0a">vendor_ies</a></td></tr>
+<tr class="memdesc:a0a4f69ade03f3b5f9cccfa5009bdea0a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Raw octet string of Vendor Information Elements contained in the beacon.  <a href="structmmagic__wlan__beacon__rx__event__args.html#a0a4f69ade03f3b5f9cccfa5009bdea0a">More...</a><br /></td></tr>
+<tr class="separator:a0a4f69ade03f3b5f9cccfa5009bdea0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Field Documentation</h2>
-<a id="a76186ce9b159eaed80fbadd2835d54cf" name="a76186ce9b159eaed80fbadd2835d54cf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a76186ce9b159eaed80fbadd2835d54cf">&#9670;&nbsp;</a></span>vendor_ies</h2>
+<a id="a0a4f69ade03f3b5f9cccfa5009bdea0a" name="a0a4f69ade03f3b5f9cccfa5009bdea0a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0a4f69ade03f3b5f9cccfa5009bdea0a">&#9670;&nbsp;</a></span>vendor_ies</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">struct <a class="el" href="structstruct__packet__buffer.html">struct_packet_buffer</a> mmagic_wlan_beacon_rx_event_args::vendor_ies</td>
+          <td class="memname">struct <a class="el" href="structraw1536.html">raw1536</a> mmagic_wlan_beacon_rx_event_args::vendor_ies</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -121,7 +121,7 @@ Data Fields</h2></td></tr>
 <p>Raw octet string of Vendor Information Elements contained in the beacon. </p>
 <p >Only the IEs that match the configured filters are returned. If multiple matching IEs are present then they are concatenated in the buffer. Each IE is a TLV where the first byte is the Tag (0xDD for Vendor Specific IE), followed by a byte specifying the length IE contents (i.e., excluding the Tag and Length). </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l02792">2792</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03277">3277</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>

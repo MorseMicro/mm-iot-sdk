@@ -24,6 +24,7 @@
 #include "common/ieee802_11_defs.h"
 #include "common/wpa_common.h"
 #include "common/nan.h"
+#include "nl80211_copy.h"
 #ifdef CONFIG_MACSEC
 #include "pae/ieee802_1x_kay.h"
 #endif /* CONFIG_MACSEC */
@@ -62,6 +63,11 @@ enum hostapd_chan_width_attr {
 	HOSTAPD_CHAN_WIDTH_80   = BIT(4),
 	HOSTAPD_CHAN_WIDTH_160  = BIT(5),
 	HOSTAPD_CHAN_WIDTH_320  = BIT(6),
+	HOSTAPD_CHAN_WIDTH_1    = BIT(7),
+	HOSTAPD_CHAN_WIDTH_2    = BIT(8),
+	HOSTAPD_CHAN_WIDTH_4    = BIT(9),
+	HOSTAPD_CHAN_WIDTH_8    = BIT(10),
+	HOSTAPD_CHAN_WIDTH_16   = BIT(11),
 };
 
 /* Filter gratuitous ARP */
@@ -124,6 +130,11 @@ struct hostapd_channel_data {
 	 * freq - Frequency in MHz
 	 */
 	int freq;
+
+	/**
+	 * freq_khz - Frequency in kHz
+	 */
+	int freq_khz;
 
 	/**
 	 * flag - Channel flags (HOSTAPD_CHAN_*)
@@ -319,6 +330,22 @@ struct hostapd_hw_modes {
 	 * eht_capab - EHT (IEEE 802.11be) capabilities
 	 */
 	struct eht_capabilities eht_capab[IEEE80211_MODE_NUM];
+
+	/**
+	 * s1g_capab - S1G (IEEE 802.11ah) capabilities
+	 */
+	u8 s1g_capab[10];
+
+	/**
+	 * s1g_mcs - S1G (IEEE 802 11ah) supported MCS and NSS params
+	 */
+	u8 s1g_mcs[5];
+
+	/**
+	 * Band - the nl80211 band - This is now relevant as
+	 * HOSTAPD_MODE_IEEE80211A is used for multible bands.
+	 */
+	enum nl80211_band band;
 };
 
 
@@ -366,6 +393,7 @@ struct hostapd_multi_hw_info {
  * @flags: information flags about the BSS/IBSS (WPA_SCAN_*)
  * @bssid: BSSID
  * @freq: frequency of the channel in MHz (e.g., 2412 = channel 1)
+ * @freq_offset: frequency offset of the channel in KHz, used when converting freq from MHz to KHz
  * @max_cw: the max channel width of the connection (calculated during scan
  * result processing)
  * @beacon_int: beacon interval in TUs (host byte order)
@@ -404,6 +432,7 @@ struct wpa_scan_res {
 	unsigned int flags;
 	u8 bssid[ETH_ALEN];
 	int freq;
+	int freq_offset;
 	enum chan_width max_cw;
 	u16 beacon_int;
 	u16 caps;
@@ -506,9 +535,12 @@ struct wpa_driver_scan_params {
 	/**
 	 * freqs - Array of frequencies to scan or %NULL for all frequencies
 	 *
-	 * The frequency is set in MHz. The array is zero-terminated.
+	 * The frequency is set in MHz unless freq_khz flag is set. The array is
+	 * zero-terminated.
 	 */
 	int *freqs;
+
+	unsigned int freq_in_khz:1;
 
 	/**
 	 * filter_ssids - Filter for reporting SSIDs
@@ -748,6 +780,7 @@ struct wpa_driver_scan_params {
  */
 struct wpa_driver_auth_params {
 	int freq;
+	int freq_khz;
 	const u8 *bssid;
 	const u8 *ssid;
 	size_t ssid_len;
@@ -864,6 +897,11 @@ struct hostapd_freq_params {
 	int freq;
 
 	/**
+	 * freq_khz - Primary channel center frequency in kHz
+	 */
+	int freq_khz;
+
+	/**
 	 * channel - Channel number
 	 */
 	int channel;
@@ -893,6 +931,11 @@ struct hostapd_freq_params {
 	int he_enabled;
 
 	/**
+	 * s1g_enabled - Whether S1G is enabled
+	 */
+	int s1g_enabled;
+
+	/**
 	 * center_freq1 - Segment 0 center frequency in MHz
 	 *
 	 * Valid for both HT and VHT.
@@ -907,7 +950,8 @@ struct hostapd_freq_params {
 	int center_freq2;
 
 	/**
-	 * bandwidth - Channel bandwidth in MHz (20, 40, 80, 160)
+	 * bandwidth - Channel bandwidth in MHz (1, 2, 4, 8, 16, 20, 40, 80,
+	 * 160)
 	 */
 	int bandwidth;
 
@@ -919,9 +963,16 @@ struct hostapd_freq_params {
 
 #ifdef CONFIG_IEEE80211AH
 	/**
-	 * prim_bandwidth - S1G Primary Channel bandwidth in MHz (1 or 2)
+	 * prim_bandwidth - S1G Primary Channel bandwidth
+	 *
+	 * 0 = 1 MHz
+	 * 1 = 2 MHz
 	 */
 	int prim_bandwidth;
+	/**
+	 * prim_index - S1G Primary Channel index within the operating channel.
+	 */
+	int prim_ch_index;
 #endif /* CONFIG_IEEE80211AH */
 
 	/**
@@ -1507,6 +1558,11 @@ struct wpa_driver_ap_params {
 	 * beacon_int - Beacon interval
 	 */
 	int beacon_int;
+
+	/**
+	 * short_beacon_int - S1G short beacons per S1G beacon
+	 */
+	int short_beacon_int;
 
 	/**
 	 * basic_rates: -1 terminated array of basic rates in 100 kbps
@@ -6031,7 +6087,8 @@ enum wpa_event_type {
  * struct freq_survey - Channel survey info
  *
  * @ifidx: Interface index in which this survey was observed
- * @freq: Center of frequency of the surveyed channel
+ * @freq: Center of frequency (MHz) of the surveyed channel
+ * @freq_khz: Center of frequency (kHz) of the surveyed channel
  * @nf: Channel noise floor in dBm
  * @channel_time: Amount of time in ms the radio spent on the channel
  * @channel_time_busy: Amount of time in ms the radio detected some signal
@@ -6045,6 +6102,7 @@ enum wpa_event_type {
 struct freq_survey {
 	u32 ifidx;
 	unsigned int freq;
+	unsigned int freq_khz;
 	s8 nf;
 	u64 channel_time;
 	u64 channel_time_busy;
@@ -6776,6 +6834,7 @@ union wpa_event_data {
 	 */
 	struct ch_switch {
 		int freq;
+		int freq_khz;
 		int ht_enabled;
 		int ch_offset;
 		enum chan_width ch_width;

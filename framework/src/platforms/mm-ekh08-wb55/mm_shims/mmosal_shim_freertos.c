@@ -17,11 +17,8 @@
 
 /* --------------------------------------------------------------------------------------------- */
 
-/** Maximum number of failure records to store (must be a power of 2). */
-#define MAX_FAILURE_RECORDS    4
-
 /** Fast implementation of _x % _m where _m is a power of 2. */
-#define FAST_MOD(_x, _m) ((_x)&((_m)-1))
+#define FAST_MOD(_x, _m) ((_x) & ((_m) - 1))
 
 /** Duration to delay before resetting the device on assert. */
 #define DELAY_BEFORE_RESET_MS 1000
@@ -33,24 +30,22 @@ struct mmosal_preserved_failure_info
     uint32_t magic;
 
     /** Number of failures recorded. */
-    uint32_t failure_count;
+    volatile uint32_t failure_count;
 
     /** Number of most recently displayed failure. */
-    uint32_t displayed_failure_count;
+    volatile uint32_t displayed_failure_count;
 
     /** Preserved information from the most recent failure(s). */
-    struct mmosal_failure_info info[MAX_FAILURE_RECORDS];
+    struct mmosal_failure_info info[MMOSAL_MAX_FAILURE_RECORDS];
 };
 
 /** Magic number to put in @c mmosal_assert_info.magic to indicate that the assertion info
  *  is valid. */
 #define ASSERT_INFO_MAGIC   (0xabcd1234)
 
-
 /* Persistent assertion info. Linker script should put this into memory that is not
  * zeroed on boot. Be careful to update linker script if renaming. */
-struct mmosal_preserved_failure_info preserved_failure_info __attribute__((section(".noinit")));
-
+struct mmosal_preserved_failure_info preserved_failure_info __attribute__((section (".noinit")));
 
 void mmosal_log_failure_info(const struct mmosal_failure_info *info)
 {
@@ -63,11 +58,12 @@ void mmosal_log_failure_info(const struct mmosal_failure_info *info)
     }
 
     preserved_failure_info.magic = ASSERT_INFO_MAGIC;
-    record_num = FAST_MOD(preserved_failure_info.failure_count, MAX_FAILURE_RECORDS);
+    record_num = FAST_MOD(preserved_failure_info.failure_count, MMOSAL_MAX_FAILURE_RECORDS);
     preserved_failure_info.failure_count++;
     memcpy(&preserved_failure_info.info[record_num], info, sizeof(*info));
 }
 
+#if !(defined(ENABLE_MANUAL_FAILURE_LOG_PROCESSING) && ENABLE_MANUAL_FAILURE_LOG_PROCESSING)
 static void mmosal_dump_failure_info(void)
 {
     unsigned first_failure_num = preserved_failure_info.displayed_failure_count;
@@ -75,23 +71,24 @@ static void mmosal_dump_failure_info(void)
         preserved_failure_info.failure_count - preserved_failure_info.displayed_failure_count;
     unsigned failure_offset;
 
-    if (new_failure_count >= MAX_FAILURE_RECORDS)
+    if (new_failure_count >= MMOSAL_MAX_FAILURE_RECORDS)
     {
-        first_failure_num = FAST_MOD(preserved_failure_info.failure_count, MAX_FAILURE_RECORDS);
-        new_failure_count =  MAX_FAILURE_RECORDS;
+        first_failure_num = FAST_MOD(preserved_failure_info.failure_count,
+                                     MMOSAL_MAX_FAILURE_RECORDS);
+        new_failure_count = MMOSAL_MAX_FAILURE_RECORDS;
     }
 
     for (failure_offset = 0; failure_offset < new_failure_count; failure_offset++)
     {
         unsigned ii;
-        unsigned idx = FAST_MOD(first_failure_num + failure_offset, MAX_FAILURE_RECORDS);
+        unsigned idx = FAST_MOD(first_failure_num + failure_offset, MMOSAL_MAX_FAILURE_RECORDS);
         struct mmosal_failure_info *info = &preserved_failure_info.info[idx];
 
         printf("Failure %u logged at pc 0x%08lx, lr 0x%08lx, line %ld in %08lx\n",
                first_failure_num + failure_offset,
                info->pc, info->lr, info->line, info->fileid);
 
-        for (ii = 0; ii < sizeof(info->platform_info)/sizeof(info->platform_info[0]); ii++)
+        for (ii = 0; ii < sizeof(info->platform_info) / sizeof(info->platform_info[0]); ii++)
         {
             printf("    0x%08lx\n", info->platform_info[ii]);
         }
@@ -100,12 +97,56 @@ static void mmosal_dump_failure_info(void)
     preserved_failure_info.displayed_failure_count = preserved_failure_info.failure_count;
 }
 
+#else
+bool mmosal_extract_failure_info(struct mmosal_failure_info *buf, uint32_t *failure_number)
+{
+    if (preserved_failure_info.magic != ASSERT_INFO_MAGIC)
+    {
+        return false;
+    }
+
+    uint32_t new_failure_count = preserved_failure_info.failure_count -
+        preserved_failure_info.displayed_failure_count;
+
+    /* No failures are un-viewed. */
+    if (new_failure_count == 0)
+    {
+        return false;
+    }
+
+    /* All failure log entries are un-viewed, set displayed_failure_count to oldest stored entry. */
+    if (new_failure_count >= MMOSAL_MAX_FAILURE_RECORDS)
+    {
+        preserved_failure_info.displayed_failure_count =
+            preserved_failure_info.failure_count - MMOSAL_MAX_FAILURE_RECORDS;
+    }
+
+    if (failure_number != NULL)
+    {
+        *failure_number = preserved_failure_info.displayed_failure_count;
+    }
+
+    /* Convert the displayed_failure_count into an index for the preserved failure log array. */
+    uint32_t oldest_entry_idx = FAST_MOD(preserved_failure_info.displayed_failure_count,
+                                         MMOSAL_MAX_FAILURE_RECORDS);
+
+    memcpy(buf, &preserved_failure_info.info[oldest_entry_idx], sizeof(*buf));
+
+    preserved_failure_info.displayed_failure_count++;
+
+    return true;
+}
+
+#endif
+
 void mmosal_impl_assert(void)
 {
 #ifdef HALT_ON_ASSERT
     if (preserved_failure_info.magic == ASSERT_INFO_MAGIC)
     {
+#if !(defined(ENABLE_MANUAL_FAILURE_LOG_PROCESSING) && ENABLE_MANUAL_FAILURE_LOG_PROCESSING)
         mmosal_dump_failure_info();
+#endif
     }
     mmosal_disable_interrupts();
     mmhal_log_flush();
@@ -115,11 +156,11 @@ void mmosal_impl_assert(void)
     mmhal_reset();
 #endif
     while (1)
-    {}
+    {
+    }
 }
 
 /* --------------------------------------------------------------------------------------------- */
-
 
 #define INIT_STACK_SIZE_U32 (1024)
 
@@ -130,9 +171,11 @@ static void init_task_main(void *arg)
 
     if (preserved_failure_info.magic == ASSERT_INFO_MAGIC)
     {
-       mmosal_dump_failure_info();
+#if !(defined(ENABLE_MANUAL_FAILURE_LOG_PROCESSING) && ENABLE_MANUAL_FAILURE_LOG_PROCESSING)
+        mmosal_dump_failure_info();
+#endif
     }
-    else if (preserved_failure_info.magic == 0)
+    else
     {
         bool all_zeros = true;
         unsigned ii;
@@ -163,10 +206,10 @@ static void init_task_main(void *arg)
  * of the heap regions would come from the linker script.
  */
 #ifdef HEAP_5
-static uint32_t heap[configTOTAL_HEAP_SIZE/sizeof(uint32_t)];
+static uint32_t heap[configTOTAL_HEAP_SIZE / sizeof(uint32_t)];
 static const HeapRegion_t heap_regions[] =
 {
-    { (uint8_t *) heap, configTOTAL_HEAP_SIZE },
+    { (uint8_t *)heap, configTOTAL_HEAP_SIZE },
     { NULL, 0 }
 };
 #endif
@@ -213,6 +256,7 @@ void *mmosal_malloc_dbg(size_t size, const char *name, unsigned line_number)
 {
     return pvPortMalloc_dbg(size, name, line_number);
 }
+
 #else
 void *mmosal_malloc_dbg(size_t size, const char *name, unsigned line_number)
 {
@@ -220,6 +264,7 @@ void *mmosal_malloc_dbg(size_t size, const char *name, unsigned line_number)
     (void)line_number;
     return pvPortMalloc_(size);
 }
+
 #endif
 
 void mmosal_free(void *p)
@@ -234,7 +279,7 @@ void *mmosal_realloc(void *ptr, size_t size)
 
 void *mmosal_calloc(size_t nitems, size_t size)
 {
-    void* ptr = pvPortMalloc_(nitems * size);
+    void *ptr = pvPortMalloc_(nitems * size);
     if (ptr != NULL)
     {
         memset(ptr, 0, nitems * size);
@@ -305,7 +350,6 @@ void _free_r(struct _reent *r, void *bp) _NOTHROW
 }
 
 /* --------------------------------------------------------------------------------------------- */
-
 
 struct mmosal_task_arg
 {
@@ -378,7 +422,7 @@ void mmosal_task_yield(void)
 
 void mmosal_task_sleep(uint32_t duration_ms)
 {
-    vTaskDelay(duration_ms/portTICK_RATE_MS);
+    vTaskDelay(duration_ms / portTICK_RATE_MS);
 }
 
 void mmosal_task_enter_critical(void)
@@ -445,7 +489,7 @@ struct mmosal_mutex *mmosal_mutex_create(const char *name)
     (void)name;
 #endif
 
-#if ( configQUEUE_REGISTRY_SIZE > 0 )
+#if (configQUEUE_REGISTRY_SIZE > 0)
     vQueueAddToRegistry((QueueHandle_t)mutex, name);
 #endif
 
@@ -465,7 +509,7 @@ bool mmosal_mutex_get(struct mmosal_mutex *mutex, uint32_t timeout_ms)
     uint32_t timeout_ticks = portMAX_DELAY;
     if (timeout_ms != UINT32_MAX)
     {
-        timeout_ticks = timeout_ms/portTICK_RATE_MS;
+        timeout_ticks = timeout_ms / portTICK_RATE_MS;
     }
     return (xSemaphoreTake((xSemaphoreHandle)mutex, timeout_ticks) == pdPASS);
 }
@@ -485,7 +529,7 @@ bool mmosal_mutex_is_held_by_active_task(struct mmosal_mutex *mutex)
 struct mmosal_sem *mmosal_sem_create(unsigned max_count, unsigned initial_count, const char *name)
 {
     struct mmosal_sem *sem =
-            (struct mmosal_sem *)xSemaphoreCreateCounting(max_count, initial_count);
+        (struct mmosal_sem *)xSemaphoreCreateCounting(max_count, initial_count);
 #if (configUSE_TRACE_FACILITY == 1) && defined(ENABLE_TRACEALYZER) && ENABLE_TRACEALYZER
     if (name != NULL)
     {
@@ -495,7 +539,7 @@ struct mmosal_sem *mmosal_sem_create(unsigned max_count, unsigned initial_count,
     (void)name;
 #endif
 
-#if ( configQUEUE_REGISTRY_SIZE > 0 )
+#if (configQUEUE_REGISTRY_SIZE > 0)
     vQueueAddToRegistry((QueueHandle_t)sem, name);
 #endif
 
@@ -532,11 +576,10 @@ bool mmosal_sem_wait(struct mmosal_sem *sem, uint32_t timeout_ms)
     uint32_t timeout_ticks = portMAX_DELAY;
     if (timeout_ms != UINT32_MAX)
     {
-        timeout_ticks = timeout_ms/portTICK_RATE_MS;
+        timeout_ticks = timeout_ms / portTICK_RATE_MS;
     }
     return (xSemaphoreTake((xSemaphoreHandle)sem, timeout_ticks) == pdPASS);
 }
-
 
 uint32_t mmosal_sem_get_count(struct mmosal_sem *sem)
 {
@@ -544,7 +587,6 @@ uint32_t mmosal_sem_get_count(struct mmosal_sem *sem)
 }
 
 /* --------------------------------------------------------------------------------------------- */
-
 
 struct mmosal_semb *mmosal_semb_create(const char *name)
 {
@@ -558,7 +600,7 @@ struct mmosal_semb *mmosal_semb_create(const char *name)
     (void)name;
 #endif
 
-#if ( configQUEUE_REGISTRY_SIZE > 0 )
+#if (configQUEUE_REGISTRY_SIZE > 0)
     vQueueAddToRegistry((QueueHandle_t)semb, name);
 #endif
 
@@ -595,7 +637,7 @@ bool mmosal_semb_wait(struct mmosal_semb *semb, uint32_t timeout_ms)
     uint32_t timeout_ticks = portMAX_DELAY;
     if (timeout_ms != UINT32_MAX)
     {
-        timeout_ticks = timeout_ms/portTICK_RATE_MS;
+        timeout_ticks = timeout_ms / portTICK_RATE_MS;
     }
     return (xSemaphoreTake((xSemaphoreHandle)semb, timeout_ticks) == pdPASS);
 }
@@ -614,7 +656,7 @@ struct mmosal_queue *mmosal_queue_create(size_t num_items, size_t item_size, con
     (void)name;
 #endif
 
-#if ( configQUEUE_REGISTRY_SIZE > 0 )
+#if (configQUEUE_REGISTRY_SIZE > 0)
     vQueueAddToRegistry((QueueHandle_t)queue, name);
 #endif
 
@@ -631,7 +673,7 @@ bool mmosal_queue_pop(struct mmosal_queue *queue, void *item, uint32_t timeout_m
     uint32_t timeout_ticks = portMAX_DELAY;
     if (timeout_ms != UINT32_MAX)
     {
-        timeout_ticks = timeout_ms/portTICK_RATE_MS;
+        timeout_ticks = timeout_ms / portTICK_RATE_MS;
     }
     return (xQueueReceive((xSemaphoreHandle)queue, item, timeout_ticks) == pdPASS);
 }
@@ -641,7 +683,7 @@ bool mmosal_queue_push(struct mmosal_queue *queue, const void *item, uint32_t ti
     uint32_t timeout_ticks = portMAX_DELAY;
     if (timeout_ms != UINT32_MAX)
     {
-        timeout_ticks = timeout_ms/portTICK_RATE_MS;
+        timeout_ticks = timeout_ms / portTICK_RATE_MS;
     }
     return (xQueueSendToBack((xSemaphoreHandle)queue, item, timeout_ticks) == pdPASS);
 }
@@ -674,7 +716,6 @@ bool mmosal_queue_push_from_isr(struct mmosal_queue *queue, const void *item)
     }
 }
 
-
 /* --------------------------------------------------------------------------------------------- */
 
 uint32_t mmosal_get_time_ms(void)
@@ -701,14 +742,17 @@ struct mmosal_timer *mmosal_timer_create(const char *name, uint32_t timer_period
      * The software timer callback functions execute in the context of a task that is
      * created automatically when the FreeRTOS scheduler is started. Therefore, it is essential that
      * software timer callback functions never call FreeRTOS API functions that will result in the
-     * calling task entering the Blocked state. It is ok to call functions such as xQueueReceive(), but
-     * only if the function’s xTicksToWait parameter (which specifies the function’s block time) is set
-     * to 0. It is not ok to call functions such as vTaskDelay(), as calling vTaskDelay() will always
+     * calling task entering the Blocked state. It is ok to call functions such as xQueueReceive(),
+     * but
+     * only if the function’s xTicksToWait parameter (which specifies the function’s block time) is
+     * set
+     * to 0. It is not ok to call functions such as vTaskDelay(), as calling vTaskDelay() will
+     * always
      * place the calling task into the Blocked state.
      */
-    return (struct mmosal_timer*)xTimerCreate(name, pdMS_TO_TICKS(timer_period),
-                                              (UBaseType_t)auto_reload, arg,
-                                              (TimerCallbackFunction_t)callback);
+    return (struct mmosal_timer *)xTimerCreate(name, pdMS_TO_TICKS(timer_period),
+                                               (UBaseType_t)auto_reload, arg,
+                                               (TimerCallbackFunction_t)callback);
 }
 
 void mmosal_timer_delete(struct mmosal_timer *timer)
@@ -751,4 +795,14 @@ bool mmosal_is_timer_active(struct mmosal_timer *timer)
     BaseType_t ret = xTimerIsTimerActive((TimerHandle_t)timer);
 
     return (ret != pdFALSE);
+}
+
+int mmosal_printf(const char *format, ...)
+{
+    int ret;
+    va_list args;
+    va_start(args, format);
+    ret = vprintf(format, args);
+    va_end(args);
+    return ret;
 }

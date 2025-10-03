@@ -843,6 +843,9 @@ int hostapd_handle_dfs(struct hostapd_iface *iface)
 	if (is_6ghz_freq(iface->freq))
 		return 1;
 
+	if (is_s1g_freq(iface->freq_khz))
+		return 1;
+
 	if (!iface->current_mode) {
 		/*
 		 * This can happen with drivers that do not provide mode
@@ -915,10 +918,11 @@ int hostapd_handle_dfs(struct hostapd_iface *iface)
 		iface, iface->conf->hw_mode, iface->freq, iface->conf->channel,
 		iface->conf->ieee80211n, iface->conf->ieee80211ac,
 		iface->conf->ieee80211ax, iface->conf->ieee80211be,
-		iface->conf->secondary_channel,
+		iface->conf->ieee80211ah, iface->conf->secondary_channel,
 		hostapd_get_oper_chwidth(iface->conf),
 		hostapd_get_oper_centr_freq_seg0_idx(iface->conf),
 		hostapd_get_oper_centr_freq_seg1_idx(iface->conf),
+		iface->conf->s1g_prim_chwidth, iface->conf->s1g_prim_1mhz_chan_index,
 		dfs_use_radar_background(iface));
 
 	if (res) {
@@ -972,6 +976,7 @@ int hostapd_is_dfs_chan_available(struct hostapd_iface *iface)
 
 static int hostapd_dfs_request_channel_switch(struct hostapd_iface *iface,
 					      int channel, int freq,
+					      int freq_khz,
 					      int secondary_channel,
 					      u8 current_vht_oper_chwidth,
 					      u8 oper_centr_freq_seg0_idx,
@@ -1007,13 +1012,14 @@ static int hostapd_dfs_request_channel_switch(struct hostapd_iface *iface,
 #endif /* CONFIG_MESH */
 	err = hostapd_set_freq_params(&csa_settings.freq_params,
 				      iface->conf->hw_mode,
-				      freq, channel,
+				      freq, freq_khz, channel,
 				      iface->conf->enable_edmg,
 				      iface->conf->edmg_channel,
 				      iface->conf->ieee80211n,
 				      iface->conf->ieee80211ac,
 				      iface->conf->ieee80211ax,
 				      iface->conf->ieee80211be,
+				      iface->conf->ieee80211ah,
 				      secondary_channel,
 				      new_vht_oper_chwidth,
 				      oper_centr_freq_seg0_idx,
@@ -1021,7 +1027,9 @@ static int hostapd_dfs_request_channel_switch(struct hostapd_iface *iface,
 				      cmode->vht_capab,
 				      &cmode->he_capab[ieee80211_mode],
 				      &cmode->eht_capab[ieee80211_mode],
-				      hostapd_get_punct_bitmap(iface->bss[0]));
+				      hostapd_get_punct_bitmap(iface->bss[0]),
+				      iface->conf->s1g_prim_chwidth,
+				      iface->conf->s1g_prim_1mhz_chan_index);
 
 	if (err) {
 		wpa_printf(MSG_ERROR,
@@ -1095,9 +1103,13 @@ static void hostapd_dfs_update_background_chain(struct hostapd_iface *iface)
 				  iface->conf->ieee80211ac,
 				  iface->conf->ieee80211ax,
 				  iface->conf->ieee80211be,
+				  iface->conf->ieee80211ah,
 				  sec, hostapd_get_oper_chwidth(iface->conf),
 				  oper_centr_freq_seg0_idx,
-				  oper_centr_freq_seg1_idx, true)) {
+				  oper_centr_freq_seg1_idx,
+				  iface->conf->s1g_prim_chwidth,
+				  iface->conf->s1g_prim_1mhz_chan_index,
+				  true)) {
 		wpa_printf(MSG_ERROR, "DFS failed to start CAC offchannel");
 		iface->radar_background.channel = -1;
 		return;
@@ -1141,7 +1153,7 @@ hostapd_dfs_start_channel_switch_background(struct hostapd_iface *iface)
 	hostapd_dfs_update_background_chain(iface);
 
 	return hostapd_dfs_request_channel_switch(
-		iface, iface->conf->channel, iface->freq,
+		iface, iface->conf->channel, iface->freq, 0,
 		iface->conf->secondary_channel, current_vht_oper_chwidth,
 		hostapd_get_oper_centr_freq_seg0_idx(iface->conf),
 		hostapd_get_oper_centr_freq_seg1_idx(iface->conf));
@@ -1443,6 +1455,7 @@ static int hostapd_dfs_start_channel_switch(struct hostapd_iface *iface)
 
 	return hostapd_dfs_request_channel_switch(iface, channel->chan,
 						  channel->freq,
+						  channel->freq_khz,
 						  secondary_channel,
 						  current_vht_oper_chwidth,
 						  oper_centr_freq_seg0_idx,

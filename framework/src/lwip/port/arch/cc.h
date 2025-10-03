@@ -30,7 +30,7 @@
  *
  */
 
- /**
+/**
  *
  * Minor modifications to work with lwIP 2.1.2
  * Author: Alair Dias Junior <alair@alair.me>
@@ -49,58 +49,58 @@ extern "C" {
 #endif
 
 #if defined(__arm__) && defined(__ARMCC_VERSION)
-    /*
-    // Setup PACKing macros for KEIL/RVMDK Tools
-    */
+/*
+ *  // Setup PACKing macros for KEIL/RVMDK Tools
+ */
     #define PACK_STRUCT_BEGIN __packed
     #define PACK_STRUCT_STRUCT
     #define PACK_STRUCT_END
     #define PACK_STRUCT_FIELD(x) x
 #elif defined(__IAR_SYSTEMS_ICC__)
-    /*
-    // Setup PACKing macros for IAR Tools
-    */
+/*
+ *  // Setup PACKing macros for IAR Tools
+ */
     #define PACK_STRUCT_BEGIN
     #define PACK_STRUCT_STRUCT
     #define PACK_STRUCT_END
     #define PACK_STRUCT_FIELD(x) x
     #define PACK_STRUCT_USE_INCLUDES
 #else
-    /*
-    // Setup PACKing macros for GCC Tools
-    */
+/*
+ *  // Setup PACKing macros for GCC Tools
+ */
     #define PACK_STRUCT_BEGIN
-    #define PACK_STRUCT_STRUCT __attribute__ ((__packed__))
+    #define PACK_STRUCT_STRUCT __attribute__((__packed__))
     #define PACK_STRUCT_END
     #define PACK_STRUCT_FIELD(x) x
 #endif
 
 /*****************************************************************************
-//
-// Define LWIP_PLATFORM_DIAG and LWIP_PLATFORM_ASSERT macros.  Both of these
-// are expected to display the message argument using a platform/app specific
-// display routine.  The ASSERT macro should then abort execution.
-//
-// In general, the user should define these in the target/application specific
-// LWIPOPTS.H file, using whatever display mechanisms are availble for the
-// board/application.  However, some general default macros are provided here
-// to allow the LWIP code to build properly with/without the DEBUG macro
-// defined.
-//
-*****************************************************************************/
+ *  //
+ *  // Define LWIP_PLATFORM_DIAG and LWIP_PLATFORM_ASSERT macros.  Both of these
+ *  // are expected to display the message argument using a platform/app specific
+ *  // display routine.  The ASSERT macro should then abort execution.
+ *  //
+ *  // In general, the user should define these in the target/application specific
+ *  // LWIPOPTS.H file, using whatever display mechanisms are availble for the
+ *  // board/application.  However, some general default macros are provided here
+ *  // to allow the LWIP code to build properly with/without the DEBUG macro
+ *  // defined.
+ *  //
+ *****************************************************************************/
 /*
-// Define an empty DIAG display maro here ... since we have no knowledge of
-// what display routines are available.
-*/
+ *  // Define an empty DIAG display maro here ... since we have no knowledge of
+ *  // what display routines are available.
+ */
 #ifndef LWIP_PLATFORM_DIAG
 #define LWIP_PLATFORM_DIAG(msg) do {printf msg;} while (0)
 #endif
 
 /*
-// Define a generic ASSERT display macro here ... use the DIAG macro to display
-// the message, then use the __error__ function, which should always be
-// defined by the user application for DEBUG builds, to abandon execution.
-*/
+ *  // Define a generic ASSERT display macro here ... use the DIAG macro to display
+ *  // the message, then use the __error__ function, which should always be
+ *  // defined by the user application for DEBUG builds, to abandon execution.
+ */
 #ifndef LWIP_PLATFORM_ASSERT
 #ifdef DEBUG
 
@@ -108,16 +108,17 @@ extern "C" {
 #include <stdbool.h>
 
 extern void __error__(char *pcFilename, uint32_t ui32Line);
-#define LWIP_PLATFORM_ASSERT(msg)       \
-{                                       \
-    LWIP_PLATFORM_DIAG(msg);            \
-    __error__(__FILE__, __LINE__);      \
-}
+
+#define LWIP_PLATFORM_ASSERT(msg)          \
+        {                                  \
+            LWIP_PLATFORM_DIAG(msg);       \
+            __error__(__FILE__, __LINE__); \
+        }
 #else
 #include <stdio.h>
 #include <stdlib.h>
 #define LWIP_PLATFORM_ASSERT(x) do {printf("Assertion \"%s\" failed at line %d in %s\n", \
-                                     x, __LINE__, __FILE__); abort();} while (0)
+                                           x, __LINE__, __FILE__); abort();} while (0)
 
 #endif
 #endif

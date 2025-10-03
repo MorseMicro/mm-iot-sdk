@@ -1964,8 +1964,8 @@ static int hostapd_no_ir_channel_list_updated(struct hostapd_iface *iface,
 		mode = &iface->hw_features[i];
 
 		if (mode->mode == iface->conf->hw_mode) {
-			if (iface->freq > 0 &&
-			    !hw_mode_get_channel(mode, iface->freq, NULL)) {
+			if ((iface->freq > 0  || iface->freq_khz > 0) &&
+			    !hw_mode_get_channel(mode, iface->freq, iface->freq_khz, NULL)) {
 				mode = NULL;
 				continue;
 			}
@@ -1991,7 +1991,8 @@ static int hostapd_no_ir_channel_list_updated(struct hostapd_iface *iface,
 			struct hostapd_channel_data *chan;
 
 			chan = hw_get_channel_freq(iface->current_mode->mode,
-						   iface->freq, NULL,
+						   iface->freq,
+						   iface->freq_khz, NULL,
 						   iface->hw_features,
 						   iface->num_hw_features);
 
@@ -2026,7 +2027,8 @@ static int hostapd_no_ir_channel_list_updated(struct hostapd_iface *iface,
 			struct hostapd_channel_data *chan;
 
 			chan = hw_get_channel_freq(iface->current_mode->mode,
-						   iface->freq, NULL,
+						   iface->freq,
+						   iface->freq_khz, NULL,
 						   iface->hw_features,
 						   iface->num_hw_features);
 			if (!chan) {
@@ -2143,123 +2145,7 @@ static int setup_interface(struct hostapd_iface *iface)
 	const struct ah_class *op_class;
 	int ret;
 	int oper_freq;
-	int oper_chwidth;
 	u8 prim_chwidth;
-	int s1g_chan_center;
-	int s1g_prim_chan;
-	int s1g_prim_global_op_class = 0;
-
-	oper_chwidth = morse_s1g_op_class_to_ch_width(iface->conf->s1g_op_class);
-	if (oper_chwidth < 0) {
-		wpa_printf(MSG_ERROR,
-			"error determining S1G operating channel width from operating class (%d)",
-			iface->conf->s1g_op_class);
-		return -1;
-	} else {
-		wpa_printf(MSG_DEBUG, "S1G width: %d MHz", oper_chwidth);
-	}
-
-	switch (iface->conf->s1g_prim_chwidth) {
-	case S1G_PRIM_CHWIDTH_1:
-		prim_chwidth = 1;
-		break;
-	case S1G_PRIM_CHWIDTH_2:
-		prim_chwidth = 2;
-		break;
-	default:
-	    wpa_printf(MSG_ERROR, "error found in config file, invalid "
-		       "prim_chwidth");
-	    return -1;
-	}
-
-	if (prim_chwidth > oper_chwidth ) {
-		wpa_printf(MSG_ERROR, "S1G primary channel bandwidth cannot "
-			   "exceed operating channel bandwidth");
-		return -1;
-	}
-
-	if (iface->conf->acs) {
-		int s1g_chan;
-		wpa_printf(MSG_DEBUG, "setup interface in ACS mode");
-		s1g_chan = morse_s1g_op_class_first_chan(iface->conf->s1g_op_class);
-		if (s1g_chan < 0) {
-			wpa_printf(MSG_ERROR, "no valid S1G channels for op class %d",
-					iface->conf->s1g_op_class);
-		} else {
-			wpa_printf(MSG_DEBUG, "morse_cli channel using %d for initial config",
-					s1g_chan);
-		}
-		oper_freq = morse_s1g_op_class_chan_to_freq(
-			iface->conf->s1g_op_class, s1g_chan);
-
-		if (oper_freq < 0)
-		{
-			wpa_printf(MSG_ERROR,
-					"S1G frequency not found from channel map class %d chan %u",
-					iface->conf->s1g_op_class, s1g_chan);
-			return -1;
-		}
-		s1g_prim_chan = morse_cc_get_primary_s1g_channel(
-							oper_chwidth, prim_chwidth, s1g_chan,
-							iface->conf->s1g_prim_1mhz_chan_index,
-							iface->conf->op_country);
-	} else {
-		int ht_center_chan = morse_ht_chan_to_ht_chan_center(
-				iface->conf, iface->conf->channel);
-		oper_freq = morse_s1g_op_class_ht_chan_to_s1g_freq(
-				iface->conf->s1g_op_class, ht_center_chan);
-		if (oper_freq < 0) {
-			wpa_printf(MSG_ERROR, "S1G frequency not found from channel map"
-					" class %d ht chan %u",
-					iface->conf->s1g_op_class, ht_center_chan);
-		} else {
-			wpa_printf(MSG_DEBUG, "S1G freq %d kHz for class %d ht chan %d",
-					oper_freq, iface->conf->s1g_op_class, ht_center_chan);
-		}
-		s1g_chan_center = morse_ht_chan_to_s1g_chan(ht_center_chan);
-		s1g_prim_chan = morse_cc_get_primary_s1g_channel(
-							oper_chwidth, prim_chwidth, s1g_chan_center,
-							iface->conf->s1g_prim_1mhz_chan_index,
-							iface->conf->op_country);
-	}
-
-	prim_chan_class = morse_s1g_ch_to_op_class(prim_chwidth, iface->conf->op_country,
-						s1g_prim_chan);
-	if (prim_chan_class)
-		s1g_prim_global_op_class = prim_chan_class->global_op_class;
-
-	/* TODO: specify/define primary 1mhz channel by channel number rather than index
-	 * note that this will require changes to morsectrl/morse_cli and the driver
-	 */
-	if (iface->conf->s1g_prim_1mhz_chan_index >= oper_chwidth) {
-		wpa_printf(MSG_ERROR, "1MHz primary channel index is too large for operating BW");
-		return -1;
-	}
-
-	ret = morse_set_channel(iface->conf->bss[0]->iface, oper_freq, oper_chwidth, prim_chwidth,
-			iface->conf->s1g_prim_1mhz_chan_index);
-
-	/* The firmware uses this return code exclusively for an unsupported / disabled channel */
-	if (ret == 1) {
-		wpa_printf(MSG_ERROR,
-			"Channel disabled due to board specific rules - stopping the interface");
-		return -1;
-	} else if (ret) {
-		wpa_printf(MSG_ERROR, "Failed to set the channel (%d)", ret);
-	}
-
-	if (s1g_prim_global_op_class &&
-	    morse_s1g_op_class_valid(iface->conf->s1g_op_class, &op_class)) {
-		ret = morse_set_s1g_op_class(iface->conf->bss[0]->iface,
-					op_class->s1g_op_class, s1g_prim_global_op_class);
-
-		/* Eat the return code and continue on, so WFA/sigma DUT don't break when trying
-		 * to move channels
-		 */
-		if (ret != 0) {
-			wpa_printf(MSG_ERROR, "Failed to set device op_class (%d)", ret);
-		}
-	}
 
 	/*
 	 * It is possible that setup_interface() is called after the interface
@@ -2333,6 +2219,10 @@ static int configured_fixed_chan_to_freq(struct hostapd_iface *iface)
 {
 	int freq, i, j;
 
+	if (iface->conf->ieee80211ah) {
+		return 0;
+	}
+
 	if (!iface->conf->channel)
 		return 0;
 	if (iface->conf->op_class) {
@@ -2403,6 +2293,13 @@ static int setup_interface2(struct hostapd_iface *iface)
 		 * feature data. */
 	} else {
 		int ret;
+#ifdef CONFIG_IEEE80211AH
+		if (iface->bss[0]->iconf->ieee80211ah) {
+			ret = hostapd_s1g_get_oper_config(iface);
+			if (ret < 0)
+				goto fail;
+		}
+#endif /* CONFIG_IEEE80211AH */
 
 		if (iface->conf->acs && !iface->is_ch_switch_dfs) {
 			iface->freq = 0;
@@ -2792,7 +2689,8 @@ static int hostapd_setup_interface_complete_sync(struct hostapd_iface *iface,
 #endif /* CONFIG_MESH */
 
 		if (!delay_apply_cfg &&
-		    hostapd_set_freq(hapd, hapd->iconf->hw_mode, iface->freq,
+		    hostapd_set_freq(hapd, hapd->iconf->hw_mode,
+				     iface->freq, iface->freq_khz,
 				     hapd->iconf->channel,
 				     hapd->iconf->enable_edmg,
 				     hapd->iconf->edmg_channel,
@@ -2800,12 +2698,15 @@ static int hostapd_setup_interface_complete_sync(struct hostapd_iface *iface,
 				     hapd->iconf->ieee80211ac,
 				     hapd->iconf->ieee80211ax,
 				     hapd->iconf->ieee80211be,
+				     hapd->iconf->ieee80211ah,
 				     hapd->iconf->secondary_channel,
 				     hostapd_get_oper_chwidth(hapd->iconf),
 				     hostapd_get_oper_centr_freq_seg0_idx(
 					     hapd->iconf),
 				     hostapd_get_oper_centr_freq_seg1_idx(
-					     hapd->iconf))) {
+					     hapd->iconf),
+					hapd->iconf->s1g_prim_chwidth,
+					hapd->iconf->s1g_prim_1mhz_chan_index)) {
 			wpa_printf(MSG_ERROR, "Could not set channel for "
 				   "kernel driver");
 			goto fail;
@@ -4520,7 +4421,7 @@ static int hostapd_change_config_freq(struct hostapd_data *hapd,
 
 	if (!params->channel) {
 		/* check if the new channel is supported by hw */
-		params->channel = hostapd_hw_get_channel(hapd, params->freq);
+		params->channel = hostapd_hw_get_channel(hapd, params->freq, 0);
 	}
 
 	channel = params->channel;
@@ -4534,10 +4435,12 @@ static int hostapd_change_config_freq(struct hostapd_data *hapd,
 	if (old_params &&
 	    hostapd_set_freq_params(old_params, conf->hw_mode,
 				    hostapd_hw_get_freq(hapd, conf->channel),
+				    0,
 				    conf->channel, conf->enable_edmg,
 				    conf->edmg_channel, conf->ieee80211n,
 				    conf->ieee80211ac, conf->ieee80211ax,
-				    conf->ieee80211be, conf->secondary_channel,
+				    conf->ieee80211be, conf->ieee80211ah,
+				    conf->secondary_channel,
 				    hostapd_get_oper_chwidth(conf),
 				    hostapd_get_oper_centr_freq_seg0_idx(conf),
 				    hostapd_get_oper_centr_freq_seg1_idx(conf),
@@ -4546,7 +4449,8 @@ static int hostapd_change_config_freq(struct hostapd_data *hapd,
 				    NULL,
 				    mode ? &mode->eht_capab[IEEE80211_MODE_AP] :
 				    NULL,
-				    hostapd_get_punct_bitmap(hapd)))
+				    hostapd_get_punct_bitmap(hapd),
+				    conf->s1g_prim_chwidth, conf->s1g_prim_1mhz_chan_index))
 		return -1;
 
 	switch (params->bandwidth) {
@@ -4814,7 +4718,7 @@ int hostapd_force_channel_switch(struct hostapd_iface *iface,
 	if (!settings->freq_params.channel) {
 		/* Check if the new channel is supported */
 		settings->freq_params.channel = hostapd_hw_get_channel(
-			iface->bss[0], settings->freq_params.freq);
+			iface->bss[0], settings->freq_params.freq, settings->freq_params.freq_khz);
 		if (!settings->freq_params.channel)
 			return -1;
 	}

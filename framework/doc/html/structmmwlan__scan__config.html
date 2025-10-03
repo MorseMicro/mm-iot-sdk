@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.8.2</span>
+   &#160;<span id="projectnumber">2.9.7</span>
    </div>
   </td>
  </tr>
@@ -96,11 +96,11 @@ $(document).ready(function(){initNavTree('structmmwlan__scan__config.html',''); 
 <div class="textblock"><p >Scan configuration data structure. </p>
 <p >Use <a class="el" href="group__MMWLAN__CTRL.html#ga5b478017f60cfcc091f5ca8e2b4d98a6">MMWLAN_SCAN_CONFIG_INIT</a> for initialization. For example:</p>
 <div class="fragment"><div class="line"><span class="keyword">struct </span><a class="code hl_struct" href="structmmwlan__scan__config.html">mmwlan_scan_config</a> scan_config = <a class="code hl_define" href="group__MMWLAN__CTRL.html#ga5b478017f60cfcc091f5ca8e2b4d98a6">MMWLAN_SCAN_CONFIG_INIT</a>;</div>
-<div class="ttc" id="agroup__MMWLAN__CTRL_html_ga5b478017f60cfcc091f5ca8e2b4d98a6"><div class="ttname"><a href="group__MMWLAN__CTRL.html#ga5b478017f60cfcc091f5ca8e2b4d98a6">MMWLAN_SCAN_CONFIG_INIT</a></div><div class="ttdeci">#define MMWLAN_SCAN_CONFIG_INIT</div><div class="ttdoc">Initializer for mmwlan_scan_config.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00533">mmwlan.h:533</a></div></div>
-<div class="ttc" id="astructmmwlan__scan__config_html"><div class="ttname"><a href="structmmwlan__scan__config.html">mmwlan_scan_config</a></div><div class="ttdoc">Scan configuration data structure.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00508">mmwlan.h:509</a></div></div>
+<div class="ttc" id="agroup__MMWLAN__CTRL_html_ga5b478017f60cfcc091f5ca8e2b4d98a6"><div class="ttname"><a href="group__MMWLAN__CTRL.html#ga5b478017f60cfcc091f5ca8e2b4d98a6">MMWLAN_SCAN_CONFIG_INIT</a></div><div class="ttdeci">#define MMWLAN_SCAN_CONFIG_INIT</div><div class="ttdoc">Initializer for mmwlan_scan_config.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00589">mmwlan.h:589</a></div></div>
+<div class="ttc" id="astructmmwlan__scan__config_html"><div class="ttname"><a href="structmmwlan__scan__config.html">mmwlan_scan_config</a></div><div class="ttdoc">Scan configuration data structure.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00556">mmwlan.h:557</a></div></div>
 </div><!-- fragment --><dl class="section see"><dt>See also</dt><dd><a class="el" href="group__MMWLAN__CTRL.html#ga632ecb9c29d782148d7c9af9395762b6" title="Update the scan configuration with the given settings.">mmwlan_set_scan_config()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00508">508</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00556">556</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 </div>
 <p><code>#include &lt;<a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>&gt;</code></p>
 <table class="memberdecls">
@@ -112,6 +112,9 @@ Data Fields</h2></td></tr>
 <tr class="memitem:a4f536d9249c4383cbd4c58e348505a4a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__scan__config.html#a4f536d9249c4383cbd4c58e348505a4a">ndp_probe_enabled</a></td></tr>
 <tr class="memdesc:a4f536d9249c4383cbd4c58e348505a4a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Boolean value indicating whether NDP probe support should be enabled.  <a href="structmmwlan__scan__config.html#a4f536d9249c4383cbd4c58e348505a4a">More...</a><br /></td></tr>
 <tr class="separator:a4f536d9249c4383cbd4c58e348505a4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa70425bf650c371fd4a9ec3c39366d74"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__scan__config.html#aa70425bf650c371fd4a9ec3c39366d74">home_channel_dwell_time_ms</a></td></tr>
+<tr class="memdesc:aa70425bf650c371fd4a9ec3c39366d74"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the home channel dwell time to use for scans that are requested internally within the mmwlan driver (e.g., when connecting or background scanning).  <a href="structmmwlan__scan__config.html#aa70425bf650c371fd4a9ec3c39366d74">More...</a><br /></td></tr>
+<tr class="separator:aa70425bf650c371fd4a9ec3c39366d74"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Field Documentation</h2>
 <a id="abb7f68897da19247834438a46a7f18bd" name="abb7f68897da19247834438a46a7f18bd"></a>
@@ -129,7 +132,26 @@ Data Fields</h2></td></tr>
 <p>Set the per-channel dwell time to use for scans that are requested internally within the mmwlan driver (e.g., when connecting or background scanning). </p>
 <dl class="section note"><dt>Note</dt><dd>This does not affect scans requested with the <a class="el" href="group__MMWLAN__CTRL.html#gacf6def12dc1c130f80670fc79f30211d">mmwlan_scan_request()</a>. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00516">516</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00564">564</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+
+</div>
+</div>
+<a id="aa70425bf650c371fd4a9ec3c39366d74" name="aa70425bf650c371fd4a9ec3c39366d74"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa70425bf650c371fd4a9ec3c39366d74">&#9670;&nbsp;</a></span>home_channel_dwell_time_ms</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t mmwlan_scan_config::home_channel_dwell_time_ms</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Set the home channel dwell time to use for scans that are requested internally within the mmwlan driver (e.g., when connecting or background scanning). </p>
+<dl class="section note"><dt>Note</dt><dd>This does not affect scans requested with the <a class="el" href="group__MMWLAN__CTRL.html#gacf6def12dc1c130f80670fc79f30211d">mmwlan_scan_request()</a>. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00585">585</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -149,7 +171,7 @@ Data Fields</h2></td></tr>
 <p >NDP probe requests are smaller than regular probe requests and will save energy when scanning.</p>
 <dl class="section warning"><dt>Warning</dt><dd>Be careful when enabling NDP probe requests. Some APs may not respond to NDP probe requests if the CSSID (Compressed SSID) field is not populated. When using the <a class="el" href="group__MMWLAN__CTRL.html#gacf6def12dc1c130f80670fc79f30211d">mmwlan_scan_request()</a> API with NDP probe requests enabled, it is advisable to include an SSID in the scan arguments (see <a class="el" href="structmmwlan__scan__args.html#a62199cfc87f9a93a1e52d88d5a02d9eb">mmwlan_scan_args::ssid</a>). </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00529">529</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00577">577</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>

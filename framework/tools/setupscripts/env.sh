@@ -70,4 +70,4 @@ fi
 export PATH=$HOME/.local/bin:$PATH
 
 # MM-IoT-SDK Version
-export MMIOT_VERSION="2.8.2"
+export MMIOT_VERSION="2.9.7"

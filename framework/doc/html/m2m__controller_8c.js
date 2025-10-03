@@ -12,9 +12,10 @@ var m2m__controller_8c =
     [ "app_init", "m2m__controller_8c.html#add3190cf715f513666f4be42874d91e2", null ],
     [ "beacon_monitor_example_start", "m2m__controller_8c.html#afabe397b761752e5057390e230bfd09a", null ],
     [ "beacon_monitor_rx_handler", "m2m__controller_8c.html#a548c1e72e51bea9abfed79b9d9b97240", null ],
+    [ "is_wlan_connected", "m2m__controller_8c.html#a9aaa8996fe5ec03b1d06d0b3b0838755", null ],
     [ "run_examples_task", "m2m__controller_8c.html#a0e6036372ca4894444a7fdec035929ca", null ],
     [ "tcp_client_example", "m2m__controller_8c.html#ac5b07133cdd8ab4e5801325b6fe128c0", null ],
-    [ "tcp_echo_server_start", "m2m__controller_8c.html#adaac7df33c2dab75c484107cf0bd34b5", null ],
+    [ "tcp_echo_server_start", "m2m__controller_8c.html#a5afdc579172347833b456810f819744e", null ],
     [ "tcp_echo_server_task", "m2m__controller_8c.html#a07fee81f3de7a7d8cdaf86ec4e69ba79", null ],
     [ "wlan_connect", "m2m__controller_8c.html#a1b18cdee34a9f27753292fc69f5df1c8", null ],
     [ "agent_started_semb", "m2m__controller_8c.html#a126582c7db4ae7352929162212ca9382", null ]

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['queues_20_28aka_20pipes_29_0',['Queues (aka pipes)',['../group__MMOSAL__QUEUE.html',1,'']]]
+  ['ping_20configuration_20variables_0',['ping configuration variables',['../group__MMAGIC__CONTROLLER__PING__CONFIG.html',1,'']]]
 ];

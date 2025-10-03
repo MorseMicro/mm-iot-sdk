@@ -6,6 +6,7 @@ var group__MMUTILS =
     [ "MM_FALLTHROUGH", "group__MMUTILS.html#ga6b1d6a408a5d817670408172c09c516d", null ],
     [ "MM_FAST_ROUND_UP", "group__MMUTILS.html#ga695315db4f1a49abe1178b6869356265", null ],
     [ "MM_MAX", "group__MMUTILS.html#ga794e1b1e074758195cf4baad3674f33b", null ],
+    [ "MM_MEMBER_SIZE", "group__MMUTILS.html#ga2f02ac1fabb35f58dd519761ce0be31b", null ],
     [ "MM_MIN", "group__MMUTILS.html#ga784ce5fcd4e6f4d10eab385b8af7997c", null ],
     [ "MM_PACKED", "group__MMUTILS.html#gabfc75e5c38f3054e1643a04b81e3b54e", null ],
     [ "MM_STATIC_ASSERT", "group__MMUTILS.html#ga88c3ad1ebe87a29a9bb932305d4d737d", null ],

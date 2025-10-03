@@ -28,7 +28,7 @@ struct mmagic_ip_config
      * reload command is successfully executed. */
     struct struct_ip_addr dns_server0;
     /** Secondary DNS server IP address. If a value is specified this will override the
-     * secondary DNS server provided by DHCP (if any). Changes  will take effect when
+     * secondary DNS server provided by DHCP (if any). Changes will take effect when
      * the reload command is successfully executed. Note that this option may be
      * ignored by some IP stacks. */
     struct struct_ip_addr dns_server1;
@@ -40,6 +40,9 @@ struct mmagic_ip_config
      * DHCP discovery and leases without waking up the host processor. Note: this comes
      * into effect only if ip.dhcp_enabled is also true. */
     bool dhcp_offload;
+    /** When set to true, IP link status notifications will be provided. Setting this to
+     * false will suppress these notifications. Defaults to true. */
+    bool link_status_evt_en;
 };
 
 struct mmagic_ip_data
@@ -121,3 +124,13 @@ enum mmagic_status mmagic_core_ip_set_whitelist_filter(
 
 enum mmagic_status mmagic_core_ip_clear_whitelist_filter(
     struct mmagic_data *core);
+
+/*
+ * ---------------------------------------------------------------------------------------------
+ * Internal API: to be used by the implementation C file only.
+ * ---------------------------------------------------------------------------------------------
+ */
+
+enum mmagic_status mmagic_core_event_ip_link_status(
+    struct mmagic_data *core,
+    const struct mmagic_core_event_ip_link_status_args *args);

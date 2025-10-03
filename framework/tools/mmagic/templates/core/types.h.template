@@ -53,6 +53,42 @@ enum mmagic_{{module.name}}_events
 };
 {% endfor %}
 
+{% for maxlen in config.string_maxlens %}
+/** String type with maximum length of {{maxlen}} (excluding null terminator). */
+struct MM_PACKED string{{maxlen}}
+{
+    /** Length of string contents (excluding null terminator). */
+    {%- if maxlen < 255 %}
+    uint8_t len;
+    {%- elif maxlen < 65535 %}
+    uint16_t len;
+    {%- else %}
+    uint32_t len;
+    {%endif %}
+
+    /** The string contents. */
+    char data[{{maxlen}} + 1];
+};
+{% endfor -%}
+
+{% for maxlen in config.raw_maxlens %}
+/** Raw octet string type with maximum length of {{maxlen}}. */
+struct MM_PACKED raw{{maxlen}}
+{
+    /** Length of @c data. */
+    {%- if maxlen < 256 %}
+    uint8_t len;
+    {%- elif maxlen < 65536 %}
+    uint16_t len;
+    {%- else %}
+    uint32_t len;
+    {%endif %}
+
+    /** The actual data buffer. */
+    uint8_t data[{{maxlen}}];
+};
+{% endfor -%}
+
 {% for struct in config.structs %}
 /** {{struct.description | wordwrap(80) | replace('\n', '\n * ')}} */
 {{struct.decl_datatype}}
@@ -69,17 +105,17 @@ enum mmagic_{{module.name}}_events
 /**
  * Convert from @c {{type}} to a string.
  *
- * @param value Reference to the @c {{type}}
- * @param buf   Reference to the buffer where string is to be placed
- * @param len   Length of the buffer provided in bytes
+ * @param value Reference to the @c {{type}}.
+ * @param buf   Reference to the buffer where string is to be placed.
+ * @param len   Length of the buffer provided in bytes.
  *
  * @return On success the number of bytes characters written (excluding the null byte). A return
  *         value of @c len or more means that the output was truncated. On error a negative value is
  *         returned.
  *
- * @note The behaviour is the same as @c snprintf() . This will not write more than @c len in bytes
+ * @note The behaviour is the same as @c snprintf(). This will not write more than @c len in bytes
  *       (including the terminating null byte). If the output was truncated due to this limit, then
- *       the return value is the  number of characters (excluding the terminating null byte) which
+ *       the return value is the number of characters (excluding the terminating null byte) which
  *       would have been written to the final string if enough space had been available.
  */
 int mmagic_{{type}}_to_string({{config.find_datatype(type)}} value, char *buf, size_t len);
@@ -88,7 +124,7 @@ int mmagic_{{type}}_to_string({{config.find_datatype(type)}} value, char *buf, s
  * Convert from a string to @c {{type}}.
  *
  * @param value Reference to the @c {{type}} to place the parsed data.
- * @param buf   Reference to a null terminated string to parse
+ * @param buf   Reference to a null terminated string to parse.
  *
  * @return On success 0. On error a negative value is returned.
  */
@@ -99,17 +135,17 @@ int mmagic_string_to_{{type}}({{config.find_datatype(type)}} *value, const char 
 /**
  * Convert from @c {{type}} to a string.
  *
- * @param value Reference to the @c {{type}}
- * @param buf   Reference to the buffer where string is to be placed
- * @param len   Length of the buffer provided in bytes
+ * @param  value Reference to the @c {{type}}.
+ * @param  buf   Reference to the buffer where string is to be placed.
+ * @param  len   Length of the buffer provided in bytes.
  *
- * @return On success the number of bytes characters written (excluding the null byte). A return
- *         value of @c len or more means that the output was truncated. On error a negative value is
- *         returned.
+ * @return       On success the number of bytes characters written (excluding the null byte).
+ *               A return value of @c len or more means that the output was truncated. On error
+ *               a negative value is returned.
  *
- * @note The behaviour is the same as @c snprintf() . This will not write more than @c len in bytes
+ * @note The behaviour is the same as @c snprintf(). This will not write more than @c len in bytes
  *       (including the terminating null byte). If the output was truncated due to this limit, then
- *       the return value is the  number of characters (excluding the terminating null byte) which
+ *       the return value is the number of characters (excluding the terminating null byte) which
  *       would have been written to the final string if enough space had been available.
  */
 int mmagic_{{type}}_to_string(const {{config.find_datatype(type)}} *value, char *buf, size_t len);
@@ -118,28 +154,58 @@ int mmagic_{{type}}_to_string(const {{config.find_datatype(type)}} *value, char 
  * Convert from a string to @c {{type}}.
  *
  * @param value Reference to the @c {{type}} to place the parsed data.
- * @param buf   Reference to a null terminated string to parse
+ * @param buf   Reference to a null terminated string to parse.
  *
  * @return On success 0. On error a negative value is returned.
  */
 int mmagic_string_to_{{type}}({{config.find_datatype(type)}} *value, const char *buf);
 {% endfor %}
 
+{% for maxlen in config.string_maxlens %}
+/**
+ * Convert from @c string{{maxlen}} to a null-terminated string.
+ *
+ * @param  value @c string{{maxlen}} value.
+ * @param  buf   Reference to the buffer where string is to be placed.
+ * @param  len   Length of the buffer provided in bytes.
+ *
+ * @return       On success the number of bytes characters written (excluding the null byte).
+ *               A return value of @c len or more means that the output was truncated. On error
+ *               a negative value is returned.
+ *
+ * @note The behaviour is the same as @c snprintf(). This will not write more than @c len in bytes
+ *       (including the terminating null byte). If the output was truncated due to this limit, then
+ *       the return value is the number of characters (excluding the terminating null byte) which
+ *       would have been written to the final string if enough space had been available.
+ */
+int mmagic_string{{maxlen}}_to_string(const struct string{{maxlen}} *value, char *buf, size_t len);
+
+/**
+ * Convert from a string to @c string{{maxlen}}.
+ *
+ * @param value Reference to the @c string{{maxlen}} to place the parsed data.
+ * @param buf   Reference to a null terminated string to parse. Must be <= {{maxlen}} characters.
+ *
+ * @return On success 0. On error a negative value is returned.
+ */
+int mmagic_string_to_string{{maxlen}}(struct string{{maxlen}} *value, const char *buf);
+{% endfor %}
+
 {% for enum in config.enums %}
 /**
  * Convert from @c {{enum.name}} to a string.
  *
- * @param value Enum value to convert.
- * @param buf   Reference to the buffer where string is to be placed
- * @param len   Length of the buffer provided in bytes
+ * @param  value Enum value to convert.
+ * @param  buf   Reference to the buffer where string is to be placed.
+ * @param  len   Length of the buffer provided in bytes.
  *
- * @return On success the number of bytes characters written (excluding the
- *         null byte). A return value of @c len or more means that the output was
- *         truncated. On error a negative value is returned.
+ * @return       On success the number of bytes characters written (excluding the
+ *               null byte). A return value of @c len or more means that the output was
+ *               truncated. On error a negative value is returned.
  *
- * @note The behaviour is the same as @c snprintf() . This will not write more than @c len in bytes
+ * @note The behaviour is the same as @c snprintf(). This will not write more than @c len in bytes
  *       (including the terminating null byte). If the output was truncated due to this limit, then
- *       the return value is the  number of characters (excluding the terminating null byte) which
+ *       the return value is the number of characters (excluding the terminating null byte) which
  *       would have been written to the final string if enough space had been available.
  */
 int mmagic_{{enum.name}}_to_string({{enum.datatype}} value, char *buf, size_t len);
@@ -147,7 +213,7 @@ int mmagic_{{enum.name}}_to_string({{enum.datatype}} value, char *buf, size_t le
 /**
  * Convert from a string to @c {{enum.name}}.
  *
- * @param value Reference to the @c {{enum.datatype}}  that will be set to the parsed value on success.
+ * @param value Reference to the @c {{enum.datatype}} that will be set to the parsed value on success.
  * @param buf   Reference to a null terminated string to parse
  *
  * @return On success 0. On error a negative value is returned.

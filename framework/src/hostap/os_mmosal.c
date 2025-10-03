@@ -44,18 +44,57 @@ int os_get_reltime(struct os_reltime *t)
     return 0;
 }
 
+/*
+ * SPDX-SnippetBegin
+ * SPDX-License-Identifier: BSD
+ * SPDX-SnippetCopyrightText: Copyright (c) 2005-2006, Jouni Malinen <j@w1.fi>
+ * SDPX—SnippetName: Functions from os_internal.c
+ */
 int os_mktime(int year, int month, int day, int hour, int min, int sec, os_time_t *t)
 {
-    UNUSED(year);
-    UNUSED(month);
-    UNUSED(day);
-    UNUSED(hour);
-    UNUSED(min);
-    UNUSED(sec);
-    UNUSED(t);
+    struct tm tm;
 
+    if (year < 1970 || month < 1 || month > 12 || day < 1 || day > 31 ||
+        hour < 0 || hour > 23 || min < 0 || min > 59 || sec < 0 ||
+        sec > 60)
+    {
+        return -1;
+    }
+
+    os_memset(&tm, 0, sizeof(tm));
+    tm.tm_year = year - 1900;
+    tm.tm_mon = month - 1;
+    tm.tm_mday = day;
+    tm.tm_hour = hour;
+    tm.tm_min = min;
+    tm.tm_sec = sec;
+
+    *t = (os_time_t)mktime(&tm);
     return 0;
 }
+
+int os_gmtime(os_time_t t, struct os_tm *tm)
+{
+    struct tm *tm2;
+    time_t t2 = t;
+
+    tm2 = gmtime(&t2);
+    if (tm2 == NULL)
+    {
+        return -1;
+    }
+    tm->sec = tm2->tm_sec;
+    tm->min = tm2->tm_min;
+    tm->hour = tm2->tm_hour;
+    tm->day = tm2->tm_mday;
+    tm->month = tm2->tm_mon + 1;
+    tm->year = tm2->tm_year + 1900;
+    return 0;
+}
+
+/*
+ *  SPDX-SnippetEnd
+ */
 
 int os_daemonize(const char *pid_file)
 {

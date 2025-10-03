@@ -384,6 +384,7 @@ enum hostapd_hw_mode {
 	HOSTAPD_MODE_IEEE80211G,
 	HOSTAPD_MODE_IEEE80211A,
 	HOSTAPD_MODE_IEEE80211AD,
+	HOSTAPD_MODE_IEEE80211AH,
 	HOSTAPD_MODE_IEEE80211ANY,
 	NUM_HOSTAPD_MODES
 };
@@ -476,6 +477,24 @@ enum oper_chan_width {
 	CONF_OPER_CHWIDTH_8640MHZ,
 	CONF_OPER_CHWIDTH_40MHZ_6GHZ,
 	CONF_OPER_CHWIDTH_320MHZ,
+	CONF_OPER_CHWIDTH_1MHz,
+	CONF_OPER_CHWIDTH_2MHz,
+	CONF_OPER_CHWIDTH_4MHz,
+	CONF_OPER_CHWIDTH_8MHz,
+	CONF_OPER_CHWIDTH_16MHz,
+};
+
+enum s1g_oper_chwidth {
+	S1G_OPER_CHWIDTH_1,
+	S1G_OPER_CHWIDTH_2,
+	S1G_OPER_CHWIDTH_4,
+	S1G_OPER_CHWIDTH_8,
+	S1G_OPER_CHWIDTH_16,
+};
+
+enum s1g_prim_chwidth {
+	S1G_PRIM_CHWIDTH_1,
+	S1G_PRIM_CHWIDTH_2,
 };
 
 enum key_flag {
@@ -526,6 +545,12 @@ enum frame_encryption {
 	FRAME_NOT_ENCRYPTED = 0,
 	FRAME_ENCRYPTED = 1
 };
+
+#define MHZ_TO_KHZ(x) ((x) * 1000)
+#define KHZ_TO_MHZ(x) ((x) / 1000)
+#define KHZ_TO_S1G_OFFSET(x) ((x) % 1000)
+/* If x (freq_khz) is 0 then print "MHz" else print "kHz" */
+#define KHZ_PRINT_FREQ_UNITS(x) (x) == 0 ? "MHz" : "kHz"
 
 #ifndef MAX_NUM_MLD_LINKS
 #define MAX_NUM_MLD_LINKS 15

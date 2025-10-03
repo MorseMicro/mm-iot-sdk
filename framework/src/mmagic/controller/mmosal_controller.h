@@ -141,6 +141,26 @@ bool mmosal_queue_push(struct mmosal_queue *queue, const void *item, uint32_t ti
  * @}
  */
 
+/**
+ * @defgroup MMOSAL_MISC Miscellaneous functions
+ *
+ * @{
+ */
+
+/**
+ * Generate a random 32 bit integer within the given range.
+ *
+ * @param min Minimum value (inclusive).
+ * @param max Maximum value (inclusive).
+ *
+ * @returns a randomly generated integer (min <= i <= max).
+ */
+uint32_t mmosal_random_u32(uint32_t min, uint32_t max);
+
+/**
+ * @}
+ */
+
 #ifdef __cplusplus
 }
 #endif

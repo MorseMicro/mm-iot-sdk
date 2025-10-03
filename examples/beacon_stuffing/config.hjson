@@ -1,5 +1,7 @@
 /*
- * Copyright  Morse Micro
+ * Copyright 2024-2025 Morse Micro
+ *
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 /*
@@ -27,23 +29,6 @@
     /* You can specify a list of key/value strings in this section to write to config store
      * this is equivalent to the write-string command */
     "strings" : {
-        /* The iperf mode, valid values are udp_server, tcp_server, udp_client and
-         * tcp_client */
-        "iperf.mode": "udp_server"
-        /* IP address of server to connect to when in client mode */
-        "iperf.server": "192.168.1.1"
-        /* Specifies the port to listen on in server mode. */
-        "iperf.port": "5001"
-        /* Duration for client transfers specified either in seconds or bytes. If this is
-         * negative, it specifies a time in seconds; if positive, it specifies the number
-         * of bytes to transmit. */
-        "iperf.amount": "-10"
-
-        "ping.target": "192.168.1.1"
-        "ping.count": "10"
-        "ping.interval": "1000"
-        "ping.size": "56"
-
         /* The Wi-Fi SSID */
         "wlan.ssid": "MorseMicro"
         /* The Wi-Fi password, not required if wlan.security is open */
@@ -54,7 +39,7 @@
         // "wlan.country_code": "XX"
 
         /* If true use DHCP, else the static IP configuration will be used */
-        "ip.dhcp_enabled": "True"
+        "ip.dhcp_enabled": "true"
 
         /* These settings are ignored if DHCP is used, but mandatory if using static IP */
         // "ip.ip_addr": "192.168.1.2"
@@ -103,10 +88,45 @@
          * to UINT32_MAX to have the maximum unbounded. If only max_health_check_intvl_ms
          * is specified, then min_health_check_intvl_ms is assumed to be 0. */
         // "wlan.max_health_check_intvl_ms": "120000"
+        /* Minimum time (in milliseconds) to dwell on a channel waiting for probe
+         * responses. */
+        // "wlan.sta_scan_dwell_time_ms": "30"
+        /* Boolean value indicating whether NDP probe support should be enabled. NDP probe
+         * requests are smaller than regular probe requests and will save energy when
+         * scanning. */
+        // "wlan.ndp_probe_enabled": "false"
+        /* Time to dwell on home channel in between channels during a scan, to allow
+         * traffic to still pass. This will only perform while connected to an AP and is
+         * ignored otherwise. If set to 0, the device will not return to the home channel
+         * during the scan. */
+        // "wlan.home_chan_dwell_time_ms": "200"
         /* If true, enables DHCP offload which allows the Morse chip to directly handle
          * DHCP discovery and leases without waking up the host processor. Note: this comes
          * into effect only if ip.dhcp_enabled is also true. */
         // "ip.dhcp_offload": "true"
+        /* Protected Management Frame mode to use (802.11w). Valid values are required and
+         * disabled */
+        // "wlan.pmf_mode": "required"
+        /* The base scan interval (in seconds) to use when connecting. An exponential back-
+         * off algorithm is applied such that for each consecutive failure to find the AP,
+         * the delay between scans will start at the base interval and grow exponentially
+         * until the limit interval is reached. If this limit is set to 0,
+         * MMWLAN_DEFAULT_SCAN_INTERVAL_LIMIT_S will be used. */
+        // "wlan.sta_scan_interval_base_s": "2"
+        /* The maximum interval (in seconds) between scan attempts when connecting. The
+         * scan algorithm will begin with the base scan interval and exponentially increase
+         * the interval until this limit is reached. The maximum valid value is UINT16_MAX.
+         * If this limit is set to 0, MMWLAN_DEFAULT_SCAN_INTERVAL_LIMIT_S will be used. */
+        // "wlan.sta_scan_interval_limit_s": "512"
+        /* Configuration of the rate adaptation behavior around selecting MCS10. Valid
+         * values are: disabled, which will never use MCS10, forced, which will always use
+         * MCS10 instead of MCS0 if the bandwidth is 1 MHz, and auto, which will use MCS10
+         * on retries instead of MCS0 when the bandwidth is 1 MHz. */
+        // "wlan.mcs10_mode": "disabled"
+        /* Configure the duty cycle behavior for air time distribution. Valid values are:
+         * burst, duty cycle air time is evenly spread across the allocation window spread,
+         * duty cycle air time for allocation window is available to consume immediately. */
+        // "wlan.duty_cycle_mode": "burst"
 
         /* The following settings are required only for the beacon_stuffing app */
         /* Length of the data to print when logging the stat struct. If the data is longer

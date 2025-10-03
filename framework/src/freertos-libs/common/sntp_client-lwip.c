@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Morse Micro.
+ * Copyright 2023-2025 Morse Micro.
  *
  * SPDX-License-Identifier: MIT
  */
@@ -18,7 +18,6 @@
 #include "lwip/sys.h"
 #include "lwip/netdb.h"
 #include "mbedtls/net.h"
-#include "core_sntp_config.h"
 #include "core_sntp_client.h"
 #include "backoff_algorithm.h"
 #include "mmhal.h"
@@ -161,6 +160,10 @@ static void sntpClient_SetTime(const SntpServerInfo_t * pTimeServer,
                                int64_t clockOffsetMs,
                                SntpLeapSecondInfo_t leapSecondInfo)
 {
+    MM_UNUSED(pTimeServer);
+    MM_UNUSED(clockOffsetMs);
+    MM_UNUSED(leapSecondInfo);
+
     uint32_t unixSecs;
     uint32_t unixMs;
     SntpStatus_t status = Sntp_ConvertToUnixTime( pServerTime, &unixSecs, &unixMs );
@@ -260,7 +263,7 @@ int sntp_sync_with_backoff(char * server_name, int timeout_ms, uint32_t min_back
         {
             break;
         }
-        printf("NTP Sync failed, backing off %ld...\n",
+        mmosal_printf("NTP Sync failed, backing off %ld...\n",
                min_backoff + (uint32_t)sntp_backoff_jitter_ms);
         mmosal_task_sleep(min_backoff + (uint32_t)sntp_backoff_jitter_ms);
     }

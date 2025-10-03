@@ -5,7 +5,7 @@
  */
 
 
-#include "mmekh08_hal_common.h"
+#include "mm_hal_common.h"
 #include "mmconfig.h"
 
 /*

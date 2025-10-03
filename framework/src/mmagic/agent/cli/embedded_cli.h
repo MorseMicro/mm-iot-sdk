@@ -41,6 +41,8 @@ extern "C" {
 // cstdint is available only since C++11, so use C header
 #include <stdint.h>
 
+#include "mmosal.h"
+
 // used for proper alignment of cli buffer
 #if UINTPTR_MAX == 0xFFFF
 #define CLI_UINT uint16_t
@@ -505,6 +507,8 @@ struct EmbeddedCliImpl {
      * Flags are defined as CLI_FLAG_*
      */
     uint8_t flags;
+
+    struct mmosal_mutex *printMutex;
 };
 
 struct AutocompletedCommand {
@@ -798,6 +802,7 @@ EmbeddedCli *embeddedCliNew(EmbeddedCliConfig *config) {
     impl->maxBindingsCount = (uint16_t) (config->maxBindingCount + cliInternalBindingCount);
     impl->lastChar = '\0';
     impl->invitation = config->invitation;
+    impl->printMutex = mmosal_mutex_create("cliprint");
 
     initInternalBindings(cli);
 
@@ -822,6 +827,7 @@ void embeddedCliProcess(EmbeddedCli *cli) {
 
     PREPARE_IMPL(cli);
 
+    MMOSAL_MUTEX_GET_INF(impl->printMutex);
 
     if (!IS_FLAG_SET(impl->flags, CLI_FLAG_INIT_COMPLETE)) {
         SET_FLAG(impl->flags, CLI_FLAG_INIT_COMPLETE);
@@ -859,6 +865,8 @@ void embeddedCliProcess(EmbeddedCli *cli) {
         impl->cmdBuffer[impl->cmdSize] = '\0';
         UNSET_U8FLAG(impl->flags, CLI_FLAG_OVERFLOW);
     }
+
+    MMOSAL_MUTEX_RELEASE(impl->printMutex);
 }
 
 bool embeddedCliAddBinding(EmbeddedCli *cli, CliCommandBinding binding) {
@@ -877,6 +885,7 @@ void embeddedCliPrint(EmbeddedCli *cli, const char *string) {
         return;
 
     PREPARE_IMPL(cli);
+    MMOSAL_MUTEX_GET_INF(impl->printMutex);
 
     // remove chars for autocompletion and live command
     if (!IS_FLAG_SET(impl->flags, CLI_FLAG_DIRECT_PRINT))
@@ -894,10 +903,14 @@ void embeddedCliPrint(EmbeddedCli *cli, const char *string) {
 
         printLiveAutocompletion(cli);
     }
+    MMOSAL_MUTEX_RELEASE(impl->printMutex);
 }
 
 void embeddedCliFree(EmbeddedCli *cli) {
     PREPARE_IMPL(cli);
+
+    mmosal_mutex_delete(impl->printMutex);
+
     if (IS_FLAG_SET(impl->flags, CLI_FLAG_ALLOCATED)) {
         // allocation is done in single call to malloc, so need only single free
         free(cli);
@@ -1068,9 +1081,23 @@ static void onControlInput(EmbeddedCli *cli, char c) {
         onAutocompleteRequest(cli);
 
         writeToOutput(cli, lineBreak);
-
+        const bool locked_on_entry = mmosal_mutex_is_held_by_active_task(impl->printMutex);
+        if (locked_on_entry)
+        {
+            /*
+             * Entering parseCommand could eventually lead to a command handler being called. If a
+             * command handler is called, we could reach a double lock on this mutex. We release the
+             * lock here to avoid having this happen.
+             */
+            MMOSAL_MUTEX_RELEASE(impl->printMutex);
+        }
         if (impl->cmdSize > 0)
             parseCommand(cli);
+        if (locked_on_entry)
+        {
+            /* And return the lock to the previous state */
+            MMOSAL_MUTEX_GET_INF(impl->printMutex);
+        }
         impl->cmdSize = 0;
         impl->cmdBuffer[impl->cmdSize] = '\0';
         impl->inputLineLength = 0;
@@ -1441,7 +1468,7 @@ static bool historyPut(CliHistory *history, const char *str) {
     // remove str from history (if it's present) so we don't get duplicates
     historyRemove(history, str);
 
-    size_t usedSize;
+    size_t usedSize = 0;
     // remove old items if new one can't fit into buffer
     while (history->itemsCount > 0) {
         const char *item = historyGet(history, history->itemsCount);

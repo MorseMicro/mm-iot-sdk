@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.8.2</span>
+   &#160;<span id="projectnumber">2.9.7</span>
    </div>
   </td>
  </tr>
@@ -89,26 +89,48 @@ $(document).ready(function(){initNavTree('structmmagic__core__tcp__connect__cmd_
 <div class="header">
   <div class="summary">
 <a href="#pub-attribs">Data Fields</a>  </div>
-  <div class="headertitle"><div class="title">mmagic_core_tcp_connect_cmd_args Struct Reference<div class="ingroups"><a class="el" href="group__MMAGIC.html">MMAGIC: CLI and Machine-to-Machine interface infrastructure</a> &raquo; <a class="el" href="group__MMAGIC__CONTROLLER.html">Morse M2M Interface Controller API</a> &raquo; <a class="el" href="group__MMAGIC__CONTROLLER__TCP.html">TCP Socket IO subsystem (tcp)</a></div></div></div>
+  <div class="headertitle"><div class="title">mmagic_core_tcp_connect_cmd_args Struct Reference<div class="ingroups"><a class="el" href="group__MMAGIC.html">MMAGIC: CLI and Machine-to-Machine interface infrastructure</a> &raquo; <a class="el" href="group__MMAGIC__CONTROLLER.html">Morse M2M Interface Controller API</a> &raquo; <a class="el" href="group__MMAGIC__CONTROLLER__TCP.html">Module tcp: TCP Socket IO, supports secure connections using TLS.</a></div></div></div>
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Command arguments structure for tcp_connect. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l04067">4067</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l04742">4742</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 </div>
 <p><code>#include &lt;<a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Data Fields</h2></td></tr>
-<tr class="memitem:a328645aee0e6f6967da930e276882f5d"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structstruct__string__254.html">struct_string_254</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmagic__core__tcp__connect__cmd__args.html#a328645aee0e6f6967da930e276882f5d">url</a></td></tr>
-<tr class="memdesc:a328645aee0e6f6967da930e276882f5d"><td class="mdescLeft">&#160;</td><td class="mdescRight">URL of the server to connect to.  <a href="structmmagic__core__tcp__connect__cmd__args.html#a328645aee0e6f6967da930e276882f5d">More...</a><br /></td></tr>
-<tr class="separator:a328645aee0e6f6967da930e276882f5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abe9286f3be6c05e6a74b018c7d6cf5fc"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structstring254.html">string254</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmagic__core__tcp__connect__cmd__args.html#abe9286f3be6c05e6a74b018c7d6cf5fc">url</a></td></tr>
+<tr class="memdesc:abe9286f3be6c05e6a74b018c7d6cf5fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">URL of the server to connect to.  <a href="structmmagic__core__tcp__connect__cmd__args.html#abe9286f3be6c05e6a74b018c7d6cf5fc">More...</a><br /></td></tr>
+<tr class="separator:abe9286f3be6c05e6a74b018c7d6cf5fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7638284f7d05745198c30fcd1bf35c75"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmagic__core__tcp__connect__cmd__args.html#a7638284f7d05745198c30fcd1bf35c75">port</a></td></tr>
 <tr class="memdesc:a7638284f7d05745198c30fcd1bf35c75"><td class="mdescLeft">&#160;</td><td class="mdescRight">TCP port to connect to.  <a href="structmmagic__core__tcp__connect__cmd__args.html#a7638284f7d05745198c30fcd1bf35c75">More...</a><br /></td></tr>
 <tr class="separator:a7638284f7d05745198c30fcd1bf35c75"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac56625c217083a48d365a0010b1f1357"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmagic__core__tcp__connect__cmd__args.html#ac56625c217083a48d365a0010b1f1357">enable_tls</a></td></tr>
+<tr class="memdesc:ac56625c217083a48d365a0010b1f1357"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enables TLS.  <a href="structmmagic__core__tcp__connect__cmd__args.html#ac56625c217083a48d365a0010b1f1357">More...</a><br /></td></tr>
+<tr class="separator:ac56625c217083a48d365a0010b1f1357"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Field Documentation</h2>
+<a id="ac56625c217083a48d365a0010b1f1357" name="ac56625c217083a48d365a0010b1f1357"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac56625c217083a48d365a0010b1f1357">&#9670;&nbsp;</a></span>enable_tls</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool mmagic_core_tcp_connect_cmd_args::enable_tls</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Enables TLS. </p>
+<p >Configure certificates through the TLS module. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l04749">4749</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+
+</div>
+</div>
 <a id="a7638284f7d05745198c30fcd1bf35c75" name="a7638284f7d05745198c30fcd1bf35c75"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7638284f7d05745198c30fcd1bf35c75">&#9670;&nbsp;</a></span>port</h2>
 
@@ -123,25 +145,25 @@ Data Fields</h2></td></tr>
 
 <p>TCP port to connect to. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l04072">4072</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l04747">4747</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
-<a id="a328645aee0e6f6967da930e276882f5d" name="a328645aee0e6f6967da930e276882f5d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a328645aee0e6f6967da930e276882f5d">&#9670;&nbsp;</a></span>url</h2>
+<a id="abe9286f3be6c05e6a74b018c7d6cf5fc" name="abe9286f3be6c05e6a74b018c7d6cf5fc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abe9286f3be6c05e6a74b018c7d6cf5fc">&#9670;&nbsp;</a></span>url</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">struct <a class="el" href="structstruct__string__254.html">struct_string_254</a> mmagic_core_tcp_connect_cmd_args::url</td>
+          <td class="memname">struct <a class="el" href="structstring254.html">string254</a> mmagic_core_tcp_connect_cmd_args::url</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>URL of the server to connect to. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l04070">4070</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l04745">4745</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>

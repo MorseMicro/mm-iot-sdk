@@ -75,6 +75,13 @@ extern "C" {
 #define LOG_USART               (LPUART1)
 #define LOG_USART_IRQ           (LPUART1_IRQn)
 #define LOG_USART_IRQ_HANDLER   LPUART1_IRQHandler
+
+/* ONE_SHOT is USART RX GPIO */
+#define ONE_SHOT_IRQn           (EXTI0_IRQn)
+#define ONE_SHOT_IRQ_LINE       (LL_EXTI_LINE_0)
+#define ONE_SHOT_IRQ_HANDLER    EXTI0_IRQHandler
+#define ONE_SHOT_EXTI_Port      (LL_EXTI_EXTI_PORTC)
+#define ONE_SHOT_EXTI_Line      (LL_EXTI_EXTI_LINE0)
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
@@ -91,6 +98,8 @@ void Error_Handler(void);
 #define LOG_USART_RX_GPIO_Port GPIOC
 #define LOG_USART_TX_Pin LL_GPIO_PIN_1
 #define LOG_USART_TX_GPIO_Port GPIOC
+#define QSPI_FLASH_CS_Pin LL_GPIO_PIN_2
+#define QSPI_FLASH_CS_GPIO_Port GPIOA
 #define GPIO_LED_GREEN_Pin LL_GPIO_PIN_7
 #define GPIO_LED_GREEN_GPIO_Port GPIOE
 #define GPIO_LED_BLUE_Pin LL_GPIO_PIN_8
@@ -108,6 +117,8 @@ void Error_Handler(void);
 #define WAKE_GPIO_Port GPIOD
 #define SPI_SCK_Pin LL_GPIO_PIN_1
 #define SPI_SCK_GPIO_Port GPIOD
+#define BLE_RESET_N_Pin LL_GPIO_PIN_2
+#define BLE_RESET_N_GPIO_Port GPIOD
 #define SPI_MISO_Pin LL_GPIO_PIN_3
 #define SPI_MISO_GPIO_Port GPIOD
 #define SPI_MOSI_Pin LL_GPIO_PIN_4

@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.8.2</span>
+   &#160;<span id="projectnumber">2.9.7</span>
    </div>
   </td>
  </tr>
@@ -90,7 +90,7 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
   <div class="headertitle"><div class="title">Introduction </div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p ><a class="anchor" id="md__root_workspace_build_mhs_binaries_mhs_res_doc_mainpage"></a></p>
+<div class="textblock"><p ><a class="anchor" id="md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_res_doc_mainpage"></a></p>
 <p >The Morse Micro IoT SDK provides a framework for developing embedded applications that include connectivity provided by Morse Micro MM610x transceivers.</p>
 <p >This SDK targets the <a class="el" href="MMPLATFORMS.html">Morse Micro IoT Reference Platforms</a>, which is made up of an MCU host development board and a Morse Micro MMECH08 development board, as shown in the diagram below. The two main components are the Morse Micro MM610x Wi-Fi HaLow transceiver and an MCU Host for running application firmware. See <a class="el" href="MMPLATFORMS.html">Morse Micro IoT Reference Platforms</a> for a full list of supported platforms.</p>
 <div class="image">
@@ -114,34 +114,7 @@ High-level block diagram of the SDK software components</div></div>
 <li><a class="el" href="group__MMAPP.html">Application Layer Protocol APIs</a> for Morse Micro implementations of protocols including ping and iperf.</li>
 <li><a class="el" href="group__MMCONFIG.html">Morse Micro Persistent Configuration Store</a> APIs for storing configuration data, etc.</li>
 </ul>
-<p >The <a class="el" href="GETTING_STARTED.html">Getting Started</a> Guide provides step-by-step instructions for getting up and running with this SDK using a Makefile-based workflow.</p>
-<h1><a class="anchor" id="autotoc_md54"></a>
-System Requirements</h1>
-<h2><a class="anchor" id="autotoc_md55"></a>
-Core architecture</h2>
-<p >Supported architectures:</p>
-<ul>
-<li>ARM Cortex-M4F</li>
-<li>ARM Cortex-M33</li>
-</ul>
-<p >In addition, untested Morselib build(s) are provided for the following architectures:</p>
-<ul>
-<li>ARM Cortex-M7F</li>
-<li>ARM fa626te</li>
-</ul>
-<h2><a class="anchor" id="autotoc_md56"></a>
-RAM and flash</h2>
-<table class="markdownTable">
-<tr class="markdownTableHead">
-<th class="markdownTableHeadNone"></th><th class="markdownTableHeadNone">Minimum*   </th><th class="markdownTableHeadNone">Recommended    </th></tr>
-<tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><b>RAM</b>   </td><td class="markdownTableBodyNone">128 KB   </td><td class="markdownTableBodyNone">192 KB+    </td></tr>
-<tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><b>Flash</b>   </td><td class="markdownTableBodyNone">768 KB   </td><td class="markdownTableBodyNone">2 MB+   </td></tr>
-</table>
-<p ><code>*</code> Note that <em>Minimum</em> is that bare minimum required to build a simple application. This may not be enough to support, for example, cloud connectivity where application layer protocols such as TLS and MQTT are required.</p>
-<p >Ping and iperf example applications for the reference platforms require approx 155 KB RAM as built with the out-of-the-box configuration. For low throughput applications heap and lwIP pooled memory can be tuned to reduce memory usage.</p>
-<p >Ping and iperf example applications for the reference platforms require approx 715 KB flash as built with the out-of-the-box configuration (excluding configuration store). </p>
+<p >The <a class="el" href="GETTING_STARTED.html">Getting Started</a> Guide provides step-by-step instructions for getting up and running with this SDK using a Makefile-based workflow. </p>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
 </div><!-- doc-content -->

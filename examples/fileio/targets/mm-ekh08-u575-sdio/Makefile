@@ -1,5 +1,7 @@
 #
-# Copyright 2021-2023 Morse Micro
+# Copyright 2023-2025 Morse Micro
+#
+# SPDX-License-Identifier: Apache-2.0
 #
 
 #
@@ -15,8 +17,20 @@ PLATFORM = mm-ekh08-u575-sdio
 # the unzipped MM IoT SDK if it is moved from its current location.
 MMIOT_ROOT ?= ../../../../framework
 
+-include $(MMIOT_ROOT)/mk/misc.mk
+
+# Build type. Valid values:
+#  - debug:         optimized for debugging at the cost of code size and CPU usage; also enables
+#                   various extra checks that are not included in `production` builds
+#  - production:    optimized for production
+BUILDTYPE ?= production
+
 # Name of directory in which to put build outputs and intermediate files
+ifeq ($(BUILDTYPE),production)
 BUILD_DIR ?= build
+else
+BUILD_DIR ?= build_$(BUILDTYPE)
+endif
 
 # Names of executable files to generate
 ELF_FILE = $(BUILD_DIR)/$(APP_NAME).elf
@@ -40,6 +54,10 @@ endif
 # as part of libmorse.a
 #BUILD_SUPPLICANT_CRYPTO_FROM_SOURCE=y
 
+# Set BUILD_SUPPLICANT_WITH_SOFTAP to enable building WPA Supplicant with Soft AP support.
+# Note that this also requires BUILD_SUPPLICANT_FROM_SOURCE (see above).
+#BUILD_SUPPLICANT_WITH_SOFTAP=y
+
 # Example source files
 APP_DIR = ../..
 SRCS_C = $(wildcard $(APP_DIR)/src/*.c)
@@ -58,11 +76,14 @@ CONLYFLAGS += -Wc++-compat
 
 
 
+ifneq ($(BUILD_SUPPLICANT_WITH_SOFTAP)$(BUILD_SUPPLICANT_WITH_DPP),)
+BUILD_SUPPLICANT_FROM_SOURCE=y
+endif
+
 # Ensure all is the first rule
 all:
 
 # Import Makefile fragments for the various components
--include $(MMIOT_ROOT)/mk/misc.mk
 include $(MMIOT_ROOT)/mk/utils.mk
 
 include $(MMIOT_ROOT)/mk/platform-$(PLATFORM).mk    # Note this provides CORE
@@ -81,7 +102,7 @@ SRCS_H += $(addprefix $(MMIOT_ROOT)/,$(MMIOT_SRCS_H))
 # A quick sanity check to see if we're missing any files that the Make targets depend on.
 $(eval $(call check_for_files,$(SRCS_H)))
 
-OBJS += $(patsubst $(APP_DIR)/%.s $(APP_DIR)/%.S,$(BUILD_DIR)/%.o,$(SRCS_S))
+OBJS += $(patsubst $(APP_DIR)/%.S,$(BUILD_DIR)/%.o,$(patsubst $(APP_DIR)/%.s,$(BUILD_DIR)/%.o,$(SRCS_S)))
 OBJS += $(patsubst $(APP_DIR)/%.c,$(BUILD_DIR)/%.o,$(SRCS_C))
 OBJS += $(patsubst $(APP_DIR)/%.cpp,$(BUILD_DIR)/%.o,$(SRCS_CPP))
 OBJS += $(patsubst %.c,$(BUILD_DIR)/%.o,$(MMIOT_SRCS_C))
@@ -99,6 +120,30 @@ ifeq ($(DISABLE_FILEID_GENERATION),)
 FILEHASHES_LIST=$(BUILD_DIR)/filehashes.txt
 CFLAGS += -DMMOSAL_FILEID=$(call uint32_hash,$<)
 endif
+
+
+ifeq ($(BUILDTYPE),debug)
+# Debug builds
+DEBUG_CFLAGS +=-Og
+DEBUG_CFLAGS +=-g
+DEBUG_CFLAGS +=-gdwarf-5
+
+# NOTE: DWARF >= Version 4 may require GDB 7.0 and -fvar-tracking-assignments for maximum benefit.
+DEBUG_CFLAGS +=-fvar-tracking-assignments
+
+DEBUG_BUILD_DEFINES += MMOSAL_TRACK_ALLOCATIONS
+
+# Enable print, breakpoint, and, failing that, infinite loop in assertion handler
+DEBUG_BUILD_DEFINES += HALT_ON_ASSERT
+
+CFLAGS += $(DEBUG_CFLAGS)
+LINKFLAGS += $(DEBUG_LINKFLAGS)
+BUILD_DEFINES += $(DEBUG_BUILD_DEFINES)
+else
+# Production builds
+CFLAGS += -Os
+endif
+$(info Building for $(BUILDTYPE) in $(BUILD_DIR))
 
 LINKER ?= $(CC)
 
@@ -170,7 +215,12 @@ $(BUILD_DIR)/%.o: $(APP_DIR)/%.cpp $(SRCS_H)
 #
 $(ELF_FILE): $(OBJS) $(LIBS) $(LD_FILES) $(FILEHASHES_LIST)
 	@echo "$(MSGPFX)Linking $@"
-	$(QUIET)$(LINKER) -o $@ $(CFLAGS) $(LINKFLAGS) $(OBJS) $(LIBS)
+	$(QUIET)$(LINKER) -o $@ $(OBJS) $(CFLAGS) $(LINKFLAGS) $(LIBS)
+# Adds debug index files to speed up GDB debugging
+ifneq (,$(ENABLE_ELF_GDB_ADD_INDEX))
+	@echo Adding .gdb_index to $(notdir $@)
+	$(QUIET)OBJCOPY=$(OBJCOPY) $(TOOLCHAIN_BASE)gdb-add-index -dwarf-5 $@
+endif
 
 $(BIN_FILE): $(ELF_FILE)
 	@echo "$(MSGPFX)Generating $@"

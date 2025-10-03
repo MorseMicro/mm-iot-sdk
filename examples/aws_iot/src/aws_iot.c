@@ -142,7 +142,7 @@
  *     {
  *        "state": {
  *	          "desired": {
- *  	          "powerOn": 1
+ *                "powerOn": 1
  *	          }
  *        }
  *     }
@@ -176,7 +176,7 @@
  *   {
  *      "state": {
  *	        "desired": {
- *  	        "powerOn": 1
+ *              "powerOn": 1
  *	        }
  *      }
  *   }
@@ -187,7 +187,7 @@
  *   @code
  *   {
  *      "state": {
- *  	    "powerOn": 1
+ *          "powerOn": 1
  *      }
  *   }
  *   @endcode
@@ -199,7 +199,7 @@
  *   {
  *      "state": {
  *	        "reported": {
- *  	        "powerOn": 1
+ *              "powerOn": 1
  *	        }
  *      }
  *   }
@@ -241,6 +241,8 @@
  * application on the IoT device with newer versions of itself. For OTA updates to work, there must
  * be a bootloader installed and an existing version of the application that is able to connect to the
  * AWS IoT infrastructure.
+ *
+ * @note OTA updates are disabled by default, to enable set the build define @c ENABLE_OTA_APP to 1.
  *
  * To perform an OTA update, first ensure there is a version of this application running on the
  * device with the right credentials and certificates to connect to the service.  In addition to
@@ -316,7 +318,7 @@
  *    @endcode
  * - Upload the MBIN file to AWS as described below, paste the contents of the @c signature.txt
  *   file into the signature field
-
+ *
  * ## Deploying the update
  * - First, ensure your AWS account has the required permissions. For more information, see:
  *   @c https://docs.aws.amazon.com/freertos/latest/userguide/code-sign-policy.html
@@ -365,6 +367,9 @@
  * the device should reboot and the new update will be applied.  AWS will indicate successful
  * update on the console once the updated firmware boots and connects to AWS.
  *
+ * @note OTA update performance will depend on the configuration in @c ota_config.h and modifying
+ *       this configuration may decrease update time. See @c ota_config.h for more information on
+ *       each option and what they are used for.
  * @note If the above process does not work for you, then you can debug the issue by enabling
  * OTA logging by removing the @c DISABLE_OTA_LOGGING flag from the @c Makefile and
  * @c platformio.ini files for this example. Also, ensure you increment the version numbers in
@@ -499,7 +504,6 @@
 #include <string.h>
 #include "mmhal.h"
 #include "mmosal.h"
-#include "mmwlan.h"
 #include "mmconfig.h"
 #include "mm_app_loadconfig.h"
 #include "mmipal.h"
@@ -556,15 +560,7 @@
         "\"clientToken\":\"%06lu\""       \
     "}"
 
-/** Current state of the lamp */
-static uint32_t ulCurrentPowerOnState = 0;
-
-/** Desired state of the lamp */
-static uint32_t ulDesiredPowerOnState = 0;
-
-/** Semaphore to request change of state of the lamp */
-struct mmosal_sem* state_change_sem = NULL;
-
+#if defined(ENABLE_OTA_APP) && ENABLE_OTA_APP
 /**
  * This function is called when an OTA update has been triggered.
  *
@@ -598,7 +594,7 @@ void ota_preupdate_callback(void)
  */
 void ota_postupdate_callback(const char *update_file, int status)
 {
-    (void) update_file;
+    (void)update_file;
 
     if (status == 0)
     {
@@ -609,13 +605,25 @@ void ota_postupdate_callback(const char *update_file, int status)
         printf("OTA Update failed with error code %d\n", status);
     }
 }
+#endif
+
+#if defined(ENABLE_SHADOW_APP) && ENABLE_SHADOW_APP
+
+/** Current state of the lamp */
+static uint32_t ulCurrentPowerOnState = 0;
+
+/** Desired state of the lamp */
+static uint32_t ulDesiredPowerOnState = 0;
+
+/** Semaphore to request change of state of the lamp */
+struct mmosal_sem *state_change_sem = NULL;
 
 /**
  * Callback function invoked on shadow state updates.
  *
- * @param json       The JSON update message, not NULL terminated.
- * @param json_len   The length of the JSON update message.
- * @param status     The status of the update.
+ * @param json     The JSON update message, not NULL terminated.
+ * @param json_len The length of the JSON update message.
+ * @param status   The status of the update.
  */
 void shadow_update_callback(char *json, size_t json_len,
                             enum shadow_update_status status)
@@ -625,12 +633,12 @@ void shadow_update_callback(char *json, size_t json_len,
 
     if (result != JSONSuccess)
     {
-        printf("ERR:Invalid JSON document received!\n");
+        printf("ERR:Invalid JSON document received\n");
         return;
     }
 
     static uint32_t ulCurrentVersion = 0; /* Remember the latest version number we've received */
-    char * pcOutValue = NULL;
+    char *pcOutValue = NULL;
     uint32_t ulOutValueLength = 0UL;
     uint32_t ulVersion = 0;
     uint32_t ulCode = 0;
@@ -660,15 +668,15 @@ void shadow_update_callback(char *json, size_t json_len,
         result = JSON_Search(json, json_len,
                              "version", strlen("version"),
                              &pcOutValue,
-                             (size_t *) &ulOutValueLength);
+                             (size_t *)&ulOutValueLength);
 
         if (result != JSONSuccess)
         {
-            printf("ERR:Version field not found in JSON document!\n");
+            printf("ERR:Version field not found in JSON document\n");
             return;
         }
         /* Convert the extracted value to an unsigned integer value. */
-        ulVersion = (uint32_t) strtoul(pcOutValue, NULL, 10);
+        ulVersion = (uint32_t)strtoul(pcOutValue, NULL, 10);
         /* Make sure the version is newer than the last one we received. */
         if (ulVersion <= ulCurrentVersion)
         {
@@ -676,10 +684,10 @@ void shadow_update_callback(char *json, size_t json_len,
              * if the version number is not newer than the latest
              * that we've received before. Your application may use a
              * different approach. */
-            printf("ERR:Received unexpected delta update with version %u. "
-                   "Current version is %u\n",
-                   (unsigned int) ulVersion,
-                   (unsigned int) ulCurrentVersion);
+            printf("ERR:Received unexpected delta update with version %u, "
+                   "current version is %u\n",
+                   (unsigned int)ulVersion,
+                   (unsigned int)ulCurrentVersion);
             return;
         }
         /* Set received version as the current version. */
@@ -690,16 +698,16 @@ void shadow_update_callback(char *json, size_t json_len,
                              "state.powerOn",
                              sizeof("state.powerOn") - 1,
                              &pcOutValue,
-                             (size_t *) &ulOutValueLength);
+                             (size_t *)&ulOutValueLength);
 
         if (result != JSONSuccess)
         {
-            printf("ERR:powerOn field not found in JSON document!\n");
+            printf("ERR:powerOn field not found in JSON document\n");
         }
         else
         {
             /* Convert the powerOn state value to an unsigned integer value. */
-            ulDesiredPowerOnState = (uint32_t) strtoul(pcOutValue, NULL, 10);
+            ulDesiredPowerOnState = (uint32_t)strtoul(pcOutValue, NULL, 10);
 
             /* Signal user task about change of state */
             mmosal_sem_give(state_change_sem);
@@ -752,20 +760,20 @@ void shadow_update_callback(char *json, size_t json_len,
                              "code",
                              sizeof("code") - 1,
                              &pcOutValue,
-                             (size_t *) &ulOutValueLength);
+                             (size_t *)&ulOutValueLength);
 
         /* Convert the code to an unsigned integer value. */
-        ulCode = (uint32_t) strtoul(pcOutValue, NULL, 10);
+        ulCode = (uint32_t)strtoul(pcOutValue, NULL, 10);
 
         printf("ERR:Received rejected response code %lu\n",
-                ulCode);
+               ulCode);
 
         /*  Obtain the message string. */
         result = JSON_Search(json, json_len,
                              "message",
                              sizeof("message") - 1,
                              &pcOutValue,
-                             (size_t *) &ulOutValueLength);
+                             (size_t *)&ulOutValueLength);
         printf("    Message: %.*s\n", (int)ulOutValueLength, pcOutValue);
 
         break;
@@ -810,9 +818,9 @@ void aws_shadow_loop(char *shadow_name)
         uint32_t ulClientToken = (mmosal_get_time_ticks() % 1000000);
 
         /* Generate update report. */
-        (void) memset(UpdateDocument, 0x00, sizeof(UpdateDocument));
+        (void)memset(UpdateDocument, 0x00, sizeof(UpdateDocument));
         snprintf(UpdateDocument, MAX_JSON_LEN, SHADOW_PUBLISH_JSON,
-                    ulCurrentPowerOnState, ulClientToken);
+                 ulCurrentPowerOnState, ulClientToken);
 
         /* Send update. */
         aws_publish_shadow(shadow_name, UpdateDocument);
@@ -820,6 +828,7 @@ void aws_shadow_loop(char *shadow_name)
         printf("INF:Publishing to /update with following client token %lu.\n", ulClientToken);
     }
 }
+#endif
 
 /**
  * Main entry point to the application. This will be invoked in a thread once operating system
@@ -836,7 +845,7 @@ void app_init(void)
     /* Wi-Fi is connected, sync to NTP - required for certificate expiry validation */
     char sntp_server[64];
     strncpy(sntp_server, "0.pool.ntp.org", sizeof(sntp_server)); /* default if key is not found */
-    mmconfig_read_string("sntp.server", sntp_server, sizeof(sntp_server));
+    (void)mmconfig_read_string("sntp.server", sntp_server, sizeof(sntp_server));
     sntp_sync_with_backoff(sntp_server, NTP_MIN_TIMEOUT, NTP_MIN_BACKOFF,
                            NTP_MIN_BACKOFF_JITTER, NTP_MAX_BACKOFF_JITTER, UINT32_MAX);
 
@@ -850,9 +859,7 @@ void app_init(void)
 
     /* Look for shadow name in config store, if none found use classic shadow (NULL) */
     char *shadow_name = NULL;
-    mmconfig_alloc_and_load(AWS_KEY_SHADOW_NAME, (void**) &shadow_name);
-
-    state_change_sem = mmosal_sem_create(1, 1, "state_change_sem");
+    mmconfig_alloc_and_load(AWS_KEY_SHADOW_NAME, (void **)&shadow_name);
 
     /* Check if fleet provisioning is needed */
     if (mmconfig_read_string(AWS_KEY_THING_NAME, NULL, 0) < 0)
@@ -870,7 +877,7 @@ void app_init(void)
         }
 #else
         printf("Device is not provisioned, "
-            "please see getting started guide on how to provision.\n");
+               "please see getting started guide on how to provision.\n");
 #endif
     }
 
@@ -880,6 +887,8 @@ void app_init(void)
 #endif
 
 #if defined(ENABLE_SHADOW_APP) && ENABLE_SHADOW_APP
+    state_change_sem = mmosal_sem_create(1, 1, "state_change_sem");
+
     /* Start the device shadow processing loop */
     aws_create_shadow(shadow_name, shadow_update_callback);
     aws_shadow_loop(shadow_name);

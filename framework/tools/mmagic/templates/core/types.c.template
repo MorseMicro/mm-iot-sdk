@@ -27,8 +27,7 @@ static const struct {{enum.name}}_string_lut
 
 int mmagic_{{enum.name}}_to_string({{enum.datatype}} value, char *buf, size_t len)
 {
-    size_t ii;
-    for (ii = 0; ii < (sizeof({{enum.name}}_string_lut)/sizeof({{enum.name}}_string_lut[0])); ii++)
+    for (size_t ii = 0; ii < MM_ARRAY_COUNT({{enum.name}}_string_lut); ii++)
     {
         if ({{enum.name}}_string_lut[ii].enum_value == value)
         {
@@ -40,8 +39,7 @@ int mmagic_{{enum.name}}_to_string({{enum.datatype}} value, char *buf, size_t le
 
 int mmagic_string_to_{{enum.name}}({{enum.datatype}} *value, const char *buf)
 {
-    size_t ii;
-    for (ii = 0; ii < (sizeof({{enum.name}}_string_lut)/sizeof({{enum.name}}_string_lut[0])); ii++)
+    for (size_t ii = 0; ii < MM_ARRAY_COUNT({{enum.name}}_string_lut); ii++)
     {
         if (strcasecmp(buf, {{enum.name}}_string_lut[ii].string_value) == 0)
         {
@@ -136,6 +134,28 @@ int mmagic_string_to_int32_t(int32_t *value, const char *buf)
     return 0;
 }
 
+/* -------------------- String types -------------------- */
+
+{% for maxlen in config.string_maxlens %}
+int mmagic_string{{maxlen}}_to_string(const struct string{{maxlen}} *value, char *buf, size_t len)
+{
+    return snprintf(buf, len, "%.*s", (int)value->len, value->data);
+}
+
+int mmagic_string_to_string{{maxlen}}(struct string{{maxlen}} *value, const char *buf)
+{
+    size_t len = strnlen(buf, sizeof(value->data));
+    if (len > sizeof(value->data) - 1)
+    {
+        return -1;
+    }
+
+    mmosal_safer_strcpy((char *)value->data, buf, len + 1);
+    value->len = len;
+
+    return 0;
+}
+{% endfor %}
 
 /* -------------------- Struct types -------------------- */
 
@@ -152,7 +172,7 @@ int mmagic_string_to_struct_country_code(struct struct_country_code *value, cons
         return -1;
     }
 
-    strncpy((char *)value->country_code, buf, len);
+    mmosal_safer_strcpy((char *)value->country_code, buf, len + 1);
 
     return 0;
 }
@@ -170,9 +190,7 @@ int mmagic_string_to_struct_ip_addr(struct struct_ip_addr *value, const char *bu
         return -1;
     }
 
-    strncpy((char *)value->addr, buf, len);
-    /* Set the last character to terminate the string */
-    value->addr[len] = 0;
+    mmosal_safer_strcpy((char *)value->addr, buf, len + 1);
 
     return 0;
 }
@@ -207,25 +225,6 @@ int mmagic_string_to_struct_mac_addr(struct struct_mac_addr *value, const char *
 
         value->addr[i] = (uint8_t)temp[i];
     }
-
-    return 0;
-}
-
-int mmagic_struct_string_32_to_string(const struct struct_string_32 *value, char *buf, size_t len)
-{
-    return snprintf(buf, len, "%.*s", (int)value->len, value->data);
-}
-
-int mmagic_string_to_struct_string_32(struct struct_string_32 *value, const char *buf)
-{
-    size_t len = strnlen(buf, sizeof(value->data));
-    if (len > sizeof(value->data) - 1)
-    {
-        return -1;
-    }
-
-    strncpy((char *)value->data, buf, len);
-    value->len = len;
 
     return 0;
 }

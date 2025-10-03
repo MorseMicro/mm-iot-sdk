@@ -476,13 +476,15 @@ TEST_STEP(test_step_verify_busy_pin, "Verify BUSY pin")
      * on the host change and that the busy irq handler gets called. */
     enum test_result result = TEST_PASSED;
     uint8_t i = 0;
-    irq_counter = 0;
     probed_chip_cfg->gpio_set_oe(probed_chip_cfg->busy_gpio_num, true);
-    probed_chip_cfg->gpio_set_value(probed_chip_cfg->busy_gpio_num, true);
+    probed_chip_cfg->gpio_set_value(probed_chip_cfg->busy_gpio_num, false);
     mmhal_wlan_register_busy_irq_handler(test_hal_irq_handle);
 
-    /* First toggle pin with IRQ enabled to verify the input value and irq handle call. */
     mmhal_wlan_set_busy_irq_enabled(true);
+    /* Clear counter after irq_enabled to ignore potential stale interrupt. */
+    mmosal_task_sleep(1);
+    irq_counter = 0;
+    /* First toggle pin with IRQ enabled to verify the input value and irq handle call. */
     for (i = 0; i < 2; i++)
     {
         probed_chip_cfg->gpio_set_value(probed_chip_cfg->busy_gpio_num, true);
@@ -506,7 +508,7 @@ TEST_STEP(test_step_verify_busy_pin, "Verify BUSY pin")
     }
     if (irq_counter != 2)
     {
-        TEST_LOG_APPEND("BUSY ping IRQ hander was not called as expected. Expected 2 invocations, "
+        TEST_LOG_APPEND("BUSY pin IRQ hander was not called as expected. Expected 2 invocations, "
                         "but was invoked %u times\n\n",
                         irq_counter);
         result = TEST_FAILED;

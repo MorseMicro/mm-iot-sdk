@@ -6,7 +6,7 @@
  * This File implements platform specific shims for accessing the data-link transport.
  */
 
-#include "mmekh05_hal_common.h"
+#include "mm_hal_common.h"
 #include "mmhal_uart.h"
 #include "mmutils.h"
 
@@ -48,6 +48,7 @@ struct mmhal_uart_data
     struct
     {
         struct mmosal_task *handle;
+        struct mmosal_semb *semb;
         volatile bool run;
         volatile bool complete;
     } rx_thread;
@@ -135,7 +136,7 @@ static void uart_rx_main(void *arg)
         bool more_data_pending = uart_rx_process();
         if (!more_data_pending)
         {
-            mmosal_task_wait_for_notification(UINT32_MAX);
+            mmosal_semb_wait(mmhal_uart.rx_thread.semb, UINT32_MAX);
         }
     }
 
@@ -147,6 +148,9 @@ void mmhal_uart_init(mmhal_uart_rx_cb_t rx_cb, void *rx_cb_arg)
     memset(&mmhal_uart, 0, sizeof(mmhal_uart));
     mmhal_uart.rx_cb = rx_cb;
     mmhal_uart.rx_cb_arg = rx_cb_arg;
+
+    mmhal_uart.rx_thread.semb = mmosal_semb_create("uartsemb");
+    MMOSAL_ASSERT(mmhal_uart.rx_thread.semb != NULL);
 
     mmhal_uart.rx_thread.run = true;
     mmhal_uart.rx_thread.handle = mmosal_task_create(
@@ -162,12 +166,18 @@ void mmhal_uart_deinit(void)
     if (mmhal_uart.rx_thread.handle != NULL)
     {
         mmhal_uart.rx_thread.run = false;
+        mmosal_semb_give(mmhal_uart.rx_thread.semb);
         while (!mmhal_uart.rx_thread.complete)
         {
-            mmosal_task_notify(mmhal_uart.rx_thread.handle);
             mmosal_task_sleep(3);
         }
         mmhal_uart.rx_thread.handle = NULL;
+    }
+
+    if (mmhal_uart.rx_thread.semb != NULL)
+    {
+        mmosal_semb_delete(mmhal_uart.rx_thread.semb);
+        mmhal_uart.rx_thread.semb = NULL;
     }
 
     LL_LPUART_DisableIT_RXNE(UART_INTERFACE);
@@ -189,23 +199,23 @@ bool mmhal_uart_set_deep_sleep_mode(enum mmhal_uart_deep_sleep_mode mode)
     {
         /* Setup USART_RX line as interrupt */
         LL_EXTI_InitTypeDef EXTI_InitStruct = {0};
-        LL_EXTI_SetEXTISource(LL_EXTI_EXTI_PORTA, LL_EXTI_EXTI_LINE10);
-        EXTI_InitStruct.Line_0_31 = LL_EXTI_LINE_10;
+        LL_EXTI_SetEXTISource(ONE_SHOT_EXTI_Port, ONE_SHOT_EXTI_Line);
+        EXTI_InitStruct.Line_0_31 = ONE_SHOT_IRQ_LINE;
         EXTI_InitStruct.LineCommand = ENABLE;
         EXTI_InitStruct.Mode = LL_EXTI_MODE_IT;
         EXTI_InitStruct.Trigger = LL_EXTI_TRIGGER_FALLING;
         LL_EXTI_Init(&EXTI_InitStruct);
-        NVIC_SetPriority(EXTI10_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 15, 0));
-        LL_EXTI_ClearFallingFlag_0_31(LL_EXTI_LINE_10);
-        NVIC_EnableIRQ(EXTI10_IRQn);
+        NVIC_SetPriority(ONE_SHOT_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 15, 0));
+        LL_EXTI_ClearFallingFlag_0_31(ONE_SHOT_IRQ_LINE);
+        NVIC_EnableIRQ(ONE_SHOT_IRQn);
         mmhal_clear_deep_sleep_veto(MMHAL_VETO_ID_HAL_UART);
         return true;
     }
     else if (mode == MMHAL_UART_DEEP_SLEEP_DISABLED)
     {
         mmhal_set_deep_sleep_veto(MMHAL_VETO_ID_HAL_UART);
-        NVIC_DisableIRQ(EXTI10_IRQn);
-        LL_EXTI_ClearFallingFlag_0_31(LL_EXTI_LINE_10);
+        NVIC_DisableIRQ(ONE_SHOT_IRQn);
+        LL_EXTI_ClearFallingFlag_0_31(ONE_SHOT_IRQ_LINE);
         return true;
     }
     return false;
@@ -214,9 +224,12 @@ bool mmhal_uart_set_deep_sleep_mode(enum mmhal_uart_deep_sleep_mode mode)
 /**
   * This function handles UART RX falling edge interrupt.
   */
-void EXTI10_IRQHandler(void)
+#ifndef ONE_SHOT_IRQ_HANDLER
+#error Must define alias macro
+#endif
+void ONE_SHOT_IRQ_HANDLER(void)
 {
-    if (LL_EXTI_IsActiveFallingFlag_0_31(LL_EXTI_LINE_10) != RESET)
+    if (LL_EXTI_IsActiveFallingFlag_0_31(ONE_SHOT_IRQ_LINE) != RESET)
     {
         mmhal_uart_set_deep_sleep_mode(MMHAL_UART_DEEP_SLEEP_DISABLED);
     }
@@ -230,7 +243,7 @@ void UART_IRQ_HANDLER(void)
         uart_rx_ringbuf_put(LL_LPUART_ReceiveData8(UART_INTERFACE));
         if (mmhal_uart.rx_thread.handle != NULL)
         {
-            mmosal_task_notify_from_isr(mmhal_uart.rx_thread.handle);
+            mmosal_semb_give_from_isr(mmhal_uart.rx_thread.semb);
         }
     }
 }

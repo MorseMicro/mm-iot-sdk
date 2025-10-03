@@ -18,10 +18,15 @@ var group__MMAGIC__CONTROLLER__IP =
       [ "src_ip", "structmmagic__core__ip__set__whitelist__filter__cmd__args.html#a676655d12222fe6fa73c5dd2c2af061b", null ],
       [ "src_port", "structmmagic__core__ip__set__whitelist__filter__cmd__args.html#a2d0c86bef2cbe597eae4433ae8eb9a6e", null ]
     ] ],
+    [ "mmagic_ip_link_status_event_args", "structmmagic__ip__link__status__event__args.html", [
+      [ "ip_link_status", "structmmagic__ip__link__status__event__args.html#aa4386aeb5699e961098c615f9ee378f7", null ]
+    ] ],
+    [ "mmagic_ip_link_status_event_handler_t", "group__MMAGIC__CONTROLLER__IP.html#ga9f31a68c37d1365cc67421359a6916da", null ],
     [ "mmagic_controller_ip_clear_whitelist_filter", "group__MMAGIC__CONTROLLER__IP.html#ga21da01928c171a33ff9fa5d6b9c6b6b4", null ],
     [ "mmagic_controller_ip_disable_tcp_keepalive_offload", "group__MMAGIC__CONTROLLER__IP.html#ga2b07b4e3e8db2928f827d794c0050bb6", null ],
     [ "mmagic_controller_ip_enable_tcp_keepalive_offload", "group__MMAGIC__CONTROLLER__IP.html#ga3b785071288aef70161ebc8bdcf0af99", null ],
     [ "mmagic_controller_ip_reload", "group__MMAGIC__CONTROLLER__IP.html#ga90492843c7097e31c32105811c883b59", null ],
     [ "mmagic_controller_ip_set_whitelist_filter", "group__MMAGIC__CONTROLLER__IP.html#gabcc3f4f5900b53f6007b4d7c8164d12b", null ],
-    [ "mmagic_controller_ip_status", "group__MMAGIC__CONTROLLER__IP.html#gaa9fac010b58383ad46ec1eec7f10e3e1", null ]
+    [ "mmagic_controller_ip_status", "group__MMAGIC__CONTROLLER__IP.html#gaa9fac010b58383ad46ec1eec7f10e3e1", null ],
+    [ "mmagic_controller_register_ip_link_status_handler", "group__MMAGIC__CONTROLLER__IP.html#ga56f63ca4244adfd379d1f0d1a9fb79f1", null ]
 ];

@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.8.2</span>
+   &#160;<span id="projectnumber">2.9.7</span>
    </div>
   </td>
  </tr>
@@ -89,8 +89,7 @@ $(document).ready(function(){initNavTree('aws__iot_8c.html',''); initResizable()
 <div class="header">
   <div class="summary">
 <a href="#define-members">Macros</a> &#124;
-<a href="#func-members">Functions</a> &#124;
-<a href="#var-members">Variables</a>  </div>
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">aws_iot.c File Reference</div></div>
 </div><!--header-->
 <div class="contents">
@@ -196,7 +195,7 @@ Running the application</h2>
 <li>Enter the following JSON text in the "Message payload" section and click "Publish". <div class="fragment"><div class="line">{</div>
 <div class="line">   <span class="stringliteral">&quot;state&quot;</span>: {</div>
 <div class="line">       <span class="stringliteral">&quot;desired&quot;</span>: {</div>
-<div class="line">          <span class="stringliteral">&quot;powerOn&quot;</span>: 1</div>
+<div class="line">           <span class="stringliteral">&quot;powerOn&quot;</span>: 1</div>
 <div class="line">       }</div>
 <div class="line">   }</div>
 <div class="line">}</div>
@@ -214,14 +213,14 @@ What is AWS Shadow?</h1>
 <li>A device such as a light switch that desires to change the state of the light bulb publishes a message to the topic <code>"$aws/things/&lt;your_thing_name&gt;/shadow/update"</code> <div class="fragment"><div class="line">{</div>
 <div class="line">   <span class="stringliteral">&quot;state&quot;</span>: {</div>
 <div class="line">       <span class="stringliteral">&quot;desired&quot;</span>: {</div>
-<div class="line">          <span class="stringliteral">&quot;powerOn&quot;</span>: 1</div>
+<div class="line">           <span class="stringliteral">&quot;powerOn&quot;</span>: 1</div>
 <div class="line">       }</div>
 <div class="line">   }</div>
 <div class="line">}</div>
 </div><!-- fragment --></li>
 <li>If this is a change in state, then AWS Shadow will post a delta message to <code>"$aws/things/&lt;your_thing_name&gt;/shadow/update/delta"</code> as <div class="fragment"><div class="line">{</div>
 <div class="line">   <span class="stringliteral">&quot;state&quot;</span>: {</div>
-<div class="line">      <span class="stringliteral">&quot;powerOn&quot;</span>: 1</div>
+<div class="line">       <span class="stringliteral">&quot;powerOn&quot;</span>: 1</div>
 <div class="line">   }</div>
 <div class="line">}</div>
 </div><!-- fragment --><ul>
@@ -231,7 +230,7 @@ What is AWS Shadow?</h1>
 <li>Once the device receives this delta message and acts on it, it will then report its new state by publishing to: <code>"$aws/things/&lt;your_thing_name&gt;/shadow/update"</code> <div class="fragment"><div class="line">{</div>
 <div class="line">   <span class="stringliteral">&quot;state&quot;</span>: {</div>
 <div class="line">       <span class="stringliteral">&quot;reported&quot;</span>: {</div>
-<div class="line">          <span class="stringliteral">&quot;powerOn&quot;</span>: 1</div>
+<div class="line">           <span class="stringliteral">&quot;powerOn&quot;</span>: 1</div>
 <div class="line">       }</div>
 <div class="line">   }</div>
 <div class="line">}</div>
@@ -251,7 +250,8 @@ Automation and Production</h1>
 <h1><a class="anchor" id="autotoc_md5"></a>
 OTA Updates</h1>
 <p >This application supports Over The Air updates. OTA updates can be used to update the existing application on the IoT device with newer versions of itself. For OTA updates to work, there must be a bootloader installed and an existing version of the application that is able to connect to the AWS IoT infrastructure.</p>
-<p >To perform an OTA update, first ensure there is a version of this application running on the device with the right credentials and certificates to connect to the service. In addition to certificates and keys described in step 3 of the Getting Started section above, we will also need a code signing certificate to be installed on the device. This certificate can be generated using a tool like openssl as described below:</p>
+<dl class="section note"><dt>Note</dt><dd>OTA updates are disabled by default, to enable set the build define <code>ENABLE_OTA_APP</code> to 1.</dd></dl>
+<p>To perform an OTA update, first ensure there is a version of this application running on the device with the right credentials and certificates to connect to the service. In addition to certificates and keys described in step 3 of the Getting Started section above, we will also need a code signing certificate to be installed on the device. This certificate can be generated using a tool like openssl as described below:</p>
 <dl class="section note"><dt>Note</dt><dd>OTA update feature is supported only on <code>mm-ekh08-u575</code> and <code>mm-mm6108-ekh05</code> platforms - you will get an error on all other platforms if you attempt an OTA update. To add OTA support to your platform, you will need to:<ul>
 <li>Build and install the bootloader for your platform. (See <a class="el" href="bootloader_8c.html">bootloader.c</a>) If you are loading the application using <code>openocd</code>, then <em>first</em> load the application and then load the bootloader. Do this every time you load the application using openocd as the application contains a stub bootloader that will overwrite the real bootloader.</li>
 <li>Ensure you have enabled flash file-system support for your platform. To add flash file-system support for your platform, you will need to add a <code></code>.filesystem section to your linker definition file that is big enough to accommodate the OTA download image plus any other data you may store in the file-system. Also ensure you have a valid implementation of <a class="el" href="group__MMHAL.html#ga9cf859409f0916684a34f5d4726cb2e3">mmhal_get_littlefs_config()</a> that returns your file-system configuration.</li>
@@ -338,7 +338,9 @@ Deploying the update</h2>
 </li>
 </ul>
 <p >Congratulations! The update has been deployed. If the application is currently running on the device, it should immediately see the update and start downloading it. In a minute or two the device should reboot and the new update will be applied. AWS will indicate successful update on the console once the updated firmware boots and connects to AWS.</p>
-<dl class="section note"><dt>Note</dt><dd>If the above process does not work for you, then you can debug the issue by enabling OTA logging by removing the <code>DISABLE_OTA_LOGGING</code> flag from the <code>Makefile</code> and <code>platformio.ini</code> files for this example. Also, ensure you increment the version numbers in <code><a class="el" href="version_8h.html" title="Contains the software version used for OTA update.">version.h</a></code> prior to every OTA update or you will get warnings that the new version is not higher than the old version, the update will still complete though.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>OTA update performance will depend on the configuration in <code>ota_config.h</code> and modifying this configuration may decrease update time. See <code>ota_config.h</code> for more information on each option and what they are used for. </dd>
+<dd>
+If the above process does not work for you, then you can debug the issue by enabling OTA logging by removing the <code>DISABLE_OTA_LOGGING</code> flag from the <code>Makefile</code> and <code>platformio.ini</code> files for this example. Also, ensure you increment the version numbers in <code><a class="el" href="version_8h.html" title="Contains the software version used for OTA update.">version.h</a></code> prior to every OTA update or you will get warnings that the new version is not higher than the old version, the update will still complete though.</dd></dl>
 <p>For more information, see: <code><a href="https://docs.aws.amazon.com/freertos/latest/userguide/ota-console-workflow.html">https://docs.aws.amazon.com/freertos/latest/userguide/ota-console-workflow.html</a></code> </p>
 <h1><a class="anchor" id="autotoc_md10"></a>
 Fleet Provisioning</h1>
@@ -502,7 +504,6 @@ Setting up the device</h2>
 </div><div class="textblock"><code>#include &lt;string.h&gt;</code><br />
 <code>#include &quot;mmhal.h&quot;</code><br />
 <code>#include &quot;mmosal.h&quot;</code><br />
-<code>#include &quot;mmwlan.h&quot;</code><br />
 <code>#include &quot;mmconfig.h&quot;</code><br />
 <code>#include &quot;mm_app_loadconfig.h&quot;</code><br />
 <code>#include &quot;mmipal.h&quot;</code><br />
@@ -516,30 +517,30 @@ Include dependency graph for aws_iot.c:</div>
 <div class="dyncontent">
 <div class="center"><img src="aws__iot_8c__incl.png" border="0" usemap="#aaws__iot_8c" alt=""/></div>
 <map name="aaws__iot_8c" id="aaws__iot_8c">
-<area shape="rect" title="AWS IoT example to demonstrate connecting to AWS Shadow service and demonstrate a simple light bulb e..." alt="" coords="899,5,981,32"/>
-<area shape="rect" title=" " alt="" coords="6,453,77,480"/>
-<area shape="rect" href="mmhal_8h_source.html" title=" " alt="" coords="760,80,840,107"/>
-<area shape="rect" href="mmosal_8h_source.html" title=" " alt="" coords="161,379,247,405"/>
-<area shape="rect" href="mmwlan_8h_source.html" title=" " alt="" coords="259,229,349,256"/>
-<area shape="rect" href="mmconfig_8h_source.html" title=" " alt="" coords="981,304,1080,331"/>
-<area shape="rect" title=" " alt="" coords="1003,80,1168,107"/>
-<area shape="rect" href="mmipal_8h_source.html" title=" " alt="" coords="374,379,458,405"/>
-<area shape="rect" title=" " alt="" coords="1192,80,1336,107"/>
-<area shape="rect" title=" " alt="" coords="1361,80,1466,107"/>
-<area shape="rect" title=" " alt="" coords="1491,80,1587,107"/>
-<area shape="rect" title=" " alt="" coords="1611,80,1765,107"/>
-<area shape="rect" href="aws__iot__config_8h.html" title="Contains the configuration parameters for the AWS IoT application." alt="" coords="1084,155,1215,181"/>
-<area shape="rect" title=" " alt="" coords="607,453,689,480"/>
-<area shape="rect" title=" " alt="" coords="736,379,811,405"/>
-<area shape="rect" title=" " alt="" coords="446,453,517,480"/>
-<area shape="rect" title=" " alt="" coords="496,229,560,256"/>
-<area shape="rect" href="mmhal__flash_8h_source.html" title=" " alt="" coords="838,304,957,331"/>
-<area shape="rect" href="mmhal__wlan_8h_source.html" title=" " alt="" coords="598,155,717,181"/>
-<area shape="rect" href="mmpkt_8h_source.html" title=" " alt="" coords="518,304,599,331"/>
-<area shape="rect" title=" " alt="" coords="949,453,1016,480"/>
-<area shape="rect" title=" " alt="" coords="101,453,171,480"/>
-<area shape="rect" title=" " alt="" coords="195,453,282,480"/>
-<area shape="rect" title=" " alt="" coords="245,304,320,331"/>
+<area shape="rect" title="AWS IoT example to demonstrate connecting to AWS Shadow service and demonstrate a simple light bulb e..." alt="" coords="1019,5,1102,32"/>
+<area shape="rect" title=" " alt="" coords="1007,453,1077,480"/>
+<area shape="rect" href="mmhal_8h_source.html" title=" " alt="" coords="253,80,333,107"/>
+<area shape="rect" href="mmosal_8h_source.html" title=" " alt="" coords="885,379,972,405"/>
+<area shape="rect" href="mmconfig_8h_source.html" title=" " alt="" coords="58,304,157,331"/>
+<area shape="rect" title=" " alt="" coords="858,80,1023,107"/>
+<area shape="rect" href="mmipal_8h_source.html" title=" " alt="" coords="59,379,143,405"/>
+<area shape="rect" title=" " alt="" coords="1098,80,1242,107"/>
+<area shape="rect" title=" " alt="" coords="1267,80,1372,107"/>
+<area shape="rect" title=" " alt="" coords="1397,80,1493,107"/>
+<area shape="rect" title=" " alt="" coords="1517,80,1671,107"/>
+<area shape="rect" href="aws__iot__config_8h.html" title="Contains the configuration parameters for the AWS IoT application." alt="" coords="1370,155,1501,181"/>
+<area shape="rect" title=" " alt="" coords="517,453,599,480"/>
+<area shape="rect" title=" " alt="" coords="319,379,394,405"/>
+<area shape="rect" title=" " alt="" coords="105,453,176,480"/>
+<area shape="rect" title=" " alt="" coords="261,229,325,256"/>
+<area shape="rect" href="mmhal__flash_8h_source.html" title=" " alt="" coords="181,304,300,331"/>
+<area shape="rect" href="mmhal__wlan_8h_source.html" title=" " alt="" coords="404,155,523,181"/>
+<area shape="rect" href="mmpkt_8h_source.html" title=" " alt="" coords="579,304,660,331"/>
+<area shape="rect" href="mmwlan_8h_source.html" title=" " alt="" coords="677,229,767,256"/>
+<area shape="rect" title=" " alt="" coords="1257,453,1323,480"/>
+<area shape="rect" title=" " alt="" coords="801,453,872,480"/>
+<area shape="rect" title=" " alt="" coords="896,453,983,480"/>
+<area shape="rect" title=" " alt="" coords="685,304,759,331"/>
 </map>
 </div>
 </div>
@@ -565,33 +566,9 @@ Macros</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a73d43770c138482993be95bbcd0f02d1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="aws__iot_8c.html#a73d43770c138482993be95bbcd0f02d1">ota_preupdate_callback</a> (void)</td></tr>
-<tr class="memdesc:a73d43770c138482993be95bbcd0f02d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function is called when an OTA update has been triggered.  <a href="aws__iot_8c.html#a73d43770c138482993be95bbcd0f02d1">More...</a><br /></td></tr>
-<tr class="separator:a73d43770c138482993be95bbcd0f02d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aed0cf24358f70241e59600970b3bda71"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="aws__iot_8c.html#aed0cf24358f70241e59600970b3bda71">ota_postupdate_callback</a> (const char *update_file, int status)</td></tr>
-<tr class="memdesc:aed0cf24358f70241e59600970b3bda71"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function is called after an OTA update was processed.  <a href="aws__iot_8c.html#aed0cf24358f70241e59600970b3bda71">More...</a><br /></td></tr>
-<tr class="separator:aed0cf24358f70241e59600970b3bda71"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3d2444352ef7a43498b8364d31303669"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="aws__iot_8c.html#a3d2444352ef7a43498b8364d31303669">shadow_update_callback</a> (char *json, size_t json_len, enum shadow_update_status status)</td></tr>
-<tr class="memdesc:a3d2444352ef7a43498b8364d31303669"><td class="mdescLeft">&#160;</td><td class="mdescRight">Callback function invoked on shadow state updates.  <a href="aws__iot_8c.html#a3d2444352ef7a43498b8364d31303669">More...</a><br /></td></tr>
-<tr class="separator:a3d2444352ef7a43498b8364d31303669"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a645a4304e63f5953522b4d14f644e00a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="aws__iot_8c.html#a645a4304e63f5953522b4d14f644e00a">aws_shadow_loop</a> (char *shadow_name)</td></tr>
-<tr class="memdesc:a645a4304e63f5953522b4d14f644e00a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Main shadow loop.  <a href="aws__iot_8c.html#a645a4304e63f5953522b4d14f644e00a">More...</a><br /></td></tr>
-<tr class="separator:a645a4304e63f5953522b4d14f644e00a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:add3190cf715f513666f4be42874d91e2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="aws__iot_8c.html#add3190cf715f513666f4be42874d91e2">app_init</a> (void)</td></tr>
 <tr class="memdesc:add3190cf715f513666f4be42874d91e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Main entry point to the application.  <a href="aws__iot_8c.html#add3190cf715f513666f4be42874d91e2">More...</a><br /></td></tr>
 <tr class="separator:add3190cf715f513666f4be42874d91e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
-Variables</h2></td></tr>
-<tr class="memitem:a26ebd1671fec1be6d6a4b32c98776395"><td class="memItemLeft" align="right" valign="top">static uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="aws__iot_8c.html#a26ebd1671fec1be6d6a4b32c98776395">ulCurrentPowerOnState</a> = 0</td></tr>
-<tr class="memdesc:a26ebd1671fec1be6d6a4b32c98776395"><td class="mdescLeft">&#160;</td><td class="mdescRight">Current state of the lamp.  <a href="aws__iot_8c.html#a26ebd1671fec1be6d6a4b32c98776395">More...</a><br /></td></tr>
-<tr class="separator:a26ebd1671fec1be6d6a4b32c98776395"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a454f6c6974c4e74e5ae8929f0b17e8a0"><td class="memItemLeft" align="right" valign="top">static uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="aws__iot_8c.html#a454f6c6974c4e74e5ae8929f0b17e8a0">ulDesiredPowerOnState</a> = 0</td></tr>
-<tr class="memdesc:a454f6c6974c4e74e5ae8929f0b17e8a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Desired state of the lamp.  <a href="aws__iot_8c.html#a454f6c6974c4e74e5ae8929f0b17e8a0">More...</a><br /></td></tr>
-<tr class="separator:a454f6c6974c4e74e5ae8929f0b17e8a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac86b2bba201cff0b28014a4bae56d3d1"><td class="memItemLeft" align="right" valign="top">struct mmosal_sem *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="aws__iot_8c.html#ac86b2bba201cff0b28014a4bae56d3d1">state_change_sem</a> = NULL</td></tr>
-<tr class="memdesc:ac86b2bba201cff0b28014a4bae56d3d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Semaphore to request change of state of the lamp.  <a href="aws__iot_8c.html#ac86b2bba201cff0b28014a4bae56d3d1">More...</a><br /></td></tr>
-<tr class="separator:ac86b2bba201cff0b28014a4bae56d3d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="af4b9aadafaa998249f1d4c20771beea9" name="af4b9aadafaa998249f1d4c20771beea9"></a>
@@ -608,7 +585,7 @@ Variables</h2></td></tr>
 
 <p>Maximum back-off jitter per attempt. </p>
 
-<p class="definition">Definition at line <a class="el" href="aws__iot_8c_source.html#l00528">528</a> of file <a class="el" href="aws__iot_8c_source.html">aws_iot.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="aws__iot_8c_source.html#l00532">532</a> of file <a class="el" href="aws__iot_8c_source.html">aws_iot.c</a>.</p>
 
 </div>
 </div>
@@ -626,7 +603,7 @@ Variables</h2></td></tr>
 
 <p>We need to back-off at least 60 seconds or most NTP Servers will tell us to go away. </p>
 
-<p class="definition">Definition at line <a class="el" href="aws__iot_8c_source.html#l00524">524</a> of file <a class="el" href="aws__iot_8c_source.html">aws_iot.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="aws__iot_8c_source.html#l00528">528</a> of file <a class="el" href="aws__iot_8c_source.html">aws_iot.c</a>.</p>
 
 </div>
 </div>
@@ -644,7 +621,7 @@ Variables</h2></td></tr>
 
 <p>Minimum back-off jitter per attempt. </p>
 
-<p class="definition">Definition at line <a class="el" href="aws__iot_8c_source.html#l00526">526</a> of file <a class="el" href="aws__iot_8c_source.html">aws_iot.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="aws__iot_8c_source.html#l00530">530</a> of file <a class="el" href="aws__iot_8c_source.html">aws_iot.c</a>.</p>
 
 </div>
 </div>
@@ -662,7 +639,7 @@ Variables</h2></td></tr>
 
 <p>Minimum NTP timeout per attempt. </p>
 
-<p class="definition">Definition at line <a class="el" href="aws__iot_8c_source.html#l00522">522</a> of file <a class="el" href="aws__iot_8c_source.html">aws_iot.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="aws__iot_8c_source.html#l00526">526</a> of file <a class="el" href="aws__iot_8c_source.html">aws_iot.c</a>.</p>
 
 </div>
 </div>
@@ -697,7 +674,7 @@ Variables</h2></td></tr>
 <div class="line">}</div>
 </div><!-- fragment --><p> Note the client token, which is optional. The token is used to identify the response to an update. The client token must be unique at any given time, but may be reused once the update is completed. For this demo, a timestamp is used for a client token. </p>
 
-<p class="definition">Definition at line <a class="el" href="aws__iot_8c_source.html#l00549">549</a> of file <a class="el" href="aws__iot_8c_source.html">aws_iot.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="aws__iot_8c_source.html#l00553">553</a> of file <a class="el" href="aws__iot_8c_source.html">aws_iot.c</a>.</p>
 
 </div>
 </div>
@@ -721,215 +698,7 @@ Variables</h2></td></tr>
 <p>Main entry point to the application. </p>
 <p >This will be invoked in a thread once operating system and hardware initialization has completed. It may return, but it does not have to. </p>
 
-<p class="definition">Definition at line <a class="el" href="aws__iot_8c_source.html#l00828">828</a> of file <a class="el" href="aws__iot_8c_source.html">aws_iot.c</a>.</p>
-
-</div>
-</div>
-<a id="a645a4304e63f5953522b4d14f644e00a" name="a645a4304e63f5953522b4d14f644e00a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a645a4304e63f5953522b4d14f644e00a">&#9670;&nbsp;</a></span>aws_shadow_loop()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void aws_shadow_loop </td>
-          <td>(</td>
-          <td class="paramtype">char *&#160;</td>
-          <td class="paramname"><em>shadow_name</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Main shadow loop. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">shadow_name</td><td>Name of the shadow. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p class="definition">Definition at line <a class="el" href="aws__iot_8c_source.html#l00780">780</a> of file <a class="el" href="aws__iot_8c_source.html">aws_iot.c</a>.</p>
-
-</div>
-</div>
-<a id="aed0cf24358f70241e59600970b3bda71" name="aed0cf24358f70241e59600970b3bda71"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aed0cf24358f70241e59600970b3bda71">&#9670;&nbsp;</a></span>ota_postupdate_callback()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void ota_postupdate_callback </td>
-          <td>(</td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>update_file</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>status</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>This function is called after an OTA update was processed. </p>
-<p >The application may perform any logging to note the event and also to migrate any data from the older version if required. The application may also use this callback to restore any files and data it had uploaded to the cloud prior to the update starting. This function may also be used to atomically update firmware and BCF images contained in the update file. For more information see <code>ota_postupdate_cb_fn_t</code>.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">update_file</td><td>Path to the update file - use this to update firmware or BCF if required. This file will be automatically deleted on return from this function. </td></tr>
-    <tr><td class="paramname">status</td><td>0 on success, bootloader error code on failure. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p class="definition">Definition at line <a class="el" href="aws__iot_8c_source.html#l00599">599</a> of file <a class="el" href="aws__iot_8c_source.html">aws_iot.c</a>.</p>
-
-</div>
-</div>
-<a id="a73d43770c138482993be95bbcd0f02d1" name="a73d43770c138482993be95bbcd0f02d1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a73d43770c138482993be95bbcd0f02d1">&#9670;&nbsp;</a></span>ota_preupdate_callback()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void ota_preupdate_callback </td>
-          <td>(</td>
-          <td class="paramtype">void&#160;</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>This function is called when an OTA update has been triggered. </p>
-<p >The primary use case of this function is to clear up space in the file system for the OTA download. Once this function returns there should be enough space available in the file system to store the complete update image. For more information see <code>ota_preupdate_cb_fn_t</code>. </p>
-
-<p class="definition">Definition at line <a class="el" href="aws__iot_8c_source.html#l00576">576</a> of file <a class="el" href="aws__iot_8c_source.html">aws_iot.c</a>.</p>
-
-</div>
-</div>
-<a id="a3d2444352ef7a43498b8364d31303669" name="a3d2444352ef7a43498b8364d31303669"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3d2444352ef7a43498b8364d31303669">&#9670;&nbsp;</a></span>shadow_update_callback()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void shadow_update_callback </td>
-          <td>(</td>
-          <td class="paramtype">char *&#160;</td>
-          <td class="paramname"><em>json</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>json_len</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">enum shadow_update_status&#160;</td>
-          <td class="paramname"><em>status</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Callback function invoked on shadow state updates. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">json</td><td>The JSON update message, not NULL terminated. </td></tr>
-    <tr><td class="paramname">json_len</td><td>The length of the JSON update message. </td></tr>
-    <tr><td class="paramname">status</td><td>The status of the update. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p class="definition">Definition at line <a class="el" href="aws__iot_8c_source.html#l00620">620</a> of file <a class="el" href="aws__iot_8c_source.html">aws_iot.c</a>.</p>
-
-</div>
-</div>
-<h2 class="groupheader">Variable Documentation</h2>
-<a id="ac86b2bba201cff0b28014a4bae56d3d1" name="ac86b2bba201cff0b28014a4bae56d3d1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac86b2bba201cff0b28014a4bae56d3d1">&#9670;&nbsp;</a></span>state_change_sem</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">struct mmosal_sem* state_change_sem = NULL</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Semaphore to request change of state of the lamp. </p>
-
-<p class="definition">Definition at line <a class="el" href="aws__iot_8c_source.html#l00566">566</a> of file <a class="el" href="aws__iot_8c_source.html">aws_iot.c</a>.</p>
-
-</div>
-</div>
-<a id="a26ebd1671fec1be6d6a4b32c98776395" name="a26ebd1671fec1be6d6a4b32c98776395"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a26ebd1671fec1be6d6a4b32c98776395">&#9670;&nbsp;</a></span>ulCurrentPowerOnState</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">uint32_t ulCurrentPowerOnState = 0</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Current state of the lamp. </p>
-
-<p class="definition">Definition at line <a class="el" href="aws__iot_8c_source.html#l00560">560</a> of file <a class="el" href="aws__iot_8c_source.html">aws_iot.c</a>.</p>
-
-</div>
-</div>
-<a id="a454f6c6974c4e74e5ae8929f0b17e8a0" name="a454f6c6974c4e74e5ae8929f0b17e8a0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a454f6c6974c4e74e5ae8929f0b17e8a0">&#9670;&nbsp;</a></span>ulDesiredPowerOnState</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">uint32_t ulDesiredPowerOnState = 0</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Desired state of the lamp. </p>
-
-<p class="definition">Definition at line <a class="el" href="aws__iot_8c_source.html#l00563">563</a> of file <a class="el" href="aws__iot_8c_source.html">aws_iot.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="aws__iot_8c_source.html#l00837">837</a> of file <a class="el" href="aws__iot_8c_source.html">aws_iot.c</a>.</p>
 
 </div>
 </div>
@@ -939,7 +708,7 @@ Variables</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_1051a0a86fe889e57b2c2b0562fadebe.html">examples</a></li><li class="navelem"><a class="el" href="dir_309fdf8f2e3de5ff5a71bf5f81fe6a67.html">aws_iot</a></li><li class="navelem"><a class="el" href="dir_f7b9eca08c7b5d711cccdcf4611264b6.html">src</a></li><li class="navelem"><a class="el" href="aws__iot_8c.html">aws_iot.c</a></li>
+    <li class="navelem"><a class="el" href="dir_91b8f418cff946e8d8b598a9068417a8.html">examples</a></li><li class="navelem"><a class="el" href="dir_b387fc6dc7da55db73b12a856472d5c8.html">aws_iot</a></li><li class="navelem"><a class="el" href="dir_a6b77cb14fc0f161a2077e6f0b75d7d1.html">src</a></li><li class="navelem"><a class="el" href="aws__iot_8c.html">aws_iot.c</a></li>
     <li class="footer">Copyright 2021 Morse Micro </li>
   </ul>
 </div>

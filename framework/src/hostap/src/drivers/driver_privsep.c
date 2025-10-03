@@ -320,6 +320,7 @@ static int wpa_driver_privsep_associate(
 	data->ssid_len = params->ssid_len;
 	data->hwmode = params->freq.mode;
 	data->freq = params->freq.freq;
+	data->freq_khz = params->freq.freq_khz;
 	data->channel = params->freq.channel;
 	data->pairwise_suite = params->pairwise_suite;
 	data->group_suite = params->group_suite;

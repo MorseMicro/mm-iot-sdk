@@ -65,7 +65,7 @@ static void datalink_process_rxbuf(struct mmagic_datalink_agent *interface, stru
     hdr = mmbuf_remove_from_start(rxbuf, UART_DATALINK_HDR_LENGTH);
     if (hdr == NULL)
     {
-        printf("Received packet too short. Dropping...\n");
+        mmosal_printf("Received packet too short. Dropping...\n");
         goto exit;
     }
 
@@ -78,7 +78,7 @@ static void datalink_process_rxbuf(struct mmagic_datalink_agent *interface, stru
         rx_crc_buf = mmbuf_remove_from_start(rxbuf, UART_DATALINK_CRC_LENGTH);
         if (rx_crc_buf == NULL)
         {
-            printf("Received packet too short. Dropping...\n");
+            mmosal_printf("Received packet too short. Dropping...\n");
             goto exit;
         }
 
@@ -86,14 +86,14 @@ static void datalink_process_rxbuf(struct mmagic_datalink_agent *interface, stru
         calc_crc = mmcrc_16_xmodem(0, mmbuf_get_data_start(rxbuf), mmbuf_get_data_length(rxbuf));
         if (rx_crc != calc_crc)
         {
-            printf("CRC validation failure. Dropping...\n");
+            mmosal_printf("CRC validation failure. Dropping...\n");
             goto exit;
         }
     }
 
     if ((*hdr & UART_DATALINK_HDR_PKT_TYPE_MASK) != UART_DATALINK_HDR_PKT_TYPE_DATA)
     {
-        printf("Unknown packet type %x\n", (*hdr & UART_DATALINK_HDR_PKT_TYPE_MASK));
+        mmosal_printf("Unknown packet type %x\n", (*hdr & UART_DATALINK_HDR_PKT_TYPE_MASK));
         goto exit;
     }
 

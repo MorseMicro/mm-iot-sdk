@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Morse Micro
+ * Copyright 2023-2025 Morse Micro
  *
  * SPDX-License-Identifier: MIT
  */
@@ -18,7 +18,6 @@
 #include "FreeRTOS_DNS.h"
 #include "FreeRTOS_Sockets.h"
 #include "netdb.h"
-#include "core_sntp_config.h"
 #include "core_sntp_client.h"
 #include "backoff_algorithm.h"
 #include "mmhal.h"
@@ -196,7 +195,7 @@ int sntp_sync_with_backoff(char * server_name, int timeout_ms, uint32_t min_back
         {
             break;
         }
-        printf("NTP Sync failed, backing off %ld...\n",
+        mmosal_printf("NTP Sync failed, backing off %ld...\n",
                min_backoff + (uint32_t)sntp_backoff_jitter_ms);
         mmosal_task_sleep(min_backoff + (uint32_t)sntp_backoff_jitter_ms);
     }

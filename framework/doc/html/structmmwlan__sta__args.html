@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.8.2</span>
+   &#160;<span id="projectnumber">2.9.7</span>
    </div>
   </td>
  </tr>
@@ -100,11 +100,11 @@ $(document).ready(function(){initNavTree('structmmwlan__sta__args.html',''); ini
 <div class="line"><span class="comment">// HERE: initialize arguments</span></div>
 <div class="line">status = <a class="code hl_function" href="group__MMWLAN__CTRL.html#ga9cdcf82a952afa692f82430f1d6b93a0">mmwlan_sta_enable</a>(&amp;sta_args);</div>
 <div class="ttc" id="agroup__MMWLAN__CTRL_html_ga9cdcf82a952afa692f82430f1d6b93a0"><div class="ttname"><a href="group__MMWLAN__CTRL.html#ga9cdcf82a952afa692f82430f1d6b93a0">mmwlan_sta_enable</a></div><div class="ttdeci">enum mmwlan_status mmwlan_sta_enable(const struct mmwlan_sta_args *args, mmwlan_sta_status_cb_t sta_status_cb)</div><div class="ttdoc">Enable station mode.</div></div>
-<div class="ttc" id="agroup__MMWLAN__CTRL_html_gaf7c5c4cba4f5bcc6116309b2332a10a9"><div class="ttname"><a href="group__MMWLAN__CTRL.html#gaf7c5c4cba4f5bcc6116309b2332a10a9">MMWLAN_STA_ARGS_INIT</a></div><div class="ttdeci">#define MMWLAN_STA_ARGS_INIT</div><div class="ttdoc">Initializer for mmwlan_sta_args.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00867">mmwlan.h:867</a></div></div>
+<div class="ttc" id="agroup__MMWLAN__CTRL_html_gaf7c5c4cba4f5bcc6116309b2332a10a9"><div class="ttname"><a href="group__MMWLAN__CTRL.html#gaf7c5c4cba4f5bcc6116309b2332a10a9">MMWLAN_STA_ARGS_INIT</a></div><div class="ttdeci">#define MMWLAN_STA_ARGS_INIT</div><div class="ttdoc">Initializer for mmwlan_sta_args.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l01016">mmwlan.h:1016</a></div></div>
 <div class="ttc" id="agroup__MMWLAN_html_ga0039072000d47e5c3712686bf1e43086"><div class="ttname"><a href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a></div><div class="ttdeci">mmwlan_status</div><div class="ttdoc">Enumeration of status return codes.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00049">mmwlan.h:50</a></div></div>
-<div class="ttc" id="astructmmwlan__sta__args_html"><div class="ttname"><a href="structmmwlan__sta__args.html">mmwlan_sta_args</a></div><div class="ttdoc">Arguments data structure for mmwlan_sta_enable().</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00779">mmwlan.h:780</a></div></div>
+<div class="ttc" id="astructmmwlan__sta__args_html"><div class="ttname"><a href="structmmwlan__sta__args.html">mmwlan_sta_args</a></div><div class="ttdoc">Arguments data structure for mmwlan_sta_enable().</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00899">mmwlan.h:900</a></div></div>
 </div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00779">779</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00899">899</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 </div>
 <p><code>#include &lt;<a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>&gt;</code></p>
 <table class="memberdecls">
@@ -164,6 +164,21 @@ Data Fields</h2></td></tr>
 <tr class="memitem:afa7e7842511277605c7681b339c06429"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__sta__args.html#afa7e7842511277605c7681b339c06429">scan_interval_limit_s</a></td></tr>
 <tr class="memdesc:afa7e7842511277605c7681b339c06429"><td class="mdescLeft">&#160;</td><td class="mdescRight">The maximum interval between scan attempts when (re)connecting.  <a href="structmmwlan__sta__args.html#afa7e7842511277605c7681b339c06429">More...</a><br /></td></tr>
 <tr class="separator:afa7e7842511277605c7681b339c06429"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a68ce383b62a427bdc89639b0ec32ddfb"><td class="memItemLeft" align="right" valign="top">uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__sta__args.html#a68ce383b62a427bdc89639b0ec32ddfb">extra_assoc_ies</a></td></tr>
+<tr class="memdesc:a68ce383b62a427bdc89639b0ec32ddfb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extra Information Elements to include in association request frames.  <a href="structmmwlan__sta__args.html#a68ce383b62a427bdc89639b0ec32ddfb">More...</a><br /></td></tr>
+<tr class="separator:a68ce383b62a427bdc89639b0ec32ddfb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae2fe36660736e548db1cc19047a41b6f"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__sta__args.html#ae2fe36660736e548db1cc19047a41b6f">extra_assoc_ies_len</a></td></tr>
+<tr class="memdesc:ae2fe36660736e548db1cc19047a41b6f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Length of <code>extra_assoc_ies</code>.  <a href="structmmwlan__sta__args.html#ae2fe36660736e548db1cc19047a41b6f">More...</a><br /></td></tr>
+<tr class="separator:ae2fe36660736e548db1cc19047a41b6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6062fb9007c88de736bbbf3db5c9ecd3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__MMWLAN__CTRL.html#ga35002d862d1a57c3b13f49c4f37d9c45">mmwlan_sta_event_cb_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__sta__args.html#a6062fb9007c88de736bbbf3db5c9ecd3">sta_evt_cb</a></td></tr>
+<tr class="memdesc:a6062fb9007c88de736bbbf3db5c9ecd3"><td class="mdescLeft">&#160;</td><td class="mdescRight">STA event callback with a user-defined opaque parameter.  <a href="structmmwlan__sta__args.html#a6062fb9007c88de736bbbf3db5c9ecd3">More...</a><br /></td></tr>
+<tr class="separator:a6062fb9007c88de736bbbf3db5c9ecd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afa0d9b248732cb7cb1cd2c4448f6bf4f"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__sta__args.html#afa0d9b248732cb7cb1cd2c4448f6bf4f">sta_evt_cb_arg</a></td></tr>
+<tr class="memdesc:afa0d9b248732cb7cb1cd2c4448f6bf4f"><td class="mdescLeft">&#160;</td><td class="mdescRight">STA event callback argument to be passed to <code>sta_evt_cb</code>.  <a href="structmmwlan__sta__args.html#afa0d9b248732cb7cb1cd2c4448f6bf4f">More...</a><br /></td></tr>
+<tr class="separator:afa0d9b248732cb7cb1cd2c4448f6bf4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4ea57619cc123ffad7079be7b9820103"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMWLAN.html#gad16f6a034dae9ce07c66035e7de09a4b">mmwlan_4addr_mode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__sta__args.html#a4ea57619cc123ffad7079be7b9820103">use_4addr</a></td></tr>
+<tr class="memdesc:a4ea57619cc123ffad7079be7b9820103"><td class="mdescLeft">&#160;</td><td class="mdescRight">Whether the station should use Linux 4-address mode.  <a href="structmmwlan__sta__args.html#a4ea57619cc123ffad7079be7b9820103">More...</a><br /></td></tr>
+<tr class="separator:a4ea57619cc123ffad7079be7b9820103"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Field Documentation</h2>
 <a id="a76ff6baa8fec4ba59aca8b6895399b81" name="a76ff6baa8fec4ba59aca8b6895399b81"></a>
@@ -182,7 +197,7 @@ Data Fields</h2></td></tr>
 <p >When the signal strength is above <code>bgscan_signal_threshold_dbm</code>, this interval will be used between iterations of background scan. If the signal threshold falls below <code>bgscan_signal_threshold_dbm</code>, background scan will use the short interval.</p>
 <dl class="section note"><dt>Note</dt><dd>Setting this to zero will disable background scanning. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00837">837</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00957">957</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -202,7 +217,7 @@ Data Fields</h2></td></tr>
 <p >When the signal strength falls below <code>bgscan_signal_threshold_dbm</code>, this interval will be used between iterations of background scan. After several iterations, or if the signal threshold increases above <code>bgscan_signal_threshold_dbm</code> background scan will return to using the long interval.</p>
 <dl class="section note"><dt>Note</dt><dd>Setting this to zero will disable background scanning. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00822">822</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00942">942</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -220,7 +235,7 @@ Data Fields</h2></td></tr>
 
 <p>Background scan signal strength threshold that switches between short and long intervals. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00826">826</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00946">946</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -239,7 +254,7 @@ Data Fields</h2></td></tr>
 <p>BSSID of the AP to connect to. </p>
 <p >If non-zero, the STA will only connect to an AP that matches this value. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00789">789</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00909">909</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -257,7 +272,44 @@ Data Fields</h2></td></tr>
 
 <p>Whether Centralized Authentication Controlled is enabled on the STA. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00811">811</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00931">931</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+
+</div>
+</div>
+<a id="a68ce383b62a427bdc89639b0ec32ddfb" name="a68ce383b62a427bdc89639b0ec32ddfb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a68ce383b62a427bdc89639b0ec32ddfb">&#9670;&nbsp;</a></span>extra_assoc_ies</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t* mmwlan_sta_args::extra_assoc_ies</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Extra Information Elements to include in association request frames. </p>
+<p >Should be <code>NULL</code> if <code>extra_assoc_ies_len</code> is zero. It is the caller's responsibility to handle potentially duplicate IEs. It is the caller's responsibility to free this buffer after calling <a class="el" href="group__MMWLAN__CTRL.html#ga9cdcf82a952afa692f82430f1d6b93a0">mmwlan_sta_enable()</a>. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00986">986</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+
+</div>
+</div>
+<a id="ae2fe36660736e548db1cc19047a41b6f" name="ae2fe36660736e548db1cc19047a41b6f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae2fe36660736e548db1cc19047a41b6f">&#9670;&nbsp;</a></span>extra_assoc_ies_len</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t mmwlan_sta_args::extra_assoc_ies_len</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Length of <code>extra_assoc_ies</code>. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00988">988</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -275,7 +327,7 @@ Data Fields</h2></td></tr>
 
 <p>Passphrase (only used if <code>security_type</code> is <code>MMWLAN_SAE</code>, otherwise ignored. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00793">793</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00913">913</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -294,7 +346,7 @@ Data Fields</h2></td></tr>
 <p>Length of <code>passphrase</code>. </p>
 <p >May be zero if <code>passphrase</code> is null-terminated. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00795">795</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00915">915</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -312,7 +364,7 @@ Data Fields</h2></td></tr>
 
 <p>Protected Management Frame mode to use (802.11w) </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00797">797</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00917">917</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -331,7 +383,7 @@ Data Fields</h2></td></tr>
 <p>Priority used by the AP to assign a STA to a Restricted Access Window (RAW) group. </p>
 <p >Valid range is 0 - <a class="el" href="group__MMWLAN.html#gac9069b1c24fa4b7cb160fd45de3de248">MMWLAN_RAW_MAX_PRIORITY</a>, or -1 to disable RAW. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00802">802</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00922">922</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -350,7 +402,7 @@ Data Fields</h2></td></tr>
 <p>Preference list of enabled elliptic curve groups for SAE and OWE. </p>
 <p >By default (if this parameter is not set), the mandatory group 19 is preferred. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00809">809</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00929">929</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -370,7 +422,7 @@ Data Fields</h2></td></tr>
 <p >An exponential back off is applied such that if the AP is not found during the first scan, we will wait for <code>scan_interval_base_s</code> seconds before attempting the second scan, then <code>scan_interval_base_s</code> squared seconds before attempting for the next scan, and so on until <code>scan_interval_limit_s</code> is reached.</p>
 <p >If this is 0 then the <a class="el" href="group__MMWLAN.html#ga4dc834cad2f429484a5eb050c833fb65">MMWLAN_DEFAULT_SCAN_INTERVAL_BASE_S</a> will be used. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00851">851</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00971">971</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -390,7 +442,7 @@ Data Fields</h2></td></tr>
 <p >The scan algorithm will begin with an interval of <code>scan_interval_base_s</code> between scans and increase the interval exponentially until this limit is reached.</p>
 <p >If this is 0 then the <a class="el" href="group__MMWLAN.html#ga07a32b3e9fb8b76fe4029cb20dc1af57">MMWLAN_DEFAULT_SCAN_INTERVAL_LIMIT_S</a> will be used. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00859">859</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00979">979</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -408,7 +460,7 @@ Data Fields</h2></td></tr>
 
 <p>Optional callback for scan results which are received during the connection process. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00839">839</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00959">959</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -426,7 +478,7 @@ Data Fields</h2></td></tr>
 
 <p>Opaque argument to be passed to <a class="el" href="structmmwlan__sta__args.html#a125f53ea8950b80c3a114e206e299b25">scan_rx_cb</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00841">841</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00961">961</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -445,7 +497,7 @@ Data Fields</h2></td></tr>
 <p>Type of security to use. </p>
 <p >If <code>MMWLAN_SAE</code> then a <code>passphrase</code> must be specified. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00791">791</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00911">911</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -463,7 +515,7 @@ Data Fields</h2></td></tr>
 
 <p>SSID of the AP to connect to. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00782">782</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00902">902</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -481,7 +533,47 @@ Data Fields</h2></td></tr>
 
 <p>Length of the SSID. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00784">784</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00904">904</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+
+</div>
+</div>
+<a id="a6062fb9007c88de736bbbf3db5c9ecd3" name="a6062fb9007c88de736bbbf3db5c9ecd3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6062fb9007c88de736bbbf3db5c9ecd3">&#9670;&nbsp;</a></span>sta_evt_cb</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__MMWLAN__CTRL.html#ga35002d862d1a57c3b13f49c4f37d9c45">mmwlan_sta_event_cb_t</a> mmwlan_sta_args::sta_evt_cb</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>STA event callback with a user-defined opaque parameter. </p>
+<p >May be <code>NULL</code>.</p>
+<dl class="section warning"><dt>Warning</dt><dd>BETA NOTICE: This is beta API that is under development; breaking changes may be introduced in future releases. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00995">995</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+
+</div>
+</div>
+<a id="afa0d9b248732cb7cb1cd2c4448f6bf4f" name="afa0d9b248732cb7cb1cd2c4448f6bf4f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afa0d9b248732cb7cb1cd2c4448f6bf4f">&#9670;&nbsp;</a></span>sta_evt_cb_arg</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void* mmwlan_sta_args::sta_evt_cb_arg</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>STA event callback argument to be passed to <code>sta_evt_cb</code>. </p>
+<p >May optionally be <code>NULL</code>. The value of this parameter must remain valid during the lifetime of the connection.</p>
+<dl class="section warning"><dt>Warning</dt><dd>BETA NOTICE: This is beta API that is under development; breaking changes may be introduced in future releases. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01003">1003</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -500,7 +592,26 @@ Data Fields</h2></td></tr>
 <p>S1G non-AP STA type. </p>
 <p >For valid STA types, <a class="el" href="group__MMWLAN__CTRL.html#ga7b57b4d0e8ba92d3574e774073498fa4">mmwlan_station_type</a> </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00804">804</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00924">924</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+
+</div>
+</div>
+<a id="a4ea57619cc123ffad7079be7b9820103" name="a4ea57619cc123ffad7079be7b9820103"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4ea57619cc123ffad7079be7b9820103">&#9670;&nbsp;</a></span>use_4addr</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__MMWLAN.html#gad16f6a034dae9ce07c66035e7de09a4b">mmwlan_4addr_mode</a> mmwlan_sta_args::use_4addr</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Whether the station should use Linux 4-address mode. </p>
+<p >When connected to a Linux AP in 4-address mode, this will trigger the AP to move the STA to a separate virtual interface. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01008">1008</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>

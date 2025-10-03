@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.8.2</span>
+   &#160;<span id="projectnumber">2.9.7</span>
    </div>
   </td>
  </tr>
@@ -90,12 +90,12 @@ $(document).ready(function(){initNavTree('GETTING_STARTED.html',''); initResizab
   <div class="headertitle"><div class="title">Getting Started </div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p ><a class="anchor" id="md__root_workspace_build_mhs_binaries_mhs_res_doc_gettingstarted"></a></p>
+<div class="textblock"><p ><a class="anchor" id="md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_res_doc_gettingstarted"></a></p>
 <p >This getting started guide walks through the process of using the MM-IoT-SDK Framework. This will go through the process of setting up the software infrastructure, building firmware for the EKH08, and loading it onto the device.</p>
 <blockquote class="doxtable">
 <p >&zwj;Note that the MM-IoT-SDK Framework is meant for more advanced users. For a simpler experience it is suggested to use PlatformIO. See <code>MM USERGUIDE - Platform IO</code> for details. </p>
 </blockquote>
-<h1><a class="anchor" id="autotoc_md57"></a>
+<h1><a class="anchor" id="autotoc_md54"></a>
 Prerequisites</h1>
 <ul>
 <li>The Morse Micro IoT SDK software package</li>
@@ -108,7 +108,7 @@ Unpacking the software package</h1>
 cd mm-iot-sdk-&lt;VER&gt;/framework
 </pre><p> Where <code>&lt;VER&gt;</code>= is the package version number. The instructions below assume that the current working directory is <code>mm-iot-sdk-&lt;VER&gt;/framework</code>.</p>
 <dl class="section warning"><dt>Warning</dt><dd>The zip file does not contain a root folder, so take care to use the <code>-d</code> parameter when unzipping or unzip into an empty directory.</dd></dl>
-<h1><a class="anchor" id="autotoc_md58"></a>
+<h1><a class="anchor" id="autotoc_md55"></a>
 Package contents</h1>
 <p >The following is a brief overview of the contents of the MM-IoT-SDK package as it relates to using the framework. There are additional files that are used for PlatformIO that we will be ignoring.</p>
 <table class="markdownTable">
@@ -143,7 +143,7 @@ Development PC setup</h1>
 <p >A shell script is provided that adds the necessary directories to the PATH. This can be sourced as follows: </p><pre class="fragment">. ./tools/setupscripts/env.sh
 </pre><p> The above script needs to be run for every terminal instance. For a more permanent solution, you can add this to the initialization script for your shell, in which case it will not need to be run manually. For example, if you are using the default shell (bash) on <b>Ubuntu 22.04</b>, you can add a line like the following to the file <code>.bashrc</code> in your home directory. Note that you will need to substitute <code>$HOME/mm-iot-sdk-&lt;VER&gt;</code> with the appropriate name of the directory where you unpacked the SDK package. </p><pre class="fragment">. $HOME/mm-iot-sdk-&lt;VER&gt;/framework/tools/setupscripts/env.sh
 </pre><p> After making the above change to .bashrc you will need to close and reopen your terminal for this to take effect.</p>
-<h2><a class="anchor" id="autotoc_md59"></a>
+<h2><a class="anchor" id="autotoc_md56"></a>
 Python environment</h2>
 <blockquote class="doxtable">
 <p >&zwj;All the python scripts in the Morse Micro IoT SDK have been validated with <b>Python3.10</b> (default for <b>Ubuntu 22.04</b>). Your mileage may vary if you use a different version. </p>
@@ -157,14 +157,14 @@ Python environment</h2>
 <blockquote class="doxtable">
 <p >&zwj;The <code>pipenv</code> commands must be run from the same directory as the Pipfile that defines the virtualenv. If you do not do this a new virtualenv will be defined without the required packages. </p>
 </blockquote>
-<h1><a class="anchor" id="autotoc_md60"></a>
+<h1><a class="anchor" id="autotoc_md57"></a>
 AP configuration</h1>
 <p >This version of the IoT SDK has been tested against Morse Micro AP with software version 1.13.1. It is assumed that you have this configured and within range of your <a class="el" href="MMPLATFORMS.html">Morse Micro IoT Reference Platforms</a>.</p>
-<h1><a class="anchor" id="autotoc_md61"></a>
+<h1><a class="anchor" id="autotoc_md58"></a>
 Application overview</h1>
 <p >This SDK includes several example applications, source code for which can be found in the <code>mm-iot-sdk-&lt;VER&gt;/examples/&lt;example&gt;</code> directory. For more detail about each of the example applications see the <a class="el" href="MMAPPS.html">Example Applications</a> page.</p>
 <p >In the following sections we will be going over some of the common elements that you will see in most, if not all, example applications. We will be using the <code>ping</code> application as an example.</p>
-<h2><a class="anchor" id="autotoc_md62"></a>
+<h2><a class="anchor" id="autotoc_md59"></a>
 Ping Example Application Structure</h2>
 <p >This is a brief overview of the ping example application structure, it is not a substitute for reading the source code.</p>
 <p >Below is a quick overview of some key files in the example application directory.</p>
@@ -205,14 +205,14 @@ Application Configuration</h2>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><code>bcf_file</code>   </td><td class="markdownTableBodyNone">Board configuration .mbin file to use.   </td></tr>
 </table>
-<h3><a class="anchor" id="autotoc_md63"></a>
+<h3><a class="anchor" id="autotoc_md60"></a>
 MMConfig Application configuration</h3>
 <p >The preferred method of configuring the application is using the <a class="el" href="group__MMCONFIG.html">Morse Micro Persistent Configuration Store</a> module. The main advantage here is that we only have to build the binary once to get a variety of different combinations. An example might be that you would like to ping a different remote IP, you can just modify the value in the <a class="el" href="group__MMCONFIG.html">Morse Micro Persistent Configuration Store</a> and reboot the application (by pressing the reset button).</p>
 <blockquote class="doxtable">
 <p >&zwj;The values stored in the <a class="el" href="group__MMCONFIG.html">Morse Micro Persistent Configuration Store</a> module will take preference over any configuration parameters set using the legacy method. </p>
 </blockquote>
 <p>Instructions for loading values into <a class="el" href="group__MMCONFIG.html">Morse Micro Persistent Configuration Store</a> can be found in <a class="el" href="GETTING_STARTED.html#SET_APP_CONFIGURATION">Setting Application Configuration</a>. </p>
-<h3><a class="anchor" id="autotoc_md64"></a>
+<h3><a class="anchor" id="autotoc_md61"></a>
 Legacy Application Configuration</h3>
 <p >The legacy method to configure the application is to use a <code>#define</code> for each parameter. These will be ignored if the corresponding <a class="el" href="group__MMCONFIG.html">Morse Micro Persistent Configuration Store</a> parameter is set.</p>
 <p >The location of the defines are in two places.</p>
@@ -238,7 +238,7 @@ Programming</h1>
 Block diagram of debugging hardware/software stack</div></div>
  <p >Connect the ST-LINK to the development PC following the instructions on the <a class="el" href="MMPLATFORMS.html">Morse Micro IoT Reference Platforms</a> page. To verify that it has enumerated, run lsub as follows: </p><pre class="fragment">lsusb | grep STM
 </pre><p> This should result in output similar to the following: </p><pre class="fragment">Bus 003 Device 081: ID 0483:374e STMicroelectronics STLINK-V3
-</pre> <h2><a class="anchor" id="autotoc_md65"></a>
+</pre> <h2><a class="anchor" id="autotoc_md62"></a>
 Launching Miniterm</h2>
 <p >Miniterm is a python based console application that allows us to monitor and interact with a serial interface. There are many other options such as minicom or putty that you can use if you so wish. However, your milage may vary if you decided to use another application.</p>
 <p >Open a new terminal and execute the following command to find the path to the ST-LINK serial port: </p><pre class="fragment">ls /dev/serial/by-id/usb-STMicroelectronics_*
@@ -293,7 +293,7 @@ Partition 0 (current)
   ping.size                        | 56
   bcf_file                         | 008004004d4d424300812801efbeadde7e66a50e04000200180100000000 ...
 </pre><p> The above process should only need to be performed once, since the sectors used by <a class="el" href="group__MMCONFIG.html">Morse Micro Persistent Configuration Store</a> should not be affected by normal application programming. Note, that these values may need to be updated if you update the version of the Morse Micro IoT SDK used. The most likely value that will need to be updated is the <code>bcf_file</code>.</p>
-<h3><a class="anchor" id="autotoc_md66"></a>
+<h3><a class="anchor" id="autotoc_md63"></a>
 Additional steps for the mm-ekh08-wb55 platform</h3>
 <blockquote class="doxtable">
 <p >&zwj;This is not relevant for other platforms </p>
@@ -303,7 +303,7 @@ Additional steps for the mm-ekh08-wb55 platform</h3>
 <p >Navigate into the <code>STM32CubeProgrammer/bin</code> directory and run the following: </p><pre class="fragment">./STM32_Programmer_CLI -c port=swd -startfus
 ./STM32_Programmer_CLI -c port=swd -fwdelete
 </pre><p> If all the operations were successful the value of the <code>SFSA</code> register (which defines the start of the flash address space that is protected for CPU2 use) should now be <code>0xF4</code>. This can be checked by running: </p><pre class="fragment">./STM32_Programmer_CLI -c port=swd -ob displ
-</pre> <h2><a class="anchor" id="autotoc_md67"></a>
+</pre> <h2><a class="anchor" id="autotoc_md64"></a>
 Launching GDB</h2>
 <p >The GNU Project debugger (GDB) is an application allows us to program and debug an application. We will just be using it to program and run the application.</p>
 <p >First of all, follow the instructions in <a class="el" href="GETTING_STARTED.html#GETTING_STARTED_DEV_PC_SETUP">Development PC setup</a> to ensure that the correct ARM toolchain bin directory is in your path.</p>
@@ -325,6 +325,7 @@ BCF board description:   MM_LP3
 Morselib version:        2.6.1
 Morse firmware version:  1.13.1
 Morse chip ID:           0x0306
+Morse chip name:         MM6108A1
 -----------------------------------
 Initialize IPv4 with static IP: 192.168.1.2...
 Initialize IPv6 using Autoconfig...
@@ -360,20 +361,20 @@ WLAN STA disabled
 Link is down. Time: 28727 ms
 </pre><p >To halt the firmware press CTRL-C and to exit GDB from there press CTRL-D and enter <code>y</code> when prompted.</p>
 <p >From here you can try out the other <a class="el" href="MMAPPS.html">Example Applications</a>.</p>
-<h1><a class="anchor" id="autotoc_md68"></a>
+<h1><a class="anchor" id="autotoc_md65"></a>
 Troubleshooting</h1>
 <h2><a class="anchor" id="BCF_CONFIG_STORE"></a>
 Unable to find BCF file entry in config store</h2>
-<h3><a class="anchor" id="autotoc_md69"></a>
+<h3><a class="anchor" id="autotoc_md66"></a>
 Symptom</h3>
 <p >The following message in the console log... </p><pre class="fragment">Unable to find BCF file entry in config store (memory range 0x81e0000-0x8200000)
 Please see the Getting Started Guide for more information.
-</pre> <h3><a class="anchor" id="autotoc_md70"></a>
+</pre> <h3><a class="anchor" id="autotoc_md67"></a>
 Possible cause</h3>
 <p >The above message will be displayed if a Morse Micro Board Configuration File (BCF file) file has not been programmed to the config store. See <a class="el" href="GETTING_STARTED.html#SET_APP_CONFIGURATION">Setting Application Configuration</a> for steps on how to do this.</p>
-<h2><a class="anchor" id="autotoc_md71"></a>
+<h2><a class="anchor" id="autotoc_md68"></a>
 Unable to connect to the MCU with OpenOCD</h2>
-<h3><a class="anchor" id="autotoc_md72"></a>
+<h3><a class="anchor" id="autotoc_md69"></a>
 Symptom</h3>
 <p >You are unable to connect to the MCU when you run the 'openocd -f openocd.cfg' commands.</p>
 <p >This may look like one of the following</p>
@@ -407,11 +408,11 @@ Info : clock speed 500 kHz
 Info : STLINK V3J8M3 (API v3) VID:PID 0483:374E
 Info : Target voltage: 3.303398
 Error: init mode failed (unable to connect to the target)
-</pre><h3><a class="anchor" id="autotoc_md73"></a>
+</pre><h3><a class="anchor" id="autotoc_md70"></a>
 Possible cause 1</h3>
 <p >The voltage (VDD) or current measurement (IDD) jumpers are not attached on your development board.</p>
 <p >For the ST Nucleo U575 development board VDD is JP4 and IDD is JP5. See <a class="el" href="MMPLATFORMS.html">Morse Micro IoT Reference Platforms</a> for details of your specific platform.</p>
-<h3><a class="anchor" id="autotoc_md74"></a>
+<h3><a class="anchor" id="autotoc_md71"></a>
 Possible cause 2</h3>
 <p >The ST-Link debugger is unable to communicate with the host processor because it is in deep sleep. It may be necessary to hold the chip in reset while attaching to it. This can be achieved by adding <code>-c "set CONNECT_ASSERT_SRST 1"</code> to the OpenOCD command line before including <code>openocd.cfg</code>. For example: </p><pre class="fragment">% openocd -c "set CONNECT_ASSERT_SRST 1" -f openocd.cfg
 </pre><p> See <a class="el" href="MMHOSTPOWERSAVE.html#MMHOSTPOWERSAVE_DEBUG_DEEP_SLEEP">Debugging during deep sleep</a> for more information. </p>

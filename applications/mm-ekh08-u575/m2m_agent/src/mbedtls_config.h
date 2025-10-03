@@ -60,6 +60,7 @@
 #define MBEDTLS_SSL_MAX_FRAGMENT_LENGTH
 #define MBEDTLS_SSL_PROTO_TLS1_2
 #define MBEDTLS_SSL_ALPN
+#define MBEDTLS_PKCS1_V15
 #define MBEDTLS_SSL_SERVER_NAME_INDICATION
 
 /* Check certificate key usage. */
@@ -69,7 +70,7 @@
 /* System support */
 #define MBEDTLS_HAVE_TIME
 #define MBEDTLS_HAVE_TIME_DATE
-#define MBEDTLS_PLATFORM_TIME_MACRO             mmhal_get_time
+#define MBEDTLS_PLATFORM_TIME_MACRO(x)          mmhal_get_time()
 #define MBEDTLS_NO_PLATFORM_ENTROPY
 #define MBEDTLS_ENTROPY_HARDWARE_ALT
 #define MBEDTLS_PLATFORM_NO_STD_FUNCTIONS
@@ -91,6 +92,7 @@
 #define MBEDTLS_ECDSA_C
 #define MBEDTLS_ECP_C
 #define MBEDTLS_ENTROPY_C
+#define MBEDTLS_GCM_C
 #define MBEDTLS_MD_C
 #define MBEDTLS_OID_C
 #define MBEDTLS_PEM_PARSE_C

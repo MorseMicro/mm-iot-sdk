@@ -8,14 +8,13 @@ var searchData=
   ['default_5fping_5fcount_5',['DEFAULT_PING_COUNT',['../wnm__sleep_8c.html#af8310053672488c01e69dcb1ef561b39',1,'wnm_sleep.c']]],
   ['default_5fping_5fdata_5fsize_6',['DEFAULT_PING_DATA_SIZE',['../wnm__sleep_8c.html#a65c1f4f55abfd44ea1b3c43df8396349',1,'wnm_sleep.c']]],
   ['default_5fping_5finterval_5fms_7',['DEFAULT_PING_INTERVAL_MS',['../wnm__sleep_8c.html#a9c53f19b1618b391a4682f10815834b2',1,'wnm_sleep.c']]],
-  ['default_5fping_5fremote_5fip_8',['DEFAULT_PING_REMOTE_IP',['../wnm__sleep_8c.html#afb92bea4a697b14d9a1116d58bda79c8',1,'wnm_sleep.c']]],
-  ['default_5fport_9',['DEFAULT_PORT',['../sslclient_8c.html#a16b710f592bf8f7900666392adc444dc',1,'sslclient.c']]],
-  ['default_5fserver_10',['DEFAULT_SERVER',['../sslclient_8c.html#a6445d726464369e3b587bb4b179797d5',1,'sslclient.c']]],
-  ['default_5fstats_5fupdate_5fperiod_5fms_11',['DEFAULT_STATS_UPDATE_PERIOD_MS',['../beacon__stuffing_8c.html#a61a7e450bc78458f1c8b146c13127b11',1,'beacon_stuffing.c']]],
-  ['default_5fudp_5fbroadcast_5fid_12',['DEFAULT_UDP_BROADCAST_ID',['../udp__broadcast_8c.html#a7042d5bb224f9fdd4c834e2c1266a9f5',1,'udp_broadcast.c']]],
-  ['default_5fudp_5fbroadcast_5fmode_13',['DEFAULT_UDP_BROADCAST_MODE',['../udp__broadcast_8c.html#adc21cfd980f3c66af30222ca59c9f929',1,'udp_broadcast.c']]],
-  ['default_5fudp_5fport_14',['DEFAULT_UDP_PORT',['../udp__broadcast_8c.html#a2f10de3cafe64664fa3b624ce8297588',1,'udp_broadcast.c']]],
-  ['default_5fwnm_5fsleep_5fduration_5fms_15',['DEFAULT_WNM_SLEEP_DURATION_MS',['../wnm__sleep_8c.html#ac24997810835e75377c3eb4feca862af',1,'wnm_sleep.c']]],
-  ['delay_5fbetween_5fpublishes_16',['DELAY_BETWEEN_PUBLISHES',['../mqttdemo_8c.html#a5fc89d18fbf89325385af2bb339deb9a',1,'mqttdemo.c']]],
-  ['dns_5fmax_5fname_5flength_17',['DNS_MAX_NAME_LENGTH',['../dns__client_8c.html#a3b01c79902063c170ef57deb72f56124',1,'dns_client.c']]]
+  ['default_5fport_8',['DEFAULT_PORT',['../sslclient_8c.html#a16b710f592bf8f7900666392adc444dc',1,'sslclient.c']]],
+  ['default_5fserver_9',['DEFAULT_SERVER',['../sslclient_8c.html#a6445d726464369e3b587bb4b179797d5',1,'sslclient.c']]],
+  ['default_5fstats_5fupdate_5fperiod_5fms_10',['DEFAULT_STATS_UPDATE_PERIOD_MS',['../beacon__stuffing_8c.html#a61a7e450bc78458f1c8b146c13127b11',1,'beacon_stuffing.c']]],
+  ['default_5fudp_5fbroadcast_5fid_11',['DEFAULT_UDP_BROADCAST_ID',['../udp__broadcast_8c.html#a7042d5bb224f9fdd4c834e2c1266a9f5',1,'udp_broadcast.c']]],
+  ['default_5fudp_5fbroadcast_5fmode_12',['DEFAULT_UDP_BROADCAST_MODE',['../udp__broadcast_8c.html#adc21cfd980f3c66af30222ca59c9f929',1,'udp_broadcast.c']]],
+  ['default_5fudp_5fport_13',['DEFAULT_UDP_PORT',['../udp__broadcast_8c.html#a2f10de3cafe64664fa3b624ce8297588',1,'udp_broadcast.c']]],
+  ['default_5fwnm_5fsleep_5fduration_5fms_14',['DEFAULT_WNM_SLEEP_DURATION_MS',['../wnm__sleep_8c.html#ac24997810835e75377c3eb4feca862af',1,'wnm_sleep.c']]],
+  ['delay_5fbetween_5fpublishes_15',['DELAY_BETWEEN_PUBLISHES',['../mqttdemo_8c.html#a5fc89d18fbf89325385af2bb339deb9a',1,'mqttdemo.c']]],
+  ['dns_5fmax_5fname_5flength_16',['DNS_MAX_NAME_LENGTH',['../dns__client_8c.html#a3b01c79902063c170ef57deb72f56124',1,'dns_client.c']]]
 ];

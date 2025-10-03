@@ -31,6 +31,7 @@ DEFAULT_BGSCAN_THRESHOLD_DBM = 0
 DEFAULT_BGSCAN_LONG_INTERVAL_S = 0
 DEFAULT_TWT_WAKE_INTERVAL_US = 300000000
 DEFAULT_TWT_MIN_WAKE_DURATION_US = 65280
+MMWLAN_DEFAULT_SCAN_INTERVAL_LIMIT_S = 512
 
 
 def _main():
@@ -53,7 +54,7 @@ def _main():
                         help="Passphrase of AP to connect to (required for SAE)")
     parser.add_argument("-S", "--security-type", choices=["OWE", "SAE"],
                         help="Security type to use (OWE, SAE). Do not specify for no security.")
-    parser.add_argument("-T", "--poll-timeout", default=DEFAULT_POLL_TIMEOUT,
+    parser.add_argument("-T", "--poll-timeout", default=DEFAULT_POLL_TIMEOUT, type=float,
                         help='Timeout in seconds after which we give up on polling the device to see if it has connected')  # noqa
     parser.add_argument("--disable-pmf", action="store_true",
                         help="Disable protected management frame support.")
@@ -73,6 +74,8 @@ def _main():
                         help="Background scan signal threshold in dBm.)")
     parser.add_argument('-l', '--bgscan-long-interval-s', default=DEFAULT_BGSCAN_LONG_INTERVAL_S, type=int,                 # noqa
                         help='Background scan long interval in seconds. Setting to 0 will disable background scanning.')    # noqa
+    parser.add_argument('-L', '--scan-interval-limit-s', default=MMWLAN_DEFAULT_SCAN_INTERVAL_LIMIT_S,                      # noqa
+                        help='Scan interval limit in seconds.')                                                             # noqa
     parser.add_argument('-w', '--twt-enabled', action='store_true', help='Enable Target Wake Time (TWT)')                   # noqa
     parser.add_argument('-k', '--twt-wake-interval-us', default=DEFAULT_TWT_WAKE_INTERVAL_US, type=int,                     # noqa
                         help="TWT service period interval in micro seconds.")
@@ -119,6 +122,7 @@ def _main():
                cac_enabled=args.cac_enable, bgscan_short_interval_s=args.bgscan_short_interval_s,
                bgscan_signal_threshold_dbm=args.bgscan_threshold_dbm,
                bgscan_long_interval_s=args.bgscan_long_interval_s,
+               scan_interval_limit_s=args.scan_interval_limit_s,
                twt_enabled=args.twt_enabled, twt_wake_interval_us=args.twt_wake_interval_us,
                twt_min_wake_duration_us=args.twt_min_wake_duration_us,
                twt_setup_command=TWT_setup_command)

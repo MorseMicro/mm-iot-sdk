@@ -1181,9 +1181,6 @@ void wpa_supplicant_set_state(struct wpa_supplicant *wpa_s,
 
 	if (state == WPA_DISCONNECTED || state == WPA_INACTIVE)
 	{
-#ifdef CONFIG_MORSE_WNM
-		morse_set_long_sleep_enabled(wpa_s->ifname, false);
-#endif
 		wpa_supplicant_start_autoscan(wpa_s);
 	}
 
@@ -2774,8 +2771,10 @@ void wpa_supplicant_associate(struct wpa_supplicant *wpa_s,
 				"Driver does not support mesh mode");
 			return;
 		}
-		if (bss)
+		if (bss) {
 			ssid->frequency = bss->freq;
+			ssid->frequency_khz = bss->freq_khz;
+		}
 		if (wpa_supplicant_join_mesh(wpa_s, ssid) < 0) {
 			wpa_supplicant_set_state(wpa_s, WPA_INACTIVE);
 			wpa_msg(wpa_s, MSG_ERROR, "Could not join mesh");
@@ -2896,7 +2895,7 @@ static int drv_supports_vht(struct wpa_supplicant *wpa_s,
 	return mode->vht_capab != 0;
 }
 
-#ifdef CONFIG_IEEE80211AH
+#if defined(CONFIG_IEEE80211AH) && defined(CONFIG_MESH)
 /* Set frequency parameters for IBSS / MESH
  * Take S1G channel information as input and convert to ht prameters.
  * Set the updated parameters in struct hostapd_freq_params
@@ -2990,6 +2989,7 @@ void morse_ibss_mesh_setup_freq(struct wpa_supplicant *wpa_s,
 			freq,
 			hw_mode,
 			ssid->frequency,
+			ssid->frequency_khz,
 			ht_channel,
 			ssid->enable_edmg,
 			ssid->edmg_channel,
@@ -2997,6 +2997,7 @@ void morse_ibss_mesh_setup_freq(struct wpa_supplicant *wpa_s,
 			conf->ieee80211ac,
 			conf->ieee80211ax,
 			conf->ieee80211be,
+			conf->ieee80211ah,
 			conf->secondary_channel,
 			hostapd_get_oper_chwidth(conf),
 			hostapd_get_oper_centr_freq_seg0_idx(conf),
@@ -3432,14 +3433,16 @@ static bool ibss_mesh_select_80_160mhz(struct wpa_supplicant *wpa_s,
 
 skip_80mhz:
 	if (hostapd_set_freq_params(&vht_freq, mode->mode, freq->freq,
+				    freq->freq_khz,
 				    freq->channel, ssid->enable_edmg,
 				    ssid->edmg_channel, freq->ht_enabled,
 				    freq->vht_enabled, freq->he_enabled,
-				    freq->eht_enabled,
+				    freq->eht_enabled, freq->s1g_enabled,
 				    freq->sec_channel_offset,
 				    chwidth, seg0, seg1, vht_caps,
 				    &mode->he_capab[ieee80211_mode],
-				    &mode->eht_capab[ieee80211_mode], 0) != 0)
+				    &mode->eht_capab[ieee80211_mode], 0,
+				    freq->prim_bandwidth, freq->prim_ch_index) != 0)
 		return false;
 
 	*freq = vht_freq;
@@ -3462,6 +3465,7 @@ void ibss_mesh_setup_freq(struct wpa_supplicant *wpa_s,
 	bool is_6ghz, is_24ghz;
 
 	freq->freq = ssid->frequency;
+	freq->freq_khz = ssid->frequency_khz;
 
 	if (ssid->mode == WPAS_MODE_IBSS && !ssid->fixed_freq) {
 		struct wpa_bss *bss = ibss_find_existing_bss(wpa_s, ssid);
@@ -4184,6 +4188,25 @@ pfs_fail:
 mscs_end:
 #endif /* CONFIG_NO_ROBUST_AV */
 
+#ifdef CONFIG_IEEE80211AH
+	/* If the STA has a priority for use with RAW insert a QoS Traffic
+	 * Capability.
+	 */
+	wpa_printf(MSG_DEBUG, "raw_sta_priority: %d", ssid->raw_sta_priority);
+	if (ssid && (ssid->raw_sta_priority >= 0)) {
+		u8 qos_traffic_cap[QOS_TRAFFIC_CAP_SIZE] = {
+			WLAN_EID_QOS_TRAFFIC_CAPABILITY,
+			1,
+			(ssid->raw_sta_priority << QOS_TRAFFIC_UP_SHIFT) & QOS_TRAFFIC_UP_MASK
+		};
+
+		if (wpa_ie_len + QOS_TRAFFIC_CAP_SIZE <= max_wpa_ie_len) {
+			os_memcpy(wpa_ie + wpa_ie_len, qos_traffic_cap, QOS_TRAFFIC_CAP_SIZE);
+			wpa_ie_len += QOS_TRAFFIC_CAP_SIZE;
+		}
+	}
+#endif
+
 	wpa_ie_len = wpas_populate_wfa_capa(wpa_s, bss, wpa_ie, wpa_ie_len,
 					    max_wpa_ie_len);
 
@@ -4530,13 +4553,10 @@ static void wpas_start_assoc_cb(struct wpa_radio_work *work, int deinit)
 		const u8 *ie, *md = NULL;
 #endif /* CONFIG_IEEE80211R */
 		wpa_msg(wpa_s, MSG_INFO, "Trying to associate with " MACSTR
-			" (SSID='%s' %s=%d%s)", MAC2STR(bss->bssid),
+			" (SSID='%s' freq=%d %s)", MAC2STR(bss->bssid),
 			wpa_ssid_txt(bss->ssid, bss->ssid_len),
-#ifdef CONFIG_IEEE80211AH
-			"chan",	morse_ht_freq_to_s1g_chan(bss->freq), "");
-#else
-			"freq", bss->freq, " MHz");
-#endif
+			bss->freq_khz ? bss->freq_khz : bss->freq,
+			bss->freq_khz ? "kHz" : "MHz");
 		bssid_changed = !is_zero_ether_addr(wpa_s->bssid);
 		os_memset(wpa_s->bssid, 0, ETH_ALEN);
 		os_memcpy(wpa_s->pending_bssid, bss->bssid, ETH_ALEN);
@@ -4637,6 +4657,7 @@ static void wpas_start_assoc_cb(struct wpa_radio_work *work, int deinit)
 				   wpa_s->key_mgmt == WPA_KEY_MGMT_WPS);
 			params.bssid = bss->bssid;
 			params.freq.freq = bss->freq;
+                        params.freq.freq_khz = bss->freq_khz;
 		}
 		params.bssid_hint = bss->bssid;
 		params.freq_hint = bss->freq;
@@ -9239,8 +9260,8 @@ void wpas_auth_failed(struct wpa_supplicant *wpa_s, const char *reason,
 	if (ssid->key_mgmt == WPA_KEY_MGMT_WPS)
 		return;
 
-	if (ssid->backoffs) {
-		for (i = 0; ssid->backoffs[i]; i++)
+	if (ssid->auth_retry_backoff) {
+		for (i = 0; ssid->auth_retry_backoff[i]; i++)
 			backoff_cnt++;
 	}
 
@@ -9258,12 +9279,13 @@ void wpas_auth_failed(struct wpa_supplicant *wpa_s, const char *reason,
 #endif /* CONFIG_P2P */
 
 	/* Use a configured backoff time if present */
-	if (ssid->auth_failures <= backoff_cnt) {
+	if (backoff_cnt > 0) {
+		int idx = MIN(ssid->auth_failures, backoff_cnt);
 		int rand = os_random() % 10;
 
-		dur = ssid->backoffs[ssid->auth_failures - 1];
+		dur = ssid->auth_retry_backoff[idx - 1];
 		wpa_msg(wpa_s, MSG_INFO,
-			"WPA: Using configured backoff of %u + %d random seconds",
+			"WPA: Using configured auth retry backoff of %u+%d seconds",
 			dur, rand);
 		dur += rand;
 	} else {

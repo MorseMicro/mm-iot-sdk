@@ -965,6 +965,9 @@ static int rate_match(struct wpa_supplicant *wpa_s, struct wpa_ssid *ssid,
 	if (bss->freq == 0)
 		return 1; /* Cannot do matching without knowing band */
 
+	if (is_s1g_freq(bss->freq_khz))
+		return 1; /* Matching for HOSTAPD_MODE_IEEE80211AH not currently supported. */
+
 	modes = wpa_s->hw.modes;
 	if (modes == NULL) {
 		/*
@@ -1197,7 +1200,7 @@ static bool wpas_valid_ml_bss(struct wpa_supplicant *wpa_s, struct wpa_bss *bss)
 }
 
 
-int disabled_freq(struct wpa_supplicant *wpa_s, int freq)
+int disabled_freq(struct wpa_supplicant *wpa_s, struct wpa_bss *bss)
 {
 	int i, j;
 
@@ -1210,8 +1213,13 @@ int disabled_freq(struct wpa_supplicant *wpa_s, int freq)
 		for (i = 0; i < mode->num_channels; i++) {
 			struct hostapd_channel_data *chan = &mode->channels[i];
 
-			if (chan->freq == freq)
-				return !!(chan->flag & HOSTAPD_CHAN_DISABLED);
+			if (is_s1g_freq(bss->freq_khz)) {
+				if (chan->freq_khz == bss->freq_khz)
+					return !!(chan->flag & HOSTAPD_CHAN_DISABLED);
+			} else {
+				if (chan->freq_khz == bss->freq_khz)
+					return !!(chan->flag & HOSTAPD_CHAN_DISABLED);
+			}
 		}
 	}
 
@@ -1653,15 +1661,12 @@ struct wpa_ssid * wpa_scan_res_match(struct wpa_supplicant *wpa_s,
 
 	if (debug_print) {
 		wpa_dbg(wpa_s, MSG_DEBUG, "%d: " MACSTR
-			" ssid='%s' wpa_ie_len=%u rsn_ie_len=%u caps=0x%x level=%d %s=%d %s%s%s",
+			" ssid='%s' wpa_ie_len=%u rsn_ie_len=%u caps=0x%x level=%d freq=%d %s %s%s%s",
 			i, MAC2STR(bss->bssid),
 			wpa_ssid_txt(bss->ssid, bss->ssid_len),
 			wpa_ie_len, rsn_ie_len, bss->caps, bss->level,
-#ifdef CONFIG_IEEE80211AH
-			"chan", morse_ht_freq_to_s1g_chan(bss->freq),
-#else
-			"freq", bss->freq,
-#endif
+			bss->freq_khz ? bss->freq_khz : bss->freq,
+			bss->freq_khz ? "kHz" : "MHz",
 			wpa_bss_get_vendor_ie(bss, WPS_IE_VENDOR_TYPE) ?
 			" wps" : "",
 			(wpa_bss_get_vendor_ie(bss, P2P_IE_VENDOR_TYPE) ||
@@ -1716,7 +1721,7 @@ struct wpa_ssid * wpa_scan_res_match(struct wpa_supplicant *wpa_s,
 		return NULL;
 	}
 
-	if (disabled_freq(wpa_s, bss->freq)) {
+	if (disabled_freq(wpa_s, bss)) {
 		if (debug_print)
 			wpa_dbg(wpa_s, MSG_DEBUG, "   skip - channel disabled");
 		return NULL;
@@ -3497,16 +3502,9 @@ static int wpa_supplicant_event_associnfo(struct wpa_supplicant *wpa_s,
 		wpa_hexdump(MSG_DEBUG, "beacon_ies",
 			    data->assoc_info.beacon_ies,
 			    data->assoc_info.beacon_ies_len);
-	if (data->assoc_info.freq) {
-		wpa_dbg(wpa_s, MSG_DEBUG,
-#ifdef CONFIG_IEEE80211AH
-			"chan=%d",
-			morse_ht_freq_to_s1g_chan(data->assoc_info.freq));
-#else
-			"freq=%u MHz",
+	if (data->assoc_info.freq)
+		wpa_dbg(wpa_s, MSG_DEBUG, "freq=%u MHz",
 			data->assoc_info.freq);
-#endif /* CONFIG_IEEE80211AH */
-	}
 
 	wpa_s->connection_set = 0;
 	if (data->assoc_info.req_ies && data->assoc_info.resp_ies) {
@@ -3533,7 +3531,7 @@ static int wpa_supplicant_event_associnfo(struct wpa_supplicant *wpa_s,
 				resp_elems.he_capabilities;
 			wpa_s->connection_eht = req_elems.eht_capabilities &&
 				resp_elems.eht_capabilities;
-			
+
 			if (resp_elems.aid)
 				wpa_sm_set_assoc_aid(wpa_s->wpa, WPA_GET_LE16(resp_elems.aid));
 			if (req_elems.rrm_enabled)
@@ -5155,8 +5153,10 @@ static void ft_rx_action(struct wpa_supplicant *wpa_s, const u8 *data,
 	{
 		struct wpa_bss *bss;
 		bss = wpa_bss_get_bssid(wpa_s, target_ap_addr);
-		if (bss)
+		if (bss) {
 			wpa_s->sme.freq = bss->freq;
+			wpa_s->sme.freq_khz = bss->freq_khz;
+		}
 		wpa_s->sme.auth_alg = WPA_AUTH_ALG_FT;
 		sme_associate(wpa_s, WPAS_MODE_INFRA, target_ap_addr,
 			      WLAN_AUTH_FT);
@@ -6584,6 +6584,7 @@ void wpa_supplicant_event(void *ctx, enum wpa_event_type event,
 		    wpa_s->current_ssid->mode ==
 		    WPAS_MODE_P2P_GROUP_FORMATION) {
 			wpas_ap_ch_switch(wpa_s, data->ch_switch.freq,
+					  data->ch_switch.freq_khz,
 					  data->ch_switch.ht_enabled,
 					  data->ch_switch.ch_offset,
 					  data->ch_switch.ch_width,

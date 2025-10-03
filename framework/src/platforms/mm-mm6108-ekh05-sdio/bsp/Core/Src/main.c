@@ -31,11 +31,8 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#ifndef SWO_GPIO_Port
-#define SWO_GPIO_Port   GPIOB
-#endif
-#ifndef SWO_Pin
-#define SWO_Pin         LL_GPIO_PIN_3
+#ifdef ENABLE_ITM_LOG
+#error "ITM/SWO logs shall not be configured on EKH05-SDIO boards"
 #endif
 /* USER CODE END PD */
 
@@ -91,11 +88,11 @@ int main(void)
 
   /* USER CODE END Init */
 
-  /* Configure the system clock */
-  SystemClock_Config();
-
   /* Configure the System Power */
   SystemPower_Config();
+
+  /* Configure the system clock */
+  SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
 
@@ -109,20 +106,6 @@ int main(void)
   MX_RTC_Init();
   MX_LPTIM1_Init();
   /* USER CODE BEGIN 2 */
-#ifdef ENABLE_ITM_LOG
-  LL_GPIO_InitTypeDef swo_pin_init = {
-    .Pin = SWO_Pin,
-    .Mode = LL_GPIO_MODE_ALTERNATE,
-    .Speed = LL_GPIO_SPEED_FREQ_VERY_HIGH,
-    .OutputType = LL_GPIO_OUTPUT_PUSHPULL,
-    .Pull = LL_GPIO_PULL_NO,
-    .Alternate = LL_GPIO_AF_0
-  };
-  ErrorStatus status = LL_GPIO_Init(SWO_GPIO_Port, &swo_pin_init);
-  MMOSAL_ASSERT(status == SUCCESS);
-  LL_DBGMCU_SetTracePinAssignment(LL_DBGMCU_TRACE_ASYNCH);
-  ITM->TER |= 1; /* Enable ITM port 0 for log output. */
-#endif
 #if defined(ENABLE_DEBUG_IN_STOP_MODE) && ENABLE_DEBUG_IN_STOP_MODE
   LL_DBGMCU_EnableDBGStopMode();
   printf("\nNote: This firmware has been built with debug in stop mode enabled.\n");
@@ -535,19 +518,22 @@ static void MX_GPIO_Init(void)
   LL_EXTI_InitTypeDef EXTI_InitStruct = {0};
   LL_GPIO_InitTypeDef GPIO_InitStruct = {0};
   LL_LPGPIO_InitTypeDef LPGPIO_InitStruct = {0};
-/* USER CODE BEGIN MX_GPIO_Init_1 */
-/* USER CODE END MX_GPIO_Init_1 */
+  /* USER CODE BEGIN MX_GPIO_Init_1 */
+  /* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   LL_AHB3_GRP1_EnableClock(LL_AHB3_GRP1_PERIPH_LPGPIO1);
   LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOE);
   LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOC);
-  LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOB);
   LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOA);
+  LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOB);
   LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOD);
 
   /**/
   LL_GPIO_SetOutputPin(CAM_PWDN_GPIO_Port, CAM_PWDN_Pin);
+
+  /**/
+  LL_GPIO_SetOutputPin(QSPI_FLASH_CS_GPIO_Port, QSPI_FLASH_CS_Pin);
 
   /**/
   LL_GPIO_ResetOutputPin(GPIOE, GPIO_LED_GREEN_Pin|GPIO_LED_BLUE_Pin|GPIO_LED_RED_Pin|RESET_N_Pin);
@@ -556,7 +542,7 @@ static void MX_GPIO_Init(void)
   LL_GPIO_ResetOutputPin(GPIOA, MM_DEBUG_1_Pin|MM_DEBUG_0_Pin);
 
   /**/
-  LL_GPIO_ResetOutputPin(WAKE_GPIO_Port, WAKE_Pin);
+  LL_GPIO_ResetOutputPin(GPIOD, WAKE_Pin|BLE_RESET_N_Pin);
 
   /**/
   GPIO_InitStruct.Pin = CAM_PWDN_Pin|GPIO_LED_GREEN_Pin|GPIO_LED_BLUE_Pin|GPIO_LED_RED_Pin
@@ -568,7 +554,7 @@ static void MX_GPIO_Init(void)
   LL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
   /**/
-  GPIO_InitStruct.Pin = MM_DEBUG_1_Pin|MM_DEBUG_0_Pin;
+  GPIO_InitStruct.Pin = QSPI_FLASH_CS_Pin|MM_DEBUG_1_Pin|MM_DEBUG_0_Pin;
   GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
   GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
   GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
@@ -576,18 +562,12 @@ static void MX_GPIO_Init(void)
   LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /**/
-  GPIO_InitStruct.Pin = LL_GPIO_PIN_15;
-  GPIO_InitStruct.Mode = LL_GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
-  LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-  /**/
-  GPIO_InitStruct.Pin = WAKE_Pin;
+  GPIO_InitStruct.Pin = WAKE_Pin|BLE_RESET_N_Pin;
   GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
   GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
   GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
   GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
-  LL_GPIO_Init(WAKE_GPIO_Port, &GPIO_InitStruct);
+  LL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
   /**/
   LPGPIO_InitStruct.Pin = LL_LPGPIO_PIN_15;
@@ -613,8 +593,8 @@ static void MX_GPIO_Init(void)
   /* EXTI interrupt init*/
   NVIC_SetPriority(EXTI5_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),15, 0));
 
-/* USER CODE BEGIN MX_GPIO_Init_2 */
-/* USER CODE END MX_GPIO_Init_2 */
+  /* USER CODE BEGIN MX_GPIO_Init_2 */
+  /* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
@@ -634,7 +614,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   /* USER CODE BEGIN Callback 0 */
 
   /* USER CODE END Callback 0 */
-  if (htim->Instance == TIM1) {
+  if (htim->Instance == TIM1)
+  {
     HAL_IncTick();
   }
   /* USER CODE BEGIN Callback 1 */

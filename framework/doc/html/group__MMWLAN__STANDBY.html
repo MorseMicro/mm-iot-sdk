@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.8.2</span>
+   &#160;<span id="projectnumber">2.9.7</span>
    </div>
   </td>
  </tr>
@@ -111,7 +111,8 @@ $(document).ready(function(){initNavTree('group__MMWLAN__STANDBY.html',''); init
 <li>The input trigger GPIO pin on the chip was toggled indicating some on board hardware requires attention.</li>
 <li>A TCP connection maintained by the TCP keep-alive offload feature was lost.</li>
 </ul>
-<p >The host will be powered on by toggling a GPIO pin, the BUSY pin is also toggled to interrupt the host. By offloading features like ARP response, ARP refresh, TCP keep-alive, and DHCP lease updates while in standby mode allows the host processor to sleep for longer resulting in better power savings. </p>
+<p >The host will be powered on by toggling a GPIO pin, the BUSY pin is also toggled to interrupt the host. By offloading features like ARP response, ARP refresh, TCP keep-alive, and DHCP lease updates while in standby mode allows the host processor to sleep for longer resulting in better power savings.</p>
+<dl class="section warning"><dt>Warning</dt><dd>BETA NOTICE: This is beta API that is under development; breaking changes may be introduced in future releases. </dd></dl>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Data Structures</h2></td></tr>
@@ -120,8 +121,7 @@ Data Structures</h2></td></tr>
   <a href="structmmwlan__standby__enter__args.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__standby__set__status__payload__args.html">mmwlan_standby_set_status_payload_args</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Arguments for <a class="el" href="group__MMWLAN__STANDBY.html#ga07515bb15ac04e997e33bfdf6f6c7833">mmwlan_standby_set_status_payload</a> <br  />
-  <a href="structmmwlan__standby__set__status__payload__args.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Arguments for <a class="el" href="group__MMWLAN__STANDBY.html#ga07515bb15ac04e997e33bfdf6f6c7833">mmwlan_standby_set_status_payload</a>.  <a href="structmmwlan__standby__set__status__payload__args.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__standby__set__wake__filter__args.html">mmwlan_standby_set_wake_filter_args</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Arguments for <a class="el" href="group__MMWLAN__STANDBY.html#ga6814b0721a36cb55fa40e8cf9ae8b215">mmwlan_standby_set_wake_filter</a> <br  />
@@ -189,12 +189,13 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">reason</td><td>The reason we exited standby mode. See enum <a class="el" href="group__MMWLAN__STANDBY.html#ga7be2c8d7da01c0a12e0d4cb171ef7764">mmwlan_standby_exit_reason</a>. </td></tr>
-    <tr><td class="paramname">arg</td><td>An opaque pointer passed from <a class="el" href="group__MMWLAN__STANDBY.html#gacf3e87544fee10ac452e54da876da9fc">mmwlan_standby_enter()</a> </td></tr>
+    <tr><td class="paramname">arg</td><td>An opaque pointer passed from <a class="el" href="group__MMWLAN__STANDBY.html#gacf3e87544fee10ac452e54da876da9fc">mmwlan_standby_enter()</a></td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section warning"><dt>Warning</dt><dd>BETA NOTICE: This is beta API that is under development; breaking changes may be introduced in future releases. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01391">1391</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01822">1822</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -231,7 +232,7 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01365">1365</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01793">1793</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -260,7 +261,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> on success or <a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086ac9e2689a222cc3b398fc89b68a1f0006">MMWLAN_ERROR</a> on failure. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> on success or <a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086ac9e2689a222cc3b398fc89b68a1f0006">MMWLAN_ERROR</a> on failure.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>BETA NOTICE: This is beta API that is under development; breaking changes may be introduced in future releases. </dd></dl>
 
 </div>
 </div>
@@ -283,7 +285,8 @@ Functions</h2></td></tr>
 <p>Forces the Morse chip to exit standby mode. </p>
 <p >here may be certain instances such as a timer expiry, which cause the host chip to wake up independent of the Morse chip. In such situations, the host calls this function to instruct the Morse chip to exit standby mode and return to normal operating mode.</p>
 <p >Triggers <a class="el" href="group__MMWLAN__STANDBY.html#gaebeeb1a17a43cb3981ba60c42fc5f71b">mmwlan_standby_exit_cb_t</a> with reason <code>MMWLAN_STANDBY_EXIT_REASON_NONE</code>.</p>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> on success or <a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086ac9e2689a222cc3b398fc89b68a1f0006">MMWLAN_ERROR</a> on failure. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> on success or <a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086ac9e2689a222cc3b398fc89b68a1f0006">MMWLAN_ERROR</a> on failure.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>BETA NOTICE: This is beta API that is under development; breaking changes may be introduced in future releases. </dd></dl>
 
 </div>
 </div>
@@ -310,7 +313,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> on success or <a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086ac9e2689a222cc3b398fc89b68a1f0006">MMWLAN_ERROR</a> on failure. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> on success or <a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086ac9e2689a222cc3b398fc89b68a1f0006">MMWLAN_ERROR</a> on failure.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>BETA NOTICE: This is beta API that is under development; breaking changes may be introduced in future releases. </dd></dl>
 
 </div>
 </div>
@@ -342,7 +346,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> on success or <a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086ac9e2689a222cc3b398fc89b68a1f0006">MMWLAN_ERROR</a> on failure. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> on success or <a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086ac9e2689a222cc3b398fc89b68a1f0006">MMWLAN_ERROR</a> on failure.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>BETA NOTICE: This is beta API that is under development; breaking changes may be introduced in future releases. </dd></dl>
 
 </div>
 </div>
@@ -374,7 +379,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> on success or <a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086ac9e2689a222cc3b398fc89b68a1f0006">MMWLAN_ERROR</a> on failure. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> on success or <a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086ac9e2689a222cc3b398fc89b68a1f0006">MMWLAN_ERROR</a> on failure.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>BETA NOTICE: This is beta API that is under development; breaking changes may be introduced in future releases. </dd></dl>
 
 </div>
 </div>

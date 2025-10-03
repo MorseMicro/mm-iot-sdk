@@ -13,7 +13,7 @@ var searchData=
   ['app_5fversion_10',['app_version',['../structmmagic__m2m__agent__init__args.html#ad4731621e21f22b29c7cb8bf54e55ab9',1,'mmagic_m2m_agent_init_args::app_version()'],['../structmmagic__cli__init__args.html#a1bb65a2fbd8ab2521bfba887fd55c314',1,'mmagic_cli_init_args::app_version()']]],
   ['application_5fend_11',['application_end',['../bootloader_8c.html#aaaf4eda13ed1d5a1e8fcefbc9d9f4bd6',1,'bootloader.c']]],
   ['application_5fstart_12',['application_start',['../bootloader_8c.html#a37d4a9c3115f43a3e2b3e102bc81b48f',1,'bootloader.c']]],
-  ['application_5fversion_13',['application_version',['../structstruct__version__info.html#a66d0d9325a9b33a251a65d0e3704ec8b',1,'struct_version_info']]],
-  ['args_14',['args',['../structmmwlan__scan__req.html#aa043d7fb919fb60301e7e1031940a085',1,'mmwlan_scan_req']]],
+  ['application_5fversion_13',['application_version',['../structstruct__version__info.html#a356046d0378fabaf71581e810d8d84d6',1,'struct_version_info']]],
+  ['args_14',['args',['../structmmwlan__dpp__cb__args.html#a02f8dc30ca3410a73f8ab26e190a28be',1,'mmwlan_dpp_cb_args::args()'],['../structmmwlan__scan__req.html#aa043d7fb919fb60301e7e1031940a085',1,'mmwlan_scan_req::args()']]],
   ['avg_5ftime_5fms_15',['avg_time_ms',['../structstruct__ping__status.html#a9391646295b6c202a210ff7d5234b373',1,'struct_ping_status']]]
 ];

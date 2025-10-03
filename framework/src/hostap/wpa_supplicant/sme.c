@@ -611,6 +611,7 @@ static void sme_send_authentication(struct wpa_supplicant *wpa_s,
 	wpa_s->reassociate = 0;
 
 	params.freq = bss->freq;
+	params.freq_khz = bss->freq_khz;
 	params.bssid = bss->bssid;
 	params.ssid = bss->ssid;
 	params.ssid_len = bss->ssid_len;
@@ -621,6 +622,7 @@ static void sme_send_authentication(struct wpa_supplicant *wpa_s,
 		wpa_s->sme.prev_bssid_set = 0;
 
 	wpa_s->sme.freq = params.freq;
+	wpa_s->sme.freq_khz = params.freq_khz;
 	os_memcpy(wpa_s->sme.ssid, params.ssid, params.ssid_len);
 	wpa_s->sme.ssid_len = params.ssid_len;
 
@@ -883,10 +885,12 @@ static void sme_send_authentication(struct wpa_supplicant *wpa_s,
 #endif /* CONFIG_FST */
 
 	sme_auth_handle_rrm(wpa_s, bss);
-#ifdef CONFIG_IEEE80211AH
+#if defined(CONFIG_IEEE80211AH)
+#if !defined(MM_IOT)
 	wpa_s->sme.assoc_req_ie_len += wpas_supp_s1g_op_class_ie(wpa_s, ssid, bss,
 				wpa_s->sme.assoc_req_ie + wpa_s->sme.assoc_req_ie_len,
 				sizeof(wpa_s->sme.assoc_req_ie) - wpa_s->sme.assoc_req_ie_len);
+#endif /* MM_IOT */
 #else
 
 #ifndef CONFIG_NO_RRM
@@ -1160,13 +1164,10 @@ no_fils:
 	wpa_supplicant_cancel_scan(wpa_s);
 
 	wpa_msg(wpa_s, MSG_INFO, "SME: Trying to authenticate with " MACSTR
-		" (SSID='%s' %s=%d%s)", MAC2STR(params.bssid),
+		" (SSID='%s' freq=%d %s)", MAC2STR(params.bssid),
 		wpa_ssid_txt(params.ssid, params.ssid_len),
-#ifdef CONFIG_IEEE80211AH
-		"chan", morse_ht_freq_to_s1g_chan(bss->freq), "");
-#else
-		"freq", params.freq, " MHz");
-#endif
+		params.freq_khz ? params.freq_khz : params.freq,
+		params.freq_khz ? "kHz" : "MHz");
 
 	eapol_sm_notify_portValid(wpa_s->eapol, false);
 	wpa_clear_keys(wpa_s, bss->bssid);
@@ -2576,6 +2577,7 @@ mscs_fail:
 	params.ssid = wpa_s->sme.ssid;
 	params.ssid_len = wpa_s->sme.ssid_len;
 	params.freq.freq = wpa_s->sme.freq;
+	params.freq.freq_khz = wpa_s->sme.freq_khz;
 	params.bg_scan_period = ssid ? ssid->bg_scan_period : -1;
 	params.wpa_ie = wpa_s->sme.assoc_req_ie_len ?
 		wpa_s->sme.assoc_req_ie : NULL;
@@ -2694,13 +2696,11 @@ mscs_fail:
 		params.prev_bssid = wpa_s->sme.prev_bssid;
 
 	wpa_msg(wpa_s, MSG_INFO, "Trying to associate with " MACSTR
-		" (SSID='%s' %s=%d%s)", MAC2STR(params.bssid),
+		" (SSID='%s' freq=%d %s)", MAC2STR(params.bssid),
 		params.ssid ? wpa_ssid_txt(params.ssid, params.ssid_len) : "",
-#ifdef CONFIG_IEEE80211AH
-		"chan", morse_ht_freq_to_s1g_chan(params.freq.center_freq1), "");
-#else
-		"freq", params.freq.freq, " MHz");
-#endif
+		params.freq.freq_khz ? params.freq.freq_khz : params.freq.freq,
+		params.freq.freq_khz ? "kHz" : "MHz");
+
 	wpa_supplicant_set_state(wpa_s, WPA_ASSOCIATING);
 
 	if (params.wpa_ie == NULL ||

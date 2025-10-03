@@ -269,13 +269,60 @@ int wpa_supplicant_conf_ap_ht(struct wpa_supplicant *wpa_s,
 			      struct wpa_ssid *ssid,
 			      struct hostapd_config *conf)
 {
+	if (ssid->frequency_khz)
+	{
+		struct hostapd_hw_modes *hw_mode = NULL;
+		conf->hw_mode = HOSTAPD_MODE_IEEE80211AH;
+		if (wpa_s->hw.modes != NULL)
+		{
+			for (uint16_t ii = 0; ii < wpa_s->hw.num_modes; ii++)
+			{
+				if (wpa_s->hw.modes[ii].mode == HOSTAPD_MODE_IEEE80211AH)
+				{
+					hw_mode = &wpa_s->hw.modes[ii];
+					break;
+				}
+			}
+		}
+		/* Determine S1G channel based on configured operating class and frequency */
+		if (hw_mode == NULL)
+		{
+			wpa_printf(MSG_ERROR, "AH HW mode required for S1G");
+			return -1;
+		}
+
+		conf->op_class = wpa_s->conf->op_class;
+		for (int ii = 0; ii < hw_mode->num_channels; ii++)
+		{
+			if (hw_mode->channels[ii].freq_khz == ssid->frequency_khz)
+			{
+				conf->channel = hw_mode->channels[ii].chan;
+			}
+		}
+
+		if (conf->channel == 0)
+		{
+			wpa_printf(MSG_ERROR, "No channel for freq %u kHz", ssid->frequency_khz);
+			return -1;
+		}
+
+		wpa_printf(MSG_DEBUG, "S1G freq %d khz, op class %d, channel %d\n",
+			   ssid->frequency_khz, conf->op_class, conf->channel);
+	}
+	else
+	{
 	conf->hw_mode = ieee80211_freq_to_channel_ext(ssid->frequency, 0,
-						      CONF_OPER_CHWIDTH_USE_HT,
-						      &conf->op_class,
-						      &conf->channel);
+				CONF_OPER_CHWIDTH_USE_HT,
+				&conf->op_class,
+				&conf->channel);
+	}
 	if (conf->hw_mode == NUM_HOSTAPD_MODES) {
+		if (ssid->frequency_khz)
+		wpa_printf(MSG_ERROR, "Unsupported AP mode frequency: %d kHz",
+		ssid->frequency_khz);
+	else
 		wpa_printf(MSG_ERROR, "Unsupported AP mode frequency: %d MHz",
-			   ssid->frequency);
+		ssid->frequency);
 		return -1;
 	}
 
@@ -292,15 +339,6 @@ int wpa_supplicant_conf_ap_ht(struct wpa_supplicant *wpa_s,
 		wpa_printf(MSG_DEBUG,
 			   "Determining HT/VHT options based on driver capabilities (freq=%u chan=%u)",
 			   ssid->frequency, conf->channel);
-
-#ifdef CONFIG_IEEE80211AH
-		if (wpa_s->conf->op_class) {
-			conf->s1g_op_class = wpa_s->conf->op_class;
-			wpa_printf(MSG_DEBUG, "s1g op class set: %d", conf->s1g_op_class);
-		} else
-			wpa_printf(MSG_DEBUG, "s1g op class not set: %d", conf->s1g_op_class);
-#endif /* CONFIG_IEEE80211AH */
-
 		mode = get_mode(wpa_s->hw.modes, wpa_s->hw.num_modes,
 				conf->hw_mode, is_6ghz_freq(ssid->frequency));
 
@@ -343,6 +381,19 @@ int wpa_supplicant_conf_ap_ht(struct wpa_supplicant *wpa_s,
 			conf->ieee80211n = 0;
 			conf->ht_capab = 0;
 			no_ht = 1;
+		}
+
+		if (mode && mode->band == NL80211_BAND_S1GHZ) {
+			conf->ieee80211ah = 1;
+			conf->country[0] = wpa_s->conf->country[0];
+			conf->country[1] = wpa_s->conf->country[1];
+			conf->country[2] = ' ';
+			conf->s1g_prim_1mhz_chan_index = ssid->s1g_prim_1mhz_chan_index;
+			conf->s1g_prim_chwidth = ssid->s1g_prim_chwidth;
+			conf->s1g_capab |= S1G_CAP0_SGI_1MHZ |
+					   S1G_CAP0_SGI_2MHZ |
+					   S1G_CAP0_SGI_4MHZ |
+					   S1G_CAP0_SGI_8MHZ;
 		}
 
 		if (mode && is_6ghz_freq(ssid->frequency) &&
@@ -463,7 +514,9 @@ int wpa_supplicant_conf_ap_ht(struct wpa_supplicant *wpa_s,
 		{
 			if (iface == wpa_s ||
 			    iface->wpa_state < WPA_AUTHENTICATING ||
-			    (int) iface->assoc_freq != ssid->frequency)
+			    (int) iface->assoc_freq_khz != ssid->frequency_khz ||
+			    (ssid->frequency_khz == 0 &&
+			     (int) iface->assoc_freq != ssid->frequency))
 				continue;
 
 			/*
@@ -1005,7 +1058,7 @@ int wpa_supplicant_create_ap(struct wpa_supplicant *wpa_s,
 	default:
 		return -1;
 	}
-	if (ssid->frequency == 0)
+	if (ssid->frequency == 0 && ssid->frequency_khz == 0)
 		ssid->frequency = 2462; /* default channel 11 */
 	params.freq.freq = ssid->frequency;
 
@@ -1173,6 +1226,7 @@ int wpa_supplicant_create_ap(struct wpa_supplicant *wpa_s,
 	eapol_sm_notify_config(wpa_s->eapol, NULL, NULL);
 	os_memcpy(wpa_s->bssid, wpa_s->own_addr, ETH_ALEN);
 	wpa_s->assoc_freq = ssid->frequency;
+	wpa_s->assoc_freq_khz = ssid->frequency_khz;
 	wpa_s->ap_iface->conf->enable_edmg = ssid->enable_edmg;
 	wpa_s->ap_iface->conf->edmg_channel = ssid->edmg_channel;
 
@@ -1884,8 +1938,8 @@ int ap_ctrl_iface_chanswitch(struct wpa_supplicant *wpa_s, const char *pos)
 #endif /* CONFIG_CTRL_IFACE */
 
 
-void wpas_ap_ch_switch(struct wpa_supplicant *wpa_s, int freq, int ht,
-		       int offset, int width, int cf1, int cf2,
+void wpas_ap_ch_switch(struct wpa_supplicant *wpa_s, int freq, int freq_khz,
+		       int ht, int offset, int width, int cf1, int cf2,
 		       u16 punct_bitmap, int finished)
 {
 	struct hostapd_iface *iface = wpa_s->ap_iface;
@@ -1895,9 +1949,12 @@ void wpas_ap_ch_switch(struct wpa_supplicant *wpa_s, int freq, int ht,
 	if (!iface)
 		return;
 	wpa_s->assoc_freq = freq;
-	if (wpa_s->current_ssid)
+	wpa_s->assoc_freq_khz = freq_khz;
+	if (wpa_s->current_ssid) {
 		wpa_s->current_ssid->frequency = freq;
-	hostapd_event_ch_switch(iface->bss[0], freq, ht,
+		wpa_s->current_ssid->frequency_khz = freq_khz;
+	}
+	hostapd_event_ch_switch(iface->bss[0], freq, freq_khz, ht,
 				offset, width, cf1, cf2, punct_bitmap,
 				finished);
 }

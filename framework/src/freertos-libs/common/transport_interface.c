@@ -27,6 +27,7 @@
  */
 
 /* Standard includes. */
+#include <stdio.h>
 #include <string.h>
 
 /* FreeRTOS includes. */
@@ -35,7 +36,7 @@
 
 /* TLS transport header. */
 #include "transport_interface.h"
-#include "netdb.h"
+#include "mmosal.h"
 
 /* Default timeout for transport layer reads */
 #define TRANSPORT_TIMEOUT       1000
@@ -159,20 +160,24 @@ static void sslContextInit( SSLContext_t * pSslContext )
     configASSERT( pSslContext != NULL );
 
     /* Initialize contexts for random number generation. */
+#if !TRANSPORT_EXTERNAL_CTR_DRBG_ENABLED
     mbedtls_entropy_init( &( pSslContext->entropyContext ) );
     mbedtls_ctr_drbg_init( &( pSslContext->ctrDrgbContext ) );
+#endif
     mbedtls_ssl_config_init( &( pSslContext->config ) );
     mbedtls_x509_crt_init( &( pSslContext->rootCa ) );
     mbedtls_pk_init( &( pSslContext->privKey ) );
     mbedtls_x509_crt_init( &( pSslContext->clientCert ) );
     mbedtls_ssl_init( &( pSslContext->context ) );
 
+#if !TRANSPORT_EXTERNAL_CTR_DRBG_ENABLED
     /* Seed the random number generator. */
     mbedtls_ctr_drbg_seed(&( pSslContext->ctrDrgbContext ),
                           mbedtls_entropy_func,
                           &( pSslContext->entropyContext ),
                           NULL,
                           0);
+#endif
 }
 /*-----------------------------------------------------------*/
 
@@ -184,8 +189,10 @@ static void sslContextFree( SSLContext_t * pSslContext )
     mbedtls_x509_crt_free( &( pSslContext->rootCa ) );
     mbedtls_x509_crt_free( &( pSslContext->clientCert ) );
     mbedtls_pk_free( &( pSslContext->privKey ) );
+#if !TRANSPORT_EXTERNAL_CTR_DRBG_ENABLED
     mbedtls_entropy_free( &( pSslContext->entropyContext ) );
     mbedtls_ctr_drbg_free( &( pSslContext->ctrDrgbContext ) );
+#endif
     mbedtls_ssl_config_free( &( pSslContext->config ) );
 }
 /*-----------------------------------------------------------*/
@@ -242,12 +249,18 @@ static int32_t setPrivateKey( SSLContext_t * pSslContext,
     configASSERT( pSslContext != NULL );
     configASSERT( pPrivateKeyPath != NULL );
 
+#if TRANSPORT_EXTERNAL_CTR_DRBG_ENABLED
+    void* rng_ctx = NULL;
+#else
+    void* rng_ctx = &(pSslContext->ctrDrgbContext);
+#endif
+
     /* Setup the client private key. */
     mbedtlsError = mbedtls_pk_parse_key( &( pSslContext->privKey ),
                                          pPrivateKeyPath,
                                          privateKeySize,
                                          NULL,
-                                         0, mbedtls_ctr_drbg_random, &(pSslContext->ctrDrgbContext));
+                                         0, mbedtls_ctr_drbg_random, rng_ctx);
 
     return mbedtlsError;
 }
@@ -267,9 +280,16 @@ static int32_t setCredentials( SSLContext_t * pSslContext,
     /* Set SSL authmode and the RNG context. */
     mbedtls_ssl_conf_authmode( &( pSslContext->config ),
                                MBEDTLS_SSL_VERIFY_REQUIRED );
+
+#if TRANSPORT_EXTERNAL_CTR_DRBG_ENABLED
+    void* rng_ctx = NULL;
+#else
+    void* rng_ctx = &(pSslContext->ctrDrgbContext);
+#endif
+
     mbedtls_ssl_conf_rng( &( pSslContext->config ),
                           mbedtls_ctr_drbg_random,
-                          &( pSslContext->ctrDrgbContext ) );
+                          rng_ctx );
     mbedtls_ssl_conf_cert_profile( &( pSslContext->config ),
                                    &( pSslContext->certProfile ) );
 
@@ -324,7 +344,7 @@ static void setOptionalConfigurations( SSLContext_t * pSslContext,
                                                         pNetworkCredentials->pAlpnProtos );
         if (mbedtlsError)
         {
-          printf("WRN: (%s:%d) mbedtls_ssl_conf_alpn_protocols returned %d.",
+          mmosal_printf("WRN: (%s:%d) mbedtls_ssl_conf_alpn_protocols returned %d.",
                  __FILE__, __LINE__, mbedtlsError);
         }
     }
@@ -336,7 +356,7 @@ static void setOptionalConfigurations( SSLContext_t * pSslContext,
                                                  pHostName );
         if (mbedtlsError)
         {
-          printf("WRN: (%s:%d) mbedtls_ssl_set_hostname returned %d.",
+          mmosal_printf("WRN: (%s:%d) mbedtls_ssl_set_hostname returned %d.",
                  __FILE__, __LINE__, mbedtlsError);
         }
     }
@@ -352,7 +372,7 @@ static void setOptionalConfigurations( SSLContext_t * pSslContext,
         mbedtlsError = mbedtls_ssl_conf_max_frag_len( &( pSslContext->config ), MBEDTLS_SSL_MAX_FRAG_LEN_4096 );
         if (mbedtlsError)
         {
-          printf("WRN: (%s:%d) mbedtls_ssl_conf_max_frag_len returned %d.",
+          mmosal_printf("WRN: (%s:%d) mbedtls_ssl_conf_max_frag_len returned %d.",
                  __FILE__, __LINE__, mbedtlsError);
         }
     #endif /* ifdef MBEDTLS_SSL_MAX_FRAGMENT_LENGTH */
@@ -498,7 +518,7 @@ TransportStatus_t transport_connect( NetworkContext_t * pNetworkContext,
     {
         mbedtls_net_init( &(pNetworkContext->tcpSocket) );
 
-        sprintf(portstr, "%7d", port);
+        snprintf(portstr, sizeof(portstr), "%7d", port);
         socketStatus = mbedtls_net_connect(&(pNetworkContext->tcpSocket), pHostName, portstr, MBEDTLS_NET_PROTO_TCP);
         if (socketStatus != 0)
         {

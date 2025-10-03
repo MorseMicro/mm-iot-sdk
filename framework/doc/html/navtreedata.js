@@ -25,118 +25,117 @@
 var NAVTREE =
 [
   [ "Morse Micro IoT SDK", "index.html", [
-    [ "Introduction", "index.html", [
-      [ "System Requirements", "index.html#autotoc_md54", [
-        [ "Core architecture", "index.html#autotoc_md55", null ],
-        [ "RAM and flash", "index.html#autotoc_md56", null ]
-      ] ]
-    ] ],
+    [ "Introduction", "index.html", null ],
     [ "Morse Micro IoT Reference Platforms", "MMPLATFORMS.html", "MMPLATFORMS" ],
     [ "Getting Started", "GETTING_STARTED.html", [
-      [ "Prerequisites", "GETTING_STARTED.html#autotoc_md57", null ],
+      [ "Prerequisites", "GETTING_STARTED.html#autotoc_md54", null ],
       [ "Unpacking the software package", "GETTING_STARTED.html#UNPACKING_THE_SW", null ],
-      [ "Package contents", "GETTING_STARTED.html#autotoc_md58", null ],
+      [ "Package contents", "GETTING_STARTED.html#autotoc_md55", null ],
       [ "Development PC setup", "GETTING_STARTED.html#GETTING_STARTED_DEV_PC_SETUP", [
-        [ "Python environment", "GETTING_STARTED.html#autotoc_md59", null ]
+        [ "Python environment", "GETTING_STARTED.html#autotoc_md56", null ]
       ] ],
-      [ "AP configuration", "GETTING_STARTED.html#autotoc_md60", null ],
-      [ "Application overview", "GETTING_STARTED.html#autotoc_md61", [
-        [ "Ping Example Application Structure", "GETTING_STARTED.html#autotoc_md62", null ],
+      [ "AP configuration", "GETTING_STARTED.html#autotoc_md57", null ],
+      [ "Application overview", "GETTING_STARTED.html#autotoc_md58", [
+        [ "Ping Example Application Structure", "GETTING_STARTED.html#autotoc_md59", null ],
         [ "Application Configuration", "GETTING_STARTED.html#APP_CONFIGURATION", [
-          [ "MMConfig Application configuration", "GETTING_STARTED.html#autotoc_md63", null ],
-          [ "Legacy Application Configuration", "GETTING_STARTED.html#autotoc_md64", null ]
+          [ "MMConfig Application configuration", "GETTING_STARTED.html#autotoc_md60", null ],
+          [ "Legacy Application Configuration", "GETTING_STARTED.html#autotoc_md61", null ]
         ] ]
       ] ],
       [ "Building Firmware", "GETTING_STARTED.html#BUILDING_FIRMWARE", null ],
       [ "Programming", "GETTING_STARTED.html#PROGRAMMING_FIRMWARE", [
-        [ "Launching Miniterm", "GETTING_STARTED.html#autotoc_md65", null ],
+        [ "Launching Miniterm", "GETTING_STARTED.html#autotoc_md62", null ],
         [ "Launching OpenOCD", "GETTING_STARTED.html#GETTING_STARTED_OPENOCD", null ],
         [ "Setting Application Configuration", "GETTING_STARTED.html#SET_APP_CONFIGURATION", [
-          [ "Additional steps for the mm-ekh08-wb55 platform", "GETTING_STARTED.html#autotoc_md66", null ]
+          [ "Additional steps for the mm-ekh08-wb55 platform", "GETTING_STARTED.html#autotoc_md63", null ]
         ] ],
-        [ "Launching GDB", "GETTING_STARTED.html#autotoc_md67", null ]
+        [ "Launching GDB", "GETTING_STARTED.html#autotoc_md64", null ]
       ] ],
-      [ "Troubleshooting", "GETTING_STARTED.html#autotoc_md68", [
+      [ "Troubleshooting", "GETTING_STARTED.html#autotoc_md65", [
         [ "Unable to find BCF file entry in config store", "GETTING_STARTED.html#BCF_CONFIG_STORE", [
-          [ "Symptom", "GETTING_STARTED.html#autotoc_md69", null ],
-          [ "Possible cause", "GETTING_STARTED.html#autotoc_md70", null ]
+          [ "Symptom", "GETTING_STARTED.html#autotoc_md66", null ],
+          [ "Possible cause", "GETTING_STARTED.html#autotoc_md67", null ]
         ] ],
-        [ "Unable to connect to the MCU with OpenOCD", "GETTING_STARTED.html#autotoc_md71", [
-          [ "Symptom", "GETTING_STARTED.html#autotoc_md72", null ],
-          [ "Possible cause 1", "GETTING_STARTED.html#autotoc_md73", null ],
-          [ "Possible cause 2", "GETTING_STARTED.html#autotoc_md74", null ]
+        [ "Unable to connect to the MCU with OpenOCD", "GETTING_STARTED.html#autotoc_md68", [
+          [ "Symptom", "GETTING_STARTED.html#autotoc_md69", null ],
+          [ "Possible cause 1", "GETTING_STARTED.html#autotoc_md70", null ],
+          [ "Possible cause 2", "GETTING_STARTED.html#autotoc_md71", null ]
         ] ]
       ] ]
     ] ],
     [ "Host Power Save", "MMHOSTPOWERSAVE.html", [
-      [ "Overview", "MMHOSTPOWERSAVE.html#autotoc_md75", null ],
-      [ "Implementation", "MMHOSTPOWERSAVE.html#autotoc_md76", null ],
-      [ "Deep sleep decision logic", "MMHOSTPOWERSAVE.html#autotoc_md77", null ],
-      [ "Deep sleep exceptions", "MMHOSTPOWERSAVE.html#autotoc_md78", null ],
+      [ "Overview", "MMHOSTPOWERSAVE.html#autotoc_md72", null ],
+      [ "Implementation", "MMHOSTPOWERSAVE.html#autotoc_md73", null ],
+      [ "Deep sleep decision logic", "MMHOSTPOWERSAVE.html#autotoc_md74", null ],
+      [ "Deep sleep exceptions", "MMHOSTPOWERSAVE.html#autotoc_md75", null ],
       [ "Debugging during deep sleep", "MMHOSTPOWERSAVE.html#MMHOSTPOWERSAVE_DEBUG_DEEP_SLEEP", null ]
     ] ],
-    [ "Morse Micro CLI API", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html", [
-      [ "Configuration variables", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md79", null ],
-      [ "Wireless LAN management (wlan) module", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md80", [
-        [ "Configuration variables", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md81", null ],
-        [ "Commands", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md82", [
-          [ "wlan-connect", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md83", null ],
-          [ "wlan-disconnect", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md84", null ],
-          [ "wlan-scan", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md85", null ],
-          [ "wlan-get_rssi", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md86", null ],
-          [ "wlan-get_mac_addr", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md87", null ],
-          [ "wlan-wnm_sleep", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md88", null ],
-          [ "wlan-beacon_monitor_enable", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md89", null ],
-          [ "wlan-beacon_monitor_disable", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md90", null ],
-          [ "wlan-standby_enter", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md91", null ],
-          [ "wlan-standby_exit", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md92", null ],
-          [ "wlan-standby_set_status_payload", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md93", null ],
-          [ "wlan-standby_set_wake_filter", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md94", null ],
-          [ "wlan-standby_set_config", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md95", null ]
+    [ "Morse Micro CLI API", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html", [
+      [ "Configuration variables", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md76", null ],
+      [ "Module wlan: Wireless LAN management.", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md77", [
+        [ "Configuration variables", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md78", null ],
+        [ "Commands", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md79", [
+          [ "wlan-connect", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md80", null ],
+          [ "wlan-disconnect", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md81", null ],
+          [ "wlan-scan", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md82", null ],
+          [ "wlan-get_rssi", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md83", null ],
+          [ "wlan-get_mac_addr", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md84", null ],
+          [ "wlan-wnm_sleep", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md85", null ],
+          [ "wlan-beacon_monitor_enable", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md86", null ],
+          [ "wlan-beacon_monitor_disable", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md87", null ],
+          [ "wlan-standby_enter", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md88", null ],
+          [ "wlan-standby_exit", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md89", null ],
+          [ "wlan-standby_set_status_payload", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md90", null ],
+          [ "wlan-standby_set_wake_filter", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md91", null ],
+          [ "wlan-standby_set_config", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md92", null ],
+          [ "wlan-get_sta_status", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md93", null ]
         ] ]
       ] ],
-      [ "IP Stack Management (ip) module", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md96", [
-        [ "Configuration variables", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md97", null ],
-        [ "Commands", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md98", [
-          [ "ip-status", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md99", null ],
-          [ "ip-reload", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md100", null ],
-          [ "ip-enable_tcp_keepalive_offload", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md101", null ],
-          [ "ip-disable_tcp_keepalive_offload", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md102", null ],
-          [ "ip-set_whitelist_filter", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md103", null ],
-          [ "ip-clear_whitelist_filter", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md104", null ]
+      [ "Module ip: IP Stack Management", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md94", [
+        [ "Configuration variables", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md95", null ],
+        [ "Commands", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md96", [
+          [ "ip-status", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md97", null ],
+          [ "ip-reload", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md98", null ],
+          [ "ip-enable_tcp_keepalive_offload", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md99", null ],
+          [ "ip-disable_tcp_keepalive_offload", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md100", null ],
+          [ "ip-set_whitelist_filter", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md101", null ],
+          [ "ip-clear_whitelist_filter", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md102", null ]
         ] ]
       ] ],
-      [ "Ping application (ping) module", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md105", [
-        [ "Configuration variables", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md106", null ],
-        [ "Commands", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md107", [
-          [ "ping-run", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md108", null ]
+      [ "Module ping: Ping application.", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md103", [
+        [ "Configuration variables", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md104", null ],
+        [ "Commands", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md105", [
+          [ "ping-run", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md106", null ]
         ] ]
       ] ],
-      [ "Iperf application (iperf) module", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md109", [
-        [ "Configuration variables", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md110", null ],
-        [ "Commands", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md111", [
-          [ "iperf-run", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md112", null ]
+      [ "Module iperf: Iperf application.", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md107", [
+        [ "Configuration variables", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md108", null ],
+        [ "Commands", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md109", [
+          [ "iperf-run", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md110", null ]
         ] ]
       ] ],
-      [ "System management (sys) module", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md113", [
-        [ "Commands", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md114", [
-          [ "sys-reset", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md115", null ],
-          [ "sys-deep_sleep", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md116", null ],
-          [ "sys-get_version", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md117", null ]
+      [ "Module sys: System management.", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md111", [
+        [ "Commands", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md112", [
+          [ "sys-reset", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md113", null ],
+          [ "sys-deep_sleep", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md114", null ],
+          [ "sys-get_version", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md115", null ]
         ] ]
       ] ],
-      [ "Enum definitions", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md118", [
-        [ "Security type", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#CLI_enum_security_type", null ],
-        [ "Pmf mode", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#CLI_enum_pmf_mode", null ],
-        [ "Power save mode", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#CLI_enum_power_save_mode", null ],
-        [ "Mcs10 mode", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#CLI_enum_mcs10_mode", null ],
-        [ "Station type", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#CLI_enum_station_type", null ],
-        [ "Status", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#CLI_enum_status", null ],
-        [ "Iperf mode", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#CLI_enum_iperf_mode", null ],
-        [ "Iperf state", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#CLI_enum_iperf_state", null ],
-        [ "Ip link state", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#CLI_enum_ip_link_state", null ],
-        [ "Deep sleep mode", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#CLI_enum_deep_sleep_mode", null ],
-        [ "Standby mode exit reason", "md__root_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#CLI_enum_standby_mode_exit_reason", null ]
+      [ "Enum definitions", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#autotoc_md116", [
+        [ "Security type", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#CLI_enum_security_type", null ],
+        [ "Pmf mode", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#CLI_enum_pmf_mode", null ],
+        [ "Power save mode", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#CLI_enum_power_save_mode", null ],
+        [ "Mcs10 mode", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#CLI_enum_mcs10_mode", null ],
+        [ "Duty cycle mode", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#CLI_enum_duty_cycle_mode", null ],
+        [ "Station type", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#CLI_enum_station_type", null ],
+        [ "Status", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#CLI_enum_status", null ],
+        [ "Iperf mode", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#CLI_enum_iperf_mode", null ],
+        [ "Iperf state", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#CLI_enum_iperf_state", null ],
+        [ "Ip link state", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#CLI_enum_ip_link_state", null ],
+        [ "Deep sleep mode", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#CLI_enum_deep_sleep_mode", null ],
+        [ "Standby mode exit reason", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#CLI_enum_standby_mode_exit_reason", null ],
+        [ "Sta state", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#CLI_enum_sta_state", null ],
+        [ "Sta event", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#CLI_enum_sta_event", null ]
       ] ]
     ] ],
     [ "Example Applications", "MMAPPS.html", null ],
@@ -168,15 +167,16 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "GETTING_STARTED.html",
-"files.html",
-"group__MMAGIC__CONTROLLER__INTERNAL.html#gga62fb515a7270a1a2eec77f80cd4fb9b7a5ea49822d188f4a62d2cb61066726e00",
-"group__MMHAL.html#ga38da43831c553f238544c541c94b0e44",
-"group__MMOSAL__MUTEX.html#gadf9da47930d58b6f893abb3c32b8f899",
-"group__MMWLAN__DATA.html#ga6501ac548a4ed7860471238854f269ed",
-"mm__app__common_8h_source.html",
-"structmmagic__core__wlan__scan__cmd__args.html#a8cf308c111c34508129392ac2a22f0e7",
-"structmmwlan__sta__args.html#a273e51fd31b3331e73b33f2c3d3de775",
-"wnm__sleep_8c.html#af6267920b504273777e2451780e565afa4a6c9b049bc6a49d7ce94ecb1e5e7d9a"
+"fileio_8c.html",
+"group__MMAGIC__CONTROLLER__INTERNAL.html#gga2b2777499fd16ac7f9e19eba64cb07a6a06d2592e5a0c10ba3bded0a54246b907",
+"group__MMAGIC__CONTROLLER__WLAN__CONFIG.html#gaab072c33a928ef6f433f68da4c266695",
+"group__MMHAL__WLAN__SPI.html#gaf2b75b0c2e4e8e75f0690af9b3980d0a",
+"group__MMUTILS__WLAN.html#gga17aef4cfb2a7b065d016e047ebb13dc2ab5d97a5640b93ce4cc60b54047cefb76",
+"group__MMWLAN__TEST.html#gga717653d3f72f5265b2c583db54f9f7baaa5e6d54f5438349ffe164ee78f03e850",
+"porting__assistant_8c.html#ae7e4e54271f9f691de54d84661d7dbd4",
+"structmmconfig__update__node.html#a2b33d5c71d4d5619ce2041c158f4a5f2",
+"structmmwlan__sta__args.html#a68ce383b62a427bdc89639b0ec32ddfb",
+"wnm__sleep_8c.html#aa74a8e27191a3077ea4cf00ea7507962"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

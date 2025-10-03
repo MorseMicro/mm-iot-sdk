@@ -14,11 +14,29 @@
 #include "cli/autogen/mmagic_cli_internal.h"
 #include "cli/autogen/mmagic_cli_wlan.h"
 
-/* This should be included after all the header files */
-#include "cli/autogen/mmagic_cli_wlan.def"
-
 /* Duration to wait for a connection to be established with the AP */
 #define MMAGIC_CLI_WLAN_CMD_TIMEOUT_MS 60000
+
+/*
+ * ANSI escape characters will be used for rich text in the console. To disable ANSI escape
+ * characters, ANSI_ESCAPE_ENABLED must be defined as 0.
+ */
+#if !(defined(ANSI_ESCAPE_ENABLED) && ANSI_ESCAPE_ENABLED == 0)
+/** ANSI escape sequence for bold text. */
+#define ANSI_BOLD  "\x1b[1m"
+/** ANSI escape sequence to reset font. */
+#define ANSI_RESET "\x1b[0m"
+#else
+/** ANSI escape sequence for bold text (disabled so no-op). */
+#define ANSI_BOLD  ""
+/** ANSI escape sequence to reset font (disabled so no-op). */
+#define ANSI_RESET ""
+#endif
+/**
+ * Length of string representation of a MAC address (i.e., "XX:XX:XX:XX:XX:XX")
+ * including null terminator.
+ */
+#define MAC_ADDR_STR_LEN    (18)
 
 void mmagic_cli_wlan_connect(EmbeddedCli *cli, char *args, void *context)
 {
@@ -32,7 +50,7 @@ void mmagic_cli_wlan_connect(EmbeddedCli *cli, char *args, void *context)
 
     {
         char msg[80];
-        snprintf(msg, sizeof(msg), "Attempting to connect, may take up to %lu seconds",
+        snprintf(msg, sizeof(msg), "Attempting to connect, waiting up to %lu seconds",
                  cmd.timeout / 1000);
         embeddedCliPrint(cli, msg);
     }
@@ -57,6 +75,66 @@ void mmagic_cli_wlan_disconnect(EmbeddedCli *cli, char *args, void *context)
     embeddedCliPrint(cli, "Disconnect");
 }
 
+static void mmagic_cli_print_scan_result(EmbeddedCli *cli,
+                                         const struct struct_scan_result *scan_result)
+{
+    char bssid_str[MAC_ADDR_STR_LEN];
+    char ssid_str[MMWLAN_SSID_MAXLEN];
+    int ret;
+    struct mm_rsn_information rsn_info;
+
+    mmagic_struct_mac_addr_to_string(&scan_result->bssid, bssid_str, sizeof(bssid_str));
+    mmagic_string32_to_string(&scan_result->ssid, ssid_str, sizeof(ssid_str));
+
+    mmagic_cli_printf(cli, ANSI_BOLD "%s" ANSI_RESET, ssid_str);
+    mmagic_cli_printf(cli, "    Operating BW: %u MHz", scan_result->op_bw_mhz);
+    mmagic_cli_printf(cli, "    BSSID: %s", bssid_str);
+    mmagic_cli_printf(cli, "    RSSI: %3d", scan_result->rssi);
+    mmagic_cli_printf(cli, "    Beacon Interval(TUs): %u", scan_result->beacon_interval);
+    mmagic_cli_printf(cli, "    Capability Info: 0x%04x", scan_result->capability_info);
+
+    ret = mm_parse_rsn_information(scan_result->ies.data, scan_result->ies.len, &rsn_info);
+    if (ret == 0)
+    {
+        unsigned ii;
+        mmagic_cli_printf(cli, "    Security:");
+        for (ii = 0; ii < rsn_info.num_akm_suites; ii++)
+        {
+            mmagic_cli_printf(cli, "        %s", mm_akm_suite_to_string(rsn_info.akm_suites[ii]));
+        }
+    }
+    else if (ret == -1)
+    {
+        mmagic_cli_printf(cli, "    Security: None");
+    }
+    else
+    {
+        mmagic_cli_printf(cli, "    Invalid RSN IE in probe response");
+    }
+
+    if (scan_result->received_ies_len > scan_result->ies.len)
+    {
+        mmagic_cli_printf(cli, "Ran out of space to store all Information Elements.");
+    }
+
+    struct mm_s1g_operation s1g_operation;
+    ret = mm_parse_s1g_operation(scan_result->ies.data, scan_result->ies.len, &s1g_operation);
+    if (ret == 0)
+    {
+        mmagic_cli_printf(cli, "    S1G Operation:");
+        mmagic_cli_printf(cli, "        Operating class: %u",
+                          s1g_operation.operating_class);
+        mmagic_cli_printf(cli, "        Primary channel: %u",
+                          s1g_operation.primary_channel_number);
+        mmagic_cli_printf(cli, "        Primary channel width: %u MHz",
+                          s1g_operation.primary_channel_width_mhz);
+        mmagic_cli_printf(cli, "        Operating channel: %u",
+                          s1g_operation.operating_channel_number);
+        mmagic_cli_printf(cli, "        Operating channel width: %u MHz",
+                          s1g_operation.operating_channel_width_mhz);
+    }
+}
+
 void mmagic_cli_wlan_scan(EmbeddedCli *cli, char *args, void *context)
 {
     MM_UNUSED(args);
@@ -67,7 +145,8 @@ void mmagic_cli_wlan_scan(EmbeddedCli *cli, char *args, void *context)
     struct mmagic_core_wlan_scan_cmd_args cmd = {
         .timeout = MMAGIC_CLI_WLAN_CMD_TIMEOUT_MS,
     };
-    struct mmagic_core_wlan_scan_rsp_args rsp = { };
+    struct mmagic_core_wlan_scan_rsp_args *rsp =
+        (struct mmagic_core_wlan_scan_rsp_args *)mmosal_malloc(sizeof(*rsp));
 
     const char *timeout = embeddedCliGetToken(args, 1);
     const char *ssid = embeddedCliGetToken(args, 2);
@@ -103,26 +182,18 @@ void mmagic_cli_wlan_scan(EmbeddedCli *cli, char *args, void *context)
         snprintf(msg, sizeof(msg), "Starting Scan (%lu ms timeout)", cmd.timeout);
     }
     embeddedCliPrint(cli, msg);
-    enum mmagic_status status = mmagic_core_wlan_scan(&ctx->core, &cmd, &rsp);
+    enum mmagic_status status = mmagic_core_wlan_scan(&ctx->core, &cmd, rsp);
 
     if (status != MMAGIC_STATUS_OK)
     {
         mmagic_cli_print_error(cli, "Scan", status);
     }
 
-    mmagic_cli_printf(cli, "%2s %-6s %-8s %s", "ID", "RSSI", "BSSID", "SSID");
-    for (int i = 0; i < rsp.results.num; i++)
+    for (int i = 0; i < rsp->results.num; i++)
     {
-        char bssid_str[31];
-        char ssid_str[33];
-
-        mmagic_struct_mac_addr_to_string(&rsp.results.results[i].bssid, bssid_str,
-                                         sizeof(bssid_str));
-        mmagic_struct_string_32_to_string(&rsp.results.results[i].ssid, ssid_str, sizeof(ssid_str));
-
-        mmagic_cli_printf(cli, "%2d %ddBm %-8s %s",
-                          i, rsp.results.results[i].rssi, bssid_str, ssid_str);
+        mmagic_cli_print_scan_result(cli, &rsp->results.results[i]);
     }
+    mmosal_free(rsp);
 }
 
 void mmagic_cli_wlan_get_rssi(EmbeddedCli *cli, char *args, void *context)
@@ -400,6 +471,15 @@ void mmagic_cli_wlan_standby_exit(EmbeddedCli *cli, char *args, void *context)
     mmagic_core_wlan_standby_exit(&ctx->core);
 }
 
+void mmagic_cli_wlan_handle_event_sta_event(
+    struct mmagic_cli *ctx,
+    const struct mmagic_core_event_wlan_sta_event_args *args)
+{
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    mmagic_enum_sta_event_to_string(args->event, buf, sizeof(buf));
+    mmagic_cli_printf(ctx->cli, "STA evt %s", buf);
+}
+
 static int hex_to_bytes(const char *hexstring, uint8_t *bytes, size_t bytes_size)
 {
     const char *pos = hexstring;
@@ -600,4 +680,17 @@ void mmagic_cli_wlan_standby_set_config(EmbeddedCli *cli, char *args, void *cont
     cmd_args.snooze_max_s = uint32val;
 
     mmagic_core_wlan_standby_set_config(&ctx->core, &cmd_args);
+}
+
+void mmagic_cli_wlan_get_sta_status(EmbeddedCli *cli, char *args, void *context)
+{
+    MM_UNUSED(args);
+    MM_UNUSED(context);
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    struct mmagic_cli *ctx = (struct mmagic_cli *)cli->appContext;
+    struct mmagic_core_wlan_get_sta_status_rsp_args rsp = { };
+    mmagic_core_wlan_get_sta_status(&ctx->core, &rsp);
+
+    mmagic_enum_sta_state_to_string(rsp.sta_status, buf, sizeof(buf));
+    mmagic_cli_printf(ctx->cli, "STA status %s", buf);
 }

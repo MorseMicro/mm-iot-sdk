@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.8.2</span>
+   &#160;<span id="projectnumber">2.9.7</span>
    </div>
   </td>
  </tr>
@@ -122,14 +122,29 @@ Data Structures</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__scan__result.html">mmwlan_scan_result</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Result of the scan request.  <a href="structmmwlan__scan__result.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__sta__event__cb__args.html">mmwlan_sta_event_cb_args</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Argument passed to the STA event callback.  <a href="structmmwlan__sta__event__cb__args.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__sta__args.html">mmwlan_sta_args</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Arguments data structure for <a class="el" href="group__MMWLAN__CTRL.html#ga9cdcf82a952afa692f82430f1d6b93a0">mmwlan_sta_enable()</a>.  <a href="structmmwlan__sta__args.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__dpp__cb__args.html">mmwlan_dpp_cb_args</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Structure passed back when a DPP event occurs.  <a href="structmmwlan__dpp__cb__args.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__dpp__args.html">mmwlan_dpp_args</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Structure to hold the arguments used for the DPP process.  <a href="structmmwlan__dpp__args.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__scan__args.html">mmwlan_scan_args</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Structure to hold scan arguments.  <a href="structmmwlan__scan__args.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__scan__req.html">mmwlan_scan_req</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Structure to hold arguments specific to a given instance of a scan.  <a href="structmmwlan__scan__req.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__softap__sta__status.html">mmwlan_softap_sta_status</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Data structure for communicating STA status information for stations connected to a Soft AP.  <a href="structmmwlan__softap__sta__status.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__softap__args.html">mmwlan_softap_args</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Arguments data structure for <a class="el" href="group__MMWLAN__CTRL.html#ga93f53a46eca2b0437b619975079aa77a">mmwlan_softap_enable()</a>.  <a href="structmmwlan__softap__args.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
@@ -140,6 +155,9 @@ Macros</h2></td></tr>
 <tr class="memitem:gaf7c939fcdd4732b574e6fe208685b94e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__CTRL.html#gaf7c939fcdd4732b574e6fe208685b94e">MMWLAN_FW_VERSION_MAXLEN</a>&#160;&#160;&#160;(32)</td></tr>
 <tr class="memdesc:gaf7c939fcdd4732b574e6fe208685b94e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum length of the firmware version string.  <a href="group__MMWLAN__CTRL.html#gaf7c939fcdd4732b574e6fe208685b94e">More...</a><br /></td></tr>
 <tr class="separator:gaf7c939fcdd4732b574e6fe208685b94e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gac1b1f76d5a9daa858d1ad1268f0c41b0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__CTRL.html#gac1b1f76d5a9daa858d1ad1268f0c41b0">MMWLAN_CHIP_ID_STRING_MAXLEN</a>&#160;&#160;&#160;(32)</td></tr>
+<tr class="memdesc:gac1b1f76d5a9daa858d1ad1268f0c41b0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum length of the chip id string.  <a href="group__MMWLAN__CTRL.html#gac1b1f76d5a9daa858d1ad1268f0c41b0">More...</a><br /></td></tr>
+<tr class="separator:gac1b1f76d5a9daa858d1ad1268f0c41b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga6a527270b405c92b3b55085bfe979f9a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__CTRL.html#ga6a527270b405c92b3b55085bfe979f9a">MMWLAN_BCF_BOARD_DESC_MAXLEN</a>&#160;&#160;&#160;(31)</td></tr>
 <tr class="memdesc:ga6a527270b405c92b3b55085bfe979f9a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum length of a BCF board description string (excluding null terminator).  <a href="group__MMWLAN__CTRL.html#ga6a527270b405c92b3b55085bfe979f9a">More...</a><br /></td></tr>
 <tr class="separator:ga6a527270b405c92b3b55085bfe979f9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -149,7 +167,7 @@ Macros</h2></td></tr>
 <tr class="memitem:gaa4c8937e0880bf35546f5e7189b02ffa"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__CTRL.html#gaa4c8937e0880bf35546f5e7189b02ffa">MMWLAN_MINIMUM_FRAGMENT_THRESHOLD</a>&#160;&#160;&#160;(256)</td></tr>
 <tr class="memdesc:gaa4c8937e0880bf35546f5e7189b02ffa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Minimum value of fragmentation threshold that can be set with <a class="el" href="group__MMWLAN__CTRL.html#gaae5ae711e6ff47f16c93bdf3fd777d83">mmwlan_set_fragment_threshold()</a>.  <a href="group__MMWLAN__CTRL.html#gaa4c8937e0880bf35546f5e7189b02ffa">More...</a><br /></td></tr>
 <tr class="separator:gaa4c8937e0880bf35546f5e7189b02ffa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga5b478017f60cfcc091f5ca8e2b4d98a6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__CTRL.html#ga5b478017f60cfcc091f5ca8e2b4d98a6">MMWLAN_SCAN_CONFIG_INIT</a>&#160;&#160;&#160;{ <a class="el" href="group__MMWLAN__CTRL.html#ga2b5fd4f717491b6907140de51aa01509">MMWLAN_SCAN_DEFAULT_DWELL_TIME_MS</a>, false }</td></tr>
+<tr class="memitem:ga5b478017f60cfcc091f5ca8e2b4d98a6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__CTRL.html#ga5b478017f60cfcc091f5ca8e2b4d98a6">MMWLAN_SCAN_CONFIG_INIT</a>&#160;&#160;&#160;    { <a class="el" href="group__MMWLAN__CTRL.html#ga2b5fd4f717491b6907140de51aa01509">MMWLAN_SCAN_DEFAULT_DWELL_TIME_MS</a>, false, <a class="el" href="group__MMWLAN__CTRL.html#ga42059e49cf41a6db4d8aaf5e813753ec">MMWLAN_SCAN_DEFAULT_DWELL_ON_HOME_MS</a> }</td></tr>
 <tr class="memdesc:ga5b478017f60cfcc091f5ca8e2b4d98a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializer for <a class="el" href="structmmwlan__scan__config.html">mmwlan_scan_config</a>.  <a href="group__MMWLAN__CTRL.html#ga5b478017f60cfcc091f5ca8e2b4d98a6">More...</a><br /></td></tr>
 <tr class="separator:ga5b478017f60cfcc091f5ca8e2b4d98a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga19dda097cdb69b4d9784bf174121ba4e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__CTRL.html#ga19dda097cdb69b4d9784bf174121ba4e">MMWLAN_TWT_CONFIG_ARGS_INIT</a></td></tr>
@@ -164,18 +182,24 @@ Macros</h2></td></tr>
 <tr class="memitem:gaf7c5c4cba4f5bcc6116309b2332a10a9"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__CTRL.html#gaf7c5c4cba4f5bcc6116309b2332a10a9">MMWLAN_STA_ARGS_INIT</a></td></tr>
 <tr class="memdesc:gaf7c5c4cba4f5bcc6116309b2332a10a9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializer for <a class="el" href="structmmwlan__sta__args.html">mmwlan_sta_args</a>.  <a href="group__MMWLAN__CTRL.html#gaf7c5c4cba4f5bcc6116309b2332a10a9">More...</a><br /></td></tr>
 <tr class="separator:gaf7c5c4cba4f5bcc6116309b2332a10a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga2b5fd4f717491b6907140de51aa01509"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__CTRL.html#ga2b5fd4f717491b6907140de51aa01509">MMWLAN_SCAN_DEFAULT_DWELL_TIME_MS</a>&#160;&#160;&#160;(105)</td></tr>
-<tr class="memdesc:ga2b5fd4f717491b6907140de51aa01509"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default value for <code><a class="el" href="structmmwlan__scan__args.html#ae97bb04cac794a2be4dfa2c74dae1c6b" title="Time to dwell on a channel waiting for probe responses/beacons.">mmwlan_scan_args.dwell_time_ms</a></code>.  <a href="group__MMWLAN__CTRL.html#ga2b5fd4f717491b6907140de51aa01509">More...</a><br /></td></tr>
+<tr class="memitem:ga2b5fd4f717491b6907140de51aa01509"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__CTRL.html#ga2b5fd4f717491b6907140de51aa01509">MMWLAN_SCAN_DEFAULT_DWELL_TIME_MS</a>&#160;&#160;&#160;(30)</td></tr>
+<tr class="memdesc:ga2b5fd4f717491b6907140de51aa01509"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default value for <code><a class="el" href="structmmwlan__scan__args.html#ae97bb04cac794a2be4dfa2c74dae1c6b" title="Minimum time to dwell on a channel waiting for probe responses/beacons.">mmwlan_scan_args.dwell_time_ms</a></code>.  <a href="group__MMWLAN__CTRL.html#ga2b5fd4f717491b6907140de51aa01509">More...</a><br /></td></tr>
 <tr class="separator:ga2b5fd4f717491b6907140de51aa01509"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga42059e49cf41a6db4d8aaf5e813753ec"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__CTRL.html#ga42059e49cf41a6db4d8aaf5e813753ec">MMWLAN_SCAN_DEFAULT_DWELL_ON_HOME_MS</a>&#160;&#160;&#160;(200)</td></tr>
+<tr class="memdesc:ga42059e49cf41a6db4d8aaf5e813753ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default time to dwell on home channel, in between scan channels.  <a href="group__MMWLAN__CTRL.html#ga42059e49cf41a6db4d8aaf5e813753ec">More...</a><br /></td></tr>
+<tr class="separator:ga42059e49cf41a6db4d8aaf5e813753ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga05cdffa90bc47c2351d20dc3c13386c0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__CTRL.html#ga05cdffa90bc47c2351d20dc3c13386c0">MMWLAN_SCAN_MIN_DWELL_TIME_MS</a>&#160;&#160;&#160;(15)</td></tr>
-<tr class="memdesc:ga05cdffa90bc47c2351d20dc3c13386c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Minimum value for <code><a class="el" href="structmmwlan__scan__args.html#ae97bb04cac794a2be4dfa2c74dae1c6b" title="Time to dwell on a channel waiting for probe responses/beacons.">mmwlan_scan_args.dwell_time_ms</a></code>.  <a href="group__MMWLAN__CTRL.html#ga05cdffa90bc47c2351d20dc3c13386c0">More...</a><br /></td></tr>
+<tr class="memdesc:ga05cdffa90bc47c2351d20dc3c13386c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Minimum value for <code><a class="el" href="structmmwlan__scan__args.html#ae97bb04cac794a2be4dfa2c74dae1c6b" title="Minimum time to dwell on a channel waiting for probe responses/beacons.">mmwlan_scan_args.dwell_time_ms</a></code>.  <a href="group__MMWLAN__CTRL.html#ga05cdffa90bc47c2351d20dc3c13386c0">More...</a><br /></td></tr>
 <tr class="separator:ga05cdffa90bc47c2351d20dc3c13386c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga185c90a221a8b25584fa41b8f33c2783"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__CTRL.html#ga185c90a221a8b25584fa41b8f33c2783">MMWLAN_SCAN_ARGS_INIT</a>&#160;&#160;&#160;{ <a class="el" href="group__MMWLAN__CTRL.html#ga2b5fd4f717491b6907140de51aa01509">MMWLAN_SCAN_DEFAULT_DWELL_TIME_MS</a>, NULL, 0, { 0 }, 0 }</td></tr>
+<tr class="memitem:ga185c90a221a8b25584fa41b8f33c2783"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__CTRL.html#ga185c90a221a8b25584fa41b8f33c2783">MMWLAN_SCAN_ARGS_INIT</a>&#160;&#160;&#160;    { <a class="el" href="group__MMWLAN__CTRL.html#ga2b5fd4f717491b6907140de51aa01509">MMWLAN_SCAN_DEFAULT_DWELL_TIME_MS</a>, NULL, 0, { 0 }, 0, <a class="el" href="group__MMWLAN__CTRL.html#ga42059e49cf41a6db4d8aaf5e813753ec">MMWLAN_SCAN_DEFAULT_DWELL_ON_HOME_MS</a> }</td></tr>
 <tr class="memdesc:ga185c90a221a8b25584fa41b8f33c2783"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializer for <a class="el" href="structmmwlan__scan__args.html">mmwlan_scan_args</a>.  <a href="group__MMWLAN__CTRL.html#ga185c90a221a8b25584fa41b8f33c2783">More...</a><br /></td></tr>
 <tr class="separator:ga185c90a221a8b25584fa41b8f33c2783"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga8dbce3240f8c8c9c36145b0ec821ba53"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__CTRL.html#ga8dbce3240f8c8c9c36145b0ec821ba53">MMWLAN_SCAN_REQ_INIT</a>&#160;&#160;&#160;{ NULL, NULL, NULL, <a class="el" href="group__MMWLAN__CTRL.html#ga185c90a221a8b25584fa41b8f33c2783">MMWLAN_SCAN_ARGS_INIT</a> }</td></tr>
 <tr class="memdesc:ga8dbce3240f8c8c9c36145b0ec821ba53"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializer for <a class="el" href="structmmwlan__scan__req.html">mmwlan_scan_req</a>.  <a href="group__MMWLAN__CTRL.html#ga8dbce3240f8c8c9c36145b0ec821ba53">More...</a><br /></td></tr>
 <tr class="separator:ga8dbce3240f8c8c9c36145b0ec821ba53"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga1df9edc518187bd43a341bfdc389efca"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__CTRL.html#ga1df9edc518187bd43a341bfdc389efca">MMWLAN_SOFTAP_ARGS_INIT</a></td></tr>
+<tr class="memdesc:ga1df9edc518187bd43a341bfdc389efca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializer for <a class="el" href="structmmwlan__softap__args.html">mmwlan_softap_args</a>.  <a href="group__MMWLAN__CTRL.html#ga1df9edc518187bd43a341bfdc389efca">More...</a><br /></td></tr>
+<tr class="separator:ga1df9edc518187bd43a341bfdc389efca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
@@ -185,9 +209,15 @@ Typedefs</h2></td></tr>
 <tr class="memitem:ga659a0eb950178f650d5909e27d8c773f"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__CTRL.html#ga659a0eb950178f650d5909e27d8c773f">mmwlan_sta_status_cb_t</a>) (enum <a class="el" href="group__MMWLAN__CTRL.html#ga5f7ef88b538aceee3b58554705899bea">mmwlan_sta_state</a> sta_state)</td></tr>
 <tr class="memdesc:ga659a0eb950178f650d5909e27d8c773f"><td class="mdescLeft">&#160;</td><td class="mdescRight">STA status callback function prototype.  <a href="group__MMWLAN__CTRL.html#ga659a0eb950178f650d5909e27d8c773f">More...</a><br /></td></tr>
 <tr class="separator:ga659a0eb950178f650d5909e27d8c773f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga35002d862d1a57c3b13f49c4f37d9c45"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__CTRL.html#ga35002d862d1a57c3b13f49c4f37d9c45">mmwlan_sta_event_cb_t</a>) (const struct <a class="el" href="structmmwlan__sta__event__cb__args.html">mmwlan_sta_event_cb_args</a> *sta_event, void *arg)</td></tr>
+<tr class="memdesc:ga35002d862d1a57c3b13f49c4f37d9c45"><td class="mdescLeft">&#160;</td><td class="mdescRight">STA event callback prototype.  <a href="group__MMWLAN__CTRL.html#ga35002d862d1a57c3b13f49c4f37d9c45">More...</a><br /></td></tr>
+<tr class="separator:ga35002d862d1a57c3b13f49c4f37d9c45"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga922c47564250dd1ab133822d0f00353d"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__CTRL.html#ga922c47564250dd1ab133822d0f00353d">mmwlan_scan_complete_cb_t</a>) (enum <a class="el" href="group__MMWLAN__CTRL.html#ga099b3d1bfda216a73f6412101207e9d6">mmwlan_scan_state</a> scan_state, void *arg)</td></tr>
 <tr class="memdesc:ga922c47564250dd1ab133822d0f00353d"><td class="mdescLeft">&#160;</td><td class="mdescRight">mmwlan scan complete callback function prototype.  <a href="group__MMWLAN__CTRL.html#ga922c47564250dd1ab133822d0f00353d">More...</a><br /></td></tr>
 <tr class="separator:ga922c47564250dd1ab133822d0f00353d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga7c506319e2f0a52c59f7938e733e8d31"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__CTRL.html#ga7c506319e2f0a52c59f7938e733e8d31">mmwlan_softap_sta_status_cb_t</a>) (const struct <a class="el" href="structmmwlan__softap__sta__status.html">mmwlan_softap_sta_status</a> *sta_status, void *arg)</td></tr>
+<tr class="memdesc:ga7c506319e2f0a52c59f7938e733e8d31"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type definition for callback to be invoked on change in status of a connected STA.  <a href="group__MMWLAN__CTRL.html#ga7c506319e2f0a52c59f7938e733e8d31">More...</a><br /></td></tr>
+<tr class="separator:ga7c506319e2f0a52c59f7938e733e8d31"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -208,6 +238,30 @@ Enumerations</h2></td></tr>
  }</td></tr>
 <tr class="memdesc:ga7b57b4d0e8ba92d3574e774073498fa4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enumeration of S1G non-AP STA types.  <a href="group__MMWLAN__CTRL.html#ga7b57b4d0e8ba92d3574e774073498fa4">More...</a><br /></td></tr>
 <tr class="separator:ga7b57b4d0e8ba92d3574e774073498fa4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga3dbb86fd4ac366b66b4da6a271a49a8e"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__CTRL.html#ga3dbb86fd4ac366b66b4da6a271a49a8e">mmwlan_sta_event</a> { <br />
+&#160;&#160;<a class="el" href="group__MMWLAN__CTRL.html#gga3dbb86fd4ac366b66b4da6a271a49a8eaa8a17f1cd5d54b6427a42ec932470428">MMWLAN_STA_EVT_SCAN_REQUEST</a>
+, <a class="el" href="group__MMWLAN__CTRL.html#gga3dbb86fd4ac366b66b4da6a271a49a8ea73b84a51ee0c55bf0ae1035b84c43364">MMWLAN_STA_EVT_SCAN_COMPLETE</a>
+, <a class="el" href="group__MMWLAN__CTRL.html#gga3dbb86fd4ac366b66b4da6a271a49a8ea4a32f48cec911df23f73974b062bfb49">MMWLAN_STA_EVT_SCAN_ABORT</a>
+, <a class="el" href="group__MMWLAN__CTRL.html#gga3dbb86fd4ac366b66b4da6a271a49a8eac8eee7d3472c1dae0be9a00fc9614c54">MMWLAN_STA_EVT_AUTH_REQUEST</a>
+, <br />
+&#160;&#160;<a class="el" href="group__MMWLAN__CTRL.html#gga3dbb86fd4ac366b66b4da6a271a49a8eacc37aa75a5986e6caab6af461879228b">MMWLAN_STA_EVT_ASSOC_REQUEST</a>
+, <a class="el" href="group__MMWLAN__CTRL.html#gga3dbb86fd4ac366b66b4da6a271a49a8ead4bed91e80a71821eb9cce5e7e493f2c">MMWLAN_STA_EVT_DEAUTH_TX</a>
+, <a class="el" href="group__MMWLAN__CTRL.html#gga3dbb86fd4ac366b66b4da6a271a49a8ea1c5d38d83b387c70bae12f054c1a8a0e">MMWLAN_STA_EVT_CTRL_PORT_OPEN</a>
+, <a class="el" href="group__MMWLAN__CTRL.html#gga3dbb86fd4ac366b66b4da6a271a49a8ea574046797e03a40c30e843ce76f7850c">MMWLAN_STA_EVT_CTRL_PORT_CLOSED</a>
+<br />
+ }</td></tr>
+<tr class="memdesc:ga3dbb86fd4ac366b66b4da6a271a49a8e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enumeration of STA events.  <a href="group__MMWLAN__CTRL.html#ga3dbb86fd4ac366b66b4da6a271a49a8e">More...</a><br /></td></tr>
+<tr class="separator:ga3dbb86fd4ac366b66b4da6a271a49a8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaff0a5b52c6328bf4d24644c68b723ed3"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__CTRL.html#gaff0a5b52c6328bf4d24644c68b723ed3">mmwlan_dpp_event</a> { <a class="el" href="group__MMWLAN__CTRL.html#ggaff0a5b52c6328bf4d24644c68b723ed3ab755a188de15bd0c296e58dfe3e623c3">MMWLAN_DPP_EVT_PB_RESULT</a>
+ }</td></tr>
+<tr class="memdesc:gaff0a5b52c6328bf4d24644c68b723ed3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enumeration of DPP events.  <a href="group__MMWLAN__CTRL.html#gaff0a5b52c6328bf4d24644c68b723ed3">More...</a><br /></td></tr>
+<tr class="separator:gaff0a5b52c6328bf4d24644c68b723ed3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gade954a79247b07a1737c72f34e2697ea"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__CTRL.html#gade954a79247b07a1737c72f34e2697ea">mmwlan_dpp_pb_result</a> { <a class="el" href="group__MMWLAN__CTRL.html#ggade954a79247b07a1737c72f34e2697eaa0cc32fc88b8249ed3b0a824fa7f7232e">MMWLAN_DPP_PB_RESULT_SUCCESS</a>
+, <a class="el" href="group__MMWLAN__CTRL.html#ggade954a79247b07a1737c72f34e2697eaa5b666c8cadd08e6c0a2c12199c19f6b0">MMWLAN_DPP_PB_RESULT_ERROR</a>
+, <a class="el" href="group__MMWLAN__CTRL.html#ggade954a79247b07a1737c72f34e2697eaa37676ba1bd525a76117c761037cb3307">MMWLAN_DPP_PB_RESULT_SESSION_OVERLAP</a>
+ }</td></tr>
+<tr class="memdesc:gade954a79247b07a1737c72f34e2697ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enumeration of results for <code>MMWLAN_DPP_EVT_PB_RESULT</code>.  <a href="group__MMWLAN__CTRL.html#gade954a79247b07a1737c72f34e2697ea">More...</a><br /></td></tr>
+<tr class="separator:gade954a79247b07a1737c72f34e2697ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga099b3d1bfda216a73f6412101207e9d6"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__CTRL.html#ga099b3d1bfda216a73f6412101207e9d6">mmwlan_scan_state</a> { <a class="el" href="group__MMWLAN__CTRL.html#gga099b3d1bfda216a73f6412101207e9d6ab50b83ceac5501a693221a3de53aae2b">MMWLAN_SCAN_SUCCESSFUL</a>
 , <a class="el" href="group__MMWLAN__CTRL.html#gga099b3d1bfda216a73f6412101207e9d6adc09547b669a0f43827cae6492d65370">MMWLAN_SCAN_TERMINATED</a>
 , <a class="el" href="group__MMWLAN__CTRL.html#gga099b3d1bfda216a73f6412101207e9d6abec4a041ebb210f38e1d648afa076426">MMWLAN_SCAN_RUNNING</a>
@@ -256,6 +310,12 @@ Functions</h2></td></tr>
 <tr class="memitem:gafe66561227e5eb9c5132b0c8341ec950"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__CTRL.html#gafe66561227e5eb9c5132b0c8341ec950">mmwlan_set_mcs10_mode</a> (enum <a class="el" href="group__MMWLAN__CTRL.html#ga967e2eed2478965f08fbbefe088587ca">mmwlan_mcs10_mode</a> mcs10_mode)</td></tr>
 <tr class="memdesc:gafe66561227e5eb9c5132b0c8341ec950"><td class="mdescLeft">&#160;</td><td class="mdescRight">Configure the rate adaptation behavior around selecting MCS10.  <a href="group__MMWLAN__CTRL.html#gafe66561227e5eb9c5132b0c8341ec950">More...</a><br /></td></tr>
 <tr class="separator:gafe66561227e5eb9c5132b0c8341ec950"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga7c1eb7c9f6f40f2aa056e6213548ec64"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__CTRL.html#ga7c1eb7c9f6f40f2aa056e6213548ec64">mmwlan_set_duty_cycle_mode</a> (enum <a class="el" href="group__MMWLAN.html#ga69f89b9ee99f9d1cae10474be1acf5e8">mmwlan_duty_cycle_mode</a> duty_cycle_mode)</td></tr>
+<tr class="memdesc:ga7c1eb7c9f6f40f2aa056e6213548ec64"><td class="mdescLeft">&#160;</td><td class="mdescRight">Configure the duty cycle behavior for air time distribution.  <a href="group__MMWLAN__CTRL.html#ga7c1eb7c9f6f40f2aa056e6213548ec64">More...</a><br /></td></tr>
+<tr class="separator:ga7c1eb7c9f6f40f2aa056e6213548ec64"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga576ad2a5faf5743ede209bd0f043e72a"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__CTRL.html#ga576ad2a5faf5743ede209bd0f043e72a">mmwlan_get_duty_cycle_stats</a> (struct <a class="el" href="structmmwlan__duty__cycle__stats.html">mmwlan_duty_cycle_stats</a> *stats)</td></tr>
+<tr class="memdesc:ga576ad2a5faf5743ede209bd0f043e72a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieve the transmit duty cycle configuration and statistics.  <a href="group__MMWLAN__CTRL.html#ga576ad2a5faf5743ede209bd0f043e72a">More...</a><br /></td></tr>
+<tr class="separator:ga576ad2a5faf5743ede209bd0f043e72a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga1a5050da56c30035ffcc4c49b7ff95d4"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__CTRL.html#ga1a5050da56c30035ffcc4c49b7ff95d4">mmwlan_boot</a> (const struct <a class="el" href="structmmwlan__boot__args.html">mmwlan_boot_args</a> *args)</td></tr>
 <tr class="memdesc:ga1a5050da56c30035ffcc4c49b7ff95d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Boot the Morse Micro transceiver and leave it in an idle state.  <a href="group__MMWLAN__CTRL.html#ga1a5050da56c30035ffcc4c49b7ff95d4">More...</a><br /></td></tr>
 <tr class="separator:ga1a5050da56c30035ffcc4c49b7ff95d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -268,6 +328,12 @@ Functions</h2></td></tr>
 <tr class="memitem:gaea4e82b03668e794165ef372931bbe0d"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__CTRL.html#gaea4e82b03668e794165ef372931bbe0d">mmwlan_sta_disable</a> (void)</td></tr>
 <tr class="memdesc:gaea4e82b03668e794165ef372931bbe0d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Disable station mode.  <a href="group__MMWLAN__CTRL.html#gaea4e82b03668e794165ef372931bbe0d">More...</a><br /></td></tr>
 <tr class="separator:gaea4e82b03668e794165ef372931bbe0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf2278ba50e3bcbd6fa96408ec3c634c3"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__CTRL.html#gaf2278ba50e3bcbd6fa96408ec3c634c3">mmwlan_dpp_start</a> (const struct <a class="el" href="structmmwlan__dpp__args.html">mmwlan_dpp_args</a> *args)</td></tr>
+<tr class="memdesc:gaf2278ba50e3bcbd6fa96408ec3c634c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function to start the Device Provisioning Protocol (DPP) process.  <a href="group__MMWLAN__CTRL.html#gaf2278ba50e3bcbd6fa96408ec3c634c3">More...</a><br /></td></tr>
+<tr class="separator:gaf2278ba50e3bcbd6fa96408ec3c634c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaca7bb00acaa9e290af98110f36f7990d"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__CTRL.html#gaca7bb00acaa9e290af98110f36f7990d">mmwlan_dpp_stop</a> (void)</td></tr>
+<tr class="memdesc:gaca7bb00acaa9e290af98110f36f7990d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function to stop the DPP process.  <a href="group__MMWLAN__CTRL.html#gaca7bb00acaa9e290af98110f36f7990d">More...</a><br /></td></tr>
+<tr class="separator:gaca7bb00acaa9e290af98110f36f7990d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga6235c4111f69778fc27fd677a0cc11ba"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMWLAN__CTRL.html#ga5f7ef88b538aceee3b58554705899bea">mmwlan_sta_state</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__CTRL.html#ga6235c4111f69778fc27fd677a0cc11ba">mmwlan_get_sta_state</a> (void)</td></tr>
 <tr class="memdesc:ga6235c4111f69778fc27fd677a0cc11ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the current WLAN STA state.  <a href="group__MMWLAN__CTRL.html#ga6235c4111f69778fc27fd677a0cc11ba">More...</a><br /></td></tr>
 <tr class="separator:ga6235c4111f69778fc27fd677a0cc11ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -277,6 +343,12 @@ Functions</h2></td></tr>
 <tr class="memitem:ga2f0467c120b215c2844ff0fdab5b2aa0"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__CTRL.html#ga2f0467c120b215c2844ff0fdab5b2aa0">mmwlan_scan_abort</a> (void)</td></tr>
 <tr class="memdesc:ga2f0467c120b215c2844ff0fdab5b2aa0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Abort in progress or pending scans.  <a href="group__MMWLAN__CTRL.html#ga2f0467c120b215c2844ff0fdab5b2aa0">More...</a><br /></td></tr>
 <tr class="separator:ga2f0467c120b215c2844ff0fdab5b2aa0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga93f53a46eca2b0437b619975079aa77a"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__CTRL.html#ga93f53a46eca2b0437b619975079aa77a">mmwlan_softap_enable</a> (const struct <a class="el" href="structmmwlan__softap__args.html">mmwlan_softap_args</a> *args)</td></tr>
+<tr class="memdesc:ga93f53a46eca2b0437b619975079aa77a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable Soft AP mode.  <a href="group__MMWLAN__CTRL.html#ga93f53a46eca2b0437b619975079aa77a">More...</a><br /></td></tr>
+<tr class="separator:ga93f53a46eca2b0437b619975079aa77a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga0024d5f5615258a8c46b09321b8e1887"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__CTRL.html#ga0024d5f5615258a8c46b09321b8e1887">mmwlan_softap_disable</a> (void)</td></tr>
+<tr class="memdesc:ga0024d5f5615258a8c46b09321b8e1887"><td class="mdescLeft">&#160;</td><td class="mdescRight">Disable Soft AP mode.  <a href="group__MMWLAN__CTRL.html#ga0024d5f5615258a8c46b09321b8e1887">More...</a><br /></td></tr>
+<tr class="separator:ga0024d5f5615258a8c46b09321b8e1887"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaeb3b7425b0161a0465c903e3003acfeb"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__CTRL.html#gaeb3b7425b0161a0465c903e3003acfeb">mmwlan_get_mac_addr</a> (uint8_t *mac_addr)</td></tr>
 <tr class="memdesc:gaeb3b7425b0161a0465c903e3003acfeb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the MAC address of this device.  <a href="group__MMWLAN__CTRL.html#gaeb3b7425b0161a0465c903e3003acfeb">More...</a><br /></td></tr>
 <tr class="separator:gaeb3b7425b0161a0465c903e3003acfeb"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -289,6 +361,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ga16ebb3265617241dc16b6c28c70a26f5"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__CTRL.html#ga16ebb3265617241dc16b6c28c70a26f5">mmwlan_get_rssi</a> (void)</td></tr>
 <tr class="memdesc:ga16ebb3265617241dc16b6c28c70a26f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the RSSI measured from the AP.  <a href="group__MMWLAN__CTRL.html#ga16ebb3265617241dc16b6c28c70a26f5">More...</a><br /></td></tr>
 <tr class="separator:ga16ebb3265617241dc16b6c28c70a26f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga0a7cfd34d9add8cfbbc428c8a845de30"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__CTRL.html#ga0a7cfd34d9add8cfbbc428c8a845de30">mmwlan_set_listen_interval</a> (uint16_t interval)</td></tr>
+<tr class="memdesc:ga0a7cfd34d9add8cfbbc428c8a845de30"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the listen interval to be indicated in the association response frame.  <a href="group__MMWLAN__CTRL.html#ga0a7cfd34d9add8cfbbc428c8a845de30">More...</a><br /></td></tr>
+<tr class="separator:ga0a7cfd34d9add8cfbbc428c8a845de30"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="ga6a527270b405c92b3b55085bfe979f9a" name="ga6a527270b405c92b3b55085bfe979f9a"></a>
@@ -305,7 +380,7 @@ Functions</h2></td></tr>
 
 <p>Maximum length of a BCF board description string (excluding null terminator). </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00341">341</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00386">386</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -323,7 +398,7 @@ Functions</h2></td></tr>
 
 <p>Maximum length of a BCF build version string (excluding null terminator). </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00343">343</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00388">388</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -342,7 +417,25 @@ Functions</h2></td></tr>
 <p>Initializer for <a class="el" href="structmmwlan__boot__args.html">mmwlan_boot_args</a>. </p>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="structmmwlan__boot__args.html" title="Arguments data structure for mmwlan_boot().">mmwlan_boot_args</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00684">684</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00760">760</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+
+</div>
+</div>
+<a id="gac1b1f76d5a9daa858d1ad1268f0c41b0" name="gac1b1f76d5a9daa858d1ad1268f0c41b0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gac1b1f76d5a9daa858d1ad1268f0c41b0">&#9670;&nbsp;</a></span>MMWLAN_CHIP_ID_STRING_MAXLEN</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define MMWLAN_CHIP_ID_STRING_MAXLEN&#160;&#160;&#160;(32)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Maximum length of the chip id string. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00358">358</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -360,7 +453,7 @@ Functions</h2></td></tr>
 
 <p>Maximum length of the firmware version string. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00315">315</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00356">356</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -378,7 +471,7 @@ Functions</h2></td></tr>
 
 <p>Minimum value of fragmentation threshold that can be set with <a class="el" href="group__MMWLAN__CTRL.html#gaae5ae711e6ff47f16c93bdf3fd777d83">mmwlan_set_fragment_threshold()</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00474">474</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00522">522</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -396,7 +489,7 @@ Functions</h2></td></tr>
 
 <p>Maximum length of the Morselib version string. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00313">313</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00354">354</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -414,7 +507,7 @@ Functions</h2></td></tr>
 
 <p>The total number of <a class="el" href="structmmwlan__qos__queue__params.html">mmwlan_qos_queue_params</a> that exist. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00597">597</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00654">654</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -425,7 +518,7 @@ Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define MMWLAN_SCAN_ARGS_INIT&#160;&#160;&#160;{ <a class="el" href="group__MMWLAN__CTRL.html#ga2b5fd4f717491b6907140de51aa01509">MMWLAN_SCAN_DEFAULT_DWELL_TIME_MS</a>, NULL, 0, { 0 }, 0 }</td>
+          <td class="memname">#define MMWLAN_SCAN_ARGS_INIT&#160;&#160;&#160;    { <a class="el" href="group__MMWLAN__CTRL.html#ga2b5fd4f717491b6907140de51aa01509">MMWLAN_SCAN_DEFAULT_DWELL_TIME_MS</a>, NULL, 0, { 0 }, 0, <a class="el" href="group__MMWLAN__CTRL.html#ga42059e49cf41a6db4d8aaf5e813753ec">MMWLAN_SCAN_DEFAULT_DWELL_ON_HOME_MS</a> }</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -433,10 +526,10 @@ Functions</h2></td></tr>
 <p>Initializer for <a class="el" href="structmmwlan__scan__args.html">mmwlan_scan_args</a>. </p>
 <p >For example:</p>
 <div class="fragment"><div class="line"><span class="keyword">struct </span><a class="code hl_struct" href="structmmwlan__scan__args.html">mmwlan_scan_args</a> scan_args = <a class="code hl_define" href="group__MMWLAN__CTRL.html#ga185c90a221a8b25584fa41b8f33c2783">MMWLAN_SCAN_ARGS_INIT</a>;</div>
-<div class="ttc" id="agroup__MMWLAN__CTRL_html_ga185c90a221a8b25584fa41b8f33c2783"><div class="ttname"><a href="group__MMWLAN__CTRL.html#ga185c90a221a8b25584fa41b8f33c2783">MMWLAN_SCAN_ARGS_INIT</a></div><div class="ttdeci">#define MMWLAN_SCAN_ARGS_INIT</div><div class="ttdoc">Initializer for mmwlan_scan_args.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00974">mmwlan.h:974</a></div></div>
-<div class="ttc" id="astructmmwlan__scan__args_html"><div class="ttname"><a href="structmmwlan__scan__args.html">mmwlan_scan_args</a></div><div class="ttdoc">Structure to hold scan arguments.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00941">mmwlan.h:942</a></div></div>
+<div class="ttc" id="agroup__MMWLAN__CTRL_html_ga185c90a221a8b25584fa41b8f33c2783"><div class="ttname"><a href="group__MMWLAN__CTRL.html#ga185c90a221a8b25584fa41b8f33c2783">MMWLAN_SCAN_ARGS_INIT</a></div><div class="ttdeci">#define MMWLAN_SCAN_ARGS_INIT</div><div class="ttdoc">Initializer for mmwlan_scan_args.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l01224">mmwlan.h:1224</a></div></div>
+<div class="ttc" id="astructmmwlan__scan__args_html"><div class="ttname"><a href="structmmwlan__scan__args.html">mmwlan_scan_args</a></div><div class="ttdoc">Structure to hold scan arguments.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l01184">mmwlan.h:1185</a></div></div>
 </div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00974">974</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01224">1224</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -447,14 +540,32 @@ Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define MMWLAN_SCAN_CONFIG_INIT&#160;&#160;&#160;{ <a class="el" href="group__MMWLAN__CTRL.html#ga2b5fd4f717491b6907140de51aa01509">MMWLAN_SCAN_DEFAULT_DWELL_TIME_MS</a>, false }</td>
+          <td class="memname">#define MMWLAN_SCAN_CONFIG_INIT&#160;&#160;&#160;    { <a class="el" href="group__MMWLAN__CTRL.html#ga2b5fd4f717491b6907140de51aa01509">MMWLAN_SCAN_DEFAULT_DWELL_TIME_MS</a>, false, <a class="el" href="group__MMWLAN__CTRL.html#ga42059e49cf41a6db4d8aaf5e813753ec">MMWLAN_SCAN_DEFAULT_DWELL_ON_HOME_MS</a> }</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>Initializer for <a class="el" href="structmmwlan__scan__config.html">mmwlan_scan_config</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00533">533</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00589">589</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+
+</div>
+</div>
+<a id="ga42059e49cf41a6db4d8aaf5e813753ec" name="ga42059e49cf41a6db4d8aaf5e813753ec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga42059e49cf41a6db4d8aaf5e813753ec">&#9670;&nbsp;</a></span>MMWLAN_SCAN_DEFAULT_DWELL_ON_HOME_MS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define MMWLAN_SCAN_DEFAULT_DWELL_ON_HOME_MS&#160;&#160;&#160;(200)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Default time to dwell on home channel, in between scan channels. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01158">1158</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -465,15 +576,15 @@ Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define MMWLAN_SCAN_DEFAULT_DWELL_TIME_MS&#160;&#160;&#160;(105)</td>
+          <td class="memname">#define MMWLAN_SCAN_DEFAULT_DWELL_TIME_MS&#160;&#160;&#160;(30)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Default value for <code><a class="el" href="structmmwlan__scan__args.html#ae97bb04cac794a2be4dfa2c74dae1c6b" title="Time to dwell on a channel waiting for probe responses/beacons.">mmwlan_scan_args.dwell_time_ms</a></code>. </p>
+<p>Default value for <code><a class="el" href="structmmwlan__scan__args.html#ae97bb04cac794a2be4dfa2c74dae1c6b" title="Minimum time to dwell on a channel waiting for probe responses/beacons.">mmwlan_scan_args.dwell_time_ms</a></code>. </p>
 <p >Note that reducing the dwell time below this value may impact scan reliability. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00915">915</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01156">1156</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -489,9 +600,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Minimum value for <code><a class="el" href="structmmwlan__scan__args.html#ae97bb04cac794a2be4dfa2c74dae1c6b" title="Time to dwell on a channel waiting for probe responses/beacons.">mmwlan_scan_args.dwell_time_ms</a></code>. </p>
+<p>Minimum value for <code><a class="el" href="structmmwlan__scan__args.html#ae97bb04cac794a2be4dfa2c74dae1c6b" title="Minimum time to dwell on a channel waiting for probe responses/beacons.">mmwlan_scan_args.dwell_time_ms</a></code>. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00918">918</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01161">1161</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -510,10 +621,33 @@ Functions</h2></td></tr>
 <p>Initializer for <a class="el" href="structmmwlan__scan__req.html">mmwlan_scan_req</a>. </p>
 <p >For example:</p>
 <div class="fragment"><div class="line"><span class="keyword">struct </span><a class="code hl_struct" href="structmmwlan__scan__req.html">mmwlan_scan_req</a> scan_req = <a class="code hl_define" href="group__MMWLAN__CTRL.html#ga8dbce3240f8c8c9c36145b0ec821ba53">MMWLAN_SCAN_REQ_INIT</a>;</div>
-<div class="ttc" id="agroup__MMWLAN__CTRL_html_ga8dbce3240f8c8c9c36145b0ec821ba53"><div class="ttname"><a href="group__MMWLAN__CTRL.html#ga8dbce3240f8c8c9c36145b0ec821ba53">MMWLAN_SCAN_REQ_INIT</a></div><div class="ttdeci">#define MMWLAN_SCAN_REQ_INIT</div><div class="ttdoc">Initializer for mmwlan_scan_req.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l01000">mmwlan.h:1000</a></div></div>
-<div class="ttc" id="astructmmwlan__scan__req_html"><div class="ttname"><a href="structmmwlan__scan__req.html">mmwlan_scan_req</a></div><div class="ttdoc">Structure to hold arguments specific to a given instance of a scan.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00979">mmwlan.h:980</a></div></div>
+<div class="ttc" id="agroup__MMWLAN__CTRL_html_ga8dbce3240f8c8c9c36145b0ec821ba53"><div class="ttname"><a href="group__MMWLAN__CTRL.html#ga8dbce3240f8c8c9c36145b0ec821ba53">MMWLAN_SCAN_REQ_INIT</a></div><div class="ttdeci">#define MMWLAN_SCAN_REQ_INIT</div><div class="ttdoc">Initializer for mmwlan_scan_req.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l01251">mmwlan.h:1251</a></div></div>
+<div class="ttc" id="astructmmwlan__scan__req_html"><div class="ttname"><a href="structmmwlan__scan__req.html">mmwlan_scan_req</a></div><div class="ttdoc">Structure to hold arguments specific to a given instance of a scan.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l01230">mmwlan.h:1231</a></div></div>
 </div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01000">1000</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01251">1251</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+
+</div>
+</div>
+<a id="ga1df9edc518187bd43a341bfdc389efca" name="ga1df9edc518187bd43a341bfdc389efca"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga1df9edc518187bd43a341bfdc389efca">&#9670;&nbsp;</a></span>MMWLAN_SOFTAP_ARGS_INIT</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define MMWLAN_SOFTAP_ARGS_INIT</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">    { { 0 }, 0, { 0 }, <a class="code hl_enumvalue" href="group__MMWLAN.html#ggaa1811e3233be70cf35a4611111eddca0a4ce45048653a785b9591d1305f47825a">MMWLAN_OPEN</a>, { 0 }, 0, <a class="code hl_enumvalue" href="group__MMWLAN.html#gga6f1e10b52468bc91ff773e96377bfa17add2d30cc5a82b600eae097ba325c1073">MMWLAN_PMF_REQUIRED</a>,                               \</div>
+<div class="line">      { 0 }, 0, 0, 0, 0, 0, 0, NULL, NULL }</div>
+<div class="ttc" id="agroup__MMWLAN_html_gga6f1e10b52468bc91ff773e96377bfa17add2d30cc5a82b600eae097ba325c1073"><div class="ttname"><a href="group__MMWLAN.html#gga6f1e10b52468bc91ff773e96377bfa17add2d30cc5a82b600eae097ba325c1073">MMWLAN_PMF_REQUIRED</a></div><div class="ttdeci">@ MMWLAN_PMF_REQUIRED</div><div class="ttdoc">Protected management frames must be used.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00159">mmwlan.h:159</a></div></div>
+<div class="ttc" id="agroup__MMWLAN_html_ggaa1811e3233be70cf35a4611111eddca0a4ce45048653a785b9591d1305f47825a"><div class="ttname"><a href="group__MMWLAN.html#ggaa1811e3233be70cf35a4611111eddca0a4ce45048653a785b9591d1305f47825a">MMWLAN_OPEN</a></div><div class="ttdeci">@ MMWLAN_OPEN</div><div class="ttdoc">Open (no security)</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00139">mmwlan.h:139</a></div></div>
+</div><!-- fragment -->
+<p>Initializer for <a class="el" href="structmmwlan__softap__args.html">mmwlan_softap_args</a>. </p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="structmmwlan__softap__args.html" title="Arguments data structure for mmwlan_softap_enable().">mmwlan_softap_args</a> </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01405">1405</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -531,18 +665,17 @@ Functions</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">    { { 0 }, 0, { 0 }, <a class="code hl_enumvalue" href="group__MMWLAN.html#ggaa1811e3233be70cf35a4611111eddca0a4ce45048653a785b9591d1305f47825a">MMWLAN_OPEN</a>, { 0 }, 0, <a class="code hl_enumvalue" href="group__MMWLAN.html#gga6f1e10b52468bc91ff773e96377bfa17add2d30cc5a82b600eae097ba325c1073">MMWLAN_PMF_REQUIRED</a>, -1, MMWLAN_STA_TYPE_NON_SENSOR, \</div>
 <div class="line">      { 0 }, <a class="code hl_enumvalue" href="group__MMWLAN.html#ggaf8803582c4c38e62330ab94ac4d667a5a11b4a195e7bbbdac9b06e9ef6fd79b5e">MMWLAN_CAC_DISABLED</a>, <a class="code hl_define" href="group__MMWLAN.html#ga948c41a1da6f011db6141b29d188fca8">DEFAULT_BGSCAN_SHORT_INTERVAL_S</a>, <a class="code hl_define" href="group__MMWLAN.html#ga2cef4cdfd533a16d04030551141a0c47">DEFAULT_BGSCAN_THRESHOLD_DBM</a>,   \</div>
 <div class="line">      DEFAULT_BGSCAN_LONG_INTERVAL_S, NULL, NULL,                                                  \</div>
-<div class="line">      MMWLAN_DEFAULT_SCAN_INTERVAL_BASE_S, <a class="code hl_define" href="group__MMWLAN.html#ga07a32b3e9fb8b76fe4029cb20dc1af57">MMWLAN_DEFAULT_SCAN_INTERVAL_LIMIT_S</a> }</div>
+<div class="line">      MMWLAN_DEFAULT_SCAN_INTERVAL_BASE_S, <a class="code hl_define" href="group__MMWLAN.html#ga07a32b3e9fb8b76fe4029cb20dc1af57">MMWLAN_DEFAULT_SCAN_INTERVAL_LIMIT_S</a>,                   \</div>
+<div class="line">      NULL, 0, NULL, NULL, MMWLAN_4ADDR_MODE_DISABLED }</div>
 <div class="ttc" id="agroup__MMWLAN_html_ga07a32b3e9fb8b76fe4029cb20dc1af57"><div class="ttname"><a href="group__MMWLAN.html#ga07a32b3e9fb8b76fe4029cb20dc1af57">MMWLAN_DEFAULT_SCAN_INTERVAL_LIMIT_S</a></div><div class="ttdeci">#define MMWLAN_DEFAULT_SCAN_INTERVAL_LIMIT_S</div><div class="ttdoc">Default value for the scan_interval_limit_s field of mmwlan_sta_args.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00117">mmwlan.h:117</a></div></div>
 <div class="ttc" id="agroup__MMWLAN_html_ga2cef4cdfd533a16d04030551141a0c47"><div class="ttname"><a href="group__MMWLAN.html#ga2cef4cdfd533a16d04030551141a0c47">DEFAULT_BGSCAN_THRESHOLD_DBM</a></div><div class="ttdeci">#define DEFAULT_BGSCAN_THRESHOLD_DBM</div><div class="ttdoc">Default Background scan signal threshold in dBm.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00101">mmwlan.h:101</a></div></div>
 <div class="ttc" id="agroup__MMWLAN_html_ga948c41a1da6f011db6141b29d188fca8"><div class="ttname"><a href="group__MMWLAN.html#ga948c41a1da6f011db6141b29d188fca8">DEFAULT_BGSCAN_SHORT_INTERVAL_S</a></div><div class="ttdeci">#define DEFAULT_BGSCAN_SHORT_INTERVAL_S</div><div class="ttdoc">Default Background scan short interval in seconds.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00098">mmwlan.h:98</a></div></div>
-<div class="ttc" id="agroup__MMWLAN_html_gga6f1e10b52468bc91ff773e96377bfa17add2d30cc5a82b600eae097ba325c1073"><div class="ttname"><a href="group__MMWLAN.html#gga6f1e10b52468bc91ff773e96377bfa17add2d30cc5a82b600eae097ba325c1073">MMWLAN_PMF_REQUIRED</a></div><div class="ttdeci">@ MMWLAN_PMF_REQUIRED</div><div class="ttdoc">Protected management frames must be used.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00152">mmwlan.h:152</a></div></div>
-<div class="ttc" id="agroup__MMWLAN_html_ggaa1811e3233be70cf35a4611111eddca0a4ce45048653a785b9591d1305f47825a"><div class="ttname"><a href="group__MMWLAN.html#ggaa1811e3233be70cf35a4611111eddca0a4ce45048653a785b9591d1305f47825a">MMWLAN_OPEN</a></div><div class="ttdeci">@ MMWLAN_OPEN</div><div class="ttdoc">Open (no security)</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00132">mmwlan.h:132</a></div></div>
-<div class="ttc" id="agroup__MMWLAN_html_ggaf8803582c4c38e62330ab94ac4d667a5a11b4a195e7bbbdac9b06e9ef6fd79b5e"><div class="ttname"><a href="group__MMWLAN.html#ggaf8803582c4c38e62330ab94ac4d667a5a11b4a195e7bbbdac9b06e9ef6fd79b5e">MMWLAN_CAC_DISABLED</a></div><div class="ttdeci">@ MMWLAN_CAC_DISABLED</div><div class="ttdoc">CAC disabled.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00161">mmwlan.h:161</a></div></div>
+<div class="ttc" id="agroup__MMWLAN_html_ggaf8803582c4c38e62330ab94ac4d667a5a11b4a195e7bbbdac9b06e9ef6fd79b5e"><div class="ttname"><a href="group__MMWLAN.html#ggaf8803582c4c38e62330ab94ac4d667a5a11b4a195e7bbbdac9b06e9ef6fd79b5e">MMWLAN_CAC_DISABLED</a></div><div class="ttdeci">@ MMWLAN_CAC_DISABLED</div><div class="ttdoc">CAC disabled.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00168">mmwlan.h:168</a></div></div>
 </div><!-- fragment -->
 <p>Initializer for <a class="el" href="structmmwlan__sta__args.html">mmwlan_sta_args</a>. </p>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="structmmwlan__sta__args.html" title="Arguments data structure for mmwlan_sta_enable().">mmwlan_sta_args</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00867">867</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01016">1016</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -560,16 +693,16 @@ Functions</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">                                      { <a class="code hl_enumvalue" href="group__MMWLAN.html#ggae025ff80e01bad1617b35759695f3104a3b42e86aa73f851f3e5801fd34260548">MMWLAN_TWT_DISABLED</a>, <a class="code hl_define" href="group__MMWLAN.html#ga2a5c4c585eae555f4d5b0c3304e5e9e4">DEFAULT_TWT_WAKE_INTERVAL_US</a>, 0, 0,     \</div>
 <div class="line">                                      DEFAULT_TWT_MIN_WAKE_DURATION_US, <a class="code hl_enumvalue" href="group__MMWLAN.html#ggacacf7f8ff268c397c2938a751857afc1a519685e3d22f6028d8715a87137d9f5d">MMWLAN_TWT_SETUP_REQUEST</a> }</div>
 <div class="ttc" id="agroup__MMWLAN_html_ga2a5c4c585eae555f4d5b0c3304e5e9e4"><div class="ttname"><a href="group__MMWLAN.html#ga2a5c4c585eae555f4d5b0c3304e5e9e4">DEFAULT_TWT_WAKE_INTERVAL_US</a></div><div class="ttdeci">#define DEFAULT_TWT_WAKE_INTERVAL_US</div><div class="ttdoc">Default Target Wake Time (TWT) interval in micro seconds.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00108">mmwlan.h:108</a></div></div>
-<div class="ttc" id="agroup__MMWLAN_html_ggacacf7f8ff268c397c2938a751857afc1a519685e3d22f6028d8715a87137d9f5d"><div class="ttname"><a href="group__MMWLAN.html#ggacacf7f8ff268c397c2938a751857afc1a519685e3d22f6028d8715a87137d9f5d">MMWLAN_TWT_SETUP_REQUEST</a></div><div class="ttdeci">@ MMWLAN_TWT_SETUP_REQUEST</div><div class="ttdoc">TWT setup request command.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00185">mmwlan.h:185</a></div></div>
-<div class="ttc" id="agroup__MMWLAN_html_ggae025ff80e01bad1617b35759695f3104a3b42e86aa73f851f3e5801fd34260548"><div class="ttname"><a href="group__MMWLAN.html#ggae025ff80e01bad1617b35759695f3104a3b42e86aa73f851f3e5801fd34260548">MMWLAN_TWT_DISABLED</a></div><div class="ttdeci">@ MMWLAN_TWT_DISABLED</div><div class="ttdoc">TWT disabled.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00174">mmwlan.h:174</a></div></div>
+<div class="ttc" id="agroup__MMWLAN_html_ggacacf7f8ff268c397c2938a751857afc1a519685e3d22f6028d8715a87137d9f5d"><div class="ttname"><a href="group__MMWLAN.html#ggacacf7f8ff268c397c2938a751857afc1a519685e3d22f6028d8715a87137d9f5d">MMWLAN_TWT_SETUP_REQUEST</a></div><div class="ttdeci">@ MMWLAN_TWT_SETUP_REQUEST</div><div class="ttdoc">TWT setup request command.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00192">mmwlan.h:192</a></div></div>
+<div class="ttc" id="agroup__MMWLAN_html_ggae025ff80e01bad1617b35759695f3104a3b42e86aa73f851f3e5801fd34260548"><div class="ttname"><a href="group__MMWLAN.html#ggae025ff80e01bad1617b35759695f3104a3b42e86aa73f851f3e5801fd34260548">MMWLAN_TWT_DISABLED</a></div><div class="ttdeci">@ MMWLAN_TWT_DISABLED</div><div class="ttdoc">TWT disabled.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00181">mmwlan.h:181</a></div></div>
 </div><!-- fragment -->
 <p>Initializer for <a class="el" href="structmmwlan__twt__config__args.html">mmwlan_twt_config_args</a>. </p>
 <p >For example:</p>
 <div class="fragment"><div class="line"><span class="keyword">struct </span><a class="code hl_struct" href="structmmwlan__twt__config__args.html">mmwlan_twt_config_args</a> twt_config_args = <a class="code hl_define" href="group__MMWLAN__CTRL.html#ga19dda097cdb69b4d9784bf174121ba4e">MMWLAN_TWT_CONFIG_ARGS_INIT</a>;</div>
-<div class="ttc" id="agroup__MMWLAN__CTRL_html_ga19dda097cdb69b4d9784bf174121ba4e"><div class="ttname"><a href="group__MMWLAN__CTRL.html#ga19dda097cdb69b4d9784bf174121ba4e">MMWLAN_TWT_CONFIG_ARGS_INIT</a></div><div class="ttdeci">#define MMWLAN_TWT_CONFIG_ARGS_INIT</div><div class="ttdoc">Initializer for mmwlan_twt_config_args.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00580">mmwlan.h:580</a></div></div>
-<div class="ttc" id="astructmmwlan__twt__config__args_html"><div class="ttname"><a href="structmmwlan__twt__config__args.html">mmwlan_twt_config_args</a></div><div class="ttdoc">Structure for storing Target Wake Time (TWT) configuration arguments.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00545">mmwlan.h:546</a></div></div>
+<div class="ttc" id="agroup__MMWLAN__CTRL_html_ga19dda097cdb69b4d9784bf174121ba4e"><div class="ttname"><a href="group__MMWLAN__CTRL.html#ga19dda097cdb69b4d9784bf174121ba4e">MMWLAN_TWT_CONFIG_ARGS_INIT</a></div><div class="ttdeci">#define MMWLAN_TWT_CONFIG_ARGS_INIT</div><div class="ttdoc">Initializer for mmwlan_twt_config_args.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00637">mmwlan.h:637</a></div></div>
+<div class="ttc" id="astructmmwlan__twt__config__args_html"><div class="ttname"><a href="structmmwlan__twt__config__args.html">mmwlan_twt_config_args</a></div><div class="ttdoc">Structure for storing Target Wake Time (TWT) configuration arguments.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00602">mmwlan.h:603</a></div></div>
 </div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00580">580</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00637">637</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -588,7 +721,7 @@ Functions</h2></td></tr>
 
 <p>mmwlan scan complete callback function prototype. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00935">935</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01178">1178</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -606,7 +739,52 @@ Functions</h2></td></tr>
 
 <p>mmwlan scan rx callback function prototype. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00760">760</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00836">836</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+
+</div>
+</div>
+<a id="ga7c506319e2f0a52c59f7938e733e8d31" name="ga7c506319e2f0a52c59f7938e733e8d31"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga7c506319e2f0a52c59f7938e733e8d31">&#9670;&nbsp;</a></span>mmwlan_softap_sta_status_cb_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef void(* mmwlan_softap_sta_status_cb_t) (const struct <a class="el" href="structmmwlan__softap__sta__status.html">mmwlan_softap_sta_status</a> *sta_status, void *arg)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Type definition for callback to be invoked on change in status of a connected STA. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sta_status</td><td>The STA status information. </td></tr>
+    <tr><td class="paramname">arg</td><td>Opaque argument that was provided when the callback was registered.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section warning"><dt>Warning</dt><dd>BETA NOTICE: This is beta API that is under development; breaking changes may be introduced in future releases. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01303">1303</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+
+</div>
+</div>
+<a id="ga35002d862d1a57c3b13f49c4f37d9c45" name="ga35002d862d1a57c3b13f49c4f37d9c45"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga35002d862d1a57c3b13f49c4f37d9c45">&#9670;&nbsp;</a></span>mmwlan_sta_event_cb_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef void(* mmwlan_sta_event_cb_t) (const struct <a class="el" href="structmmwlan__sta__event__cb__args.html">mmwlan_sta_event_cb_args</a> *sta_event, void *arg)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>STA event callback prototype. </p>
+<dl class="section warning"><dt>Warning</dt><dd>BETA NOTICE: This is beta API that is under development; breaking changes may be introduced in future releases. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00883">883</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -624,11 +802,59 @@ Functions</h2></td></tr>
 
 <p>STA status callback function prototype. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00763">763</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00839">839</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="gaff0a5b52c6328bf4d24644c68b723ed3" name="gaff0a5b52c6328bf4d24644c68b723ed3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaff0a5b52c6328bf4d24644c68b723ed3">&#9670;&nbsp;</a></span>mmwlan_dpp_event</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__MMWLAN__CTRL.html#gaff0a5b52c6328bf4d24644c68b723ed3">mmwlan_dpp_event</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Enumeration of DPP events. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ggaff0a5b52c6328bf4d24644c68b723ed3ab755a188de15bd0c296e58dfe3e623c3" name="ggaff0a5b52c6328bf4d24644c68b723ed3ab755a188de15bd0c296e58dfe3e623c3"></a>MMWLAN_DPP_EVT_PB_RESULT&#160;</td><td class="fielddoc"><p >DPP push button result. </p>
+</td></tr>
+</table>
+
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01062">1062</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+
+</div>
+</div>
+<a id="gade954a79247b07a1737c72f34e2697ea" name="gade954a79247b07a1737c72f34e2697ea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gade954a79247b07a1737c72f34e2697ea">&#9670;&nbsp;</a></span>mmwlan_dpp_pb_result</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__MMWLAN__CTRL.html#gade954a79247b07a1737c72f34e2697ea">mmwlan_dpp_pb_result</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Enumeration of results for <code>MMWLAN_DPP_EVT_PB_RESULT</code>. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ggade954a79247b07a1737c72f34e2697eaa0cc32fc88b8249ed3b0a824fa7f7232e" name="ggade954a79247b07a1737c72f34e2697eaa0cc32fc88b8249ed3b0a824fa7f7232e"></a>MMWLAN_DPP_PB_RESULT_SUCCESS&#160;</td><td class="fielddoc"><p >DPP push button process was successful. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ggade954a79247b07a1737c72f34e2697eaa5b666c8cadd08e6c0a2c12199c19f6b0" name="ggade954a79247b07a1737c72f34e2697eaa5b666c8cadd08e6c0a2c12199c19f6b0"></a>MMWLAN_DPP_PB_RESULT_ERROR&#160;</td><td class="fielddoc"><p >An error occurred during the DPP push button process. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ggade954a79247b07a1737c72f34e2697eaa37676ba1bd525a76117c761037cb3307" name="ggade954a79247b07a1737c72f34e2697eaa37676ba1bd525a76117c761037cb3307"></a>MMWLAN_DPP_PB_RESULT_SESSION_OVERLAP&#160;</td><td class="fielddoc"><p >A session overlap occurred during the DPP push button process. </p>
+</td></tr>
+</table>
+
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01069">1069</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+
+</div>
+</div>
 <a id="ga967e2eed2478965f08fbbefe088587ca" name="ga967e2eed2478965f08fbbefe088587ca"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga967e2eed2478965f08fbbefe088587ca">&#9670;&nbsp;</a></span>mmwlan_mcs10_mode</h2>
 
@@ -651,7 +877,7 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00637">637</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00694">694</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -678,7 +904,44 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00923">923</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01166">1166</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+
+</div>
+</div>
+<a id="ga3dbb86fd4ac366b66b4da6a271a49a8e" name="ga3dbb86fd4ac366b66b4da6a271a49a8e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga3dbb86fd4ac366b66b4da6a271a49a8e">&#9670;&nbsp;</a></span>mmwlan_sta_event</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__MMWLAN__CTRL.html#ga3dbb86fd4ac366b66b4da6a271a49a8e">mmwlan_sta_event</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Enumeration of STA events. </p>
+<dl class="section warning"><dt>Warning</dt><dd>BETA NOTICE: This is beta API that is under development; breaking changes may be introduced in future releases. </dd></dl>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="gga3dbb86fd4ac366b66b4da6a271a49a8eaa8a17f1cd5d54b6427a42ec932470428" name="gga3dbb86fd4ac366b66b4da6a271a49a8eaa8a17f1cd5d54b6427a42ec932470428"></a>MMWLAN_STA_EVT_SCAN_REQUEST&#160;</td><td class="fielddoc"><p >The STA is starting a scan. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga3dbb86fd4ac366b66b4da6a271a49a8ea73b84a51ee0c55bf0ae1035b84c43364" name="gga3dbb86fd4ac366b66b4da6a271a49a8ea73b84a51ee0c55bf0ae1035b84c43364"></a>MMWLAN_STA_EVT_SCAN_COMPLETE&#160;</td><td class="fielddoc"><p >The STA has finished a scan. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga3dbb86fd4ac366b66b4da6a271a49a8ea4a32f48cec911df23f73974b062bfb49" name="gga3dbb86fd4ac366b66b4da6a271a49a8ea4a32f48cec911df23f73974b062bfb49"></a>MMWLAN_STA_EVT_SCAN_ABORT&#160;</td><td class="fielddoc"><p >The STA has aborted a scan early. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga3dbb86fd4ac366b66b4da6a271a49a8eac8eee7d3472c1dae0be9a00fc9614c54" name="gga3dbb86fd4ac366b66b4da6a271a49a8eac8eee7d3472c1dae0be9a00fc9614c54"></a>MMWLAN_STA_EVT_AUTH_REQUEST&#160;</td><td class="fielddoc"><p >The STA is sending an authentication request to the AP. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga3dbb86fd4ac366b66b4da6a271a49a8eacc37aa75a5986e6caab6af461879228b" name="gga3dbb86fd4ac366b66b4da6a271a49a8eacc37aa75a5986e6caab6af461879228b"></a>MMWLAN_STA_EVT_ASSOC_REQUEST&#160;</td><td class="fielddoc"><p >The STA is sending an association request to the AP. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga3dbb86fd4ac366b66b4da6a271a49a8ead4bed91e80a71821eb9cce5e7e493f2c" name="gga3dbb86fd4ac366b66b4da6a271a49a8ead4bed91e80a71821eb9cce5e7e493f2c"></a>MMWLAN_STA_EVT_DEAUTH_TX&#160;</td><td class="fielddoc"><p >The STA is sending a de-authorization request to the AP. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga3dbb86fd4ac366b66b4da6a271a49a8ea1c5d38d83b387c70bae12f054c1a8a0e" name="gga3dbb86fd4ac366b66b4da6a271a49a8ea1c5d38d83b387c70bae12f054c1a8a0e"></a>MMWLAN_STA_EVT_CTRL_PORT_OPEN&#160;</td><td class="fielddoc"><p >The Supplicant IEEE 802.1X Controlled Port is now open meaning that the STA is fully authenticated and data transmission can begin. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga3dbb86fd4ac366b66b4da6a271a49a8ea574046797e03a40c30e843ce76f7850c" name="gga3dbb86fd4ac366b66b4da6a271a49a8ea574046797e03a40c30e843ce76f7850c"></a>MMWLAN_STA_EVT_CTRL_PORT_CLOSED&#160;</td><td class="fielddoc"><p >The Supplicant IEEE 802.1X Controlled Port is now closed. </p>
+</td></tr>
+</table>
+
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00847">847</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -696,7 +959,7 @@ Functions</h2></td></tr>
 
 <p>Enumeration of states in STA mode. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00714">714</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00790">790</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -714,7 +977,7 @@ Functions</h2></td></tr>
 
 <p>Enumeration of S1G non-AP STA types. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00724">724</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00800">800</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -745,6 +1008,58 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> on success, else an appropriate error code. </dd></dl>
+
+</div>
+</div>
+<a id="gaf2278ba50e3bcbd6fa96408ec3c634c3" name="gaf2278ba50e3bcbd6fa96408ec3c634c3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaf2278ba50e3bcbd6fa96408ec3c634c3">&#9670;&nbsp;</a></span>mmwlan_dpp_start()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a> mmwlan_dpp_start </td>
+          <td>(</td>
+          <td class="paramtype">const struct <a class="el" href="structmmwlan__dpp__args.html">mmwlan_dpp_args</a> *&#160;</td>
+          <td class="paramname"><em>args</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Function to start the Device Provisioning Protocol (DPP) process. </p>
+<p >This will return once DPP has successfully started. Feedback will be provided via the <code>dpp_event_cb</code>.</p>
+<dl class="section warning"><dt>Warning</dt><dd>If this has been called <code><a class="el" href="group__MMWLAN__CTRL.html#gaca7bb00acaa9e290af98110f36f7990d" title="Function to stop the DPP process.">mmwlan_dpp_stop()</a></code> MUST be called before <code><a class="el" href="group__MMWLAN__CTRL.html#ga83480307a380060f5a1e03eaaf634081" title="Perform a clean shutdown of the Morse Micro transceiver, including cleanly disconnecting from a conne...">mmwlan_shutdown()</a></code> is called.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">args</td><td>Reference to the dpp arguments to use.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><code>MMWLAN_SUCCESS</code> on success, else an appropriate error code.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>BETA NOTICE: This is beta API that is under development; breaking changes may be introduced in future releases. </dd></dl>
+
+</div>
+</div>
+<a id="gaca7bb00acaa9e290af98110f36f7990d" name="gaca7bb00acaa9e290af98110f36f7990d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaca7bb00acaa9e290af98110f36f7990d">&#9670;&nbsp;</a></span>mmwlan_dpp_stop()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a> mmwlan_dpp_stop </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Function to stop the DPP process. </p>
+<dl class="section return"><dt>Returns</dt><dd><code>MMWLAN_SUCCESS</code> on success, else an appropriate error code.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>BETA NOTICE: This is beta API that is under development; breaking changes may be introduced in future releases. </dd></dl>
 
 </div>
 </div>
@@ -816,6 +1131,33 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">bssid</td><td>Buffer to receive the BSSID. Length must be <a class="el" href="group__MMWLAN.html#gad1f02bb330d9d2f4c831a1cf9d44ff1a">MMWLAN_MAC_ADDR_LEN</a>. Will be set to 00:00:00:00:00:00 if the station is not currently associated.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> on success, else an appropriate error code. </dd></dl>
+
+</div>
+</div>
+<a id="ga576ad2a5faf5743ede209bd0f043e72a" name="ga576ad2a5faf5743ede209bd0f043e72a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga576ad2a5faf5743ede209bd0f043e72a">&#9670;&nbsp;</a></span>mmwlan_get_duty_cycle_stats()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a> mmwlan_get_duty_cycle_stats </td>
+          <td>(</td>
+          <td class="paramtype">struct <a class="el" href="structmmwlan__duty__cycle__stats.html">mmwlan_duty_cycle_stats</a> *&#160;</td>
+          <td class="paramname"><em>stats</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Retrieve the transmit duty cycle configuration and statistics. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">stats</td><td>Pointer to a duty cycle statistics structure.</td></tr>
   </table>
   </dd>
 </dl>
@@ -1080,6 +1422,33 @@ The scan request may be rejected, in which case the complete callback will be in
 
 </div>
 </div>
+<a id="ga7c1eb7c9f6f40f2aa056e6213548ec64" name="ga7c1eb7c9f6f40f2aa056e6213548ec64"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga7c1eb7c9f6f40f2aa056e6213548ec64">&#9670;&nbsp;</a></span>mmwlan_set_duty_cycle_mode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a> mmwlan_set_duty_cycle_mode </td>
+          <td>(</td>
+          <td class="paramtype">enum <a class="el" href="group__MMWLAN.html#ga69f89b9ee99f9d1cae10474be1acf5e8">mmwlan_duty_cycle_mode</a>&#160;</td>
+          <td class="paramname"><em>duty_cycle_mode</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Configure the duty cycle behavior for air time distribution. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">duty_cycle_mode</td><td>Sets the duty cycle mode. See <a class="el" href="group__MMWLAN.html#ga69f89b9ee99f9d1cae10474be1acf5e8">mmwlan_duty_cycle_mode</a> for what each mode means.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> on success, else an appropriate error code. </dd></dl>
+
+</div>
+</div>
 <a id="gaae5ae711e6ff47f16c93bdf3fd777d83" name="gaae5ae711e6ff47f16c93bdf3fd777d83"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#gaae5ae711e6ff47f16c93bdf3fd777d83">&#9670;&nbsp;</a></span>mmwlan_set_fragment_threshold()</h2>
 
@@ -1107,6 +1476,34 @@ The scan request may be rejected, in which case the complete callback will be in
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> on success, else an appropriate error code. </dd></dl>
+
+</div>
+</div>
+<a id="ga0a7cfd34d9add8cfbbc428c8a845de30" name="ga0a7cfd34d9add8cfbbc428c8a845de30"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga0a7cfd34d9add8cfbbc428c8a845de30">&#9670;&nbsp;</a></span>mmwlan_set_listen_interval()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a> mmwlan_set_listen_interval </td>
+          <td>(</td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>interval</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets the listen interval to be indicated in the association response frame. </p>
+<p >This informs the AP how often the STA will wake up. The AP uses the listen interval in determining the lifetime of frames that it buffers for a STA.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">interval</td><td>Interval value in beacon or short beacon units. e.g. 5 will set the listen interval to the interval between 5 beacons. 0 will disable this feature.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><code>MMWLAN_SUCCESS</code> on success, else an appropriate error code. </dd></dl>
 
 </div>
 </div>
@@ -1155,6 +1552,8 @@ The scan request may be rejected, in which case the complete callback will be in
 
 <p>Sets whether or not the 802.11 power save is enabled. </p>
 <p >Defaults to <a class="el" href="group__MMWLAN.html#ggad4799bcbe9ac956813798fcecffc5a15a609dc320e02e2c02096c5d08e713104e">MMWLAN_PS_ENABLED</a></p>
+<dl class="section note"><dt>Note</dt><dd>It is recommended to keep power save enabled if the STA will be duty cycle limited, </dd></dl>
+<dl class="section see"><dt>See also</dt><dd>mm_app_regdb.c for regulatory duty cycle limits.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">mode</td><td>enum indicating which 802.11 power save mode to use.</td></tr>
@@ -1304,6 +1703,59 @@ This must only be invoked when MMWLAN is inactive (i.e., STA mode not enabled).<
 
 </div>
 </div>
+<a id="ga0024d5f5615258a8c46b09321b8e1887" name="ga0024d5f5615258a8c46b09321b8e1887"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga0024d5f5615258a8c46b09321b8e1887">&#9670;&nbsp;</a></span>mmwlan_softap_disable()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a> mmwlan_softap_disable </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Disable Soft AP mode. </p>
+<p >This will disconnect any stations from the AP. It will also shut down the transceiver if nothing else is holding it open. Note that if the transceiver was booted by <code><a class="el" href="group__MMWLAN__CTRL.html#ga1a5050da56c30035ffcc4c49b7ff95d4" title="Boot the Morse Micro transceiver and leave it in an idle state.">mmwlan_boot()</a></code> then this function will not shut down the transceiver.</p>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> if successful and the transceiver was also shut down, <a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a4cd4f5db45e1f2396387d37575b745da">MMWLAN_SHUTDOWN_BLOCKED</a> if successful and the transceiver was not shut down, else an appropriate error code.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>BETA NOTICE: This is beta API that is under development; breaking changes may be introduced in future releases. </dd></dl>
+
+</div>
+</div>
+<a id="ga93f53a46eca2b0437b619975079aa77a" name="ga93f53a46eca2b0437b619975079aa77a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga93f53a46eca2b0437b619975079aa77a">&#9670;&nbsp;</a></span>mmwlan_softap_enable()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a> mmwlan_softap_enable </td>
+          <td>(</td>
+          <td class="paramtype">const struct <a class="el" href="structmmwlan__softap__args.html">mmwlan_softap_args</a> *&#160;</td>
+          <td class="paramname"><em>args</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Enable Soft AP mode. </p>
+<p >This will power on the transceiver then start Access Point mode.</p>
+<dl class="section warning"><dt>Warning</dt><dd>Channel list must be set before enabling station mode. <a class="el" href="group__MMWLAN__REGDB.html#ga73b6742a29b62bf0091a9b6c9cc770db">mmwlan_set_channel_list()</a>.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">args</td><td>Arguments (e.g., SSID, etc.). See <a class="el" href="structmmwlan__softap__args.html">mmwlan_softap_args</a>.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> on success, else an appropriate error code.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>BETA NOTICE: This is beta API that is under development; breaking changes may be introduced in future releases. </dd></dl>
+
+</div>
+</div>
 <a id="gaea4e82b03668e794165ef372931bbe0d" name="gaea4e82b03668e794165ef372931bbe0d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#gaea4e82b03668e794165ef372931bbe0d">&#9670;&nbsp;</a></span>mmwlan_sta_disable()</h2>
 
@@ -1321,8 +1773,8 @@ This must only be invoked when MMWLAN is inactive (i.e., STA mode not enabled).<
 </div><div class="memdoc">
 
 <p>Disable station mode. </p>
-<p >This will disconnect from the AP. It will also shut down the transceiver if nothing else is holding it open. Note that if the transceiver was booted by <code><a class="el" href="group__MMWLAN__CTRL.html#ga1a5050da56c30035ffcc4c49b7ff95d4" title="Boot the Morse Micro transceiver and leave it in an idle state.">mmwlan_boot()</a></code> then this function will shut down the transceiver.</p>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> if successful and the transceiver was also shut down, <a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a4cd4f5db45e1f2396387d37575b745da">MMWLAN_SHUTDOWN_BLOCKED</a> if successful and the transceiver was not shut down, else an appropriate error code. </dd></dl>
+<p >This will disconnect from the AP. It will also shut down the transceiver if nothing else is holding it open. Note that if the transceiver was booted by <code><a class="el" href="group__MMWLAN__CTRL.html#ga1a5050da56c30035ffcc4c49b7ff95d4" title="Boot the Morse Micro transceiver and leave it in an idle state.">mmwlan_boot()</a></code> then this function will not shut down the transceiver.</p>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> if successful, else an appropriate error code. </dd></dl>
 
 </div>
 </div>
@@ -1354,12 +1806,15 @@ This must only be invoked when MMWLAN is inactive (i.e., STA mode not enabled).<
 
 <p>Enable station mode. </p>
 <p >This will power on the transceiver then initiate connection to the given Access Point. If station mode is already enabled when this function is invoked then it will disconnect from (if already connected) and initiate connection to the given AP.</p>
-<dl class="section note"><dt>Note</dt><dd>The STA status callback (<code>sta_status_cb</code>) must not block and MMWLAN API functions may not be invoked from the callback.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>The STA status callback (<code>sta_status_cb</code>) must not block and MMWLAN API functions may not be invoked from the callback. </dd>
+<dd>
+A copy of <code>args-&gt;extra_assoc_ies</code> buffer will be made if <code>args-&gt;extra_assoc_ies_len</code> is non-zero. Caller is responsible for freeing the buffer in <code>args</code> after this function is called.</dd></dl>
 <dl class="section warning"><dt>Warning</dt><dd>Channel list must be set before enabling station mode. <a class="el" href="group__MMWLAN__REGDB.html#ga73b6742a29b62bf0091a9b6c9cc770db">mmwlan_set_channel_list()</a>.</dd></dl>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000005">Deprecated:</a></b></dt><dd>The <code>sta_status_cb</code> parameter should not be used. Please use <code>mmwlan_sta_args.ext_sta_status_cb</code> as the preferred callback method.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">args</td><td>STA arguments (e.g., SSID, etc.). See <a class="el" href="structmmwlan__sta__args.html">mmwlan_sta_args</a>. </td></tr>
-    <tr><td class="paramname">sta_status_cb</td><td>Optional callback to be invoked on STA state changes. May be <code>NULL</code>.</td></tr>
+    <tr><td class="paramname">sta_status_cb</td><td>Optional callback to be invoked on STA state changes. May be <code>NULL</code>. Must be <code>NULL</code> if <code>args-&gt;ext_sta_status_cb</code> is not <code>NULL</code>.</td></tr>
   </table>
   </dd>
 </dl>
@@ -1384,7 +1839,7 @@ This must only be invoked when MMWLAN is inactive (i.e., STA mode not enabled).<
 </div><div class="memdoc">
 
 <p>Add configurations for Target Wake Time (TWT). </p>
-<dl class="section note"><dt>Note</dt><dd>This is used to add TWT configuration for a new TWT agreement. This function should be invoked before <a class="el" href="group__MMWLAN__CTRL.html#ga9cdcf82a952afa692f82430f1d6b93a0">mmwlan_sta_enable</a>.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This is used to add TWT configuration for a new TWT agreement. This function must be invoked before <a class="el" href="group__MMWLAN__CTRL.html#ga9cdcf82a952afa692f82430f1d6b93a0">mmwlan_sta_enable</a>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">twt_config_args</td><td>TWT configuration arguments <a class="el" href="structmmwlan__twt__config__args.html">mmwlan_twt_config_args</a>.</td></tr>

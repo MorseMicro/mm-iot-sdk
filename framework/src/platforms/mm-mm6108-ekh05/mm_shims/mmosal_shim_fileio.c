@@ -72,7 +72,6 @@ static int (*lfs_file_close_ptr)(
 static lfs_soff_t (*lfs_file_seek_ptr)(
     lfs_t *lfs, lfs_file_t *file, lfs_soff_t off, int whence) = NULL;
 
-
 /**
  * Initializes the LittleFS subsystem.
  *
@@ -99,12 +98,12 @@ static void littlefs_init(void)
             return;
         }
 
-        file_table = (lfs_file_t *) mmosal_calloc(MAX_FILES, sizeof(lfs_file_t));
+        file_table = (lfs_file_t *)mmosal_calloc(MAX_FILES, sizeof(lfs_file_t));
         if (file_table == NULL)
         {
 #ifndef MMOSAL_NO_DEBUGLOG
             printf("Failed to allocate memory for file_table (%u*%u bytes)\n",
-                MAX_FILES, sizeof(lfs_file_t));
+                   MAX_FILES, sizeof(lfs_file_t));
 #endif
             return;
         }
@@ -114,7 +113,7 @@ static void littlefs_init(void)
 
 #ifndef LFS_READONLY
         /* Reformat if we can't mount the filesystem
-        * this should only happen on the first boot */
+         * this should only happen on the first boot */
         if (err)
         {
             printf("Could not find LFS partition, formatting...");
@@ -157,8 +156,8 @@ static int find_empty_slot()
 
     for (i = 0; i < MAX_FILES; i++)
     {
-        if (memcmp((const void*) &file_table[i],
-                   (const void*) &zero_file, sizeof(lfs_file_t)) == 0)
+        if (memcmp((const void *)&file_table[i],
+                   (const void *)&zero_file, sizeof(lfs_file_t)) == 0)
         {
             return i;
         }
@@ -171,8 +170,8 @@ static int find_empty_slot()
 /**
  * Returns 1 (true) if the specified file descriptor is a terminal.
  *
- * @param fd The file descriptor to query.
- * @return 1 if a terminal, 0 otherwise.
+ * @param  fd The file descriptor to query.
+ * @return    1 if a terminal, 0 otherwise.
  */
 int _isatty(int fd)
 {
@@ -185,9 +184,9 @@ int _isatty(int fd)
 /**
  * Standard POSIX file open, See open().
  *
- * @param pathname The path of the file to open.
- * @param flags    Open flags, see open()
- * @return         The file descriptor of the opened file.
+ * @param  pathname The path of the file to open.
+ * @param  flags    Open flags, see open()
+ * @return          The file descriptor of the opened file.
  */
 int _open(const char *pathname, int flags, ...)
 {
@@ -216,22 +215,28 @@ int _open(const char *pathname, int flags, ...)
 #ifdef LFS_READONLY
     MM_UNUSED(flags);
 #else
-    if (flags & O_WRONLY) {
+    if (flags & O_WRONLY)
+    {
         lfs_flags |= LFS_O_WRONLY;
     }
-    if (flags & O_RDWR) {
+    if (flags & O_RDWR)
+    {
         lfs_flags |= LFS_O_RDWR;
     }
-    if (flags & O_CREAT) {
+    if (flags & O_CREAT)
+    {
         lfs_flags |= LFS_O_CREAT;
     }
-    if (flags & O_TRUNC) {
+    if (flags & O_TRUNC)
+    {
         lfs_flags |= LFS_O_TRUNC;
     }
-    if (flags & O_APPEND) {
+    if (flags & O_APPEND)
+    {
         lfs_flags |= LFS_O_APPEND;
     }
-    if (flags & O_EXCL) {
+    if (flags & O_EXCL)
+    {
         lfs_flags |= LFS_O_EXCL;
     }
 #endif
@@ -252,8 +257,8 @@ int _open(const char *pathname, int flags, ...)
 /**
  * Standard POSIX file close, See close().
  *
- * @param fd    The file descriptor to close.
- * @return      0 on success, -1 on error.
+ * @param  fd The file descriptor to close.
+ * @return    0 on success, -1 on error.
  */
 int _close(int fd)
 {
@@ -274,8 +279,8 @@ int _close(int fd)
         /* STDIO, just ignore and pretend we closed it */
         return 0;
     }
-    else if (memcmp((const void*) &file_table[FD_TO_SLOT(fd)],
-                    (const void*) &zero_file, sizeof(lfs_file_t)) == 0)
+    else if (memcmp((const void *)&file_table[FD_TO_SLOT(fd)],
+                    (const void *)&zero_file, sizeof(lfs_file_t)) == 0)
     {
         /* File not open */
         errno = EBADF;
@@ -292,7 +297,7 @@ int _close(int fd)
     }
 
     /* Now clear the slot */
-    memset((void*) &file_table[FD_TO_SLOT(fd)], 0, sizeof(lfs_file_t));
+    memset((void *)&file_table[FD_TO_SLOT(fd)], 0, sizeof(lfs_file_t));
 
     return 0;
 }
@@ -300,10 +305,10 @@ int _close(int fd)
 /**
  * Standard POSIX file read, see read().
  *
- * @param fd    The file descriptor to read from.
- * @param buf   The buffer to read into.
- * @param count Maximum number of bytes to read.
- * @return      The number of bytes read, 0 on end-of-file, or -1 on error.
+ * @param  fd    The file descriptor to read from.
+ * @param  buf   The buffer to read into.
+ * @param  count Maximum number of bytes to read.
+ * @return       The number of bytes read, 0 on end-of-file, or -1 on error.
  */
 ssize_t _read(int fd, void *buf, size_t count)
 {
@@ -329,8 +334,8 @@ ssize_t _read(int fd, void *buf, size_t count)
         errno = EBADF;
         return -1;
     }
-    else if (memcmp((const void*) &file_table[FD_TO_SLOT(fd)],
-                    (const void*) &zero_file, sizeof(lfs_file_t)) == 0)
+    else if (memcmp((const void *)&file_table[FD_TO_SLOT(fd)],
+                    (const void *)&zero_file, sizeof(lfs_file_t)) == 0)
     {
         /* File not open */
         errno = EBADF;
@@ -352,10 +357,10 @@ ssize_t _read(int fd, void *buf, size_t count)
 /**
  * Standard POSIX file write, see write().
  *
- * @param fd    The file descriptor to read from.
- * @param buf   The buffer to write from.
- * @param count Number of bytes to write.
- * @return      The number of bytes written or -1 on error.
+ * @param  fd    The file descriptor to read from.
+ * @param  buf   The buffer to write from.
+ * @param  count Number of bytes to write.
+ * @return       The number of bytes written or -1 on error.
  */
 ssize_t _write(int fd, const void *buf, size_t count)
 {
@@ -370,7 +375,7 @@ ssize_t _write(int fd, const void *buf, size_t count)
     {
         /* Dump to console */
         uint32_t ii;
-        uint8_t* c = (uint8_t*) buf;
+        uint8_t *c = (uint8_t *)buf;
         for (ii = 0; ii < count; ii++)
         {
             putchar((int)c[ii]);
@@ -394,8 +399,8 @@ ssize_t _write(int fd, const void *buf, size_t count)
         errno = EBADF;
         return -1;
     }
-    else if (memcmp((const void*) &file_table[FD_TO_SLOT(fd)],
-                    (const void*) &zero_file, sizeof(lfs_file_t)) == 0)
+    else if (memcmp((const void *)&file_table[FD_TO_SLOT(fd)],
+                    (const void *)&zero_file, sizeof(lfs_file_t)) == 0)
     {
         /* File not open */
         errno = EBADF;
@@ -418,10 +423,10 @@ ssize_t _write(int fd, const void *buf, size_t count)
 /**
  * Standard POSIX file seek, see @c lseek().
  *
- * @param fd        The file descriptor to seek within.
- * @param offset    The offset to seek to.
- * @param whence    Where to offset from, see @c lseek().
- * @return          On success returns the absolute offset from the beginning
+ * @param  fd     The file descriptor to seek within.
+ * @param  offset The offset to seek to.
+ * @param  whence Where to offset from, see @c lseek().
+ * @return        On success returns the absolute offset from the beginning
  *                  of the file, or -1 on error.
  */
 off_t _lseek(int fd, off_t offset, int whence)
@@ -444,8 +449,8 @@ off_t _lseek(int fd, off_t offset, int whence)
         errno = EINVAL;
         return -1;
     }
-    else if (memcmp((const void*) &file_table[FD_TO_SLOT(fd)],
-                    (const void*) &zero_file, sizeof(lfs_file_t)) == 0)
+    else if (memcmp((const void *)&file_table[FD_TO_SLOT(fd)],
+                    (const void *)&zero_file, sizeof(lfs_file_t)) == 0)
     {
         /* File not open */
         errno = EBADF;
@@ -467,9 +472,9 @@ off_t _lseek(int fd, off_t offset, int whence)
 /**
  * Standard POSIX file status, see @c fstat().
  *
- * @param fd    The file descriptor whose status is requested.
- * @param buf   A pointer to a struct stat to return the status in.
- * @return      0 on success, -1 on error.
+ * @param  fd  The file descriptor whose status is requested.
+ * @param  buf A pointer to a struct stat to return the status in.
+ * @return     0 on success, -1 on error.
  */
 int _fstat(int fd, struct stat *buf)
 {
@@ -484,8 +489,8 @@ int _fstat(int fd, struct stat *buf)
 /**
  * Standard POSIX file/directory delete, see @c unlink().
  *
- * @param pathname The file/directory to delete.
- * @return         0 on success, -1 on error.
+ * @param  pathname The file/directory to delete.
+ * @return          0 on success, -1 on error.
  */
 int _unlink(const char *pathname)
 {
@@ -511,9 +516,9 @@ int _unlink(const char *pathname)
 /**
  * Standard POSIX make directory, see @c mkdir().
  *
- * @param pathname The directory to create.
- * @param mode     The permissions/mode - ignored.
- * @return         0 on success, -1 on error.
+ * @param  pathname The directory to create.
+ * @param  mode     The permissions/mode - ignored.
+ * @return          0 on success, -1 on error.
  */
 int _mkdir(const char *pathname, mode_t mode)
 {

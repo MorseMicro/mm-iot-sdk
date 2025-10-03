@@ -218,17 +218,17 @@ extern "C" {
 /** Return & error codes */
 enum mmconfig_result
 {
-    MMCONFIG_OK = 0,                        /**< Operation completed successfully */
-    MMCONFIG_DATA_ERASED = 1,               /**< Partition was erased */
-    MMCONFIG_ERR_INVALID_KEY = -1,          /**< Key provided was invalid */
-    MMCONFIG_ERR_FULL = -2,                 /**< Config store is full */
-    MMCONFIG_ERR_NOT_FOUND = -3,            /**< Requested key was not found */
-    MMCONFIG_ERR_INCORRECT_TYPE = -4,       /**< Requested data type did not match found data */
-    MMCONFIG_ERR_INVALID_PARTITION = -5,    /**< Valid partition was not found */
+    MMCONFIG_OK                      = 0,   /**< Operation completed successfully */
+    MMCONFIG_DATA_ERASED             = 1,   /**< Partition was erased */
+    MMCONFIG_ERR_INVALID_KEY         = -1,  /**< Key provided was invalid */
+    MMCONFIG_ERR_FULL                = -2,  /**< Config store is full */
+    MMCONFIG_ERR_NOT_FOUND           = -3,  /**< Requested key was not found */
+    MMCONFIG_ERR_INCORRECT_TYPE      = -4,  /**< Requested data type did not match found data */
+    MMCONFIG_ERR_INVALID_PARTITION   = -5,  /**< Valid partition was not found */
     MMCONFIG_ERR_INSUFFICIENT_MEMORY = -6,  /**< Insufficient memory */
-    MMCONFIG_ERR_OUT_OF_BOUNDS = -7,        /**< Offset was out of bounds */
-    MMCONFIG_ERR_NOT_SUPPORTED = -8,        /**< Operation not supported */
-    MMCONFIG_ERR_WILDCARD_KEY = -9          /**< Key contains wildcard valid only for deletion */
+    MMCONFIG_ERR_OUT_OF_BOUNDS       = -7,  /**< Offset was out of bounds */
+    MMCONFIG_ERR_NOT_SUPPORTED       = -8,  /**< Operation not supported */
+    MMCONFIG_ERR_WILDCARD_KEY        = -9   /**< Key contains wildcard valid only for deletion */
 };
 
 /**
@@ -259,7 +259,7 @@ struct mmconfig_update_node
  * Erases all flash blocks allocated to persistent storage and write the signature
  * at the 2 copies in flash.
  *
- * @return              It returns 0 on success or an error code on failure.
+ * @return It returns 0 on success or an error code on failure.
  */
 int mmconfig_eraseall(void);
 
@@ -268,15 +268,15 @@ int mmconfig_eraseall(void);
  *
  * If there is already data with the same key (ignoring case) then it will be replaced.
  *
- * @param key           Identifies the data element in persistent storage and is a
+ * @param  key  Identifies the data element in persistent storage and is a
  *                      case insensitive alphanumeric (plus underscore) string starting
  *                      with an alpha. Same rules as a C variable name, but case insensitive.
  *                      Must be a null terminated string.
- * @param data          The binary data to be written, can contain nulls and need not be null
+ * @param  data The binary data to be written, can contain nulls and need not be null
  *                      terminated. Can be a pointer to a structure or any arbitrary data to
  *                      be written.
- * @param size          The size of the binary data to be written.
- * @return              Returns @c MMCONFIG_OK on success. On error returns:
+ * @param  size The size of the binary data to be written.
+ * @return      Returns @c MMCONFIG_OK on success. On error returns:
  *                          @c MMCONFIG_ERR_INVALID_KEY if key is invalid
  *                          @c MMCONFIG_ERR_FULL if insufficient space to write data
  *                          Other negative number for other errors.
@@ -286,12 +286,12 @@ int mmconfig_write_data(const char *key, const void *data, size_t size);
 /**
  * Deletes the specified key(s) from persistent store.
  *
- * @param key           Identifies the data element in persistent storage and is a
+ * @param  key Identifies the data element in persistent storage and is a
  *                      case insensitive alphanumeric (plus underscore) string starting
  *                      with an alpha. Same rules as a C variable name, but case insensitive.
  *                      For deletion a wildcard (*) may be specified at the end to delete
  *                      multiple keys in one go. Must be a null terminated string.
- * @return              Returns @c MMCONFIG_OK on success. On error returns:
+ * @return     Returns @c MMCONFIG_OK on success. On error returns:
  *                          @c MMCONFIG_ERR_INVALID_KEY if key is invalid
  *                          @c MMCONFIG_ERR_FULL if insufficient space to write data
  *                          Other negative number for other errors.
@@ -300,7 +300,6 @@ static inline int mmconfig_delete_key(const char *key)
 {
     return mmconfig_write_data(key, NULL, 0);
 }
-
 
 /**
  * Writes all updates from the update node list to persistent store.
@@ -313,10 +312,10 @@ static inline int mmconfig_delete_key(const char *key)
  * ownership of the list and is responsible for freeing the nodes after the
  * write.
  *
- * @param node_list     Pointer to a linked list of nodes to be included in the
+ * @param  node_list Pointer to a linked list of nodes to be included in the
  *                      update.
  *
- * @return              Returns @c MMCONFIG_OK on success. On error, no update
+ * @return           Returns @c MMCONFIG_OK on success. On error, no update
  *                      takes place and the return code is:
  *                          @c MMCONFIG_ERR_INVALID_KEY if a key in the list is invalid
  *                          @c MMCONFIG_ERR_FULL if insufficient space to write data
@@ -329,12 +328,12 @@ int mmconfig_write_update_node_list(const struct mmconfig_update_node *node_list
  *
  * If there is already data with the same key (ignoring case) then it will be replaced.
  *
- * @param key           Identifies the data element in persistent storage and is a
+ * @param  key   Identifies the data element in persistent storage and is a
  *                      case insensitive alphanumeric (plus underscore) string starting
  *                      with an alpha. Same rules as a C variable name, but case insensitive.
  *                      Must be a null terminated string.
- * @param value         The data to be written, must be a null terminated string.
- * @return              Returns @c MMCONFIG_OK on success. On error returns:
+ * @param  value The data to be written, must be a null terminated string.
+ * @return       Returns @c MMCONFIG_OK on success. On error returns:
  *                          @c MMCONFIG_ERR_INVALID_KEY if key is invalid
  *                          @c MMCONFIG_ERR_FULL if insufficient space to write data
  *                          Other negative number for other errors.
@@ -347,14 +346,14 @@ int mmconfig_write_string(const char *key, const char *value);
  * @note If you use @c mmconfig_read_string() to read data written by @c mmconfig_write_data()
  *       then it could fail if the data is not null terminated.
  *
- * @param key           Identifies the data element in persistent storage and is a
+ * @param  key     Identifies the data element in persistent storage and is a
  *                      case insensitive alphanumeric (plus underscore) string starting
  *                      with an alpha. Same rules as a C variable name, but case insensitive.
  *                      Must be a null terminated string.
- * @param buffer        Buffer to read the string into.
+ * @param  buffer  Buffer to read the string into.
  *                      On error, the buffer is untouched, so can be preloaded with a default value.
- * @param bufsize       Length of buffer.
- * @return              Returns length of string read on success. On error returns:
+ * @param  bufsize Length of buffer.
+ * @return         Returns length of string read on success. On error returns:
  *                          @c MMCONFIG_ERR_INVALID_KEY if key is invalid
  *                          @c MMCONFIG_ERR_NOT_FOUND if the specified key was not found
  *                          @c MMCONFIG_ERR_INCORRECT_TYPE if the data pointed to by the key is not
@@ -369,13 +368,13 @@ int mmconfig_read_string(const char *key, char *buffer, int bufsize);
  *
  * It is the responsibility of the caller to free the memory when it is no longer required.
  *
- * @param key           Identifies the data element in persistent storage and is a
+ * @param  key  Identifies the data element in persistent storage and is a
  *                      case insensitive alphanumeric (plus underscore) string starting
  *                      with an alpha. Same rules as a C variable name, but case insensitive.
  *                      Must be a null terminated string.
- * @param data          Returns a pointer to allocated memory loaded with the key value.
+ * @param  data Returns a pointer to allocated memory loaded with the key value.
  *                      Returns NULL on any error.
- * @return              Returns number of bytes read and allocated on success. On error returns:
+ * @return      Returns number of bytes read and allocated on success. On error returns:
  *                          @c MMCONFIG_ERR_INVALID_KEY if key is invalid
  *                          @c MMCONFIG_ERR_NOT_FOUND if the specified key was not found
  *                          @c MMCONFIG_ERR_INSUFFICIENT_MEMORY if memory could not be allocated
@@ -388,12 +387,12 @@ int mmconfig_alloc_and_load(const char *key, void **data);
  *
  * If there is already data with the same key then it will be replaced.
  *
- * @param key           Identifies the data element in persistent storage and is a
+ * @param  key   Identifies the data element in persistent storage and is a
  *                      case insensitive alphanumeric (plus underscore) string starting
  *                      with an alpha. Same rules as a C variable name, but case insensitive.
  *                      Must be a null terminated string.
- * @param value         The integer to be written, it is converted to string and written.
- * @return              Returns @c MMCONFIG_OK on success. On error returns:
+ * @param  value The integer to be written, it is converted to string and written.
+ * @return       Returns @c MMCONFIG_OK on success. On error returns:
  *                          @c MMCONFIG_ERR_INVALID_KEY if key is invalid
  *                          Other negative number for other errors.
  */
@@ -402,13 +401,13 @@ int mmconfig_write_int(const char *key, int value);
 /**
  * Returns the integer stored in persistent store identified by the key.
  *
- * @param key           Identifies the data element in persistent storage and is a
+ * @param  key   Identifies the data element in persistent storage and is a
  *                      case insensitive alphanumeric (plus underscore) string starting
  *                      with an alpha. Same rules as a C variable name, but case insensitive.
  *                      Must be a null terminated string.
- * @param value         Returns the integer in this, it is converted from string.
+ * @param  value Returns the integer in this, it is converted from string.
  *                      On error, the value is untouched, so can be preloaded with a default.
- * @return              Returns @c MMCONFIG_OK on success. On error returns:
+ * @return       Returns @c MMCONFIG_OK on success. On error returns:
  *                          @c MMCONFIG_ERR_INVALID_KEY if key is invalid
  *                          @c MMCONFIG_ERR_NOT_FOUND if the specified key was not found
  *                          @c MMCONFIG_ERR_INCORRECT_TYPE if the data pointed to by the key is not
@@ -421,12 +420,12 @@ int mmconfig_read_int(const char *key, int *value);
  *
  * If there is already data with the same key then it will be replaced.
  *
- * @param key           Identifies the data element in persistent storage and is a
+ * @param  key   Identifies the data element in persistent storage and is a
  *                      case insensitive alphanumeric (plus underscore) string starting
  *                      with an alpha. Same rules as a C variable name, but case insensitive.
  *                      Must be a null terminated string.
- * @param value         The unsigned integer to be written, it is converted to string and written.
- * @return              Returns @c MMCONFIG_OK on success. On error returns:
+ * @param  value The unsigned integer to be written, it is converted to string and written.
+ * @return       Returns @c MMCONFIG_OK on success. On error returns:
  *                          @c MMCONFIG_ERR_INVALID_KEY if key is invalid
  *                          Other negative number for other errors.
  */
@@ -435,13 +434,13 @@ int mmconfig_write_uint32(const char *key, uint32_t value);
 /**
  * Returns the unsigned integer stored in persistent store identified by the key.
  *
- * @param key           Identifies the data element in persistent storage and is a
+ * @param  key   Identifies the data element in persistent storage and is a
  *                      case insensitive alphanumeric (plus underscore) string starting
  *                      with an alpha. Same rules as a C variable name, but case insensitive.
  *                      Must be a null terminated string.
- * @param value         Returns the unsigned integer in this, it is converted from string.
+ * @param  value Returns the unsigned integer in this, it is converted from string.
  *                      On error, the value is untouched, so can be preloaded with a default.
- * @return              Returns @c MMCONFIG_OK on success. On error returns:
+ * @return       Returns @c MMCONFIG_OK on success. On error returns:
  *                          @c MMCONFIG_ERR_INVALID_KEY if key is invalid
  *                          @c MMCONFIG_ERR_NOT_FOUND if the specified key was not found
  *                          @c MMCONFIG_ERR_INCORRECT_TYPE if the data pointed to by the key is not
@@ -454,12 +453,12 @@ int mmconfig_read_uint32(const char *key, uint32_t *value);
  *
  * If there is already data with the same key then it will be replaced.
  *
- * @param key           Identifies the data element in persistent storage and is a
+ * @param  key   Identifies the data element in persistent storage and is a
  *                      case insensitive alphanumeric (plus underscore) string starting
  *                      with an alpha. Same rules as a C variable name, but case insensitive.
  *                      Must be a null terminated string.
- * @param value         The boolean value to be written, it is converted to string and written.
- * @return              Returns @c MMCONFIG_OK on success. On error returns:
+ * @param  value The boolean value to be written, it is converted to string and written.
+ * @return       Returns @c MMCONFIG_OK on success. On error returns:
  *                          @c MMCONFIG_ERR_INVALID_KEY if key is invalid
  *                          Other negative number for other errors.
  */
@@ -468,15 +467,15 @@ int mmconfig_write_bool(const char *key, bool value);
 /**
  * Returns the boolean value stored in persistent store identified by the key.
  *
- * @param key           Identifies the data element in persistent storage and is a
+ * @param  key   Identifies the data element in persistent storage and is a
  *                      case insensitive alphanumeric (plus underscore) string starting
  *                      with an alpha. Same rules as a C variable name, but case insensitive.
  *                      Must be a null terminated string.
- * @param value         Returns the boolean value stored, it is converted from string but may even be
+ * @param  value Returns the boolean value stored, it is converted from string but may even be
  *                      a single byte raw boolean value.  The string representation may be
  *                      "true"/"false" or a "0"/non zero integer string.
  *                      On error, the value is untouched, so can be preloaded with a default.
- * @return              Returns @c MMCONFIG_OK on success. On error returns:
+ * @return       Returns @c MMCONFIG_OK on success. On error returns:
  *                          @c MMCONFIG_ERR_INVALID_KEY if key is invalid
  *                          @c MMCONFIG_ERR_NOT_FOUND if the specified key was not found
  *                          @c MMCONFIG_ERR_INCORRECT_TYPE if the data pointed to by the key is not
@@ -486,14 +485,14 @@ int mmconfig_read_bool(const char *key, bool *value);
 
 /**
  * Returns the persistent store data identified by the key.
- * @param key           Identifies the data element in persistent storage and is a
+ * @param  key      Identifies the data element in persistent storage and is a
  *                      case insensitive alphanumeric (plus underscore) string starting
  *                      with an alpha. Same rules as a C variable name, but case insensitive.
  *                      Must be a null terminated string.
- * @param buffer        A pointer to a pre-allocated buffer to return the data address in.
- * @param buffsize      The length of the buffer.
- * @param offset        An offset into the source from which to copy the data into the buffer.
- * @return              Returns length of data copied on success. On error returns:
+ * @param  buffer   A pointer to a pre-allocated buffer to return the data address in.
+ * @param  buffsize The length of the buffer.
+ * @param  offset   An offset into the source from which to copy the data into the buffer.
+ * @return          Returns length of data copied on success. On error returns:
  *                          @c MMCONFIG_ERR_INVALID_KEY if key is invalid
  *                          @c MMCONFIG_ERR_NOT_FOUND if the specified key was not found
  *                          @c MMCONFIG_ERR_OUT_OF_BOUNDS if the offset is out of bounds
@@ -504,8 +503,8 @@ int mmconfig_read_bytes(const char *key, void *buffer, uint32_t buffsize, uint32
 /**
  * Validates an entire key intended for data storage
  *
- * @param key          The key to validate
- * @return             Returns @c MMCONFIG_OK if the key is valid, or
+ * @param  key The key to validate
+ * @return     Returns @c MMCONFIG_OK if the key is valid, or
  *                          @c MMCONFIG_ERR_INVALID_KEY if key is invalid
  * @note If the key ends in an asterisk '*' it will fail this validation.
  *       However, it is still valid for deleting multiple keys (where any key
@@ -516,8 +515,8 @@ int mmconfig_validate_key(const char *key);
 /**
  * Validates a single character intended to make up a key for data storage
  *
- * @param character    The character to validate
- * @return             Returns @c MMCONFIG_OK if the character is valid, or
+ * @param  character The character to validate
+ * @return           Returns @c MMCONFIG_OK if the character is valid, or
  *                          @c MMCONFIG_ERR_INVALID_KEY if character is invalid
  *
  * @note Additional restrictions apply to the first character of a key
@@ -532,16 +531,16 @@ int mmconfig_validate_key_character(char character);
  * updates (if not NULL) and the number of bytes that would remain free in
  * the persistent store afterwards.
  *
- * @param node_list    Pointer to a linked list of nodes to be sized.
+ * @param  node_list       Pointer to a linked list of nodes to be sized.
  *                     May be NULL if there is nothing to store
- * @param bytes_used   Pointer for the size of current data plus node_list
- * @param bytes_remaining Pointer for the number of bytes that would remain free if
+ * @param  bytes_used      Pointer for the size of current data plus node_list
+ * @param  bytes_remaining Pointer for the number of bytes that would remain free if
  *                     node_list was stored.  May be negative if insufficient storage is available.
- * @return             Returns @c MMCONFIG_OK on success. On error returns:
+ * @return                 Returns @c MMCONFIG_OK on success. On error returns:
  *                          @c MMCONFIG_ERR_NOT_SUPPORTED if there is no persistent store
  */
 int mmconfig_check_usage(const struct mmconfig_update_node *node_list,
-                             uint32_t *bytes_used, int32_t *bytes_remaining);
+                         uint32_t *bytes_used, int32_t *bytes_remaining);
 
 /**
  * Loads and applies any other @c mmwlan settings specified in config store.

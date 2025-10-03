@@ -69,7 +69,7 @@
 /* System support */
 #define MBEDTLS_HAVE_TIME
 #define MBEDTLS_HAVE_TIME_DATE
-#define MBEDTLS_PLATFORM_TIME_MACRO             mmhal_get_time
+#define MBEDTLS_PLATFORM_TIME_MACRO(x)          mmhal_get_time()
 #define MBEDTLS_NO_PLATFORM_ENTROPY
 #define MBEDTLS_ENTROPY_HARDWARE_ALT
 #define MBEDTLS_PLATFORM_NO_STD_FUNCTIONS

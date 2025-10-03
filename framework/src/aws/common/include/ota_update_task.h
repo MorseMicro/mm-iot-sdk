@@ -47,7 +47,6 @@ typedef void (*ota_preupdate_cb_fn_t)(void);
  */
 typedef void (*ota_postupdate_cb_fn_t)(const char *update_file, int status);
 
-
 /**
  * Suspends the OTA update
  */

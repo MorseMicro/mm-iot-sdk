@@ -10,5 +10,6 @@ var group__MMOSAL =
     [ "Time", "group__MMOSAL__TIME.html", "group__MMOSAL__TIME" ],
     [ "Timers", "group__MMOSAL__TIMER.html", "group__MMOSAL__TIMER" ],
     [ "Assertions and failure handling", "group__MMOSAL__ASSERT.html", "group__MMOSAL__ASSERT" ],
-    [ "Miscellaneous functions", "group__MMOSAL__MISC.html", "group__MMOSAL__MISC" ]
+    [ "Miscellaneous functions", "group__MMOSAL__MISC.html", "group__MMOSAL__MISC" ],
+    [ "Deprecated MMOSAL API", "group__MMOSAL__DEPRECATED.html", "group__MMOSAL__DEPRECATED" ]
 ];

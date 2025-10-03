@@ -14,9 +14,6 @@
 #include "cli/autogen/mmagic_cli_internal.h"
 #include "cli/autogen/mmagic_cli_iperf.h"
 
-/* This should be included after all the header files */
-#include "cli/autogen/mmagic_cli_iperf.def"
-
 /** Array of power of 10 unit specifiers. */
 static const char units[] = {' ', 'K', 'M', 'G', 'T'};
 

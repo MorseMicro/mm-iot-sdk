@@ -1656,6 +1656,24 @@ static void phy_info_vht_capa(struct hostapd_hw_modes *mode,
 }
 
 
+static void phy_info_s1g_capa(struct hostapd_hw_modes *mode,
+			      struct nlattr *capability,
+			      struct nlattr *mcs_nss_set)
+{
+	if (capability && nla_len(capability) >= 10) {
+		u8 *capa;
+		capa = nla_data(capability);
+		os_memcpy(mode->s1g_capab, capa, 10);
+	}
+
+	if (mcs_nss_set && nla_len(mcs_nss_set) >= 5) {
+		u8 *mcs_nss;
+		mcs_nss = nla_data(mcs_nss_set);
+		os_memcpy(mode->s1g_mcs, mcs_nss, 5);
+	}
+}
+
+
 static int phy_info_edmg_capa(struct hostapd_hw_modes *mode,
 			      struct nlattr *bw_config,
 			      struct nlattr *channels)
@@ -1695,6 +1713,8 @@ static void phy_info_freq(struct hostapd_hw_modes *mode,
 
 	os_memset(chan, 0, sizeof(*chan));
 	chan->freq = nla_get_u32(tb_freq[NL80211_FREQUENCY_ATTR_FREQ]);
+	chan->freq_khz = MHZ_TO_KHZ(chan->freq) +
+		nla_get_u32(tb_freq[NL80211_FREQUENCY_ATTR_OFFSET]);
 	chan->flag = 0;
 	chan->allowed_bw = ~0;
 	chan->dfs_cac_ms = 0;
@@ -1728,6 +1748,25 @@ static void phy_info_freq(struct hostapd_hw_modes *mode,
 		chan->allowed_bw &= ~HOSTAPD_CHAN_WIDTH_80;
 	if (tb_freq[NL80211_FREQUENCY_ATTR_NO_160MHZ])
 		chan->allowed_bw &= ~HOSTAPD_CHAN_WIDTH_160;
+
+	/* The kernel treats S1G channel bandwidths different by marking them as
+	 * allowed instead of disallowed */
+	chan->allowed_bw &= ~(HOSTAPD_CHAN_WIDTH_1 |
+		HOSTAPD_CHAN_WIDTH_2 |
+		HOSTAPD_CHAN_WIDTH_4 |
+		HOSTAPD_CHAN_WIDTH_8 |
+		HOSTAPD_CHAN_WIDTH_16);
+
+	if (tb_freq[NL80211_FREQUENCY_ATTR_1MHZ])
+		chan->allowed_bw |= HOSTAPD_CHAN_WIDTH_1;
+	if (tb_freq[NL80211_FREQUENCY_ATTR_2MHZ])
+		chan->allowed_bw |= HOSTAPD_CHAN_WIDTH_2;
+	if (tb_freq[NL80211_FREQUENCY_ATTR_4MHZ])
+		chan->allowed_bw |= HOSTAPD_CHAN_WIDTH_4;
+	if (tb_freq[NL80211_FREQUENCY_ATTR_8MHZ])
+		chan->allowed_bw |= HOSTAPD_CHAN_WIDTH_8;
+	if (tb_freq[NL80211_FREQUENCY_ATTR_16MHZ])
+		chan->allowed_bw |= HOSTAPD_CHAN_WIDTH_16;
 
 	if (tb_freq[NL80211_FREQUENCY_ATTR_DFS_STATE]) {
 		enum nl80211_dfs_state state =
@@ -2095,6 +2134,8 @@ static int phy_info_band(struct phy_info_arg *phy_info, struct nlattr *nl_band)
 		mode->vht_mcs_set[4] = 0xff;
 		mode->vht_mcs_set[5] = 0xff;
 
+		mode->band = nl_band->nla_type;
+
 		*(phy_info->num_modes) += 1;
 		phy_info->last_mode = nl_band->nla_type;
 		phy_info->last_chan_idx = 0;
@@ -2110,6 +2151,8 @@ static int phy_info_band(struct phy_info_arg *phy_info, struct nlattr *nl_band)
 			 tb_band[NL80211_BAND_ATTR_HT_MCS_SET]);
 	phy_info_vht_capa(mode, tb_band[NL80211_BAND_ATTR_VHT_CAPA],
 			  tb_band[NL80211_BAND_ATTR_VHT_MCS_SET]);
+	phy_info_s1g_capa(mode, tb_band[NL80211_BAND_ATTR_S1G_CAPA],
+			  tb_band[NL80211_BAND_ATTR_S1G_MCS_NSS_SET]);
 	ret = phy_info_edmg_capa(mode,
 				 tb_band[NL80211_BAND_ATTR_EDMG_BW_CONFIG],
 				 tb_band[NL80211_BAND_ATTR_EDMG_CHANNELS]);
@@ -2180,7 +2223,10 @@ wpa_driver_nl80211_postprocess_modes(struct hostapd_hw_modes *modes,
 
 		modes[m].is_6ghz = false;
 
-		if (modes[m].channels[0].freq < 2000) {
+		if (modes[m].channels[0].freq_khz < 1000000 &&
+			modes[m].channels[0].freq_khz > 0){
+			modes[m].mode = HOSTAPD_MODE_IEEE80211A;
+		} else if (modes[m].channels[0].freq < 2000) {
 			modes[m].num_channels = 0;
 			continue;
 		} else if (modes[m].channels[0].freq < 4000) {

@@ -251,6 +251,9 @@ static struct mmosal_sem *SemHciId = NULL;
 static struct mmosal_task *hci_task_handle;
 static struct mmosal_task *adv_task_handle;
 
+static struct mmosal_semb *hci_semb;
+static struct mmosal_semb *adv_semb;
+
 /* Private function prototypes -----------------------------------------------*/
 static void BLE_UserEvtRx(void *p_Payload);
 static void BLE_StatusNot(HCI_TL_CmdStatus_t Status);
@@ -331,6 +334,9 @@ void APP_BLE_Init(void)
                                        CFG_HCI_USER_EVT_PROCESS_NAME);
   MMOSAL_ASSERT(hci_task_handle != NULL);
 
+  hci_semb = mmosal_semb_create("hci");
+  MMOSAL_ASSERT(hci_semb != NULL);
+
   /**
    * Starts the BLE Stack on CPU2
    */
@@ -369,6 +375,9 @@ void APP_BLE_Init(void)
                                        CFG_ADV_UPDATE_PROCESS_STACK_SIZE,
                                        CFG_ADV_UPDATE_PROCESS_NAME);
   MMOSAL_ASSERT(adv_task_handle != NULL);
+
+  adv_semb = mmosal_semb_create("adv");
+  MMOSAL_ASSERT(adv_semb != NULL);
 
   /**
    * Initialization of ADV - Ad Manufacturer Element - Support OTA Bit Mask
@@ -1210,7 +1219,7 @@ static void Adv_Mgr(void)
    * The background is the only place where the application can make sure a new aci command
    * is not sent if there is a pending one
    */
-  mmosal_task_notify_from_isr(adv_task_handle);
+  mmosal_semb_give_from_isr(adv_semb);
 
   return;
 }
@@ -1221,7 +1230,7 @@ static void adv_update_task(void *arg)
 
     for (;;)
     {
-        mmosal_task_wait_for_notification(UINT32_MAX);
+        mmosal_semb_wait(adv_semb, UINT32_MAX);
         Adv_Update();
     }
 }
@@ -1239,7 +1248,7 @@ static void hci_user_event_task(void *arg)
 
     for (;;)
     {
-        mmosal_task_wait_for_notification(UINT32_MAX);
+        mmosal_semb_wait(hci_semb, UINT32_MAX);
         hci_user_evt_proc();
     }
 }
@@ -1254,7 +1263,7 @@ static void hci_user_event_task(void *arg)
  *************************************************************/
 void hci_notify_asynch_evt(void* p_Data)
 {
-  mmosal_task_notify_from_isr(hci_task_handle);
+  mmosal_semb_give_from_isr(hci_semb);
 
   return;
 }

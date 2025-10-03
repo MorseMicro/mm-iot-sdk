@@ -64,16 +64,16 @@ OtaPalStatus_t otaPal_CreateFileForRx(OtaFileContext_t * const pFileContext)
 {
     OtaPalStatus_t ret = OTA_PAL_COMBINE_ERR(OtaPalSuccess, 0);
 
-    LogInfo(("Creating file %s...", (char*)pFileContext->pFilePath));
+    LogInfo(("Creating file %s...", (char *)pFileContext->pFilePath));
 
-    pFileContext->pFile = fopen((char*)pFileContext->pFilePath, "wb+");
+    pFileContext->pFile = fopen((char *)pFileContext->pFilePath, "wb+");
     if (pFileContext->pFile == NULL)
     {
         ret = OTA_PAL_COMBINE_ERR(OtaPalRxFileCreateFailed, 0);
     }
 
     /* Mark the file for deletion after succesful or failed update */
-    mmconfig_write_string("DELETE_FILE", (char*) pFileContext->pFilePath);
+    mmconfig_write_string("DELETE_FILE", (char *)pFileContext->pFilePath);
 
     /* Notify user application that an OTA update is about to start */
     if (ota_pal_preupdate_callback)
@@ -117,7 +117,7 @@ OtaPalStatus_t otaPal_CloseFile(OtaFileContext_t * const pFileContext)
         MMOSAL_ASSERT(fclose(pFileContext->pFile) == 0);
 
         /* Check the size of the OTA public key */
-        int len =  mmconfig_read_bytes(AWS_KEY_OTA_CERTIFICATE, NULL, 0, 0);
+        int len = mmconfig_read_bytes(AWS_KEY_OTA_CERTIFICATE, NULL, 0, 0);
         if (len < DUMMY_FILE_SIZE)
         {
             /* No valid OTA keys found */
@@ -125,7 +125,7 @@ OtaPalStatus_t otaPal_CloseFile(OtaFileContext_t * const pFileContext)
         }
 
         /* Looks like we have a valid key */
-        uint8_t *certificate = (uint8_t*) mmosal_malloc(len + 1);
+        uint8_t *certificate = (uint8_t *)mmosal_malloc(len + 1);
         MMOSAL_ASSERT(certificate != NULL);
         /* Now read the bytes in */
         MMOSAL_ASSERT(mmconfig_read_bytes(AWS_KEY_OTA_CERTIFICATE, certificate, len, 0) > 0);
@@ -169,15 +169,27 @@ int16_t otaPal_WriteBlock(OtaFileContext_t * const pFileContext,
                           uint8_t * const pData,
                           uint32_t ulBlockSize)
 {
+    static uint32_t last_percentage = 0;
     LogInfo(("Writing %lu bytes at %lu to %s...", ulBlockSize, ulOffset, pFileContext->pFilePath));
 
     if (fseek(pFileContext->pFile, ulOffset, SEEK_SET) == 0)
     {
-        return (int16_t) fwrite(pData, 1, ulBlockSize, pFileContext->pFile);
+        uint32_t numBlocks = (pFileContext->fileSize + (OTA_FILE_BLOCK_SIZE - 1U) ) >>
+            otaconfigLOG2_FILE_BLOCK_SIZE;
+
+        uint32_t completion_percentage = 100 - 100 * pFileContext->blocksRemaining / numBlocks;
+
+        if (completion_percentage != last_percentage && completion_percentage % 5 == 0)
+        {
+            printf("OTA update is %lu%% complete\n", completion_percentage);
+        }
+        last_percentage = completion_percentage;
+
+        return (int16_t)fwrite(pData, 1, ulBlockSize, pFileContext->pFile);
     }
     else
     {
-        LogError(("Could not write to file at offset %lu!", ulOffset));
+        LogError(("Could not write to file at offset %lu", ulOffset));
         return -1;
     }
 }
@@ -187,7 +199,7 @@ OtaPalStatus_t otaPal_ActivateNewImage(OtaFileContext_t * const pFileContext)
     LogInfo(("Activating..."));
 
     /* Notify loader an update is available */
-    mmconfig_write_string("UPDATE_IMAGE", (char*) pFileContext->pFilePath);
+    mmconfig_write_string("UPDATE_IMAGE", (char *)pFileContext->pFilePath);
 
     /* Reset to loader */
     mmhal_reset();
@@ -202,7 +214,7 @@ OtaPalStatus_t otaPal_SetPlatformImageState(OtaFileContext_t * const pFileContex
     (void)pFileContext;
     (void)eState;
 
-    LogInfo(("OTA State is now %d", (int) eState));
+    LogInfo(("OTA State is now %d", (int)eState));
 
     return OTA_PAL_COMBINE_ERR(OtaPalSuccess, 0);
 }

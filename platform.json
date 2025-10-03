@@ -10,7 +10,7 @@
     "engines": {
         "platformio": "^6"
     },
-    "version": "2.8.2",
+    "version": "2.9.7",
     "frameworks": {
         "mm_iot": {
             "script": "builder/frameworks/mm_iot.py",

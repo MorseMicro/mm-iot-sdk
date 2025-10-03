@@ -76,7 +76,7 @@
  * #### Example WLAN Connect using MMAGIC Controller ####
  *
  * Attempting to connect to MHS_Test with passphrase 12345678
- * This may take some time (~30 seconds)
+ * This may take some time (~10 seconds)
  * Link Up
  * Link is up (DHCP). Time: 10483 ms, IP: 192.168.1.189, Netmask: 255.255.255.0, Gateway:
  * 192.168.1.1
@@ -222,7 +222,7 @@ static bool wlan_connect(struct mmagic_controller *controller)
 
     printf("Attempting to connect to %s with passphrase %s\n", STRINGIFY(SSID),
            STRINGIFY(SAE_PASSPHRASE));
-    printf("This may take some time (~30 seconds)\n");
+    printf("This may take some time (~10 seconds)\n");
     status = mmagic_controller_set_wlan_ssid(controller, STRINGIFY(SSID));
     if (status != MMAGIC_STATUS_OK)
     {
@@ -230,7 +230,7 @@ static bool wlan_connect(struct mmagic_controller *controller)
         return false;
     }
 
-    mmagic_controller_set_wlan_password(controller, STRINGIFY(SAE_PASSPHRASE));
+    status = mmagic_controller_set_wlan_password(controller, STRINGIFY(SAE_PASSPHRASE));
     if (status != MMAGIC_STATUS_OK)
     {
         printf("Error %d setting the wlan password\n", status);
@@ -268,6 +268,88 @@ static bool wlan_connect(struct mmagic_controller *controller)
         mmosal_task_sleep(500);
     }
 
+    return false;
+}
+
+/**
+ * This function illustrates how to check if the agent already has an active connection.
+ * Useful when the controller has restarted and reattaches to the agent.
+ *
+ * @param  controller Reference to the controller structure to use.
+ *
+ * @return            @c true is a wlan connection and link was established else @c false
+ */
+static bool is_wlan_connected(struct mmagic_controller *controller)
+{
+    mmosal_task_sleep(100);
+    printf("\n\n#### Example check WLAN connection using MMAGIC Controller ####\n\n");
+    enum mmagic_status status;
+
+    printf("Checking SSID and password match expected values\n");
+    struct string32 agent_ssid = {};
+    const size_t ssid_len = sizeof(STRINGIFY(SSID)) - 1;
+    status = mmagic_controller_get_wlan_ssid(controller, &agent_ssid);
+    if (status != MMAGIC_STATUS_OK)
+    {
+        printf("Error %d getting the wlan ssid\n", status);
+        return false;
+    }
+    if ((ssid_len != agent_ssid.len) || memcmp(agent_ssid.data, STRINGIFY(SSID), ssid_len + 1))
+    {
+        printf("SSID mismatch\n");
+        return false;
+    }
+
+    struct string100 agent_pwd = {};
+    const size_t pwd_len = sizeof(STRINGIFY(SAE_PASSPHRASE)) - 1;
+    status = mmagic_controller_get_wlan_password(controller, &agent_pwd);
+    if (status != MMAGIC_STATUS_OK)
+    {
+        printf("Error %d getting the wlan password\n", status);
+        return false;
+    }
+    if ((pwd_len != agent_pwd.len) || memcmp(agent_pwd.data, STRINGIFY(SAE_PASSPHRASE),
+                                             pwd_len + 1))
+    {
+        printf("Password mismatch\n");
+        return false;
+    }
+
+    printf("Checking STA connection status\n");
+    struct mmagic_core_wlan_get_sta_status_rsp_args rsp_args = {};
+    status = mmagic_controller_wlan_get_sta_status(controller, &rsp_args);
+    if (status != MMAGIC_STATUS_OK)
+    {
+        printf("Error %d getting wlan sta status\n", status);
+        return false;
+    }
+    if (rsp_args.sta_status != MMAGIC_STA_STATE_CONNECTED)
+    {
+        printf("STA not connected\n");
+        return false;
+    }
+
+    printf("Checking link status\n");
+    struct mmagic_core_ip_status_rsp_args ip_status_rsp_args = {};
+    for (int attempts = 2; attempts > 0; --attempts)
+    {
+        status = mmagic_controller_ip_status(controller, &ip_status_rsp_args);
+        if ((status == MMAGIC_STATUS_OK) &&
+            (ip_status_rsp_args.status.link_state == MMAGIC_IP_LINK_STATE_UP))
+        {
+            printf("Link is up %s. Time: %lu ms, ",
+                   ip_status_rsp_args.status.dhcp_enabled ? "(DHCP)" : "(Static)",
+                   mmosal_get_time_ms());
+            printf("IP: %s, ", ip_status_rsp_args.status.ip_addr.addr);
+            printf("Netmask: %s, ", ip_status_rsp_args.status.netmask.addr);
+            printf("Gateway: %s", ip_status_rsp_args.status.gateway.addr);
+            printf("\n");
+            return true;
+        }
+        mmosal_task_sleep(500);
+    }
+
+    printf("Link Down\n");
     return false;
 }
 
@@ -400,7 +482,7 @@ static void tcp_client_example(struct mmagic_controller *controller)
     struct mmagic_core_tcp_recv_cmd_args tcp_recv_cmd_args = {
         .stream_id = tcp_stream_id,
         .len = 1536,
-        .timeout = 1000,
+        .timeout = 5000,
     };
     struct mmagic_core_tcp_recv_rsp_args tcp_recv_rsp_args = {};
     status = mmagic_controller_tcp_recv(controller, &tcp_recv_cmd_args, &tcp_recv_rsp_args);
@@ -508,21 +590,24 @@ static void tcp_echo_server_task(void *args)
  * This function illustrates how to start a TCP server and listen for a connection. It will echo
  * back anything received on the connection once established.
  *
- * @param controller Reference to the controller structure to use.
+ * @param  controller Reference to the controller structure to use.
+ * @param  port       The TCP port to bind to.
+ *
+ * @return            @ref MMAGIC_STATUS_OK else an appropriate error code.
  */
-static void tcp_echo_server_start(struct mmagic_controller *controller)
+static enum mmagic_status tcp_echo_server_start(struct mmagic_controller *controller, uint16_t port)
 {
     printf("\n\n#### Example TCP Echo Server using MMAGIC Controller ####\n\n");
     enum mmagic_status status;
     static struct tcp_echo_server_thread_args thread_args;
 
-    struct mmagic_core_tcp_bind_cmd_args tcp_bind_cmd_args = {.port = TCP_ECHCO_SERVER_PORT};
+    struct mmagic_core_tcp_bind_cmd_args tcp_bind_cmd_args = {.port = port};
     struct mmagic_core_tcp_bind_rsp_args tcp_bind_rsp_args = {};
     status = mmagic_controller_tcp_bind(controller, &tcp_bind_cmd_args, &tcp_bind_rsp_args);
     if (status != MMAGIC_STATUS_OK)
     {
         printf("Error %u whilst opening the tcp socket\n", status);
-        MMOSAL_ASSERT(false);
+        return status;
     }
     uint8_t tcp_socket_stream_id = tcp_bind_rsp_args.stream_id;
     printf("Opened listening socket (Port %u) on stream_id %u\n",
@@ -539,7 +624,7 @@ static void tcp_echo_server_start(struct mmagic_controller *controller)
                                               &tcp_accept_rsp_args);
         if (status != MMAGIC_STATUS_OK)
         {
-            printf("Error %u whilst trying to accept a TCP connetion\n", status);
+            printf("Error %u whilst trying to accept a TCP connection\n", status);
             break;
         }
 
@@ -547,7 +632,7 @@ static void tcp_echo_server_start(struct mmagic_controller *controller)
         thread_args.controller = controller;
 
         mmosal_task_create(tcp_echo_server_task, &thread_args,
-                        MMOSAL_TASK_PRI_LOW, 2048, "tcp_echo_server_task");
+                           MMOSAL_TASK_PRI_LOW, 2048, "tcp_echo_server_task");
     }
 
     struct mmagic_core_tcp_close_cmd_args tcp_close_cmd_args =
@@ -560,7 +645,11 @@ static void tcp_echo_server_start(struct mmagic_controller *controller)
         printf("Error %u whilst trying to close the listening socket on stream_id %u\n",
                status, tcp_socket_stream_id);
     }
-    printf("Closed listening socket\n");
+    else
+    {
+        printf("Closed listening socket\n");
+    }
+    return status;
 }
 
 /**
@@ -579,9 +668,44 @@ static void run_examples_task(void *args)
 
     struct mmagic_controller *controller = mmagic_controller_init(&init_args);
 
+    enum {
+        AGENT_ACTION_TIMEOUT_MS = 1000,
+    };
+
+    bool agent_already_running = false;
+    enum mmagic_status status;
     printf("M2M Controller enabled. Awaiting Agent start\n");
+    if (mmosal_semb_wait(agent_started_semb, AGENT_ACTION_TIMEOUT_MS))
+    {
+        goto agent_started;
+    }
+
+    printf("No agent start notification, agent may already be running.\n");
+    printf("Attempting sync to recover connection.\n");
+    status = mmagic_controller_agent_sync(controller, AGENT_ACTION_TIMEOUT_MS);
+    if (status == MMAGIC_STATUS_OK)
+    {
+        agent_already_running = true;
+        /* Check for existing connection */
+        if (is_wlan_connected(controller))
+        {
+            printf("WLAN connection reattached\n");
+            goto agent_connected;
+        }
+        goto agent_started;
+    }
+
+    printf("Sync failed with status %d, attempting LLC agent reset.\n", status);
+    mmagic_controller_request_agent_reset(controller);
+    if (mmosal_semb_wait(agent_started_semb, AGENT_ACTION_TIMEOUT_MS))
+    {
+        goto agent_started;
+    }
+
+    printf("LLC reset failed. Please hard reset the agent.\n");
     mmosal_semb_wait(agent_started_semb, UINT32_MAX);
 
+agent_started:
     if (!wlan_connect(controller))
     {
         printf("Failed to connect\n");
@@ -589,11 +713,18 @@ static void run_examples_task(void *args)
     }
     printf("WLAN connection established\n");
 
+agent_connected:
     beacon_monitor_example_start(controller);
 
     tcp_client_example(controller);
 
-    tcp_echo_server_start(controller);
+    status = tcp_echo_server_start(controller, TCP_ECHCO_SERVER_PORT);
+    if ((status == MMAGIC_STATUS_SOCKET_LISTEN_FAILED) && agent_already_running)
+    {
+        /* Socket may already be open from previous run, try another port */
+        status = tcp_echo_server_start(controller, TCP_ECHCO_SERVER_PORT + mmhal_random_u32(1, 10));
+        printf("TCP echo server ended with status %d\n", status);
+    }
 }
 
 /**

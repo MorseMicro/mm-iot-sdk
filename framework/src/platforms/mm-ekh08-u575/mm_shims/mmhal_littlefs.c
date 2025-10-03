@@ -14,7 +14,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-#include "mmekh08_hal_common.h"
+#include "mm_hal_common.h"
 #include "mmhal_flash.h"
 #include "mmutils.h"
 

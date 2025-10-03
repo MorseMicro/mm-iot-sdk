@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.8.2</span>
+   &#160;<span id="projectnumber">2.9.7</span>
    </div>
   </td>
  </tr>
@@ -96,14 +96,14 @@ $(document).ready(function(){initNavTree('structmmwlan__scan__args.html',''); in
 <div class="textblock"><p >Structure to hold scan arguments. </p>
 <p >This structure should be initialized using <a class="el" href="group__MMWLAN__CTRL.html#ga185c90a221a8b25584fa41b8f33c2783">MMWLAN_SCAN_ARGS_INIT</a> for forward compatibility. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00941">941</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01184">1184</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 </div>
 <p><code>#include &lt;<a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Data Fields</h2></td></tr>
 <tr class="memitem:ae97bb04cac794a2be4dfa2c74dae1c6b"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__scan__args.html#ae97bb04cac794a2be4dfa2c74dae1c6b">dwell_time_ms</a></td></tr>
-<tr class="memdesc:ae97bb04cac794a2be4dfa2c74dae1c6b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Time to dwell on a channel waiting for probe responses/beacons.  <a href="structmmwlan__scan__args.html#ae97bb04cac794a2be4dfa2c74dae1c6b">More...</a><br /></td></tr>
+<tr class="memdesc:ae97bb04cac794a2be4dfa2c74dae1c6b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Minimum time to dwell on a channel waiting for probe responses/beacons.  <a href="structmmwlan__scan__args.html#ae97bb04cac794a2be4dfa2c74dae1c6b">More...</a><br /></td></tr>
 <tr class="separator:ae97bb04cac794a2be4dfa2c74dae1c6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a404204866cd8ab0cac645b48ee53f36a"><td class="memItemLeft" align="right" valign="top">uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__scan__args.html#a404204866cd8ab0cac645b48ee53f36a">extra_ies</a></td></tr>
 <tr class="memdesc:a404204866cd8ab0cac645b48ee53f36a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extra Information Elements to include in Probe Request frames.  <a href="structmmwlan__scan__args.html#a404204866cd8ab0cac645b48ee53f36a">More...</a><br /></td></tr>
@@ -117,8 +117,30 @@ Data Fields</h2></td></tr>
 <tr class="memitem:ae90eb4d35c4fac1980702f678e8ef1ff"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__scan__args.html#ae90eb4d35c4fac1980702f678e8ef1ff">ssid_len</a></td></tr>
 <tr class="memdesc:ae90eb4d35c4fac1980702f678e8ef1ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Length of the SSID.  <a href="structmmwlan__scan__args.html#ae90eb4d35c4fac1980702f678e8ef1ff">More...</a><br /></td></tr>
 <tr class="separator:ae90eb4d35c4fac1980702f678e8ef1ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab3d53a2735ea71f92a271b3416a9eda5"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__scan__args.html#ab3d53a2735ea71f92a271b3416a9eda5">dwell_on_home_ms</a></td></tr>
+<tr class="memdesc:ab3d53a2735ea71f92a271b3416a9eda5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Time to dwell on home channel in between channels during a scan, to allow traffic to still pass.  <a href="structmmwlan__scan__args.html#ab3d53a2735ea71f92a271b3416a9eda5">More...</a><br /></td></tr>
+<tr class="separator:ab3d53a2735ea71f92a271b3416a9eda5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Field Documentation</h2>
+<a id="ab3d53a2735ea71f92a271b3416a9eda5" name="ab3d53a2735ea71f92a271b3416a9eda5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab3d53a2735ea71f92a271b3416a9eda5">&#9670;&nbsp;</a></span>dwell_on_home_ms</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t mmwlan_scan_args::dwell_on_home_ms</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Time to dwell on home channel in between channels during a scan, to allow traffic to still pass. </p>
+<p >This will only perform while connected to an AP and is ignored otherwise. If set to 0, the device will not return to the home channel during the scan. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01212">1212</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+
+</div>
+</div>
 <a id="ae97bb04cac794a2be4dfa2c74dae1c6b" name="ae97bb04cac794a2be4dfa2c74dae1c6b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae97bb04cac794a2be4dfa2c74dae1c6b">&#9670;&nbsp;</a></span>dwell_time_ms</h2>
 
@@ -131,10 +153,10 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Time to dwell on a channel waiting for probe responses/beacons. </p>
-<dl class="section note"><dt>Note</dt><dd>This includes the time it takes to actually tune to the channel. </dd></dl>
+<p>Minimum time to dwell on a channel waiting for probe responses/beacons. </p>
+<dl class="section note"><dt>Note</dt><dd>There is some additional delay applied on top of this to allow for tuning to each channel and sending a probe request. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00948">948</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01192">1192</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -153,7 +175,7 @@ Data Fields</h2></td></tr>
 <p>Extra Information Elements to include in Probe Request frames. </p>
 <p >May be <code>NULL</code> if <code>extra_ies_len</code> is zero. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00953">953</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01197">1197</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -171,7 +193,7 @@ Data Fields</h2></td></tr>
 
 <p>Length of <code>extra_ies</code>. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00955">955</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01199">1199</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -190,7 +212,7 @@ Data Fields</h2></td></tr>
 <p>SSID used for scan. </p>
 <p >May be <code>NULL</code>, with <code>ssid_len</code> set to zero for an undirected scan. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00960">960</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01204">1204</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -208,7 +230,7 @@ Data Fields</h2></td></tr>
 
 <p>Length of the SSID. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00962">962</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01206">1206</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>

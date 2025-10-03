@@ -12,6 +12,24 @@
 #include "stm32h7xx_hal_flash.h"
 #include "stm32h7xx_hal_flash_ex.h"
 
+const struct mmhal_flash_partition_config* mmhal_get_mmconfig_partition(void)
+{
+    /** Start of MMCONFIG region in flash. */
+    extern uint8_t mmconfig_start;
+
+    /** End of MMCONFIG region in flash. */
+    extern uint8_t mmconfig_end;
+
+    static struct mmhal_flash_partition_config mmconfig_partition =
+        MMHAL_FLASH_PARTITION_CONFIG_DEFAULT;
+
+    mmconfig_partition.partition_start = (uint32_t) &mmconfig_start;
+    mmconfig_partition.partition_size = (uint32_t) (&mmconfig_end - &mmconfig_start);
+    mmconfig_partition.not_memory_mapped = false;
+
+    return &mmconfig_partition;
+}
+
 uint32_t mmhal_flash_getblocksize(uint32_t block_address)
 {
     if ((block_address >= FLASH_BASE) && (block_address < FLASH_BASE + FLASH_SIZE))
@@ -121,4 +139,9 @@ int mmhal_flash_write(uint32_t write_address, const uint8_t *data, size_t size)
     HAL_FLASH_Lock();
 
     return retval;
+}
+
+const struct lfs_config* mmhal_get_littlefs_config(void)
+{
+    return NULL;
 }

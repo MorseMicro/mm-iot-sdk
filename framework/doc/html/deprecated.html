@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.8.2</span>
+   &#160;<span id="projectnumber">2.9.7</span>
    </div>
   </td>
  </tr>
@@ -93,10 +93,16 @@ $(document).ready(function(){initNavTree('deprecated.html',''); initResizable();
 <div class="textblock"><dl class="reflist">
 <dt>Global <a class="el" href="group__MMHAL__WLAN__SPI.html#ga8f248d785042a9fb4585dd75d286ceac">mmhal_wlan_clear_spi_irq</a>  (void)</dt>
 <dd><a class="anchor" id="_deprecated000001"></a>Do not invoke this function because it is deprecated and will be removed from the mmhal API in a future release. This function need not be implemented as a weak stub is used in morselib.  </dd>
-<dt>Global <a class="el" href="group__MMOSAL__TASKS.html#ga0cdd217c5ff65498813d12367fd9a394">mmosal_task_join</a>  (struct mmosal_task *task)</dt>
+<dt>Global <a class="el" href="group__MMOSAL__DEPRECATED.html#gaae85012294eac142c84cee6889a61d11">mmosal_task_notify</a>  (struct mmosal_task *task)</dt>
+<dd><a class="anchor" id="_deprecated000003"></a>Do not invoke this function because it is deprecated and will be removed from the mmosal API in a future release.  </dd>
+<dt>Global <a class="el" href="group__MMOSAL__DEPRECATED.html#ga10a70bf367b5d46a7cd46a726e744766">mmosal_task_notify_from_isr</a>  (struct mmosal_task *task)</dt>
+<dd><a class="anchor" id="_deprecated000004"></a>Do not invoke this function because it is deprecated and will be removed from the mmosal API in a future release.  </dd>
+<dt>Global <a class="el" href="group__MMOSAL__DEPRECATED.html#gab10e895f652b30de6087629437ce3c2a">mmosal_task_wait_for_notification</a>  (uint32_t timeout_ms)</dt>
 <dd><a class="anchor" id="_deprecated000002"></a>Do not invoke this function because it is deprecated and will be removed from the mmosal API in a future release.  </dd>
+<dt>Global <a class="el" href="group__MMWLAN__CTRL.html#ga9cdcf82a952afa692f82430f1d6b93a0">mmwlan_sta_enable</a>  (const struct <a class="el" href="structmmwlan__sta__args.html" title="Arguments data structure for mmwlan_sta_enable().">mmwlan_sta_args</a> *args, mmwlan_sta_status_cb_t sta_status_cb)</dt>
+<dd><a class="anchor" id="_deprecated000005"></a>The <code>sta_status_cb</code> parameter should not be used. Please use <code>mmwlan_sta_args.ext_sta_status_cb</code> as the preferred callback method. </dd>
 <dt>Global <a class="el" href="structmmwlan__standby__config.html#a7b3e29994039d5c636288479ba316c14">mmwlan_standby_config::bss_inactivity_before_snooze_s</a>  </dt>
-<dd><a class="anchor" id="_deprecated000003"></a>This parameter is no longer used and will be removed in a future release. </dd>
+<dd><a class="anchor" id="_deprecated000006"></a>This parameter is no longer used and will be removed in a future release. </dd>
 </dl>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->

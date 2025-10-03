@@ -71,6 +71,11 @@ u8 * hostapd_eid_he_operation(struct hostapd_data *hapd, u8 *eid);
 u8 * hostapd_eid_he_mu_edca_parameter_set(struct hostapd_data *hapd, u8 *eid);
 u8 * hostapd_eid_spatial_reuse(struct hostapd_data *hapd, u8 *eid);
 u8 * hostapd_eid_he_6ghz_band_cap(struct hostapd_data *hapd, u8 *eid);
+u8 * hostapd_eid_s1g_oper(struct hostapd_data *hapd, u8 *eid);
+u8 * hostapd_eid_s1g_capab(struct hostapd_data *hapd, u8 *eid);
+u8 * hostapd_eid_s1g_beacon_compat(struct hostapd_data *hapd, u8 *eid);
+u8 * hostapd_eid_s1g_short_beacon_int(struct hostapd_data *hapd, u8 *eid);
+u8 * hostapd_eid_aid_response(struct hostapd_data *hapd, u8 *eid, le16 aid);
 
 int hostapd_ht_operation_update(struct hostapd_iface *iface);
 void ieee802_11_send_sa_query_req(struct hostapd_data *hapd,
@@ -149,6 +154,8 @@ int hostapd_update_time_adv(struct hostapd_data *hapd);
 void hostapd_client_poll_ok(struct hostapd_data *hapd, const u8 *addr);
 u8 * hostapd_eid_bss_max_idle_period(struct hostapd_data *hapd, u8 *eid,
 				     u16 value);
+
+u32 hostapd_s1g_get_oper_config(struct hostapd_iface *iface);
 
 int auth_sae_init_committed(struct hostapd_data *hapd, struct sta_info *sta);
 #ifdef CONFIG_SAE

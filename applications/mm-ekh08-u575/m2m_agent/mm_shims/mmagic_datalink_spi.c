@@ -79,6 +79,8 @@ struct mmagic_datalink_agent
     struct mmosal_semb *tx_buf_complete_semb;
     /** Current deep sleep mode of the data link. */
     enum mmagic_datalink_agent_deep_sleep_mode deep_sleep_mode;
+    /** Binary semaphore to signal the receive task when there is data available. */
+    struct mmosal_semb *rx_task_semb;
 };
 
 /** Ack payload for transmission on successful reception of @c MMAGIC_DATALINK_WRITE payload. */
@@ -252,7 +254,7 @@ static void mmagic_datalink_agent_handle_spi_tx_cplt(struct mmagic_datalink_agen
     {
     case MMAGIC_DATALINK_AGENT_STATE_C2A_ACK:
         /* Only notify rx thread once the ACK has been sent */
-        mmosal_task_notify_from_isr(agent_dl->rx_task_handle);
+        mmosal_semb_give_from_isr(agent_dl->rx_task_semb);
         mmagic_datalink_agent_configure_rx_idle(agent_dl);
         break;
 
@@ -363,11 +365,11 @@ static void mmagic_datalink_agent_handle_spi_rx_cplt(struct mmagic_datalink_agen
         break;
 
     case MMAGIC_DATALINK_AGENT_STATE_C2A_PAYLOAD:
-        mmosal_task_notify_from_isr(agent_dl->rx_task_handle);
+        mmosal_semb_give_from_isr(agent_dl->rx_task_semb);
         break;
 
     default:
-        /* We shouldn't be recieving in any other state. */
+        /* We shouldn't be receiving in any other state. */
         MMOSAL_ASSERT(false);
         break;
     }
@@ -375,7 +377,7 @@ static void mmagic_datalink_agent_handle_spi_rx_cplt(struct mmagic_datalink_agen
 
 /**
  * Function to handle any SPI bus errors that occur. It will attempt to recover and put the agent
- * back into a recoverable state. If this is not possible it will asset.
+ * back into a recoverable state. If this is not possible it will assert.
  *
  * @note This is expected to be called from ISR context.
  *
@@ -385,10 +387,6 @@ static void mmagic_datalink_agent_handle_spi_error(struct mmagic_datalink_agent 
 {
     switch (agent_dl->state)
     {
-    case MMAGIC_DATALINK_AGENT_STATE_IDLE:
-        mmagic_datalink_agent_configure_rx_idle(agent_dl);
-        break;
-
     case MMAGIC_DATALINK_AGENT_STATE_C2A_PAYLOAD:
         agent_dl->rx_packet_len = 0;
         mmagic_datalink_agent_configure_rx_idle(agent_dl);
@@ -467,12 +465,12 @@ static void mmagic_datalink_agent_rx_task(void *arg)
             agent_dl->rx_buffer_callback(agent_dl, agent_dl->rx_buffer_cb_arg, rx_buf);
         }
 
-        mmosal_task_wait_for_notification(UINT32_MAX);
+        mmosal_semb_wait(agent_dl->rx_task_semb, UINT32_MAX);
     }
     agent_dl->rx_task_has_finished = true;
 }
 
-void MMAGIC_DATALINK_AGENT_WAKE_HANLDER(void)
+void MMAGIC_DATALINK_AGENT_WAKE_HANDLER(void)
 {
     struct mmagic_datalink_agent *agent_dl = mmagic_datalink_agent_get();
 
@@ -535,21 +533,26 @@ struct mmagic_datalink_agent *mmagic_datalink_agent_init(
                                                        MMAGIC_DATALINK_AGENT_ALLOC_PADDING_BYTES);
     if (!agent_dl->rx_packet_buf)
     {
-        return NULL;
+        goto failure;
     }
 
     agent_dl->tx_buf_complete_semb = mmosal_semb_create("tx_complete");
     if (!agent_dl->tx_buf_complete_semb)
     {
-        return NULL;
+        goto failure;
+    }
+
+    agent_dl->rx_task_semb = mmosal_semb_create("rx_task");
+    if (!agent_dl->rx_task_semb)
+    {
+        goto failure;
     }
 
     agent_dl->rx_task_handle = mmosal_task_create(mmagic_datalink_agent_rx_task, agent_dl,
                                                   MMOSAL_TASK_PRI_HIGH, 512, "mmagic_datalink_rx");
     if (!agent_dl->rx_task_handle)
     {
-        mmosal_semb_delete(agent_dl->tx_buf_complete_semb);
-        return NULL;
+        goto failure;
     }
 
     agent_dl->spi_handle = &hspi2;
@@ -567,6 +570,18 @@ struct mmagic_datalink_agent *mmagic_datalink_agent_init(
     }
 
     return agent_dl;
+
+failure:
+    mmosal_free(agent_dl->rx_packet_buf);
+    if (agent_dl->rx_task_semb != NULL)
+    {
+        mmosal_semb_delete(agent_dl->rx_task_semb);
+    }
+    if (agent_dl->tx_buf_complete_semb != NULL)
+    {
+        mmosal_semb_delete(agent_dl->tx_buf_complete_semb);
+    }
+    return NULL;
 }
 
 void mmagic_datalink_agent_deinit(struct mmagic_datalink_agent *agent_dl)
@@ -577,13 +592,20 @@ void mmagic_datalink_agent_deinit(struct mmagic_datalink_agent *agent_dl)
     }
 
     agent_dl->shutdown = true;
-    mmosal_task_notify(agent_dl->rx_task_handle);
+    mmosal_semb_give(agent_dl->rx_task_semb);
     while (!agent_dl->rx_task_has_finished)
     {
         mmosal_task_sleep(2);
     }
     mmosal_free(agent_dl->rx_packet_buf);
-    mmosal_semb_delete(agent_dl->tx_buf_complete_semb);
+    if (agent_dl->rx_task_semb != NULL)
+    {
+        mmosal_semb_delete(agent_dl->rx_task_semb);
+    }
+    if (agent_dl->tx_buf_complete_semb != NULL)
+    {
+        mmosal_semb_delete(agent_dl->tx_buf_complete_semb);
+    }
     agent_dl->initialized = false;
 }
 
@@ -595,9 +617,16 @@ struct mmbuf *mmagic_datalink_agent_alloc_buffer_for_tx(size_t header_size, size
 
 int mmagic_datalink_agent_tx_buffer(struct mmagic_datalink_agent *agent_dl, struct mmbuf *buf)
 {
-    /* A quick sanity check, this will not catch all errors. */
-    if ((!buf) || (agent_dl->tx_buf) || (!agent_dl->initialized))
+    const uint32_t buf_len = mmbuf_get_data_length(buf);
+    if ((!buf) || (agent_dl->tx_buf) || (!agent_dl->initialized) || (buf_len == 0) ||
+        (buf_len > UINT16_MAX))
     {
+        MMOSAL_DEV_ASSERT(buf);
+        MMOSAL_DEV_ASSERT(agent_dl->tx_buf == NULL);
+        MMOSAL_DEV_ASSERT(agent_dl->initialized);
+        MMOSAL_DEV_ASSERT(buf_len);
+        MMOSAL_DEV_ASSERT(buf_len <= UINT16_MAX);
+        mmbuf_release(buf);
         return -1;
     }
 
@@ -605,13 +634,12 @@ int mmagic_datalink_agent_tx_buffer(struct mmagic_datalink_agent *agent_dl, stru
     mmbuf_release(agent_dl->pending_release_tx_buf);
     agent_dl->pending_release_tx_buf = NULL;
     agent_dl->tx_buf = buf;
-    uint32_t buf_len = mmbuf_get_data_length(buf);
     agent_dl->tx_payload_len[0] = (uint8_t)(buf_len >> 8);
     agent_dl->tx_payload_len[1] = (uint8_t)(buf_len);
     if (agent_dl->state == MMAGIC_DATALINK_AGENT_STATE_IDLE)
     {
         /* Only raise the ready line if no transaction is in progress. If there is a transaction in
-         * progress the ready line will be set when it conludes. */
+         * progress the ready line will be set when it concludes. */
         mmagic_datalink_agent_set_rdy_high();
     }
     MMOSAL_TASK_EXIT_CRITICAL();
@@ -657,7 +685,7 @@ bool mmagic_datalink_agent_set_deep_sleep_mode(struct mmagic_datalink_agent *age
 }
 
 /*
- * DMA intialization code provided by ST.
+ * DMA initialization code provided by ST.
  *
  * Copyright (c) 2021 STMicroelectronics.
  * All rights reserved.

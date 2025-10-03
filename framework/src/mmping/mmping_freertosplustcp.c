@@ -34,7 +34,8 @@ enum ping_state
 struct ping_session
 {
     /** Ping arguments. */
-    struct {
+    struct
+    {
         /** The local IP address, in binary format. */
         mmipal_ip_addr_t ping_src;
         /** The IP address of the ping target, in binary format. */
@@ -68,13 +69,15 @@ struct ping_session
     volatile uint16_t session_id;
     /** Current ping state. */
     volatile enum ping_state state;
+    /** Handle of the running ping task, or NULL if it is not running. */
+    struct mmosal_task *task_handle;
+    /** Semaphore to notify ping task of state changes. */
+    struct mmosal_semb *semb;
 };
 
 /** The current ping session. At present we only support a single session, but in future this
  *  may be an array of sessions. */
 static struct ping_session ping_session;
-/** Handle of the running ping task, or NULL if it is not running. */
-static struct mmosal_task *ping_task_handle;
 /** The next session ID to use. */
 static uint16_t ping_next_session_id;
 
@@ -100,10 +103,7 @@ static void process_ping_acknowledgement(struct ping_session *session)
         }
 
         /* Wake up the ping task to handle the state change. */
-        if (ping_task_handle != NULL)
-        {
-            mmosal_task_notify(ping_task_handle);
-        }
+        mmosal_semb_give(session->semb);
     }
 }
 
@@ -148,7 +148,7 @@ void vApplicationPingReplyHook(ePingReplyStatus_t eStatus,
     else
     {
         FreeRTOS_debug_printf(("Ping reply (%u) received with eStatus = %d\n",
-                              usIdentifier, eStatus));
+                               usIdentifier, eStatus));
     }
 }
 
@@ -214,7 +214,7 @@ static void ping_send(struct ping_session *session)
         ret = FreeRTOS_SendPingRequestIPv6(
             &target_ipv6_address,
             session->args.ping_size,
-            session->args.ping_interval_ms * 1000/mmosal_ticks_per_second());
+            session->args.ping_interval_ms * 1000 / mmosal_ticks_per_second());
     }
     else
 #else
@@ -234,7 +234,7 @@ static void ping_send(struct ping_session *session)
         ret = FreeRTOS_SendPingRequest(
             target_ip_address,
             session->args.ping_size,
-            session->args.ping_interval_ms * 1000/mmosal_ticks_per_second());
+            session->args.ping_interval_ms * 1000 / mmosal_ticks_per_second());
     }
     if (ret == pdFAIL)
     {
@@ -303,33 +303,46 @@ void ping_task(void *arg)
         {
             ping_session_timeout(session);
         }
-
-        uint32_t sleep_time = session->timeout_time_ms - mmosal_get_time_ms();
-        /* Sanity check that the current time hasn't passed the timeout time. */
-        if ((int32_t)sleep_time > 0)
+        else
         {
-            mmosal_task_wait_for_notification(sleep_time);
+            uint32_t sleep_time = session->timeout_time_ms - mmosal_get_time_ms();
+            /* Sanity check that the current time hasn't passed the timeout time. */
+            if ((int32_t)sleep_time > 0)
+            {
+                mmosal_semb_wait(session->semb, sleep_time);
+            }
         }
     }
 
-    FreeRTOS_debug_printf((
-        "Ping summary: %lu sent/%lu received (%lu%% loss) %lu/%lu/%lu min/avg/max RTT ms\n",
-         session->stats.ping_total_count, session->stats.ping_recv_count,
-         (session->stats.ping_total_count - session->stats.ping_recv_count) * 100 /
-                        session->stats.ping_total_count,
-         session->stats.ping_min_time_ms,
-         session->rtt_sum_ms/session->stats.ping_recv_count,
-         session->stats.ping_max_time_ms));
+    FreeRTOS_debug_printf(("Ping summary: %lu sent/%lu received "
+                           "(%lu%% loss) %lu/%lu/%lu min/avg/max RTT ms\n",
+                           session->stats.ping_total_count, session->stats.ping_recv_count,
+                           (session->stats.ping_total_count - session->stats.ping_recv_count) *
+                           100 /
+                           session->stats.ping_total_count,
+                           session->stats.ping_min_time_ms,
+                           session->rtt_sum_ms / session->stats.ping_recv_count,
+                           session->stats.ping_max_time_ms));
 
-    ping_task_handle = NULL;
+    mmosal_semb_delete(session->semb);
+    session->semb = NULL;
+    session->task_handle = NULL;
 }
 
-void mmping_stats(struct mmping_stats* stats)
+void mmping_stats(struct mmping_stats *stats)
 {
     struct ping_session *session = &ping_session;
     *stats = session->stats;
     stats->ping_is_running = (session->state != PING_IDLE);
-    stats->ping_avg_time_ms = session->rtt_sum_ms / session->stats.ping_recv_count;
+    if (session->stats.ping_recv_count != 0)
+    {
+        stats->ping_avg_time_ms = session->rtt_sum_ms / session->stats.ping_recv_count;
+    }
+    else
+    {
+        stats->ping_avg_time_ms = 0;
+    }
+
     if (stats->ping_receiver[0] == '\0')
     {
         mmosal_safer_strcpy(stats->ping_receiver, session->args.ping_target, MMPING_IPADDR_MAXLEN);
@@ -340,9 +353,14 @@ void mmping_stop(void)
 {
     struct ping_session *session = &ping_session;
     session->state = PING_IDLE;
-    if (ping_task_handle != NULL)
+
+    if (session->semb != NULL)
     {
-        mmosal_task_notify(ping_task_handle);
+        mmosal_semb_give(session->semb);
+    }
+    while (session->task_handle != NULL)
+    {
+        mmosal_task_sleep(50);
     }
 }
 
@@ -350,7 +368,7 @@ static struct ping_session *ping_get_empty_session(void)
 {
     struct ping_session *session = &ping_session;
 
-    if (session->state == PING_IDLE)
+    if (session->state == PING_IDLE && session->task_handle == NULL)
     {
         return session;
     }
@@ -360,7 +378,7 @@ static struct ping_session *ping_get_empty_session(void)
     }
 }
 
-uint16_t mmping_start(const struct mmping_args* args)
+uint16_t mmping_start(const struct mmping_args *args)
 {
     if (args->ping_size < MMPING_MIN_DATA_SIZE || args->ping_size > MMPING_MAX_DATA_SIZE)
     {
@@ -421,24 +439,24 @@ uint16_t mmping_start(const struct mmping_args* args)
         session->args.ping_count = MMPING_MAX_COUNT;
     }
 
-    /* There will be an unlikely race condition where the ping thread could be terminating
-     * but still be non-NULL. Then the session will not run. But it is very unlikely bordering
-     * impossible. */
-    if (ping_task_handle == NULL)
+    session->semb = mmosal_semb_create("ping");
+    if (session->semb == NULL)
     {
-        ping_task_handle = mmosal_task_create(ping_task, NULL, MMOSAL_TASK_PRI_LOW,
-                                              512, "ping_request");
-        if (ping_task_handle == NULL)
-        {
-            session->stats.ping_is_running = false;
-            return 0;
-        }
+        session->stats.ping_is_running = false;
+        session->state = PING_IDLE;
+        return 0;
     }
-    else
+
+    session->task_handle = mmosal_task_create(ping_task, NULL, MMOSAL_TASK_PRI_LOW,
+                                              512, "ping_request");
+    if (session->task_handle == NULL)
     {
-        /* Ping task is running, but probably asleep. Wake it up so we can send immediately. */
-        mmosal_task_notify(ping_task_handle);
-        FreeRTOS_debug_printf(("Ping task already running\n"));
+        mmosal_semb_delete(session->semb);
+        session->semb = NULL;
+
+        session->stats.ping_is_running = false;
+        session->state = PING_IDLE;
+        return 0;
     }
 
     return session->session_id;

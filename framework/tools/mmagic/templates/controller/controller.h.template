@@ -28,8 +28,9 @@
  * * Include mmagic_controller.h in your application to integrate the Controller functionality.
  */
 
+#include <stdbool.h>
 #include <stddef.h>
-
+#include <memory.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -56,6 +57,42 @@ extern "C" {
     {%- endfor %}
 };
 {% endfor %}
+
+{% for maxlen in config.string_maxlens %}
+/** String type with maximum length of {{maxlen}} (excluding null terminator). */
+struct MM_PACKED string{{maxlen}}
+{
+    /** Length of string contents (excluding null terminator). */
+    {%- if maxlen < 255 %}
+    uint8_t len;
+    {%- elif maxlen < 65535 %}
+    uint16_t len;
+    {%- else %}
+    uint32_t len;
+    {%endif %}
+
+    /** The string contents. */
+    char data[{{maxlen}} + 1];
+};
+{% endfor -%}
+
+{% for maxlen in config.raw_maxlens %}
+/** Raw octet string type with maximum length of {{maxlen}}. */
+struct MM_PACKED raw{{maxlen}}
+{
+    /** Length of @c data. */
+    {%- if maxlen < 256 %}
+    uint8_t len;
+    {%- elif maxlen < 65536 %}
+    uint16_t len;
+    {%- else %}
+    uint32_t len;
+    {%endif %}
+
+    /** The acutal data buffer. */
+    uint8_t data[{{maxlen}}];
+};
+{% endfor -%}
 
 {% for struct in config.structs %}
 /** {{struct.description}} */
@@ -108,7 +145,7 @@ typedef void (*mmagic_controller_agent_start_cb_t)(struct mmagic_controller *con
  */
 struct mmagic_controller_init_args
 {
-    /** Callback function to executed any time a event that the agent has started is received.*/
+    /** Callback function to executed any time a event that the agent has started is received. */
     mmagic_controller_agent_start_cb_t agent_start_cb;
     /** User argument that will be passed when the agent_start_cb is executed. */
     void *agent_start_arg;
@@ -150,6 +187,9 @@ void mmagic_controller_deinit(struct mmagic_controller *controller);
 /** The stream ID of the control stream */
 #define CONTROL_STREAM  0
 
+/** The default timeout when waiting for a response from a command sent to the agent in ms. */
+#define MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS 1000
+
 /**
  * Sends a command to the agent.
  *
@@ -180,13 +220,47 @@ enum mmagic_status mmagic_controller_tx(
  * @param buffer        A pointer to a buffer to load with any returned data.
                         May be NULL if none.
  * @param buffer_length Length of above buffer.
+ * @param timeout_ms    The time in milliseconds to wait for a response from the agent,
+                        set to @c UINT32_MAX for an indefinite wait.
  *
  * @return              MMAGIC_STATUS_OK on success, else an error code.
  */
 enum mmagic_status mmagic_controller_rx(struct mmagic_controller* controller, uint8_t stream_id, uint8_t submodule_id,
                          uint8_t command_id, uint8_t subcommand_id,
-                         uint8_t* buffer, size_t buffer_length);
+                         uint8_t* buffer, size_t buffer_length, uint32_t timeout_ms);
 
+/**
+ * Sends a sync request to the agent and waits for a sync response.
+ *
+ * This function will block waiting for a response from the agent or until the provided timeout
+ * duration elapses.
+ *
+ * @param  controller Controller context.
+ * @param  timeout_ms Duration to wait for a sync response from the agent.
+ *
+ * @return            MMAGIC_STATUS_OK on successful sync, else an appropriate error code.
+ */
+enum mmagic_status mmagic_controller_agent_sync(struct mmagic_controller *controller,
+                                                uint32_t timeout_ms);
+
+/**
+ * Sends a reset request to the agent.
+ *
+ * A reset is considered successful when the agent returns a start notification. On success, the
+ * controller @c agent_start_cb function will be executed.
+ *
+ * @note This function will return once a reset request has been transmitted. It is up to the
+ * application to handle waiting for the start callback to be called.
+ *
+ * @note Both this function and @ref mmagic_controller_sys_reset will perform a soft reset of the
+ * agent, however this function should be preferred as the reset is handled at a lower layer in the
+ * agents MMAGIC stack.
+ *
+ * @param  controller Controller context.
+ *
+ * @return            MMAGIC_STATUS_OK on successful transmission, else an error code.
+ */
+enum mmagic_status mmagic_controller_request_agent_reset(struct mmagic_controller *controller);
 
 {% for module in config.modules %}
 {% if module.configs -%}
@@ -223,7 +297,7 @@ enum mmagic_{{module.name}}_cmd
 
 {% for module in config.modules %}
 /**
- * @defgroup MMAGIC_CONTROLLER_{{module.name.upper()}} {{module.description}} subsystem ({{module.name}})
+ * @defgroup MMAGIC_CONTROLLER_{{module.name.upper()}} Module {{ module.name }}: {{ module.description }}
  * @{
  */
 
@@ -252,7 +326,7 @@ static inline enum mmagic_status mmagic_controller_get_{{module.name}}_{{var.nam
     {
         return status;
     }
-    status = mmagic_controller_rx(controller, CONTROL_STREAM, {{mm.module_label(config, module)}}, {{mm.cmd_label(config, module, "get")}}, {{mm.var_label(config, module, var)}}, (uint8_t*) var, sizeof(*var));
+    status = mmagic_controller_rx(controller, CONTROL_STREAM, {{mm.module_label(config, module)}}, {{mm.cmd_label(config, module, "get")}}, {{mm.var_label(config, module, var)}}, (uint8_t*) var, sizeof(*var), MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -275,10 +349,10 @@ static inline enum mmagic_status mmagic_controller_set_{{module.name}}_{{var.nam
     {
         return status;
     }
-    status = mmagic_controller_rx(controller, CONTROL_STREAM, {{mm.module_label(config, module)}}, {{mm.cmd_label(config, module, "set")}}, {{mm.var_label(config, module, var)}}, NULL, 0);
+    status = mmagic_controller_rx(controller, CONTROL_STREAM, {{mm.module_label(config, module)}}, {{mm.cmd_label(config, module, "set")}}, {{mm.var_label(config, module, var)}}, NULL, 0, MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
-{% elif var.type.startswith("struct_string") %}
+{% elif var.type.startswith("string") %}
 /**
  * Sets @c {{var.name}} setting for module @c {{module.name}}.
  *
@@ -305,7 +379,7 @@ static inline enum mmagic_status mmagic_controller_set_{{module.name}}_{{var.nam
     {
         return status;
     }
-    status = mmagic_controller_rx(controller, CONTROL_STREAM, {{mm.module_label(config, module)}}, {{mm.cmd_label(config, module, "set")}}, {{mm.var_label(config, module, var)}}, NULL, 0);
+    status = mmagic_controller_rx(controller, CONTROL_STREAM, {{mm.module_label(config, module)}}, {{mm.cmd_label(config, module, "set")}}, {{mm.var_label(config, module, var)}}, NULL, 0, MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 {% else -%}
@@ -327,7 +401,7 @@ static inline enum mmagic_status mmagic_controller_set_{{module.name}}_{{var.nam
     {
         return status;
     }
-    status = mmagic_controller_rx(controller, CONTROL_STREAM, {{mm.module_label(config, module)}}, {{mm.cmd_label(config, module, "set")}}, {{mm.var_label(config, module, var)}}, NULL, 0);
+    status = mmagic_controller_rx(controller, CONTROL_STREAM, {{mm.module_label(config, module)}}, {{mm.cmd_label(config, module, "set")}}, {{mm.var_label(config, module, var)}}, NULL, 0, MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 {% endif -%}
@@ -348,7 +422,7 @@ static inline enum mmagic_status mmagic_controller_{{module.name}}_commit_all(st
     {
         return status;
     }
-    status = mmagic_controller_rx(controller, CONTROL_STREAM, {{mm.module_label(config, module)}}, {{mm.cmd_label(config, module, "commit")}}, 0, NULL, 0);
+    status = mmagic_controller_rx(controller, CONTROL_STREAM, {{mm.module_label(config, module)}}, {{mm.cmd_label(config, module, "commit")}}, 0, NULL, 0, MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -432,45 +506,69 @@ static inline enum mmagic_status mmagic_controller_{{module.name}}_{{command.nam
 {%- endif %}
 {
     enum mmagic_status status;
-    uint8_t stream_id = CONTROL_STREAM;
 {%- if command.stream_type %}
-    stream_id = cmd_args->stream_id;
+    const uint8_t stream_id = cmd_args->stream_id;
+{%- else %}
+    const uint8_t stream_id = CONTROL_STREAM;
 {%- endif %}
 {#- Special handling for sys-reset since it does not return a response #}
 {%- if module.name == "sys" and command.name == "reset" %}
     status = mmagic_controller_tx(controller, stream_id, {{mm.module_label(config, module)}},
         {{mm.cmd_label(config, module, command.name)}}, 0, NULL, 0);
 {%- elif command.command_args %}
+{%- if command.response_timeout_ms %}
+    uint32_t response_timeout_ms = {{command.response_timeout_ms}};
+{% else %}
+    uint32_t response_timeout_ms = MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS;
+{% endif %}
+{%- for arg in command.command_args %}
+{%- if arg.name == "timeout" %}
+    /* Account for the timeout argument when waiting for the response and make sure no overflow. */
+    if (UINT32_MAX - response_timeout_ms >= cmd_args->timeout )
+    {
+        response_timeout_ms += cmd_args->timeout;
+    }
+    else
+    {
+        response_timeout_ms = UINT32_MAX;
+    }
+{% endif %}
+{% endfor %}
 {%- if command.response_args %}
     status = mmagic_controller_tx(controller, stream_id, {{mm.module_label(config, module)}}, {{mm.cmd_label(config, module, command.name)}}, 0, (uint8_t*) cmd_args, sizeof(*cmd_args));
     if (status != MMAGIC_STATUS_OK)
     {
         return status;
     }
-    status = mmagic_controller_rx(controller, stream_id, {{mm.module_label(config, module)}}, {{mm.cmd_label(config, module, command.name)}}, 0, (uint8_t*) rsp_args, sizeof(*rsp_args));
+    status = mmagic_controller_rx(controller, stream_id, {{mm.module_label(config, module)}}, {{mm.cmd_label(config, module, command.name)}}, 0, (uint8_t*) rsp_args, sizeof(*rsp_args), response_timeout_ms);
 {%- else %}
     status = mmagic_controller_tx(controller, stream_id, {{mm.module_label(config, module)}}, {{mm.cmd_label(config, module, command.name)}}, 0, (uint8_t*) cmd_args, sizeof(*cmd_args));
     if (status != MMAGIC_STATUS_OK)
     {
         return status;
     }
-    status = mmagic_controller_rx(controller, stream_id, {{mm.module_label(config, module)}}, {{mm.cmd_label(config, module, command.name)}}, 0, NULL, 0);
+    status = mmagic_controller_rx(controller, stream_id, {{mm.module_label(config, module)}}, {{mm.cmd_label(config, module, command.name)}}, 0, NULL, 0, response_timeout_ms);
 {%- endif %}
 {%- else %}
+{%- if command.response_timeout_ms %}
+    uint32_t response_timeout_ms = {{command.response_timeout_ms}};
+{% else %}
+    uint32_t response_timeout_ms = MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS;
+{% endif %}
 {%- if command.response_args %}
     status = mmagic_controller_tx(controller, stream_id, {{mm.module_label(config, module)}}, {{mm.cmd_label(config, module, command.name)}}, 0, NULL, 0);
     if (status != MMAGIC_STATUS_OK)
     {
         return status;
     }
-    status = mmagic_controller_rx(controller, stream_id, {{mm.module_label(config, module)}}, {{mm.cmd_label(config, module, command.name)}}, 0, (uint8_t*) rsp_args, sizeof(*rsp_args));
+    status = mmagic_controller_rx(controller, stream_id, {{mm.module_label(config, module)}}, {{mm.cmd_label(config, module, command.name)}}, 0, (uint8_t*) rsp_args, sizeof(*rsp_args), response_timeout_ms);
 {%- else %}
     status = mmagic_controller_tx(controller, stream_id, {{mm.module_label(config, module)}}, {{mm.cmd_label(config, module, command.name)}}, 0, NULL, 0);
     if (status != MMAGIC_STATUS_OK)
     {
         return status;
     }
-    return mmagic_controller_rx(controller, stream_id, {{mm.module_label(config, module)}}, {{mm.cmd_label(config, module, command.name)}}, 0, NULL, 0);
+    return mmagic_controller_rx(controller, stream_id, {{mm.module_label(config, module)}}, {{mm.cmd_label(config, module, command.name)}}, 0, NULL, 0, response_timeout_ms);
 {%- endif %}
 {%- endif %}
     return status;
@@ -498,10 +596,10 @@ struct MM_PACKED mmagic_{{module.name}}_{{event.name}}_event_args
  *
  * @warning This function must not invoke any mmagic API functions.
  *
- * @param args  Notication arguments received from the agent.
- * @param arg   Opaque argument that was provided when the callbcak was registered.
+ * @param event_args  Notication arguments received from the agent.
+ * @param arg         Opaque argument that was provided when the callback was registered.
  */
-typedef void (*mmagic_{{module.name}}_{{event.name}}_event_handler_t)(const struct mmagic_{{module.name}}_{{event.name}}_event_args *args, void *arg);
+typedef void (*mmagic_{{module.name}}_{{event.name}}_event_handler_t)(const struct mmagic_{{module.name}}_{{event.name}}_event_args *event_args, void *arg);
 {%-else %}
 /**
  * Handler for the {{module.name}}-{{event.name}} event.

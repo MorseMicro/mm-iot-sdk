@@ -4,33 +4,32 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
- /**
-  * @ingroup MMAPP
-  * @defgroup MMPING Morse Micro Ping
-  *
-  * This is the ICMP echo (ping) request implementation.
-  *
-  * This implementation is designed to be similar to Unix ping, but differs from it in
-  * some respects.
-  *
-  * The behavior of this ping implementation is as follows:
-  *
-  * * A ping request will be sent. The time for the next ping request is calculated as the
-  *   current time plus the given ping interval.
-  * * If the ping response is not received within the ping retry timeout (see below for details)
-  *   then it the ping request will be retransmitted. This will be repeated up to
-  *   @c MMPING_MAX_RETRIES times.
-  * * If @c MMPING_MAX_RETRIES is exceeded or a valid ping reply is received then ping will
-  *   wait until the next ping request time calculated above before proceeding to send the
-  *   next ping request. If this time has already elapsed then the next ping request will
-  *   be sent immediately.
-  *
-  * The ping retry timeout is calculated as the 2 times average RTT if one or more ping responses
-  * have been received, otherwise it will be @c MMPING_INITIAL_RETRY_INTERVAL_MS.
-  *
-  * @{
-  */
-
+/**
+ * @ingroup MMAPP
+ * @defgroup MMPING Morse Micro Ping
+ *
+ * This is the ICMP echo (ping) request implementation.
+ *
+ * This implementation is designed to be similar to Unix ping, but differs from it in
+ * some respects.
+ *
+ * The behavior of this ping implementation is as follows:
+ *
+ * * A ping request will be sent. The time for the next ping request is calculated as the
+ *   current time plus the given ping interval.
+ * * If the ping response is not received within the ping retry timeout (see below for details)
+ *   then it the ping request will be retransmitted. This will be repeated up to
+ *   @c MMPING_MAX_RETRIES times.
+ * * If @c MMPING_MAX_RETRIES is exceeded or a valid ping reply is received then ping will
+ *   wait until the next ping request time calculated above before proceeding to send the
+ *   next ping request. If this time has already elapsed then the next ping request will
+ *   be sent immediately.
+ *
+ * The ping retry timeout is calculated as the 2 times average RTT if one or more ping responses
+ * have been received, otherwise it will be @c MMPING_INITIAL_RETRY_INTERVAL_MS.
+ *
+ * @{
+ */
 
 #pragma once
 
@@ -40,7 +39,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 
 /** Default time interval in milliseconds between ping requests. */
 #define MMPING_DEFAULT_PING_INTERVAL_MS                (1000)
@@ -94,11 +92,11 @@ struct mmping_args
 };
 
 /** Initializer for @ref mmping_args. */
-#define MMPING_ARGS_DEFAULT                                                           \
-    {                                                                                 \
-        { 0 }, { 0 }, MMPING_DEFAULT_PING_INTERVAL_MS,                                \
-        MMPING_DEFAULT_PING_COUNT, MMPING_DEFAULT_DATA_SIZE,                          \
-    }
+#define MMPING_ARGS_DEFAULT                                      \
+        {                                                        \
+            { 0 }, { 0 }, MMPING_DEFAULT_PING_INTERVAL_MS,       \
+            MMPING_DEFAULT_PING_COUNT, MMPING_DEFAULT_DATA_SIZE, \
+        }
 
 /**
  * Data structure to store ping results.
@@ -128,7 +126,7 @@ struct mmping_stats
  *
  * @returns the ID for this ping on success, on failure returns 0.
  */
-uint16_t mmping_start(const struct mmping_args* args);
+uint16_t mmping_start(const struct mmping_args *args);
 
 /**
  * Stop any running ping request.
@@ -142,7 +140,7 @@ void mmping_stop(void);
  *
  * @note Calling @c mmping_start() will reset the ping statistics
  */
-void mmping_stats(struct mmping_stats* stats);
+void mmping_stats(struct mmping_stats *stats);
 
 #ifdef __cplusplus
 }

@@ -16,6 +16,9 @@
 #include "mmagic_core_iperf.h"
 #include "mmagic_core_sys.h"
 #include "mmagic_core_tcp.h"
+#include "mmagic_core_tls.h"
+#include "mmagic_core_ntp.h"
+#include "mmagic_core_mqtt.h"
 
 void mmagic_core_init_modules(struct mmagic_data *core)
 {
@@ -25,11 +28,16 @@ void mmagic_core_init_modules(struct mmagic_data *core)
     mmagic_core_iperf_init(core);
     mmagic_core_sys_init(core);
     mmagic_core_tcp_init(core);
+    mmagic_core_tls_init(core);
+    mmagic_core_ntp_init(core);
+    mmagic_core_mqtt_init(core);
 
     mmagic_core_wlan_load_all(core);
     mmagic_core_ip_load_all(core);
     mmagic_core_ping_load_all(core);
     mmagic_core_iperf_load_all(core);
+    mmagic_core_tls_load_all(core);
+    mmagic_core_ntp_load_all(core);
 
     mmagic_core_wlan_start(core);
     mmagic_core_ip_start(core);
@@ -37,4 +45,7 @@ void mmagic_core_init_modules(struct mmagic_data *core)
     mmagic_core_iperf_start(core);
     mmagic_core_sys_start(core);
     mmagic_core_tcp_start(core);
+    mmagic_core_tls_start(core);
+    mmagic_core_ntp_start(core);
+    mmagic_core_mqtt_start(core);
 }

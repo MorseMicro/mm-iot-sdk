@@ -97,6 +97,8 @@ struct wpa_bss {
 	size_t ssid_len;
 	/** Frequency of the channel in MHz (e.g., 2412 = channel 1) */
 	int freq;
+	/** Frequency of the channel in kHz */
+	int freq_khz;
 	/** The max channel width supported by both the AP and the STA */
 	enum chan_width max_cw;
 	/** Beacon interval in TUs (host byte order) */

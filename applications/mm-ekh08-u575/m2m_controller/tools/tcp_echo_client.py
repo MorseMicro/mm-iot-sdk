@@ -51,23 +51,34 @@ def tcp_client(host, port, num_packets, num_bytes):
     try:
         client_socket = socket.socket()
         client_socket.connect((host, port))
+        client_socket.settimeout(5)
     except Exception as e:
-        logging.error("Could not connect to specified socket!")
+        logging.error(f"Socket connect failed with error {e}!")
 
-    count = 0
+    count = 1
     error_count = 0
-    while (count < num_packets):
-        count += 1
+    while (count <= num_packets):
         buffer = bytearray(os.urandom(num_bytes))
-        client_socket.send(buffer)
-        echo_data = client_socket.recv(num_bytes)
-        if (buffer != echo_data):
-            logging.error("Received echo data did not match!")
+        try:
+            client_socket.sendall(buffer)
+            echo_data = client_socket.recv(num_bytes)
+            print(f"Received {len(echo_data)} from socket.")
+            if (buffer != echo_data):
+                logging.error("Received echo data did not match!")
+                error_count += 1
+            else:
+                logging.info(f"Successfully sent and received packet {count}")
+            count += 1
+
+        except socket.timeout:
+            logging.error(f"Timeout during send/recv at packet {count}")
             error_count += 1
-        else:
-            logging.info(f"Successfully sent and received packet {count}")
+            time.sleep(1)
+
+    client_socket.shutdown(socket.SHUT_RDWR)
     client_socket.close()
-    logging.info(f"Finished sending {count} packets, Total {error_count} errors.")
+
+    logging.info(f"Finished sending {num_packets} packets, Total {error_count} errors.")
 
 
 def _app_main(args):

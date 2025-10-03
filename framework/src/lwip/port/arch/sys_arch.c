@@ -104,7 +104,7 @@ void sys_mbox_post(sys_mbox_t *mbox, void *msg)
 
 err_t sys_mbox_trypost(sys_mbox_t *mbox, void *msg)
 {
-    bool ok = mmosal_queue_push(*mbox, &msg, 0); //??
+    bool ok = mmosal_queue_push(*mbox, &msg, 0); // ??
     if (!ok)
     {
         SYS_STATS_INC(mbox.err);
@@ -141,14 +141,13 @@ sys_thread_t sys_thread_new(const char *name, lwip_thread_fn thread,
     LWIP_ASSERT("Invalid prio",
                 prio >= MMOSAL_TASK_PRI_MIN && prio <= MMOSAL_TASK_PRI_HIGH);
     enum mmosal_task_priority prio_ = (enum mmosal_task_priority)prio;
-    return mmosal_task_create(thread, arg, prio_, stacksize/4, name);
+    return mmosal_task_create(thread, arg, prio_, stacksize / 4, name);
 }
 
 void sys_init(void)
 {
     /* No initiliasation necessary (but mmosal_init() must have previously been called). */
 }
-
 
 u32_t sys_now(void)
 {

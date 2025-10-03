@@ -5,7 +5,7 @@ var group__MMAGIC__CONTROLLER__WLAN =
       [ "timeout", "structmmagic__core__wlan__connect__cmd__args.html#a786c5e40487d5706009f1bf876b4a903", null ]
     ] ],
     [ "mmagic_core_wlan_scan_cmd_args", "structmmagic__core__wlan__scan__cmd__args.html", [
-      [ "ssid", "structmmagic__core__wlan__scan__cmd__args.html#a8cf308c111c34508129392ac2a22f0e7", null ],
+      [ "ssid", "structmmagic__core__wlan__scan__cmd__args.html#a0e64f1d33435745754c974bf372525eb", null ],
       [ "timeout", "structmmagic__core__wlan__scan__cmd__args.html#a755445c39f80ea89db14bb26a06104a1", null ]
     ] ],
     [ "mmagic_core_wlan_scan_rsp_args", "structmmagic__core__wlan__scan__rsp__args.html", [
@@ -40,15 +40,23 @@ var group__MMAGIC__CONTROLLER__WLAN =
       [ "snooze_period_s", "structmmagic__core__wlan__standby__set__config__cmd__args.html#ab4357e7da3ee6e488a216878a74c3e3d", null ],
       [ "src_ip", "structmmagic__core__wlan__standby__set__config__cmd__args.html#a4ce726d0126c4706895e310c98139025", null ]
     ] ],
+    [ "mmagic_core_wlan_get_sta_status_rsp_args", "structmmagic__core__wlan__get__sta__status__rsp__args.html", [
+      [ "sta_status", "structmmagic__core__wlan__get__sta__status__rsp__args.html#a4927fa92976146044dcbe3789e0af992", null ]
+    ] ],
     [ "mmagic_wlan_beacon_rx_event_args", "structmmagic__wlan__beacon__rx__event__args.html", [
-      [ "vendor_ies", "structmmagic__wlan__beacon__rx__event__args.html#a76186ce9b159eaed80fbadd2835d54cf", null ]
+      [ "vendor_ies", "structmmagic__wlan__beacon__rx__event__args.html#a0a4f69ade03f3b5f9cccfa5009bdea0a", null ]
     ] ],
     [ "mmagic_wlan_standby_exit_event_args", "structmmagic__wlan__standby__exit__event__args.html", [
       [ "reason", "structmmagic__wlan__standby__exit__event__args.html#ae2923e1610857ed280ea38d0a90ca9dc", null ]
     ] ],
-    [ "mmagic_wlan_beacon_rx_event_handler_t", "group__MMAGIC__CONTROLLER__WLAN.html#gaa4f17864fa7ed1222030d6b81b33c18c", null ],
-    [ "mmagic_wlan_standby_exit_event_handler_t", "group__MMAGIC__CONTROLLER__WLAN.html#ga662cb4a420a969980c6c45c95a1e1c03", null ],
+    [ "mmagic_wlan_sta_event_event_args", "structmmagic__wlan__sta__event__event__args.html", [
+      [ "event", "structmmagic__wlan__sta__event__event__args.html#aa913ec8c5d2e25192f2011b29904931f", null ]
+    ] ],
+    [ "mmagic_wlan_beacon_rx_event_handler_t", "group__MMAGIC__CONTROLLER__WLAN.html#gad80e59f2d4499d2d5d701e346d7d1ca1", null ],
+    [ "mmagic_wlan_sta_event_event_handler_t", "group__MMAGIC__CONTROLLER__WLAN.html#gac5f8553d9e9524d938edf44ccf0fadb6", null ],
+    [ "mmagic_wlan_standby_exit_event_handler_t", "group__MMAGIC__CONTROLLER__WLAN.html#ga28e204fbe55bed14f6c96d63e7f9bb22", null ],
     [ "mmagic_controller_register_wlan_beacon_rx_handler", "group__MMAGIC__CONTROLLER__WLAN.html#ga5c30986dc797fd7af634a8c2c160d3cf", null ],
+    [ "mmagic_controller_register_wlan_sta_event_handler", "group__MMAGIC__CONTROLLER__WLAN.html#ga78fffc772cda305a0751522416637255", null ],
     [ "mmagic_controller_register_wlan_standby_exit_handler", "group__MMAGIC__CONTROLLER__WLAN.html#gabfb9028d058933f693fad067019558ce", null ],
     [ "mmagic_controller_wlan_beacon_monitor_disable", "group__MMAGIC__CONTROLLER__WLAN.html#ga7df5b1d97a5ac812a50da2f39137d8b3", null ],
     [ "mmagic_controller_wlan_beacon_monitor_enable", "group__MMAGIC__CONTROLLER__WLAN.html#ga02e16ff1c68e7ad4cb8194a032d30cb6", null ],
@@ -56,6 +64,7 @@ var group__MMAGIC__CONTROLLER__WLAN =
     [ "mmagic_controller_wlan_disconnect", "group__MMAGIC__CONTROLLER__WLAN.html#ga34d5debc340690c5632c29c108f6d73a", null ],
     [ "mmagic_controller_wlan_get_mac_addr", "group__MMAGIC__CONTROLLER__WLAN.html#ga726515dccff0e202821ce192aa226ea7", null ],
     [ "mmagic_controller_wlan_get_rssi", "group__MMAGIC__CONTROLLER__WLAN.html#ga31e4e91f3980525141a6a195c6699414", null ],
+    [ "mmagic_controller_wlan_get_sta_status", "group__MMAGIC__CONTROLLER__WLAN.html#ga44dcd0e8a14955b6c2e018abd8a3cf77", null ],
     [ "mmagic_controller_wlan_scan", "group__MMAGIC__CONTROLLER__WLAN.html#ga9577da447e646511dd89eff2af4a969f", null ],
     [ "mmagic_controller_wlan_standby_enter", "group__MMAGIC__CONTROLLER__WLAN.html#ga1816a65393d562e9b5a10f8918b3b49c", null ],
     [ "mmagic_controller_wlan_standby_exit", "group__MMAGIC__CONTROLLER__WLAN.html#ga3243a83982b2e8993012ee09d8e2211f", null ],

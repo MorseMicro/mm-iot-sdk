@@ -527,7 +527,7 @@ static int wpas_sta_secondary_channel_offset(struct wpa_bss *bss, u8 *current,
 				    channel, &phy_type);
 }
 
-#ifdef CONFIG_IEEE80211AH
+#if defined(CONFIG_IEEE80211AH) && !defined(MM_IOT)
 size_t wpas_supp_s1g_op_class_ie(struct wpa_supplicant *wpa_s,
 						struct wpa_ssid *ssid,
 						struct wpa_bss *bss, u8 *pos, size_t len)
@@ -539,10 +539,12 @@ size_t wpas_supp_s1g_op_class_ie(struct wpa_supplicant *wpa_s,
 	size_t res;
 	u8 s1g_op_ch_width;
 	const u8 *country_ie;
+	const u8 *s1g_op_ie;
 	const u8 *vht_ie;
 	const u8 *ht_ie;
 	char country[3];
 	int sec_chan = 0;
+	struct ieee80211_s1g_operation *s1g_oper = NULL;
 	struct ieee80211_vht_operation *vht_oper = NULL;
 	struct ieee80211_ht_operation *ht_oper = NULL;
 	/* Indication that in the 1/2 MHz bandwidth case, when the VHT IE is present to use the
@@ -583,9 +585,25 @@ size_t wpas_supp_s1g_op_class_ie(struct wpa_supplicant *wpa_s,
 	wpabuf_put_u8(buf, WLAN_EID_SUPPORTED_OPERATING_CLASSES);
 	ie_len = wpabuf_put(buf, 1);
 
+	/* Get operating class from native S1G Operation IE, if it exists. */
+	s1g_op_ie = wpa_bss_get_ie(bss, WLAN_EID_S1G_OPERATION);
+	if (s1g_op_ie && s1g_op_ie[1] >= 4) {
+		s1g_oper = (struct ieee80211_s1g_operation *) (s1g_op_ie + 2);
+		s1g_op_ch_width =
+		     ((s1g_oper->ch_width & S1G_OPERATION_OPERATING_CHANNEL_WIDTH_MASK)
+		     >> S1G_OPERATION_OPERATING_CHANNEL_WIDTH_SHIFT) + 1;
+		s1g_op_chan = s1g_oper->oper_ch;
+		if (morse_insert_supported_op_class(buf, country, s1g_op_ch_width, s1g_op_chan)
+							== MORSE_S1G_RETURN_ERROR) {
+			wpa_printf(MSG_ERROR, "Failed to insert supported operating class");
+			res = 0;
+			goto end;
+		}
+	}
+
 	/* Get current operating class for s1g channel bw > 4MHz */
 	vht_ie = wpa_bss_get_ie(bss, WLAN_EID_VHT_OPERATION);
-	if (vht_ie && vht_ie[1] >= 1) {
+	if (!s1g_op_ie && vht_ie && vht_ie[1] >= 1) {
 		vht_oper = (struct ieee80211_vht_operation *) (vht_ie + 2);
 
 		if (vht_oper->vht_op_info_chwidth == CHANWIDTH_80MHZ ||
@@ -618,7 +636,7 @@ size_t wpas_supp_s1g_op_class_ie(struct wpa_supplicant *wpa_s,
 	}
 
 	/* Get current operating class for s1g channel bw is 1MHz or 2MHz */
-	if (ht_ie && (!vht_ie || vht_use_ht) && s1g_op_chan > 0) {
+	if (!s1g_op_ie && ht_ie && (!vht_ie || vht_use_ht) && s1g_op_chan > 0) {
 		if ((ht_oper->ht_param & HT_INFO_HT_PARAM_STA_CHNL_WIDTH) && sec_chan) {
 			s1g_op_ch_width = 2;
 			s1g_op_chan += sec_chan;

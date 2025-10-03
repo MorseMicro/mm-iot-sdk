@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.8.2</span>
+   &#160;<span id="projectnumber">2.9.7</span>
    </div>
   </td>
  </tr>
@@ -95,23 +95,65 @@ $(document).ready(function(){initNavTree('structstruct__scan__result.html',''); 
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Structure for holding a scan result. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00267">267</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00358">358</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 </div>
 <p><code>#include &lt;<a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Data Fields</h2></td></tr>
-<tr class="memitem:a37529f24388aa49d853595b5c01da568"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structstruct__string__32.html">struct_string_32</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstruct__scan__result.html#a37529f24388aa49d853595b5c01da568">ssid</a></td></tr>
-<tr class="memdesc:a37529f24388aa49d853595b5c01da568"><td class="mdescLeft">&#160;</td><td class="mdescRight">SSID of the AP.  <a href="structstruct__scan__result.html#a37529f24388aa49d853595b5c01da568">More...</a><br /></td></tr>
-<tr class="separator:a37529f24388aa49d853595b5c01da568"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a23cdde6d279531639755efc29137750c"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structstring32.html">string32</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstruct__scan__result.html#a23cdde6d279531639755efc29137750c">ssid</a></td></tr>
+<tr class="memdesc:a23cdde6d279531639755efc29137750c"><td class="mdescLeft">&#160;</td><td class="mdescRight">SSID of the AP.  <a href="structstruct__scan__result.html#a23cdde6d279531639755efc29137750c">More...</a><br /></td></tr>
+<tr class="separator:a23cdde6d279531639755efc29137750c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa4b0f0533525588a69b50db21c159a1c"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structstruct__mac__addr.html">struct_mac_addr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstruct__scan__result.html#aa4b0f0533525588a69b50db21c159a1c">bssid</a></td></tr>
 <tr class="memdesc:aa4b0f0533525588a69b50db21c159a1c"><td class="mdescLeft">&#160;</td><td class="mdescRight">BSSID of the AP network.  <a href="structstruct__scan__result.html#aa4b0f0533525588a69b50db21c159a1c">More...</a><br /></td></tr>
 <tr class="separator:aa4b0f0533525588a69b50db21c159a1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa318eb3c7cc708d898c13f8f4f2d61b2"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstruct__scan__result.html#aa318eb3c7cc708d898c13f8f4f2d61b2">rssi</a></td></tr>
 <tr class="memdesc:aa318eb3c7cc708d898c13f8f4f2d61b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">RSSI of the AP in dBm.  <a href="structstruct__scan__result.html#aa318eb3c7cc708d898c13f8f4f2d61b2">More...</a><br /></td></tr>
 <tr class="separator:aa318eb3c7cc708d898c13f8f4f2d61b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acc24ceafb055f780cf99bf70f7cc573a"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structraw255.html">raw255</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstruct__scan__result.html#acc24ceafb055f780cf99bf70f7cc573a">ies</a></td></tr>
+<tr class="memdesc:acc24ceafb055f780cf99bf70f7cc573a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to the start of the Information Elements within the Probe Response frame.  <a href="structstruct__scan__result.html#acc24ceafb055f780cf99bf70f7cc573a">More...</a><br /></td></tr>
+<tr class="separator:acc24ceafb055f780cf99bf70f7cc573a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0992c101cca3374e30505fd368729c04"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstruct__scan__result.html#a0992c101cca3374e30505fd368729c04">received_ies_len</a></td></tr>
+<tr class="memdesc:a0992c101cca3374e30505fd368729c04"><td class="mdescLeft">&#160;</td><td class="mdescRight">Length of the ies field in the received frame.  <a href="structstruct__scan__result.html#a0992c101cca3374e30505fd368729c04">More...</a><br /></td></tr>
+<tr class="separator:a0992c101cca3374e30505fd368729c04"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac6fad989c382122169b4e90c0d51aa00"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstruct__scan__result.html#ac6fad989c382122169b4e90c0d51aa00">beacon_interval</a></td></tr>
+<tr class="memdesc:ac6fad989c382122169b4e90c0d51aa00"><td class="mdescLeft">&#160;</td><td class="mdescRight">Value of the Beacon Interval field.  <a href="structstruct__scan__result.html#ac6fad989c382122169b4e90c0d51aa00">More...</a><br /></td></tr>
+<tr class="separator:ac6fad989c382122169b4e90c0d51aa00"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6b0c9f4e42d8ef6da31298d0d54aff9b"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstruct__scan__result.html#a6b0c9f4e42d8ef6da31298d0d54aff9b">capability_info</a></td></tr>
+<tr class="memdesc:a6b0c9f4e42d8ef6da31298d0d54aff9b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Value of the Capability Information field.  <a href="structstruct__scan__result.html#a6b0c9f4e42d8ef6da31298d0d54aff9b">More...</a><br /></td></tr>
+<tr class="separator:a6b0c9f4e42d8ef6da31298d0d54aff9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6b14358d78a5b2f21d8514096696a2e2"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstruct__scan__result.html#a6b14358d78a5b2f21d8514096696a2e2">channel_freq_hz</a></td></tr>
+<tr class="memdesc:a6b14358d78a5b2f21d8514096696a2e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Center frequency in Hz of the channel where the frame was received.  <a href="structstruct__scan__result.html#a6b14358d78a5b2f21d8514096696a2e2">More...</a><br /></td></tr>
+<tr class="separator:a6b14358d78a5b2f21d8514096696a2e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7271c90404a039753bcd302433d6f838"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstruct__scan__result.html#a7271c90404a039753bcd302433d6f838">bw_mhz</a></td></tr>
+<tr class="memdesc:a7271c90404a039753bcd302433d6f838"><td class="mdescLeft">&#160;</td><td class="mdescRight">Bandwidth, in MHz, where the frame was received.  <a href="structstruct__scan__result.html#a7271c90404a039753bcd302433d6f838">More...</a><br /></td></tr>
+<tr class="separator:a7271c90404a039753bcd302433d6f838"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a65eb1e52b8e6d5717aad59f8e4ef4930"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstruct__scan__result.html#a65eb1e52b8e6d5717aad59f8e4ef4930">op_bw_mhz</a></td></tr>
+<tr class="memdesc:a65eb1e52b8e6d5717aad59f8e4ef4930"><td class="mdescLeft">&#160;</td><td class="mdescRight">Operating bandwidth, in MHz, of the access point.  <a href="structstruct__scan__result.html#a65eb1e52b8e6d5717aad59f8e4ef4930">More...</a><br /></td></tr>
+<tr class="separator:a65eb1e52b8e6d5717aad59f8e4ef4930"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adc1ecf4836bd3d0912e89bcbdbf67755"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstruct__scan__result.html#adc1ecf4836bd3d0912e89bcbdbf67755">tsf</a></td></tr>
+<tr class="memdesc:adc1ecf4836bd3d0912e89bcbdbf67755"><td class="mdescLeft">&#160;</td><td class="mdescRight">TSF timestamp in the Probe Response frame.  <a href="structstruct__scan__result.html#adc1ecf4836bd3d0912e89bcbdbf67755">More...</a><br /></td></tr>
+<tr class="separator:adc1ecf4836bd3d0912e89bcbdbf67755"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Field Documentation</h2>
+<a id="ac6fad989c382122169b4e90c0d51aa00" name="ac6fad989c382122169b4e90c0d51aa00"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac6fad989c382122169b4e90c0d51aa00">&#9670;&nbsp;</a></span>beacon_interval</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint16_t struct_scan_result::beacon_interval</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Value of the Beacon Interval field. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00372">372</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+
+</div>
+</div>
 <a id="aa4b0f0533525588a69b50db21c159a1c" name="aa4b0f0533525588a69b50db21c159a1c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa4b0f0533525588a69b50db21c159a1c">&#9670;&nbsp;</a></span>bssid</h2>
 
@@ -126,7 +168,116 @@ Data Fields</h2></td></tr>
 
 <p>BSSID of the AP network. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00272">272</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00363">363</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+
+</div>
+</div>
+<a id="a7271c90404a039753bcd302433d6f838" name="a7271c90404a039753bcd302433d6f838"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7271c90404a039753bcd302433d6f838">&#9670;&nbsp;</a></span>bw_mhz</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t struct_scan_result::bw_mhz</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Bandwidth, in MHz, where the frame was received. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00378">378</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+
+</div>
+</div>
+<a id="a6b0c9f4e42d8ef6da31298d0d54aff9b" name="a6b0c9f4e42d8ef6da31298d0d54aff9b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6b0c9f4e42d8ef6da31298d0d54aff9b">&#9670;&nbsp;</a></span>capability_info</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint16_t struct_scan_result::capability_info</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Value of the Capability Information field. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00374">374</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+
+</div>
+</div>
+<a id="a6b14358d78a5b2f21d8514096696a2e2" name="a6b14358d78a5b2f21d8514096696a2e2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6b14358d78a5b2f21d8514096696a2e2">&#9670;&nbsp;</a></span>channel_freq_hz</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t struct_scan_result::channel_freq_hz</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Center frequency in Hz of the channel where the frame was received. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00376">376</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+
+</div>
+</div>
+<a id="acc24ceafb055f780cf99bf70f7cc573a" name="acc24ceafb055f780cf99bf70f7cc573a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acc24ceafb055f780cf99bf70f7cc573a">&#9670;&nbsp;</a></span>ies</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">struct <a class="el" href="structraw255.html">raw255</a> struct_scan_result::ies</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Pointer to the start of the Information Elements within the Probe Response frame. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00367">367</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+
+</div>
+</div>
+<a id="a65eb1e52b8e6d5717aad59f8e4ef4930" name="a65eb1e52b8e6d5717aad59f8e4ef4930"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a65eb1e52b8e6d5717aad59f8e4ef4930">&#9670;&nbsp;</a></span>op_bw_mhz</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t struct_scan_result::op_bw_mhz</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Operating bandwidth, in MHz, of the access point. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00380">380</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+
+</div>
+</div>
+<a id="a0992c101cca3374e30505fd368729c04" name="a0992c101cca3374e30505fd368729c04"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0992c101cca3374e30505fd368729c04">&#9670;&nbsp;</a></span>received_ies_len</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint16_t struct_scan_result::received_ies_len</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Length of the ies field in the received frame. </p>
+<p >May exceed the size of the ies buffer in this structure. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00370">370</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -144,25 +295,43 @@ Data Fields</h2></td></tr>
 
 <p>RSSI of the AP in dBm. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00274">274</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00365">365</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
-<a id="a37529f24388aa49d853595b5c01da568" name="a37529f24388aa49d853595b5c01da568"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a37529f24388aa49d853595b5c01da568">&#9670;&nbsp;</a></span>ssid</h2>
+<a id="a23cdde6d279531639755efc29137750c" name="a23cdde6d279531639755efc29137750c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a23cdde6d279531639755efc29137750c">&#9670;&nbsp;</a></span>ssid</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">struct <a class="el" href="structstruct__string__32.html">struct_string_32</a> struct_scan_result::ssid</td>
+          <td class="memname">struct <a class="el" href="structstring32.html">string32</a> struct_scan_result::ssid</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>SSID of the AP. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00270">270</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00361">361</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+
+</div>
+</div>
+<a id="adc1ecf4836bd3d0912e89bcbdbf67755" name="adc1ecf4836bd3d0912e89bcbdbf67755"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adc1ecf4836bd3d0912e89bcbdbf67755">&#9670;&nbsp;</a></span>tsf</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint64_t struct_scan_result::tsf</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>TSF timestamp in the Probe Response frame. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00382">382</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.4"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Morse Micro IoT SDK: Wireless LAN management subsystem (wlan)</title>
+<title>Morse Micro IoT SDK: Module wlan: Wireless LAN management.</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.8.2</span>
+   &#160;<span id="projectnumber">2.9.7</span>
    </div>
   </td>
  </tr>
@@ -92,7 +92,7 @@ $(document).ready(function(){initNavTree('group__MMAGIC__CONTROLLER__WLAN.html',
 <a href="#nested-classes">Data Structures</a> &#124;
 <a href="#typedef-members">Typedefs</a> &#124;
 <a href="#func-members">Functions</a>  </div>
-  <div class="headertitle"><div class="title">Wireless LAN management subsystem (wlan)<div class="ingroups"><a class="el" href="group__MMAGIC.html">MMAGIC: CLI and Machine-to-Machine interface infrastructure</a> &raquo; <a class="el" href="group__MMAGIC__CONTROLLER.html">Morse M2M Interface Controller API</a></div></div></div>
+  <div class="headertitle"><div class="title">Module wlan: Wireless LAN management.<div class="ingroups"><a class="el" href="group__MMAGIC.html">MMAGIC: CLI and Machine-to-Machine interface infrastructure</a> &raquo; <a class="el" href="group__MMAGIC__CONTROLLER.html">Morse M2M Interface Controller API</a></div></div></div>
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -134,21 +134,30 @@ Data Structures</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmagic__core__wlan__standby__set__config__cmd__args.html">mmagic_core_wlan_standby_set_config_cmd_args</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Command arguments structure for wlan_standby_set_config.  <a href="structmmagic__core__wlan__standby__set__config__cmd__args.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmagic__core__wlan__get__sta__status__rsp__args.html">mmagic_core_wlan_get_sta_status_rsp_args</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Response arguments structure for wlan_get_sta_status.  <a href="structmmagic__core__wlan__get__sta__status__rsp__args.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmagic__wlan__beacon__rx__event__args.html">mmagic_wlan_beacon_rx_event_args</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Event arguments structure for wlan_beacon_rx.  <a href="structmmagic__wlan__beacon__rx__event__args.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmagic__wlan__standby__exit__event__args.html">mmagic_wlan_standby_exit_event_args</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Event arguments structure for wlan_standby_exit.  <a href="structmmagic__wlan__standby__exit__event__args.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmagic__wlan__sta__event__event__args.html">mmagic_wlan_sta_event_event_args</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Event arguments structure for wlan_sta_event.  <a href="structmmagic__wlan__sta__event__event__args.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
-<tr class="memitem:gaa4f17864fa7ed1222030d6b81b33c18c"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#gaa4f17864fa7ed1222030d6b81b33c18c">mmagic_wlan_beacon_rx_event_handler_t</a>) (const struct <a class="el" href="structmmagic__wlan__beacon__rx__event__args.html">mmagic_wlan_beacon_rx_event_args</a> *args, void *arg)</td></tr>
-<tr class="memdesc:gaa4f17864fa7ed1222030d6b81b33c18c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handler for the wlan-beacon_rx event.  <a href="group__MMAGIC__CONTROLLER__WLAN.html#gaa4f17864fa7ed1222030d6b81b33c18c">More...</a><br /></td></tr>
-<tr class="separator:gaa4f17864fa7ed1222030d6b81b33c18c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga662cb4a420a969980c6c45c95a1e1c03"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#ga662cb4a420a969980c6c45c95a1e1c03">mmagic_wlan_standby_exit_event_handler_t</a>) (const struct <a class="el" href="structmmagic__wlan__standby__exit__event__args.html">mmagic_wlan_standby_exit_event_args</a> *args, void *arg)</td></tr>
-<tr class="memdesc:ga662cb4a420a969980c6c45c95a1e1c03"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handler for the wlan-standby_exit event.  <a href="group__MMAGIC__CONTROLLER__WLAN.html#ga662cb4a420a969980c6c45c95a1e1c03">More...</a><br /></td></tr>
-<tr class="separator:ga662cb4a420a969980c6c45c95a1e1c03"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gad80e59f2d4499d2d5d701e346d7d1ca1"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#gad80e59f2d4499d2d5d701e346d7d1ca1">mmagic_wlan_beacon_rx_event_handler_t</a>) (const struct <a class="el" href="structmmagic__wlan__beacon__rx__event__args.html">mmagic_wlan_beacon_rx_event_args</a> *event_args, void *arg)</td></tr>
+<tr class="memdesc:gad80e59f2d4499d2d5d701e346d7d1ca1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handler for the wlan-beacon_rx event.  <a href="group__MMAGIC__CONTROLLER__WLAN.html#gad80e59f2d4499d2d5d701e346d7d1ca1">More...</a><br /></td></tr>
+<tr class="separator:gad80e59f2d4499d2d5d701e346d7d1ca1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga28e204fbe55bed14f6c96d63e7f9bb22"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#ga28e204fbe55bed14f6c96d63e7f9bb22">mmagic_wlan_standby_exit_event_handler_t</a>) (const struct <a class="el" href="structmmagic__wlan__standby__exit__event__args.html">mmagic_wlan_standby_exit_event_args</a> *event_args, void *arg)</td></tr>
+<tr class="memdesc:ga28e204fbe55bed14f6c96d63e7f9bb22"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handler for the wlan-standby_exit event.  <a href="group__MMAGIC__CONTROLLER__WLAN.html#ga28e204fbe55bed14f6c96d63e7f9bb22">More...</a><br /></td></tr>
+<tr class="separator:ga28e204fbe55bed14f6c96d63e7f9bb22"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gac5f8553d9e9524d938edf44ccf0fadb6"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#gac5f8553d9e9524d938edf44ccf0fadb6">mmagic_wlan_sta_event_event_handler_t</a>) (const struct <a class="el" href="structmmagic__wlan__sta__event__event__args.html">mmagic_wlan_sta_event_event_args</a> *event_args, void *arg)</td></tr>
+<tr class="memdesc:gac5f8553d9e9524d938edf44ccf0fadb6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handler for the wlan-sta_event event.  <a href="group__MMAGIC__CONTROLLER__WLAN.html#gac5f8553d9e9524d938edf44ccf0fadb6">More...</a><br /></td></tr>
+<tr class="separator:gac5f8553d9e9524d938edf44ccf0fadb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -191,22 +200,28 @@ Functions</h2></td></tr>
 <tr class="memitem:ga3dcd99633029d9eb0963a6686302d63a"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#ga3dcd99633029d9eb0963a6686302d63a">mmagic_controller_wlan_standby_set_config</a> (struct mmagic_controller *controller, struct <a class="el" href="structmmagic__core__wlan__standby__set__config__cmd__args.html">mmagic_core_wlan_standby_set_config_cmd_args</a> *cmd_args)</td></tr>
 <tr class="memdesc:ga3dcd99633029d9eb0963a6686302d63a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the standby mode configuration parameters.  <a href="group__MMAGIC__CONTROLLER__WLAN.html#ga3dcd99633029d9eb0963a6686302d63a">More...</a><br /></td></tr>
 <tr class="separator:ga3dcd99633029d9eb0963a6686302d63a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga5c30986dc797fd7af634a8c2c160d3cf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#ga5c30986dc797fd7af634a8c2c160d3cf">mmagic_controller_register_wlan_beacon_rx_handler</a> (struct mmagic_controller *controller, <a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#gaa4f17864fa7ed1222030d6b81b33c18c">mmagic_wlan_beacon_rx_event_handler_t</a> handler, void *arg)</td></tr>
+<tr class="memitem:ga44dcd0e8a14955b6c2e018abd8a3cf77"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#ga44dcd0e8a14955b6c2e018abd8a3cf77">mmagic_controller_wlan_get_sta_status</a> (struct mmagic_controller *controller, struct <a class="el" href="structmmagic__core__wlan__get__sta__status__rsp__args.html">mmagic_core_wlan_get_sta_status_rsp_args</a> *rsp_args)</td></tr>
+<tr class="memdesc:ga44dcd0e8a14955b6c2e018abd8a3cf77"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the STA status of the WLAN interface.  <a href="group__MMAGIC__CONTROLLER__WLAN.html#ga44dcd0e8a14955b6c2e018abd8a3cf77">More...</a><br /></td></tr>
+<tr class="separator:ga44dcd0e8a14955b6c2e018abd8a3cf77"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga5c30986dc797fd7af634a8c2c160d3cf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#ga5c30986dc797fd7af634a8c2c160d3cf">mmagic_controller_register_wlan_beacon_rx_handler</a> (struct mmagic_controller *controller, <a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#gad80e59f2d4499d2d5d701e346d7d1ca1">mmagic_wlan_beacon_rx_event_handler_t</a> handler, void *arg)</td></tr>
 <tr class="memdesc:ga5c30986dc797fd7af634a8c2c160d3cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register a handler for the wlan-beacon_rx event.  <a href="group__MMAGIC__CONTROLLER__WLAN.html#ga5c30986dc797fd7af634a8c2c160d3cf">More...</a><br /></td></tr>
 <tr class="separator:ga5c30986dc797fd7af634a8c2c160d3cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gabfb9028d058933f693fad067019558ce"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#gabfb9028d058933f693fad067019558ce">mmagic_controller_register_wlan_standby_exit_handler</a> (struct mmagic_controller *controller, <a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#ga662cb4a420a969980c6c45c95a1e1c03">mmagic_wlan_standby_exit_event_handler_t</a> handler, void *arg)</td></tr>
+<tr class="memitem:gabfb9028d058933f693fad067019558ce"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#gabfb9028d058933f693fad067019558ce">mmagic_controller_register_wlan_standby_exit_handler</a> (struct mmagic_controller *controller, <a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#ga28e204fbe55bed14f6c96d63e7f9bb22">mmagic_wlan_standby_exit_event_handler_t</a> handler, void *arg)</td></tr>
 <tr class="memdesc:gabfb9028d058933f693fad067019558ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register a handler for the wlan-standby_exit event.  <a href="group__MMAGIC__CONTROLLER__WLAN.html#gabfb9028d058933f693fad067019558ce">More...</a><br /></td></tr>
 <tr class="separator:gabfb9028d058933f693fad067019558ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga78fffc772cda305a0751522416637255"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#ga78fffc772cda305a0751522416637255">mmagic_controller_register_wlan_sta_event_handler</a> (struct mmagic_controller *controller, <a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#gac5f8553d9e9524d938edf44ccf0fadb6">mmagic_wlan_sta_event_event_handler_t</a> handler, void *arg)</td></tr>
+<tr class="memdesc:ga78fffc772cda305a0751522416637255"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register a handler for the wlan-sta_event event.  <a href="group__MMAGIC__CONTROLLER__WLAN.html#ga78fffc772cda305a0751522416637255">More...</a><br /></td></tr>
+<tr class="separator:ga78fffc772cda305a0751522416637255"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Typedef Documentation</h2>
-<a id="gaa4f17864fa7ed1222030d6b81b33c18c" name="gaa4f17864fa7ed1222030d6b81b33c18c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gaa4f17864fa7ed1222030d6b81b33c18c">&#9670;&nbsp;</a></span>mmagic_wlan_beacon_rx_event_handler_t</h2>
+<a id="gad80e59f2d4499d2d5d701e346d7d1ca1" name="gad80e59f2d4499d2d5d701e346d7d1ca1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gad80e59f2d4499d2d5d701e346d7d1ca1">&#9670;&nbsp;</a></span>mmagic_wlan_beacon_rx_event_handler_t</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">typedef void(* mmagic_wlan_beacon_rx_event_handler_t) (const struct <a class="el" href="structmmagic__wlan__beacon__rx__event__args.html">mmagic_wlan_beacon_rx_event_args</a> *args, void *arg)</td>
+          <td class="memname">typedef void(* mmagic_wlan_beacon_rx_event_handler_t) (const struct <a class="el" href="structmmagic__wlan__beacon__rx__event__args.html">mmagic_wlan_beacon_rx_event_args</a> *event_args, void *arg)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -217,24 +232,52 @@ Functions</h2></td></tr>
 <dl class="section warning"><dt>Warning</dt><dd>This function must not invoke any mmagic API functions.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">args</td><td>Notication arguments received from the agent. </td></tr>
-    <tr><td class="paramname">arg</td><td>Opaque argument that was provided when the callbcak was registered. </td></tr>
+    <tr><td class="paramname">event_args</td><td>Notication arguments received from the agent. </td></tr>
+    <tr><td class="paramname">arg</td><td>Opaque argument that was provided when the callback was registered. </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l02808">2808</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03293">3293</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
-<a id="ga662cb4a420a969980c6c45c95a1e1c03" name="ga662cb4a420a969980c6c45c95a1e1c03"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga662cb4a420a969980c6c45c95a1e1c03">&#9670;&nbsp;</a></span>mmagic_wlan_standby_exit_event_handler_t</h2>
+<a id="gac5f8553d9e9524d938edf44ccf0fadb6" name="gac5f8553d9e9524d938edf44ccf0fadb6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gac5f8553d9e9524d938edf44ccf0fadb6">&#9670;&nbsp;</a></span>mmagic_wlan_sta_event_event_handler_t</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">typedef void(* mmagic_wlan_standby_exit_event_handler_t) (const struct <a class="el" href="structmmagic__wlan__standby__exit__event__args.html">mmagic_wlan_standby_exit_event_args</a> *args, void *arg)</td>
+          <td class="memname">typedef void(* mmagic_wlan_sta_event_event_handler_t) (const struct <a class="el" href="structmmagic__wlan__sta__event__event__args.html">mmagic_wlan_sta_event_event_args</a> *event_args, void *arg)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Handler for the wlan-sta_event event. </p>
+<p >Triggered when STA event occurs when in STA mode.</p>
+<dl class="section note"><dt>Note</dt><dd>This function will be invoked in the context of the controller data link thread and should perform minimal processing.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>This function must not invoke any mmagic API functions.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">event_args</td><td>Notication arguments received from the agent. </td></tr>
+    <tr><td class="paramname">arg</td><td>Opaque argument that was provided when the callback was registered. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03376">3376</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+
+</div>
+</div>
+<a id="ga28e204fbe55bed14f6c96d63e7f9bb22" name="ga28e204fbe55bed14f6c96d63e7f9bb22"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga28e204fbe55bed14f6c96d63e7f9bb22">&#9670;&nbsp;</a></span>mmagic_wlan_standby_exit_event_handler_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef void(* mmagic_wlan_standby_exit_event_handler_t) (const struct <a class="el" href="structmmagic__wlan__standby__exit__event__args.html">mmagic_wlan_standby_exit_event_args</a> *event_args, void *arg)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -245,13 +288,13 @@ Functions</h2></td></tr>
 <dl class="section warning"><dt>Warning</dt><dd>This function must not invoke any mmagic API functions.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">args</td><td>Notication arguments received from the agent. </td></tr>
-    <tr><td class="paramname">arg</td><td>Opaque argument that was provided when the callbcak was registered. </td></tr>
+    <tr><td class="paramname">event_args</td><td>Notication arguments received from the agent. </td></tr>
+    <tr><td class="paramname">arg</td><td>Opaque argument that was provided when the callback was registered. </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l02850">2850</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03335">3335</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -271,7 +314,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#gaa4f17864fa7ed1222030d6b81b33c18c">mmagic_wlan_beacon_rx_event_handler_t</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#gad80e59f2d4499d2d5d701e346d7d1ca1">mmagic_wlan_beacon_rx_event_handler_t</a>&#160;</td>
           <td class="paramname"><em>handler</em>, </td>
         </tr>
         <tr>
@@ -303,6 +346,53 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="ga78fffc772cda305a0751522416637255" name="ga78fffc772cda305a0751522416637255"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga78fffc772cda305a0751522416637255">&#9670;&nbsp;</a></span>mmagic_controller_register_wlan_sta_event_handler()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void mmagic_controller_register_wlan_sta_event_handler </td>
+          <td>(</td>
+          <td class="paramtype">struct mmagic_controller *&#160;</td>
+          <td class="paramname"><em>controller</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#gac5f8553d9e9524d938edf44ccf0fadb6">mmagic_wlan_sta_event_event_handler_t</a>&#160;</td>
+          <td class="paramname"><em>handler</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>arg</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Register a handler for the wlan-sta_event event. </p>
+<p >Triggered when STA event occurs when in STA mode.</p>
+<dl class="section note"><dt>Note</dt><dd>The handler callbacks will be invoked in the context of the controller data link thread. The handler should perform minimal processing.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>The handler callback must not invoke any mmagic API functions.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">controller</td><td>Reference to the the controller handle. </td></tr>
+    <tr><td class="paramname">handler</td><td>The handler function to register. </td></tr>
+    <tr><td class="paramname">arg</td><td>Opaque argument to be passed to the handler when it is invoked. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="gabfb9028d058933f693fad067019558ce" name="gabfb9028d058933f693fad067019558ce"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#gabfb9028d058933f693fad067019558ce">&#9670;&nbsp;</a></span>mmagic_controller_register_wlan_standby_exit_handler()</h2>
 
@@ -318,7 +408,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#ga662cb4a420a969980c6c45c95a1e1c03">mmagic_wlan_standby_exit_event_handler_t</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#ga28e204fbe55bed14f6c96d63e7f9bb22">mmagic_wlan_standby_exit_event_handler_t</a>&#160;</td>
           <td class="paramname"><em>handler</em>, </td>
         </tr>
         <tr>
@@ -384,7 +474,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l02587">2587</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03018">3018</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -433,7 +523,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l02561">2561</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l02989">2989</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -481,7 +571,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l02354">2354</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l02750">2750</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -518,7 +608,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l02379">2379</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l02787">2787</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -566,7 +656,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l02494">2494</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l02918">2918</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -614,7 +704,55 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l02459">2459</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l02881">2881</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+
+</div>
+</div>
+<a id="ga44dcd0e8a14955b6c2e018abd8a3cf77" name="ga44dcd0e8a14955b6c2e018abd8a3cf77"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga44dcd0e8a14955b6c2e018abd8a3cf77">&#9670;&nbsp;</a></span>mmagic_controller_wlan_get_sta_status()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a> mmagic_controller_wlan_get_sta_status </td>
+          <td>(</td>
+          <td class="paramtype">struct mmagic_controller *&#160;</td>
+          <td class="paramname"><em>controller</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">struct <a class="el" href="structmmagic__core__wlan__get__sta__status__rsp__args.html">mmagic_core_wlan_get_sta_status_rsp_args</a> *&#160;</td>
+          <td class="paramname"><em>rsp_args</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Retrieves the STA status of the WLAN interface. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir"></td><td class="paramname">controller</td><td>Reference to the controller handle. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">rsp_args</td><td>Pointer to the data structure to be filled out with the result. If the If the return code is not <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> then the contents of this structure will be undefined.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03248">3248</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -669,7 +807,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l02423">2423</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l02833">2833</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -706,7 +844,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l02612">2612</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03046">3046</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -744,7 +882,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l02638">2638</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03074">3074</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -793,7 +931,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l02765">2765</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03209">3209</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -842,7 +980,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l02672">2672</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03110">3110</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -891,7 +1029,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l02712">2712</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03153">3153</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -939,7 +1077,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l02527">2527</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l02953">2953</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>

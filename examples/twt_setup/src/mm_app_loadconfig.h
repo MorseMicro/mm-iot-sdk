@@ -49,9 +49,7 @@ void load_mmipal_init_args(struct mmipal_init_args *args);
 void load_mmwlan_sta_args(struct mmwlan_sta_args *sta_config);
 
 /**
- * Loads the following settings from config store and applies them.
- * @c wlan.subbands_enabled, @c wlan.sgi_enabled, @c wlan.ampdu_enabled,
- * @c wlan.fragment_threshold and @c wlan.rts_threshold.
+ * Loads various WLAN-specific settings from config store and applies them.
  */
 void load_mmwlan_settings(void);
 

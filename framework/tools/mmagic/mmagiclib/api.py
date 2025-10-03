@@ -25,7 +25,7 @@ NUM_RESERVED_COMMAND_IDS = 8
 TYPE_ARRAY_REGEX = re.compile(r'^array(?P<num>\d{1,4})_(?P<type>.*)')
 STRUCT_NAME_REGEX = re.compile(r'^struct_[\w\d]*$')
 ENUM_NAME_REGEX = re.compile(r'^enum_[\w\d]*$')
-
+VARLEN_TYPE_REGEX = re.compile(r'^(?P<type>string|raw)(?P<maxlen>\d{1,4})')
 
 def validate_name(name: str, regex: re.Pattern):
     ''' Given a name and a regex, validate that the name matches the pattern. '''
@@ -55,6 +55,15 @@ class Enum:
 
     def value_identifier(self, value):
         return f"MMAGIC_{self.stripped_name.upper()}_{value.name.upper()}"
+
+    def index(self, value):
+        if isinstance(value, int):
+            return value
+        else:
+            for index, v in enumerate(self.values):
+                if v.name == value:
+                    return index
+        raise ValueError(f"Value {value} not found in Enum {self.name}")
 
     def __post_init__(self):
         object.__setattr__(self, 'stripped_name', re.sub('enum_(?P<name>.*)', '\\g<name>', self.name))
@@ -100,6 +109,7 @@ class Argument:
 
 @dataclass(frozen=True)
 class Command:
+    response_timeout_ms: Optional[int]
     name: str
     id: int
     description: str
@@ -168,6 +178,37 @@ class Configuration:
                     struct_types_used.add(var.type)
         object.__setattr__(self, 'struct_types_used', sorted(struct_types_used))
 
+        all_types = set()
+        for struct in self.structs:
+            for element in struct.elements:
+                all_types.add(element.type)
+        for module in self.modules:
+            for var in module.configs:
+                all_types.add(var.type)
+            for cmd in module.commands:
+                for arg in cmd.command_args:
+                    all_types.add(arg.type)
+                for arg in cmd.response_args:
+                    all_types.add(arg.type)
+            for evt in module.events:
+                for arg in evt.event_args:
+                    all_types.add(arg.type)
+
+        string_maxlens = set()
+        raw_maxlens = set()
+        for datatype in all_types:
+            match = TYPE_ARRAY_REGEX.match(datatype)
+            if match:
+                datatype = match.group("type")
+            match = VARLEN_TYPE_REGEX.match(datatype)
+            if match:
+                if match.group("type") == "string":
+                    string_maxlens.add(int(match.group("maxlen")))
+                elif match.group("type") == "raw":
+                    raw_maxlens.add(int(match.group("maxlen")))
+        object.__setattr__(self, 'string_maxlens', sorted(string_maxlens))
+        object.__setattr__(self, 'raw_maxlens', sorted(raw_maxlens))
+
     def _find_struct(self, name: str):
         if 'struct' in name:
             try:
@@ -184,11 +225,23 @@ class Configuration:
             except StopIteration:
                 raise Exception(f'Unable to find entry for {name}')
 
+    def _find_varlen(self, name: str):
+        match = VARLEN_TYPE_REGEX.match(name)
+        if match:
+            return f"struct {name}"
+
     def find_datatype(self, name: str):
         # If this is an array, then extract the name of the data type from the full name
         match = TYPE_ARRAY_REGEX.match(name)
         if match:
             name = match.group("type")
+
+        if name in STD_C_TYPES:
+            return name
+
+        varlen_type = self._find_varlen(name)
+        if varlen_type:
+            return varlen_type
 
         struct = self._find_struct(name)
         if struct:
@@ -198,10 +251,27 @@ class Configuration:
         if enum:
             return enum.datatype
 
-        if name in STD_C_TYPES:
-            return name
-
         raise Exception(f'Invalid type, {name}')
+
+    def find_command(self, full_name: str):
+        module_name, command_name = full_name.split("-", maxsplit=1)
+        for module in self.modules:
+            if module.name == module_name:
+                for command in module.commands:
+                    if command.name == command_name:
+                        return module, command
+                raise Exception(f"Command {command_name} not found in module {module_name}")
+        raise Exception(f"Module {module_name} not found")
+
+    def find_config_var(self, full_name: str):
+        module_name, config_name = full_name.split(".", maxsplit=1)
+        for module in self.modules:
+            if module.name == module_name:
+                for config in module.configs:
+                    if config.name == config_name:
+                        return module, config
+                raise Exception(f"Config {config_name} not found in module {module_name}")
+        raise Exception(f"Module {module_name} not found")
 
     def datatype_is_c_type(self, name: str):
         return name in STD_C_TYPES
@@ -217,7 +287,16 @@ class Configuration:
         return False
 
     def datatype_is_string(self, name: str):
-        return name.startswith("struct_string_")
+        return name.startswith("string")
+
+    def datatype_is_raw(self, name: str):
+        return name.startswith("raw")
+
+    def datatype_ref_prefix(self, name: str):
+        if name.startswith("struct") or name.startswith("string") or name.startswith("raw"):
+            return "&"
+        else:
+            return ""
 
     """ Get array element from type if array prefix is present else empty string """
     def get_array_element(self, name: str):

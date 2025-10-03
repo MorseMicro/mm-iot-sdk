@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.8.2</span>
+   &#160;<span id="projectnumber">2.9.7</span>
    </div>
   </td>
  </tr>
@@ -217,7 +217,7 @@ $(document).ready(function(){initNavTree('dns__client_8c_source.html',''); initR
 <div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span> </div>
 <div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span>    <span class="comment">/* Get the hostname to lookup, if not provided use the default */</span></div>
 <div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span>    strncpy(hostname, <a class="code hl_define" href="dns__client_8c.html#ad8813e0a0b6ecd915006ef10499b0ddb">DEFAULT_LOOKUP</a>, <span class="keyword">sizeof</span>(hostname));</div>
-<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span>    <a class="code hl_function" href="group__MMCONFIG__API.html#ga49a03e759500ae9d9395a22d3846c11e">mmconfig_read_string</a>(<span class="stringliteral">&quot;dns.lookup&quot;</span>, hostname, <span class="keyword">sizeof</span>(hostname));</div>
+<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span>    (void)<a class="code hl_function" href="group__MMCONFIG__API.html#ga49a03e759500ae9d9395a22d3846c11e">mmconfig_read_string</a>(<span class="stringliteral">&quot;dns.lookup&quot;</span>, hostname, <span class="keyword">sizeof</span>(hostname));</div>
 <div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span> </div>
 <div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span>    printf(<span class="stringliteral">&quot;Hostname %s resolves to:\n&quot;</span>, hostname);</div>
 <div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>    <a class="code hl_function" href="dns__client_8c.html#aab6c345708293f4688077eaead7ae424">dns_lookup</a>(hostname, AF_INET);</div>
@@ -242,7 +242,7 @@ $(document).ready(function(){initNavTree('dns__client_8c_source.html',''); initR
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_1051a0a86fe889e57b2c2b0562fadebe.html">examples</a></li><li class="navelem"><a class="el" href="dir_a805c0ceb3c4da160cc95beb9dd7ed58.html">dns_client</a></li><li class="navelem"><a class="el" href="dir_d769e87028a011d7297bb137d496d7c3.html">src</a></li><li class="navelem"><a class="el" href="dns__client_8c.html">dns_client.c</a></li>
+    <li class="navelem"><a class="el" href="dir_91b8f418cff946e8d8b598a9068417a8.html">examples</a></li><li class="navelem"><a class="el" href="dir_b736ae14df4bc0f117d2dd101dbc55dd.html">dns_client</a></li><li class="navelem"><a class="el" href="dir_77a404d5bde1e7217255a05b3e030766.html">src</a></li><li class="navelem"><a class="el" href="dns__client_8c.html">dns_client.c</a></li>
     <li class="footer">Copyright 2021 Morse Micro </li>
   </ul>
 </div>

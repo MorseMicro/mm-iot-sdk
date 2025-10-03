@@ -160,7 +160,7 @@ void app_init(void)
 
     /* Get the hostname to lookup, if not provided use the default */
     strncpy(hostname, DEFAULT_LOOKUP, sizeof(hostname));
-    mmconfig_read_string("dns.lookup", hostname, sizeof(hostname));
+    (void)mmconfig_read_string("dns.lookup", hostname, sizeof(hostname));
 
     printf("Hostname %s resolves to:\n", hostname);
     dns_lookup(hostname, AF_INET);

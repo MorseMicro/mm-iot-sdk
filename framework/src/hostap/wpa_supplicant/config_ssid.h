@@ -542,6 +542,11 @@ struct wpa_ssid {
 	int frequency;
 
 	/**
+	 * frequency_khz - Channel frequency in kilohertz (kHz)
+	 */
+	int frequency_khz;
+
+	/**
 	 * enable_edmg - Enable EDMG feature in STA/AP mode
 	 *
 	 * This flag is used for enabling the EDMG capability in STA/AP mode.
@@ -1422,14 +1427,13 @@ struct wpa_ssid {
 	int disable_s1g_sgi;
 
 	/**
-	 * backoffs - Array of association backoff times in seconds
+	 * auth_retry_backoff - List of authentication retry backoff times in seconds
 	 *
 	 * This is an optional zero-terminated array of backoff times in seconds. When present, it
 	 * overrides the default delay times used between successive authentication failures.
-	 * It can be used to speed up association for a large number of stations in a congested
 	 * network.
 	 */
-	int *backoffs;
+	int *auth_retry_backoff;
 
 #endif /* CONFIG_IEEE80211AH */
 };

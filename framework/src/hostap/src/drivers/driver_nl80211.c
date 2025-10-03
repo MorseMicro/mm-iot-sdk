@@ -182,9 +182,6 @@ static void add_ifidx(struct wpa_driver_nl80211_data *drv, int ifidx,
 		      int ifidx_reason);
 static void del_ifidx(struct wpa_driver_nl80211_data *drv, int ifidx,
 		      int ifidx_reason);
-static int have_ifidx(struct wpa_driver_nl80211_data *drv, int ifidx,
-		      int ifidx_reason);
-
 static int nl80211_set_channel(struct i802_bss *bss,
 			       struct hostapd_freq_params *freq, int set_chan);
 static int nl80211_disable_11b_rates(struct wpa_driver_nl80211_data *drv,
@@ -1245,7 +1242,7 @@ nl80211_find_drv(struct nl80211_global *global, int idx, u8 *buf, size_t len,
 				*init_failed = 1;
 			return drv;
 		}
-		if (res > 0 || have_ifidx(drv, idx, IFIDX_ANY))
+		if (res > 0 || nl80211_has_ifidx(drv, idx, IFIDX_ANY))
 			return drv;
 	}
 	return NULL;
@@ -1536,6 +1533,7 @@ static void wpa_driver_nl80211_event_rtm_dellink(void *ctx,
 struct nl80211_get_assoc_freq_arg {
 	struct wpa_driver_nl80211_data *drv;
 	unsigned int assoc_freq;
+	unsigned int assoc_freq_offset;
 	unsigned int ibss_freq;
 	u8 assoc_bssid[ETH_ALEN];
 	u8 assoc_ssid[SSID_MAX_LEN];
@@ -1587,13 +1585,12 @@ static int nl80211_get_assoc_freq_handler(struct nl_msg *msg, void *arg)
 		if (!drv->sta_mlo_info.valid_links ||
 		    drv->sta_mlo_info.assoc_link_id == link_id) {
 			ctx->assoc_freq = freq;
-#ifdef CONFIG_IEEE80211AH
-			wpa_printf(MSG_DEBUG, "nl80211: Associated on %u MHz (5 GHz mapped)",
-				   ctx->assoc_freq);
-#else
-			wpa_printf(MSG_DEBUG, "nl80211: Associated on %u MHz",
-					ctx->assoc_freq);
-#endif
+			if (bss[NL80211_BSS_FREQUENCY_OFFSET])
+				ctx->assoc_freq_offset =
+					nla_get_u32(bss[NL80211_BSS_FREQUENCY_OFFSET]);
+
+			wpa_printf(MSG_DEBUG, "nl80211: Associated on %u.%u MHz",
+				   ctx->assoc_freq, ctx->assoc_freq_offset);
 		}
 	}
 	if (status == NL80211_BSS_STATUS_IBSS_JOINED &&
@@ -4044,13 +4041,17 @@ retry:
 		if (nla_put(msg, NL80211_ATTR_MAC, ETH_ALEN, params->bssid))
 			goto fail;
 	}
-	if (params->freq) {
-#ifdef CONFIG_IEEE80211AH
-		wpa_printf(MSG_DEBUG, "  * mapped freq=%d",
-#else
-		wpa_printf(MSG_DEBUG, "  * freq=%d",
-#endif /* CONFIG_IEEE80211AH */
-		params->freq);
+	if (params->freq_khz) {
+		wpa_printf(MSG_DEBUG, "  * freq=%d kHz", params->freq_khz);
+		if (nla_put_u32(msg, NL80211_ATTR_WIPHY_FREQ,
+				KHZ_TO_MHZ(params->freq_khz)))
+			goto fail;
+		if (nla_put_u32(msg, NL80211_ATTR_WIPHY_FREQ_OFFSET,
+				KHZ_TO_S1G_OFFSET(params->freq_khz)))
+			goto fail;
+	}
+	else if(params->freq){
+		wpa_printf(MSG_DEBUG, "  * freq=%d MHz", params->freq);
 		if (nla_put_u32(msg, NL80211_ATTR_WIPHY_FREQ, params->freq))
 			goto fail;
 	}
@@ -4974,6 +4975,27 @@ err:
 #endif /* CONFIG_DRIVER_NL80211_QCA */
 
 
+static enum nl80211_chan_width nl80211_s1g_ch_width_parse(
+	const struct hostapd_freq_params *freq)
+{
+	switch (freq->bandwidth) {
+	case 1:
+		return NL80211_CHAN_WIDTH_1;
+	case 2:
+		return NL80211_CHAN_WIDTH_2;
+	case 4:
+		return NL80211_CHAN_WIDTH_4;
+	case 8:
+		return NL80211_CHAN_WIDTH_8;
+	case 16:
+		return NL80211_CHAN_WIDTH_16;
+	default:
+		return 0;
+	}
+	return 0;
+}
+
+
 static int nl80211_put_freq_params(struct nl_msg *msg,
 				   const struct hostapd_freq_params *freq)
 {
@@ -4982,13 +5004,27 @@ static int nl80211_put_freq_params(struct nl_msg *msg,
 	u8 channel;
 
 	wpa_printf(MSG_DEBUG, "  * freq=%d", freq->freq);
-	if (nla_put_u32(msg, NL80211_ATTR_WIPHY_FREQ, freq->freq))
+	if (is_s1g_freq(freq->freq_khz)) {
+		if (nla_put_u32(msg,
+				NL80211_ATTR_WIPHY_FREQ,
+				KHZ_TO_MHZ(freq->freq_khz)))
+		return -ENOBUFS;
+	} else {
+		if (nla_put_u32(msg, NL80211_ATTR_WIPHY_FREQ, freq->freq))
+			return -ENOBUFS;
+	}
+
+	wpa_printf(MSG_DEBUG, "  * freq_offset=%d",
+		   KHZ_TO_S1G_OFFSET(freq->freq_khz));
+	if (nla_put_u32(msg, NL80211_ATTR_WIPHY_FREQ_OFFSET,
+			KHZ_TO_S1G_OFFSET(freq->freq_khz)))
 		return -ENOBUFS;
 
 	wpa_printf(MSG_DEBUG, "  * eht_enabled=%d", freq->eht_enabled);
 	wpa_printf(MSG_DEBUG, "  * he_enabled=%d", freq->he_enabled);
 	wpa_printf(MSG_DEBUG, "  * vht_enabled=%d", freq->vht_enabled);
 	wpa_printf(MSG_DEBUG, "  * ht_enabled=%d", freq->ht_enabled);
+	wpa_printf(MSG_DEBUG, "  * s1g_enabled=%d", freq->s1g_enabled);
 	wpa_printf(MSG_DEBUG, "  * radar_background=%d",
 		   freq->radar_background);
 
@@ -4996,7 +5032,14 @@ static int nl80211_put_freq_params(struct nl_msg *msg,
 	is_24ghz = hw_mode == HOSTAPD_MODE_IEEE80211G ||
 		hw_mode == HOSTAPD_MODE_IEEE80211B;
 
-	if (freq->vht_enabled ||
+	if (freq->s1g_enabled) {
+		wpa_printf(MSG_DEBUG, "  * bandwidth=%d", freq->bandwidth);
+		cw = nl80211_s1g_ch_width_parse(freq);
+		if (!cw)
+			return -EINVAL;
+		if (nla_put_u32(msg, NL80211_ATTR_CHANNEL_WIDTH, cw))
+			return -ENOBUFS;
+	} else if (freq->vht_enabled ||
 	    ((freq->he_enabled || freq->eht_enabled) && !is_24ghz)) {
 		enum nl80211_chan_width cw;
 
@@ -5142,8 +5185,22 @@ static int wpa_driver_nl80211_set_ap(void *priv,
 	    nl80211_put_beacon_rate(msg, drv->capa.flags, drv->capa.flags2,
 				    params) ||
 	    nl80211_put_dtim_period(msg, params->dtim_period) ||
+	    nla_put_u32(msg, NL80211_ATTR_SHORT_BEACON_PERIOD,
+			params->short_beacon_int) ||
 	    nla_put(msg, NL80211_ATTR_SSID, params->ssid_len, params->ssid))
 		goto fail;
+
+	if (is_s1g_freq(params->freq->freq_khz)) {
+		if (nla_put_u32(msg, NL80211_ATTR_WIPHY_FREQ,
+				KHZ_TO_MHZ(params->freq->freq_khz)) ||
+			nla_put_u32(msg, NL80211_ATTR_WIPHY_FREQ_OFFSET,
+				    KHZ_TO_S1G_OFFSET(params->freq->freq_khz)))
+			goto fail;
+
+		cw = nl80211_s1g_ch_width_parse(params->freq);
+		if (cw && nla_put_u32(msg, NL80211_ATTR_CHANNEL_WIDTH, cw))
+			goto fail;
+	}
 
 	if (params->mld_ap) {
 		wpa_printf(MSG_DEBUG, "nl80211: link_id=%u",
@@ -5534,9 +5591,9 @@ static int nl80211_set_channel(struct i802_bss *bss,
 	int ret;
 
 	wpa_printf(MSG_DEBUG,
-		   "nl80211: Set freq %d (ht_enabled=%d, vht_enabled=%d, he_enabled=%d, eht_enabled=%d, bandwidth=%d MHz, cf1=%d MHz, cf2=%d MHz)",
-		   freq->freq, freq->ht_enabled, freq->vht_enabled,
-		   freq->he_enabled, freq->eht_enabled, freq->bandwidth,
+		   "nl80211: Set freq %d %s(ht_enabled=%d, vht_enabled=%d, he_enabled=%d, eht_enabled=%d, s1g_enabled=%d, bandwidth=%d MHz, cf1=%d MHz, cf2=%d MHz)",
+		   freq->freq_khz ? freq->freq_khz : freq->freq, KHZ_PRINT_FREQ_UNITS(freq->freq_khz), freq->ht_enabled, freq->vht_enabled,
+		   freq->he_enabled, freq->eht_enabled, freq->s1g_enabled, freq->bandwidth,
 		   freq->center_freq1, freq->center_freq2);
 
 	msg = nl80211_drv_msg(drv, 0, set_chan ? NL80211_CMD_SET_CHANNEL :
@@ -6858,13 +6915,19 @@ static int nl80211_connect_common(struct wpa_driver_nl80211_data *drv,
 			return -1;
 	}
 
-	if (params->freq.freq && !params->mld_params.mld_addr) {
-#ifdef CONFIG_IEEE80211AH
-		wpa_printf(MSG_DEBUG, "  * mapped freq=%d",
-#else
-		wpa_printf(MSG_DEBUG, "  * freq=%d",
-#endif /* CONFIG_IEEE80211AH */
-				params->freq.freq);
+	if (params->freq.freq_khz && !params->mld_params.mld_addr) {
+		wpa_printf(MSG_DEBUG, "  * freq=%d.%d",
+			   KHZ_TO_MHZ(params->freq.freq_khz),
+			   KHZ_TO_S1G_OFFSET(params->freq.freq_khz));
+		if (nla_put_u32(msg, NL80211_ATTR_WIPHY_FREQ,
+				KHZ_TO_MHZ(params->freq.freq_khz)))
+			return -1;
+		if (nla_put_u32(msg, NL80211_ATTR_WIPHY_FREQ_OFFSET,
+				KHZ_TO_S1G_OFFSET(params->freq.freq_khz)))
+			return -1;
+		drv->assoc_freq = KHZ_TO_MHZ(params->freq.freq_khz);
+	} else if (params->freq.freq && !params->mld_params.mld_addr) {
+		wpa_printf(MSG_DEBUG, "  * freq=%d", params->freq.freq);
 		if (nla_put_u32(msg, NL80211_ATTR_WIPHY_FREQ,
 				params->freq.freq))
 			return -1;
@@ -8495,7 +8558,7 @@ static void add_ifidx(struct wpa_driver_nl80211_data *drv, int ifidx,
 	wpa_printf(MSG_DEBUG,
 		   "nl80211: Add own interface ifindex %d (ifidx_reason %d)",
 		   ifidx, ifidx_reason);
-	if (have_ifidx(drv, ifidx, ifidx_reason)) {
+	if (nl80211_has_ifidx(drv, ifidx, ifidx_reason)) {
 		wpa_printf(MSG_DEBUG, "nl80211: ifindex %d already in the list",
 			   ifidx);
 		return;
@@ -8555,8 +8618,8 @@ static void del_ifidx(struct wpa_driver_nl80211_data *drv, int ifidx,
 }
 
 
-static int have_ifidx(struct wpa_driver_nl80211_data *drv, int ifidx,
-		      int ifidx_reason)
+int nl80211_has_ifidx(struct wpa_driver_nl80211_data *drv, int ifidx,
+					  int ifidx_reason)
 {
 	int i;
 
@@ -8661,7 +8724,7 @@ static void handle_eapol(int sock, void *eloop_ctx, void *sock_ctx)
 		return;
 	}
 
-	if (have_ifidx(drv, lladdr.sll_ifindex, IFIDX_ANY))
+	if (nl80211_has_ifidx(drv, lladdr.sll_ifindex, IFIDX_ANY))
 		drv_event_eapol_rx(drv->ctx, lladdr.sll_addr, buf, len);
 }
 
@@ -10301,6 +10364,9 @@ static void add_survey(struct nlattr **sinfo, u32 ifidx,
 
 	survey->ifidx = ifidx;
 	survey->freq = nla_get_u32(sinfo[NL80211_SURVEY_INFO_FREQUENCY]);
+	if (sinfo[NL80211_SURVEY_INFO_FREQUENCY_OFFSET])
+		survey->freq_khz = MHZ_TO_KHZ(survey->freq) +
+			nla_get_u32(sinfo[NL80211_SURVEY_INFO_FREQUENCY_OFFSET]);
 	survey->filled = 0;
 
 	if (sinfo[NL80211_SURVEY_INFO_NOISE]) {
@@ -10333,8 +10399,9 @@ static void add_survey(struct nlattr **sinfo, u32 ifidx,
 		survey->filled |= SURVEY_HAS_CHAN_TIME_TX;
 	}
 
-	wpa_printf(MSG_DEBUG, "nl80211: Freq survey dump event (freq=%d MHz noise=%d channel_time=%ld busy_time=%ld tx_time=%ld rx_time=%ld filled=%04x)",
-		   survey->freq,
+	wpa_printf(MSG_DEBUG, "nl80211: Freq survey dump event (freq=%d %s noise=%d channel_time=%ld busy_time=%ld tx_time=%ld rx_time=%ld filled=%04x)",
+		   survey->freq_khz ? survey->freq_khz : survey->freq,
+		   KHZ_PRINT_FREQ_UNITS(survey->freq_khz),
 		   survey->nf,
 		   (unsigned long int) survey->channel_time,
 		   (unsigned long int) survey->channel_time_busy,

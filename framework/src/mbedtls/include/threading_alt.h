@@ -27,7 +27,6 @@
  * @brief mbed TLS threading functions implementation.
  */
 
-
 #ifndef MBEDTLS_THREADING_ALT_H_
 #define MBEDTLS_THREADING_ALT_H_
 
@@ -43,11 +42,11 @@
  */
 typedef struct mbedtls_threading_mutex
 {
-    struct mmosal_mutex * mutexHandle;
+    struct mmosal_mutex *mutexHandle;
 } mbedtls_threading_mutex_t;
 
 void mbedtls_platform_threading_init(void);
-void mbedtls_platform_threading_deinit(void);
 
+void mbedtls_platform_threading_deinit(void);
 
 #endif /* ifndef MBEDTLS_THREADING_ALT_H_ */

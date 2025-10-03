@@ -482,7 +482,7 @@ static void wpa_supplicant_optimize_freqs(
 				if (bss)
 					break;
 			}
-			if (bss && !disabled_freq(wpa_s, bss->freq)) {
+			if (bss && !disabled_freq(wpa_s, bss)) {
 				params->freqs = os_calloc(2, sizeof(int));
 				if (params->freqs) {
 					wpa_dbg(wpa_s, MSG_DEBUG,
@@ -2577,34 +2577,20 @@ static void dump_scan_res(struct wpa_scan_results *scan_res,
 			int noise_valid = !(r->flags & WPA_SCAN_NOISE_INVALID);
 
 			wpa_printf(MSG_EXCESSIVE, MACSTR
-				   " ssid=%s %s=%d qual=%d noise=%d%s level=%d snr=%d%s flags=0x%x age=%u est=%u",
+				   " ssid=%s freq=%d qual=%d noise=%d%s level=%d snr=%d%s flags=0x%x age=%u est=%u",
 				   MAC2STR(r->bssid),
 				   wpa_ssid_txt(ssid, ssid_len),
-#ifdef CONFIG_IEEE80211AH
-				   "chan",
-				   morse_ht_freq_to_s1g_chan(r->freq),
-#else
-				   "freq",
-				   r->freq,
-#endif			   
-				   r->qual,
+				   r->freq, r->freq_offset, r->qual,
 				   r->noise, noise_valid ? "" : "~", r->level,
 				   r->snr, r->snr >= GREAT_SNR ? "*" : "",
 				   r->flags,
 				   r->age, r->est_throughput);
 		} else {
 			wpa_printf(MSG_EXCESSIVE, MACSTR
-				   " ssid=%s %s=%d qual=%d noise=%d level=%d flags=0x%x age=%u est=%u",
+				   " ssid=%s freq=%d qual=%d noise=%d level=%d flags=0x%x age=%u est=%u",
 				   MAC2STR(r->bssid),
 				   wpa_ssid_txt(ssid, ssid_len),
-#ifdef CONFIG_IEEE80211AH
-				   "chan",
-				   morse_ht_freq_to_s1g_chan(r->freq),
-#else
-				   "freq",
-				   r->freq,
-#endif
-				   r->qual,
+				   r->freq, r->freq_offset, r->qual,
 				   r->noise, r->level, r->flags, r->age,
 				   r->est_throughput);
 		}
@@ -3377,6 +3363,8 @@ wpa_scan_clone_params(const struct wpa_driver_scan_params *src)
 		if (params->freqs == NULL)
 			goto failed;
 	}
+
+	params->freq_in_khz = src->freq_in_khz;
 
 	if (src->filter_ssids) {
 		params->filter_ssids = os_memdup(src->filter_ssids,

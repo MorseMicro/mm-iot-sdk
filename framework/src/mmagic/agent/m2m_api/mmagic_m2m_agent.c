@@ -11,7 +11,6 @@
 #include "m2m_llc/mmagic_llc_agent.h"
 #include "m2m_api/mmagic_m2m_agent.h"
 #include "m2m_api/autogen/mmagic_m2m_internal.h"
-#include "m2m_api/autogen/mmagic_m2m.def"
 
 /** M2M stream data. */
 struct mmagic_m2m_stream
@@ -42,6 +41,7 @@ static void mmagic_m2m_agent_free_stream(struct mmagic_m2m_stream *stream)
 {
     /* Sanity check to ensure integrity of stream structures */
     MMOSAL_ASSERT(stream->agent->core.stream[stream->sid] == stream);
+    MMOSAL_DEV_ASSERT(stream->sid != CONTROL_STREAM);
 
     stream->agent->core.stream[stream->sid] = NULL;
     mmosal_queue_delete(stream->stream_queue);
@@ -84,8 +84,8 @@ static void mmagic_m2m_agent_stream_task(void *arg)
         /* Response buffer should not be NULL, assert here to catch problems early. */
         MMOSAL_ASSERT(resp_buf);
 
-        mmagic_llc_agent_tx(stream->agent->agent_llc, MMAGIC_LLC_PTYPE_RESPONSE,
-                            stream->sid, resp_buf);
+        MMOSAL_DEV_ASSERT(mmagic_llc_agent_tx(stream->agent->agent_llc, MMAGIC_LLC_PTYPE_RESPONSE,
+                                              stream->sid, resp_buf));
         mmbuf_release(rx_buffer);
     }
 
@@ -96,10 +96,11 @@ static void mmagic_m2m_agent_stream_task(void *arg)
 enum mmagic_status mmagic_m2m_agent_open_stream(struct mmagic_data *core,
                                                 void *stream_context, uint8_t *sid)
 {
-    int ii;
+    MMOSAL_DEV_ASSERT(core);
+    MMOSAL_DEV_ASSERT(sid);
 
     /* find a free stream */
-    for (ii = 0; ii < MMAGIC_MAX_STREAMS; ii++)
+    for (int ii = 0; ii < MMAGIC_MAX_STREAMS; ii++)
     {
         if (core->stream[ii] == NULL)
         {
@@ -107,7 +108,7 @@ enum mmagic_status mmagic_m2m_agent_open_stream(struct mmagic_data *core,
                 mmosal_malloc(sizeof(struct mmagic_m2m_stream));
             if (core->stream[ii] == NULL)
             {
-                return MMAGIC_STATUS_UNAVAILABLE;
+                return MMAGIC_STATUS_NO_MEM;
             }
 
             core->stream[ii]->stream_context = stream_context;
@@ -115,7 +116,7 @@ enum mmagic_status mmagic_m2m_agent_open_stream(struct mmagic_data *core,
             if (core->stream[ii]->stream_queue == NULL)
             {
                 mmosal_free(core->stream[ii]);
-                return MMAGIC_STATUS_UNAVAILABLE;
+                return MMAGIC_STATUS_NO_MEM;
             }
             struct mmosal_task *stream_task =
                 mmosal_task_create(mmagic_m2m_agent_stream_task, core->stream[ii],
@@ -124,7 +125,7 @@ enum mmagic_status mmagic_m2m_agent_open_stream(struct mmagic_data *core,
             {
                 mmosal_queue_delete(core->stream[ii]->stream_queue);
                 mmosal_free(core->stream[ii]);
-                return MMAGIC_STATUS_OK;
+                return MMAGIC_STATUS_NO_MEM;
             }
 
             core->stream[ii]->agent = mmagic_m2m_agent_get();
@@ -155,7 +156,7 @@ void mmagic_m2m_agent_close_stream(struct mmagic_data *core, uint8_t stream_id)
     void *nullpointer = NULL;
 
     /* We cannot close the command stream */
-    MMOSAL_ASSERT(stream_id != 0);
+    MMOSAL_ASSERT(stream_id != CONTROL_STREAM);
 
     MMOSAL_ASSERT(stream_id < MMAGIC_MAX_STREAMS);
 
@@ -172,7 +173,7 @@ struct mmbuf *mmagic_m2m_create_response(uint8_t subsystem, uint8_t command, uin
 {
     struct mmagic_m2m_response_header *txheader;
 
-    struct mmbuf *txbuffer = mmagic_llc_agent_alloc_buffer_for_tx(NULL, sizeof(txheader) + size);
+    struct mmbuf *txbuffer = mmagic_llc_agent_alloc_buffer_for_tx(NULL, sizeof(*txheader) + size);
 
     if (txbuffer)
     {
@@ -202,7 +203,7 @@ enum mmagic_status mmagic_m2m_rx_callback(struct mmagic_llc_agent *agent_llc, vo
 
     if (agent->core.stream[sid] == NULL)
     {
-        printf("MMAGIC_M2M_AGENT: Invalid stream ID %u!\n", sid);
+        mmosal_printf("MMAGIC_M2M_AGENT: Invalid stream ID %u!\n", sid);
         mmbuf_release(rxbuffer);
         return MMAGIC_STATUS_INVALID_STREAM;
     }
@@ -226,8 +227,7 @@ enum mmagic_status mmagic_m2m_event_handler(void *arg, uint8_t subsystem_id,
         return MMAGIC_STATUS_NO_MEM;
     }
 
-    mmagic_llc_agent_tx(agent->agent_llc, MMAGIC_LLC_PTYPE_EVENT, 0, mmbuf);
-    return MMAGIC_STATUS_OK;
+    return mmagic_llc_agent_tx(agent->agent_llc, MMAGIC_LLC_PTYPE_EVENT, 0, mmbuf);
 }
 
 /**
@@ -273,7 +273,7 @@ struct mmagic_m2m_agent *mmagic_m2m_agent_init(const struct mmagic_m2m_agent_ini
                   MMAGIC_STATUS_OK);
     MMOSAL_ASSERT(command_sid == CONTROL_STREAM);
 
-    MMOSAL_ASSERT(mmagic_llc_send_start_notification(agent->agent_llc));
+    MMOSAL_ASSERT(mmagic_llc_send_start_notification(agent->agent_llc) == MMAGIC_STATUS_OK);
 
     return agent;
 }

@@ -17,12 +17,15 @@
 #include "mmagic_core_iperf.h"
 #include "mmagic_core_sys.h"
 #include "mmagic_core_tcp.h"
+#include "mmagic_core_tls.h"
+#include "mmagic_core_ntp.h"
+#include "mmagic_core_mqtt.h"
 
 /** Maximum length of the @c app_version string (excluding null terminator). */
 #define MMAGIC_SYS_MAX_APP_VERSION_LENGTH   (31)
 
 /** Maximum number of streams we support in MMAGIC */
-#define MMAGIC_MAX_STREAMS  32
+#define MMAGIC_MAX_STREAMS  8
 
 /**
  * Function type for M2M/CLI-specific event implementation.
@@ -43,6 +46,9 @@ struct mmagic_data
     struct mmagic_iperf_data iperf_data;
     struct mmagic_sys_data sys_data;
     struct mmagic_tcp_data tcp_data;
+    struct mmagic_tls_data tls_data;
+    struct mmagic_ntp_data ntp_data;
+    struct mmagic_mqtt_data mqtt_data;
 
     /** Reference to the regulatory database */
     const struct mmwlan_regulatory_db *reg_db;
@@ -92,6 +98,21 @@ static inline struct mmagic_sys_data *mmagic_data_get_sys(struct mmagic_data *co
 static inline struct mmagic_tcp_data *mmagic_data_get_tcp(struct mmagic_data *core)
 {
     return &core->tcp_data;
+}
+
+static inline struct mmagic_tls_data *mmagic_data_get_tls(struct mmagic_data *core)
+{
+    return &core->tls_data;
+}
+
+static inline struct mmagic_ntp_data *mmagic_data_get_ntp(struct mmagic_data *core)
+{
+    return &core->ntp_data;
+}
+
+static inline struct mmagic_mqtt_data *mmagic_data_get_mqtt(struct mmagic_data *core)
+{
+    return &core->mqtt_data;
 }
 
 void mmagic_core_init_modules(struct mmagic_data *mmagicd);

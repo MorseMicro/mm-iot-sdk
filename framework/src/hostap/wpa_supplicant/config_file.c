@@ -1048,8 +1048,8 @@ static void wpa_config_write_network(FILE *f, struct wpa_ssid *ssid)
 #ifdef CONFIG_IEEE80211AH
 	INT(cac);
 	INT_DEF(disable_s1g_sgi, DEFAULT_DISABLE_SGI);
-	STR(backoffs);
 #endif
+	STR(auth_retry_backoff);
 	INT(disable_eht);
 	INT(enable_4addr_mode);
 	INT(max_idle);
@@ -1754,12 +1754,6 @@ static void wpa_config_write_global(FILE *f, struct wpa_config *config)
 	if (config->dpp_connector_privacy_default)
 		fprintf(f, "dpp_connector_privacy_default=%d\n",
 			config->dpp_connector_privacy_default);
-	if (config->dpp_key)
-		fprintf(f, "dpp_key=%s\n",
-			config->dpp_key);
-	if (config->dpp_chirp_forever)
-		fprintf(f, "dpp_chirp_forever=%d\n",
-			config->dpp_chirp_forever);
 	if (config->coloc_intf_reporting)
 		fprintf(f, "coloc_intf_reporting=%d\n",
 			config->coloc_intf_reporting);

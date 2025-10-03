@@ -3,7 +3,6 @@ var ping_8c =
     [ "PING_COUNT", "ping_8c.html#a0c1e71852ac798f73e914991b3e70f64", null ],
     [ "PING_DATA_SIZE", "ping_8c.html#aae49a47b7be864d302fa11ad0b3b9589", null ],
     [ "PING_INTERVAL_MS", "ping_8c.html#aa7e73448526543d4ed006bba737609de", null ],
-    [ "PING_REMOTE_IP", "ping_8c.html#af9e8e2b924ec299f5a446769461c6c8f", null ],
     [ "POST_PING_DELAY_MS", "ping_8c.html#aa74a8e27191a3077ea4cf00ea7507962", null ],
     [ "UPDATE_INTERVAL_MS", "ping_8c.html#ad4602c729fef5a16a7f3dcf974eeee14", null ],
     [ "debug_state", "ping_8c.html#af6267920b504273777e2451780e565af", [

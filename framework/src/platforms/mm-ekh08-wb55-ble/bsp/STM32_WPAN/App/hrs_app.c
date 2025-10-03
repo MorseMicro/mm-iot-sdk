@@ -69,6 +69,7 @@ PLACE_IN_SECTION("BLE_APP_CONTEXT") static HRSAPP_Context_t HRSAPP_Context;
 
 /* USER CODE END PV */
 static struct mmosal_task *hrs_task_handle;
+static struct mmosal_semb *hrs_semb;
 
 /* Private functions prototypes-----------------------------------------------*/
 static void HrMeas( void );
@@ -142,6 +143,8 @@ void HRSAPP_Init(void)
                                        CFG_HRS_PROCESS_STACK_SIZE,
                                        CFG_HRS_PROCESS_NAME);
   MMOSAL_ASSERT(hrs_task_handle != NULL);
+  hrs_semb = mmosal_semb_create("hrs");
+  MMOSAL_ASSERT(hrs_semb != NULL);
 /* USER CODE BEGIN HRSAPP_Init */
 /**
    * Set Body Sensor Location
@@ -192,7 +195,7 @@ static void hrs_app_task(void *arg)
 
     for (;;)
     {
-        mmosal_task_wait_for_notification(UINT32_MAX);
+        mmosal_semb_wait(hrs_semb, UINT32_MAX);
         HRSAPP_Measurement( );
     }
 }
@@ -225,7 +228,7 @@ static void HrMeas( void )
    * The background is the only place where the application can make sure a new aci command
    * is not sent if there is a pending one
    */
-  mmosal_task_notify_from_isr(hrs_task_handle);
+  mmosal_semb_give_from_isr(hrs_semb);
 /* USER CODE BEGIN HrMeas */
 
 /* USER CODE END HrMeas */

@@ -11,6 +11,12 @@ var group__MMWLAN =
     [ "WLAN Datapath API", "group__MMWLAN__DATA.html", "group__MMWLAN__DATA" ],
     [ "Statistics API", "group__MMWLAN__STATS.html", "group__MMWLAN__STATS" ],
     [ "Test (ATE) API", "group__MMWLAN__TEST.html", "group__MMWLAN__TEST" ],
+    [ "mmwlan_duty_cycle_stats", "structmmwlan__duty__cycle__stats.html", [
+      [ "burst_airtime_remaining_us", "structmmwlan__duty__cycle__stats.html#a7e6fbbf898e960ac1ea153d2e8158952", null ],
+      [ "burst_window_duration_us", "structmmwlan__duty__cycle__stats.html#a56a2783b35ac066f9b5cf45825f59d6d", null ],
+      [ "duty_cycle", "structmmwlan__duty__cycle__stats.html#aa9339f72b79dd157936fd2ff2b1763a1", null ],
+      [ "mode", "structmmwlan__duty__cycle__stats.html#ad49c29c48fe8906b1781d838508982df", null ]
+    ] ],
     [ "DEFAULT_BGSCAN_LONG_INTERVAL_S", "group__MMWLAN.html#ga71b8f7f48139c1d7a8ac8b20537c36de", null ],
     [ "DEFAULT_BGSCAN_SHORT_INTERVAL_S", "group__MMWLAN.html#ga948c41a1da6f011db6141b29d188fca8", null ],
     [ "DEFAULT_BGSCAN_THRESHOLD_DBM", "group__MMWLAN.html#ga2cef4cdfd533a16d04030551141a0c47", null ],
@@ -18,6 +24,8 @@ var group__MMWLAN =
     [ "DEFAULT_TWT_WAKE_INTERVAL_US", "group__MMWLAN.html#ga2a5c4c585eae555f4d5b0c3304e5e9e4", null ],
     [ "MMWLAN_DEFAULT_SCAN_INTERVAL_BASE_S", "group__MMWLAN.html#ga4dc834cad2f429484a5eb050c833fb65", null ],
     [ "MMWLAN_DEFAULT_SCAN_INTERVAL_LIMIT_S", "group__MMWLAN.html#ga07a32b3e9fb8b76fe4029cb20dc1af57", null ],
+    [ "MMWLAN_DEFAULT_SOFTAP_BEACON_INTERVAL_TUS", "group__MMWLAN.html#ga97067bcced560be898c59bda0e54daec", null ],
+    [ "MMWLAN_DEFAULT_SOFTAP_DTIM_PERIOD", "group__MMWLAN.html#gaba883cb183bdd2478a36420499755727", null ],
     [ "MMWLAN_MAC_ADDR_LEN", "group__MMWLAN.html#gad1f02bb330d9d2f4c831a1cf9d44ff1a", null ],
     [ "MMWLAN_MAX_EC_GROUPS", "group__MMWLAN.html#ga8e0c9525afa90a775d251a7dd785cb92", null ],
     [ "MMWLAN_OUI_SIZE", "group__MMWLAN.html#gaa9382290cddb08f42b62119a898c77de", null ],
@@ -26,9 +34,14 @@ var group__MMWLAN =
     [ "MMWLAN_SSID_MAXLEN", "group__MMWLAN.html#gab3eb6b84d66a2bac936052645f431015", null ],
     [ "MMWLAN_STANDBY_STATUS_FRAME_USER_PAYLOAD_MAXLEN", "group__MMWLAN.html#ga84f1a76137b3e5d01dd0942e2c4ee564", null ],
     [ "MMWLAN_STANDBY_WAKE_FRAME_USER_FILTER_MAXLEN", "group__MMWLAN.html#gae65281a566a88f746c21c004a7971341", null ],
+    [ "mmwlan_4addr_mode", "group__MMWLAN.html#gad16f6a034dae9ce07c66035e7de09a4b", null ],
     [ "mmwlan_cac_mode", "group__MMWLAN.html#gaf8803582c4c38e62330ab94ac4d667a5", [
       [ "MMWLAN_CAC_DISABLED", "group__MMWLAN.html#ggaf8803582c4c38e62330ab94ac4d667a5a11b4a195e7bbbdac9b06e9ef6fd79b5e", null ],
       [ "MMWLAN_CAC_ENABLED", "group__MMWLAN.html#ggaf8803582c4c38e62330ab94ac4d667a5a7ae163ccb145d095f23cdc88329122e0", null ]
+    ] ],
+    [ "mmwlan_duty_cycle_mode", "group__MMWLAN.html#ga69f89b9ee99f9d1cae10474be1acf5e8", [
+      [ "MMWLAN_DUTY_CYCLE_MODE_SPREAD", "group__MMWLAN.html#gga69f89b9ee99f9d1cae10474be1acf5e8ab9ee23f3cb0fcb042e0a1212a6c7a632", null ],
+      [ "MMWLAN_DUTY_CYCLE_MODE_BURST", "group__MMWLAN.html#gga69f89b9ee99f9d1cae10474be1acf5e8ac3e646bfb0bcc7c0fd659340e6b98b82", null ]
     ] ],
     [ "mmwlan_pmf_mode", "group__MMWLAN.html#ga6f1e10b52468bc91ff773e96377bfa17", [
       [ "MMWLAN_PMF_REQUIRED", "group__MMWLAN.html#gga6f1e10b52468bc91ff773e96377bfa17add2d30cc5a82b600eae097ba325c1073", null ],

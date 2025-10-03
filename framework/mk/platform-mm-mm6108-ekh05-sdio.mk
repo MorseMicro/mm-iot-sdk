@@ -22,6 +22,13 @@ BSP_SRCS_C += Core/Src/stm32u5xx_hal_msp.c
 BSP_SRCS_C += Core/Src/stm32u5xx_hal_timebase_tim.c
 BSP_SRCS_C += Core/Src/stm32u5xx_it.c
 BSP_SRCS_C += Core/Src/system_stm32u5xx.c
+ifeq ($(BUILD_WITH_MBEDTLS_ECC_HW_CRYPTO),y)
+# Enable STM32U585 PKA hardware acceleration for ECC (mbedTLS ECP alternative implementation)
+BUILD_DEFINES += MBEDTLS_ECP_ALT=1
+
+BSP_SRCS_C += Core/Src/ecp_alt.c
+BSP_SRCS_C += Core/Src/ecp_curves_alt.c
+endif
 
 
 BSP_SRCS_H += Core/Inc/main.h
@@ -44,6 +51,7 @@ BSP_DRIVERS_SRCS_C += Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_gtzc.c
 BSP_DRIVERS_SRCS_C += Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_i2c.c
 BSP_DRIVERS_SRCS_C += Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_i2c_ex.c
 BSP_DRIVERS_SRCS_C += Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_icache.c
+BSP_DRIVERS_SRCS_C += Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_pka.c
 BSP_DRIVERS_SRCS_C += Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_pwr.c
 BSP_DRIVERS_SRCS_C += Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_pwr_ex.c
 BSP_DRIVERS_SRCS_C += Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_rcc.c
@@ -105,6 +113,7 @@ BSP_DRIVERS_SRCS_H += Drivers/STM32U5xx_HAL_Driver/Inc/stm32u5xx_hal.h
 BSP_DRIVERS_SRCS_H += Drivers/STM32U5xx_HAL_Driver/Inc/stm32u5xx_hal_i2c_ex.h
 BSP_DRIVERS_SRCS_H += Drivers/STM32U5xx_HAL_Driver/Inc/stm32u5xx_hal_i2c.h
 BSP_DRIVERS_SRCS_H += Drivers/STM32U5xx_HAL_Driver/Inc/stm32u5xx_hal_icache.h
+BSP_DRIVERS_SRCS_H += Drivers/STM32U5xx_HAL_Driver/Inc/stm32u5xx_hal_pka.h
 BSP_DRIVERS_SRCS_H += Drivers/STM32U5xx_HAL_Driver/Inc/stm32u5xx_hal_pwr_ex.h
 BSP_DRIVERS_SRCS_H += Drivers/STM32U5xx_HAL_Driver/Inc/stm32u5xx_hal_pwr.h
 BSP_DRIVERS_SRCS_H += Drivers/STM32U5xx_HAL_Driver/Inc/stm32u5xx_hal_rcc_ex.h
@@ -170,6 +179,9 @@ BUILD_DEFINES += TICKLESS_IDLE
 
 ENABLE_DEBUG_IN_STOP_MODE ?= 1
 BUILD_DEFINES += ENABLE_DEBUG_IN_STOP_MODE=$(ENABLE_DEBUG_IN_STOP_MODE)
+
+# Reduce filesystem size to 128 KB for debug builds to allow for the increased code size.
+DEBUG_LINKFLAGS += -Wl,--defsym=__FILESYSTEM_SIZE=0x20000
 
 CONLYFLAGS += -include $(MMIOT_ROOT)/$(BSP_DRIVERS_DIR)/Drivers/CMSIS/Device/ST/STM32U5xx/Include/stm32u585xx.h
 CFLAGS-$(BSP_DRIVERS_DIR) += -Wno-c++-compat

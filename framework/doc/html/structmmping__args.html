@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.8.2</span>
+   &#160;<span id="projectnumber">2.9.7</span>
    </div>
   </td>
  </tr>
@@ -96,10 +96,10 @@ $(document).ready(function(){initNavTree('structmmping__args.html',''); initResi
 <div class="textblock"><p >Ping request arguments data structure. </p>
 <p >For forward compatibility this structure should be initialized using <code>MMPING_ARGS_DEFAULT</code>. For example:</p>
 <div class="fragment"><div class="line"><span class="keyword">struct </span><a class="code hl_struct" href="structmmping__args.html">mmping_args</a> args = <a class="code hl_define" href="group__MMPING.html#gacd81e1f6fad2ac9ee8fcecb82e590437">MMPING_ARGS_DEFAULT</a>;</div>
-<div class="ttc" id="agroup__MMPING_html_gacd81e1f6fad2ac9ee8fcecb82e590437"><div class="ttname"><a href="group__MMPING.html#gacd81e1f6fad2ac9ee8fcecb82e590437">MMPING_ARGS_DEFAULT</a></div><div class="ttdeci">#define MMPING_ARGS_DEFAULT</div><div class="ttdoc">Initializer for mmping_args.</div><div class="ttdef"><b>Definition:</b> <a href="mmping_8h_source.html#l00097">mmping.h:97</a></div></div>
-<div class="ttc" id="astructmmping__args_html"><div class="ttname"><a href="structmmping__args.html">mmping_args</a></div><div class="ttdoc">Ping request arguments data structure.</div><div class="ttdef"><b>Definition:</b> <a href="mmping_8h_source.html#l00078">mmping.h:79</a></div></div>
+<div class="ttc" id="agroup__MMPING_html_gacd81e1f6fad2ac9ee8fcecb82e590437"><div class="ttname"><a href="group__MMPING.html#gacd81e1f6fad2ac9ee8fcecb82e590437">MMPING_ARGS_DEFAULT</a></div><div class="ttdeci">#define MMPING_ARGS_DEFAULT</div><div class="ttdoc">Initializer for mmping_args.</div><div class="ttdef"><b>Definition:</b> <a href="mmping_8h_source.html#l00095">mmping.h:95</a></div></div>
+<div class="ttc" id="astructmmping__args_html"><div class="ttname"><a href="structmmping__args.html">mmping_args</a></div><div class="ttdoc">Ping request arguments data structure.</div><div class="ttdef"><b>Definition:</b> <a href="mmping_8h_source.html#l00076">mmping.h:77</a></div></div>
 </div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="mmping_8h_source.html#l00078">78</a> of file <a class="el" href="mmping_8h_source.html">mmping.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmping_8h_source.html#l00076">76</a> of file <a class="el" href="mmping_8h_source.html">mmping.h</a>.</p>
 </div>
 <p><code>#include &lt;<a class="el" href="mmping_8h_source.html">mmping.h</a>&gt;</code></p>
 <table class="memberdecls">
@@ -137,7 +137,7 @@ Data Fields</h2></td></tr>
 <p>This specifies the number of ping requests to send before terminating the session. </p>
 <p >If this is zero or exceeds <a class="el" href="group__MMPING.html#ga254e66798de6a997c858735bd6e28fd7">MMPING_MAX_COUNT</a> then it it will be set to <a class="el" href="group__MMPING.html#ga254e66798de6a997c858735bd6e28fd7">MMPING_MAX_COUNT</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmping_8h_source.html#l00091">91</a> of file <a class="el" href="mmping_8h_source.html">mmping.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmping_8h_source.html#l00089">89</a> of file <a class="el" href="mmping_8h_source.html">mmping.h</a>.</p>
 
 </div>
 </div>
@@ -155,7 +155,7 @@ Data Fields</h2></td></tr>
 
 <p>The time interval between ping requests (in milliseconds) </p>
 
-<p class="definition">Definition at line <a class="el" href="mmping_8h_source.html#l00085">85</a> of file <a class="el" href="mmping_8h_source.html">mmping.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmping_8h_source.html#l00083">83</a> of file <a class="el" href="mmping_8h_source.html">mmping.h</a>.</p>
 
 </div>
 </div>
@@ -173,7 +173,7 @@ Data Fields</h2></td></tr>
 
 <p>Specifies the data packet size in bytes excluding 8 bytes ICMP header. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmping_8h_source.html#l00093">93</a> of file <a class="el" href="mmping_8h_source.html">mmping.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmping_8h_source.html#l00091">91</a> of file <a class="el" href="mmping_8h_source.html">mmping.h</a>.</p>
 
 </div>
 </div>
@@ -191,7 +191,7 @@ Data Fields</h2></td></tr>
 
 <p>String representation of the local IP address. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmping_8h_source.html#l00081">81</a> of file <a class="el" href="mmping_8h_source.html">mmping.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmping_8h_source.html#l00079">79</a> of file <a class="el" href="mmping_8h_source.html">mmping.h</a>.</p>
 
 </div>
 </div>
@@ -209,7 +209,7 @@ Data Fields</h2></td></tr>
 
 <p>String representation of the IP address of the ping target. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmping_8h_source.html#l00083">83</a> of file <a class="el" href="mmping_8h_source.html">mmping.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmping_8h_source.html#l00081">81</a> of file <a class="el" href="mmping_8h_source.html">mmping.h</a>.</p>
 
 </div>
 </div>

@@ -102,14 +102,27 @@ void NMI_Handler(void)
 void HardFault_Handler(void)
 {
   /* USER CODE BEGIN HardFault_IRQn 0 */
-    MMOSAL_LOG_FAILURE_INFO(FAILURE_HARDFAULT, SCB->HFSR, SCB->CFSR);
+  const uint32_t *fault_stack;
+  if ((uintptr_t)(MMPORT_GET_LR()) & 0x04)
+  {
+    fault_stack = (const uint32_t *)__get_PSP();
+  }
+  else
+  {
+    fault_stack = (const uint32_t *)__get_MSP();
+  }
+
+  uint32_t fault_pc = fault_stack[6];
+  (void)fault_pc; /* Protect against unused variable warnings */
+
+  MMOSAL_LOG_FAILURE_INFO(FAILURE_HARDFAULT, SCB->HFSR, SCB->CFSR, fault_pc);
 #ifdef HALT_ON_ASSERT
-    while (1)
-    {
-        MMPORT_BREAKPOINT();
-    }
+  while (1)
+  {
+    MMPORT_BREAKPOINT();
+  }
 #else
-    mmhal_reset();
+  mmhal_reset();
 #endif
   /* USER CODE END HardFault_IRQn 0 */
   while (1)

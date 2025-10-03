@@ -127,6 +127,10 @@ u8 * hostapd_eid_supp_rates(struct hostapd_data *hapd, u8 *eid)
 	if (hapd->iface->current_rates == NULL)
 		return eid;
 
+	/* 802.11ah does not need to include the support rates element */
+	if (hapd->iconf->ieee80211ah)
+		return eid;
+
 	*pos++ = WLAN_EID_SUPP_RATES;
 	num = hapd->iface->num_rates;
 	if ((hapd->iconf->ieee80211n || hapd->iconf->ieee80211ah) &&
@@ -3630,8 +3634,9 @@ static u16 copy_supp_rates(struct hostapd_data *hapd, struct sta_info *sta,
 			   struct ieee802_11_elems *elems)
 {
 	/* Supported rates not used in IEEE 802.11ad/DMG */
-	if (hapd->iface->current_mode &&
-	    hapd->iface->current_mode->mode == HOSTAPD_MODE_IEEE80211AD)
+	if ((hapd->iface->current_mode &&
+	     hapd->iface->current_mode->mode == HOSTAPD_MODE_IEEE80211AD) ||
+	    hapd->iconf->ieee80211ah)
 		return WLAN_STATUS_SUCCESS;
 
 	if (!elems->supp_rates) {
@@ -4954,6 +4959,7 @@ static u16 send_assoc_resp(struct hostapd_data *hapd, struct sta_info *sta,
 	size_t buflen;
 	struct ieee80211_mgmt *reply;
 	u8 *p;
+	le16 aid = 0;
 	u16 res = WLAN_STATUS_SUCCESS;
 
 	buflen = sizeof(struct ieee80211_mgmt) + 1024;
@@ -5001,10 +5007,18 @@ static u16 send_assoc_resp(struct hostapd_data *hapd, struct sta_info *sta,
 		host_to_le16(hostapd_own_capab_info(hapd));
 	reply->u.assoc_resp.status_code = host_to_le16(status_code);
 
-	reply->u.assoc_resp.aid = host_to_le16((sta ? sta->aid : 0) |
-					       BIT(14) | BIT(15));
+	p = reply->u.assoc_resp.variable;
+	aid = host_to_le16((sta ? sta->aid : 0) |
+			   BIT(14) | BIT(15));
+	if (!hapd->iconf->ieee80211ah) {
+		reply->u.assoc_resp.aid = aid;
+	} else {
+		/* AID field is not included for S1G */
+		p -= sizeof(reply->u.assoc_resp.aid);
+	}
+
 	/* Supported rates */
-	p = hostapd_eid_supp_rates(hapd, reply->u.assoc_resp.variable);
+	p = hostapd_eid_supp_rates(hapd, p);
 	/* Extended supported rates */
 	p = hostapd_eid_ext_supp_rates(hapd, p);
 
@@ -5095,6 +5109,14 @@ static u16 send_assoc_resp(struct hostapd_data *hapd, struct sta_info *sta,
 		p = hostapd_eid_he_6ghz_band_cap(hapd, p);
 	}
 #endif /* CONFIG_IEEE80211AX */
+
+#ifdef CONFIG_IEEE80211AH
+	if (hapd->iconf->ieee80211ah) {
+		p = hostapd_eid_aid_response(hapd, p, aid);
+		p = hostapd_eid_s1g_capab(hapd, p);
+		p = hostapd_eid_s1g_oper(hapd, p);
+	}
+#endif /* CONFIG_IEEE80211AH */
 
 	p = hostapd_eid_ext_capab(hapd, p, false);
 	p = hostapd_eid_bss_max_idle_period(hapd, p,
@@ -6410,7 +6432,7 @@ int ieee802_11_mgmt(struct hostapd_data *hapd, const u8 *buf, size_t len,
 	}
 
 	if (stype == WLAN_FC_STYPE_PROBE_REQ) {
-		handle_probe_req(hapd, mgmt, len, ssi_signal);
+		handle_probe_req(hapd, mgmt, len, ssi_signal, freq);
 		return 1;
 	}
 

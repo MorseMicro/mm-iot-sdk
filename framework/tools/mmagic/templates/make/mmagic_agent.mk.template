@@ -19,6 +19,7 @@ MMAGIC_AGENT_SRCS_C += core/autogen/mmagic_core_data.c
 MMAGIC_AGENT_SRCS_C += core/autogen/mmagic_core_types.c
 MMAGIC_AGENT_SRCS_C += core/mmagic_core_utils.c
 {%- for module in config.modules %}
+MMAGIC_AGENT_SRCS_C += core/autogen/mmagic_core_autogen_{{module.name}}.c
 MMAGIC_AGENT_SRCS_C += core/mmagic_core_{{module.name}}.c
 {%- endfor %}
 
@@ -26,14 +27,15 @@ MMAGIC_AGENT_SRCS_H += cli/autogen/mmagic_cli_internal.h
 {%- for module in config.modules %}
 {%- if module.cli_support %}
 MMAGIC_AGENT_SRCS_H += cli/autogen/mmagic_cli_{{module.name}}.h
-MMAGIC_AGENT_SRCS_H += cli/autogen/mmagic_cli_{{module.name}}.def
 {%- endif %}
 {%- endfor %}
 
 MMAGIC_AGENT_SRCS_C += cli/mmagic_cli.c
 MMAGIC_AGENT_SRCS_C += cli/mmagic_cli_internal.c
+MMAGIC_AGENT_SRCS_C += cli/autogen/mmagic_cli_autogen.c
 {%- for module in config.modules %}
 {%- if module.cli_support %}
+MMAGIC_AGENT_SRCS_C += cli/autogen/mmagic_cli_autogen_{{module.name}}.c
 MMAGIC_AGENT_SRCS_C += cli/mmagic_cli_{{module.name}}.c
 {%- endif %}
 {%- endfor %}
@@ -45,8 +47,9 @@ MMAGIC_AGENT_SRCS_H += m2m_api/autogen/mmagic_m2m_{{module.name}}.h
 {%- endfor %}
 
 MMAGIC_AGENT_SRCS_C += m2m_api/mmagic_m2m_agent.c
+MMAGIC_AGENT_SRCS_C += m2m_api/autogen/mmagic_m2m_autogen.c
 {%- for module in config.modules %}
-MMAGIC_AGENT_SRCS_C += m2m_api/autogen/mmagic_m2m_{{module.name}}.c
+MMAGIC_AGENT_SRCS_C += m2m_api/autogen/mmagic_m2m_autogen_{{module.name}}.c
 {%- endfor %}
 
 MMAGIC_AGENT_SRCS_H += m2m_llc/mmagic_llc_agent.h

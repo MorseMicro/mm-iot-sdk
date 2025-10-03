@@ -222,5 +222,9 @@ void app_init(void)
 
     app_wlan_init();
 
+    /* Explicitly prevent the Morse Micro chip from entering it's power save state during rf-test
+     * operations. */
+    mmwlan_set_power_save_mode(MMWLAN_PS_DISABLED);
+
     mmhal_uart_init(uart_rx_handler, &rx_slip_state);
 }

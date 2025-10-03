@@ -113,20 +113,6 @@ int main(void)
   MX_RTC_Init();
   MX_LPTIM1_Init();
   /* USER CODE BEGIN 2 */
-#ifdef ENABLE_ITM_LOG
-  LL_GPIO_InitTypeDef swo_pin_init = {
-    .Pin = SWO_Pin,
-    .Mode = LL_GPIO_MODE_ALTERNATE,
-    .Speed = LL_GPIO_SPEED_FREQ_VERY_HIGH,
-    .OutputType = LL_GPIO_OUTPUT_PUSHPULL,
-    .Pull = LL_GPIO_PULL_NO,
-    .Alternate = LL_GPIO_AF_0
-  };
-  ErrorStatus status = LL_GPIO_Init(SWO_GPIO_Port, &swo_pin_init);
-  MMOSAL_ASSERT(status == SUCCESS);
-  LL_DBGMCU_SetTracePinAssignment(LL_DBGMCU_TRACE_ASYNCH);
-  ITM->TER |= 1; /* Enable ITM port 0 for log output. */
-#endif
 #if defined(ENABLE_DEBUG_IN_STOP_MODE) && ENABLE_DEBUG_IN_STOP_MODE
   LL_DBGMCU_EnableDBGStopMode();
   printf("\nNote: This firmware has been built with debug in stop mode enabled.\n");

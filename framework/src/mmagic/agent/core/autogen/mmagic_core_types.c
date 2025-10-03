@@ -32,10 +32,7 @@ static const struct enum_security_type_string_lut
 
 int mmagic_enum_security_type_to_string(enum mmagic_security_type value, char *buf, size_t len)
 {
-    size_t ii;
-    for (ii = 0;
-         ii < (sizeof(enum_security_type_string_lut) / sizeof(enum_security_type_string_lut[0]));
-         ii++)
+    for (size_t ii = 0; ii < MM_ARRAY_COUNT(enum_security_type_string_lut); ii++)
     {
         if (enum_security_type_string_lut[ii].enum_value == value)
         {
@@ -47,10 +44,7 @@ int mmagic_enum_security_type_to_string(enum mmagic_security_type value, char *b
 
 int mmagic_string_to_enum_security_type(enum mmagic_security_type *value, const char *buf)
 {
-    size_t ii;
-    for (ii = 0;
-         ii < (sizeof(enum_security_type_string_lut) / sizeof(enum_security_type_string_lut[0]));
-         ii++)
+    for (size_t ii = 0; ii < MM_ARRAY_COUNT(enum_security_type_string_lut); ii++)
     {
         if (strcasecmp(buf, enum_security_type_string_lut[ii].string_value) == 0)
         {
@@ -78,9 +72,7 @@ static const struct enum_pmf_mode_string_lut
 
 int mmagic_enum_pmf_mode_to_string(enum mmagic_pmf_mode value, char *buf, size_t len)
 {
-    size_t ii;
-    for (ii = 0; ii < (sizeof(enum_pmf_mode_string_lut) / sizeof(enum_pmf_mode_string_lut[0]));
-         ii++)
+    for (size_t ii = 0; ii < MM_ARRAY_COUNT(enum_pmf_mode_string_lut); ii++)
     {
         if (enum_pmf_mode_string_lut[ii].enum_value == value)
         {
@@ -92,9 +84,7 @@ int mmagic_enum_pmf_mode_to_string(enum mmagic_pmf_mode value, char *buf, size_t
 
 int mmagic_string_to_enum_pmf_mode(enum mmagic_pmf_mode *value, const char *buf)
 {
-    size_t ii;
-    for (ii = 0; ii < (sizeof(enum_pmf_mode_string_lut) / sizeof(enum_pmf_mode_string_lut[0]));
-         ii++)
+    for (size_t ii = 0; ii < MM_ARRAY_COUNT(enum_pmf_mode_string_lut); ii++)
     {
         if (strcasecmp(buf, enum_pmf_mode_string_lut[ii].string_value) == 0)
         {
@@ -122,11 +112,7 @@ static const struct enum_power_save_mode_string_lut
 
 int mmagic_enum_power_save_mode_to_string(enum mmagic_power_save_mode value, char *buf, size_t len)
 {
-    size_t ii;
-    for (ii = 0;
-         ii <
-         (sizeof(enum_power_save_mode_string_lut) / sizeof(enum_power_save_mode_string_lut[0]));
-         ii++)
+    for (size_t ii = 0; ii < MM_ARRAY_COUNT(enum_power_save_mode_string_lut); ii++)
     {
         if (enum_power_save_mode_string_lut[ii].enum_value == value)
         {
@@ -138,11 +124,7 @@ int mmagic_enum_power_save_mode_to_string(enum mmagic_power_save_mode value, cha
 
 int mmagic_string_to_enum_power_save_mode(enum mmagic_power_save_mode *value, const char *buf)
 {
-    size_t ii;
-    for (ii = 0;
-         ii <
-         (sizeof(enum_power_save_mode_string_lut) / sizeof(enum_power_save_mode_string_lut[0]));
-         ii++)
+    for (size_t ii = 0; ii < MM_ARRAY_COUNT(enum_power_save_mode_string_lut); ii++)
     {
         if (strcasecmp(buf, enum_power_save_mode_string_lut[ii].string_value) == 0)
         {
@@ -174,9 +156,7 @@ static const struct enum_mcs10_mode_string_lut
 
 int mmagic_enum_mcs10_mode_to_string(enum mmagic_mcs10_mode value, char *buf, size_t len)
 {
-    size_t ii;
-    for (ii = 0; ii < (sizeof(enum_mcs10_mode_string_lut) / sizeof(enum_mcs10_mode_string_lut[0]));
-         ii++)
+    for (size_t ii = 0; ii < MM_ARRAY_COUNT(enum_mcs10_mode_string_lut); ii++)
     {
         if (enum_mcs10_mode_string_lut[ii].enum_value == value)
         {
@@ -188,13 +168,51 @@ int mmagic_enum_mcs10_mode_to_string(enum mmagic_mcs10_mode value, char *buf, si
 
 int mmagic_string_to_enum_mcs10_mode(enum mmagic_mcs10_mode *value, const char *buf)
 {
-    size_t ii;
-    for (ii = 0; ii < (sizeof(enum_mcs10_mode_string_lut) / sizeof(enum_mcs10_mode_string_lut[0]));
-         ii++)
+    for (size_t ii = 0; ii < MM_ARRAY_COUNT(enum_mcs10_mode_string_lut); ii++)
     {
         if (strcasecmp(buf, enum_mcs10_mode_string_lut[ii].string_value) == 0)
         {
             *value = enum_mcs10_mode_string_lut[ii].enum_value;
+            return 0;
+        }
+    }
+    return -1;
+}
+
+static const struct enum_duty_cycle_mode_string_lut
+{
+    const char *string_value;
+    enum mmagic_duty_cycle_mode enum_value;
+} enum_duty_cycle_mode_string_lut[] = {
+    {
+        .string_value = "spread",
+        .enum_value = MMAGIC_DUTY_CYCLE_MODE_SPREAD,
+    },
+    {
+        .string_value = "burst",
+        .enum_value = MMAGIC_DUTY_CYCLE_MODE_BURST,
+    },
+};
+
+int mmagic_enum_duty_cycle_mode_to_string(enum mmagic_duty_cycle_mode value, char *buf, size_t len)
+{
+    for (size_t ii = 0; ii < MM_ARRAY_COUNT(enum_duty_cycle_mode_string_lut); ii++)
+    {
+        if (enum_duty_cycle_mode_string_lut[ii].enum_value == value)
+        {
+            return snprintf(buf, len, "%s", enum_duty_cycle_mode_string_lut[ii].string_value);
+        }
+    }
+    return -1;
+}
+
+int mmagic_string_to_enum_duty_cycle_mode(enum mmagic_duty_cycle_mode *value, const char *buf)
+{
+    for (size_t ii = 0; ii < MM_ARRAY_COUNT(enum_duty_cycle_mode_string_lut); ii++)
+    {
+        if (strcasecmp(buf, enum_duty_cycle_mode_string_lut[ii].string_value) == 0)
+        {
+            *value = enum_duty_cycle_mode_string_lut[ii].enum_value;
             return 0;
         }
     }
@@ -218,10 +236,7 @@ static const struct enum_station_type_string_lut
 
 int mmagic_enum_station_type_to_string(enum mmagic_station_type value, char *buf, size_t len)
 {
-    size_t ii;
-    for (ii = 0;
-         ii < (sizeof(enum_station_type_string_lut) / sizeof(enum_station_type_string_lut[0]));
-         ii++)
+    for (size_t ii = 0; ii < MM_ARRAY_COUNT(enum_station_type_string_lut); ii++)
     {
         if (enum_station_type_string_lut[ii].enum_value == value)
         {
@@ -233,10 +248,7 @@ int mmagic_enum_station_type_to_string(enum mmagic_station_type value, char *buf
 
 int mmagic_string_to_enum_station_type(enum mmagic_station_type *value, const char *buf)
 {
-    size_t ii;
-    for (ii = 0;
-         ii < (sizeof(enum_station_type_string_lut) / sizeof(enum_station_type_string_lut[0]));
-         ii++)
+    for (size_t ii = 0; ii < MM_ARRAY_COUNT(enum_station_type_string_lut); ii++)
     {
         if (strcasecmp(buf, enum_station_type_string_lut[ii].string_value) == 0)
         {
@@ -336,12 +348,55 @@ static const struct enum_status_string_lut
         .string_value = "socket_listen_failed",
         .enum_value = MMAGIC_STATUS_SOCKET_LISTEN_FAILED,
     },
+    {
+        .string_value = "ntp_kod_received",
+        .enum_value = MMAGIC_STATUS_NTP_KOD_RECEIVED,
+    },
+    {
+        .string_value = "ntp_kod_backoff_received",
+        .enum_value = MMAGIC_STATUS_NTP_KOD_BACKOFF_RECEIVED,
+    },
+    {
+        .string_value = "socket_send_failed",
+        .enum_value = MMAGIC_STATUS_SOCKET_SEND_FAILED,
+    },
+    {
+        .string_value = "invalid_credentials",
+        .enum_value = MMAGIC_STATUS_INVALID_CREDENTIALS,
+    },
+    {
+        .string_value = "handshake_failed",
+        .enum_value = MMAGIC_STATUS_HANDSHAKE_FAILED,
+    },
+    {
+        .string_value = "authentication_failed",
+        .enum_value = MMAGIC_STATUS_AUTHENTICATION_FAILED,
+    },
+    {
+        .string_value = "missing_credentials",
+        .enum_value = MMAGIC_STATUS_MISSING_CREDENTIALS,
+    },
+    {
+        .string_value = "time_not_synchronized",
+        .enum_value = MMAGIC_STATUS_TIME_NOT_SYNCHRONIZED,
+    },
+    {
+        .string_value = "mqtt_refused",
+        .enum_value = MMAGIC_STATUS_MQTT_REFUSED,
+    },
+    {
+        .string_value = "mqtt_keepalive_timeout",
+        .enum_value = MMAGIC_STATUS_MQTT_KEEPALIVE_TIMEOUT,
+    },
+    {
+        .string_value = "bad_version",
+        .enum_value = MMAGIC_STATUS_BAD_VERSION,
+    },
 };
 
 int mmagic_enum_status_to_string(enum mmagic_status value, char *buf, size_t len)
 {
-    size_t ii;
-    for (ii = 0; ii < (sizeof(enum_status_string_lut) / sizeof(enum_status_string_lut[0])); ii++)
+    for (size_t ii = 0; ii < MM_ARRAY_COUNT(enum_status_string_lut); ii++)
     {
         if (enum_status_string_lut[ii].enum_value == value)
         {
@@ -353,8 +408,7 @@ int mmagic_enum_status_to_string(enum mmagic_status value, char *buf, size_t len
 
 int mmagic_string_to_enum_status(enum mmagic_status *value, const char *buf)
 {
-    size_t ii;
-    for (ii = 0; ii < (sizeof(enum_status_string_lut) / sizeof(enum_status_string_lut[0])); ii++)
+    for (size_t ii = 0; ii < MM_ARRAY_COUNT(enum_status_string_lut); ii++)
     {
         if (strcasecmp(buf, enum_status_string_lut[ii].string_value) == 0)
         {
@@ -390,9 +444,7 @@ static const struct enum_iperf_mode_string_lut
 
 int mmagic_enum_iperf_mode_to_string(enum mmagic_iperf_mode value, char *buf, size_t len)
 {
-    size_t ii;
-    for (ii = 0; ii < (sizeof(enum_iperf_mode_string_lut) / sizeof(enum_iperf_mode_string_lut[0]));
-         ii++)
+    for (size_t ii = 0; ii < MM_ARRAY_COUNT(enum_iperf_mode_string_lut); ii++)
     {
         if (enum_iperf_mode_string_lut[ii].enum_value == value)
         {
@@ -404,9 +456,7 @@ int mmagic_enum_iperf_mode_to_string(enum mmagic_iperf_mode value, char *buf, si
 
 int mmagic_string_to_enum_iperf_mode(enum mmagic_iperf_mode *value, const char *buf)
 {
-    size_t ii;
-    for (ii = 0; ii < (sizeof(enum_iperf_mode_string_lut) / sizeof(enum_iperf_mode_string_lut[0]));
-         ii++)
+    for (size_t ii = 0; ii < MM_ARRAY_COUNT(enum_iperf_mode_string_lut); ii++)
     {
         if (strcasecmp(buf, enum_iperf_mode_string_lut[ii].string_value) == 0)
         {
@@ -442,10 +492,7 @@ static const struct enum_iperf_state_string_lut
 
 int mmagic_enum_iperf_state_to_string(enum mmagic_iperf_state value, char *buf, size_t len)
 {
-    size_t ii;
-    for (ii =
-             0; ii < (sizeof(enum_iperf_state_string_lut) / sizeof(enum_iperf_state_string_lut[0]));
-         ii++)
+    for (size_t ii = 0; ii < MM_ARRAY_COUNT(enum_iperf_state_string_lut); ii++)
     {
         if (enum_iperf_state_string_lut[ii].enum_value == value)
         {
@@ -457,10 +504,7 @@ int mmagic_enum_iperf_state_to_string(enum mmagic_iperf_state value, char *buf, 
 
 int mmagic_string_to_enum_iperf_state(enum mmagic_iperf_state *value, const char *buf)
 {
-    size_t ii;
-    for (ii =
-             0; ii < (sizeof(enum_iperf_state_string_lut) / sizeof(enum_iperf_state_string_lut[0]));
-         ii++)
+    for (size_t ii = 0; ii < MM_ARRAY_COUNT(enum_iperf_state_string_lut); ii++)
     {
         if (strcasecmp(buf, enum_iperf_state_string_lut[ii].string_value) == 0)
         {
@@ -488,10 +532,7 @@ static const struct enum_ip_link_state_string_lut
 
 int mmagic_enum_ip_link_state_to_string(enum mmagic_ip_link_state value, char *buf, size_t len)
 {
-    size_t ii;
-    for (ii = 0;
-         ii < (sizeof(enum_ip_link_state_string_lut) / sizeof(enum_ip_link_state_string_lut[0]));
-         ii++)
+    for (size_t ii = 0; ii < MM_ARRAY_COUNT(enum_ip_link_state_string_lut); ii++)
     {
         if (enum_ip_link_state_string_lut[ii].enum_value == value)
         {
@@ -503,10 +544,7 @@ int mmagic_enum_ip_link_state_to_string(enum mmagic_ip_link_state value, char *b
 
 int mmagic_string_to_enum_ip_link_state(enum mmagic_ip_link_state *value, const char *buf)
 {
-    size_t ii;
-    for (ii = 0;
-         ii < (sizeof(enum_ip_link_state_string_lut) / sizeof(enum_ip_link_state_string_lut[0]));
-         ii++)
+    for (size_t ii = 0; ii < MM_ARRAY_COUNT(enum_ip_link_state_string_lut); ii++)
     {
         if (strcasecmp(buf, enum_ip_link_state_string_lut[ii].string_value) == 0)
         {
@@ -538,11 +576,7 @@ static const struct enum_deep_sleep_mode_string_lut
 
 int mmagic_enum_deep_sleep_mode_to_string(enum mmagic_deep_sleep_mode value, char *buf, size_t len)
 {
-    size_t ii;
-    for (ii = 0;
-         ii <
-         (sizeof(enum_deep_sleep_mode_string_lut) / sizeof(enum_deep_sleep_mode_string_lut[0]));
-         ii++)
+    for (size_t ii = 0; ii < MM_ARRAY_COUNT(enum_deep_sleep_mode_string_lut); ii++)
     {
         if (enum_deep_sleep_mode_string_lut[ii].enum_value == value)
         {
@@ -554,11 +588,7 @@ int mmagic_enum_deep_sleep_mode_to_string(enum mmagic_deep_sleep_mode value, cha
 
 int mmagic_string_to_enum_deep_sleep_mode(enum mmagic_deep_sleep_mode *value, const char *buf)
 {
-    size_t ii;
-    for (ii = 0;
-         ii <
-         (sizeof(enum_deep_sleep_mode_string_lut) / sizeof(enum_deep_sleep_mode_string_lut[0]));
-         ii++)
+    for (size_t ii = 0; ii < MM_ARRAY_COUNT(enum_deep_sleep_mode_string_lut); ii++)
     {
         if (strcasecmp(buf, enum_deep_sleep_mode_string_lut[ii].string_value) == 0)
         {
@@ -611,12 +641,7 @@ static const struct enum_standby_mode_exit_reason_string_lut
 int mmagic_enum_standby_mode_exit_reason_to_string(enum mmagic_standby_mode_exit_reason value,
                                                    char *buf, size_t len)
 {
-    size_t ii;
-    for (ii =
-             0;
-         ii <
-         (sizeof(enum_standby_mode_exit_reason_string_lut) /
-          sizeof(enum_standby_mode_exit_reason_string_lut[0])); ii++)
+    for (size_t ii = 0; ii < MM_ARRAY_COUNT(enum_standby_mode_exit_reason_string_lut); ii++)
     {
         if (enum_standby_mode_exit_reason_string_lut[ii].enum_value == value)
         {
@@ -630,16 +655,119 @@ int mmagic_enum_standby_mode_exit_reason_to_string(enum mmagic_standby_mode_exit
 int mmagic_string_to_enum_standby_mode_exit_reason(enum mmagic_standby_mode_exit_reason *value,
                                                    const char *buf)
 {
-    size_t ii;
-    for (ii =
-             0;
-         ii <
-         (sizeof(enum_standby_mode_exit_reason_string_lut) /
-          sizeof(enum_standby_mode_exit_reason_string_lut[0])); ii++)
+    for (size_t ii = 0; ii < MM_ARRAY_COUNT(enum_standby_mode_exit_reason_string_lut); ii++)
     {
         if (strcasecmp(buf, enum_standby_mode_exit_reason_string_lut[ii].string_value) == 0)
         {
             *value = enum_standby_mode_exit_reason_string_lut[ii].enum_value;
+            return 0;
+        }
+    }
+    return -1;
+}
+
+static const struct enum_sta_state_string_lut
+{
+    const char *string_value;
+    enum mmagic_sta_state enum_value;
+} enum_sta_state_string_lut[] = {
+    {
+        .string_value = "disconnected",
+        .enum_value = MMAGIC_STA_STATE_DISCONNECTED,
+    },
+    {
+        .string_value = "connecting",
+        .enum_value = MMAGIC_STA_STATE_CONNECTING,
+    },
+    {
+        .string_value = "connected",
+        .enum_value = MMAGIC_STA_STATE_CONNECTED,
+    },
+};
+
+int mmagic_enum_sta_state_to_string(enum mmagic_sta_state value, char *buf, size_t len)
+{
+    for (size_t ii = 0; ii < MM_ARRAY_COUNT(enum_sta_state_string_lut); ii++)
+    {
+        if (enum_sta_state_string_lut[ii].enum_value == value)
+        {
+            return snprintf(buf, len, "%s", enum_sta_state_string_lut[ii].string_value);
+        }
+    }
+    return -1;
+}
+
+int mmagic_string_to_enum_sta_state(enum mmagic_sta_state *value, const char *buf)
+{
+    for (size_t ii = 0; ii < MM_ARRAY_COUNT(enum_sta_state_string_lut); ii++)
+    {
+        if (strcasecmp(buf, enum_sta_state_string_lut[ii].string_value) == 0)
+        {
+            *value = enum_sta_state_string_lut[ii].enum_value;
+            return 0;
+        }
+    }
+    return -1;
+}
+
+static const struct enum_sta_event_string_lut
+{
+    const char *string_value;
+    enum mmagic_sta_event enum_value;
+} enum_sta_event_string_lut[] = {
+    {
+        .string_value = "scan_request",
+        .enum_value = MMAGIC_STA_EVENT_SCAN_REQUEST,
+    },
+    {
+        .string_value = "scan_complete",
+        .enum_value = MMAGIC_STA_EVENT_SCAN_COMPLETE,
+    },
+    {
+        .string_value = "scan_abort",
+        .enum_value = MMAGIC_STA_EVENT_SCAN_ABORT,
+    },
+    {
+        .string_value = "auth_request",
+        .enum_value = MMAGIC_STA_EVENT_AUTH_REQUEST,
+    },
+    {
+        .string_value = "assoc_request",
+        .enum_value = MMAGIC_STA_EVENT_ASSOC_REQUEST,
+    },
+    {
+        .string_value = "deauth_tx",
+        .enum_value = MMAGIC_STA_EVENT_DEAUTH_TX,
+    },
+    {
+        .string_value = "ctrl_port_open",
+        .enum_value = MMAGIC_STA_EVENT_CTRL_PORT_OPEN,
+    },
+    {
+        .string_value = "ctrl_port_closed",
+        .enum_value = MMAGIC_STA_EVENT_CTRL_PORT_CLOSED,
+    },
+};
+
+int mmagic_enum_sta_event_to_string(enum mmagic_sta_event value, char *buf, size_t len)
+{
+    for (size_t ii = 0; ii < MM_ARRAY_COUNT(enum_sta_event_string_lut); ii++)
+    {
+        if (enum_sta_event_string_lut[ii].enum_value == value)
+        {
+            return snprintf(buf, len, "%s", enum_sta_event_string_lut[ii].string_value);
+        }
+    }
+    return -1;
+}
+
+int mmagic_string_to_enum_sta_event(enum mmagic_sta_event *value, const char *buf)
+{
+    for (size_t ii = 0; ii < MM_ARRAY_COUNT(enum_sta_event_string_lut); ii++)
+    {
+        if (strcasecmp(buf, enum_sta_event_string_lut[ii].string_value) == 0)
+        {
+            *value = enum_sta_event_string_lut[ii].enum_value;
             return 0;
         }
     }
@@ -729,6 +857,65 @@ int mmagic_string_to_int32_t(int32_t *value, const char *buf)
     return 0;
 }
 
+/* -------------------- String types -------------------- */
+
+int mmagic_string32_to_string(const struct string32 *value, char *buf, size_t len)
+{
+    return snprintf(buf, len, "%.*s", (int)value->len, value->data);
+}
+
+int mmagic_string_to_string32(struct string32 *value, const char *buf)
+{
+    size_t len = strnlen(buf, sizeof(value->data));
+    if (len > sizeof(value->data) - 1)
+    {
+        return -1;
+    }
+
+    mmosal_safer_strcpy((char *)value->data, buf, len + 1);
+    value->len = len;
+
+    return 0;
+}
+
+int mmagic_string100_to_string(const struct string100 *value, char *buf, size_t len)
+{
+    return snprintf(buf, len, "%.*s", (int)value->len, value->data);
+}
+
+int mmagic_string_to_string100(struct string100 *value, const char *buf)
+{
+    size_t len = strnlen(buf, sizeof(value->data));
+    if (len > sizeof(value->data) - 1)
+    {
+        return -1;
+    }
+
+    mmosal_safer_strcpy((char *)value->data, buf, len + 1);
+    value->len = len;
+
+    return 0;
+}
+
+int mmagic_string254_to_string(const struct string254 *value, char *buf, size_t len)
+{
+    return snprintf(buf, len, "%.*s", (int)value->len, value->data);
+}
+
+int mmagic_string_to_string254(struct string254 *value, const char *buf)
+{
+    size_t len = strnlen(buf, sizeof(value->data));
+    if (len > sizeof(value->data) - 1)
+    {
+        return -1;
+    }
+
+    mmosal_safer_strcpy((char *)value->data, buf, len + 1);
+    value->len = len;
+
+    return 0;
+}
+
 /* -------------------- Struct types -------------------- */
 
 int mmagic_struct_country_code_to_string(const struct struct_country_code *value, char *buf,
@@ -745,7 +932,7 @@ int mmagic_string_to_struct_country_code(struct struct_country_code *value, cons
         return -1;
     }
 
-    strncpy((char *)value->country_code, buf, len);
+    mmosal_safer_strcpy((char *)value->country_code, buf, len + 1);
 
     return 0;
 }
@@ -763,9 +950,7 @@ int mmagic_string_to_struct_ip_addr(struct struct_ip_addr *value, const char *bu
         return -1;
     }
 
-    strncpy((char *)value->addr, buf, len);
-    /* Set the last character to terminate the string */
-    value->addr[len] = 0;
+    mmosal_safer_strcpy((char *)value->addr, buf, len + 1);
 
     return 0;
 }
@@ -800,25 +985,6 @@ int mmagic_string_to_struct_mac_addr(struct struct_mac_addr *value, const char *
 
         value->addr[i] = (uint8_t)temp[i];
     }
-
-    return 0;
-}
-
-int mmagic_struct_string_32_to_string(const struct struct_string_32 *value, char *buf, size_t len)
-{
-    return snprintf(buf, len, "%.*s", (int)value->len, value->data);
-}
-
-int mmagic_string_to_struct_string_32(struct struct_string_32 *value, const char *buf)
-{
-    size_t len = strnlen(buf, sizeof(value->data));
-    if (len > sizeof(value->data) - 1)
-    {
-        return -1;
-    }
-
-    strncpy((char *)value->data, buf, len);
-    value->len = len;
 
     return 0;
 }

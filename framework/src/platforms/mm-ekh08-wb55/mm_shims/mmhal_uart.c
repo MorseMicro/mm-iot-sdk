@@ -6,7 +6,7 @@
  * This File implements platform specific shims for accessing the data-link transport.
  */
 
-#include "mmekh08_hal_common.h"
+#include "mm_hal_common.h"
 #include "mmhal_uart.h"
 #include "mmutils.h"
 
@@ -48,6 +48,7 @@ struct mmhal_uart_data
     struct
     {
         struct mmosal_task *handle;
+        struct mmosal_semb *semb;
         volatile bool run;
         volatile bool complete;
     } rx_thread;
@@ -135,7 +136,7 @@ static void uart_rx_main(void *arg)
         bool more_data_pending = uart_rx_process();
         if (!more_data_pending)
         {
-            mmosal_task_wait_for_notification(UINT32_MAX);
+            mmosal_semb_wait(mmhal_uart.rx_thread.semb, UINT32_MAX);
         }
     }
 
@@ -147,6 +148,9 @@ void mmhal_uart_init(mmhal_uart_rx_cb_t rx_cb, void *rx_cb_arg)
     memset(&mmhal_uart, 0, sizeof(mmhal_uart));
     mmhal_uart.rx_cb = rx_cb;
     mmhal_uart.rx_cb_arg = rx_cb_arg;
+
+    mmhal_uart.rx_thread.semb = mmosal_semb_create("uartsemb");
+    MMOSAL_ASSERT(mmhal_uart.rx_thread.semb != NULL);
 
     mmhal_uart.rx_thread.run = true;
     mmhal_uart.rx_thread.handle = mmosal_task_create(
@@ -162,12 +166,18 @@ void mmhal_uart_deinit(void)
     if (mmhal_uart.rx_thread.handle != NULL)
     {
         mmhal_uart.rx_thread.run = false;
+        mmosal_semb_give(mmhal_uart.rx_thread.semb);
         while (!mmhal_uart.rx_thread.complete)
         {
-            mmosal_task_notify(mmhal_uart.rx_thread.handle);
             mmosal_task_sleep(3);
         }
         mmhal_uart.rx_thread.handle = NULL;
+    }
+
+    if (mmhal_uart.rx_thread.semb != NULL)
+    {
+        mmosal_semb_delete(mmhal_uart.rx_thread.semb);
+        mmhal_uart.rx_thread.semb = NULL;
     }
 
     LL_USART_DisableIT_RXNE(UART_INTERFACE);
@@ -229,7 +239,7 @@ void LOG_USART_IRQ_HANDLER(void)
         uart_rx_ringbuf_put(LL_USART_ReceiveData8(UART_INTERFACE));
         if (mmhal_uart.rx_thread.handle != NULL)
         {
-            mmosal_task_notify_from_isr(mmhal_uart.rx_thread.handle);
+            mmosal_semb_give_from_isr(mmhal_uart.rx_thread.semb);
         }
     }
 }

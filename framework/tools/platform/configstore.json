@@ -33,7 +33,7 @@
         "configstore_last_sector": 7,
         "configstore_base_address": "0x8004000",
         "configstore_size": "0x4000",
-        "supported_platforms": ["mm-ekh08-wb55", "mm-ekh08-wb55-ble", "mm-mmecs01", "mm-mmecs02", "mm-mmecs02v2"]
+        "supported_platforms": ["mm-ekh08-wb55", "mm-ekh08-wb55-ble", "mm-mmecs02v2"]
     },
     "STM32F429ZIx.cpu":
     {
@@ -43,15 +43,6 @@
         "configstore_base_address": "0x8004000",
         "configstore_size": "0x8000",
         "supported_platforms": ["mm-ekh08-f429"]
-    },
-    "psoc6.cpu.cm0":
-    {
-        "configstore_bank": 0,
-        "configstore_first_sector": 48,
-        "configstore_last_sector": 112,
-        "configstore_base_address": "0x10006000",
-        "configstore_size": "0x08000",
-        "supported_platforms": ["mm-cy8ckit-062-wifi-bt","mm-cy8ckit-062s2-43012"]
     },
     "stm32f7x.cpu":
     {

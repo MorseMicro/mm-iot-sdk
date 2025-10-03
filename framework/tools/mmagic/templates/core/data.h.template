@@ -20,7 +20,7 @@
 #define MMAGIC_SYS_MAX_APP_VERSION_LENGTH   (31)
 
 /** Maximum number of streams we support in MMAGIC */
-#define MMAGIC_MAX_STREAMS  32
+#define MMAGIC_MAX_STREAMS  8
 
 /**
  * Function type for M2M/CLI-specific event implementation.

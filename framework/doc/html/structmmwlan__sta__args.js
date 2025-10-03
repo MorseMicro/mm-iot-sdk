@@ -5,6 +5,8 @@ var structmmwlan__sta__args =
     [ "bgscan_signal_threshold_dbm", "structmmwlan__sta__args.html#a1482f6342780cdd2c87bfdb26031663c", null ],
     [ "bssid", "structmmwlan__sta__args.html#ab811c54a8346c94b159d9a0e2c79873f", null ],
     [ "cac_mode", "structmmwlan__sta__args.html#aa411a15b1675d3ba9e9aa19bdf34096f", null ],
+    [ "extra_assoc_ies", "structmmwlan__sta__args.html#a68ce383b62a427bdc89639b0ec32ddfb", null ],
+    [ "extra_assoc_ies_len", "structmmwlan__sta__args.html#ae2fe36660736e548db1cc19047a41b6f", null ],
     [ "passphrase", "structmmwlan__sta__args.html#a418540ad74a7573f0856df166d52efe8", null ],
     [ "passphrase_len", "structmmwlan__sta__args.html#a6ef8e0aefdf046642b13e453cc6d04e0", null ],
     [ "pmf_mode", "structmmwlan__sta__args.html#a5f424a8f2c9ea4906a99fcc87dc5553f", null ],
@@ -17,5 +19,8 @@ var structmmwlan__sta__args =
     [ "security_type", "structmmwlan__sta__args.html#a6bcc064f22d95a72f600901eec121440", null ],
     [ "ssid", "structmmwlan__sta__args.html#a37eedda1226220898f59af38054559fa", null ],
     [ "ssid_len", "structmmwlan__sta__args.html#ae9e39fb6cb80b417abcc6af8b7f830fe", null ],
-    [ "sta_type", "structmmwlan__sta__args.html#afe8c57db71f388a6afae7badc83e24b3", null ]
+    [ "sta_evt_cb", "structmmwlan__sta__args.html#a6062fb9007c88de736bbbf3db5c9ecd3", null ],
+    [ "sta_evt_cb_arg", "structmmwlan__sta__args.html#afa0d9b248732cb7cb1cd2c4448f6bf4f", null ],
+    [ "sta_type", "structmmwlan__sta__args.html#afe8c57db71f388a6afae7badc83e24b3", null ],
+    [ "use_4addr", "structmmwlan__sta__args.html#a4ea57619cc123ffad7079be7b9820103", null ]
 ];

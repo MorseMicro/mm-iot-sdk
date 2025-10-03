@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['wnm_5fsleep_5fenabled_0',['wnm_sleep_enabled',['../structmmwlan__set__wnm__sleep__enabled__args.html#a5605ee17b705eb75c1f8f7c272c71390',1,'mmwlan_set_wnm_sleep_enabled_args::wnm_sleep_enabled()'],['../structmmagic__core__wlan__wnm__sleep__cmd__args.html#a1f7485c432d5e2c4c13162527e6f3657',1,'mmagic_core_wlan_wnm_sleep_cmd_args::wnm_sleep_enabled()']]]
+  ['valid_5fchip_5fids_0',['valid_chip_ids',['../structchip__cfg.html#a0d5735d4eee454b11781751319dd7dc0',1,'chip_cfg']]],
+  ['vendor_5fies_1',['vendor_ies',['../structmmagic__wlan__beacon__rx__event__args.html#a0a4f69ade03f3b5f9cccfa5009bdea0a',1,'mmagic_wlan_beacon_rx_event_args']]],
+  ['version_2',['version',['../structmmwlan__bcf__metadata.html#adf230bcb317ee6f9fce43d306c9c7cbf',1,'mmwlan_bcf_metadata::version()'],['../structmmiperf__client__args.html#ae9b8e5d920fc9293340dde959d96ddde',1,'mmiperf_client_args::version()'],['../structmmiperf__server__args.html#a3998db290e0cc7247b7bdd90f3362a8c',1,'mmiperf_server_args::version()'],['../structmm__rsn__information.html#a48470713afc679e6de9c08043fbdc373',1,'mm_rsn_information::version()']]]
 ];

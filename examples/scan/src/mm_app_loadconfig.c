@@ -44,9 +44,17 @@
 #define SECURITY_TYPE                   MMWLAN_SAE
 #endif
 
+/* Default PMF mode */
+#ifndef PMF_MODE
+/** Protected Management Frames (PMF) mode (@see mmwlan_pmf_mode). */
+#define PMF_MODE                        MMWLAN_PMF_REQUIRED
+#endif
+
 /* Configure the STA to use DHCP, this overrides any static configuration.
  * If the @c ip.dhcp_enabled is set in the config store that will take priority */
-// #define ENABLE_DHCP                     (1)
+#ifndef ENABLE_DHCP
+#define ENABLE_DHCP                     (1)
+#endif
 
 /* Static Network configuration */
 #ifndef STATIC_LOCAL_IP
@@ -90,7 +98,7 @@ void load_mmipal_init_args(struct mmipal_init_args *args)
     (void)mmosal_safer_strcpy(args->gateway_addr, STATIC_GATEWAY, sizeof(args->gateway_addr));
     (void)mmconfig_read_string("ip.gateway", args->gateway_addr, sizeof(args->gateway_addr));
 
-#ifdef ENABLE_DHCP
+#if ENABLE_DHCP
     args->mode = MMIPAL_DHCP;
 #else
     args->mode = MMIPAL_STATIC;
@@ -226,6 +234,20 @@ void load_mmwlan_sta_args(struct mmwlan_sta_args *sta_config)
         }
     }
 
+    /* Load PMF mode */
+    sta_config->pmf_mode = PMF_MODE;
+    if (mmconfig_read_string("wlan.pmf_mode", strval, sizeof(strval)) > 0)
+    {
+        if (strncmp("disabled", strval, sizeof(strval)) == 0)
+        {
+            sta_config->pmf_mode = MMWLAN_PMF_DISABLED;
+        }
+        else if (strncmp("required", strval, sizeof(strval)) == 0)
+        {
+            sta_config->pmf_mode = MMWLAN_PMF_REQUIRED;
+        }
+    }
+
     /* Load BSSID */
     if (mmconfig_read_string("wlan.bssid", strval, sizeof(strval)) > 0)
     {
@@ -350,6 +372,43 @@ void load_mmwlan_settings(void)
     {
         /* If only minimum is specified, then treat the maximum as unbounded */
         mmwlan_set_health_check_interval(uintval, UINT32_MAX);
+    }
+
+    struct mmwlan_scan_config scan_config = MMWLAN_SCAN_CONFIG_INIT;
+    (void)mmconfig_read_uint32("wlan.sta_scan_dwell_time_ms", &scan_config.dwell_time_ms);
+    (void)mmconfig_read_bool("wlan.ndp_probe_enabled", &scan_config.ndp_probe_enabled);
+    (void)mmconfig_read_uint32("wlan.home_chan_dwell_time_ms",
+                               &scan_config.home_channel_dwell_time_ms);
+    mmwlan_set_scan_config(&scan_config);
+
+    /* Apply MCS10 mode if specified */
+    if (mmconfig_read_string("wlan.mcs10_mode", strval, sizeof(strval)) > 0)
+    {
+        if (strncmp("disabled", strval, sizeof(strval)) == 0)
+        {
+            mmwlan_set_mcs10_mode(MMWLAN_MCS10_MODE_DISABLED);
+        }
+        else if (strncmp("forced", strval, sizeof(strval)) == 0)
+        {
+            mmwlan_set_mcs10_mode(MMWLAN_MCS10_MODE_FORCED);
+        }
+        else if (strncmp("auto", strval, sizeof(strval)) == 0)
+        {
+            mmwlan_set_mcs10_mode(MMWLAN_MCS10_MODE_AUTO);
+        }
+    }
+
+    /* Apply duty cycle mode if specified */
+    if (mmconfig_read_string("wlan.duty_cycle_mode", strval, sizeof(strval)) > 0)
+    {
+        if (strncmp("spread", strval, sizeof(strval)) == 0)
+        {
+            mmwlan_set_duty_cycle_mode(MMWLAN_DUTY_CYCLE_MODE_SPREAD);
+        }
+        else if (strncmp("burst", strval, sizeof(strval)) == 0)
+        {
+            mmwlan_set_duty_cycle_mode(MMWLAN_DUTY_CYCLE_MODE_BURST);
+        }
     }
 }
 

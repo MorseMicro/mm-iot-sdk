@@ -18,7 +18,8 @@
 /** Size of buffer used to print config element value */
 #define MMAGIC_CLI_PRINT_BUF_LEN 192
 #define MMAGIC_CLI_RX_BUFFER_SIZE 16
-#define MMAGIC_CLI_CMD_BUFFER_SIZE 96
+/** Needs to be large enough to accomodate WLAN password, IP and MAC address */
+#define MMAGIC_CLI_CMD_BUFFER_SIZE 128
 #define MMAGIC_CLI_HISTORY_SIZE 8
 #define MMAGIC_CLI_BINDING_COUNT 32
 
@@ -83,3 +84,17 @@ void mmagic_cli_printf(EmbeddedCli *cli, const char *format, ...);
  */
 void mmagic_cli_register_config_accessor(struct mmagic_cli *ctx,
                                          struct mmagic_cli_config_accessor *accessor);
+
+/**
+ * Initialize CLI modules.
+ */
+void mmagic_cli_init_modules(struct mmagic_cli *ctx);
+
+
+/**
+ * CLI event handler. See @ref mmagic_event_fn_t for argument details.
+ *
+ * @see mmagic_event_fn_t
+ */
+enum mmagic_status mmagic_cli_handle_event(
+    void *arg, uint8_t subsystem_id, uint8_t event_id, const uint8_t *payload, size_t payload_len);

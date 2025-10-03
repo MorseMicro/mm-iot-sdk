@@ -42,14 +42,17 @@ struct hostapd_channel_data * hw_get_channel_chan(struct hostapd_hw_modes *mode,
 
 
 struct hostapd_channel_data *
-hw_mode_get_channel(struct hostapd_hw_modes *mode, int freq, int *chan)
+hw_mode_get_channel(struct hostapd_hw_modes *mode, int freq,
+		    int freq_khz, int *chan)
 {
 	int i;
 
 	for (i = 0; i < mode->num_channels; i++) {
 		struct hostapd_channel_data *ch = &mode->channels[i];
-
-		if (ch->freq == freq) {
+		if (freq_khz && (ch->freq_khz == freq_khz)) {
+			return ch;
+		}
+		if (freq && (ch->freq == freq)) {
 			if (chan)
 				*chan = ch->chan;
 			return ch;
@@ -61,8 +64,9 @@ hw_mode_get_channel(struct hostapd_hw_modes *mode, int freq, int *chan)
 
 
 struct hostapd_channel_data *
-hw_get_channel_freq(enum hostapd_hw_mode mode, int freq, int *chan,
-		    struct hostapd_hw_modes *hw_features, int num_hw_features)
+hw_get_channel_freq(enum hostapd_hw_mode mode, int freq, int freq_khz,
+		    int *chan, struct hostapd_hw_modes *hw_features,
+		    int num_hw_features)
 {
 	struct hostapd_channel_data *chan_data;
 	int i;
@@ -79,7 +83,8 @@ hw_get_channel_freq(enum hostapd_hw_mode mode, int freq, int *chan,
 		if (curr_mode->mode != mode)
 			continue;
 
-		chan_data = hw_mode_get_channel(curr_mode, freq, chan);
+		chan_data = hw_mode_get_channel(curr_mode, freq,
+						freq_khz, chan);
 		if (chan_data)
 			return chan_data;
 	}
@@ -98,12 +103,13 @@ int hw_get_freq(struct hostapd_hw_modes *mode, int chan)
 }
 
 
-int hw_get_chan(enum hostapd_hw_mode mode, int freq,
+int hw_get_chan(enum hostapd_hw_mode mode, int freq, int freq_khz,
 		struct hostapd_hw_modes *hw_features, int num_hw_features)
 {
 	int chan;
 
-	hw_get_channel_freq(mode, freq, &chan, hw_features, num_hw_features);
+	hw_get_channel_freq(mode, freq, freq_khz, &chan, hw_features,
+			    num_hw_features);
 
 	return chan;
 }
@@ -458,16 +464,19 @@ void punct_update_legacy_bw(u16 bitmap, u8 pri, enum oper_chan_width *width,
 
 int hostapd_set_freq_params(struct hostapd_freq_params *data,
 			    enum hostapd_hw_mode mode,
-			    int freq, int channel, int enable_edmg,
+			    int freq, int freq_khz,
+			    int channel, int enable_edmg,
 			    u8 edmg_channel, int ht_enabled,
 			    int vht_enabled, int he_enabled,
-			    bool eht_enabled, int sec_channel_offset,
+			    bool eht_enabled, int s1g_enabled,
+			    int sec_channel_offset,
 			    enum oper_chan_width oper_chwidth,
 			    int center_segment0,
 			    int center_segment1, u32 vht_caps,
 			    struct he_capabilities *he_cap,
 			    struct eht_capabilities *eht_cap,
-			    u16 punct_bitmap)
+			    u16 punct_bitmap,
+			    int prim_bandwidth, int prim_ch_index)
 {
 	enum oper_chan_width oper_chwidth_legacy;
 	u8 seg0_legacy, seg1_legacy;
@@ -479,11 +488,13 @@ int hostapd_set_freq_params(struct hostapd_freq_params *data,
 	os_memset(data, 0, sizeof(*data));
 	data->mode = mode;
 	data->freq = freq;
+	data->freq_khz = freq_khz;
 	data->channel = channel;
 	data->ht_enabled = ht_enabled;
 	data->vht_enabled = vht_enabled;
 	data->he_enabled = he_enabled;
 	data->eht_enabled = eht_enabled;
+	data->s1g_enabled = s1g_enabled;
 	data->sec_channel_offset = sec_channel_offset;
 	data->center_freq1 = freq + sec_channel_offset * 10;
 	data->center_freq2 = 0;
@@ -494,15 +505,29 @@ int hostapd_set_freq_params(struct hostapd_freq_params *data,
 		data->bandwidth = 160;
 	else if (oper_chwidth == CONF_OPER_CHWIDTH_320MHZ)
 		data->bandwidth = 320;
+	else if (oper_chwidth == CONF_OPER_CHWIDTH_1MHz)
+		data->bandwidth = 1;
+	else if (oper_chwidth == CONF_OPER_CHWIDTH_2MHz)
+		data->bandwidth = 2;
+	else if (oper_chwidth == CONF_OPER_CHWIDTH_4MHz)
+		data->bandwidth = 4;
+	else if (oper_chwidth == CONF_OPER_CHWIDTH_8MHz)
+		data->bandwidth = 8;
 	else if (sec_channel_offset)
 		data->bandwidth = 40;
 	else
 		data->bandwidth = 20;
-
+	data->prim_bandwidth = prim_bandwidth;
+	data->prim_ch_index = prim_ch_index;
 
 #ifndef MM_IOT
 	hostapd_encode_edmg_chan(enable_edmg, edmg_channel, channel,
 				 &data->edmg);
+
+	if (s1g_enabled) {
+		data->bandwidth = oper_chwidth;
+		return 0;
+	}
 
 	if (is_6ghz_freq(freq)) {
 		if (!data->he_enabled && !data->eht_enabled) {
@@ -937,6 +962,16 @@ int chan_bw_allowed(const struct hostapd_channel_data *chan, u32 bw,
 	u32 bw_mask;
 
 	switch (bw) {
+	case 1:
+		return chan->allowed_bw & HOSTAPD_CHAN_WIDTH_1;
+	case 2:
+		return chan->allowed_bw & HOSTAPD_CHAN_WIDTH_2;
+	case 4:
+		return chan->allowed_bw & HOSTAPD_CHAN_WIDTH_4;
+	case 8:
+		return chan->allowed_bw & HOSTAPD_CHAN_WIDTH_8;
+	case 16:
+		return chan->allowed_bw & HOSTAPD_CHAN_WIDTH_16;
 	case 20:
 		bw_mask = HOSTAPD_CHAN_WIDTH_20;
 		break;

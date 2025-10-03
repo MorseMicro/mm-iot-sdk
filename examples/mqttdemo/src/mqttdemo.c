@@ -499,16 +499,16 @@ void app_init(void)
     snprintf(topic, sizeof(topic), TOPIC_FORMAT, client_id);
 
     /* Read from config store */
-    mmconfig_read_string("mqtt.clientid", client_id, sizeof(client_id));
-    mmconfig_read_string("mqtt.topic", topic, sizeof(topic));
-    mmconfig_read_uint32("mqtt.port", &port);
-    mmconfig_read_uint32("mqtt.publish_delay", &publish_delay);
+    (void)mmconfig_read_string("mqtt.clientid", client_id, sizeof(client_id));
+    (void)mmconfig_read_string("mqtt.topic", topic, sizeof(topic));
+    (void)mmconfig_read_uint32("mqtt.port", &port);
+    (void)mmconfig_read_uint32("mqtt.publish_delay", &publish_delay);
 
     strncpy(server, MQTT_BROKER_ENDPOINT, sizeof(server));
-    mmconfig_read_string("mqtt.server", server, sizeof(server));
+    (void)mmconfig_read_string("mqtt.server", server, sizeof(server));
 
     strncpy(message, EXAMPLE_MESSAGE, sizeof(message));
-    mmconfig_read_string("mqtt.message", message, sizeof(message));
+    (void)mmconfig_read_string("mqtt.message", message, sizeof(message));
 
     /*************************** Connect. *********************************/
 

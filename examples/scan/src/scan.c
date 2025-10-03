@@ -11,6 +11,11 @@
  * @note It is assumed that you have followed the steps in the @ref GETTING_STARTED guide and are
  * therefore familiar with how to build, flash, and monitor an application using the MM-IoT-SDK
  * framework.
+ *
+ * This example application provides a very basic demonstration of the MMWLAN scan API. It simply
+ * initiates a scan (with default arguments) and displays all results. Note that the MMWLAN scan
+ * implementation does not sort or cache scan results. As such, it is possible that a single
+ * Access Point may appear multiple times in the results displayed by this example application.
  */
 
 #include <string.h>
@@ -20,10 +25,10 @@
 #include "mm_app_loadconfig.h"
 
 /*
- * If ASNI_ESCAPE_ENABLED is non-zero (the default) then ANSI escape characters will be used to
- *  format the log output.
+ * ANSI escape characters will be used for rich text in the console. To disable ANSI escape
+ * characters, ANSI_ESCAPE_ENABLED must be defined as 0.
  */
-#if !(defined(ASNI_ESCAPE_ENABLED) && ASNI_ESCAPE_ENABLED == 0)
+#if !(defined(ANSI_ESCAPE_ENABLED) && ANSI_ESCAPE_ENABLED == 0)
 /** ANSI escape sequence for bold text. */
 #define ANSI_BOLD  "\x1b[1m"
 /** ANSI escape sequence to reset font. */
@@ -62,7 +67,7 @@ static void scan_rx_callback(const struct mmwlan_scan_result *result, void *arg)
              result->bssid[4], result->bssid[5]);
     snprintf(ssid_str, (result->ssid_len+1), "%s", result->ssid);
 
-    printf(ANSI_BOLD "%2d. %s" ANSI_RESET "\n", num_scan_results, ssid_str);
+    printf(ANSI_BOLD "%s" ANSI_RESET "\n", ssid_str);
     printf("    Operating BW: %u MHz\n",  result->op_bw_mhz);
     printf("    BSSID: %s\n", bssid_str);
     printf("    RSSI: %3d\n", result->rssi);
@@ -80,7 +85,7 @@ static void scan_rx_callback(const struct mmwlan_scan_result *result, void *arg)
         }
         printf("\n");
     }
-    else if (ret == -1 || rsn_info.num_akm_suites == 0)
+    else if (ret == -1)
     {
         printf("    Security: None\n");
     }

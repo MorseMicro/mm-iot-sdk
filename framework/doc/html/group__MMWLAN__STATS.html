@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.8.2</span>
+   &#160;<span id="projectnumber">2.9.7</span>
    </div>
   </td>
  </tr>
@@ -136,6 +136,9 @@ Functions</h2></td></tr>
 <tr class="memitem:gaf381987e120572896842eee39309ffe1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__STATS.html#gaf381987e120572896842eee39309ffe1">mmwlan_free_morse_stats</a> (struct <a class="el" href="structmmwlan__morse__stats.html">mmwlan_morse_stats</a> *stats)</td></tr>
 <tr class="memdesc:gaf381987e120572896842eee39309ffe1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Frees a <code><a class="el" href="structmmwlan__morse__stats.html" title="Data structure used to represent an opaque buffer containing Morse statistics.">mmwlan_morse_stats</a></code> instance that was returned by <code><a class="el" href="group__MMWLAN__STATS.html#gaa1aafc216b66e1b6b2929a951e3b7c92" title="Retrieves statistics from the Morse transceiver.">mmwlan_get_morse_stats()</a></code>.  <a href="group__MMWLAN__STATS.html#gaf381987e120572896842eee39309ffe1">More...</a><br /></td></tr>
 <tr class="separator:gaf381987e120572896842eee39309ffe1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab25b8e9e34b36938fe8816e44cfcc96c"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__UMAC__STATS.html#gab25b8e9e34b36938fe8816e44cfcc96c">mmwlan_clear_umac_stats</a> (void)</td></tr>
+<tr class="memdesc:gab25b8e9e34b36938fe8816e44cfcc96c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear all current values of the UMAC statistics.  <a href="group__MMWLAN__UMAC__STATS.html#gab25b8e9e34b36938fe8816e44cfcc96c">More...</a><br /></td></tr>
+<tr class="separator:gab25b8e9e34b36938fe8816e44cfcc96c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
 <a id="ga2ec38aac9d46a87a1090bea4e9bebb52" name="ga2ec38aac9d46a87a1090bea4e9bebb52"></a>
@@ -162,11 +165,32 @@ Functions</h2></td></tr>
 <li>Guard: 0 = LGI, 1 = SGI </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02160">2160</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02615">2615</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="gab25b8e9e34b36938fe8816e44cfcc96c" name="gab25b8e9e34b36938fe8816e44cfcc96c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gab25b8e9e34b36938fe8816e44cfcc96c">&#9670;&nbsp;</a></span>mmwlan_clear_umac_stats()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a> mmwlan_clear_umac_stats </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Clear all current values of the UMAC statistics. </p>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> </dd></dl>
+
+</div>
+</div>
 <a id="gaf381987e120572896842eee39309ffe1" name="gaf381987e120572896842eee39309ffe1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#gaf381987e120572896842eee39309ffe1">&#9670;&nbsp;</a></span>mmwlan_free_morse_stats()</h2>
 

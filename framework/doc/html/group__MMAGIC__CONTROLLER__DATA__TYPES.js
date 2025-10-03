@@ -1,16 +1,24 @@
 var group__MMAGIC__CONTROLLER__DATA__TYPES =
 [
-    [ "struct_packet_buffer", "structstruct__packet__buffer.html", [
-      [ "data", "structstruct__packet__buffer.html#a00fd94bee5119935b7ebb9471d469c28", null ],
-      [ "len", "structstruct__packet__buffer.html#a74bd2ae7c16c4fbfe3528d246cf3ab62", null ]
+    [ "string32", "structstring32.html", [
+      [ "data", "structstring32.html#a8e32479e94435e25682b09a16bec5b40", null ],
+      [ "len", "structstring32.html#a41c58a4f0259f454a9f9310c71514ba3", null ]
     ] ],
-    [ "struct_string_254", "structstruct__string__254.html", [
-      [ "data", "structstruct__string__254.html#ac3d69e420967cdd103f2078b18dd1494", null ],
-      [ "len", "structstruct__string__254.html#a2aa197b279349f99554ca8168c7891d4", null ]
+    [ "string100", "structstring100.html", [
+      [ "data", "structstring100.html#ae75bbe037c78b0b665dfbae576d0495d", null ],
+      [ "len", "structstring100.html#a714fa120f1393d69284694e7a97777b9", null ]
     ] ],
-    [ "struct_string_32", "structstruct__string__32.html", [
-      [ "data", "structstruct__string__32.html#a96b6ea3dc848303bfedcd1cc8141abca", null ],
-      [ "len", "structstruct__string__32.html#a675d8b07499d9e4879200a48f19bc935", null ]
+    [ "string254", "structstring254.html", [
+      [ "data", "structstring254.html#af9c3411660b91093147dda79c2479417", null ],
+      [ "len", "structstring254.html#a4b7746a7af329fc08d02b7d9e97e8c84", null ]
+    ] ],
+    [ "raw255", "structraw255.html", [
+      [ "data", "structraw255.html#a9467dd36e203f1166f8a839b86a48ed2", null ],
+      [ "len", "structraw255.html#a6ce2bcadf4a43cd590d5377e95ece458", null ]
+    ] ],
+    [ "raw1536", "structraw1536.html", [
+      [ "data", "structraw1536.html#a43f2147e4d686df68715e883e1dbef9f", null ],
+      [ "len", "structraw1536.html#a85aba205c60155023104a7b946b466b1", null ]
     ] ],
     [ "struct_mac_addr", "structstruct__mac__addr.html", [
       [ "addr", "structstruct__mac__addr.html#a1aaf6a7b27669e437c63e1874aa8236c", null ]
@@ -26,17 +34,25 @@ var group__MMAGIC__CONTROLLER__DATA__TYPES =
       [ "ouis", "structstruct__oui__list.html#a90e6b3fb342473b4a30023a29507923b", null ]
     ] ],
     [ "struct_scan_result", "structstruct__scan__result.html", [
+      [ "beacon_interval", "structstruct__scan__result.html#ac6fad989c382122169b4e90c0d51aa00", null ],
       [ "bssid", "structstruct__scan__result.html#aa4b0f0533525588a69b50db21c159a1c", null ],
+      [ "bw_mhz", "structstruct__scan__result.html#a7271c90404a039753bcd302433d6f838", null ],
+      [ "capability_info", "structstruct__scan__result.html#a6b0c9f4e42d8ef6da31298d0d54aff9b", null ],
+      [ "channel_freq_hz", "structstruct__scan__result.html#a6b14358d78a5b2f21d8514096696a2e2", null ],
+      [ "ies", "structstruct__scan__result.html#acc24ceafb055f780cf99bf70f7cc573a", null ],
+      [ "op_bw_mhz", "structstruct__scan__result.html#a65eb1e52b8e6d5717aad59f8e4ef4930", null ],
+      [ "received_ies_len", "structstruct__scan__result.html#a0992c101cca3374e30505fd368729c04", null ],
       [ "rssi", "structstruct__scan__result.html#aa318eb3c7cc708d898c13f8f4f2d61b2", null ],
-      [ "ssid", "structstruct__scan__result.html#a37529f24388aa49d853595b5c01da568", null ]
+      [ "ssid", "structstruct__scan__result.html#a23cdde6d279531639755efc29137750c", null ],
+      [ "tsf", "structstruct__scan__result.html#adc1ecf4836bd3d0912e89bcbdbf67755", null ]
     ] ],
     [ "struct_version_info", "structstruct__version__info.html", [
-      [ "application_version", "structstruct__version__info.html#a66d0d9325a9b33a251a65d0e3704ec8b", null ],
-      [ "bootloader_version", "structstruct__version__info.html#ad21d122e428e4d5bb0ae755acedf2db8", null ],
-      [ "morse_firmware_version", "structstruct__version__info.html#a14fcb4059ff2d8a82603b4c622f92533", null ],
-      [ "morse_hardware_version", "structstruct__version__info.html#ab4aa281f8e58b0a56ecfabd42412c9f7", null ],
-      [ "morselib_version", "structstruct__version__info.html#a295e6fcd1f7d933f112185b87df04f0a", null ],
-      [ "user_hardware_version", "structstruct__version__info.html#a8d3d1be9974650229b36bd48b8945a57", null ]
+      [ "application_version", "structstruct__version__info.html#a356046d0378fabaf71581e810d8d84d6", null ],
+      [ "bootloader_version", "structstruct__version__info.html#af95af8ec214357e0c1b109411905b15a", null ],
+      [ "morse_firmware_version", "structstruct__version__info.html#ab3ab413655e73da744a7ab82402cd12a", null ],
+      [ "morse_hardware_version", "structstruct__version__info.html#a54343204b49b04c2a3d9168f7c110c22", null ],
+      [ "morselib_version", "structstruct__version__info.html#af67c5b89b2a23b86c0e6410493be9dd4", null ],
+      [ "user_hardware_version", "structstruct__version__info.html#a97f4bc3086789cb5de2f49b5391e5de7", null ]
     ] ],
     [ "struct_scan_status", "structstruct__scan__status.html", [
       [ "num", "structstruct__scan__status.html#a27ec739f619791a609460939daeaf4ee", null ],
@@ -81,6 +97,10 @@ var group__MMAGIC__CONTROLLER__DATA__TYPES =
       [ "MMAGIC_DEEP_SLEEP_MODE_ONE_SHOT", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#gga6bff6987d5569c51bb6bb13b8fecb3eba26dd8e91f6c92d184d1410c1b54ae763", null ],
       [ "MMAGIC_DEEP_SLEEP_MODE_HARDWARE", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#gga6bff6987d5569c51bb6bb13b8fecb3eba0b356867a4da64378e5122a27673c6fe", null ]
     ] ],
+    [ "mmagic_duty_cycle_mode", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#gaaa8c41d233711415a15d8e746d61a974", [
+      [ "MMAGIC_DUTY_CYCLE_MODE_SPREAD", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggaaa8c41d233711415a15d8e746d61a974a4a8307e647356b4c3f2e085a7da11a5b", null ],
+      [ "MMAGIC_DUTY_CYCLE_MODE_BURST", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggaaa8c41d233711415a15d8e746d61a974ad7d88ff711af93ab2faf2f713190e4f3", null ]
+    ] ],
     [ "mmagic_ip_link_state", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga1692061985bc1a94d4a15a880aaeb95f", [
       [ "MMAGIC_IP_LINK_STATE_DOWN", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#gga1692061985bc1a94d4a15a880aaeb95fa0a11453e48b342a0c0099c4fa97b5aec", null ],
       [ "MMAGIC_IP_LINK_STATE_UP", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#gga1692061985bc1a94d4a15a880aaeb95fae1fa6920d2c0139e585e96e202de1764", null ]
@@ -114,6 +134,21 @@ var group__MMAGIC__CONTROLLER__DATA__TYPES =
       [ "MMAGIC_SECURITY_TYPE_SAE", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggac0cc9a0a39a6292bf1087fc917bf3dffaa09c9f5ec37c900d7b9ba2cf72936a5f", null ],
       [ "MMAGIC_SECURITY_TYPE_OWE", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggac0cc9a0a39a6292bf1087fc917bf3dffaaa8188d0f3fe0640aec5f1015a1a3898", null ],
       [ "MMAGIC_SECURITY_TYPE_OPEN", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggac0cc9a0a39a6292bf1087fc917bf3dffa63be0779ad549b18d24dd55d040d41ab", null ]
+    ] ],
+    [ "mmagic_sta_event", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga64a3537e1a6d31e31bcc7f99bd3cadb8", [
+      [ "MMAGIC_STA_EVENT_SCAN_REQUEST", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#gga64a3537e1a6d31e31bcc7f99bd3cadb8acb84933f9a38f363b44962289be017ab", null ],
+      [ "MMAGIC_STA_EVENT_SCAN_COMPLETE", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#gga64a3537e1a6d31e31bcc7f99bd3cadb8a5f7fac6b06c5688169470188c33539a0", null ],
+      [ "MMAGIC_STA_EVENT_SCAN_ABORT", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#gga64a3537e1a6d31e31bcc7f99bd3cadb8a8b49634c8018481898e8e45b0c76d438", null ],
+      [ "MMAGIC_STA_EVENT_AUTH_REQUEST", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#gga64a3537e1a6d31e31bcc7f99bd3cadb8ac602600feb6716bf1d4e1967e101911c", null ],
+      [ "MMAGIC_STA_EVENT_ASSOC_REQUEST", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#gga64a3537e1a6d31e31bcc7f99bd3cadb8ace9e6c894d27644483f775d3fc8de328", null ],
+      [ "MMAGIC_STA_EVENT_DEAUTH_TX", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#gga64a3537e1a6d31e31bcc7f99bd3cadb8af3ef2c4086d70fb8b62d77866ac6e363", null ],
+      [ "MMAGIC_STA_EVENT_CTRL_PORT_OPEN", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#gga64a3537e1a6d31e31bcc7f99bd3cadb8a68a930c611991b0abf5c4d96714b60ce", null ],
+      [ "MMAGIC_STA_EVENT_CTRL_PORT_CLOSED", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#gga64a3537e1a6d31e31bcc7f99bd3cadb8ad16b8510cbf6516a51c53bedcfb6051c", null ]
+    ] ],
+    [ "mmagic_sta_state", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga88a4a443f7e7b9959144eecefdf785a8", [
+      [ "MMAGIC_STA_STATE_DISCONNECTED", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#gga88a4a443f7e7b9959144eecefdf785a8abf055ba93216e860515915d5bbf751eb", null ],
+      [ "MMAGIC_STA_STATE_CONNECTING", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#gga88a4a443f7e7b9959144eecefdf785a8a2fe04b4b880b052398eca7ca8e49a8e8", null ],
+      [ "MMAGIC_STA_STATE_CONNECTED", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#gga88a4a443f7e7b9959144eecefdf785a8ada7aa555c65b5c841f8445a2ec774b54", null ]
     ] ],
     [ "mmagic_standby_mode_exit_reason", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#gab67ae7b325fb681fb00aaff541c63410", [
       [ "MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_NONE", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggab67ae7b325fb681fb00aaff541c63410a9760249555936caae4cd9ce4120d7fd1", null ],
@@ -150,7 +185,18 @@ var group__MMAGIC__CONTROLLER__DATA__TYPES =
       [ "MMAGIC_STATUS_SOCKET_FAILED", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92ae370f3b93b96a043d3e91c9223360bb8", null ],
       [ "MMAGIC_STATUS_SOCKET_CONNECT_FAILED", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92ab8c53b7e40d35ed2944001ed79a22bba", null ],
       [ "MMAGIC_STATUS_SOCKET_BIND_FAILED", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a3d8ae0507b43c6cbd6e9acf00a300b7a", null ],
-      [ "MMAGIC_STATUS_SOCKET_LISTEN_FAILED", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a273683e027ae66b77f99af86940c87e4", null ]
+      [ "MMAGIC_STATUS_SOCKET_LISTEN_FAILED", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a273683e027ae66b77f99af86940c87e4", null ],
+      [ "MMAGIC_STATUS_NTP_KOD_RECEIVED", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a814c9b34b03c4e0faf209b5a57d5e4a6", null ],
+      [ "MMAGIC_STATUS_NTP_KOD_BACKOFF_RECEIVED", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92ad50db21882ded796cb522f92fabcd570", null ],
+      [ "MMAGIC_STATUS_SOCKET_SEND_FAILED", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a9c59be04b7228d08de5ac188cc45324a", null ],
+      [ "MMAGIC_STATUS_INVALID_CREDENTIALS", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92ae5e3cd68fc14fcc64f196b7cb449583a", null ],
+      [ "MMAGIC_STATUS_HANDSHAKE_FAILED", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92ac3fe866989e9197be9597137466c6f4f", null ],
+      [ "MMAGIC_STATUS_AUTHENTICATION_FAILED", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a6cbad4b631b9a589f6f378325843dfff", null ],
+      [ "MMAGIC_STATUS_MISSING_CREDENTIALS", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a7145f1fdf033d19ac93d7dad41ecdb7a", null ],
+      [ "MMAGIC_STATUS_TIME_NOT_SYNCHRONIZED", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a49dc0377bbf2486b6d08b8a50604ba2a", null ],
+      [ "MMAGIC_STATUS_MQTT_REFUSED", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92ab46093c0d16e6713d9986e8bb1c1ba07", null ],
+      [ "MMAGIC_STATUS_MQTT_KEEPALIVE_TIMEOUT", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a25505fb5b0ff3a2956fea1710d264b4a", null ],
+      [ "MMAGIC_STATUS_BAD_VERSION", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92af434dd4ec6060646e5c698813b928748", null ]
     ] ],
     [ "mmagic_subsystem", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#gadc12f63888a42e66b656dd64b32b37e9", [
       [ "MMAGIC_WLAN", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggadc12f63888a42e66b656dd64b32b37e9a34813320ada453d675b27dbe970fb8ed", null ],
@@ -158,6 +204,9 @@ var group__MMAGIC__CONTROLLER__DATA__TYPES =
       [ "MMAGIC_PING", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggadc12f63888a42e66b656dd64b32b37e9aa527b10cd3723f481594656a613f7128", null ],
       [ "MMAGIC_IPERF", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggadc12f63888a42e66b656dd64b32b37e9a6b0d6e4219269707d311c6c0f78f39e2", null ],
       [ "MMAGIC_SYS", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggadc12f63888a42e66b656dd64b32b37e9a78ef328aa0c243b67cc6466a0f5385c5", null ],
-      [ "MMAGIC_TCP", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggadc12f63888a42e66b656dd64b32b37e9a80df37c4ae90674770e88fa9379f23d7", null ]
+      [ "MMAGIC_TCP", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggadc12f63888a42e66b656dd64b32b37e9a80df37c4ae90674770e88fa9379f23d7", null ],
+      [ "MMAGIC_TLS", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggadc12f63888a42e66b656dd64b32b37e9a1c85845892b5d56d8ded48fba66d15f2", null ],
+      [ "MMAGIC_NTP", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggadc12f63888a42e66b656dd64b32b37e9aca15e7d182da3cb55511a011c48d3a1a", null ],
+      [ "MMAGIC_MQTT", "group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggadc12f63888a42e66b656dd64b32b37e9ae0452fdb61420e9ef35d8fcaeb6e8a58", null ]
     ] ]
 ];

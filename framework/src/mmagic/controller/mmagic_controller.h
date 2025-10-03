@@ -25,7 +25,9 @@
  * * Include mmagic_controller.h in your application to integrate the Controller functionality.
  */
 
+#include <stdbool.h>
 #include <stddef.h>
+#include <memory.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -42,23 +44,23 @@ extern "C" {
  * @{
  */
 
-/** Connection security type */
+/** Connection security type. */
 enum mmagic_security_type
 {
-    /** Simultaneous Authentication of Equals (password-based authentication) */
+    /** Simultaneous Authentication of Equals (password-based authentication). */
     MMAGIC_SECURITY_TYPE_SAE  = 0,
-    /** Opportunistic Wireless Encryption (encrypted, passwordless) */
+    /** Opportunistic Wireless Encryption (encrypted, passwordless). */
     MMAGIC_SECURITY_TYPE_OWE  = 1,
-    /** No security enabled at all */
+    /** No security enabled at all. */
     MMAGIC_SECURITY_TYPE_OPEN = 2,
 };
 
-/** Protected management frame mode */
+/** Protected management frame mode. */
 enum mmagic_pmf_mode
 {
-    /** Protected management frames must be used */
+    /** Protected management frames must be used. */
     MMAGIC_PMF_MODE_REQUIRED = 0,
-    /** No protected management frames */
+    /** No protected management frames. */
     MMAGIC_PMF_MODE_DISABLED = 1,
 };
 
@@ -82,6 +84,15 @@ enum mmagic_mcs10_mode
     MMAGIC_MCS10_MODE_AUTO     = 2,
 };
 
+/** Enumeration of duty cycle modes. */
+enum mmagic_duty_cycle_mode
+{
+    /** Duty cycle air time is evenly spread. */
+    MMAGIC_DUTY_CYCLE_MODE_SPREAD = 0,
+    /** Duty cycle air time available in burst. */
+    MMAGIC_DUTY_CYCLE_MODE_BURST  = 1,
+};
+
 /** Enumeration of S1G non-AP STA types. */
 enum mmagic_station_type
 {
@@ -95,47 +106,72 @@ enum mmagic_station_type
 enum mmagic_status
 {
     /** Operation was successful. */
-    MMAGIC_STATUS_OK                    = 0,
+    MMAGIC_STATUS_OK                       = 0,
     /** The operation failed with an unspecified error. */
-    MMAGIC_STATUS_ERROR                 = 1,
+    MMAGIC_STATUS_ERROR                    = 1,
     /** The operation failed due to an invalid argument. */
-    MMAGIC_STATUS_INVALID_ARG           = 2,
+    MMAGIC_STATUS_INVALID_ARG              = 2,
     /** Functionality is temporarily unavailable. */
-    MMAGIC_STATUS_UNAVAILABLE           = 3,
-    /** The operation failed due to an invalid argument. */
-    MMAGIC_STATUS_TIMEOUT               = 4,
+    MMAGIC_STATUS_UNAVAILABLE              = 3,
+    /** The operation timed out. */
+    MMAGIC_STATUS_TIMEOUT                  = 4,
     /** An invalid stream was specified. */
-    MMAGIC_STATUS_INVALID_STREAM        = 5,
+    MMAGIC_STATUS_INVALID_STREAM           = 5,
     /** Specified operation was not found. */
-    MMAGIC_STATUS_NOT_FOUND             = 6,
+    MMAGIC_STATUS_NOT_FOUND                = 6,
     /** Specified operation is not supported. */
-    MMAGIC_STATUS_NOT_SUPPORTED         = 7,
+    MMAGIC_STATUS_NOT_SUPPORTED            = 7,
     /** An error occured during transmission. */
-    MMAGIC_STATUS_TX_ERROR              = 8,
+    MMAGIC_STATUS_TX_ERROR                 = 8,
     /** Failed due to memory allocation failure. */
-    MMAGIC_STATUS_NO_MEM                = 9,
+    MMAGIC_STATUS_NO_MEM                   = 9,
     /** Failed due to stream being closed from the other side. */
-    MMAGIC_STATUS_CLOSED                = 10,
+    MMAGIC_STATUS_CLOSED                   = 10,
     /** WLAN operation failed because the channel list has not been set. */
-    MMAGIC_STATUS_CHANNEL_LIST_NOT_SET  = 11,
+    MMAGIC_STATUS_CHANNEL_LIST_NOT_SET     = 11,
     /** WLAN shutdown failed. */
-    MMAGIC_STATUS_SHUTDOWN_BLOCKED      = 12,
+    MMAGIC_STATUS_SHUTDOWN_BLOCKED         = 12,
     /** Attempted to tune to a channel that was not available. */
-    MMAGIC_STATUS_CHANNEL_INVALID       = 13,
+    MMAGIC_STATUS_CHANNEL_INVALID          = 13,
     /** Operation failed because the WLAN device was not booted. */
-    MMAGIC_STATUS_NOT_RUNNING           = 14,
+    MMAGIC_STATUS_NOT_RUNNING              = 14,
     /** Operation failed because the link was not up. */
-    MMAGIC_STATUS_NO_LINK               = 15,
-    /** Failed to get an IP address for the given hostname */
-    MMAGIC_STATUS_UNKNOWN_HOST          = 16,
+    MMAGIC_STATUS_NO_LINK                  = 15,
+    /** Failed to get an IP address for the given hostname. */
+    MMAGIC_STATUS_UNKNOWN_HOST             = 16,
     /** Failed to open the socket. */
-    MMAGIC_STATUS_SOCKET_FAILED         = 17,
+    MMAGIC_STATUS_SOCKET_FAILED            = 17,
     /** Socket connection failed. */
-    MMAGIC_STATUS_SOCKET_CONNECT_FAILED = 18,
+    MMAGIC_STATUS_SOCKET_CONNECT_FAILED    = 18,
     /** Socket bind failed. */
-    MMAGIC_STATUS_SOCKET_BIND_FAILED    = 19,
+    MMAGIC_STATUS_SOCKET_BIND_FAILED       = 19,
     /** Socket listen failed. */
-    MMAGIC_STATUS_SOCKET_LISTEN_FAILED  = 20,
+    MMAGIC_STATUS_SOCKET_LISTEN_FAILED     = 20,
+    /** NTP server returned Kiss-o'-Death. */
+    MMAGIC_STATUS_NTP_KOD_RECEIVED         = 21,
+    /** NTP server returned Kiss-o'-Death with rate code. Client should backoff then retry. */
+    MMAGIC_STATUS_NTP_KOD_BACKOFF_RECEIVED = 22,
+    /** Socket send failed. */
+    MMAGIC_STATUS_SOCKET_SEND_FAILED       = 23,
+    /** Credentials provided were invalid. Possible cause: missing null terminator on a PEM
+     * key/certificate. */
+    MMAGIC_STATUS_INVALID_CREDENTIALS      = 24,
+    /** Error during TLS handshake. */
+    MMAGIC_STATUS_HANDSHAKE_FAILED         = 25,
+    /** Credentials provided by the server were not valid. */
+    MMAGIC_STATUS_AUTHENTICATION_FAILED    = 26,
+    /** Missing certificate or key to open TLS connection. Provided through the TLS module
+     * configuration. */
+    MMAGIC_STATUS_MISSING_CREDENTIALS      = 27,
+    /** Internal time has not been synchronized. This is required for certificate verification for
+     * TLS. Use the NTP module to synchronize internal time. */
+    MMAGIC_STATUS_TIME_NOT_SYNCHRONIZED    = 28,
+    /** The server refused a CONNECT or SUBSCRIBE. */
+    MMAGIC_STATUS_MQTT_REFUSED             = 29,
+    /** Timed out while waiting for PINGRESP. Connection to the broker has been lost. */
+    MMAGIC_STATUS_MQTT_KEEPALIVE_TIMEOUT   = 30,
+    /** Operation failed due to a version mismatch. */
+    MMAGIC_STATUS_BAD_VERSION              = 32,
 };
 
 /** Mode to use when running the iperf. */
@@ -205,37 +241,92 @@ enum mmagic_standby_mode_exit_reason
     MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_HW_SCAN_FAILED_TO_START = 7,
 };
 
-/** Packet buffer for standard 1536 byte size packets */
-struct MM_PACKED struct_packet_buffer
+/** Station states */
+enum mmagic_sta_state
 {
-    /** Length of the data in @c data */
-    uint16_t len;
-    /** Array containing the data */
-    uint8_t data[1536];
+    /** Disconnected from the AP. */
+    MMAGIC_STA_STATE_DISCONNECTED = 1,
+    /** Connecting to the AP. */
+    MMAGIC_STA_STATE_CONNECTING   = 2,
+    /** Connected to the AP. */
+    MMAGIC_STA_STATE_CONNECTED    = 3,
 };
 
-/** Data type for string up to 254 characters (with space for a null terminating character). */
-struct MM_PACKED struct_string_254
+/** Station connection events. */
+enum mmagic_sta_event
 {
-    /** Length of the data in @c data (excluding null terminator) */
+    /** The STA is starting a scan. */
+    MMAGIC_STA_EVENT_SCAN_REQUEST     = 0,
+    /** The STA has finished a scan. */
+    MMAGIC_STA_EVENT_SCAN_COMPLETE    = 1,
+    /** The STA has aborted a scan early. */
+    MMAGIC_STA_EVENT_SCAN_ABORT       = 2,
+    /** The STA is sending an authentication request to the AP. */
+    MMAGIC_STA_EVENT_AUTH_REQUEST     = 3,
+    /** The STA is sending an association request to the AP. */
+    MMAGIC_STA_EVENT_ASSOC_REQUEST    = 4,
+    /** The STA is sending an de-authorization request to the AP. */
+    MMAGIC_STA_EVENT_DEAUTH_TX        = 5,
+    /** The Supplicant IEEE 802.1X Controlled Port is now open. */
+    MMAGIC_STA_EVENT_CTRL_PORT_OPEN   = 6,
+    /** The Supplicant IEEE 802.1X Controlled Port is now closed. */
+    MMAGIC_STA_EVENT_CTRL_PORT_CLOSED = 7,
+};
+
+/** String type with maximum length of 32 (excluding null terminator). */
+struct MM_PACKED string32
+{
+    /** Length of string contents (excluding null terminator). */
     uint8_t len;
-    /** Array containing the string */
+
+    /** The string contents. */
+    char data[32 + 1];
+};
+
+/** String type with maximum length of 100 (excluding null terminator). */
+struct MM_PACKED string100
+{
+    /** Length of string contents (excluding null terminator). */
+    uint8_t len;
+
+    /** The string contents. */
+    char data[100 + 1];
+};
+
+/** String type with maximum length of 254 (excluding null terminator). */
+struct MM_PACKED string254
+{
+    /** Length of string contents (excluding null terminator). */
+    uint8_t len;
+
+    /** The string contents. */
+    char data[254 + 1];
+};
+
+/** Raw octet string type with maximum length of 255. */
+struct MM_PACKED raw255
+{
+    /** Length of @c data. */
+    uint8_t len;
+
+    /** The acutal data buffer. */
     uint8_t data[255];
 };
 
-/** Data type for string up to 32 characters (with space for a null terminating character). */
-struct MM_PACKED struct_string_32
+/** Raw octet string type with maximum length of 1536. */
+struct MM_PACKED raw1536
 {
-    /** Length of the data in @c data (excluding null terminator) */
-    uint8_t len;
-    /** Array containing the string */
-    uint8_t data[33];
+    /** Length of @c data. */
+    uint16_t len;
+
+    /** The acutal data buffer. */
+    uint8_t data[1536];
 };
 
-/** Data type to contain mac address byte array */
+/** Data type to contain mac address byte array. */
 struct MM_PACKED struct_mac_addr
 {
-    /** Array containing the mac addr */
+    /** Array containing the mac addr. */
     uint8_t addr[6];
 };
 
@@ -250,7 +341,7 @@ struct MM_PACKED struct_country_code
 /** Data type to contain a three octet OUI. */
 struct MM_PACKED struct_oui
 {
-    /** The 3 octet OUI */
+    /** The 3 octet OUI. */
     uint8_t oui[3];
 };
 
@@ -267,36 +358,53 @@ struct MM_PACKED struct_oui_list
 struct MM_PACKED struct_scan_result
 {
     /** SSID of the AP. */
-    struct struct_string_32 ssid;
+    struct string32 ssid;
     /** BSSID of the AP network. */
     struct struct_mac_addr bssid;
     /** RSSI of the AP in dBm. */
     int32_t rssi;
+    /** Pointer to the start of the Information Elements within the Probe Response frame. */
+    struct raw255 ies;
+    /** Length of the ies field in the received frame. May exceed the size of the ies buffer in this
+     * structure. */
+    uint16_t received_ies_len;
+    /** Value of the Beacon Interval field. */
+    uint16_t beacon_interval;
+    /** Value of the Capability Information field. */
+    uint16_t capability_info;
+    /** Center frequency in Hz of the channel where the frame was received. */
+    uint32_t channel_freq_hz;
+    /** Bandwidth, in MHz, where the frame was received. */
+    uint8_t bw_mhz;
+    /** Operating bandwidth, in MHz, of the access point. */
+    uint8_t op_bw_mhz;
+    /** TSF timestamp in the Probe Response frame. */
+    uint64_t tsf;
 };
 
 /** Structure for devise firmware and hardware versions. */
 struct MM_PACKED struct_version_info
 {
     /** Version of the application software. */
-    struct struct_string_32 application_version;
+    struct string32 application_version;
     /** Version of the bootloader software. */
-    struct struct_string_32 bootloader_version;
+    struct string32 bootloader_version;
     /** Version of the user hardware. */
-    struct struct_string_32 user_hardware_version;
+    struct string32 user_hardware_version;
     /** Version of the Morse firmware. */
-    struct struct_string_32 morse_firmware_version;
+    struct string32 morse_firmware_version;
     /** Version of the Morse IoT SDK library. */
-    struct struct_string_32 morselib_version;
+    struct string32 morselib_version;
     /** Version of the Morse hardware. */
-    struct struct_string_32 morse_hardware_version;
+    struct string32 morse_hardware_version;
 };
 
-/** Structure for returning the scan status */
+/** Structure for returning the scan status. */
 struct MM_PACKED struct_scan_status
 {
     /** Array of scan results. */
     struct struct_scan_result results[10];
-    /** Number of results retrieved */
+    /** Number of results retrieved. */
     uint8_t num;
 };
 
@@ -304,73 +412,73 @@ struct MM_PACKED struct_scan_status
  * addresses and colon-separated hexadecimal notation for IPv6 addresses. */
 struct MM_PACKED struct_ip_addr
 {
-    /** Array containing the IP string */
+    /** Array containing the IP string. */
     char addr[48];
 };
 
-/** Structure to contain the current IP status */
+/** Structure to contain the current IP status. */
 struct MM_PACKED struct_ip_status
 {
-    /** Current link state */
+    /** Current link state. */
     enum mmagic_ip_link_state link_state;
-    /** Whether or not dhcp is enabled */
+    /** Whether or not dhcp is enabled. */
     bool dhcp_enabled;
-    /** Current IP address */
+    /** Current IP address. */
     struct struct_ip_addr ip_addr;
-    /** Current IP network mask */
+    /** Current IP network mask. */
     struct struct_ip_addr netmask;
-    /** Current IP gateway */
+    /** Current IP gateway. */
     struct struct_ip_addr gateway;
-    /** Current broadcast IP address */
+    /** Current broadcast IP address. */
     struct struct_ip_addr broadcast;
-    /** DNS server IP addresses */
+    /** DNS server IP addresses. */
     struct struct_ip_addr dns_servers[2];
 };
 
-/** Data structure to store ping results */
+/** Data structure to store ping results. */
 struct MM_PACKED struct_ping_status
 {
-    /** IP address of the device receiving the ping requests */
+    /** IP address of the device receiving the ping requests. */
     struct struct_ip_addr receiver_addr;
-    /** Total number of requests sent */
+    /** Total number of requests sent. */
     uint32_t total_count;
-    /** The number of ping responses received */
+    /** The number of ping responses received. */
     uint32_t recv_count;
-    /** The minimum latency in ms between request sent and response received */
+    /** The minimum latency in ms between request sent and response received. */
     uint32_t min_time_ms;
-    /** The average latency in ms between request sent and response received */
+    /** The average latency in ms between request sent and response received. */
     uint32_t avg_time_ms;
-    /** The maximum latency in ms between request sent and response received */
+    /** The maximum latency in ms between request sent and response received. */
     uint32_t max_time_ms;
-    /** Stores non-zero session ID whilst ping session is running */
+    /** Stores non-zero session ID whilst ping session is running. */
     uint16_t session_id;
 };
 
-/** Data structure to store iperf results */
+/** Data structure to store iperf results. */
 struct MM_PACKED struct_iperf_status
 {
-    /** IP address of the remote device */
+    /** IP address of the remote device. */
     struct struct_ip_addr remote_addr;
-    /** Port number of the remote device */
+    /** Port number of the remote device. */
     uint16_t remote_port;
-    /** IP address of the local device */
+    /** IP address of the local device. */
     struct struct_ip_addr local_addr;
-    /** Port number of the local device */
+    /** Port number of the local device. */
     uint16_t local_port;
-    /** The number of bytes of data transferred during the iperf test */
+    /** The number of bytes of data transferred during the iperf test. */
     uint64_t bytes_transferred;
-    /** The duration of the iperf test in milliseconds */
+    /** The duration of the iperf test in milliseconds. */
     uint32_t duration_ms;
-    /** The average throughput in kbps */
+    /** The average throughput in kbps. */
     uint32_t bandwidth_kbitpsec;
 };
 
-/** Generic 64 byte buffer */
+/** Generic 64 byte buffer. */
 struct MM_PACKED struct_buffer64
 {
-    /** The 64 byte buffer */
+    /** The 64 byte buffer. */
     uint8_t buffer[64];
-    /** Leangth of data in the buffer */
+    /** Length of data in the buffer. */
     uint8_t len;
 };
 
@@ -391,6 +499,12 @@ enum mmagic_subsystem
     MMAGIC_SYS   = 5,
     /** Subsystem ID for @ref MMAGIC_CONTROLLER_TCP */
     MMAGIC_TCP   = 6,
+    /** Subsystem ID for @ref MMAGIC_CONTROLLER_TLS */
+    MMAGIC_TLS   = 7,
+    /** Subsystem ID for @ref MMAGIC_CONTROLLER_NTP */
+    MMAGIC_NTP   = 8,
+    /** Subsystem ID for @ref MMAGIC_CONTROLLER_MQTT */
+    MMAGIC_MQTT  = 9,
 };
 
 /** @} */
@@ -422,7 +536,7 @@ typedef void (*mmagic_controller_agent_start_cb_t)(struct mmagic_controller *con
  */
 struct mmagic_controller_init_args
 {
-    /** Callback function to executed any time a event that the agent has started is received.*/
+    /** Callback function to executed any time a event that the agent has started is received. */
     mmagic_controller_agent_start_cb_t agent_start_cb;
     /** User argument that will be passed when the agent_start_cb is executed. */
     void *agent_start_arg;
@@ -463,6 +577,9 @@ void mmagic_controller_deinit(struct mmagic_controller *controller);
 /** The stream ID of the control stream */
 #define CONTROL_STREAM  0
 
+/** The default timeout when waiting for a response from a command sent to the agent in ms. */
+#define MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS 1000
+
 /**
  * Sends a command to the agent.
  *
@@ -493,13 +610,48 @@ enum mmagic_status mmagic_controller_tx(
  * @param  buffer        A pointer to a buffer to load with any returned data.
  *                       May be NULL if none.
  * @param  buffer_length Length of above buffer.
+ * @param  timeout_ms    The time in milliseconds to wait for a response from the agent,
+ *                       set to @c UINT32_MAX for an indefinite wait.
  *
  * @return               MMAGIC_STATUS_OK on success, else an error code.
  */
 enum mmagic_status mmagic_controller_rx(struct mmagic_controller *controller, uint8_t stream_id,
                                         uint8_t submodule_id,
                                         uint8_t command_id, uint8_t subcommand_id,
-                                        uint8_t *buffer, size_t buffer_length);
+                                        uint8_t *buffer, size_t buffer_length, uint32_t timeout_ms);
+
+/**
+ * Sends a sync request to the agent and waits for a sync response.
+ *
+ * This function will block waiting for a response from the agent or until the provided timeout
+ * duration elapses.
+ *
+ * @param  controller Controller context.
+ * @param  timeout_ms Duration to wait for a sync response from the agent.
+ *
+ * @return            MMAGIC_STATUS_OK on successful sync, else an appropriate error code.
+ */
+enum mmagic_status mmagic_controller_agent_sync(struct mmagic_controller *controller,
+                                                uint32_t timeout_ms);
+
+/**
+ * Sends a reset request to the agent.
+ *
+ * A reset is considered successful when the agent returns a start notification. On success, the
+ * controller @c agent_start_cb function will be executed.
+ *
+ * @note This function will return once a reset request has been transmitted. It is up to the
+ * application to handle waiting for the start callback to be called.
+ *
+ * @note Both this function and @ref mmagic_controller_sys_reset will perform a soft reset of the
+ * agent, however this function should be preferred as the reset is handled at a lower layer in the
+ * agents MMAGIC stack.
+ *
+ * @param  controller Controller context.
+ *
+ * @return            MMAGIC_STATUS_OK on successful transmission, else an error code.
+ */
+enum mmagic_status mmagic_controller_request_agent_reset(struct mmagic_controller *controller);
 
 /** wlan configuration variable IDs */
 enum mmagic_wlan_var
@@ -508,7 +660,7 @@ enum mmagic_wlan_var
     MMAGIC_WLAN_VAR_COUNTRY_CODE              = 0,
     /** SSID of the AP to connect to, can be 1-32 characters long. */
     MMAGIC_WLAN_VAR_SSID                      = 1,
-    /** Password used when associating, 1-32 characters long. */
+    /** Password used when associating, 1-100 characters long. */
     MMAGIC_WLAN_VAR_PASSWORD                  = 2,
     /** Security type to used when associating. */
     MMAGIC_WLAN_VAR_SECURITY                  = 3,
@@ -517,7 +669,7 @@ enum mmagic_wlan_var
     MMAGIC_WLAN_VAR_RAW_PRIORITY              = 4,
     /** BSSID of the ap to associate to, all 0x00 for any. */
     MMAGIC_WLAN_VAR_BSSID                     = 5,
-    /** Protected Management Frame mode to use (802.11w) */
+    /** Protected Management Frame mode to use (802.11w). */
     MMAGIC_WLAN_VAR_PMF_MODE                  = 6,
     /** S1G non-AP STA type. */
     MMAGIC_WLAN_VAR_STATION_TYPE              = 7,
@@ -594,6 +746,13 @@ enum mmagic_wlan_var
      * which will always use MCS10 instead of MCS0 if the bandwidth is 1 MHz, and auto, which will
      * use MCS10 on retries instead of MCS0 when the bandwidth is 1 MHz. */
     MMAGIC_WLAN_VAR_MCS10_MODE                = 26,
+    /** When set to true, STA event notifications will be provided. Setting this to false will
+     * suppress these notifications. Defaults to false. */
+    MMAGIC_WLAN_VAR_STA_EVT_EN                = 27,
+    /** The duty cycle air time distribution mode. The duty cycle mode can be set to spread, where
+     * the air time is spread evenly across the window; or burst, where air time is available to be
+     * consumed immediately. */
+    MMAGIC_WLAN_VAR_DUTY_CYCLE_MODE           = 28,
 };
 
 /** wlan configuration command IDs */
@@ -648,6 +807,8 @@ enum mmagic_wlan_cmd
     /** Sets the standby mode configuration parameters. If this command is not executed then the
      * defaults are as specified. */
     MMAGIC_WLAN_CMD_STANDBY_SET_CONFIG         = 20,
+    /** Retrieves the STA status of the WLAN interface. */
+    MMAGIC_WLAN_CMD_GET_STA_STATUS             = 21,
 };
 
 /** ip configuration variable IDs */
@@ -655,29 +816,32 @@ enum mmagic_ip_var
 {
     /** IP address to use for a static network connection. This will take effect when the reload
      * command is successfully executed. */
-    MMAGIC_IP_VAR_IP_ADDR      = 0,
+    MMAGIC_IP_VAR_IP_ADDR            = 0,
     /** Netmask to use for a static network connection. This will take effect when the reload
      * command is successfully executed. */
-    MMAGIC_IP_VAR_NETMASK      = 1,
+    MMAGIC_IP_VAR_NETMASK            = 1,
     /** Gateway to use for a static network connection. This will take effect when the reload
      * command is successfully executed. */
-    MMAGIC_IP_VAR_GATEWAY      = 2,
+    MMAGIC_IP_VAR_GATEWAY            = 2,
     /** Primary DNS server IP address. If a value is specified this will override the primary DNS
      * server provided by DHCP (if any). Changes will take effect when the reload command is
      * successfully executed. */
-    MMAGIC_IP_VAR_DNS_SERVER0  = 3,
+    MMAGIC_IP_VAR_DNS_SERVER0        = 3,
     /** Secondary DNS server IP address. If a value is specified this will override the secondary
-     * DNS server provided by DHCP (if any). Changes  will take effect when the reload command is
+     * DNS server provided by DHCP (if any). Changes will take effect when the reload command is
      * successfully executed. Note that this option may be ignored by some IP stacks. */
-    MMAGIC_IP_VAR_DNS_SERVER1  = 4,
+    MMAGIC_IP_VAR_DNS_SERVER1        = 4,
     /** True to enable DHCP for IP address configuration, or false to use the static configuration
      * given by ip_addr, netmask, and gateway. This will take effect when the reload command is
      * successfully executed. */
-    MMAGIC_IP_VAR_DHCP_ENABLED = 5,
+    MMAGIC_IP_VAR_DHCP_ENABLED       = 5,
     /** If true, enables DHCP offload which allows the Morse chip to directly handle DHCP discovery
      * and leases without waking up the host processor. Note: this comes into effect only if
      * ip.dhcp_enabled is also true. */
-    MMAGIC_IP_VAR_DHCP_OFFLOAD = 6,
+    MMAGIC_IP_VAR_DHCP_OFFLOAD       = 6,
+    /** When set to true, IP link status notifications will be provided. Setting this to false will
+     * suppress these notifications. Defaults to true. */
+    MMAGIC_IP_VAR_LINK_STATUS_EVT_EN = 7,
 };
 
 /** ip configuration command IDs */
@@ -799,28 +963,102 @@ enum mmagic_tcp_cmd
     MMAGIC_TCP_CMD_LOAD       = 2,
     /** Commit the current configuration to flash */
     MMAGIC_TCP_CMD_COMMIT     = 3,
-    /** Opens a client TCP socket and returns its stream ID */
+    /** Opens a client TCP socket and returns its stream ID. */
     MMAGIC_TCP_CMD_CONNECT    = 8,
-    /** Opens a server TCP socket and returns its stream ID */
+    /** Opens a server TCP socket and returns its stream ID. */
     MMAGIC_TCP_CMD_BIND       = 9,
-    /** Reads from a socket */
+    /** Reads from a socket. */
     MMAGIC_TCP_CMD_RECV       = 10,
-    /** Writes to a socket */
+    /** Writes to a socket. */
     MMAGIC_TCP_CMD_SEND       = 11,
-    /** Polls the socket till it is ready for reading */
+    /** Polls the socket till it is ready for reading. */
     MMAGIC_TCP_CMD_READ_POLL  = 12,
-    /** Polls the socket till it is ready for writing */
+    /** Polls the socket till it is ready for writing. */
     MMAGIC_TCP_CMD_WRITE_POLL = 13,
     /** Waits for an incoming socket connection and returns a new stream ID. */
     MMAGIC_TCP_CMD_ACCEPT     = 14,
-    /** Closes and frees the socket */
+    /** Closes and frees the socket. */
     MMAGIC_TCP_CMD_CLOSE      = 15,
+};
+
+/** tls configuration variable IDs */
+enum mmagic_tls_var
+{
+    /** Root certificate authority certificate. Supported formats are PEM and DER. Must be null
+     * terminated if in PEM format. */
+    MMAGIC_TLS_VAR_ROOT_CA_CERTIFICATE = 0,
+    /** Certificate to identify the client. Supported formats are PEM and DER. Must be null
+     * terminated if in PEM format. */
+    MMAGIC_TLS_VAR_CLIENT_CERTIFICATE  = 1,
+    /** Client private key. Supported formats are PEM and DER. Must be null terminated if in PEM
+     * format. */
+    MMAGIC_TLS_VAR_CLIENT_PRIVATE_KEY  = 2,
+};
+
+/** tls configuration command IDs */
+enum mmagic_tls_cmd
+{
+    /** Retrieve the value of a configuration variable */
+    MMAGIC_TLS_CMD_GET    = 0,
+    /** Set the value of a configuration variable */
+    MMAGIC_TLS_CMD_SET    = 1,
+    /** Reserved (unused) */
+    MMAGIC_TLS_CMD_LOAD   = 2,
+    /** Commit the current configuration to flash */
+    MMAGIC_TLS_CMD_COMMIT = 3,
+};
+
+/** ntp configuration variable IDs */
+enum mmagic_ntp_var
+{
+    /** The hostname or IP of the NTP server. Defaults to "0.pool.ntp.org". */
+    MMAGIC_NTP_VAR_SERVER = 0,
+};
+
+/** ntp configuration command IDs */
+enum mmagic_ntp_cmd
+{
+    /** Retrieve the value of a configuration variable */
+    MMAGIC_NTP_CMD_GET      = 0,
+    /** Set the value of a configuration variable */
+    MMAGIC_NTP_CMD_SET      = 1,
+    /** Reserved (unused) */
+    MMAGIC_NTP_CMD_LOAD     = 2,
+    /** Commit the current configuration to flash */
+    MMAGIC_NTP_CMD_COMMIT   = 3,
+    /** Synchronizes internal time using the NTP server. */
+    MMAGIC_NTP_CMD_SYNC     = 8,
+    /** Reads current internal time. */
+    MMAGIC_NTP_CMD_GET_TIME = 9,
+};
+
+/** mqtt configuration command IDs */
+enum mmagic_mqtt_cmd
+{
+    /** Retrieve the value of a configuration variable */
+    MMAGIC_MQTT_CMD_GET         = 0,
+    /** Set the value of a configuration variable */
+    MMAGIC_MQTT_CMD_SET         = 1,
+    /** Reserved (unused) */
+    MMAGIC_MQTT_CMD_LOAD        = 2,
+    /** Commit the current configuration to flash */
+    MMAGIC_MQTT_CMD_COMMIT      = 3,
+    /** Starts the MQTT agent. Automatically handles reconnects with a backoff timer and saves up to
+     * 10 subscriptions across reconnects. Listen to "broker_connection" events for information
+     * about the state of the connection to the broker. */
+    MMAGIC_MQTT_CMD_START_AGENT = 8,
+    /** Publishes a message on a topic. */
+    MMAGIC_MQTT_CMD_PUBLISH     = 9,
+    /** Subscribes to a topic. Messages will arrive in the "message_received" event. */
+    MMAGIC_MQTT_CMD_SUBSCRIBE   = 10,
+    /** Stops the MQTT agent. */
+    MMAGIC_MQTT_CMD_STOP_AGENT  = 11,
 };
 
 /** @} */
 
 /**
- * @defgroup MMAGIC_CONTROLLER_WLAN Wireless LAN management subsystem (wlan)
+ * @defgroup MMAGIC_CONTROLLER_WLAN Module wlan: Wireless LAN management.
  * @{
  */
 
@@ -850,7 +1088,8 @@ static inline enum mmagic_status mmagic_controller_get_wlan_country_code(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET,
-                                  MMAGIC_WLAN_VAR_COUNTRY_CODE, (uint8_t *)var, sizeof(*var));
+                                  MMAGIC_WLAN_VAR_COUNTRY_CODE, (uint8_t *)var, sizeof(*var),
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -875,7 +1114,8 @@ static inline enum mmagic_status mmagic_controller_set_wlan_country_code(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_SET,
-                                  MMAGIC_WLAN_VAR_COUNTRY_CODE, NULL, 0);
+                                  MMAGIC_WLAN_VAR_COUNTRY_CODE, NULL, 0,
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -885,12 +1125,12 @@ static inline enum mmagic_status mmagic_controller_set_wlan_country_code(
  * SSID of the AP to connect to, can be 1-32 characters long.
  *
  * @param  controller Reference to the controller handle.
- * @param  var        Reference to the @c struct_string_32 to place the received data in.
+ * @param  var        Reference to the @c string32 to place the received data in.
  *
  * @return            MMAGIC_STATUS_OK on success, else an error code.
  */
 static inline enum mmagic_status mmagic_controller_get_wlan_ssid(
-    struct mmagic_controller *controller, struct struct_string_32 *var)
+    struct mmagic_controller *controller, struct string32 *var)
 {
     enum mmagic_status status;
     status = mmagic_controller_tx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET,
@@ -900,7 +1140,8 @@ static inline enum mmagic_status mmagic_controller_get_wlan_ssid(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET,
-                                  MMAGIC_WLAN_VAR_SSID, (uint8_t *)var, sizeof(*var));
+                                  MMAGIC_WLAN_VAR_SSID, (uint8_t *)var, sizeof(*var),
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -910,14 +1151,14 @@ static inline enum mmagic_status mmagic_controller_get_wlan_ssid(
  * SSID of the AP to connect to, can be 1-32 characters long.
  *
  * @param  controller Reference to the controller handle.
- * @param  var        The @c struct_string_32 to write.
+ * @param  var        The @c string32 to write.
  *
  * @return            MMAGIC_STATUS_OK on success, else an error code.
  */
 static inline enum mmagic_status mmagic_controller_set_wlan_ssid(
     struct mmagic_controller *controller, const char *var)
 {
-    struct struct_string_32 var_val;
+    struct string32 var_val;
     enum mmagic_status status;
     var_val.len = strlen(var);
     if (var_val.len > sizeof(var_val.data) - 1)
@@ -933,22 +1174,23 @@ static inline enum mmagic_status mmagic_controller_set_wlan_ssid(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_SET,
-                                  MMAGIC_WLAN_VAR_SSID, NULL, 0);
+                                  MMAGIC_WLAN_VAR_SSID, NULL, 0,
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
 /**
  * Gets @c password setting for module @c wlan.
  *
- * Password used when associating, 1-32 characters long.
+ * Password used when associating, 1-100 characters long.
  *
  * @param  controller Reference to the controller handle.
- * @param  var        Reference to the @c struct_string_32 to place the received data in.
+ * @param  var        Reference to the @c string100 to place the received data in.
  *
  * @return            MMAGIC_STATUS_OK on success, else an error code.
  */
 static inline enum mmagic_status mmagic_controller_get_wlan_password(
-    struct mmagic_controller *controller, struct struct_string_32 *var)
+    struct mmagic_controller *controller, struct string100 *var)
 {
     enum mmagic_status status;
     status = mmagic_controller_tx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET,
@@ -958,24 +1200,25 @@ static inline enum mmagic_status mmagic_controller_get_wlan_password(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET,
-                                  MMAGIC_WLAN_VAR_PASSWORD, (uint8_t *)var, sizeof(*var));
+                                  MMAGIC_WLAN_VAR_PASSWORD, (uint8_t *)var, sizeof(*var),
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
 /**
  * Sets @c password setting for module @c wlan.
  *
- * Password used when associating, 1-32 characters long.
+ * Password used when associating, 1-100 characters long.
  *
  * @param  controller Reference to the controller handle.
- * @param  var        The @c struct_string_32 to write.
+ * @param  var        The @c string100 to write.
  *
  * @return            MMAGIC_STATUS_OK on success, else an error code.
  */
 static inline enum mmagic_status mmagic_controller_set_wlan_password(
     struct mmagic_controller *controller, const char *var)
 {
-    struct struct_string_32 var_val;
+    struct string100 var_val;
     enum mmagic_status status;
     var_val.len = strlen(var);
     if (var_val.len > sizeof(var_val.data) - 1)
@@ -991,7 +1234,8 @@ static inline enum mmagic_status mmagic_controller_set_wlan_password(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_SET,
-                                  MMAGIC_WLAN_VAR_PASSWORD, NULL, 0);
+                                  MMAGIC_WLAN_VAR_PASSWORD, NULL, 0,
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -1016,7 +1260,8 @@ static inline enum mmagic_status mmagic_controller_get_wlan_security(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET,
-                                  MMAGIC_WLAN_VAR_SECURITY, (uint8_t *)var, sizeof(*var));
+                                  MMAGIC_WLAN_VAR_SECURITY, (uint8_t *)var, sizeof(*var),
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -1041,7 +1286,8 @@ static inline enum mmagic_status mmagic_controller_set_wlan_security(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_SET,
-                                  MMAGIC_WLAN_VAR_SECURITY, NULL, 0);
+                                  MMAGIC_WLAN_VAR_SECURITY, NULL, 0,
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -1066,7 +1312,8 @@ static inline enum mmagic_status mmagic_controller_get_wlan_raw_priority(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET,
-                                  MMAGIC_WLAN_VAR_RAW_PRIORITY, (uint8_t *)var, sizeof(*var));
+                                  MMAGIC_WLAN_VAR_RAW_PRIORITY, (uint8_t *)var, sizeof(*var),
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -1091,7 +1338,8 @@ static inline enum mmagic_status mmagic_controller_set_wlan_raw_priority(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_SET,
-                                  MMAGIC_WLAN_VAR_RAW_PRIORITY, NULL, 0);
+                                  MMAGIC_WLAN_VAR_RAW_PRIORITY, NULL, 0,
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -1116,7 +1364,8 @@ static inline enum mmagic_status mmagic_controller_get_wlan_bssid(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET,
-                                  MMAGIC_WLAN_VAR_BSSID, (uint8_t *)var, sizeof(*var));
+                                  MMAGIC_WLAN_VAR_BSSID, (uint8_t *)var, sizeof(*var),
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -1141,14 +1390,15 @@ static inline enum mmagic_status mmagic_controller_set_wlan_bssid(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_SET,
-                                  MMAGIC_WLAN_VAR_BSSID, NULL, 0);
+                                  MMAGIC_WLAN_VAR_BSSID, NULL, 0,
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
 /**
  * Gets @c pmf_mode setting for module @c wlan.
  *
- * Protected Management Frame mode to use (802.11w)
+ * Protected Management Frame mode to use (802.11w).
  *
  * @param  controller Reference to the controller handle.
  * @param  var        Reference to the @c enum_pmf_mode to place the received data in.
@@ -1166,14 +1416,15 @@ static inline enum mmagic_status mmagic_controller_get_wlan_pmf_mode(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET,
-                                  MMAGIC_WLAN_VAR_PMF_MODE, (uint8_t *)var, sizeof(*var));
+                                  MMAGIC_WLAN_VAR_PMF_MODE, (uint8_t *)var, sizeof(*var),
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
 /**
  * Sets @c pmf_mode setting for module @c wlan.
  *
- * Protected Management Frame mode to use (802.11w)
+ * Protected Management Frame mode to use (802.11w).
  *
  * @param  controller Reference to the controller handle.
  * @param  var        The @c enum_pmf_mode to write.
@@ -1191,7 +1442,8 @@ static inline enum mmagic_status mmagic_controller_set_wlan_pmf_mode(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_SET,
-                                  MMAGIC_WLAN_VAR_PMF_MODE, NULL, 0);
+                                  MMAGIC_WLAN_VAR_PMF_MODE, NULL, 0,
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -1216,7 +1468,8 @@ static inline enum mmagic_status mmagic_controller_get_wlan_station_type(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET,
-                                  MMAGIC_WLAN_VAR_STATION_TYPE, (uint8_t *)var, sizeof(*var));
+                                  MMAGIC_WLAN_VAR_STATION_TYPE, (uint8_t *)var, sizeof(*var),
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -1241,7 +1494,8 @@ static inline enum mmagic_status mmagic_controller_set_wlan_station_type(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_SET,
-                                  MMAGIC_WLAN_VAR_STATION_TYPE, NULL, 0);
+                                  MMAGIC_WLAN_VAR_STATION_TYPE, NULL, 0,
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -1266,7 +1520,8 @@ static inline enum mmagic_status mmagic_controller_get_wlan_rts_threshold(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET,
-                                  MMAGIC_WLAN_VAR_RTS_THRESHOLD, (uint8_t *)var, sizeof(*var));
+                                  MMAGIC_WLAN_VAR_RTS_THRESHOLD, (uint8_t *)var, sizeof(*var),
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -1291,7 +1546,8 @@ static inline enum mmagic_status mmagic_controller_set_wlan_rts_threshold(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_SET,
-                                  MMAGIC_WLAN_VAR_RTS_THRESHOLD, NULL, 0);
+                                  MMAGIC_WLAN_VAR_RTS_THRESHOLD, NULL, 0,
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -1316,7 +1572,8 @@ static inline enum mmagic_status mmagic_controller_get_wlan_sgi_enabled(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET,
-                                  MMAGIC_WLAN_VAR_SGI_ENABLED, (uint8_t *)var, sizeof(*var));
+                                  MMAGIC_WLAN_VAR_SGI_ENABLED, (uint8_t *)var, sizeof(*var),
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -1341,7 +1598,8 @@ static inline enum mmagic_status mmagic_controller_set_wlan_sgi_enabled(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_SET,
-                                  MMAGIC_WLAN_VAR_SGI_ENABLED, NULL, 0);
+                                  MMAGIC_WLAN_VAR_SGI_ENABLED, NULL, 0,
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -1366,7 +1624,8 @@ static inline enum mmagic_status mmagic_controller_get_wlan_subbands_enabled(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET,
-                                  MMAGIC_WLAN_VAR_SUBBANDS_ENABLED, (uint8_t *)var, sizeof(*var));
+                                  MMAGIC_WLAN_VAR_SUBBANDS_ENABLED, (uint8_t *)var, sizeof(*var),
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -1391,7 +1650,8 @@ static inline enum mmagic_status mmagic_controller_set_wlan_subbands_enabled(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_SET,
-                                  MMAGIC_WLAN_VAR_SUBBANDS_ENABLED, NULL, 0);
+                                  MMAGIC_WLAN_VAR_SUBBANDS_ENABLED, NULL, 0,
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -1416,7 +1676,8 @@ static inline enum mmagic_status mmagic_controller_get_wlan_ampdu_enabled(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET,
-                                  MMAGIC_WLAN_VAR_AMPDU_ENABLED, (uint8_t *)var, sizeof(*var));
+                                  MMAGIC_WLAN_VAR_AMPDU_ENABLED, (uint8_t *)var, sizeof(*var),
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -1441,7 +1702,8 @@ static inline enum mmagic_status mmagic_controller_set_wlan_ampdu_enabled(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_SET,
-                                  MMAGIC_WLAN_VAR_AMPDU_ENABLED, NULL, 0);
+                                  MMAGIC_WLAN_VAR_AMPDU_ENABLED, NULL, 0,
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -1466,7 +1728,8 @@ static inline enum mmagic_status mmagic_controller_get_wlan_power_save_mode(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET,
-                                  MMAGIC_WLAN_VAR_POWER_SAVE_MODE, (uint8_t *)var, sizeof(*var));
+                                  MMAGIC_WLAN_VAR_POWER_SAVE_MODE, (uint8_t *)var, sizeof(*var),
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -1491,7 +1754,8 @@ static inline enum mmagic_status mmagic_controller_set_wlan_power_save_mode(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_SET,
-                                  MMAGIC_WLAN_VAR_POWER_SAVE_MODE, NULL, 0);
+                                  MMAGIC_WLAN_VAR_POWER_SAVE_MODE, NULL, 0,
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -1517,7 +1781,8 @@ static inline enum mmagic_status mmagic_controller_get_wlan_fragment_threshold(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET,
-                                  MMAGIC_WLAN_VAR_FRAGMENT_THRESHOLD, (uint8_t *)var, sizeof(*var));
+                                  MMAGIC_WLAN_VAR_FRAGMENT_THRESHOLD, (uint8_t *)var, sizeof(*var),
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -1543,7 +1808,8 @@ static inline enum mmagic_status mmagic_controller_set_wlan_fragment_threshold(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_SET,
-                                  MMAGIC_WLAN_VAR_FRAGMENT_THRESHOLD, NULL, 0);
+                                  MMAGIC_WLAN_VAR_FRAGMENT_THRESHOLD, NULL, 0,
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -1568,7 +1834,8 @@ static inline enum mmagic_status mmagic_controller_get_wlan_cac_enabled(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET,
-                                  MMAGIC_WLAN_VAR_CAC_ENABLED, (uint8_t *)var, sizeof(*var));
+                                  MMAGIC_WLAN_VAR_CAC_ENABLED, (uint8_t *)var, sizeof(*var),
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -1593,7 +1860,8 @@ static inline enum mmagic_status mmagic_controller_set_wlan_cac_enabled(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_SET,
-                                  MMAGIC_WLAN_VAR_CAC_ENABLED, NULL, 0);
+                                  MMAGIC_WLAN_VAR_CAC_ENABLED, NULL, 0,
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -1620,7 +1888,7 @@ static inline enum mmagic_status mmagic_controller_get_wlan_offload_arp_response
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET,
                                   MMAGIC_WLAN_VAR_OFFLOAD_ARP_RESPONSE, (uint8_t *)var,
-                                  sizeof(*var));
+                                  sizeof(*var), MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -1647,7 +1915,8 @@ static inline enum mmagic_status mmagic_controller_set_wlan_offload_arp_response
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_SET,
-                                  MMAGIC_WLAN_VAR_OFFLOAD_ARP_RESPONSE, NULL, 0);
+                                  MMAGIC_WLAN_VAR_OFFLOAD_ARP_RESPONSE, NULL, 0,
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -1674,7 +1943,7 @@ static inline enum mmagic_status mmagic_controller_get_wlan_offload_arp_refresh_
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET,
                                   MMAGIC_WLAN_VAR_OFFLOAD_ARP_REFRESH_S, (uint8_t *)var,
-                                  sizeof(*var));
+                                  sizeof(*var), MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -1701,7 +1970,8 @@ static inline enum mmagic_status mmagic_controller_set_wlan_offload_arp_refresh_
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_SET,
-                                  MMAGIC_WLAN_VAR_OFFLOAD_ARP_REFRESH_S, NULL, 0);
+                                  MMAGIC_WLAN_VAR_OFFLOAD_ARP_REFRESH_S, NULL, 0,
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -1731,7 +2001,7 @@ static inline enum mmagic_status mmagic_controller_get_wlan_min_health_check_int
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET,
                                   MMAGIC_WLAN_VAR_MIN_HEALTH_CHECK_INTVL_MS, (uint8_t *)var,
-                                  sizeof(*var));
+                                  sizeof(*var), MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -1761,7 +2031,8 @@ static inline enum mmagic_status mmagic_controller_set_wlan_min_health_check_int
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_SET,
-                                  MMAGIC_WLAN_VAR_MIN_HEALTH_CHECK_INTVL_MS, NULL, 0);
+                                  MMAGIC_WLAN_VAR_MIN_HEALTH_CHECK_INTVL_MS, NULL, 0,
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -1790,7 +2061,7 @@ static inline enum mmagic_status mmagic_controller_get_wlan_max_health_check_int
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET,
                                   MMAGIC_WLAN_VAR_MAX_HEALTH_CHECK_INTVL_MS, (uint8_t *)var,
-                                  sizeof(*var));
+                                  sizeof(*var), MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -1819,7 +2090,8 @@ static inline enum mmagic_status mmagic_controller_set_wlan_max_health_check_int
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_SET,
-                                  MMAGIC_WLAN_VAR_MAX_HEALTH_CHECK_INTVL_MS, NULL, 0);
+                                  MMAGIC_WLAN_VAR_MAX_HEALTH_CHECK_INTVL_MS, NULL, 0,
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -1845,7 +2117,8 @@ static inline enum mmagic_status mmagic_controller_get_wlan_ndp_probe_enabled(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET,
-                                  MMAGIC_WLAN_VAR_NDP_PROBE_ENABLED, (uint8_t *)var, sizeof(*var));
+                                  MMAGIC_WLAN_VAR_NDP_PROBE_ENABLED, (uint8_t *)var, sizeof(*var),
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -1871,7 +2144,8 @@ static inline enum mmagic_status mmagic_controller_set_wlan_ndp_probe_enabled(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_SET,
-                                  MMAGIC_WLAN_VAR_NDP_PROBE_ENABLED, NULL, 0);
+                                  MMAGIC_WLAN_VAR_NDP_PROBE_ENABLED, NULL, 0,
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -1899,7 +2173,7 @@ static inline enum mmagic_status mmagic_controller_get_wlan_sta_scan_interval_ba
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET,
                                   MMAGIC_WLAN_VAR_STA_SCAN_INTERVAL_BASE_S, (uint8_t *)var,
-                                  sizeof(*var));
+                                  sizeof(*var), MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -1927,7 +2201,8 @@ static inline enum mmagic_status mmagic_controller_set_wlan_sta_scan_interval_ba
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_SET,
-                                  MMAGIC_WLAN_VAR_STA_SCAN_INTERVAL_BASE_S, NULL, 0);
+                                  MMAGIC_WLAN_VAR_STA_SCAN_INTERVAL_BASE_S, NULL, 0,
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -1955,7 +2230,7 @@ static inline enum mmagic_status mmagic_controller_get_wlan_sta_scan_interval_li
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET,
                                   MMAGIC_WLAN_VAR_STA_SCAN_INTERVAL_LIMIT_S, (uint8_t *)var,
-                                  sizeof(*var));
+                                  sizeof(*var), MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -1983,7 +2258,8 @@ static inline enum mmagic_status mmagic_controller_set_wlan_sta_scan_interval_li
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_SET,
-                                  MMAGIC_WLAN_VAR_STA_SCAN_INTERVAL_LIMIT_S, NULL, 0);
+                                  MMAGIC_WLAN_VAR_STA_SCAN_INTERVAL_LIMIT_S, NULL, 0,
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -1997,12 +2273,12 @@ static inline enum mmagic_status mmagic_controller_set_wlan_sta_scan_interval_li
  * documentation for `mmwlan_qos_queue_params`.
  *
  * @param  controller Reference to the controller handle.
- * @param  var        Reference to the @c struct_string_32 to place the received data in.
+ * @param  var        Reference to the @c string32 to place the received data in.
  *
  * @return            MMAGIC_STATUS_OK on success, else an error code.
  */
 static inline enum mmagic_status mmagic_controller_get_wlan_qos_0_params(
-    struct mmagic_controller *controller, struct struct_string_32 *var)
+    struct mmagic_controller *controller, struct string32 *var)
 {
     enum mmagic_status status;
     status = mmagic_controller_tx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET,
@@ -2012,7 +2288,8 @@ static inline enum mmagic_status mmagic_controller_get_wlan_qos_0_params(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET,
-                                  MMAGIC_WLAN_VAR_QOS_0_PARAMS, (uint8_t *)var, sizeof(*var));
+                                  MMAGIC_WLAN_VAR_QOS_0_PARAMS, (uint8_t *)var, sizeof(*var),
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -2026,14 +2303,14 @@ static inline enum mmagic_status mmagic_controller_get_wlan_qos_0_params(
  * documentation for `mmwlan_qos_queue_params`.
  *
  * @param  controller Reference to the controller handle.
- * @param  var        The @c struct_string_32 to write.
+ * @param  var        The @c string32 to write.
  *
  * @return            MMAGIC_STATUS_OK on success, else an error code.
  */
 static inline enum mmagic_status mmagic_controller_set_wlan_qos_0_params(
     struct mmagic_controller *controller, const char *var)
 {
-    struct struct_string_32 var_val;
+    struct string32 var_val;
     enum mmagic_status status;
     var_val.len = strlen(var);
     if (var_val.len > sizeof(var_val.data) - 1)
@@ -2050,7 +2327,8 @@ static inline enum mmagic_status mmagic_controller_set_wlan_qos_0_params(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_SET,
-                                  MMAGIC_WLAN_VAR_QOS_0_PARAMS, NULL, 0);
+                                  MMAGIC_WLAN_VAR_QOS_0_PARAMS, NULL, 0,
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -2064,12 +2342,12 @@ static inline enum mmagic_status mmagic_controller_set_wlan_qos_0_params(
  * documentation for `mmwlan_qos_queue_params`.
  *
  * @param  controller Reference to the controller handle.
- * @param  var        Reference to the @c struct_string_32 to place the received data in.
+ * @param  var        Reference to the @c string32 to place the received data in.
  *
  * @return            MMAGIC_STATUS_OK on success, else an error code.
  */
 static inline enum mmagic_status mmagic_controller_get_wlan_qos_1_params(
-    struct mmagic_controller *controller, struct struct_string_32 *var)
+    struct mmagic_controller *controller, struct string32 *var)
 {
     enum mmagic_status status;
     status = mmagic_controller_tx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET,
@@ -2079,7 +2357,8 @@ static inline enum mmagic_status mmagic_controller_get_wlan_qos_1_params(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET,
-                                  MMAGIC_WLAN_VAR_QOS_1_PARAMS, (uint8_t *)var, sizeof(*var));
+                                  MMAGIC_WLAN_VAR_QOS_1_PARAMS, (uint8_t *)var, sizeof(*var),
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -2093,14 +2372,14 @@ static inline enum mmagic_status mmagic_controller_get_wlan_qos_1_params(
  * documentation for `mmwlan_qos_queue_params`.
  *
  * @param  controller Reference to the controller handle.
- * @param  var        The @c struct_string_32 to write.
+ * @param  var        The @c string32 to write.
  *
  * @return            MMAGIC_STATUS_OK on success, else an error code.
  */
 static inline enum mmagic_status mmagic_controller_set_wlan_qos_1_params(
     struct mmagic_controller *controller, const char *var)
 {
-    struct struct_string_32 var_val;
+    struct string32 var_val;
     enum mmagic_status status;
     var_val.len = strlen(var);
     if (var_val.len > sizeof(var_val.data) - 1)
@@ -2117,7 +2396,8 @@ static inline enum mmagic_status mmagic_controller_set_wlan_qos_1_params(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_SET,
-                                  MMAGIC_WLAN_VAR_QOS_1_PARAMS, NULL, 0);
+                                  MMAGIC_WLAN_VAR_QOS_1_PARAMS, NULL, 0,
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -2131,12 +2411,12 @@ static inline enum mmagic_status mmagic_controller_set_wlan_qos_1_params(
  * documentation for `mmwlan_qos_queue_params`.
  *
  * @param  controller Reference to the controller handle.
- * @param  var        Reference to the @c struct_string_32 to place the received data in.
+ * @param  var        Reference to the @c string32 to place the received data in.
  *
  * @return            MMAGIC_STATUS_OK on success, else an error code.
  */
 static inline enum mmagic_status mmagic_controller_get_wlan_qos_2_params(
-    struct mmagic_controller *controller, struct struct_string_32 *var)
+    struct mmagic_controller *controller, struct string32 *var)
 {
     enum mmagic_status status;
     status = mmagic_controller_tx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET,
@@ -2146,7 +2426,8 @@ static inline enum mmagic_status mmagic_controller_get_wlan_qos_2_params(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET,
-                                  MMAGIC_WLAN_VAR_QOS_2_PARAMS, (uint8_t *)var, sizeof(*var));
+                                  MMAGIC_WLAN_VAR_QOS_2_PARAMS, (uint8_t *)var, sizeof(*var),
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -2160,14 +2441,14 @@ static inline enum mmagic_status mmagic_controller_get_wlan_qos_2_params(
  * documentation for `mmwlan_qos_queue_params`.
  *
  * @param  controller Reference to the controller handle.
- * @param  var        The @c struct_string_32 to write.
+ * @param  var        The @c string32 to write.
  *
  * @return            MMAGIC_STATUS_OK on success, else an error code.
  */
 static inline enum mmagic_status mmagic_controller_set_wlan_qos_2_params(
     struct mmagic_controller *controller, const char *var)
 {
-    struct struct_string_32 var_val;
+    struct string32 var_val;
     enum mmagic_status status;
     var_val.len = strlen(var);
     if (var_val.len > sizeof(var_val.data) - 1)
@@ -2184,7 +2465,8 @@ static inline enum mmagic_status mmagic_controller_set_wlan_qos_2_params(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_SET,
-                                  MMAGIC_WLAN_VAR_QOS_2_PARAMS, NULL, 0);
+                                  MMAGIC_WLAN_VAR_QOS_2_PARAMS, NULL, 0,
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -2198,12 +2480,12 @@ static inline enum mmagic_status mmagic_controller_set_wlan_qos_2_params(
  * documentation for `mmwlan_qos_queue_params`.
  *
  * @param  controller Reference to the controller handle.
- * @param  var        Reference to the @c struct_string_32 to place the received data in.
+ * @param  var        Reference to the @c string32 to place the received data in.
  *
  * @return            MMAGIC_STATUS_OK on success, else an error code.
  */
 static inline enum mmagic_status mmagic_controller_get_wlan_qos_3_params(
-    struct mmagic_controller *controller, struct struct_string_32 *var)
+    struct mmagic_controller *controller, struct string32 *var)
 {
     enum mmagic_status status;
     status = mmagic_controller_tx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET,
@@ -2213,7 +2495,8 @@ static inline enum mmagic_status mmagic_controller_get_wlan_qos_3_params(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET,
-                                  MMAGIC_WLAN_VAR_QOS_3_PARAMS, (uint8_t *)var, sizeof(*var));
+                                  MMAGIC_WLAN_VAR_QOS_3_PARAMS, (uint8_t *)var, sizeof(*var),
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -2227,14 +2510,14 @@ static inline enum mmagic_status mmagic_controller_get_wlan_qos_3_params(
  * documentation for `mmwlan_qos_queue_params`.
  *
  * @param  controller Reference to the controller handle.
- * @param  var        The @c struct_string_32 to write.
+ * @param  var        The @c string32 to write.
  *
  * @return            MMAGIC_STATUS_OK on success, else an error code.
  */
 static inline enum mmagic_status mmagic_controller_set_wlan_qos_3_params(
     struct mmagic_controller *controller, const char *var)
 {
-    struct struct_string_32 var_val;
+    struct string32 var_val;
     enum mmagic_status status;
     var_val.len = strlen(var);
     if (var_val.len > sizeof(var_val.data) - 1)
@@ -2251,7 +2534,8 @@ static inline enum mmagic_status mmagic_controller_set_wlan_qos_3_params(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_SET,
-                                  MMAGIC_WLAN_VAR_QOS_3_PARAMS, NULL, 0);
+                                  MMAGIC_WLAN_VAR_QOS_3_PARAMS, NULL, 0,
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -2279,7 +2563,8 @@ static inline enum mmagic_status mmagic_controller_get_wlan_mcs10_mode(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET,
-                                  MMAGIC_WLAN_VAR_MCS10_MODE, (uint8_t *)var, sizeof(*var));
+                                  MMAGIC_WLAN_VAR_MCS10_MODE, (uint8_t *)var, sizeof(*var),
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -2307,7 +2592,118 @@ static inline enum mmagic_status mmagic_controller_set_wlan_mcs10_mode(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_SET,
-                                  MMAGIC_WLAN_VAR_MCS10_MODE, NULL, 0);
+                                  MMAGIC_WLAN_VAR_MCS10_MODE, NULL, 0,
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
+    return status;
+}
+
+/**
+ * Gets @c sta_evt_en setting for module @c wlan.
+ *
+ * When set to true, STA event notifications will be provided. Setting this to false will suppress
+ * these notifications. Defaults to false.
+ *
+ * @param  controller Reference to the controller handle.
+ * @param  var        Reference to the @c bool to place the received data in.
+ *
+ * @return            MMAGIC_STATUS_OK on success, else an error code.
+ */
+static inline enum mmagic_status mmagic_controller_get_wlan_sta_evt_en(
+    struct mmagic_controller *controller, bool *var)
+{
+    enum mmagic_status status;
+    status = mmagic_controller_tx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET,
+                                  MMAGIC_WLAN_VAR_STA_EVT_EN, NULL, 0);
+    if (status != MMAGIC_STATUS_OK)
+    {
+        return status;
+    }
+    status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET,
+                                  MMAGIC_WLAN_VAR_STA_EVT_EN, (uint8_t *)var, sizeof(*var),
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
+    return status;
+}
+
+/**
+ * Sets @c sta_evt_en setting for module @c wlan.
+ *
+ * When set to true, STA event notifications will be provided. Setting this to false will suppress
+ * these notifications. Defaults to false.
+ *
+ * @param  controller Reference to the controller handle.
+ * @param  var        The @c bool to write.
+ *
+ * @return            MMAGIC_STATUS_OK on success, else an error code.
+ */
+static inline enum mmagic_status mmagic_controller_set_wlan_sta_evt_en(
+    struct mmagic_controller *controller, bool var)
+{
+    enum mmagic_status status;
+    status = mmagic_controller_tx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_SET,
+                                  MMAGIC_WLAN_VAR_STA_EVT_EN, (uint8_t *)&var, sizeof(var));
+    if (status != MMAGIC_STATUS_OK)
+    {
+        return status;
+    }
+    status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_SET,
+                                  MMAGIC_WLAN_VAR_STA_EVT_EN, NULL, 0,
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
+    return status;
+}
+
+/**
+ * Gets @c duty_cycle_mode setting for module @c wlan.
+ *
+ * The duty cycle air time distribution mode. The duty cycle mode can be set to spread, where the
+ * air time is spread evenly across the window; or burst, where air time is available to be consumed
+ * immediately.
+ *
+ * @param  controller Reference to the controller handle.
+ * @param  var        Reference to the @c enum_duty_cycle_mode to place the received data in.
+ *
+ * @return            MMAGIC_STATUS_OK on success, else an error code.
+ */
+static inline enum mmagic_status mmagic_controller_get_wlan_duty_cycle_mode(
+    struct mmagic_controller *controller, enum mmagic_duty_cycle_mode *var)
+{
+    enum mmagic_status status;
+    status = mmagic_controller_tx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET,
+                                  MMAGIC_WLAN_VAR_DUTY_CYCLE_MODE, NULL, 0);
+    if (status != MMAGIC_STATUS_OK)
+    {
+        return status;
+    }
+    status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET,
+                                  MMAGIC_WLAN_VAR_DUTY_CYCLE_MODE, (uint8_t *)var, sizeof(*var),
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
+    return status;
+}
+
+/**
+ * Sets @c duty_cycle_mode setting for module @c wlan.
+ *
+ * The duty cycle air time distribution mode. The duty cycle mode can be set to spread, where the
+ * air time is spread evenly across the window; or burst, where air time is available to be consumed
+ * immediately.
+ *
+ * @param  controller Reference to the controller handle.
+ * @param  var        The @c enum_duty_cycle_mode to write.
+ *
+ * @return            MMAGIC_STATUS_OK on success, else an error code.
+ */
+static inline enum mmagic_status mmagic_controller_set_wlan_duty_cycle_mode(
+    struct mmagic_controller *controller, enum mmagic_duty_cycle_mode var)
+{
+    enum mmagic_status status;
+    status = mmagic_controller_tx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_SET,
+                                  MMAGIC_WLAN_VAR_DUTY_CYCLE_MODE, (uint8_t *)&var, sizeof(var));
+    if (status != MMAGIC_STATUS_OK)
+    {
+        return status;
+    }
+    status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_SET,
+                                  MMAGIC_WLAN_VAR_DUTY_CYCLE_MODE, NULL, 0,
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -2329,7 +2725,7 @@ static inline enum mmagic_status mmagic_controller_wlan_commit_all(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_WLAN, MMAGIC_WLAN_CMD_COMMIT,
-                                  0, NULL, 0);
+                                  0, NULL, 0, MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -2339,7 +2735,7 @@ static inline enum mmagic_status mmagic_controller_wlan_commit_all(
 struct MM_PACKED mmagic_core_wlan_connect_cmd_args
 {
     /** Duration in milliseconds to wait for connection establish, if connection does not get
-     * established an explicit disconnect will be sent. 0 to return immediately without waiting */
+     * established an explicit disconnect will be sent. 0 to return immediately without waiting. */
     uint32_t timeout;
 };
 
@@ -2357,7 +2753,19 @@ static inline enum mmagic_status mmagic_controller_wlan_connect(
     mmagic_core_wlan_connect_cmd_args *cmd_args)
 {
     enum mmagic_status status;
-    uint8_t stream_id = CONTROL_STREAM;
+    const uint8_t stream_id = CONTROL_STREAM;
+    uint32_t response_timeout_ms = MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS;
+
+    /* Account for the timeout argument when waiting for the response and make sure no overflow. */
+    if (UINT32_MAX - response_timeout_ms >= cmd_args->timeout)
+    {
+        response_timeout_ms += cmd_args->timeout;
+    }
+    else
+    {
+        response_timeout_ms = UINT32_MAX;
+    }
+
     status = mmagic_controller_tx(controller, stream_id, MMAGIC_WLAN, MMAGIC_WLAN_CMD_CONNECT, 0,
                                   (uint8_t *)cmd_args, sizeof(*cmd_args));
     if (status != MMAGIC_STATUS_OK)
@@ -2365,7 +2773,7 @@ static inline enum mmagic_status mmagic_controller_wlan_connect(
         return status;
     }
     status = mmagic_controller_rx(controller, stream_id, MMAGIC_WLAN, MMAGIC_WLAN_CMD_CONNECT, 0,
-                                  NULL, 0);
+                                  NULL, 0, response_timeout_ms);
     return status;
 }
 
@@ -2380,7 +2788,9 @@ static inline enum mmagic_status mmagic_controller_wlan_disconnect(
     struct mmagic_controller *controller)
 {
     enum mmagic_status status;
-    uint8_t stream_id = CONTROL_STREAM;
+    const uint8_t stream_id = CONTROL_STREAM;
+    uint32_t response_timeout_ms = MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS;
+
     status = mmagic_controller_tx(controller, stream_id, MMAGIC_WLAN, MMAGIC_WLAN_CMD_DISCONNECT, 0,
                                   NULL, 0);
     if (status != MMAGIC_STATUS_OK)
@@ -2388,7 +2798,7 @@ static inline enum mmagic_status mmagic_controller_wlan_disconnect(
         return status;
     }
     return mmagic_controller_rx(controller, stream_id, MMAGIC_WLAN, MMAGIC_WLAN_CMD_DISCONNECT, 0,
-                                NULL, 0);
+                                NULL, 0, response_timeout_ms);
     return status;
 }
 
@@ -2396,7 +2806,7 @@ static inline enum mmagic_status mmagic_controller_wlan_disconnect(
 struct MM_PACKED mmagic_core_wlan_scan_cmd_args
 {
     /** Optional SSID to include in probe requests. */
-    struct struct_string_32 ssid;
+    struct string32 ssid;
     /** Optional duration in milliseconds to wait for scan to complete, if scan does not complete by
      * the timeout any available results will be returned and the scan aborted. */
     uint32_t timeout;
@@ -2427,7 +2837,19 @@ static inline enum mmagic_status mmagic_controller_wlan_scan(struct mmagic_contr
                                                              rsp_args)
 {
     enum mmagic_status status;
-    uint8_t stream_id = CONTROL_STREAM;
+    const uint8_t stream_id = CONTROL_STREAM;
+    uint32_t response_timeout_ms = MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS;
+
+    /* Account for the timeout argument when waiting for the response and make sure no overflow. */
+    if (UINT32_MAX - response_timeout_ms >= cmd_args->timeout)
+    {
+        response_timeout_ms += cmd_args->timeout;
+    }
+    else
+    {
+        response_timeout_ms = UINT32_MAX;
+    }
+
     status = mmagic_controller_tx(controller, stream_id, MMAGIC_WLAN, MMAGIC_WLAN_CMD_SCAN, 0,
                                   (uint8_t *)cmd_args, sizeof(*cmd_args));
     if (status != MMAGIC_STATUS_OK)
@@ -2435,7 +2857,7 @@ static inline enum mmagic_status mmagic_controller_wlan_scan(struct mmagic_contr
         return status;
     }
     status = mmagic_controller_rx(controller, stream_id, MMAGIC_WLAN, MMAGIC_WLAN_CMD_SCAN, 0,
-                                  (uint8_t *)rsp_args, sizeof(*rsp_args));
+                                  (uint8_t *)rsp_args, sizeof(*rsp_args), response_timeout_ms);
     return status;
 }
 
@@ -2462,7 +2884,9 @@ static inline enum mmagic_status mmagic_controller_wlan_get_rssi(
     mmagic_core_wlan_get_rssi_rsp_args *rsp_args)
 {
     enum mmagic_status status;
-    uint8_t stream_id = CONTROL_STREAM;
+    const uint8_t stream_id = CONTROL_STREAM;
+    uint32_t response_timeout_ms = MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS;
+
     status = mmagic_controller_tx(controller, stream_id, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET_RSSI, 0,
                                   NULL, 0);
     if (status != MMAGIC_STATUS_OK)
@@ -2470,7 +2894,7 @@ static inline enum mmagic_status mmagic_controller_wlan_get_rssi(
         return status;
     }
     status = mmagic_controller_rx(controller, stream_id, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET_RSSI, 0,
-                                  (uint8_t *)rsp_args, sizeof(*rsp_args));
+                                  (uint8_t *)rsp_args, sizeof(*rsp_args), response_timeout_ms);
     return status;
 }
 
@@ -2497,7 +2921,9 @@ static inline enum mmagic_status mmagic_controller_wlan_get_mac_addr(
     mmagic_core_wlan_get_mac_addr_rsp_args *rsp_args)
 {
     enum mmagic_status status;
-    uint8_t stream_id = CONTROL_STREAM;
+    const uint8_t stream_id = CONTROL_STREAM;
+    uint32_t response_timeout_ms = MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS;
+
     status = mmagic_controller_tx(controller, stream_id, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET_MAC_ADDR,
                                   0, NULL, 0);
     if (status != MMAGIC_STATUS_OK)
@@ -2505,7 +2931,7 @@ static inline enum mmagic_status mmagic_controller_wlan_get_mac_addr(
         return status;
     }
     status = mmagic_controller_rx(controller, stream_id, MMAGIC_WLAN, MMAGIC_WLAN_CMD_GET_MAC_ADDR,
-                                  0, (uint8_t *)rsp_args, sizeof(*rsp_args));
+                                  0, (uint8_t *)rsp_args, sizeof(*rsp_args), response_timeout_ms);
     return status;
 }
 
@@ -2530,7 +2956,9 @@ static inline enum mmagic_status mmagic_controller_wlan_wnm_sleep(
     mmagic_core_wlan_wnm_sleep_cmd_args *cmd_args)
 {
     enum mmagic_status status;
-    uint8_t stream_id = CONTROL_STREAM;
+    const uint8_t stream_id = CONTROL_STREAM;
+    uint32_t response_timeout_ms = MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS;
+
     status = mmagic_controller_tx(controller, stream_id, MMAGIC_WLAN, MMAGIC_WLAN_CMD_WNM_SLEEP, 0,
                                   (uint8_t *)cmd_args, sizeof(*cmd_args));
     if (status != MMAGIC_STATUS_OK)
@@ -2538,7 +2966,7 @@ static inline enum mmagic_status mmagic_controller_wlan_wnm_sleep(
         return status;
     }
     status = mmagic_controller_rx(controller, stream_id, MMAGIC_WLAN, MMAGIC_WLAN_CMD_WNM_SLEEP, 0,
-                                  NULL, 0);
+                                  NULL, 0, response_timeout_ms);
     return status;
 }
 
@@ -2564,7 +2992,9 @@ static inline enum mmagic_status mmagic_controller_wlan_beacon_monitor_enable(
     mmagic_core_wlan_beacon_monitor_enable_cmd_args *cmd_args)
 {
     enum mmagic_status status;
-    uint8_t stream_id = CONTROL_STREAM;
+    const uint8_t stream_id = CONTROL_STREAM;
+    uint32_t response_timeout_ms = MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS;
+
     status = mmagic_controller_tx(controller, stream_id, MMAGIC_WLAN,
                                   MMAGIC_WLAN_CMD_BEACON_MONITOR_ENABLE, 0, (uint8_t *)cmd_args,
                                   sizeof(*cmd_args));
@@ -2573,7 +3003,8 @@ static inline enum mmagic_status mmagic_controller_wlan_beacon_monitor_enable(
         return status;
     }
     status = mmagic_controller_rx(controller, stream_id, MMAGIC_WLAN,
-                                  MMAGIC_WLAN_CMD_BEACON_MONITOR_ENABLE, 0, NULL, 0);
+                                  MMAGIC_WLAN_CMD_BEACON_MONITOR_ENABLE, 0, NULL, 0,
+                                  response_timeout_ms);
     return status;
 }
 
@@ -2588,7 +3019,9 @@ static inline enum mmagic_status mmagic_controller_wlan_beacon_monitor_disable(
     struct mmagic_controller *controller)
 {
     enum mmagic_status status;
-    uint8_t stream_id = CONTROL_STREAM;
+    const uint8_t stream_id = CONTROL_STREAM;
+    uint32_t response_timeout_ms = MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS;
+
     status = mmagic_controller_tx(controller, stream_id, MMAGIC_WLAN,
                                   MMAGIC_WLAN_CMD_BEACON_MONITOR_DISABLE, 0, NULL, 0);
     if (status != MMAGIC_STATUS_OK)
@@ -2596,7 +3029,8 @@ static inline enum mmagic_status mmagic_controller_wlan_beacon_monitor_disable(
         return status;
     }
     return mmagic_controller_rx(controller, stream_id, MMAGIC_WLAN,
-                                MMAGIC_WLAN_CMD_BEACON_MONITOR_DISABLE, 0, NULL, 0);
+                                MMAGIC_WLAN_CMD_BEACON_MONITOR_DISABLE, 0, NULL, 0,
+                                response_timeout_ms);
     return status;
 }
 
@@ -2613,7 +3047,9 @@ static inline enum mmagic_status mmagic_controller_wlan_standby_enter(
     struct mmagic_controller *controller)
 {
     enum mmagic_status status;
-    uint8_t stream_id = CONTROL_STREAM;
+    const uint8_t stream_id = CONTROL_STREAM;
+    uint32_t response_timeout_ms = MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS;
+
     status = mmagic_controller_tx(controller, stream_id, MMAGIC_WLAN, MMAGIC_WLAN_CMD_STANDBY_ENTER,
                                   0, NULL, 0);
     if (status != MMAGIC_STATUS_OK)
@@ -2621,7 +3057,7 @@ static inline enum mmagic_status mmagic_controller_wlan_standby_enter(
         return status;
     }
     return mmagic_controller_rx(controller, stream_id, MMAGIC_WLAN, MMAGIC_WLAN_CMD_STANDBY_ENTER,
-                                0, NULL, 0);
+                                0, NULL, 0, response_timeout_ms);
     return status;
 }
 
@@ -2639,7 +3075,9 @@ static inline enum mmagic_status mmagic_controller_wlan_standby_exit(
     struct mmagic_controller *controller)
 {
     enum mmagic_status status;
-    uint8_t stream_id = CONTROL_STREAM;
+    const uint8_t stream_id = CONTROL_STREAM;
+    uint32_t response_timeout_ms = MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS;
+
     status = mmagic_controller_tx(controller, stream_id, MMAGIC_WLAN, MMAGIC_WLAN_CMD_STANDBY_EXIT,
                                   0, NULL, 0);
     if (status != MMAGIC_STATUS_OK)
@@ -2647,7 +3085,7 @@ static inline enum mmagic_status mmagic_controller_wlan_standby_exit(
         return status;
     }
     return mmagic_controller_rx(controller, stream_id, MMAGIC_WLAN, MMAGIC_WLAN_CMD_STANDBY_EXIT, 0,
-                                NULL, 0);
+                                NULL, 0, response_timeout_ms);
     return status;
 }
 
@@ -2675,7 +3113,9 @@ static inline enum mmagic_status mmagic_controller_wlan_standby_set_status_paylo
     mmagic_core_wlan_standby_set_status_payload_cmd_args *cmd_args)
 {
     enum mmagic_status status;
-    uint8_t stream_id = CONTROL_STREAM;
+    const uint8_t stream_id = CONTROL_STREAM;
+    uint32_t response_timeout_ms = MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS;
+
     status = mmagic_controller_tx(controller, stream_id, MMAGIC_WLAN,
                                   MMAGIC_WLAN_CMD_STANDBY_SET_STATUS_PAYLOAD, 0,
                                   (uint8_t *)cmd_args, sizeof(*cmd_args));
@@ -2684,7 +3124,8 @@ static inline enum mmagic_status mmagic_controller_wlan_standby_set_status_paylo
         return status;
     }
     status = mmagic_controller_rx(controller, stream_id, MMAGIC_WLAN,
-                                  MMAGIC_WLAN_CMD_STANDBY_SET_STATUS_PAYLOAD, 0, NULL, 0);
+                                  MMAGIC_WLAN_CMD_STANDBY_SET_STATUS_PAYLOAD, 0, NULL, 0,
+                                  response_timeout_ms);
     return status;
 }
 
@@ -2715,7 +3156,9 @@ static inline enum mmagic_status mmagic_controller_wlan_standby_set_wake_filter(
     mmagic_core_wlan_standby_set_wake_filter_cmd_args *cmd_args)
 {
     enum mmagic_status status;
-    uint8_t stream_id = CONTROL_STREAM;
+    const uint8_t stream_id = CONTROL_STREAM;
+    uint32_t response_timeout_ms = MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS;
+
     status = mmagic_controller_tx(controller, stream_id, MMAGIC_WLAN,
                                   MMAGIC_WLAN_CMD_STANDBY_SET_WAKE_FILTER, 0, (uint8_t *)cmd_args,
                                   sizeof(*cmd_args));
@@ -2724,32 +3167,33 @@ static inline enum mmagic_status mmagic_controller_wlan_standby_set_wake_filter(
         return status;
     }
     status = mmagic_controller_rx(controller, stream_id, MMAGIC_WLAN,
-                                  MMAGIC_WLAN_CMD_STANDBY_SET_WAKE_FILTER, 0, NULL, 0);
+                                  MMAGIC_WLAN_CMD_STANDBY_SET_WAKE_FILTER, 0, NULL, 0,
+                                  response_timeout_ms);
     return status;
 }
 
 /** Command arguments structure for wlan_standby_set_config */
 struct MM_PACKED mmagic_core_wlan_standby_set_config_cmd_args
 {
-    /** Interval in seconds for transmitting Standby status packets. (Default 15s) */
+    /** Interval in seconds for transmitting Standby status packets (Default 15s). */
     uint32_t notify_period_s;
-    /** Source IP address to use for the standby status packets. (Default 0.0.0.0) */
+    /** Source IP address to use for the standby status packets (Default 0.0.0.0). */
     struct struct_ip_addr src_ip;
-    /** Destination IP address for the standby status packets. (Default 0.0.0.0) */
+    /** Destination IP address for the standby status packets (Default 0.0.0.0). */
     struct struct_ip_addr dst_ip;
     /** Destination UDP Port for the standby status packets, also used the source port for outgoing
-     * UDP port for outgoing UDP packets. (Default 22000) */
+     * UDP port for outgoing UDP packets (Default 22000). */
     uint16_t dst_port;
     /** Deprecated. This parameter is no longer used and will be removed in a future release. */
     uint32_t bss_inactivity_s;
     /** The interval in seconds to wake periodically from snooze mode and check for beacons. If no
      * beacons are found then the Morse chip will re-enter snooze mode. If beacons are found then
-     * the Morse chip will exit standby mode so the host can reassociate. (Default 60s) */
+     * the Morse chip will exit standby mode so the host can reassociate (Default 60s). */
     uint32_t snooze_period_s;
     /** The amount in seconds to increase successive snooze intervals. This saves power by snoozing
-     * for longer before checking for beacons again if no beacons are found. (Default 0s) */
+     * for longer before checking for beacons again if no beacons are found. (Default 0s). */
     uint32_t snooze_increment_s;
-    /** The maximum time in seconds to snooze for after increments. (Default unlimited) */
+    /** The maximum time in seconds to snooze for after increments (Default unlimited). */
     uint32_t snooze_max_s;
 };
 
@@ -2768,7 +3212,9 @@ static inline enum mmagic_status mmagic_controller_wlan_standby_set_config(
     mmagic_core_wlan_standby_set_config_cmd_args *cmd_args)
 {
     enum mmagic_status status;
-    uint8_t stream_id = CONTROL_STREAM;
+    const uint8_t stream_id = CONTROL_STREAM;
+    uint32_t response_timeout_ms = MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS;
+
     status = mmagic_controller_tx(controller, stream_id, MMAGIC_WLAN,
                                   MMAGIC_WLAN_CMD_STANDBY_SET_CONFIG, 0, (uint8_t *)cmd_args,
                                   sizeof(*cmd_args));
@@ -2777,7 +3223,46 @@ static inline enum mmagic_status mmagic_controller_wlan_standby_set_config(
         return status;
     }
     status = mmagic_controller_rx(controller, stream_id, MMAGIC_WLAN,
-                                  MMAGIC_WLAN_CMD_STANDBY_SET_CONFIG, 0, NULL, 0);
+                                  MMAGIC_WLAN_CMD_STANDBY_SET_CONFIG, 0, NULL, 0,
+                                  response_timeout_ms);
+    return status;
+}
+
+/** Response arguments structure for wlan_get_sta_status */
+struct MM_PACKED mmagic_core_wlan_get_sta_status_rsp_args
+{
+    /** The current STA status. */
+    enum mmagic_sta_state sta_status;
+};
+
+/**
+ * Retrieves the STA status of the WLAN interface.
+ *
+ * @param      controller Reference to the controller handle.
+ * @param[out] rsp_args   Pointer to the data structure to be filled out with the result. If the
+ *                          If the return code is not @ref MMAGIC_STATUS_OK then the
+ *                          contents of this structure will be undefined.
+ *
+ * @return                @ref MMAGIC_STATUS_OK else an appropriate error code.
+ */
+static inline enum mmagic_status mmagic_controller_wlan_get_sta_status(
+    struct mmagic_controller *controller,
+    struct
+    mmagic_core_wlan_get_sta_status_rsp_args *rsp_args)
+{
+    enum mmagic_status status;
+    const uint8_t stream_id = CONTROL_STREAM;
+    uint32_t response_timeout_ms = MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS;
+
+    status = mmagic_controller_tx(controller, stream_id, MMAGIC_WLAN,
+                                  MMAGIC_WLAN_CMD_GET_STA_STATUS, 0, NULL, 0);
+    if (status != MMAGIC_STATUS_OK)
+    {
+        return status;
+    }
+    status = mmagic_controller_rx(controller, stream_id, MMAGIC_WLAN,
+                                  MMAGIC_WLAN_CMD_GET_STA_STATUS, 0, (uint8_t *)rsp_args,
+                                  sizeof(*rsp_args), response_timeout_ms);
     return status;
 }
 
@@ -2789,7 +3274,7 @@ struct MM_PACKED mmagic_wlan_beacon_rx_event_args
      * concatenated in the buffer. Each IE is a TLV where the first byte is the Tag (0xDD for Vendor
      * Specific IE), followed by a byte specifying the length IE contents (i.e., excluding the Tag
      * and Length). */
-    struct struct_packet_buffer vendor_ies;
+    struct raw1536 vendor_ies;
 };
 
 /**
@@ -2802,11 +3287,11 @@ struct MM_PACKED mmagic_wlan_beacon_rx_event_args
  *
  * @warning This function must not invoke any mmagic API functions.
  *
- * @param args Notication arguments received from the agent.
- * @param arg  Opaque argument that was provided when the callbcak was registered.
+ * @param event_args Notication arguments received from the agent.
+ * @param arg        Opaque argument that was provided when the callback was registered.
  */
 typedef void (*mmagic_wlan_beacon_rx_event_handler_t)(
-    const struct mmagic_wlan_beacon_rx_event_args *args, void *arg);
+    const struct mmagic_wlan_beacon_rx_event_args *event_args, void *arg);
 
 /**
  * Register a handler for the wlan-beacon_rx event.
@@ -2844,11 +3329,11 @@ struct MM_PACKED mmagic_wlan_standby_exit_event_args
  *
  * @warning This function must not invoke any mmagic API functions.
  *
- * @param args Notication arguments received from the agent.
- * @param arg  Opaque argument that was provided when the callbcak was registered.
+ * @param event_args Notication arguments received from the agent.
+ * @param arg        Opaque argument that was provided when the callback was registered.
  */
 typedef void (*mmagic_wlan_standby_exit_event_handler_t)(
-    const struct mmagic_wlan_standby_exit_event_args *args, void *arg);
+    const struct mmagic_wlan_standby_exit_event_args *event_args, void *arg);
 
 /**
  * Register a handler for the wlan-standby_exit event.
@@ -2868,10 +3353,51 @@ void mmagic_controller_register_wlan_standby_exit_handler(
     struct mmagic_controller *controller,
     mmagic_wlan_standby_exit_event_handler_t handler, void *arg);
 
+/** Event arguments structure for wlan_sta_event */
+struct MM_PACKED mmagic_wlan_sta_event_event_args
+{
+    /** The reported WLAN STA evt. */
+    enum mmagic_sta_event event;
+};
+
+/**
+ * Handler for the wlan-sta_event event.
+ *
+ * Triggered when STA event occurs when in STA mode.
+ *
+ * @note This function will be invoked in the context of the controller data link thread
+ *       and should perform minimal processing.
+ *
+ * @warning This function must not invoke any mmagic API functions.
+ *
+ * @param event_args Notication arguments received from the agent.
+ * @param arg        Opaque argument that was provided when the callback was registered.
+ */
+typedef void (*mmagic_wlan_sta_event_event_handler_t)(
+    const struct mmagic_wlan_sta_event_event_args *event_args, void *arg);
+
+/**
+ * Register a handler for the wlan-sta_event event.
+ *
+ * Triggered when STA event occurs when in STA mode.
+ *
+ * @note The handler callbacks will be invoked in the context of the controller data link
+ *       thread. The handler should perform minimal processing.
+ *
+ * @warning The handler callback must not invoke any mmagic API functions.
+ *
+ * @param controller Reference to the the controller handle.
+ * @param handler    The handler function to register.
+ * @param arg        Opaque argument to be passed to the handler when it is invoked.
+ */
+void mmagic_controller_register_wlan_sta_event_handler(
+    struct mmagic_controller *controller,
+    mmagic_wlan_sta_event_event_handler_t handler, void *arg);
+
 /** @} */
 
 /**
- * @defgroup MMAGIC_CONTROLLER_IP IP Stack Management subsystem (ip)
+ * @defgroup MMAGIC_CONTROLLER_IP Module ip: IP Stack Management
  * @{
  */
 
@@ -2902,7 +3428,8 @@ static inline enum mmagic_status mmagic_controller_get_ip_ip_addr(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_IP, MMAGIC_IP_CMD_GET,
-                                  MMAGIC_IP_VAR_IP_ADDR, (uint8_t *)var, sizeof(*var));
+                                  MMAGIC_IP_VAR_IP_ADDR, (uint8_t *)var, sizeof(*var),
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -2928,7 +3455,8 @@ static inline enum mmagic_status mmagic_controller_set_ip_ip_addr(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_IP, MMAGIC_IP_CMD_SET,
-                                  MMAGIC_IP_VAR_IP_ADDR, NULL, 0);
+                                  MMAGIC_IP_VAR_IP_ADDR, NULL, 0,
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -2954,7 +3482,8 @@ static inline enum mmagic_status mmagic_controller_get_ip_netmask(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_IP, MMAGIC_IP_CMD_GET,
-                                  MMAGIC_IP_VAR_NETMASK, (uint8_t *)var, sizeof(*var));
+                                  MMAGIC_IP_VAR_NETMASK, (uint8_t *)var, sizeof(*var),
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -2980,7 +3509,8 @@ static inline enum mmagic_status mmagic_controller_set_ip_netmask(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_IP, MMAGIC_IP_CMD_SET,
-                                  MMAGIC_IP_VAR_NETMASK, NULL, 0);
+                                  MMAGIC_IP_VAR_NETMASK, NULL, 0,
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -3006,7 +3536,8 @@ static inline enum mmagic_status mmagic_controller_get_ip_gateway(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_IP, MMAGIC_IP_CMD_GET,
-                                  MMAGIC_IP_VAR_GATEWAY, (uint8_t *)var, sizeof(*var));
+                                  MMAGIC_IP_VAR_GATEWAY, (uint8_t *)var, sizeof(*var),
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -3032,7 +3563,8 @@ static inline enum mmagic_status mmagic_controller_set_ip_gateway(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_IP, MMAGIC_IP_CMD_SET,
-                                  MMAGIC_IP_VAR_GATEWAY, NULL, 0);
+                                  MMAGIC_IP_VAR_GATEWAY, NULL, 0,
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -3059,7 +3591,8 @@ static inline enum mmagic_status mmagic_controller_get_ip_dns_server0(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_IP, MMAGIC_IP_CMD_GET,
-                                  MMAGIC_IP_VAR_DNS_SERVER0, (uint8_t *)var, sizeof(*var));
+                                  MMAGIC_IP_VAR_DNS_SERVER0, (uint8_t *)var, sizeof(*var),
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -3086,7 +3619,8 @@ static inline enum mmagic_status mmagic_controller_set_ip_dns_server0(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_IP, MMAGIC_IP_CMD_SET,
-                                  MMAGIC_IP_VAR_DNS_SERVER0, NULL, 0);
+                                  MMAGIC_IP_VAR_DNS_SERVER0, NULL, 0,
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -3094,7 +3628,7 @@ static inline enum mmagic_status mmagic_controller_set_ip_dns_server0(
  * Gets @c dns_server1 setting for module @c ip.
  *
  * Secondary DNS server IP address. If a value is specified this will override the secondary DNS
- * server provided by DHCP (if any). Changes  will take effect when the reload command is
+ * server provided by DHCP (if any). Changes will take effect when the reload command is
  * successfully executed. Note that this option may be ignored by some IP stacks.
  *
  * @param  controller Reference to the controller handle.
@@ -3113,7 +3647,8 @@ static inline enum mmagic_status mmagic_controller_get_ip_dns_server1(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_IP, MMAGIC_IP_CMD_GET,
-                                  MMAGIC_IP_VAR_DNS_SERVER1, (uint8_t *)var, sizeof(*var));
+                                  MMAGIC_IP_VAR_DNS_SERVER1, (uint8_t *)var, sizeof(*var),
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -3121,7 +3656,7 @@ static inline enum mmagic_status mmagic_controller_get_ip_dns_server1(
  * Sets @c dns_server1 setting for module @c ip.
  *
  * Secondary DNS server IP address. If a value is specified this will override the secondary DNS
- * server provided by DHCP (if any). Changes  will take effect when the reload command is
+ * server provided by DHCP (if any). Changes will take effect when the reload command is
  * successfully executed. Note that this option may be ignored by some IP stacks.
  *
  * @param  controller Reference to the controller handle.
@@ -3140,7 +3675,8 @@ static inline enum mmagic_status mmagic_controller_set_ip_dns_server1(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_IP, MMAGIC_IP_CMD_SET,
-                                  MMAGIC_IP_VAR_DNS_SERVER1, NULL, 0);
+                                  MMAGIC_IP_VAR_DNS_SERVER1, NULL, 0,
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -3167,7 +3703,8 @@ static inline enum mmagic_status mmagic_controller_get_ip_dhcp_enabled(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_IP, MMAGIC_IP_CMD_GET,
-                                  MMAGIC_IP_VAR_DHCP_ENABLED, (uint8_t *)var, sizeof(*var));
+                                  MMAGIC_IP_VAR_DHCP_ENABLED, (uint8_t *)var, sizeof(*var),
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -3194,7 +3731,8 @@ static inline enum mmagic_status mmagic_controller_set_ip_dhcp_enabled(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_IP, MMAGIC_IP_CMD_SET,
-                                  MMAGIC_IP_VAR_DHCP_ENABLED, NULL, 0);
+                                  MMAGIC_IP_VAR_DHCP_ENABLED, NULL, 0,
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -3221,7 +3759,8 @@ static inline enum mmagic_status mmagic_controller_get_ip_dhcp_offload(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_IP, MMAGIC_IP_CMD_GET,
-                                  MMAGIC_IP_VAR_DHCP_OFFLOAD, (uint8_t *)var, sizeof(*var));
+                                  MMAGIC_IP_VAR_DHCP_OFFLOAD, (uint8_t *)var, sizeof(*var),
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -3248,7 +3787,62 @@ static inline enum mmagic_status mmagic_controller_set_ip_dhcp_offload(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_IP, MMAGIC_IP_CMD_SET,
-                                  MMAGIC_IP_VAR_DHCP_OFFLOAD, NULL, 0);
+                                  MMAGIC_IP_VAR_DHCP_OFFLOAD, NULL, 0,
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
+    return status;
+}
+
+/**
+ * Gets @c link_status_evt_en setting for module @c ip.
+ *
+ * When set to true, IP link status notifications will be provided. Setting this to false will
+ * suppress these notifications. Defaults to true.
+ *
+ * @param  controller Reference to the controller handle.
+ * @param  var        Reference to the @c bool to place the received data in.
+ *
+ * @return            MMAGIC_STATUS_OK on success, else an error code.
+ */
+static inline enum mmagic_status mmagic_controller_get_ip_link_status_evt_en(
+    struct mmagic_controller *controller, bool *var)
+{
+    enum mmagic_status status;
+    status = mmagic_controller_tx(controller, CONTROL_STREAM, MMAGIC_IP, MMAGIC_IP_CMD_GET,
+                                  MMAGIC_IP_VAR_LINK_STATUS_EVT_EN, NULL, 0);
+    if (status != MMAGIC_STATUS_OK)
+    {
+        return status;
+    }
+    status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_IP, MMAGIC_IP_CMD_GET,
+                                  MMAGIC_IP_VAR_LINK_STATUS_EVT_EN, (uint8_t *)var, sizeof(*var),
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
+    return status;
+}
+
+/**
+ * Sets @c link_status_evt_en setting for module @c ip.
+ *
+ * When set to true, IP link status notifications will be provided. Setting this to false will
+ * suppress these notifications. Defaults to true.
+ *
+ * @param  controller Reference to the controller handle.
+ * @param  var        The @c bool to write.
+ *
+ * @return            MMAGIC_STATUS_OK on success, else an error code.
+ */
+static inline enum mmagic_status mmagic_controller_set_ip_link_status_evt_en(
+    struct mmagic_controller *controller, bool var)
+{
+    enum mmagic_status status;
+    status = mmagic_controller_tx(controller, CONTROL_STREAM, MMAGIC_IP, MMAGIC_IP_CMD_SET,
+                                  MMAGIC_IP_VAR_LINK_STATUS_EVT_EN, (uint8_t *)&var, sizeof(var));
+    if (status != MMAGIC_STATUS_OK)
+    {
+        return status;
+    }
+    status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_IP, MMAGIC_IP_CMD_SET,
+                                  MMAGIC_IP_VAR_LINK_STATUS_EVT_EN, NULL, 0,
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -3270,7 +3864,7 @@ static inline enum mmagic_status mmagic_controller_ip_commit_all(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_IP, MMAGIC_IP_CMD_COMMIT, 0,
-                                  NULL, 0);
+                                  NULL, 0, MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -3298,7 +3892,9 @@ static inline enum mmagic_status mmagic_controller_ip_status(struct mmagic_contr
                                                              rsp_args)
 {
     enum mmagic_status status;
-    uint8_t stream_id = CONTROL_STREAM;
+    const uint8_t stream_id = CONTROL_STREAM;
+    uint32_t response_timeout_ms = MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS;
+
     status = mmagic_controller_tx(controller, stream_id, MMAGIC_IP, MMAGIC_IP_CMD_STATUS, 0, NULL,
                                   0);
     if (status != MMAGIC_STATUS_OK)
@@ -3306,7 +3902,7 @@ static inline enum mmagic_status mmagic_controller_ip_status(struct mmagic_contr
         return status;
     }
     status = mmagic_controller_rx(controller, stream_id, MMAGIC_IP, MMAGIC_IP_CMD_STATUS, 0,
-                                  (uint8_t *)rsp_args, sizeof(*rsp_args));
+                                  (uint8_t *)rsp_args, sizeof(*rsp_args), response_timeout_ms);
     return status;
 }
 
@@ -3320,14 +3916,17 @@ static inline enum mmagic_status mmagic_controller_ip_status(struct mmagic_contr
 static inline enum mmagic_status mmagic_controller_ip_reload(struct mmagic_controller *controller)
 {
     enum mmagic_status status;
-    uint8_t stream_id = CONTROL_STREAM;
+    const uint8_t stream_id = CONTROL_STREAM;
+    uint32_t response_timeout_ms = MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS;
+
     status = mmagic_controller_tx(controller, stream_id, MMAGIC_IP, MMAGIC_IP_CMD_RELOAD, 0, NULL,
                                   0);
     if (status != MMAGIC_STATUS_OK)
     {
         return status;
     }
-    return mmagic_controller_rx(controller, stream_id, MMAGIC_IP, MMAGIC_IP_CMD_RELOAD, 0, NULL, 0);
+    return mmagic_controller_rx(controller, stream_id, MMAGIC_IP, MMAGIC_IP_CMD_RELOAD, 0, NULL, 0,
+                                response_timeout_ms);
     return status;
 }
 
@@ -3359,7 +3958,9 @@ static inline enum mmagic_status mmagic_controller_ip_enable_tcp_keepalive_offlo
     mmagic_core_ip_enable_tcp_keepalive_offload_cmd_args *cmd_args)
 {
     enum mmagic_status status;
-    uint8_t stream_id = CONTROL_STREAM;
+    const uint8_t stream_id = CONTROL_STREAM;
+    uint32_t response_timeout_ms = MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS;
+
     status = mmagic_controller_tx(controller, stream_id, MMAGIC_IP,
                                   MMAGIC_IP_CMD_ENABLE_TCP_KEEPALIVE_OFFLOAD, 0,
                                   (uint8_t *)cmd_args, sizeof(*cmd_args));
@@ -3368,7 +3969,8 @@ static inline enum mmagic_status mmagic_controller_ip_enable_tcp_keepalive_offlo
         return status;
     }
     status = mmagic_controller_rx(controller, stream_id, MMAGIC_IP,
-                                  MMAGIC_IP_CMD_ENABLE_TCP_KEEPALIVE_OFFLOAD, 0, NULL, 0);
+                                  MMAGIC_IP_CMD_ENABLE_TCP_KEEPALIVE_OFFLOAD, 0, NULL, 0,
+                                  response_timeout_ms);
     return status;
 }
 
@@ -3383,7 +3985,9 @@ static inline enum mmagic_status mmagic_controller_ip_disable_tcp_keepalive_offl
     struct mmagic_controller *controller)
 {
     enum mmagic_status status;
-    uint8_t stream_id = CONTROL_STREAM;
+    const uint8_t stream_id = CONTROL_STREAM;
+    uint32_t response_timeout_ms = MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS;
+
     status = mmagic_controller_tx(controller, stream_id, MMAGIC_IP,
                                   MMAGIC_IP_CMD_DISABLE_TCP_KEEPALIVE_OFFLOAD, 0, NULL, 0);
     if (status != MMAGIC_STATUS_OK)
@@ -3391,7 +3995,8 @@ static inline enum mmagic_status mmagic_controller_ip_disable_tcp_keepalive_offl
         return status;
     }
     return mmagic_controller_rx(controller, stream_id, MMAGIC_IP,
-                                MMAGIC_IP_CMD_DISABLE_TCP_KEEPALIVE_OFFLOAD, 0, NULL, 0);
+                                MMAGIC_IP_CMD_DISABLE_TCP_KEEPALIVE_OFFLOAD, 0, NULL, 0,
+                                response_timeout_ms);
     return status;
 }
 
@@ -3400,7 +4005,7 @@ struct MM_PACKED mmagic_core_ip_set_whitelist_filter_cmd_args
 {
     /** The IPv4 source address to match, 0.0.0.0 for any. */
     struct struct_ip_addr src_ip;
-    /** The IPv4 destination address to match, 0.0.0.0 for any. (Usually our IP address) */
+    /** The IPv4 destination address to match, 0.0.0.0 for any (Usually our IP address). */
     struct struct_ip_addr dest_ip;
     /** The netmask to apply to the source or destination IP, 0.0.0.0 for any. */
     struct struct_ip_addr netmask;
@@ -3429,7 +4034,9 @@ static inline enum mmagic_status mmagic_controller_ip_set_whitelist_filter(
     mmagic_core_ip_set_whitelist_filter_cmd_args *cmd_args)
 {
     enum mmagic_status status;
-    uint8_t stream_id = CONTROL_STREAM;
+    const uint8_t stream_id = CONTROL_STREAM;
+    uint32_t response_timeout_ms = MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS;
+
     status = mmagic_controller_tx(controller, stream_id, MMAGIC_IP,
                                   MMAGIC_IP_CMD_SET_WHITELIST_FILTER, 0, (uint8_t *)cmd_args,
                                   sizeof(*cmd_args));
@@ -3438,7 +4045,8 @@ static inline enum mmagic_status mmagic_controller_ip_set_whitelist_filter(
         return status;
     }
     status = mmagic_controller_rx(controller, stream_id, MMAGIC_IP,
-                                  MMAGIC_IP_CMD_SET_WHITELIST_FILTER, 0, NULL, 0);
+                                  MMAGIC_IP_CMD_SET_WHITELIST_FILTER, 0, NULL, 0,
+                                  response_timeout_ms);
     return status;
 }
 
@@ -3453,7 +4061,9 @@ static inline enum mmagic_status mmagic_controller_ip_clear_whitelist_filter(
     struct mmagic_controller *controller)
 {
     enum mmagic_status status;
-    uint8_t stream_id = CONTROL_STREAM;
+    const uint8_t stream_id = CONTROL_STREAM;
+    uint32_t response_timeout_ms = MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS;
+
     status = mmagic_controller_tx(controller, stream_id, MMAGIC_IP,
                                   MMAGIC_IP_CMD_CLEAR_WHITELIST_FILTER, 0, NULL, 0);
     if (status != MMAGIC_STATUS_OK)
@@ -3461,14 +4071,57 @@ static inline enum mmagic_status mmagic_controller_ip_clear_whitelist_filter(
         return status;
     }
     return mmagic_controller_rx(controller, stream_id, MMAGIC_IP,
-                                MMAGIC_IP_CMD_CLEAR_WHITELIST_FILTER, 0, NULL, 0);
+                                MMAGIC_IP_CMD_CLEAR_WHITELIST_FILTER, 0, NULL, 0,
+                                response_timeout_ms);
     return status;
 }
+
+/** Event arguments structure for ip_link_status */
+struct MM_PACKED mmagic_ip_link_status_event_args
+{
+    /** Link status for the WLAN interface. This is only valid when the WLAN interface is configured
+     * to be a STA rather than an AP. */
+    struct struct_ip_status ip_link_status;
+};
+
+/**
+ * Handler for the ip-link_status event.
+ *
+ * Triggered when the IP stack has a valid address.
+ *
+ * @note This function will be invoked in the context of the controller data link thread
+ *       and should perform minimal processing.
+ *
+ * @warning This function must not invoke any mmagic API functions.
+ *
+ * @param event_args Notication arguments received from the agent.
+ * @param arg        Opaque argument that was provided when the callback was registered.
+ */
+typedef void (*mmagic_ip_link_status_event_handler_t)(
+    const struct mmagic_ip_link_status_event_args *event_args, void *arg);
+
+/**
+ * Register a handler for the ip-link_status event.
+ *
+ * Triggered when the IP stack has a valid address.
+ *
+ * @note The handler callbacks will be invoked in the context of the controller data link
+ *       thread. The handler should perform minimal processing.
+ *
+ * @warning The handler callback must not invoke any mmagic API functions.
+ *
+ * @param controller Reference to the the controller handle.
+ * @param handler    The handler function to register.
+ * @param arg        Opaque argument to be passed to the handler when it is invoked.
+ */
+void mmagic_controller_register_ip_link_status_handler(
+    struct mmagic_controller *controller,
+    mmagic_ip_link_status_event_handler_t handler, void *arg);
 
 /** @} */
 
 /**
- * @defgroup MMAGIC_CONTROLLER_PING Ping application subsystem (ping)
+ * @defgroup MMAGIC_CONTROLLER_PING Module ping: Ping application.
  * @{
  */
 
@@ -3498,7 +4151,8 @@ static inline enum mmagic_status mmagic_controller_get_ping_target(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_PING, MMAGIC_PING_CMD_GET,
-                                  MMAGIC_PING_VAR_TARGET, (uint8_t *)var, sizeof(*var));
+                                  MMAGIC_PING_VAR_TARGET, (uint8_t *)var, sizeof(*var),
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -3523,7 +4177,8 @@ static inline enum mmagic_status mmagic_controller_set_ping_target(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_PING, MMAGIC_PING_CMD_SET,
-                                  MMAGIC_PING_VAR_TARGET, NULL, 0);
+                                  MMAGIC_PING_VAR_TARGET, NULL, 0,
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -3548,7 +4203,8 @@ static inline enum mmagic_status mmagic_controller_get_ping_interval(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_PING, MMAGIC_PING_CMD_GET,
-                                  MMAGIC_PING_VAR_INTERVAL, (uint8_t *)var, sizeof(*var));
+                                  MMAGIC_PING_VAR_INTERVAL, (uint8_t *)var, sizeof(*var),
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -3573,7 +4229,8 @@ static inline enum mmagic_status mmagic_controller_set_ping_interval(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_PING, MMAGIC_PING_CMD_SET,
-                                  MMAGIC_PING_VAR_INTERVAL, NULL, 0);
+                                  MMAGIC_PING_VAR_INTERVAL, NULL, 0,
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -3599,7 +4256,8 @@ static inline enum mmagic_status mmagic_controller_get_ping_count(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_PING, MMAGIC_PING_CMD_GET,
-                                  MMAGIC_PING_VAR_COUNT, (uint8_t *)var, sizeof(*var));
+                                  MMAGIC_PING_VAR_COUNT, (uint8_t *)var, sizeof(*var),
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -3625,7 +4283,8 @@ static inline enum mmagic_status mmagic_controller_set_ping_count(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_PING, MMAGIC_PING_CMD_SET,
-                                  MMAGIC_PING_VAR_COUNT, NULL, 0);
+                                  MMAGIC_PING_VAR_COUNT, NULL, 0,
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -3647,7 +4306,7 @@ static inline enum mmagic_status mmagic_controller_ping_commit_all(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_PING, MMAGIC_PING_CMD_COMMIT,
-                                  0, NULL, 0);
+                                  0, NULL, 0, MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -3675,7 +4334,9 @@ static inline enum mmagic_status mmagic_controller_ping_run(struct mmagic_contro
                                                             rsp_args)
 {
     enum mmagic_status status;
-    uint8_t stream_id = CONTROL_STREAM;
+    const uint8_t stream_id = CONTROL_STREAM;
+    uint32_t response_timeout_ms = MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS;
+
     status = mmagic_controller_tx(controller, stream_id, MMAGIC_PING, MMAGIC_PING_CMD_RUN, 0, NULL,
                                   0);
     if (status != MMAGIC_STATUS_OK)
@@ -3683,14 +4344,14 @@ static inline enum mmagic_status mmagic_controller_ping_run(struct mmagic_contro
         return status;
     }
     status = mmagic_controller_rx(controller, stream_id, MMAGIC_PING, MMAGIC_PING_CMD_RUN, 0,
-                                  (uint8_t *)rsp_args, sizeof(*rsp_args));
+                                  (uint8_t *)rsp_args, sizeof(*rsp_args), response_timeout_ms);
     return status;
 }
 
 /** @} */
 
 /**
- * @defgroup MMAGIC_CONTROLLER_IPERF Iperf application subsystem (iperf)
+ * @defgroup MMAGIC_CONTROLLER_IPERF Module iperf: Iperf application.
  * @{
  */
 
@@ -3721,7 +4382,8 @@ static inline enum mmagic_status mmagic_controller_get_iperf_mode(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_IPERF, MMAGIC_IPERF_CMD_GET,
-                                  MMAGIC_IPERF_VAR_MODE, (uint8_t *)var, sizeof(*var));
+                                  MMAGIC_IPERF_VAR_MODE, (uint8_t *)var, sizeof(*var),
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -3747,7 +4409,8 @@ static inline enum mmagic_status mmagic_controller_set_iperf_mode(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_IPERF, MMAGIC_IPERF_CMD_SET,
-                                  MMAGIC_IPERF_VAR_MODE, NULL, 0);
+                                  MMAGIC_IPERF_VAR_MODE, NULL, 0,
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -3772,7 +4435,8 @@ static inline enum mmagic_status mmagic_controller_get_iperf_server(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_IPERF, MMAGIC_IPERF_CMD_GET,
-                                  MMAGIC_IPERF_VAR_SERVER, (uint8_t *)var, sizeof(*var));
+                                  MMAGIC_IPERF_VAR_SERVER, (uint8_t *)var, sizeof(*var),
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -3797,7 +4461,8 @@ static inline enum mmagic_status mmagic_controller_set_iperf_server(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_IPERF, MMAGIC_IPERF_CMD_SET,
-                                  MMAGIC_IPERF_VAR_SERVER, NULL, 0);
+                                  MMAGIC_IPERF_VAR_SERVER, NULL, 0,
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -3823,7 +4488,8 @@ static inline enum mmagic_status mmagic_controller_get_iperf_port(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_IPERF, MMAGIC_IPERF_CMD_GET,
-                                  MMAGIC_IPERF_VAR_PORT, (uint8_t *)var, sizeof(*var));
+                                  MMAGIC_IPERF_VAR_PORT, (uint8_t *)var, sizeof(*var),
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -3849,7 +4515,8 @@ static inline enum mmagic_status mmagic_controller_set_iperf_port(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_IPERF, MMAGIC_IPERF_CMD_SET,
-                                  MMAGIC_IPERF_VAR_PORT, NULL, 0);
+                                  MMAGIC_IPERF_VAR_PORT, NULL, 0,
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -3876,7 +4543,8 @@ static inline enum mmagic_status mmagic_controller_get_iperf_amount(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_IPERF, MMAGIC_IPERF_CMD_GET,
-                                  MMAGIC_IPERF_VAR_AMOUNT, (uint8_t *)var, sizeof(*var));
+                                  MMAGIC_IPERF_VAR_AMOUNT, (uint8_t *)var, sizeof(*var),
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -3903,7 +4571,8 @@ static inline enum mmagic_status mmagic_controller_set_iperf_amount(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_IPERF, MMAGIC_IPERF_CMD_SET,
-                                  MMAGIC_IPERF_VAR_AMOUNT, NULL, 0);
+                                  MMAGIC_IPERF_VAR_AMOUNT, NULL, 0,
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -3925,7 +4594,7 @@ static inline enum mmagic_status mmagic_controller_iperf_commit_all(
         return status;
     }
     status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_IPERF, MMAGIC_IPERF_CMD_COMMIT,
-                                  0, NULL, 0);
+                                  0, NULL, 0, MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -3953,7 +4622,9 @@ static inline enum mmagic_status mmagic_controller_iperf_run(struct mmagic_contr
                                                              rsp_args)
 {
     enum mmagic_status status;
-    uint8_t stream_id = CONTROL_STREAM;
+    const uint8_t stream_id = CONTROL_STREAM;
+    uint32_t response_timeout_ms = MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS;
+
     status = mmagic_controller_tx(controller, stream_id, MMAGIC_IPERF, MMAGIC_IPERF_CMD_RUN, 0,
                                   NULL, 0);
     if (status != MMAGIC_STATUS_OK)
@@ -3961,14 +4632,14 @@ static inline enum mmagic_status mmagic_controller_iperf_run(struct mmagic_contr
         return status;
     }
     status = mmagic_controller_rx(controller, stream_id, MMAGIC_IPERF, MMAGIC_IPERF_CMD_RUN, 0,
-                                  (uint8_t *)rsp_args, sizeof(*rsp_args));
+                                  (uint8_t *)rsp_args, sizeof(*rsp_args), response_timeout_ms);
     return status;
 }
 
 /** @} */
 
 /**
- * @defgroup MMAGIC_CONTROLLER_SYS System management subsystem (sys)
+ * @defgroup MMAGIC_CONTROLLER_SYS Module sys: System management.
  * @{
  */
 
@@ -3982,7 +4653,7 @@ static inline enum mmagic_status mmagic_controller_iperf_run(struct mmagic_contr
 static inline enum mmagic_status mmagic_controller_sys_reset(struct mmagic_controller *controller)
 {
     enum mmagic_status status;
-    uint8_t stream_id = CONTROL_STREAM;
+    const uint8_t stream_id = CONTROL_STREAM;
     status = mmagic_controller_tx(controller, stream_id, MMAGIC_SYS,
                                   MMAGIC_SYS_CMD_RESET, 0, NULL, 0);
     return status;
@@ -4009,7 +4680,9 @@ static inline enum mmagic_status mmagic_controller_sys_deep_sleep(
     mmagic_core_sys_deep_sleep_cmd_args *cmd_args)
 {
     enum mmagic_status status;
-    uint8_t stream_id = CONTROL_STREAM;
+    const uint8_t stream_id = CONTROL_STREAM;
+    uint32_t response_timeout_ms = MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS;
+
     status = mmagic_controller_tx(controller, stream_id, MMAGIC_SYS, MMAGIC_SYS_CMD_DEEP_SLEEP, 0,
                                   (uint8_t *)cmd_args, sizeof(*cmd_args));
     if (status != MMAGIC_STATUS_OK)
@@ -4017,7 +4690,7 @@ static inline enum mmagic_status mmagic_controller_sys_deep_sleep(
         return status;
     }
     status = mmagic_controller_rx(controller, stream_id, MMAGIC_SYS, MMAGIC_SYS_CMD_DEEP_SLEEP, 0,
-                                  NULL, 0);
+                                  NULL, 0, response_timeout_ms);
     return status;
 }
 
@@ -4044,7 +4717,9 @@ static inline enum mmagic_status mmagic_controller_sys_get_version(
     mmagic_core_sys_get_version_rsp_args *rsp_args)
 {
     enum mmagic_status status;
-    uint8_t stream_id = CONTROL_STREAM;
+    const uint8_t stream_id = CONTROL_STREAM;
+    uint32_t response_timeout_ms = MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS;
+
     status = mmagic_controller_tx(controller, stream_id, MMAGIC_SYS, MMAGIC_SYS_CMD_GET_VERSION, 0,
                                   NULL, 0);
     if (status != MMAGIC_STATUS_OK)
@@ -4052,14 +4727,14 @@ static inline enum mmagic_status mmagic_controller_sys_get_version(
         return status;
     }
     status = mmagic_controller_rx(controller, stream_id, MMAGIC_SYS, MMAGIC_SYS_CMD_GET_VERSION, 0,
-                                  (uint8_t *)rsp_args, sizeof(*rsp_args));
+                                  (uint8_t *)rsp_args, sizeof(*rsp_args), response_timeout_ms);
     return status;
 }
 
 /** @} */
 
 /**
- * @defgroup MMAGIC_CONTROLLER_TCP TCP Socket IO subsystem (tcp)
+ * @defgroup MMAGIC_CONTROLLER_TCP Module tcp: TCP Socket IO, supports secure connections using TLS.
  * @{
  */
 
@@ -4067,9 +4742,11 @@ static inline enum mmagic_status mmagic_controller_sys_get_version(
 struct MM_PACKED mmagic_core_tcp_connect_cmd_args
 {
     /** URL of the server to connect to. */
-    struct struct_string_254 url;
+    struct string254 url;
     /** TCP port to connect to. */
     uint16_t port;
+    /** Enables TLS. Configure certificates through the TLS module. */
+    bool enable_tls;
 };
 
 /** Response arguments structure for tcp_connect */
@@ -4080,7 +4757,7 @@ struct MM_PACKED mmagic_core_tcp_connect_rsp_args
 };
 
 /**
- * Opens a client TCP socket and returns its stream ID
+ * Opens a client TCP socket and returns its stream ID.
  *
  * @param      controller Reference to the controller handle.
  * @param[in]  cmd_args   Command arguments
@@ -4099,7 +4776,9 @@ static inline enum mmagic_status mmagic_controller_tcp_connect(struct mmagic_con
                                                                rsp_args)
 {
     enum mmagic_status status;
-    uint8_t stream_id = CONTROL_STREAM;
+    const uint8_t stream_id = CONTROL_STREAM;
+    uint32_t response_timeout_ms = 15000;
+
     status = mmagic_controller_tx(controller, stream_id, MMAGIC_TCP, MMAGIC_TCP_CMD_CONNECT, 0,
                                   (uint8_t *)cmd_args, sizeof(*cmd_args));
     if (status != MMAGIC_STATUS_OK)
@@ -4107,7 +4786,7 @@ static inline enum mmagic_status mmagic_controller_tcp_connect(struct mmagic_con
         return status;
     }
     status = mmagic_controller_rx(controller, stream_id, MMAGIC_TCP, MMAGIC_TCP_CMD_CONNECT, 0,
-                                  (uint8_t *)rsp_args, sizeof(*rsp_args));
+                                  (uint8_t *)rsp_args, sizeof(*rsp_args), response_timeout_ms);
     return status;
 }
 
@@ -4126,7 +4805,7 @@ struct MM_PACKED mmagic_core_tcp_bind_rsp_args
 };
 
 /**
- * Opens a server TCP socket and returns its stream ID
+ * Opens a server TCP socket and returns its stream ID.
  *
  * @param      controller Reference to the controller handle.
  * @param[in]  cmd_args   Command arguments
@@ -4143,7 +4822,9 @@ static inline enum mmagic_status mmagic_controller_tcp_bind(struct mmagic_contro
                                                             rsp_args)
 {
     enum mmagic_status status;
-    uint8_t stream_id = CONTROL_STREAM;
+    const uint8_t stream_id = CONTROL_STREAM;
+    uint32_t response_timeout_ms = MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS;
+
     status = mmagic_controller_tx(controller, stream_id, MMAGIC_TCP, MMAGIC_TCP_CMD_BIND, 0,
                                   (uint8_t *)cmd_args, sizeof(*cmd_args));
     if (status != MMAGIC_STATUS_OK)
@@ -4151,7 +4832,7 @@ static inline enum mmagic_status mmagic_controller_tcp_bind(struct mmagic_contro
         return status;
     }
     status = mmagic_controller_rx(controller, stream_id, MMAGIC_TCP, MMAGIC_TCP_CMD_BIND, 0,
-                                  (uint8_t *)rsp_args, sizeof(*rsp_args));
+                                  (uint8_t *)rsp_args, sizeof(*rsp_args), response_timeout_ms);
     return status;
 }
 
@@ -4170,11 +4851,11 @@ struct MM_PACKED mmagic_core_tcp_recv_cmd_args
 struct MM_PACKED mmagic_core_tcp_recv_rsp_args
 {
     /** Buffer of read data. */
-    struct struct_packet_buffer buffer;
+    struct raw1536 buffer;
 };
 
 /**
- * Reads from a socket
+ * Reads from a socket.
  *
  * @param      controller Reference to the controller handle.
  * @param[in]  cmd_args   Command arguments
@@ -4191,8 +4872,19 @@ static inline enum mmagic_status mmagic_controller_tcp_recv(struct mmagic_contro
                                                             rsp_args)
 {
     enum mmagic_status status;
-    uint8_t stream_id = CONTROL_STREAM;
-    stream_id = cmd_args->stream_id;
+    const uint8_t stream_id = cmd_args->stream_id;
+    uint32_t response_timeout_ms = MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS;
+
+    /* Account for the timeout argument when waiting for the response and make sure no overflow. */
+    if (UINT32_MAX - response_timeout_ms >= cmd_args->timeout)
+    {
+        response_timeout_ms += cmd_args->timeout;
+    }
+    else
+    {
+        response_timeout_ms = UINT32_MAX;
+    }
+
     status = mmagic_controller_tx(controller, stream_id, MMAGIC_TCP, MMAGIC_TCP_CMD_RECV, 0,
                                   (uint8_t *)cmd_args, sizeof(*cmd_args));
     if (status != MMAGIC_STATUS_OK)
@@ -4200,7 +4892,7 @@ static inline enum mmagic_status mmagic_controller_tcp_recv(struct mmagic_contro
         return status;
     }
     status = mmagic_controller_rx(controller, stream_id, MMAGIC_TCP, MMAGIC_TCP_CMD_RECV, 0,
-                                  (uint8_t *)rsp_args, sizeof(*rsp_args));
+                                  (uint8_t *)rsp_args, sizeof(*rsp_args), response_timeout_ms);
     return status;
 }
 
@@ -4210,11 +4902,11 @@ struct MM_PACKED mmagic_core_tcp_send_cmd_args
     /** Stream ID of the socket to send on. */
     uint8_t stream_id;
     /** Buffer to send. */
-    struct struct_packet_buffer buffer;
+    struct raw1536 buffer;
 };
 
 /**
- * Writes to a socket
+ * Writes to a socket.
  *
  * @param     controller Reference to the controller handle.
  * @param[in] cmd_args   Command arguments
@@ -4226,8 +4918,9 @@ static inline enum mmagic_status mmagic_controller_tcp_send(struct mmagic_contro
                                                             cmd_args)
 {
     enum mmagic_status status;
-    uint8_t stream_id = CONTROL_STREAM;
-    stream_id = cmd_args->stream_id;
+    const uint8_t stream_id = cmd_args->stream_id;
+    uint32_t response_timeout_ms = MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS;
+
     status = mmagic_controller_tx(controller, stream_id, MMAGIC_TCP, MMAGIC_TCP_CMD_SEND, 0,
                                   (uint8_t *)cmd_args, sizeof(*cmd_args));
     if (status != MMAGIC_STATUS_OK)
@@ -4235,7 +4928,7 @@ static inline enum mmagic_status mmagic_controller_tcp_send(struct mmagic_contro
         return status;
     }
     status = mmagic_controller_rx(controller, stream_id, MMAGIC_TCP, MMAGIC_TCP_CMD_SEND, 0, NULL,
-                                  0);
+                                  0, response_timeout_ms);
     return status;
 }
 
@@ -4249,7 +4942,7 @@ struct MM_PACKED mmagic_core_tcp_read_poll_cmd_args
 };
 
 /**
- * Polls the socket till it is ready for reading
+ * Polls the socket till it is ready for reading.
  *
  * @param     controller Reference to the controller handle.
  * @param[in] cmd_args   Command arguments
@@ -4262,8 +4955,19 @@ static inline enum mmagic_status mmagic_controller_tcp_read_poll(
     mmagic_core_tcp_read_poll_cmd_args *cmd_args)
 {
     enum mmagic_status status;
-    uint8_t stream_id = CONTROL_STREAM;
-    stream_id = cmd_args->stream_id;
+    const uint8_t stream_id = cmd_args->stream_id;
+    uint32_t response_timeout_ms = MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS;
+
+    /* Account for the timeout argument when waiting for the response and make sure no overflow. */
+    if (UINT32_MAX - response_timeout_ms >= cmd_args->timeout)
+    {
+        response_timeout_ms += cmd_args->timeout;
+    }
+    else
+    {
+        response_timeout_ms = UINT32_MAX;
+    }
+
     status = mmagic_controller_tx(controller, stream_id, MMAGIC_TCP, MMAGIC_TCP_CMD_READ_POLL, 0,
                                   (uint8_t *)cmd_args, sizeof(*cmd_args));
     if (status != MMAGIC_STATUS_OK)
@@ -4271,7 +4975,7 @@ static inline enum mmagic_status mmagic_controller_tcp_read_poll(
         return status;
     }
     status = mmagic_controller_rx(controller, stream_id, MMAGIC_TCP, MMAGIC_TCP_CMD_READ_POLL, 0,
-                                  NULL, 0);
+                                  NULL, 0, response_timeout_ms);
     return status;
 }
 
@@ -4285,7 +4989,7 @@ struct MM_PACKED mmagic_core_tcp_write_poll_cmd_args
 };
 
 /**
- * Polls the socket till it is ready for writing
+ * Polls the socket till it is ready for writing.
  *
  * @param     controller Reference to the controller handle.
  * @param[in] cmd_args   Command arguments
@@ -4298,8 +5002,19 @@ static inline enum mmagic_status mmagic_controller_tcp_write_poll(
     mmagic_core_tcp_write_poll_cmd_args *cmd_args)
 {
     enum mmagic_status status;
-    uint8_t stream_id = CONTROL_STREAM;
-    stream_id = cmd_args->stream_id;
+    const uint8_t stream_id = cmd_args->stream_id;
+    uint32_t response_timeout_ms = MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS;
+
+    /* Account for the timeout argument when waiting for the response and make sure no overflow. */
+    if (UINT32_MAX - response_timeout_ms >= cmd_args->timeout)
+    {
+        response_timeout_ms += cmd_args->timeout;
+    }
+    else
+    {
+        response_timeout_ms = UINT32_MAX;
+    }
+
     status = mmagic_controller_tx(controller, stream_id, MMAGIC_TCP, MMAGIC_TCP_CMD_WRITE_POLL, 0,
                                   (uint8_t *)cmd_args, sizeof(*cmd_args));
     if (status != MMAGIC_STATUS_OK)
@@ -4307,7 +5022,7 @@ static inline enum mmagic_status mmagic_controller_tcp_write_poll(
         return status;
     }
     status = mmagic_controller_rx(controller, stream_id, MMAGIC_TCP, MMAGIC_TCP_CMD_WRITE_POLL, 0,
-                                  NULL, 0);
+                                  NULL, 0, response_timeout_ms);
     return status;
 }
 
@@ -4343,8 +5058,9 @@ static inline enum mmagic_status mmagic_controller_tcp_accept(struct mmagic_cont
                                                               *rsp_args)
 {
     enum mmagic_status status;
-    uint8_t stream_id = CONTROL_STREAM;
-    stream_id = cmd_args->stream_id;
+    const uint8_t stream_id = cmd_args->stream_id;
+    uint32_t response_timeout_ms = -1;
+
     status = mmagic_controller_tx(controller, stream_id, MMAGIC_TCP, MMAGIC_TCP_CMD_ACCEPT, 0,
                                   (uint8_t *)cmd_args, sizeof(*cmd_args));
     if (status != MMAGIC_STATUS_OK)
@@ -4352,7 +5068,7 @@ static inline enum mmagic_status mmagic_controller_tcp_accept(struct mmagic_cont
         return status;
     }
     status = mmagic_controller_rx(controller, stream_id, MMAGIC_TCP, MMAGIC_TCP_CMD_ACCEPT, 0,
-                                  (uint8_t *)rsp_args, sizeof(*rsp_args));
+                                  (uint8_t *)rsp_args, sizeof(*rsp_args), response_timeout_ms);
     return status;
 }
 
@@ -4364,7 +5080,7 @@ struct MM_PACKED mmagic_core_tcp_close_cmd_args
 };
 
 /**
- * Closes and frees the socket
+ * Closes and frees the socket.
  *
  * @param     controller Reference to the controller handle.
  * @param[in] cmd_args   Command arguments
@@ -4376,7 +5092,9 @@ static inline enum mmagic_status mmagic_controller_tcp_close(struct mmagic_contr
                                                              cmd_args)
 {
     enum mmagic_status status;
-    uint8_t stream_id = CONTROL_STREAM;
+    const uint8_t stream_id = CONTROL_STREAM;
+    uint32_t response_timeout_ms = MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS;
+
     status = mmagic_controller_tx(controller, stream_id, MMAGIC_TCP, MMAGIC_TCP_CMD_CLOSE, 0,
                                   (uint8_t *)cmd_args, sizeof(*cmd_args));
     if (status != MMAGIC_STATUS_OK)
@@ -4384,9 +5102,629 @@ static inline enum mmagic_status mmagic_controller_tcp_close(struct mmagic_contr
         return status;
     }
     status = mmagic_controller_rx(controller, stream_id, MMAGIC_TCP, MMAGIC_TCP_CMD_CLOSE, 0, NULL,
-                                  0);
+                                  0, response_timeout_ms);
     return status;
 }
+
+/** @} */
+
+/**
+ * @defgroup MMAGIC_CONTROLLER_TLS Module tls: TLS support.
+ * @{
+ */
+
+/**
+ * @defgroup MMAGIC_CONTROLLER_TLS_CONFIG tls configuration variables
+ * @{
+ */
+
+/**
+ * Gets @c root_ca_certificate setting for module @c tls.
+ *
+ * Root certificate authority certificate. Supported formats are PEM and DER. Must be null
+ * terminated if in PEM format.
+ *
+ * @param  controller Reference to the controller handle.
+ * @param  var        Reference to the @c raw1536 to place the received data in.
+ *
+ * @return            MMAGIC_STATUS_OK on success, else an error code.
+ */
+static inline enum mmagic_status mmagic_controller_get_tls_root_ca_certificate(
+    struct mmagic_controller *controller, struct raw1536 *var)
+{
+    enum mmagic_status status;
+    status = mmagic_controller_tx(controller, CONTROL_STREAM, MMAGIC_TLS, MMAGIC_TLS_CMD_GET,
+                                  MMAGIC_TLS_VAR_ROOT_CA_CERTIFICATE, NULL, 0);
+    if (status != MMAGIC_STATUS_OK)
+    {
+        return status;
+    }
+    status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_TLS, MMAGIC_TLS_CMD_GET,
+                                  MMAGIC_TLS_VAR_ROOT_CA_CERTIFICATE, (uint8_t *)var, sizeof(*var),
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
+    return status;
+}
+
+/**
+ * Sets @c root_ca_certificate setting for module @c tls.
+ *
+ * Root certificate authority certificate. Supported formats are PEM and DER. Must be null
+ * terminated if in PEM format.
+ *
+ * @param  controller Reference to the controller handle.
+ * @param  var        Reference to the @c raw1536 to write.
+ *
+ * @return            MMAGIC_STATUS_OK on success, else an error code.
+ */
+static inline enum mmagic_status mmagic_controller_set_tls_root_ca_certificate(
+    struct mmagic_controller *controller, struct raw1536 *var)
+{
+    enum mmagic_status status;
+    status = mmagic_controller_tx(controller, CONTROL_STREAM, MMAGIC_TLS, MMAGIC_TLS_CMD_SET,
+                                  MMAGIC_TLS_VAR_ROOT_CA_CERTIFICATE, (uint8_t *)var, sizeof(*var));
+    if (status != MMAGIC_STATUS_OK)
+    {
+        return status;
+    }
+    status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_TLS, MMAGIC_TLS_CMD_SET,
+                                  MMAGIC_TLS_VAR_ROOT_CA_CERTIFICATE, NULL, 0,
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
+    return status;
+}
+
+/**
+ * Gets @c client_certificate setting for module @c tls.
+ *
+ * Certificate to identify the client. Supported formats are PEM and DER. Must be null terminated if
+ * in PEM format.
+ *
+ * @param  controller Reference to the controller handle.
+ * @param  var        Reference to the @c raw1536 to place the received data in.
+ *
+ * @return            MMAGIC_STATUS_OK on success, else an error code.
+ */
+static inline enum mmagic_status mmagic_controller_get_tls_client_certificate(
+    struct mmagic_controller *controller, struct raw1536 *var)
+{
+    enum mmagic_status status;
+    status = mmagic_controller_tx(controller, CONTROL_STREAM, MMAGIC_TLS, MMAGIC_TLS_CMD_GET,
+                                  MMAGIC_TLS_VAR_CLIENT_CERTIFICATE, NULL, 0);
+    if (status != MMAGIC_STATUS_OK)
+    {
+        return status;
+    }
+    status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_TLS, MMAGIC_TLS_CMD_GET,
+                                  MMAGIC_TLS_VAR_CLIENT_CERTIFICATE, (uint8_t *)var, sizeof(*var),
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
+    return status;
+}
+
+/**
+ * Sets @c client_certificate setting for module @c tls.
+ *
+ * Certificate to identify the client. Supported formats are PEM and DER. Must be null terminated if
+ * in PEM format.
+ *
+ * @param  controller Reference to the controller handle.
+ * @param  var        Reference to the @c raw1536 to write.
+ *
+ * @return            MMAGIC_STATUS_OK on success, else an error code.
+ */
+static inline enum mmagic_status mmagic_controller_set_tls_client_certificate(
+    struct mmagic_controller *controller, struct raw1536 *var)
+{
+    enum mmagic_status status;
+    status = mmagic_controller_tx(controller, CONTROL_STREAM, MMAGIC_TLS, MMAGIC_TLS_CMD_SET,
+                                  MMAGIC_TLS_VAR_CLIENT_CERTIFICATE, (uint8_t *)var, sizeof(*var));
+    if (status != MMAGIC_STATUS_OK)
+    {
+        return status;
+    }
+    status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_TLS, MMAGIC_TLS_CMD_SET,
+                                  MMAGIC_TLS_VAR_CLIENT_CERTIFICATE, NULL, 0,
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
+    return status;
+}
+
+/**
+ * Gets @c client_private_key setting for module @c tls.
+ *
+ * Client private key. Supported formats are PEM and DER. Must be null terminated if in PEM format.
+ *
+ * @param  controller Reference to the controller handle.
+ * @param  var        Reference to the @c raw1536 to place the received data in.
+ *
+ * @return            MMAGIC_STATUS_OK on success, else an error code.
+ */
+static inline enum mmagic_status mmagic_controller_get_tls_client_private_key(
+    struct mmagic_controller *controller, struct raw1536 *var)
+{
+    enum mmagic_status status;
+    status = mmagic_controller_tx(controller, CONTROL_STREAM, MMAGIC_TLS, MMAGIC_TLS_CMD_GET,
+                                  MMAGIC_TLS_VAR_CLIENT_PRIVATE_KEY, NULL, 0);
+    if (status != MMAGIC_STATUS_OK)
+    {
+        return status;
+    }
+    status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_TLS, MMAGIC_TLS_CMD_GET,
+                                  MMAGIC_TLS_VAR_CLIENT_PRIVATE_KEY, (uint8_t *)var, sizeof(*var),
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
+    return status;
+}
+
+/**
+ * Sets @c client_private_key setting for module @c tls.
+ *
+ * Client private key. Supported formats are PEM and DER. Must be null terminated if in PEM format.
+ *
+ * @param  controller Reference to the controller handle.
+ * @param  var        Reference to the @c raw1536 to write.
+ *
+ * @return            MMAGIC_STATUS_OK on success, else an error code.
+ */
+static inline enum mmagic_status mmagic_controller_set_tls_client_private_key(
+    struct mmagic_controller *controller, struct raw1536 *var)
+{
+    enum mmagic_status status;
+    status = mmagic_controller_tx(controller, CONTROL_STREAM, MMAGIC_TLS, MMAGIC_TLS_CMD_SET,
+                                  MMAGIC_TLS_VAR_CLIENT_PRIVATE_KEY, (uint8_t *)var, sizeof(*var));
+    if (status != MMAGIC_STATUS_OK)
+    {
+        return status;
+    }
+    status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_TLS, MMAGIC_TLS_CMD_SET,
+                                  MMAGIC_TLS_VAR_CLIENT_PRIVATE_KEY, NULL, 0,
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
+    return status;
+}
+
+/**
+ * Saves all settings from persistent store.
+ *
+ * @param  controller Reference to the controller handle.
+ *
+ * @return            MMAGIC_STATUS_OK on success, else an error code.
+ */
+static inline enum mmagic_status mmagic_controller_tls_commit_all(
+    struct mmagic_controller *controller)
+{
+    enum mmagic_status status;
+    status = mmagic_controller_tx(controller, CONTROL_STREAM, MMAGIC_TLS, MMAGIC_TLS_CMD_COMMIT, 0,
+                                  NULL, 0);
+    if (status != MMAGIC_STATUS_OK)
+    {
+        return status;
+    }
+    status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_TLS, MMAGIC_TLS_CMD_COMMIT, 0,
+                                  NULL, 0, MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
+    return status;
+}
+
+/** @} */
+
+/** @} */
+
+/**
+ * @defgroup MMAGIC_CONTROLLER_NTP Module ntp: Network Time Protocol.
+ * @{
+ */
+
+/**
+ * @defgroup MMAGIC_CONTROLLER_NTP_CONFIG ntp configuration variables
+ * @{
+ */
+
+/**
+ * Gets @c server setting for module @c ntp.
+ *
+ * The hostname or IP of the NTP server. Defaults to "0.pool.ntp.org".
+ *
+ * @param  controller Reference to the controller handle.
+ * @param  var        Reference to the @c string254 to place the received data in.
+ *
+ * @return            MMAGIC_STATUS_OK on success, else an error code.
+ */
+static inline enum mmagic_status mmagic_controller_get_ntp_server(
+    struct mmagic_controller *controller, struct string254 *var)
+{
+    enum mmagic_status status;
+    status = mmagic_controller_tx(controller, CONTROL_STREAM, MMAGIC_NTP, MMAGIC_NTP_CMD_GET,
+                                  MMAGIC_NTP_VAR_SERVER, NULL, 0);
+    if (status != MMAGIC_STATUS_OK)
+    {
+        return status;
+    }
+    status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_NTP, MMAGIC_NTP_CMD_GET,
+                                  MMAGIC_NTP_VAR_SERVER, (uint8_t *)var, sizeof(*var),
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
+    return status;
+}
+
+/**
+ * Sets @c server setting for module @c ntp.
+ *
+ * The hostname or IP of the NTP server. Defaults to "0.pool.ntp.org".
+ *
+ * @param  controller Reference to the controller handle.
+ * @param  var        The @c string254 to write.
+ *
+ * @return            MMAGIC_STATUS_OK on success, else an error code.
+ */
+static inline enum mmagic_status mmagic_controller_set_ntp_server(
+    struct mmagic_controller *controller, const char *var)
+{
+    struct string254 var_val;
+    enum mmagic_status status;
+    var_val.len = strlen(var);
+    if (var_val.len > sizeof(var_val.data) - 1)
+    {
+        return MMAGIC_STATUS_INVALID_ARG;
+    }
+    memcpy(var_val.data, (const uint8_t *)var, var_val.len);
+    memset(var_val.data + var_val.len, 0, sizeof(var_val.data) - var_val.len);
+    status = mmagic_controller_tx(controller, CONTROL_STREAM, MMAGIC_NTP, MMAGIC_NTP_CMD_SET,
+                                  MMAGIC_NTP_VAR_SERVER, (uint8_t *)&var_val, sizeof(var_val));
+    if (status != MMAGIC_STATUS_OK)
+    {
+        return status;
+    }
+    status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_NTP, MMAGIC_NTP_CMD_SET,
+                                  MMAGIC_NTP_VAR_SERVER, NULL, 0,
+                                  MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
+    return status;
+}
+
+/**
+ * Saves all settings from persistent store.
+ *
+ * @param  controller Reference to the controller handle.
+ *
+ * @return            MMAGIC_STATUS_OK on success, else an error code.
+ */
+static inline enum mmagic_status mmagic_controller_ntp_commit_all(
+    struct mmagic_controller *controller)
+{
+    enum mmagic_status status;
+    status = mmagic_controller_tx(controller, CONTROL_STREAM, MMAGIC_NTP, MMAGIC_NTP_CMD_COMMIT, 0,
+                                  NULL, 0);
+    if (status != MMAGIC_STATUS_OK)
+    {
+        return status;
+    }
+    status = mmagic_controller_rx(controller, CONTROL_STREAM, MMAGIC_NTP, MMAGIC_NTP_CMD_COMMIT, 0,
+                                  NULL, 0, MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
+    return status;
+}
+
+/** @} */
+
+/**
+ * Synchronizes internal time using the NTP server.
+ *
+ * @param  controller Reference to the controller handle.
+ *
+ * @return            @ref MMAGIC_STATUS_OK else an appropriate error code.
+ */
+static inline enum mmagic_status mmagic_controller_ntp_sync(struct mmagic_controller *controller)
+{
+    enum mmagic_status status;
+    const uint8_t stream_id = CONTROL_STREAM;
+    uint32_t response_timeout_ms = MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS;
+
+    status = mmagic_controller_tx(controller, stream_id, MMAGIC_NTP, MMAGIC_NTP_CMD_SYNC, 0, NULL,
+                                  0);
+    if (status != MMAGIC_STATUS_OK)
+    {
+        return status;
+    }
+    return mmagic_controller_rx(controller, stream_id, MMAGIC_NTP, MMAGIC_NTP_CMD_SYNC, 0, NULL, 0,
+                                response_timeout_ms);
+    return status;
+}
+
+/** Response arguments structure for ntp_get_time */
+struct MM_PACKED mmagic_core_ntp_get_time_rsp_args
+{
+    /** Current internal time (Seconds since epoch, UTC). */
+    uint64_t timestamp;
+};
+
+/**
+ * Reads current internal time.
+ *
+ * @param      controller Reference to the controller handle.
+ * @param[out] rsp_args   Pointer to the data structure to be filled out with the result. If the
+ *                          If the return code is not @ref MMAGIC_STATUS_OK then the
+ *                          contents of this structure will be undefined.
+ *
+ * @return                @ref MMAGIC_STATUS_OK else an appropriate error code.
+ */
+static inline enum mmagic_status mmagic_controller_ntp_get_time(
+    struct mmagic_controller *controller,
+    struct
+    mmagic_core_ntp_get_time_rsp_args *rsp_args)
+{
+    enum mmagic_status status;
+    const uint8_t stream_id = CONTROL_STREAM;
+    uint32_t response_timeout_ms = MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS;
+
+    status = mmagic_controller_tx(controller, stream_id, MMAGIC_NTP, MMAGIC_NTP_CMD_GET_TIME, 0,
+                                  NULL, 0);
+    if (status != MMAGIC_STATUS_OK)
+    {
+        return status;
+    }
+    status = mmagic_controller_rx(controller, stream_id, MMAGIC_NTP, MMAGIC_NTP_CMD_GET_TIME, 0,
+                                  (uint8_t *)rsp_args, sizeof(*rsp_args), response_timeout_ms);
+    return status;
+}
+
+/** @} */
+
+/**
+ * @defgroup MMAGIC_CONTROLLER_MQTT Module mqtt: MQTT agent.
+ * @{
+ */
+
+/** Command arguments structure for mqtt_start_agent */
+struct MM_PACKED mmagic_core_mqtt_start_agent_cmd_args
+{
+    /** URL of the broker to connect to. */
+    struct string254 url;
+    /** Port of the broker to connect to. */
+    uint16_t port;
+    /** Username to connect to the broker. */
+    struct string100 username;
+    /** Password to connect to the broker. */
+    struct string100 password;
+    /** Enables TLS for brokers that require it. Configure certificates through the TLS module. */
+    bool secure;
+};
+
+/** Response arguments structure for mqtt_start_agent */
+struct MM_PACKED mmagic_core_mqtt_start_agent_rsp_args
+{
+    /** Stream ID of the opened socket. */
+    uint8_t stream_id;
+};
+
+/**
+ * Starts the MQTT agent. Automatically handles reconnects with a backoff timer and saves up to 10
+ * subscriptions across reconnects. Listen to "broker_connection" events for information about the
+ * state of the connection to the broker.
+ *
+ * @param      controller Reference to the controller handle.
+ * @param[in]  cmd_args   Command arguments
+ * @param[out] rsp_args   Pointer to the data structure to be filled out with the result. If the
+ *                          If the return code is not @ref MMAGIC_STATUS_OK then the
+ *                          contents of this structure will be undefined.
+ *
+ * @return                @ref MMAGIC_STATUS_OK else an appropriate error code.
+ */
+static inline enum mmagic_status mmagic_controller_mqtt_start_agent(
+    struct mmagic_controller *controller,
+    struct
+    mmagic_core_mqtt_start_agent_cmd_args *cmd_args,
+    struct
+    mmagic_core_mqtt_start_agent_rsp_args *rsp_args)
+{
+    enum mmagic_status status;
+    const uint8_t stream_id = CONTROL_STREAM;
+    uint32_t response_timeout_ms = MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS;
+
+    status = mmagic_controller_tx(controller, stream_id, MMAGIC_MQTT, MMAGIC_MQTT_CMD_START_AGENT,
+                                  0, (uint8_t *)cmd_args, sizeof(*cmd_args));
+    if (status != MMAGIC_STATUS_OK)
+    {
+        return status;
+    }
+    status = mmagic_controller_rx(controller, stream_id, MMAGIC_MQTT, MMAGIC_MQTT_CMD_START_AGENT,
+                                  0, (uint8_t *)rsp_args, sizeof(*rsp_args), response_timeout_ms);
+    return status;
+}
+
+/** Command arguments structure for mqtt_publish */
+struct MM_PACKED mmagic_core_mqtt_publish_cmd_args
+{
+    /** Stream ID of the MQTT connection. */
+    uint8_t stream_id;
+    /** MQTT topic to publish to. */
+    struct string254 topic;
+    /** Contents of the message. */
+    struct raw1536 payload;
+    /** MQTT quality of service (0-2). Only 0 is supported for now. */
+    uint8_t qos;
+};
+
+/**
+ * Publishes a message on a topic.
+ *
+ * @param     controller Reference to the controller handle.
+ * @param[in] cmd_args   Command arguments
+ *
+ * @return               @ref MMAGIC_STATUS_OK else an appropriate error code.
+ */
+static inline enum mmagic_status mmagic_controller_mqtt_publish(
+    struct mmagic_controller *controller,
+    struct
+    mmagic_core_mqtt_publish_cmd_args *cmd_args)
+{
+    enum mmagic_status status;
+    const uint8_t stream_id = CONTROL_STREAM;
+    uint32_t response_timeout_ms = MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS;
+
+    status = mmagic_controller_tx(controller, stream_id, MMAGIC_MQTT, MMAGIC_MQTT_CMD_PUBLISH, 0,
+                                  (uint8_t *)cmd_args, sizeof(*cmd_args));
+    if (status != MMAGIC_STATUS_OK)
+    {
+        return status;
+    }
+    status = mmagic_controller_rx(controller, stream_id, MMAGIC_MQTT, MMAGIC_MQTT_CMD_PUBLISH, 0,
+                                  NULL, 0, response_timeout_ms);
+    return status;
+}
+
+/** Command arguments structure for mqtt_subscribe */
+struct MM_PACKED mmagic_core_mqtt_subscribe_cmd_args
+{
+    /** Stream ID of the MQTT connection. */
+    uint8_t stream_id;
+    /** MQTT topic to subscribe to. */
+    struct string254 topic;
+    /** MQTT quality of service (0-2). Only 0 is supported for now. */
+    uint8_t qos;
+};
+
+/**
+ * Subscribes to a topic. Messages will arrive in the "message_received" event.
+ *
+ * @param     controller Reference to the controller handle.
+ * @param[in] cmd_args   Command arguments
+ *
+ * @return               @ref MMAGIC_STATUS_OK else an appropriate error code.
+ */
+static inline enum mmagic_status mmagic_controller_mqtt_subscribe(
+    struct mmagic_controller *controller,
+    struct
+    mmagic_core_mqtt_subscribe_cmd_args *cmd_args)
+{
+    enum mmagic_status status;
+    const uint8_t stream_id = CONTROL_STREAM;
+    uint32_t response_timeout_ms = MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS;
+
+    status = mmagic_controller_tx(controller, stream_id, MMAGIC_MQTT, MMAGIC_MQTT_CMD_SUBSCRIBE, 0,
+                                  (uint8_t *)cmd_args, sizeof(*cmd_args));
+    if (status != MMAGIC_STATUS_OK)
+    {
+        return status;
+    }
+    status = mmagic_controller_rx(controller, stream_id, MMAGIC_MQTT, MMAGIC_MQTT_CMD_SUBSCRIBE, 0,
+                                  NULL, 0, response_timeout_ms);
+    return status;
+}
+
+/** Command arguments structure for mqtt_stop_agent */
+struct MM_PACKED mmagic_core_mqtt_stop_agent_cmd_args
+{
+    /** Stream ID of the MQTT connection. */
+    uint8_t stream_id;
+};
+
+/**
+ * Stops the MQTT agent.
+ *
+ * @param     controller Reference to the controller handle.
+ * @param[in] cmd_args   Command arguments
+ *
+ * @return               @ref MMAGIC_STATUS_OK else an appropriate error code.
+ */
+static inline enum mmagic_status mmagic_controller_mqtt_stop_agent(
+    struct mmagic_controller *controller,
+    struct
+    mmagic_core_mqtt_stop_agent_cmd_args *cmd_args)
+{
+    enum mmagic_status status;
+    const uint8_t stream_id = CONTROL_STREAM;
+    uint32_t response_timeout_ms = MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS;
+
+    status = mmagic_controller_tx(controller, stream_id, MMAGIC_MQTT, MMAGIC_MQTT_CMD_STOP_AGENT, 0,
+                                  (uint8_t *)cmd_args, sizeof(*cmd_args));
+    if (status != MMAGIC_STATUS_OK)
+    {
+        return status;
+    }
+    status = mmagic_controller_rx(controller, stream_id, MMAGIC_MQTT, MMAGIC_MQTT_CMD_STOP_AGENT, 0,
+                                  NULL, 0, response_timeout_ms);
+    return status;
+}
+
+/** Event arguments structure for mqtt_message_received */
+struct MM_PACKED mmagic_mqtt_message_received_event_args
+{
+    /** Stream ID of the MQTT connection. */
+    uint8_t stream_id;
+    /** MQTT topic the message was received on. */
+    struct string254 topic;
+    /** Contents of the message. */
+    struct raw1536 payload;
+};
+
+/**
+ * Handler for the mqtt-message_received event.
+ *
+ * Triggered when a message is received on a topic that has been subscribed to.
+ *
+ * @note This function will be invoked in the context of the controller data link thread
+ *       and should perform minimal processing.
+ *
+ * @warning This function must not invoke any mmagic API functions.
+ *
+ * @param event_args Notication arguments received from the agent.
+ * @param arg        Opaque argument that was provided when the callback was registered.
+ */
+typedef void (*mmagic_mqtt_message_received_event_handler_t)(
+    const struct mmagic_mqtt_message_received_event_args *event_args, void *arg);
+
+/**
+ * Register a handler for the mqtt-message_received event.
+ *
+ * Triggered when a message is received on a topic that has been subscribed to.
+ *
+ * @note The handler callbacks will be invoked in the context of the controller data link
+ *       thread. The handler should perform minimal processing.
+ *
+ * @warning The handler callback must not invoke any mmagic API functions.
+ *
+ * @param controller Reference to the the controller handle.
+ * @param handler    The handler function to register.
+ * @param arg        Opaque argument to be passed to the handler when it is invoked.
+ */
+void mmagic_controller_register_mqtt_message_received_handler(
+    struct mmagic_controller *controller,
+    mmagic_mqtt_message_received_event_handler_t handler, void *arg);
+
+/** Event arguments structure for mqtt_broker_connection */
+struct MM_PACKED mmagic_mqtt_broker_connection_event_args
+{
+    /** Stream ID of the MQTT connection. */
+    uint8_t stream_id;
+    /** Current state of the connection to the broker. */
+    enum mmagic_status connection_state;
+};
+
+/**
+ * Handler for the mqtt-broker_connection event.
+ *
+ * State of the connection to the broker (see mqtt-start).
+ *
+ * @note This function will be invoked in the context of the controller data link thread
+ *       and should perform minimal processing.
+ *
+ * @warning This function must not invoke any mmagic API functions.
+ *
+ * @param event_args Notication arguments received from the agent.
+ * @param arg        Opaque argument that was provided when the callback was registered.
+ */
+typedef void (*mmagic_mqtt_broker_connection_event_handler_t)(
+    const struct mmagic_mqtt_broker_connection_event_args *event_args, void *arg);
+
+/**
+ * Register a handler for the mqtt-broker_connection event.
+ *
+ * State of the connection to the broker (see mqtt-start).
+ *
+ * @note The handler callbacks will be invoked in the context of the controller data link
+ *       thread. The handler should perform minimal processing.
+ *
+ * @warning The handler callback must not invoke any mmagic API functions.
+ *
+ * @param controller Reference to the the controller handle.
+ * @param handler    The handler function to register.
+ * @param arg        Opaque argument to be passed to the handler when it is invoked.
+ */
+void mmagic_controller_register_mqtt_broker_connection_handler(
+    struct mmagic_controller *controller,
+    mmagic_mqtt_broker_connection_event_handler_t handler, void *arg);
 
 /** @} */
 

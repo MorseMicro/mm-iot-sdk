@@ -12,7 +12,7 @@
 #ifndef DPP_H
 #define DPP_H
 
-#ifdef CONFIG_DPP
+#if  defined(CONFIG_DPP) || defined(MM_IOT_DPP_HEADER)
 #include "utils/list.h"
 #include "common/wpa_common.h"
 #include "crypto/sha256.h"
@@ -224,9 +224,11 @@ struct dpp_pkex {
 	struct crypto_ec_key *peer_bootstrap_key;
 	struct wpabuf *exchange_req;
 	struct wpabuf *exchange_resp;
+	struct wpabuf *commit_reveal_req;
 	unsigned int t; /* number of failures on code use */
 	unsigned int exch_req_wait_time;
 	unsigned int exch_req_tries;
+	unsigned int commit_reveal_tries;
 	unsigned int freq;
 	u8 peer_version;
 	struct wpabuf *enc_key;
@@ -338,6 +340,7 @@ struct dpp_authentication {
 	int waiting_auth_conf;
 	int auth_req_ack;
 	unsigned int auth_resp_tries;
+	unsigned int conf_req_tries;
 	u8 allowed_roles;
 	int configurator;
 	int remove_on_tx_status;
@@ -865,5 +868,64 @@ int dpp_update_reconfig_id(struct dpp_reconfig_id *id);
 void dpp_free_reconfig_id(struct dpp_reconfig_id *id);
 int dpp_get_pubkey_hash(struct crypto_ec_key *key, u8 *hash);
 
-#endif /* CONFIG_DPP */
+/* --------------------------------------------------------------------------------------------- */
+/* This is intended to be a lighter weight way to get feedback on DPP events from hostap. */
+
+enum morse_dpp_event_type
+{
+    /** Equivalent to @c DPP_EVENT_PB_RESULT. */
+	MORSE_DPP_EVT_PB_RESULT,
+};
+
+/** Enumeration of the different result reported using the @c DPP_EVENT_PB_RESULT hostap event.  */
+enum morse_dpp_pb_result
+{
+	MORSE_DPP_PB_RESULT_SUCCESS,
+	MORSE_DPP_PB_RESULT_FAILED,
+	MORSE_DPP_PB_RESULT_SESSION_OVERLAP,
+	MORSE_DPP_PB_RESULT_NO_CONFIG,
+	MORSE_DPP_PB_RESULT_COULD_NOT_CONNECT,
+};
+
+struct morse_dpp_event
+{
+	enum morse_dpp_event_type type;
+	union
+	{
+	    struct
+		{
+		    /** Equivalent to the strings reported using @c DPP_EVENT_PB_RESULT */
+			enum morse_dpp_pb_result result;
+			/** Reference to a configuration result on success. May be @NULL if no conf_obj was
+			 * available. */
+			const struct dpp_config_obj *conf_obj;
+		} pb_result;
+	} args;
+};
+
+#ifdef MM_IOT_DPP_EVENTS
+#define MORSE_DPP_EVT_ARGS(_type, _args_type, ...) (struct morse_dpp_event) { \
+    .type = (_type), \
+    .args = { ._args_type = { __VA_ARGS__ }}, \
+}
+
+#define MORSE_DPP_EVT_CALL(_type, _field, ...)                     \
+    morse_dpp_event(__func__, __LINE__,                            \
+        &(MORSE_DPP_EVT_ARGS(_type, _field, __VA_ARGS__)))
+
+
+/**
+ * Function that can be used to emit DPP event from hostap.
+ *
+ * @param func  Function where the event was triggered. Used for debugging.
+ * @param line  Line nubmer where the event was triggeredf. Used for debugging.
+ * @param evt   Reference to the DPP event that occured. This is only valid for the lifetime of the
+ *              function.
+ */
+void morse_dpp_event(const char *func, int line, const struct morse_dpp_event *evt);
+#else
+#define MORSE_DPP_EVT_CALL(_type, _field, ...)	((void)0)
+#endif /* MM_IOT_DPP_EVENTS*/
+
+#endif /* CONFIG_DPP || MM_IOT_DPP_HEADER */
 #endif /* DPP_H */

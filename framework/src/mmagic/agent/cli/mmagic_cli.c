@@ -12,7 +12,6 @@
 #include "cli/autogen/mmagic_cli_iperf.h"
 #include "cli/autogen/mmagic_cli_sys.h"
 #include "cli/autogen/mmagic_cli_internal.h"
-#include "cli/autogen/mmagic_cli.def"
 
 /* In one (and only one) compilation unit (.c/.cpp file) define macro to unwrap implementations */
 #define EMBEDDED_CLI_IMPL
@@ -111,7 +110,7 @@ void mmagic_cli_set(EmbeddedCli *cli, char *args, void *context)
     struct mmagic_cli *ctx = (struct mmagic_cli *)cli->appContext;
 
     uint16_t num_tokens = embeddedCliGetTokenCount(args);
-    if (num_tokens < 2)
+    if (num_tokens < 1)
     {
         embeddedCliPrint(cli, "Invalid number of arguments");
         return;
@@ -119,6 +118,11 @@ void mmagic_cli_set(EmbeddedCli *cli, char *args, void *context)
 
     const char *var = embeddedCliGetToken(args, 1);
     const char *val = embeddedCliGetToken(args, 2);
+
+    if (val == NULL)
+    {
+        val = "";
+    }
 
     char *variable;
     char *dot = strstr(var, ".");
@@ -223,7 +227,8 @@ static void mmagic_cli_register_default_bindings(struct mmagic_cli *ctx)
 {
     embeddedCliAddBinding(ctx->cli, (CliCommandBinding) {
         "get",
-        "Retrieves the value of a given config variable, `all` to list all available.",
+        "Retrieves the value of a given config variable, `all` to list all available.\n"
+        "\tPrints (empty) when no value is set.",
         true,
         ctx,
         mmagic_cli_get
@@ -231,7 +236,7 @@ static void mmagic_cli_register_default_bindings(struct mmagic_cli *ctx)
 
     embeddedCliAddBinding(ctx->cli, (CliCommandBinding) {
         "set",
-        "Set the value of the variable specified.",
+        "Set the value of the variable specified. Providing no value will clear the variable.",
         true,
         ctx,
         mmagic_cli_set
@@ -299,7 +304,7 @@ struct mmagic_cli *mmagic_cli_init(const struct mmagic_cli_init_args *args)
     ctx->cli = embeddedCliNew(ctx->config);
     if (ctx->cli == NULL)
     {
-        printf("Failed to init CLI\n");
+        mmosal_printf("Failed to init CLI\n");
         return NULL;
     }
 

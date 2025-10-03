@@ -3538,6 +3538,15 @@ static int hostapd_config_fill(struct hostapd_config *conf,
 			return 1;
 		}
 		bss->dtim_period = val;
+	} else if (os_strcmp(buf, "short_beacon_int") == 0) {
+		int val = atoi(pos);
+
+		if (val < 1 || val > 65535) {
+			wpa_printf(MSG_ERROR, "Line %d: invalid short_beacon_int %d",
+				   line, val);
+			return 1;
+		}
+		bss->short_beacon_int = val;
 	} else if (os_strcmp(buf, "bss_load_update_period") == 0) {
 		int val = atoi(pos);
 
@@ -3817,6 +3826,8 @@ static int hostapd_config_fill(struct hostapd_config *conf,
 		conf->s1g_prim_chwidth = atoi(pos);
 	} else if (os_strcmp(buf, "s1g_prim_1mhz_chan_index") == 0) {
 		conf->s1g_prim_1mhz_chan_index = atoi(pos);
+	} else if (os_strcmp(buf, "raw") == 0) {
+		bss->raw_enabled = atoi(pos);
 	} else if (os_strcmp(buf, "s1g_capab") == 0) {
 		conf->s1g_capab = 0;
 		if (hostapd_config_s1g_capab(conf, pos) < 0) {
@@ -4011,6 +4022,18 @@ static int hostapd_config_fill(struct hostapd_config *conf,
 		}
 		conf->mbssid = mbssid;
 #endif /* CONFIG_IEEE80211AX || CONFIG_IEEE80211AH */
+#ifdef CONFIG_IEEE80211AH
+	} else if (os_strcmp(buf, "ieee80211ah") == 0) {
+		conf->ieee80211ah = atoi(pos);
+	} else if (os_strcmp(buf, "s1g_start_freq") == 0) {
+		conf->s1g_start_freq = atoi(pos);
+	} else if (os_strcmp(buf, "s1g_oper_chwidth") == 0) {
+		conf->s1g_oper_chwidth = atoi(pos);
+	} else if (os_strcmp(buf, "s1g_op_class") == 0) {
+		conf->s1g_op_class = atoi(pos);
+	} else if (os_strcmp(buf, "s1g_basic_mcs_nss_set") == 0) {
+		conf->s1g_basic_mcs_nss_set = atoi(pos);
+#endif /* CONFIG_IEEE80211AH */
 	} else if (os_strcmp(buf, "max_listen_interval") == 0) {
 		bss->max_listen_interval = atoi(pos);
 	} else if (os_strcmp(buf, "disable_pmksa_caching") == 0) {

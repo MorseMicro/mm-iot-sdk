@@ -644,18 +644,23 @@ int hostapd_flush(struct hostapd_data *hapd)
 
 
 int hostapd_set_freq(struct hostapd_data *hapd, enum hostapd_hw_mode mode,
-		     int freq, int channel, int edmg, u8 edmg_channel,
+		     int freq, int freq_khz, int channel,
+		     int edmg, u8 edmg_channel,
 		     int ht_enabled, int vht_enabled,
 		     int he_enabled, bool eht_enabled,
+		     int s1g_enabled,
 		     int sec_channel_offset, int oper_chwidth,
-		     int center_segment0, int center_segment1)
+		     int center_segment0, int center_segment1,
+		     int prim_bandwidth, int prim_ch_index)
 {
 	struct hostapd_freq_params data;
 	struct hostapd_hw_modes *cmode = hapd->iface->current_mode;
 
-	if (hostapd_set_freq_params(&data, mode, freq, channel, edmg,
+	if (hostapd_set_freq_params(&data, mode, freq, freq_khz,
+				    channel, edmg,
 				    edmg_channel, ht_enabled,
-				    vht_enabled, he_enabled, eht_enabled,
+				    vht_enabled, he_enabled,
+				    eht_enabled, s1g_enabled,
 				    sec_channel_offset, oper_chwidth,
 				    center_segment0, center_segment1,
 				    cmode ? cmode->vht_capab : 0,
@@ -663,21 +668,14 @@ int hostapd_set_freq(struct hostapd_data *hapd, enum hostapd_hw_mode mode,
 				    &cmode->he_capab[IEEE80211_MODE_AP] : NULL,
 				    cmode ?
 				    &cmode->eht_capab[IEEE80211_MODE_AP] :
-				    NULL, hostapd_get_punct_bitmap(hapd)))
+				    NULL, hostapd_get_punct_bitmap(hapd),
+				    prim_bandwidth, prim_ch_index))
 		return -1;
 
 	if (hapd->driver == NULL)
 		return 0;
 	if (hapd->driver->set_freq == NULL)
 		return 0;
-
-#ifdef CONFIG_IEEE80211AH
-	if (hapd->iface->conf->ieee80211ah) {
-		/* Need to get the correct center channel and freq */
-		int ht_center_chan = morse_ht_chan_to_ht_chan_center(hapd->iface->conf, data.channel);
-		data.center_freq1 = ieee80211_channel_to_frequency(ht_center_chan, NL80211_BAND_5GHZ);
-	}
-#endif
 
 	data.link_id = -1;
 
@@ -1009,10 +1007,12 @@ int hostapd_drv_send_action_forced_addr3(struct hostapd_data *hapd,
 
 int hostapd_start_dfs_cac(struct hostapd_iface *iface,
 			  enum hostapd_hw_mode mode, int freq,
-			  int channel, int ht_enabled, int vht_enabled,
-			  int he_enabled, bool eht_enabled,
+			  int channel, int ht_enabled,
+			  int vht_enabled, int he_enabled,
+			  bool eht_enabled, int s1g_enabled,
 			  int sec_channel_offset, int oper_chwidth,
 			  int center_segment0, int center_segment1,
+			  int prim_bandwidth, int prim_ch_index,
 			  bool radar_background)
 {
 	struct hostapd_data *hapd = iface->bss[0];
@@ -1029,16 +1029,18 @@ int hostapd_start_dfs_cac(struct hostapd_iface *iface,
 		return -1;
 	}
 
-	if (hostapd_set_freq_params(&data, mode, freq, channel, 0, 0,
+	if (hostapd_set_freq_params(&data, mode, freq, 0, channel, 0, 0,
 				    ht_enabled,
-				    vht_enabled, he_enabled, eht_enabled,
+				    vht_enabled, he_enabled,
+				    eht_enabled, s1g_enabled,
 				    sec_channel_offset,
 				    oper_chwidth, center_segment0,
 				    center_segment1,
 				    cmode->vht_capab,
 				    &cmode->he_capab[IEEE80211_MODE_AP],
 				    &cmode->eht_capab[IEEE80211_MODE_AP],
-				    hostapd_get_punct_bitmap(hapd))) {
+				    hostapd_get_punct_bitmap(hapd),
+				    prim_bandwidth, prim_ch_index)) {
 		wpa_printf(MSG_ERROR, "Can't set freq params");
 		return -1;
 	}

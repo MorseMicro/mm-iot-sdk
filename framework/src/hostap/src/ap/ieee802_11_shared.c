@@ -479,6 +479,22 @@ static void hostapd_ext_capab_byte(struct hostapd_data *hapd, u8 *pos, int idx,
 	}
 }
 
+u8 * hostapd_eid_aid_response(struct hostapd_data *hapd, u8 *eid, le16 aid)
+{
+	u8 *pos = eid;
+	const u8 len = 5;
+
+	*pos++ = WLAN_EID_AID_RESPONSE;
+	*pos++ = len;
+
+	memset(pos, 0, len);
+	u8 *end = pos + len;
+
+	*pos++ = aid;
+
+
+	return end;
+}
 
 u8 * hostapd_eid_ext_capab(struct hostapd_data *hapd, u8 *eid,
 			   bool mbssid_complete)

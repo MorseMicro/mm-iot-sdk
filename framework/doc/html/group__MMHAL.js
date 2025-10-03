@@ -46,7 +46,7 @@ var group__MMHAL =
     [ "mmhal_get_isr_state", "group__MMHAL.html#gadf52078b3c4bb38e2b8f8d8074516e2f", null ],
     [ "mmhal_get_littlefs_config", "group__MMHAL.html#ga9cf859409f0916684a34f5d4726cb2e3", null ],
     [ "mmhal_get_mmconfig_partition", "group__MMHAL.html#gaabe05e475ba03621d7e4ba776ed2d616", null ],
-    [ "mmhal_get_time", "group__MMHAL.html#gafab03afd7609cfbf88b0e3b101bc6831", null ],
+    [ "mmhal_get_time", "group__MMHAL.html#gac2c9fe492590de0ad2303e50e43d46a8", null ],
     [ "mmhal_init", "group__MMHAL.html#gaf7edd399817e2d06bb6e0d065c6ff7e8", null ],
     [ "mmhal_log_flush", "group__MMHAL.html#ga750f53e36947aecdde9d022c0d189df9", null ],
     [ "mmhal_log_write", "group__MMHAL.html#ga6aa1b4bbef7b22825aa7906285ac0ee2", null ],

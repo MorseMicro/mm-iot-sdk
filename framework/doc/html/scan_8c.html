@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.8.2</span>
+   &#160;<span id="projectnumber">2.9.7</span>
    </div>
   </td>
  </tr>
@@ -96,7 +96,8 @@ $(document).ready(function(){initNavTree('scan_8c.html',''); initResizable(); })
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Example application to demonstrate using the MMWLAN scan subsystem. </p>
-<dl class="section note"><dt>Note</dt><dd>It is assumed that you have followed the steps in the <a class="el" href="GETTING_STARTED.html">Getting Started</a> guide and are therefore familiar with how to build, flash, and monitor an application using the MM-IoT-SDK framework. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>It is assumed that you have followed the steps in the <a class="el" href="GETTING_STARTED.html">Getting Started</a> guide and are therefore familiar with how to build, flash, and monitor an application using the MM-IoT-SDK framework.</dd></dl>
+<p>This example application provides a very basic demonstration of the MMWLAN scan API. It simply initiates a scan (with default arguments) and displays all results. Note that the MMWLAN scan implementation does not sort or cache scan results. As such, it is possible that a single Access Point may appear multiple times in the results displayed by this example application. </p>
 
 <p class="definition">Definition in file <a class="el" href="scan_8c_source.html">scan.c</a>.</p>
 </div><div class="textblock"><code>#include &lt;string.h&gt;</code><br />
@@ -173,7 +174,7 @@ Variables</h2></td></tr>
 
 <p>ANSI escape sequence for bold text. </p>
 
-<p class="definition">Definition at line <a class="el" href="scan_8c_source.html#l00028">28</a> of file <a class="el" href="scan_8c_source.html">scan.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="scan_8c_source.html#l00033">33</a> of file <a class="el" href="scan_8c_source.html">scan.c</a>.</p>
 
 </div>
 </div>
@@ -191,7 +192,7 @@ Variables</h2></td></tr>
 
 <p>ANSI escape sequence to reset font. </p>
 
-<p class="definition">Definition at line <a class="el" href="scan_8c_source.html#l00030">30</a> of file <a class="el" href="scan_8c_source.html">scan.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="scan_8c_source.html#l00035">35</a> of file <a class="el" href="scan_8c_source.html">scan.c</a>.</p>
 
 </div>
 </div>
@@ -209,7 +210,7 @@ Variables</h2></td></tr>
 
 <p>Length of string representation of a MAC address (i.e., "XX:XX:XX:XX:XX:XX") including null terminator. </p>
 
-<p class="definition">Definition at line <a class="el" href="scan_8c_source.html#l00040">40</a> of file <a class="el" href="scan_8c_source.html">scan.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="scan_8c_source.html#l00045">45</a> of file <a class="el" href="scan_8c_source.html">scan.c</a>.</p>
 
 </div>
 </div>
@@ -233,7 +234,7 @@ Variables</h2></td></tr>
 <p>Main entry point to the application. </p>
 <p >This will be invoked in a thread once operating system and hardware initialization has completed. It may return, but it does not have to. </p>
 
-<p class="definition">Definition at line <a class="el" href="scan_8c_source.html#l00127">127</a> of file <a class="el" href="scan_8c_source.html">scan.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="scan_8c_source.html#l00132">132</a> of file <a class="el" href="scan_8c_source.html">scan.c</a>.</p>
 
 </div>
 </div>
@@ -280,7 +281,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="scan_8c_source.html#l00116">116</a> of file <a class="el" href="scan_8c_source.html">scan.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="scan_8c_source.html#l00121">121</a> of file <a class="el" href="scan_8c_source.html">scan.c</a>.</p>
 
 </div>
 </div>
@@ -327,7 +328,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="scan_8c_source.html#l00051">51</a> of file <a class="el" href="scan_8c_source.html">scan.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="scan_8c_source.html#l00056">56</a> of file <a class="el" href="scan_8c_source.html">scan.c</a>.</p>
 
 </div>
 </div>
@@ -354,7 +355,7 @@ Variables</h2></td></tr>
 
 <p>Number of results found. </p>
 
-<p class="definition">Definition at line <a class="el" href="scan_8c_source.html#l00043">43</a> of file <a class="el" href="scan_8c_source.html">scan.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="scan_8c_source.html#l00048">48</a> of file <a class="el" href="scan_8c_source.html">scan.c</a>.</p>
 
 </div>
 </div>
@@ -364,7 +365,7 @@ Variables</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_1051a0a86fe889e57b2c2b0562fadebe.html">examples</a></li><li class="navelem"><a class="el" href="dir_f8337c5bc7ac05a6f7824297429a94aa.html">scan</a></li><li class="navelem"><a class="el" href="dir_7116bcae3e14d2a84f1dfa4137a6c26d.html">src</a></li><li class="navelem"><a class="el" href="scan_8c.html">scan.c</a></li>
+    <li class="navelem"><a class="el" href="dir_91b8f418cff946e8d8b598a9068417a8.html">examples</a></li><li class="navelem"><a class="el" href="dir_df049d7887a6c6d0e97833f712b1b15c.html">scan</a></li><li class="navelem"><a class="el" href="dir_f9adac58fe2d0c6d8f22c1f29201cc65.html">src</a></li><li class="navelem"><a class="el" href="scan_8c.html">scan.c</a></li>
     <li class="footer">Copyright 2021 Morse Micro </li>
   </ul>
 </div>

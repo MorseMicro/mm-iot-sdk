@@ -53,8 +53,9 @@ void mmagic_core_tcp_start(struct mmagic_data *core);
 /** Command arguments structure for tcp_connect */
 struct MM_PACKED mmagic_core_tcp_connect_cmd_args
 {
-    struct struct_string_254 url;
+    struct string254 url;
     uint16_t port;
+    bool enable_tls;
 };
 
 /** Response arguments structure for tcp_connect */
@@ -96,7 +97,7 @@ struct MM_PACKED mmagic_core_tcp_recv_cmd_args
 /** Response arguments structure for tcp_recv */
 struct MM_PACKED mmagic_core_tcp_recv_rsp_args
 {
-    struct struct_packet_buffer buffer;
+    struct raw1536 buffer;
 };
 
 enum mmagic_status mmagic_core_tcp_recv(
@@ -108,7 +109,7 @@ enum mmagic_status mmagic_core_tcp_recv(
 struct MM_PACKED mmagic_core_tcp_send_cmd_args
 {
     uint8_t stream_id;
-    struct struct_packet_buffer buffer;
+    struct raw1536 buffer;
 };
 
 enum mmagic_status mmagic_core_tcp_send(

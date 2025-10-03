@@ -13,10 +13,10 @@
 extern "C" {
 #endif
 
-typedef struct mmosal_sem   *sys_sem_t;
+typedef struct mmosal_sem *sys_sem_t;
 typedef struct mmosal_mutex *sys_mutex_t;
 typedef struct mmosal_queue *sys_mbox_t;
-typedef struct mmosal_task  *sys_thread_t;
+typedef struct mmosal_task *sys_thread_t;
 
 #define sys_mutex_valid(mutex)              ((*(mutex)) != NULL)
 #define sys_mutex_set_invalid(mutex)        ((*(mutex)) = NULL)
@@ -28,15 +28,14 @@ typedef struct mmosal_task  *sys_thread_t;
 #define sys_mbox_set_invalid(mbox)          ((*(mbox)) = NULL)
 #define sys_jiffies()                       (mmosal_get_time_ticks())
 
-
 extern sys_mutex_t lock_tcpip_core;
 extern sys_thread_t sys_tcpip_thread;
 
 #define sys_mark_tcpip_thread() (sys_tcpip_thread = mmosal_task_get_active())
-#define sys_assert_core_locked()                                                            \
-    LWIP_ASSERT("tcpiplock",                                                                \
-                (mmhal_get_isr_state() != MMHAL_IN_ISR) &&                                  \
-                (!sys_tcpip_thread || mmosal_mutex_is_held_by_active_task(lock_tcpip_core)))
+#define sys_assert_core_locked()                               \
+        LWIP_ASSERT("tcpiplock",                               \
+                    (mmhal_get_isr_state() != MMHAL_IN_ISR) && \
+                    (!sys_tcpip_thread || mmosal_mutex_is_held_by_active_task(lock_tcpip_core)))
 
 #ifdef __cplusplus
 }

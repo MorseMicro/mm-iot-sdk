@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#include "mmekh05_hal_common.h"
+#include "mm_hal_common.h"
 #include "stm32u5xx_ll_sdmmc.h"
 
 
@@ -142,14 +142,14 @@ int mmhal_wlan_sdio_startup(void)
     ret = SDMMC_Init(WLAN_SDMMC, Init);
         if (ret != HAL_OK)
     {
-        LOG_ERR("%s:%d: SDMMC_Init failed\n", __FUNCTION__, __LINE__);
+        LOG_ERR("%s:%d: SDMMC_Init failed\n", __func__, __LINE__);
         return ret;
     }
 
     ret = SDMMC_PowerState_ON(WLAN_SDMMC);
     if (ret != HAL_OK)
     {
-        LOG_ERR("%s:%d: %s failed\n", __FUNCTION__, __LINE__, "PowerState");
+        LOG_ERR("%s:%d: %s failed\n", __func__, __LINE__, "PowerState");
         return ret;
     }
 
@@ -161,7 +161,7 @@ int mmhal_wlan_sdio_startup(void)
     ret = SDMMC_CmdGoIdleState(WLAN_SDMMC);
     if (ret != HAL_OK)
     {
-        LOG_ERR("%s:%d: %s failed\n", __FUNCTION__, __LINE__, "CMD0");
+        LOG_ERR("%s:%d: %s failed\n", __func__, __LINE__, "CMD0");
         return ret;
     }
 
@@ -169,7 +169,7 @@ int mmhal_wlan_sdio_startup(void)
     ret = SDMMC_CmdOperCond(WLAN_SDMMC);
     if (ret != HAL_OK)
     {
-        LOG_ERR("%s:%d: %s failed\n", __FUNCTION__, __LINE__, "CMD8");
+        LOG_ERR("%s:%d: %s failed\n", __func__, __LINE__, "CMD8");
         return ret;
     }
 
@@ -177,21 +177,21 @@ int mmhal_wlan_sdio_startup(void)
     ret = mmhal_wlan_sdio_cmd(5, 0xfc0000, &rsp);
     if (ret != HAL_OK)
     {
-        LOG_ERR("%s:%d: %s failed\n", __FUNCTION__, __LINE__, "CMD8");
+        LOG_ERR("%s:%d: %s failed\n", __func__, __LINE__, "CMD8");
         return ret;
     }
 
     ret = mmhal_wlan_sdio_cmd(3, 0, &rsp);
     if (ret != 0)
     {
-        LOG_ERR("%s:%d: CMD3 error\n", __FUNCTION__, __LINE__);
+        LOG_ERR("%s:%d: CMD3 error\n", __func__, __LINE__);
         return ret;
     }
 
     ret = mmhal_wlan_sdio_cmd(7, rsp & 0xffff0000, &rsp);
     if (ret != 0)
     {
-        LOG_ERR("%s:%d: CMD7 error\n", __FUNCTION__, __LINE__);
+        LOG_ERR("%s:%d: CMD7 error\n", __func__, __LINE__);
         return ret;
     }
 
@@ -200,7 +200,7 @@ int mmhal_wlan_sdio_startup(void)
         52, mmhal_make_cmd52_arg(MMHAL_SDIO_WRITE, MMHAL_SDIO_FUNCTION_0, 0x07, 0x02), &rsp);
     if (ret != 0)
     {
-        LOG_ERR("%s:%d: CMD52 error\n", __FUNCTION__, __LINE__);
+        LOG_ERR("%s:%d: CMD52 error\n", __func__, __LINE__);
         return ret;
     }
 #endif
@@ -209,7 +209,7 @@ int mmhal_wlan_sdio_startup(void)
         52, mmhal_make_cmd52_arg(MMHAL_SDIO_WRITE, MMHAL_SDIO_FUNCTION_0, 0x02, 0x06), &rsp);
     if (ret != 0)
     {
-        LOG_ERR("%s:%d: CMD52 error\n", __FUNCTION__, __LINE__);
+        LOG_ERR("%s:%d: CMD52 error\n", __func__, __LINE__);
         return ret;
     }
 
@@ -217,7 +217,7 @@ int mmhal_wlan_sdio_startup(void)
         52, mmhal_make_cmd52_arg(MMHAL_SDIO_WRITE, MMHAL_SDIO_FUNCTION_0, 0x04, 0x07), &rsp);
     if (ret != 0)
     {
-        LOG_ERR("%s:%d: CMD52 error\n", __FUNCTION__, __LINE__);
+        LOG_ERR("%s:%d: CMD52 error\n", __func__, __LINE__);
         return ret;
     }
 
@@ -225,7 +225,7 @@ int mmhal_wlan_sdio_startup(void)
         52, mmhal_make_cmd52_arg(MMHAL_SDIO_WRITE, MMHAL_SDIO_FUNCTION_1, 0x10000, 0x05), &rsp);
     if (ret != 0)
     {
-        LOG_ERR("%s:%d: CMD52 error\n", __FUNCTION__, __LINE__);
+        LOG_ERR("%s:%d: CMD52 error\n", __func__, __LINE__);
         return ret;
     }
 
@@ -233,7 +233,7 @@ int mmhal_wlan_sdio_startup(void)
         52, mmhal_make_cmd52_arg(MMHAL_SDIO_WRITE, MMHAL_SDIO_FUNCTION_1, 0x10001, 0x10), &rsp);
     if (ret != 0)
     {
-        LOG_ERR("%s:%d: CMD52 error\n", __FUNCTION__, __LINE__);
+        LOG_ERR("%s:%d: CMD52 error\n", __func__, __LINE__);
         return ret;
     }
 
@@ -241,7 +241,7 @@ int mmhal_wlan_sdio_startup(void)
         52, mmhal_make_cmd52_arg(MMHAL_SDIO_WRITE, MMHAL_SDIO_FUNCTION_1, 0x10002, 0x02), &rsp);
     if (ret != 0)
     {
-        LOG_ERR("%s:%d: CMD52 error\n", __FUNCTION__, __LINE__);
+        LOG_ERR("%s:%d: CMD52 error\n", __func__, __LINE__);
         return ret;
     }
 

@@ -44,3 +44,13 @@ MMIOT_SRCS_H += $(addprefix $(FREERTOS_COMMON_DIR)/,$(FREERTOS_COMMON_SRCS_H))
 MMIOT_INCLUDES += $(FREERTOS_COMMON_DIR)/include $(FREERTOS_COMMON_DIR)/mmiot/include
 
 CFLAGS-$(FREERTOS_COMMON_DIR) += -Wno-c++-compat
+
+# Enable queue registry. This allow for RTOS objects like queues and sempahores viewed if you are
+# using a RTOS kernel aware debugger. https://www.freertos.org/vQueueAddToRegistry.html
+DEBUG_BUILD_DEFINES += configQUEUE_REGISTRY_SIZE=15
+
+# Panic on malloc failure
+DEBUG_BUILD_DEFINES += configUSE_MALLOC_FAILED_HOOK=1
+
+# Enable FreeRTOS integrity checks to help catch cases of data structures getting trampled on
+#DEBUG_BUILD_DEFINES += configUSE_LIST_DATA_INTEGRITY_CHECK_BYTES=1

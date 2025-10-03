@@ -47,6 +47,8 @@ struct mmagic_datalink_controller
     bool rx_task_has_finished;
     /** Task handle for the background rx task. */
     struct mmosal_task *rx_task_handle;
+    /** Binary semaphore to signal the receive task when there is data available. */
+    struct mmosal_semb *rx_task_semb;
 };
 
 /**
@@ -249,7 +251,7 @@ void MMAGIC_DATALINK_CONTROLLER_IRQ_HANLDER(void)
     {
         LL_EXTI_ClearRisingFlag_0_31(MMAGIC_DATALINK_CONTROLLER_IRQ_LINE);
         struct mmagic_datalink_controller *controller_dl = mmagic_datalink_controller_get();
-        mmosal_task_notify_from_isr(controller_dl->rx_task_handle);
+        mmosal_semb_give_from_isr(controller_dl->rx_task_semb);
     }
 }
 
@@ -263,7 +265,7 @@ static void mmagic_datalink_controller_rx_task(void *arg)
 
     while (!controller_dl->shutdown)
     {
-        mmosal_task_wait_for_notification(UINT32_MAX);
+        mmosal_semb_wait(controller_dl->rx_task_semb, UINT32_MAX);
         struct mmbuf *rx_buf = mmagic_datalink_controller_rx_buffer(controller_dl);
         if (rx_buf != NULL)
         {
@@ -299,7 +301,13 @@ struct mmagic_datalink_controller *mmagic_datalink_controller_init(
     controller_dl->spi_mutex = mmosal_mutex_create("mmagic_datalink_spi");
     if (!controller_dl->spi_mutex)
     {
-        return NULL;
+        goto failure;
+    }
+
+    controller_dl->rx_task_semb = mmosal_semb_create("mmagic_datalink_rx");
+    if (!controller_dl->rx_task_semb)
+    {
+        goto failure;
     }
 
     controller_dl->rx_task_handle = mmosal_task_create(mmagic_datalink_controller_rx_task,
@@ -308,8 +316,7 @@ struct mmagic_datalink_controller *mmagic_datalink_controller_init(
                                                        "mmagic_datalink_rx");
     if (!controller_dl->rx_task_handle)
     {
-        mmosal_mutex_delete(controller_dl->spi_mutex);
-        return NULL;
+        goto failure;
     }
 
     controller_dl->spi_handle = &hspi2;
@@ -318,6 +325,18 @@ struct mmagic_datalink_controller *mmagic_datalink_controller_init(
     NVIC_EnableIRQ(MMAGIC_DATALINK_IRQ_EXTI_IRQn);
     controller_dl->initialized = true;
     return controller_dl;
+
+failure:
+    mmosal_mutex_delete(controller_dl->spi_mutex);
+    if (controller_dl->rx_task_semb)
+    {
+        mmosal_semb_delete(controller_dl->rx_task_semb);
+    }
+    if (controller_dl->rx_task_handle != NULL)
+    {
+        mmosal_task_delete(controller_dl->rx_task_handle);
+    }
+    return NULL;
 }
 
 /**

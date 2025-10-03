@@ -41,12 +41,12 @@ struct s1g_ht_chan_pair {
 static const int vht80_chans[] = {
 	42, 58, 106, 122, 155, 171
 };
-static const int num_vht80_chans = ARRAY_SIZE(vht80_chans);
+static const unsigned int num_vht80_chans = ARRAY_SIZE(vht80_chans);
 
 static const int vht160_chans[] = {
 	50, 114, 163
 };
-static const int num_vht160_chans = ARRAY_SIZE(vht160_chans);
+static const unsigned int num_vht160_chans = ARRAY_SIZE(vht160_chans);
 
 static const int ht_40_pri_1mhz_offset[] = {
 	-2, 2,
@@ -221,6 +221,7 @@ static const char *ah_country[] = {
 	[MORSE_AU] = "AU",
 	[MORSE_CA] = "CA",
 	[MORSE_EU] = "EU",
+	[MORSE_GB] = "GB",
 	[MORSE_IN] = "IN",
 	[MORSE_JP] = "JP",
 	[MORSE_KR] = "KR",
@@ -327,13 +328,26 @@ static const struct ah_class eu6 = {
 	.s1g_op_class_idx = 6,
 	.global_op_class = 66,
 	.s1g_width = IEEE80211_CHAN_1MHZ,
-	.cc_list = {"EU"},
+	.cc_list = {"EU", "GB"},
 	.chans = (
 		S1G_CHAN_ENABLED_FLAG(1) |
 		S1G_CHAN_ENABLED_FLAG(3) |
 		S1G_CHAN_ENABLED_FLAG(5) |
 		S1G_CHAN_ENABLED_FLAG(7) |
 		S1G_CHAN_ENABLED_FLAG(9)
+	),
+};
+
+static const struct ah_class eu7 = {
+	.s1g_freq_start = 863000,
+	.s1g_op_class = 7,
+	.s1g_op_class_idx = 7,
+	.global_op_class = 67,
+	.s1g_width = IEEE80211_CHAN_2MHZ,
+	.cc_list = {"EU", "GB"},
+	.chans = (
+		S1G_CHAN_ENABLED_FLAG(2) |
+		S1G_CHAN_ENABLED_FLAG(6)
 	),
 };
 
@@ -681,7 +695,7 @@ static const struct ah_class
 	&us4,
 	NULL,
 	&eu6,
-	NULL,
+	&eu7,
 	&jp8,
 	&jp9,
 	&jp10,
@@ -708,7 +722,7 @@ static const struct ah_class
 	&in31,
 };
 
-const int S1G_OP_CLASSES_LEN = ARRAY_SIZE(s1g_op_classes);
+const unsigned int S1G_OP_CLASSES_LEN = ARRAY_SIZE(s1g_op_classes);
 
 /*
  * Classify an operating class number as S1G local, global or invalid.
@@ -1478,6 +1492,7 @@ int morse_s1g_get_start_freq_for_country(char *cc, int freq, int bw)
 				start_freq = 902000;
 				break;
 			case MORSE_EU:
+			case MORSE_GB:
 				if (freq > 901400)
 					start_freq = 901400;
 				else
@@ -1517,6 +1532,26 @@ int morse_s1g_get_start_freq_for_country(char *cc, int freq, int bw)
 }
 
 #ifdef CONFIG_IEEE80211AH
+int morse_s1g_get_primary_channel(struct hostapd_config *conf, int bw)
+{
+	int ht_center_chan = morse_ht_chan_to_ht_chan_center(conf, conf->channel);
+	int s1g_op_chan = morse_ht_chan_to_s1g_chan(ht_center_chan);
+	int op_bw = morse_s1g_chan_to_bw(s1g_op_chan);
+
+	/* Can only retrieve the 1Mhz or 2MHz primary channel variant */
+	if (bw < 1 || bw > 2)
+		return MORSE_INVALID_CHANNEL;
+
+	if (conf->s1g_prim_1mhz_chan_index >= op_bw)
+		return MORSE_INVALID_CHANNEL;
+
+	return morse_cc_get_primary_s1g_channel(op_bw,
+						bw,
+						s1g_op_chan,
+						conf->s1g_prim_1mhz_chan_index,
+						conf->op_country);
+}
+
 /* Validate ht centre channel with index and returns corresponding ht channel */
 int morse_validate_ht_channel_with_idx(u8 s1g_op_class, int ht_center_channel,
 				int *oper_chwidth, int s1g_prim_1mhz_chan_index,
@@ -1892,7 +1927,7 @@ int morse_insert_supported_op_class(struct wpabuf *buf, char *cc,
 {
 	const struct ah_class *class;
 	const struct ah_class *current_class;
-	int i;
+	unsigned int i;
 
 	/* Fill current operating class based on oper ie */
 	current_class = morse_s1g_ch_to_op_class(s1g_ch_width, cc, s1g_op_chan);
@@ -2001,6 +2036,7 @@ int morse_s1g_get_first_center_freq_for_country(char *cc)
 				freq = 902500;
 				break;
 			case MORSE_EU:
+			case MORSE_GB:
 				freq = 863500;
 				break;
 			case MORSE_IN:

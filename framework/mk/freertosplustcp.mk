@@ -66,8 +66,9 @@ CFLAGS-$(FREERTOSTCP_DIR)/source/portable/BufferManagement += -Wno-error=maybe-u
 
 # We currently use BufferAllocation_2 which allocates on the heap. We thus
 # need to increase our heap size so that we have sufficient space to allocate
-# buffers.
-BUILD_DEFINES += IP_STACK_HEAP=44032
+# buffers. Also an extra 16K is needed for the sector memory buffer pool utilized
+# by TCP windows, see prvCreateSectors().
+BUILD_DEFINES += IP_STACK_HEAP=60416
 
 BUILD_DEFINES += ipconfigUSE_IPv4=$(MMIPAL_IPV4_ENABLED)
 BUILD_DEFINES += ipconfigUSE_IPv6=$(MMIPAL_IPV6_ENABLED)

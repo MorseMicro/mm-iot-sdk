@@ -63,6 +63,7 @@ struct privsep_cmd_associate {
 	size_t ssid_len;
 	int hwmode;
 	int freq;
+	int freq_khz;
 	int channel;
 	int pairwise_suite;
 	int group_suite;

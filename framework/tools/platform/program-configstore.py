@@ -24,6 +24,7 @@ import struct
 import subprocess
 import sys
 import tempfile
+import traceback
 
 import hjson
 
@@ -211,7 +212,7 @@ class ConfigStorePartition:
             # is case insensitive and so would consider 'Key' and 'key' the same.
             self._dictionary[type_name.lower()] = data
         else:
-            logging.error("Invalid key specified")
+            logging.error("Invalid key specified: %s", type_name)
             sys.exit(1)
 
     def add_entry_string(self, key, value):
@@ -863,6 +864,11 @@ def _handle_delete_key(args, programmer):
     return config_store
 
 
+def _read_config_store(_args, programmer):
+    config_store = programmer.read_config_store()
+    return config_store
+
+
 def _app_main(args):
     if args.debug_host is not None:
         programmer_class = ConfigStoreOpenOCDProgrammer
@@ -897,13 +903,20 @@ def _app_main(args):
             logging.info("BCF file programmed successfully.")
         else:
             try:
-                config_store = args.func(args, programmer)
+                operation_fn = args.func
             except AttributeError:
                 if not args.dump and not args.dump_binary:
                     logging.error("You likely forgot to specify a sub-command.")
                     sys.exit(1)
 
-                config_store = programmer.read_config_store()
+                operation_fn = _read_config_store
+            try:
+                config_store = operation_fn(args, programmer)
+            except Exception as e:
+                logging.error("Failed to execute %s: %s", operation_fn.__name__, str(e))
+                if args.verbose >= 2:
+                    traceback.print_exc()
+                sys.exit(1)
 
         if config_store is not None:
             if args.dump:

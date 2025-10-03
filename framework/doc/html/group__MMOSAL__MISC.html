@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.8.2</span>
+   &#160;<span id="projectnumber">2.9.7</span>
    </div>
   </td>
  </tr>
@@ -96,11 +96,51 @@ $(document).ready(function(){initNavTree('group__MMOSAL__MISC.html',''); initRes
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:gab0abc03dba59846e3ed9829dfb17db95"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMOSAL__MISC.html#gab0abc03dba59846e3ed9829dfb17db95">mmosal_printf</a> (const char *format,...)</td></tr>
+<tr class="memdesc:gab0abc03dba59846e3ed9829dfb17db95"><td class="mdescLeft">&#160;</td><td class="mdescRight">OS abstracted version of <code>printf</code> used by morselib.  <a href="group__MMOSAL__MISC.html#gab0abc03dba59846e3ed9829dfb17db95">More...</a><br /></td></tr>
+<tr class="separator:gab0abc03dba59846e3ed9829dfb17db95"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaec62d4b897cc04594af6ef860b345fc1"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMOSAL__MISC.html#gaec62d4b897cc04594af6ef860b345fc1">mmosal_safer_strcpy</a> (char *dst, const char *src, size_t size)</td></tr>
 <tr class="memdesc:gaec62d4b897cc04594af6ef860b345fc1"><td class="mdescLeft">&#160;</td><td class="mdescRight">A safer version of <code>strncpy</code>.  <a href="group__MMOSAL__MISC.html#gaec62d4b897cc04594af6ef860b345fc1">More...</a><br /></td></tr>
 <tr class="separator:gaec62d4b897cc04594af6ef860b345fc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="gab0abc03dba59846e3ed9829dfb17db95" name="gab0abc03dba59846e3ed9829dfb17db95"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gab0abc03dba59846e3ed9829dfb17db95">&#9670;&nbsp;</a></span>mmosal_printf()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int mmosal_printf </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>format</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>...</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>OS abstracted version of <code>printf</code> used by morselib. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">format</td><td>Format string</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>On success, the total number of characters written. On failure, a negative number. </dd></dl>
+
+</div>
+</div>
 <a id="gaec62d4b897cc04594af6ef860b345fc1" name="gaec62d4b897cc04594af6ef860b345fc1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#gaec62d4b897cc04594af6ef860b345fc1">&#9670;&nbsp;</a></span>mmosal_safer_strcpy()</h2>
 
@@ -153,7 +193,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>true if the string was truncated else false (note that a size of 0 will always result this function returning true). </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmosal_8h_source.html#l01024">1024</a> of file <a class="el" href="mmosal_8h_source.html">mmosal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmosal_8h_source.html#l01030">1030</a> of file <a class="el" href="mmosal_8h_source.html">mmosal.h</a>.</p>
 
 </div>
 </div>

@@ -14,9 +14,6 @@
 #include "core/autogen/mmagic_core_iperf.h"
 #include "mmagic.h"
 
-/* This should be included after all the header files */
-#include "core/autogen/mmagic_core_iperf.def"
-
 static struct mmagic_iperf_config default_config =
 {
     .mode = MMAGIC_IPERF_MODE_UDP_SERVER,

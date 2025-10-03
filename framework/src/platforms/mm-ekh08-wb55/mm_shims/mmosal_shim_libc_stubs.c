@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+#include <sys/types.h>
+
 #include "mmosal.h"
 
 /*
@@ -30,11 +32,12 @@ void *_sbrk(ptrdiff_t p)
  */
 void _exit(int status)
 {
-    (void) status;
+    (void)status;
     while (1)
     {
     }
 }
+
 #endif
 
 /*

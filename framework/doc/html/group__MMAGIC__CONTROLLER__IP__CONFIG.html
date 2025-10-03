@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.8.2</span>
+   &#160;<span id="projectnumber">2.9.7</span>
    </div>
   </td>
  </tr>
@@ -89,7 +89,7 @@ $(document).ready(function(){initNavTree('group__MMAGIC__CONTROLLER__IP__CONFIG.
 <div class="header">
   <div class="summary">
 <a href="#func-members">Functions</a>  </div>
-  <div class="headertitle"><div class="title">ip configuration variables<div class="ingroups"><a class="el" href="group__MMAGIC.html">MMAGIC: CLI and Machine-to-Machine interface infrastructure</a> &raquo; <a class="el" href="group__MMAGIC__CONTROLLER.html">Morse M2M Interface Controller API</a> &raquo; <a class="el" href="group__MMAGIC__CONTROLLER__IP.html">IP Stack Management subsystem (ip)</a></div></div></div>
+  <div class="headertitle"><div class="title">ip configuration variables<div class="ingroups"><a class="el" href="group__MMAGIC.html">MMAGIC: CLI and Machine-to-Machine interface infrastructure</a> &raquo; <a class="el" href="group__MMAGIC__CONTROLLER.html">Morse M2M Interface Controller API</a> &raquo; <a class="el" href="group__MMAGIC__CONTROLLER__IP.html">Module ip: IP Stack Management</a></div></div></div>
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -138,6 +138,12 @@ Functions</h2></td></tr>
 <tr class="memitem:ga401c71ead44ee909408ac0606e4fe359"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__IP__CONFIG.html#ga401c71ead44ee909408ac0606e4fe359">mmagic_controller_set_ip_dhcp_offload</a> (struct mmagic_controller *controller, bool var)</td></tr>
 <tr class="memdesc:ga401c71ead44ee909408ac0606e4fe359"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets <code>dhcp_offload</code> setting for module <code>ip</code>.  <a href="group__MMAGIC__CONTROLLER__IP__CONFIG.html#ga401c71ead44ee909408ac0606e4fe359">More...</a><br /></td></tr>
 <tr class="separator:ga401c71ead44ee909408ac0606e4fe359"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga997d23bf5d5d3194ef96fa01f5318f00"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__IP__CONFIG.html#ga997d23bf5d5d3194ef96fa01f5318f00">mmagic_controller_get_ip_link_status_evt_en</a> (struct mmagic_controller *controller, bool *var)</td></tr>
+<tr class="memdesc:ga997d23bf5d5d3194ef96fa01f5318f00"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets <code>link_status_evt_en</code> setting for module <code>ip</code>.  <a href="group__MMAGIC__CONTROLLER__IP__CONFIG.html#ga997d23bf5d5d3194ef96fa01f5318f00">More...</a><br /></td></tr>
+<tr class="separator:ga997d23bf5d5d3194ef96fa01f5318f00"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga775b4ccbeee20cb556a22fefbcfee428"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__IP__CONFIG.html#ga775b4ccbeee20cb556a22fefbcfee428">mmagic_controller_set_ip_link_status_evt_en</a> (struct mmagic_controller *controller, bool var)</td></tr>
+<tr class="memdesc:ga775b4ccbeee20cb556a22fefbcfee428"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets <code>link_status_evt_en</code> setting for module <code>ip</code>.  <a href="group__MMAGIC__CONTROLLER__IP__CONFIG.html#ga775b4ccbeee20cb556a22fefbcfee428">More...</a><br /></td></tr>
+<tr class="separator:ga775b4ccbeee20cb556a22fefbcfee428"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga8dae33179f9a62c1e81e293af63b978f"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__IP__CONFIG.html#ga8dae33179f9a62c1e81e293af63b978f">mmagic_controller_ip_commit_all</a> (struct mmagic_controller *controller)</td></tr>
 <tr class="memdesc:ga8dae33179f9a62c1e81e293af63b978f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves all settings from persistent store.  <a href="group__MMAGIC__CONTROLLER__IP__CONFIG.html#ga8dae33179f9a62c1e81e293af63b978f">More...</a><br /></td></tr>
 <tr class="separator:ga8dae33179f9a62c1e81e293af63b978f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -188,7 +194,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>MMAGIC_STATUS_OK on success, else an error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03159">3159</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03695">3695</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -237,7 +243,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>MMAGIC_STATUS_OK on success, else an error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03213">3213</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03751">3751</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -286,7 +292,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>MMAGIC_STATUS_OK on success, else an error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03051">3051</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03583">3583</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -335,7 +341,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>MMAGIC_STATUS_OK on success, else an error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03105">3105</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03639">3639</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -384,7 +390,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>MMAGIC_STATUS_OK on success, else an error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l02998">2998</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03528">3528</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -433,7 +439,56 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>MMAGIC_STATUS_OK on success, else an error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l02894">2894</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03420">3420</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+
+</div>
+</div>
+<a id="ga997d23bf5d5d3194ef96fa01f5318f00" name="ga997d23bf5d5d3194ef96fa01f5318f00"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga997d23bf5d5d3194ef96fa01f5318f00">&#9670;&nbsp;</a></span>mmagic_controller_get_ip_link_status_evt_en()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a> mmagic_controller_get_ip_link_status_evt_en </td>
+          <td>(</td>
+          <td class="paramtype">struct mmagic_controller *&#160;</td>
+          <td class="paramname"><em>controller</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool *&#160;</td>
+          <td class="paramname"><em>var</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets <code>link_status_evt_en</code> setting for module <code>ip</code>. </p>
+<p >When set to true, IP link status notifications will be provided. Setting this to false will suppress these notifications. Defaults to true.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">controller</td><td>Reference to the controller handle. </td></tr>
+    <tr><td class="paramname">var</td><td>Reference to the <code>bool</code> to place the received data in.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>MMAGIC_STATUS_OK on success, else an error code. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03806">3806</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -482,7 +537,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>MMAGIC_STATUS_OK on success, else an error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l02946">2946</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03474">3474</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -519,7 +574,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>MMAGIC_STATUS_OK on success, else an error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03262">3262</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03856">3856</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -568,7 +623,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>MMAGIC_STATUS_OK on success, else an error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03186">3186</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03723">3723</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -617,7 +672,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>MMAGIC_STATUS_OK on success, else an error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03240">3240</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03779">3779</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -666,7 +721,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>MMAGIC_STATUS_OK on success, else an error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03078">3078</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03611">3611</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -715,7 +770,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>MMAGIC_STATUS_OK on success, else an error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03132">3132</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03667">3667</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -764,7 +819,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>MMAGIC_STATUS_OK on success, else an error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03024">3024</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03555">3555</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -813,7 +868,56 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>MMAGIC_STATUS_OK on success, else an error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l02920">2920</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03447">3447</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+
+</div>
+</div>
+<a id="ga775b4ccbeee20cb556a22fefbcfee428" name="ga775b4ccbeee20cb556a22fefbcfee428"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga775b4ccbeee20cb556a22fefbcfee428">&#9670;&nbsp;</a></span>mmagic_controller_set_ip_link_status_evt_en()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a> mmagic_controller_set_ip_link_status_evt_en </td>
+          <td>(</td>
+          <td class="paramtype">struct mmagic_controller *&#160;</td>
+          <td class="paramname"><em>controller</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>var</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Sets <code>link_status_evt_en</code> setting for module <code>ip</code>. </p>
+<p >When set to true, IP link status notifications will be provided. Setting this to false will suppress these notifications. Defaults to true.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">controller</td><td>Reference to the controller handle. </td></tr>
+    <tr><td class="paramname">var</td><td>The <code>bool</code> to write.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>MMAGIC_STATUS_OK on success, else an error code. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03833">3833</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -862,7 +966,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>MMAGIC_STATUS_OK on success, else an error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l02972">2972</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03501">3501</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>

@@ -75,7 +75,7 @@ extern "C" {
 #define LOG_USART_IRQ_HANDLER   USART1_IRQHandler
 
 #define MMAGIC_DATALINK_AGENT_WAKE_LINE (LL_EXTI_LINE_5)
-#define MMAGIC_DATALINK_AGENT_WAKE_HANLDER EXTI5_IRQHandler
+#define MMAGIC_DATALINK_AGENT_WAKE_HANDLER EXTI5_IRQHandler
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/

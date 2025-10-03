@@ -1747,18 +1747,6 @@ struct wpa_config {
 	int dpp_connector_privacy_default;
 
 	/**
-	 * dpp_chirp_forever - If configured, will initiate chirp, and continue
-	 * until a connection succeeds
-	 */
-	int dpp_chirp_forever;
-
-	/**
-	 * dpp_key - A *.pem file containing a private EC key in the following
-	 * format: prime256v1
-	 */
-	char *dpp_key;
-
-	/**
 	 * coloc_intf_reporting - Colocated interference reporting
 	 *
 	 * dot11CoLocIntfReportingActivated

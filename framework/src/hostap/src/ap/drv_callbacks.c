@@ -1189,8 +1189,8 @@ void hostapd_event_sta_opmode_changed(struct hostapd_data *hapd, const u8 *addr,
 }
 
 
-void hostapd_event_ch_switch(struct hostapd_data *hapd, int freq, int ht,
-			     int offset, int width, int cf1, int cf2,
+void hostapd_event_ch_switch(struct hostapd_data *hapd, int freq, int freq_khz,
+			     int ht, int offset, int width, int cf1, int cf2,
 			     u16 punct_bitmap, int finished)
 {
 #ifdef NEED_AP_MLME
@@ -1220,7 +1220,7 @@ void hostapd_event_ch_switch(struct hostapd_data *hapd, int freq, int ht,
 	is_dfs0 = hostapd_is_dfs_required(hapd->iface);
 	hapd->iface->freq = freq;
 
-	channel = hostapd_hw_get_channel(hapd, freq);
+	channel = hostapd_hw_get_channel(hapd, freq, freq_khz);
 	if (!channel) {
 		hostapd_logger(hapd, NULL, HOSTAPD_MODULE_IEEE80211,
 			       HOSTAPD_LEVEL_WARNING,
@@ -1485,6 +1485,7 @@ void hostapd_acs_channel_selected(struct hostapd_data *hapd,
 				if (hapd->iface->freq > 0 &&
 				    !hw_get_chan(mode->mode,
 						 hapd->iface->freq,
+						 hapd->iface->freq_khz,
 						 hapd->iface->hw_features,
 						 hapd->iface->num_hw_features))
 					continue;
@@ -1509,7 +1510,7 @@ void hostapd_acs_channel_selected(struct hostapd_data *hapd,
 		goto out;
 	}
 	pri_chan = hw_get_channel_freq(hapd->iface->current_mode->mode,
-				       acs_res->pri_freq, NULL,
+				       acs_res->pri_freq, 0, NULL,
 				       hapd->iface->hw_features,
 				       hapd->iface->num_hw_features);
 	if (!pri_chan) {
@@ -2742,6 +2743,7 @@ void wpa_supplicant_event(void *ctx, enum wpa_event_type event,
 		}
 #endif /* CONFIG_IEEE80211BE */
 		hostapd_event_ch_switch(hapd, data->ch_switch.freq,
+					data->ch_switch.freq_khz,
 					data->ch_switch.ht_enabled,
 					data->ch_switch.ch_offset,
 					data->ch_switch.ch_width,

@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.8.2</span>
+   &#160;<span id="projectnumber">2.9.7</span>
    </div>
   </td>
  </tr>
@@ -184,7 +184,7 @@ $(document).ready(function(){initNavTree('mmhal_8h_source.html',''); initResizab
 <div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span> </div>
 <div class="line"><a id="l00235" name="l00235"></a><span class="lineno"><a class="line" href="group__MMHAL.html#gafecc06cd65ac8ac10ed485a770bb21a1">  235</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="group__MMHAL.html#gafecc06cd65ac8ac10ed485a770bb21a1">mmhal_set_debug_pins</a>(uint32_t mask, uint32_t values);</div>
 <div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span> </div>
-<div class="line"><a id="l00243" name="l00243"></a><span class="lineno"><a class="line" href="group__MMHAL.html#gafab03afd7609cfbf88b0e3b101bc6831">  243</a></span>time_t <a class="code hl_function" href="group__MMHAL.html#gafab03afd7609cfbf88b0e3b101bc6831">mmhal_get_time</a>();</div>
+<div class="line"><a id="l00243" name="l00243"></a><span class="lineno"><a class="line" href="group__MMHAL.html#gac2c9fe492590de0ad2303e50e43d46a8">  243</a></span>time_t <a class="code hl_function" href="group__MMHAL.html#gac2c9fe492590de0ad2303e50e43d46a8">mmhal_get_time</a>(<span class="keywordtype">void</span>);</div>
 <div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span> </div>
 <div class="line"><a id="l00258" name="l00258"></a><span class="lineno"><a class="line" href="group__MMHAL.html#ga77b51bf4b2f19c38bd3763bcc4756fb7">  258</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="group__MMHAL.html#ga77b51bf4b2f19c38bd3763bcc4756fb7">mmhal_set_time</a>(time_t epoch);</div>
 <div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span> </div>
@@ -239,13 +239,13 @@ $(document).ready(function(){initNavTree('mmhal_8h_source.html',''); initResizab
 <div class="ttc" id="agroup__MMHAL_html_gaba693440d2efbbc6c36b8288489ffd04"><div class="ttname"><a href="group__MMHAL.html#gaba693440d2efbbc6c36b8288489ffd04">mmhal_sleep_prepare</a></div><div class="ttdeci">enum mmhal_sleep_state mmhal_sleep_prepare(uint32_t expected_idle_time_ms)</div><div class="ttdoc">Function to prepare MCU to enter sleep.</div></div>
 <div class="ttc" id="agroup__MMHAL_html_gabe168560c9b24e4a614e6e0128d34c5c"><div class="ttname"><a href="group__MMHAL.html#gabe168560c9b24e4a614e6e0128d34c5c">mmhal_set_error_led</a></div><div class="ttdeci">void mmhal_set_error_led(bool state)</div><div class="ttdoc">Set the error LED to the requested state.</div></div>
 <div class="ttc" id="agroup__MMHAL_html_gac25caf50d17ead605f05658a7555ab7c"><div class="ttname"><a href="group__MMHAL.html#gac25caf50d17ead605f05658a7555ab7c">mmhal_set_led</a></div><div class="ttdeci">void mmhal_set_led(uint8_t led, uint8_t level)</div><div class="ttdoc">Set the specified LED to the requested level.</div></div>
+<div class="ttc" id="agroup__MMHAL_html_gac2c9fe492590de0ad2303e50e43d46a8"><div class="ttname"><a href="group__MMHAL.html#gac2c9fe492590de0ad2303e50e43d46a8">mmhal_get_time</a></div><div class="ttdeci">time_t mmhal_get_time(void)</div><div class="ttdoc">Returns the time of day as set in the RTC.</div></div>
 <div class="ttc" id="agroup__MMHAL_html_gad70f1cb88b309f7b8fd5bfedec145d2e"><div class="ttname"><a href="group__MMHAL.html#gad70f1cb88b309f7b8fd5bfedec145d2e">mmhal_get_button</a></div><div class="ttdeci">enum mmhal_button_state mmhal_get_button(enum mmhal_button_id button_id)</div><div class="ttdoc">Reads the state of the specified button.</div></div>
 <div class="ttc" id="agroup__MMHAL_html_gadf49a4c25a98e787a51d91179954aa7b"><div class="ttname"><a href="group__MMHAL.html#gadf49a4c25a98e787a51d91179954aa7b">mmhal_random_u32</a></div><div class="ttdeci">uint32_t mmhal_random_u32(uint32_t min, uint32_t max)</div><div class="ttdoc">Generate a random 32 bit integer within the given range.</div></div>
 <div class="ttc" id="agroup__MMHAL_html_gadf52078b3c4bb38e2b8f8d8074516e2f"><div class="ttname"><a href="group__MMHAL.html#gadf52078b3c4bb38e2b8f8d8074516e2f">mmhal_get_isr_state</a></div><div class="ttdeci">enum mmhal_isr_state mmhal_get_isr_state(void)</div><div class="ttdoc">Get the current ISR state (i.e., whether in ISR or not).</div></div>
 <div class="ttc" id="agroup__MMHAL_html_gaf0174eb0b4d85be6c3e4675fc887955b"><div class="ttname"><a href="group__MMHAL.html#gaf0174eb0b4d85be6c3e4675fc887955b">mmhal_reset</a></div><div class="ttdeci">void mmhal_reset(void)</div><div class="ttdoc">Reset the microcontroller.</div></div>
 <div class="ttc" id="agroup__MMHAL_html_gaf3a3b184fe97a6258b17017b7d7fd8c2"><div class="ttname"><a href="group__MMHAL.html#gaf3a3b184fe97a6258b17017b7d7fd8c2">mmhal_clear_deep_sleep_veto</a></div><div class="ttdeci">void mmhal_clear_deep_sleep_veto(uint8_t veto_id)</div><div class="ttdoc">Clears a deep sleep veto that was preventing the device from entering deep sleep (see mmhal_set_deep_...</div></div>
 <div class="ttc" id="agroup__MMHAL_html_gaf7edd399817e2d06bb6e0d065c6ff7e8"><div class="ttname"><a href="group__MMHAL.html#gaf7edd399817e2d06bb6e0d065c6ff7e8">mmhal_init</a></div><div class="ttdeci">void mmhal_init(void)</div><div class="ttdoc">Initialization after RTOS scheduler started.</div></div>
-<div class="ttc" id="agroup__MMHAL_html_gafab03afd7609cfbf88b0e3b101bc6831"><div class="ttname"><a href="group__MMHAL.html#gafab03afd7609cfbf88b0e3b101bc6831">mmhal_get_time</a></div><div class="ttdeci">time_t mmhal_get_time()</div><div class="ttdoc">Returns the time of day as set in the RTC.</div></div>
 <div class="ttc" id="agroup__MMHAL_html_gafecc06cd65ac8ac10ed485a770bb21a1"><div class="ttname"><a href="group__MMHAL.html#gafecc06cd65ac8ac10ed485a770bb21a1">mmhal_set_debug_pins</a></div><div class="ttdeci">void mmhal_set_debug_pins(uint32_t mask, uint32_t values)</div><div class="ttdoc">Set the value one or more debug pins.</div></div>
 <div class="ttc" id="agroup__MMHAL_html_gga38da43831c553f238544c541c94b0e44a362ebf9027aca6abaf0b9671b516e879"><div class="ttname"><a href="group__MMHAL.html#gga38da43831c553f238544c541c94b0e44a362ebf9027aca6abaf0b9671b516e879">MMHAL_SLEEP_DISABLED</a></div><div class="ttdeci">@ MMHAL_SLEEP_DISABLED</div><div class="ttdoc">Disable MCU sleep.</div><div class="ttdef"><b>Definition:</b> <a href="mmhal_8h_source.html#l00060">mmhal.h:60</a></div></div>
 <div class="ttc" id="agroup__MMHAL_html_gga38da43831c553f238544c541c94b0e44a787dfce29b0e865a5e562fe084738acc"><div class="ttname"><a href="group__MMHAL.html#gga38da43831c553f238544c541c94b0e44a787dfce29b0e865a5e562fe084738acc">MMHAL_SLEEP_SHALLOW</a></div><div class="ttdeci">@ MMHAL_SLEEP_SHALLOW</div><div class="ttdoc">MCU to enter shallow sleep.</div><div class="ttdef"><b>Definition:</b> <a href="mmhal_8h_source.html#l00061">mmhal.h:61</a></div></div>
@@ -269,7 +269,7 @@ $(document).ready(function(){initNavTree('mmhal_8h_source.html',''); initResizab
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_a4df97076b09f6697792d865bbdf3d58.html">framework</a></li><li class="navelem"><a class="el" href="dir_d3d5acd8fca1997c72527e6ec9e4716f.html">morselib</a></li><li class="navelem"><a class="el" href="dir_c2423b6a51463df30cb166d03fd518d5.html">include</a></li><li class="navelem"><b>mmhal.h</b></li>
+    <li class="navelem"><a class="el" href="dir_2b316fbf51ac995e875dc7b728ebb0de.html">framework</a></li><li class="navelem"><a class="el" href="dir_81ef0fb1c5d83934621da892b9e3f6f6.html">morselib</a></li><li class="navelem"><a class="el" href="dir_bd756646489e9e9d67d91307eca56693.html">include</a></li><li class="navelem"><b>mmhal.h</b></li>
     <li class="footer">Copyright 2021 Morse Micro </li>
   </ul>
 </div>

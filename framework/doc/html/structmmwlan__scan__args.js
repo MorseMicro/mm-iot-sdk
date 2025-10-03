@@ -1,5 +1,6 @@
 var structmmwlan__scan__args =
 [
+    [ "dwell_on_home_ms", "structmmwlan__scan__args.html#ab3d53a2735ea71f92a271b3416a9eda5", null ],
     [ "dwell_time_ms", "structmmwlan__scan__args.html#ae97bb04cac794a2be4dfa2c74dae1c6b", null ],
     [ "extra_ies", "structmmwlan__scan__args.html#a404204866cd8ab0cac645b48ee53f36a", null ],
     [ "extra_ies_len", "structmmwlan__scan__args.html#abb537560d46b1118f2ed43e43348adee", null ],

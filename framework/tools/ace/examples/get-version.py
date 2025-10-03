@@ -46,6 +46,7 @@ def _main():
     print(f"\rMorse firmware version: {rsp.morse_fw_version}")
     print(f"\rMorselib version:       {rsp.morselib_version}")
     print(f"\rMorse chip ID:          {rsp.morse_chip_id:x}")
+    print(f"\rMorse chip name:        {rsp.morse_chip_id_string}")
 
     rsp = dutif.exec("wlan/get_bcf_metadata")
     major = rsp.version_major if rsp.version_major is not None else 0

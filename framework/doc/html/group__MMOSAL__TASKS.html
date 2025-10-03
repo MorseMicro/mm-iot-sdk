@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.8.2</span>
+   &#160;<span id="projectnumber">2.9.7</span>
    </div>
   </td>
  </tr>
@@ -135,9 +135,6 @@ Functions</h2></td></tr>
 <tr class="memitem:gac6e3770e4c431294c0c38c50102199fe"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMOSAL__TASKS.html#gac6e3770e4c431294c0c38c50102199fe">mmosal_task_delete</a> (struct mmosal_task *task)</td></tr>
 <tr class="memdesc:gac6e3770e4c431294c0c38c50102199fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete the given task.  <a href="group__MMOSAL__TASKS.html#gac6e3770e4c431294c0c38c50102199fe">More...</a><br /></td></tr>
 <tr class="separator:gac6e3770e4c431294c0c38c50102199fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga0cdd217c5ff65498813d12367fd9a394"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMOSAL__TASKS.html#ga0cdd217c5ff65498813d12367fd9a394">mmosal_task_join</a> (struct mmosal_task *task)</td></tr>
-<tr class="memdesc:ga0cdd217c5ff65498813d12367fd9a394"><td class="mdescLeft">&#160;</td><td class="mdescRight">Block until the given task has terminated.  <a href="group__MMOSAL__TASKS.html#ga0cdd217c5ff65498813d12367fd9a394">More...</a><br /></td></tr>
-<tr class="separator:ga0cdd217c5ff65498813d12367fd9a394"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga23471004fbe03bda76cbebae3be98baa"><td class="memItemLeft" align="right" valign="top">struct mmosal_task *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMOSAL__TASKS.html#ga23471004fbe03bda76cbebae3be98baa">mmosal_task_get_active</a> (void)</td></tr>
 <tr class="memdesc:ga23471004fbe03bda76cbebae3be98baa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the handle of the active task.  <a href="group__MMOSAL__TASKS.html#ga23471004fbe03bda76cbebae3be98baa">More...</a><br /></td></tr>
 <tr class="separator:ga23471004fbe03bda76cbebae3be98baa"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -163,15 +160,6 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>mmosal_task_yield</b>
 <tr class="memitem:ga4b2d2b31bbf2e46da28f5540fac0199c"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMOSAL__TASKS.html#ga4b2d2b31bbf2e46da28f5540fac0199c">mmosal_task_name</a> (void)</td></tr>
 <tr class="memdesc:ga4b2d2b31bbf2e46da28f5540fac0199c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the name of the running task.  <a href="group__MMOSAL__TASKS.html#ga4b2d2b31bbf2e46da28f5540fac0199c">More...</a><br /></td></tr>
 <tr class="separator:ga4b2d2b31bbf2e46da28f5540fac0199c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gab10e895f652b30de6087629437ce3c2a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMOSAL__TASKS.html#gab10e895f652b30de6087629437ce3c2a">mmosal_task_wait_for_notification</a> (uint32_t timeout_ms)</td></tr>
-<tr class="memdesc:gab10e895f652b30de6087629437ce3c2a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Blocks the current task until a notification is received.  <a href="group__MMOSAL__TASKS.html#gab10e895f652b30de6087629437ce3c2a">More...</a><br /></td></tr>
-<tr class="separator:gab10e895f652b30de6087629437ce3c2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaae85012294eac142c84cee6889a61d11"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMOSAL__TASKS.html#gaae85012294eac142c84cee6889a61d11">mmosal_task_notify</a> (struct mmosal_task *task)</td></tr>
-<tr class="memdesc:gaae85012294eac142c84cee6889a61d11"><td class="mdescLeft">&#160;</td><td class="mdescRight">Notifies a waiting task (<a class="el" href="group__MMOSAL__TASKS.html#gab10e895f652b30de6087629437ce3c2a">mmosal_task_wait_for_notification()</a>) that it can continue.  <a href="group__MMOSAL__TASKS.html#gaae85012294eac142c84cee6889a61d11">More...</a><br /></td></tr>
-<tr class="separator:gaae85012294eac142c84cee6889a61d11"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga10a70bf367b5d46a7cd46a726e744766"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMOSAL__TASKS.html#ga10a70bf367b5d46a7cd46a726e744766">mmosal_task_notify_from_isr</a> (struct mmosal_task *task)</td></tr>
-<tr class="memdesc:ga10a70bf367b5d46a7cd46a726e744766"><td class="mdescLeft">&#160;</td><td class="mdescRight">Notifies a waiting task (<a class="el" href="group__MMOSAL__TASKS.html#gab10e895f652b30de6087629437ce3c2a">mmosal_task_wait_for_notification()</a>) that it can continue.  <a href="group__MMOSAL__TASKS.html#ga10a70bf367b5d46a7cd46a726e744766">More...</a><br /></td></tr>
-<tr class="separator:ga10a70bf367b5d46a7cd46a726e744766"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="ga0f712aef0ecfaeceb293a07a7860df63" name="ga0f712aef0ecfaeceb293a07a7860df63"></a>
@@ -196,7 +184,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>mmosal_task_yield</b>
 <p>Enter critical section. </p>
 <p >This may result in interrupts being disabled so critical sections must be kept short. Each entry to a critical section must be matched to a corresponding exit (<a class="el" href="group__MMOSAL__TASKS.html#ga4be26c811e89a5cae31b484d77741f68">MMOSAL_TASK_EXIT_CRITICAL()</a>). </p>
 
-<p class="definition">Definition at line <a class="el" href="mmosal_8h_source.html#l00252">252</a> of file <a class="el" href="mmosal_8h_source.html">mmosal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmosal_8h_source.html#l00240">240</a> of file <a class="el" href="mmosal_8h_source.html">mmosal.h</a>.</p>
 
 </div>
 </div>
@@ -222,7 +210,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>mmosal_task_yield</b>
 <p>Exit critical section. </p>
 <p >Used to exit a critical section previously entered with <a class="el" href="group__MMOSAL__TASKS.html#ga0f712aef0ecfaeceb293a07a7860df63">MMOSAL_TASK_ENTER_CRITICAL()</a>). </p>
 
-<p class="definition">Definition at line <a class="el" href="mmosal_8h_source.html#l00263">263</a> of file <a class="el" href="mmosal_8h_source.html">mmosal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmosal_8h_source.html#l00251">251</a> of file <a class="el" href="mmosal_8h_source.html">mmosal.h</a>.</p>
 
 </div>
 </div>
@@ -476,34 +464,6 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>mmosal_task_yield</b>
 
 </div>
 </div>
-<a id="ga0cdd217c5ff65498813d12367fd9a394" name="ga0cdd217c5ff65498813d12367fd9a394"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga0cdd217c5ff65498813d12367fd9a394">&#9670;&nbsp;</a></span>mmosal_task_join()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void mmosal_task_join </td>
-          <td>(</td>
-          <td class="paramtype">struct mmosal_task *&#160;</td>
-          <td class="paramname"><em>task</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Block until the given task has terminated. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">task</td><td>Handle of the task to wait for.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section note"><dt>Note</dt><dd>With FreeRTOS deleted tasks will not be cleaned up until the idle task runs.</dd></dl>
-<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000002">Deprecated:</a></b></dt><dd>Do not invoke this function because it is deprecated and will be removed from the mmosal API in a future release. </dd></dl>
-
-</div>
-</div>
 <a id="ga4b2d2b31bbf2e46da28f5540fac0199c" name="ga4b2d2b31bbf2e46da28f5540fac0199c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga4b2d2b31bbf2e46da28f5540fac0199c">&#9670;&nbsp;</a></span>mmosal_task_name()</h2>
 
@@ -522,62 +482,6 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>mmosal_task_yield</b>
 
 <p>Get the name of the running task. </p>
 <dl class="section return"><dt>Returns</dt><dd>the name of the running task. </dd></dl>
-
-</div>
-</div>
-<a id="gaae85012294eac142c84cee6889a61d11" name="gaae85012294eac142c84cee6889a61d11"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gaae85012294eac142c84cee6889a61d11">&#9670;&nbsp;</a></span>mmosal_task_notify()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void mmosal_task_notify </td>
-          <td>(</td>
-          <td class="paramtype">struct mmosal_task *&#160;</td>
-          <td class="paramname"><em>task</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Notifies a waiting task (<a class="el" href="group__MMOSAL__TASKS.html#gab10e895f652b30de6087629437ce3c2a">mmosal_task_wait_for_notification()</a>) that it can continue. </p>
-<dl class="section warning"><dt>Warning</dt><dd>Must not be called from ISR context.</dd></dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">task</td><td>Handle of the task to notify.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__MMOSAL__TASKS.html#gab10e895f652b30de6087629437ce3c2a" title="Blocks the current task until a notification is received.">mmosal_task_wait_for_notification()</a> </dd></dl>
-
-</div>
-</div>
-<a id="ga10a70bf367b5d46a7cd46a726e744766" name="ga10a70bf367b5d46a7cd46a726e744766"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga10a70bf367b5d46a7cd46a726e744766">&#9670;&nbsp;</a></span>mmosal_task_notify_from_isr()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void mmosal_task_notify_from_isr </td>
-          <td>(</td>
-          <td class="paramtype">struct mmosal_task *&#160;</td>
-          <td class="paramname"><em>task</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Notifies a waiting task (<a class="el" href="group__MMOSAL__TASKS.html#gab10e895f652b30de6087629437ce3c2a">mmosal_task_wait_for_notification()</a>) that it can continue. </p>
-<dl class="section warning"><dt>Warning</dt><dd>Must only be called from ISR context.</dd></dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">task</td><td>Handle of the task to notify.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__MMOSAL__TASKS.html#gab10e895f652b30de6087629437ce3c2a" title="Blocks the current task until a notification is received.">mmosal_task_wait_for_notification()</a> </dd></dl>
 
 </div>
 </div>
@@ -604,37 +508,6 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>mmosal_task_yield</b>
   </table>
   </dd>
 </dl>
-
-</div>
-</div>
-<a id="gab10e895f652b30de6087629437ce3c2a" name="gab10e895f652b30de6087629437ce3c2a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gab10e895f652b30de6087629437ce3c2a">&#9670;&nbsp;</a></span>mmosal_task_wait_for_notification()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool mmosal_task_wait_for_notification </td>
-          <td>(</td>
-          <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>timeout_ms</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Blocks the current task until a notification is received. </p>
-<p >Notifications can be sent using <a class="el" href="group__MMOSAL__TASKS.html#gaae85012294eac142c84cee6889a61d11">mmosal_task_notify()</a> or <a class="el" href="group__MMOSAL__TASKS.html#ga10a70bf367b5d46a7cd46a726e744766">mmosal_task_notify_from_isr()</a>.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">timeout_ms</td><td>The time to wait before giving up (or <code>UINT32_MAX</code> to wait forever).</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd><code>true</code> of a notification was received or <code>false</code> if it timed out.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="group__MMOSAL__TASKS.html#gaae85012294eac142c84cee6889a61d11" title="Notifies a waiting task (mmosal_task_wait_for_notification()) that it can continue.">mmosal_task_notify()</a> </dd>
-<dd>
-<a class="el" href="group__MMOSAL__TASKS.html#ga10a70bf367b5d46a7cd46a726e744766" title="Notifies a waiting task (mmosal_task_wait_for_notification()) that it can continue.">mmosal_task_notify_from_isr()</a> </dd></dl>
 
 </div>
 </div>

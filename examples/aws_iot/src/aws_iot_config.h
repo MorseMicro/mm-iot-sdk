@@ -19,6 +19,8 @@
 /**
  * The config store key storing the thing name,
  * if not found it is assumed the device needs provisioning
+ *
+ * Optional, defaults to "MM_Client_ID_<MAC Address>"
  */
 #define AWS_KEY_THING_NAME              "aws.thingname"
 

@@ -42,7 +42,7 @@
  */
 typedef struct
 {
-    const char * str; /**< The string to print */
+    const char *str;  /**< The string to print */
     size_t length;    /**< Length of the string to print */
 } CborPrintContext_t;
 
@@ -55,20 +55,20 @@ typedef struct
  * representation.
  *
  * @param token Context for the function.
- * @param fmt @c printf style format string.
- * @param ... arguments after format string.
+ * @param fmt   @c printf style format string.
+ * @param ...   arguments after format string.
  */
-static CborError cborPrinter(void * token,
-                              const char * fmt,
-                              ...);
+static CborError cborPrinter(void *token,
+                             const char *fmt,
+                             ...);
 
 /*-----------------------------------------------------------*/
 
-bool generateCsrRequest(uint8_t * pBuffer,
-                         size_t bufferLength,
-                         const char * pCsr,
-                         size_t csrLength,
-                         size_t * pOutLengthWritten)
+bool generateCsrRequest(uint8_t *pBuffer,
+                        size_t bufferLength,
+                        const char *pCsr,
+                        size_t csrLength,
+                        size_t *pOutLengthWritten)
 {
     CborEncoder encoder, mapEncoder;
     CborError cborRet;
@@ -102,7 +102,7 @@ bool generateCsrRequest(uint8_t * pBuffer,
 
     if (cborRet == CborNoError)
     {
-        *pOutLengthWritten = cbor_encoder_get_buffer_size(&encoder, (uint8_t *) pBuffer);
+        *pOutLengthWritten = cbor_encoder_get_buffer_size(&encoder, (uint8_t *)pBuffer);
     }
     else
     {
@@ -116,15 +116,16 @@ bool generateCsrRequest(uint8_t * pBuffer,
 
     return(cborRet == CborNoError);
 }
+
 /*-----------------------------------------------------------*/
 
-bool generateRegisterThingRequest(uint8_t * pBuffer,
-                                   size_t bufferLength,
-                                   const char * pCertificateOwnershipToken,
-                                   size_t certificateOwnershipTokenLength,
-                                   const char * pDeviceSerial,
-                                   size_t serialLength,
-                                   size_t * pOutLengthWritten)
+bool generateRegisterThingRequest(uint8_t *pBuffer,
+                                  size_t bufferLength,
+                                  const char *pCertificateOwnershipToken,
+                                  size_t certificateOwnershipTokenLength,
+                                  const char *pDeviceSerial,
+                                  size_t serialLength,
+                                  size_t *pOutLengthWritten)
 {
     CborEncoder encoder, mapEncoder, parametersEncoder;
     CborError cborRet;
@@ -186,7 +187,7 @@ bool generateRegisterThingRequest(uint8_t * pBuffer,
 
     if (cborRet == CborNoError)
     {
-        *pOutLengthWritten = cbor_encoder_get_buffer_size(&encoder, (uint8_t *) pBuffer);
+        *pOutLengthWritten = cbor_encoder_get_buffer_size(&encoder, (uint8_t *)pBuffer);
     }
     else
     {
@@ -200,16 +201,17 @@ bool generateRegisterThingRequest(uint8_t * pBuffer,
 
     return(cborRet == CborNoError);
 }
+
 /*-----------------------------------------------------------*/
 
-bool parseCsrResponse(const uint8_t * pResponse,
-                       size_t length,
-                       char * pCertificateBuffer,
-                       size_t * pCertificateBufferLength,
-                       char * pCertificateIdBuffer,
-                       size_t * pCertificateIdBufferLength,
-                       char * pOwnershipTokenBuffer,
-                       size_t * pOwnershipTokenBufferLength)
+bool parseCsrResponse(const uint8_t *pResponse,
+                      size_t length,
+                      char *pCertificateBuffer,
+                      size_t *pCertificateBufferLength,
+                      char *pCertificateIdBuffer,
+                      size_t *pCertificateIdBufferLength,
+                      char *pOwnershipTokenBuffer,
+                      size_t *pOwnershipTokenBufferLength)
 {
     CborError cborRet;
     CborParser parser;
@@ -266,9 +268,9 @@ bool parseCsrResponse(const uint8_t * pResponse,
             if (cborRet == CborErrorOutOfMemory)
             {
                 size_t requiredLen = 0;
-                (void) cbor_value_calculate_string_length(&value, &requiredLen);
+                (void)cbor_value_calculate_string_length(&value, &requiredLen);
                 LogError(("Certificate buffer insufficiently large. Certificate length: %lu",
-                          (uint32_t) requiredLen));
+                          (uint32_t)requiredLen));
             }
             else if (cborRet != CborNoError)
             {
@@ -305,14 +307,14 @@ bool parseCsrResponse(const uint8_t * pResponse,
             if (cborRet == CborErrorOutOfMemory)
             {
                 size_t requiredLen = 0;
-                (void) cbor_value_calculate_string_length(&value, &requiredLen);
+                (void)cbor_value_calculate_string_length(&value, &requiredLen);
                 LogError(("Certificate ID buffer insufficiently large. Certificate ID length: %lu",
-                          (uint32_t) requiredLen));
+                          (uint32_t)requiredLen));
             }
             else if (cborRet != CborNoError)
             {
                 LogError(("Failed to parse \"certificateId\" value from response: %s.",
-                           cbor_error_string(cborRet)));
+                          cbor_error_string(cborRet)));
             }
         }
     }
@@ -344,9 +346,9 @@ bool parseCsrResponse(const uint8_t * pResponse,
             if (cborRet == CborErrorOutOfMemory)
             {
                 size_t requiredLen = 0;
-                (void) cbor_value_calculate_string_length(&value, &requiredLen);
+                (void)cbor_value_calculate_string_length(&value, &requiredLen);
                 LogError(("Certificate ownership token buffer insufficiently large, required: %lu",
-                          (uint32_t) requiredLen));
+                          (uint32_t)requiredLen));
             }
             else if (cborRet != CborNoError)
             {
@@ -358,12 +360,13 @@ bool parseCsrResponse(const uint8_t * pResponse,
 
     return(cborRet == CborNoError);
 }
+
 /*-----------------------------------------------------------*/
 
-bool parseRegisterThingResponse(const uint8_t * pResponse,
-                                 size_t length,
-                                 char * pThingNameBuffer,
-                                 size_t * pThingNameBufferLength)
+bool parseRegisterThingResponse(const uint8_t *pResponse,
+                                size_t length,
+                                char *pThingNameBuffer,
+                                size_t *pThingNameBufferLength)
 {
     CborError cborRet;
     CborParser parser;
@@ -415,9 +418,9 @@ bool parseRegisterThingResponse(const uint8_t * pResponse,
             if (cborRet == CborErrorOutOfMemory)
             {
                 size_t requiredLen = 0;
-                (void) cbor_value_calculate_string_length(&value, &requiredLen);
+                (void)cbor_value_calculate_string_length(&value, &requiredLen);
                 LogError(("Thing name buffer insufficiently large. Thing name length: %lu",
-                          (uint32_t) requiredLen));
+                          (uint32_t)requiredLen));
             }
             else if (cborRet != CborNoError)
             {
@@ -429,15 +432,16 @@ bool parseRegisterThingResponse(const uint8_t * pResponse,
 
     return(cborRet == CborNoError);
 }
+
 /*-----------------------------------------------------------*/
 
-static CborError cborPrinter(void * token,
-                              const char * fmt,
-                              ...)
+static CborError cborPrinter(void *token,
+                             const char *fmt,
+                             ...)
 {
     int result;
     va_list args;
-    CborPrintContext_t * ctx = (CborPrintContext_t *) token;
+    CborPrintContext_t *ctx = (CborPrintContext_t *)token;
 
     va_start(args, fmt);
 
@@ -452,12 +456,12 @@ static CborError cborPrinter(void * token,
     }
     else
     {
-        size_t newLen = (unsigned) result;
+        size_t newLen = (unsigned)result;
         size_t oldLen = ctx->length;
-        char * newPtr;
+        char *newPtr;
 
         ctx->length = oldLen + newLen;
-        newPtr = (char *) realloc((void *) ctx->str, ctx->length + 1);
+        newPtr = (char *)realloc((void *)ctx->str, ctx->length + 1);
 
         if (newPtr == NULL)
         {
@@ -483,10 +487,11 @@ static CborError cborPrinter(void * token,
 
     return (result < 0) ? CborErrorIO : CborNoError;
 }
+
 /*-----------------------------------------------------------*/
 
-const char * getStringFromCbor(const uint8_t * cbor,
-                                size_t length)
+const char *getStringFromCbor(const uint8_t *cbor,
+                              size_t length)
 {
     CborPrintContext_t printCtx = { 0 };
     CborParser parser;
@@ -511,4 +516,5 @@ const char * getStringFromCbor(const uint8_t * cbor,
 
     return printCtx.str;
 }
+
 /*-----------------------------------------------------------*/

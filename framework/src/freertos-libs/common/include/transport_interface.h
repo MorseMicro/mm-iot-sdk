@@ -46,6 +46,10 @@
 #include "mbedtls/x509.h"
 #include "mbedtls/net.h"
 
+#ifndef TRANSPORT_EXTERNAL_CTR_DRBG_ENABLED
+#define TRANSPORT_EXTERNAL_CTR_DRBG_ENABLED (0)
+#endif
+
 /* *INDENT-OFF* */
 #ifdef __cplusplus
     extern "C" {
@@ -263,8 +267,10 @@ typedef struct SSLContext
     mbedtls_x509_crt rootCa;                 /**< Root CA certificate context. */
     mbedtls_x509_crt clientCert;             /**< Client certificate context. */
     mbedtls_pk_context privKey;              /**< Client private key context. */
+#if !TRANSPORT_EXTERNAL_CTR_DRBG_ENABLED
     mbedtls_entropy_context entropyContext;  /**< Entropy context for random number generation. */
     mbedtls_ctr_drbg_context ctrDrgbContext; /**< CTR DRBG context for random number generation. */
+#endif
 } SSLContext_t;
 
 /**

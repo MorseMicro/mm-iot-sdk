@@ -41,19 +41,23 @@ extern ota_preupdate_cb_fn_t ota_pal_preupdate_callback;
 /**
  * @brief Abort an OTA transfer.
  *
- * Aborts access to an existing open file represented by the OTA file context @c pFileContext. This is
+ * Aborts access to an existing open file represented by the OTA file context @c pFileContext. This
+ * is
  * only valid for jobs that started successfully.
  *
  * @note The input @c pFileContext is checked for NULL by the OTA agent before this
  * function is called.
  *
- * This function may be called before the file is opened, so the file pointer @c pFileContext->fileHandle
+ * This function may be called before the file is opened, so the file pointer @c
+ * pFileContext->fileHandle
  * may be NULL when this function is called.
  *
  * @param[in] pFileContext OTA file context information.
  *
- * @return The @c OtaPalStatus_t error code is a combination of the main OTA PAL interface error and
- *         the MCU specific sub error code. See ota_platform_interface.h for the @c OtaPalMainStatus_t
+ * @return                 The @c OtaPalStatus_t error code is a combination of the main OTA PAL
+ *                         interface error and
+ *         the MCU specific sub error code. See ota_platform_interface.h for the @c
+ * OtaPalMainStatus_t
  *         error codes and your specific PAL implementation for the sub error code.
  *
  * Major error codes returned are:
@@ -68,18 +72,22 @@ OtaPalStatus_t otaPal_Abort(OtaFileContext_t * const pFileContext);
  *
  * @note Opens the file indicated in the OTA file context in the MCU file system.
  *
- * @note The previous image may be present in the designated image download partition or file, so the
+ * @note The previous image may be present in the designated image download partition or file, so
+ * the
  * partition or file must be completely erased or overwritten in this routine.
  *
  * @note The input @c pFileContext is checked for NULL by the OTA agent before this
  * function is called.
- * The device file path is a required field in the OTA job document, so @c pFileContext->pFilePath is
+ * The device file path is a required field in the OTA job document, so @c pFileContext->pFilePath
+ * is
  * checked for NULL by the OTA agent before this function is called.
  *
  * @param[in] pFileContext OTA file context information.
  *
- * @return The @c OtaPalStatus_t error code is a combination of the main OTA PAL interface error and
- *         the MCU specific sub error code. See ota_platform_interface.h for the @c OtaPalMainStatus_t
+ * @return                 The @c OtaPalStatus_t error code is a combination of the main OTA PAL
+ *                         interface error and
+ *         the MCU specific sub error code. See ota_platform_interface.h for the @c
+ * OtaPalMainStatus_t
  *         error codes and your specific PAL implementation for the sub error code.
  *
  * Major error codes returned are:
@@ -107,8 +115,10 @@ OtaPalStatus_t otaPal_CreateFileForRx(OtaFileContext_t * const pFileContext);
  *
  * @param[in] pFileContext OTA file context information.
  *
- * @return The @c OtaPalStatus_t error code is a combination of the main OTA PAL interface error and
- *         the MCU specific sub error code. See ota_platform_interface.h for the @c OtaPalMainStatus_t
+ * @return                 The @c OtaPalStatus_t error code is a combination of the main OTA PAL
+ *                         interface error and
+ *         the MCU specific sub error code. See ota_platform_interface.h for the @c
+ * OtaPalMainStatus_t
  *         error codes and your specific PAL implementation for the sub error code.
  *
  * Major error codes returned are:
@@ -132,11 +142,12 @@ OtaPalStatus_t otaPal_CloseFile(OtaFileContext_t * const pFileContext);
  * @c offset is validated by the OTA agent before this function is called.
  *
  * @param[in] pFileContext OTA file context information.
- * @param[in] ulOffset Byte offset to write to from the beginning of the file.
- * @param[in] pData Pointer to the byte array of data to write.
- * @param[in] ulBlockSize The number of bytes to write.
+ * @param[in] ulOffset     Byte offset to write to from the beginning of the file.
+ * @param[in] pData        Pointer to the byte array of data to write.
+ * @param[in] ulBlockSize  The number of bytes to write.
  *
- * @return The number of bytes written successfully, or a negative error code from the platform
+ * @return                 The number of bytes written successfully, or a negative error code from
+ *                         the platform
  * abstraction layer.
  */
 int16_t otaPal_WriteBlock(OtaFileContext_t * const pFileContext,
@@ -155,8 +166,10 @@ int16_t otaPal_WriteBlock(OtaFileContext_t * const pFileContext,
  *
  * @param[in] pFileContext OTA file context information.
  *
- * @return The @c OtaPalStatus_t error code is a combination of the main OTA PAL interface error and
- *         the MCU specific sub error code. See ota_platform_interface.h for the @c OtaPalMainStatus_t
+ * @return                 The @c OtaPalStatus_t error code is a combination of the main OTA PAL
+ *                         interface error and
+ *         the MCU specific sub error code. See ota_platform_interface.h for the @c
+ * OtaPalMainStatus_t
  *         error codes and your specific PAL implementation for the sub error code.
  *
  * Major error codes returned are:
@@ -173,19 +186,24 @@ OtaPalStatus_t otaPal_ActivateNewImage(OtaFileContext_t * const pFileContext);
  * Refer to the PAL implementation to determine what happens on your platform.
  *
  * @param[in] pFileContext File context of type @c OtaFileContext_t.
- * @param[in] eState The desired state of the OTA update image.
+ * @param[in] eState       The desired state of the OTA update image.
  *
- * @return The @c OtaPalStatus_t error code is a combination of the main OTA PAL interface error and
- *         the MCU specific sub error code. See ota_platform_interface.h for the @c OtaPalMainStatus_t
+ * @return                 The @c OtaPalStatus_t error code is a combination of the main OTA PAL
+ *                         interface error and
+ *         the MCU specific sub error code. See ota_platform_interface.h for the @c
+ * OtaPalMainStatus_t
  *         error codes and your specific PAL implementation for the sub error code.
  *
  * Major error codes returned are:
  *
  *   @c OtaPalSuccess on success.
  *   @c OtaPalBadImageState: if you specify an invalid @c OtaImageState_t. No sub error code.
- *   @c OtaPalAbortFailed: failed to roll back the update image as requested by @c OtaImageStateAborted.
- *   @c OtaPalRejectFailed: failed to roll back the update image as requested by @c OtaImageStateRejected.
- *   @c OtaPalCommitFailed: failed to make update image permanent as requested by @c OtaImageStateAccepted.
+ *   @c OtaPalAbortFailed: failed to roll back the update image as requested by @c
+ * OtaImageStateAborted.
+ *   @c OtaPalRejectFailed: failed to roll back the update image as requested by @c
+ * OtaImageStateRejected.
+ *   @c OtaPalCommitFailed: failed to make update image permanent as requested by @c
+ * OtaImageStateAccepted.
  */
 OtaPalStatus_t otaPal_SetPlatformImageState(OtaFileContext_t * const pFileContext,
                                             OtaImageState_t eState);
@@ -206,7 +224,7 @@ OtaPalStatus_t otaPal_SetPlatformImageState(OtaFileContext_t * const pFileContex
  *
  * @param[in] pFileContext File context of type @c OtaFileContext_t.
  *
- * @return An @c OtaPalImageState_t. One of the following:
+ * @return                 An @c OtaPalImageState_t. One of the following:
  *   @c OtaPalImageStatePendingCommit (the new firmware image is in the self test phase)
  *   @c OtaPalImageStateValid         (the new firmware image is already committed)
  *   @c OtaPalImageStateInvalid       (the new firmware image is invalid or non-existent)
@@ -225,8 +243,10 @@ OtaPalImageState_t otaPal_GetPlatformImageState(OtaFileContext_t * const pFileCo
  *
  * @param[in] pFileContext OTA file context information.
  *
- * @return The @c OtaPalStatus_t error code is a combination of the main OTA PAL interface error and
- *         the MCU specific sub error code. See ota_platform_interface.h for the @c OtaPalMainStatus_t
+ * @return                 The @c OtaPalStatus_t error code is a combination of the main OTA PAL
+ *                         interface error and
+ *         the MCU specific sub error code. See ota_platform_interface.h for the @c
+ * OtaPalMainStatus_t
  *         error codes and your specific PAL implementation for the sub error code.
  */
 OtaPalStatus_t otaPal_ResetDevice(OtaFileContext_t * const pFileContext);

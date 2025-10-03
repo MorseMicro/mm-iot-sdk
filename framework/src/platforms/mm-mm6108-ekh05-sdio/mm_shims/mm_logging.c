@@ -31,7 +31,6 @@ static bool morse_debug_mutex_take(void)
     }
 }
 
-
 static void morse_debug_mutex_release(void)
 {
     if (log_mutex != NULL)
@@ -78,7 +77,6 @@ int vprintf(const char *fmt, va_list arg)
     return ret;
 }
 
-
 /* Mutex must have been acquired before this function is invoked. */
 static int printf_protected(const char *fmt, ...)
 {
@@ -88,7 +86,6 @@ static int printf_protected(const char *fmt, ...)
     va_end(args);
     return 0;
 }
-
 
 int printf(const char *fmt, ...)
 {
@@ -141,8 +138,6 @@ int setvbuf(FILE *stream, char *buffer, int mode, size_t size)
     MM_UNUSED(size);
     return 0;
 }
-
-
 
 /** Maximum length of buffer to dump inline before going to multi-line mode */
 #define DUMP_INLINE_MAXLEN      (8)

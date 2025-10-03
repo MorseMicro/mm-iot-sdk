@@ -34,9 +34,9 @@
 /**
  * @brief Log base 2 of the size of the file data block message (excluding the header).
  *
- * 10 bits yields a data block size of 1KB.
+ * 11 bits yields a data block size of 2KB.
  */
-#define otaconfigLOG2_FILE_BLOCK_SIZE           10UL
+#define otaconfigLOG2_FILE_BLOCK_SIZE           11UL
 
 /**
  * @brief Size of the file data block message (excluding the header).
@@ -78,8 +78,13 @@
  *  how many data blocks response is expected for each data requests.
  *  Please note that this must be set larger than zero.
  *
+ * @note    Increasing this value will increase RAM usage by @c otaconfigFILE_BLOCK_SIZE per added
+ *          block. This value may need to be lowered on memory limited devices.
+ * @warning This value is limited by the @c MAX_MESSAGES define in @c ota_os_mmosal.c, which
+ *          defaults to 20. To increase beyond that limit, you must first increase @c MAX_MESSAGES
+ *          to your desired value.
  */
-#define otaconfigMAX_NUM_BLOCKS_REQUEST         1U
+#define otaconfigMAX_NUM_BLOCKS_REQUEST         16U
 
 /**
  * @brief The maximum number of requests allowed to send without a response before we abort.
@@ -96,7 +101,7 @@
  * This configurations parameter sets the maximum number of static data buffers used by
  * the OTA agent for job and file data blocks received.
  */
-#define kOta_MAX_NUM_OTA_DATA_BUFFERS       (otaconfigMAX_NUM_BLOCKS_REQUEST + 1)
+#define otaconfigMAX_NUM_OTA_DATA_BUFFERS       (otaconfigMAX_NUM_BLOCKS_REQUEST + 1)
 
 /**
  * @brief How frequently the device will report its OTA progress to the cloud.
@@ -105,7 +110,7 @@
  * number of blocks it receives. For example, 25 means device will update job status every 25
  * blocks it receives.
  */
-#define otaconfigOTA_UPDATE_STATUS_FREQUENCY    25U
+#define otaconfigOTA_UPDATE_STATUS_FREQUENCY    100U
 
 /**
  * @brief Allow update to same or lower version.

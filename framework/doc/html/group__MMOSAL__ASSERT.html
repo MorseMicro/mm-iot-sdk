@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.8.2</span>
+   &#160;<span id="projectnumber">2.9.7</span>
    </div>
   </td>
  </tr>
@@ -108,6 +108,9 @@ Macros</h2></td></tr>
 <tr class="memitem:gae9a238e70e8ae1b8da15fe9ca36f802e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMOSAL__ASSERT.html#gae9a238e70e8ae1b8da15fe9ca36f802e">MMOSAL_FILEID</a>&#160;&#160;&#160;0</td></tr>
 <tr class="memdesc:gae9a238e70e8ae1b8da15fe9ca36f802e"><td class="mdescLeft">&#160;</td><td class="mdescRight">File identifier: if not provided by compiler then define to zero.  <a href="group__MMOSAL__ASSERT.html#gae9a238e70e8ae1b8da15fe9ca36f802e">More...</a><br /></td></tr>
 <tr class="separator:gae9a238e70e8ae1b8da15fe9ca36f802e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga98c9317eeccabe1644c790812bcad227"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMOSAL__ASSERT.html#ga98c9317eeccabe1644c790812bcad227">MMOSAL_MAX_FAILURE_RECORDS</a>&#160;&#160;&#160;4</td></tr>
+<tr class="memdesc:ga98c9317eeccabe1644c790812bcad227"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum number of failure records to buffer (must be a power of 2).  <a href="group__MMOSAL__ASSERT.html#ga98c9317eeccabe1644c790812bcad227">More...</a><br /></td></tr>
+<tr class="separator:ga98c9317eeccabe1644c790812bcad227"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga85c232ca83d2375318386c4ea49c7b17"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMOSAL__ASSERT.html#ga85c232ca83d2375318386c4ea49c7b17">MMOSAL_LOG_FAILURE_INFO</a>(...)</td></tr>
 <tr class="memdesc:ga85c232ca83d2375318386c4ea49c7b17"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize a <a class="el" href="structmmosal__failure__info.html" title="Data structure used to store information about a failure that can be preserved across reset.">mmosal_failure_info</a> struct based on current state and invoke <a class="el" href="group__MMOSAL__ASSERT.html#ga351ea740e61f98a4e92442ace45ab24e" title="Log failure information in a way that it is preserved across reboots so that it can be available for ...">mmosal_log_failure_info()</a>.  <a href="group__MMOSAL__ASSERT.html#ga85c232ca83d2375318386c4ea49c7b17">More...</a><br /></td></tr>
 <tr class="separator:ga85c232ca83d2375318386c4ea49c7b17"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -117,6 +120,12 @@ Macros</h2></td></tr>
 <tr class="memitem:ga54003ace4e888bdbcd9fdd52334a9f96"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMOSAL__ASSERT.html#ga54003ace4e888bdbcd9fdd52334a9f96">MMOSAL_ASSERT_LOG_DATA</a>(expr, ...)</td></tr>
 <tr class="memdesc:ga54003ace4e888bdbcd9fdd52334a9f96"><td class="mdescLeft">&#160;</td><td class="mdescRight">Assert that the given expression evaluates to true and abort execution if not.  <a href="group__MMOSAL__ASSERT.html#ga54003ace4e888bdbcd9fdd52334a9f96">More...</a><br /></td></tr>
 <tr class="separator:ga54003ace4e888bdbcd9fdd52334a9f96"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab53fa43784adb38e9bbcad684ab57ecf"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMOSAL__ASSERT.html#gab53fa43784adb38e9bbcad684ab57ecf">MMOSAL_DEV_ASSERT</a>(x)&#160;&#160;&#160;((void)(x))</td></tr>
+<tr class="memdesc:gab53fa43784adb38e9bbcad684ab57ecf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Assertions that are only enabled for debug builds.  <a href="group__MMOSAL__ASSERT.html#gab53fa43784adb38e9bbcad684ab57ecf">More...</a><br /></td></tr>
+<tr class="separator:gab53fa43784adb38e9bbcad684ab57ecf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaed754648f1810c1f44ed48ad8debbfa1"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMOSAL__ASSERT.html#gaed754648f1810c1f44ed48ad8debbfa1">MMOSAL_DEV_ASSERT_LOG_DATA</a>(x, ...)&#160;&#160;&#160;((void)(x))</td></tr>
+<tr class="memdesc:gaed754648f1810c1f44ed48ad8debbfa1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Assertions that are only enabled for debug builds (with support for up to 4 <code>uint32_t's</code> to be logged).  <a href="group__MMOSAL__ASSERT.html#gaed754648f1810c1f44ed48ad8debbfa1">More...</a><br /></td></tr>
+<tr class="separator:gaed754648f1810c1f44ed48ad8debbfa1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -160,7 +169,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="mmosal_8h_source.html#l00967">967</a> of file <a class="el" href="mmosal_8h_source.html">mmosal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmosal_8h_source.html#l00927">927</a> of file <a class="el" href="mmosal_8h_source.html">mmosal.h</a>.</p>
 
 </div>
 </div>
@@ -207,7 +216,61 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="mmosal_8h_source.html#l00986">986</a> of file <a class="el" href="mmosal_8h_source.html">mmosal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmosal_8h_source.html#l00946">946</a> of file <a class="el" href="mmosal_8h_source.html">mmosal.h</a>.</p>
+
+</div>
+</div>
+<a id="gab53fa43784adb38e9bbcad684ab57ecf" name="gab53fa43784adb38e9bbcad684ab57ecf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gab53fa43784adb38e9bbcad684ab57ecf">&#9670;&nbsp;</a></span>MMOSAL_DEV_ASSERT</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define MMOSAL_DEV_ASSERT</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">x</td><td>)</td>
+          <td>&#160;&#160;&#160;((void)(x))</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Assertions that are only enabled for debug builds. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmosal_8h_source.html#l00971">971</a> of file <a class="el" href="mmosal_8h_source.html">mmosal.h</a>.</p>
+
+</div>
+</div>
+<a id="gaed754648f1810c1f44ed48ad8debbfa1" name="gaed754648f1810c1f44ed48ad8debbfa1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaed754648f1810c1f44ed48ad8debbfa1">&#9670;&nbsp;</a></span>MMOSAL_DEV_ASSERT_LOG_DATA</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define MMOSAL_DEV_ASSERT_LOG_DATA</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">x, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>...</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;((void)(x))</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Assertions that are only enabled for debug builds (with support for up to 4 <code>uint32_t's</code> to be logged). </p>
+
+<p class="definition">Definition at line <a class="el" href="mmosal_8h_source.html#l00974">974</a> of file <a class="el" href="mmosal_8h_source.html">mmosal.h</a>.</p>
 
 </div>
 </div>
@@ -225,7 +288,7 @@ Functions</h2></td></tr>
 
 <p>File identifier: if not provided by compiler then define to zero. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmosal_8h_source.html#l00904">904</a> of file <a class="el" href="mmosal_8h_source.html">mmosal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmosal_8h_source.html#l00856">856</a> of file <a class="el" href="mmosal_8h_source.html">mmosal.h</a>.</p>
 
 </div>
 </div>
@@ -256,13 +319,32 @@ Functions</h2></td></tr>
 <div class="line">        info.pc = (uint32_t)pc;                                                     \</div>
 <div class="line">        mmosal_log_failure_info(&amp;info);                                             \</div>
 <div class="line">    } <span class="keywordflow">while</span> (0)</div>
-<div class="ttc" id="agroup__MMOSAL__ASSERT_html_gae9a238e70e8ae1b8da15fe9ca36f802e"><div class="ttname"><a href="group__MMOSAL__ASSERT.html#gae9a238e70e8ae1b8da15fe9ca36f802e">MMOSAL_FILEID</a></div><div class="ttdeci">#define MMOSAL_FILEID</div><div class="ttdoc">File identifier: if not provided by compiler then define to zero.</div><div class="ttdef"><b>Definition:</b> <a href="mmosal_8h_source.html#l00904">mmosal.h:904</a></div></div>
-<div class="ttc" id="astructmmosal__failure__info_html"><div class="ttname"><a href="structmmosal__failure__info.html">mmosal_failure_info</a></div><div class="ttdoc">Data structure used to store information about a failure that can be preserved across reset.</div><div class="ttdef"><b>Definition:</b> <a href="mmosal_8h_source.html#l00908">mmosal.h:909</a></div></div>
-<div class="ttc" id="astructmmosal__failure__info_html_a530aa0570e831d7bbc8c498732f8e85e"><div class="ttname"><a href="structmmosal__failure__info.html#a530aa0570e831d7bbc8c498732f8e85e">mmosal_failure_info::lr</a></div><div class="ttdeci">uint32_t lr</div><div class="ttdoc">Content of the LR register at assertion.</div><div class="ttdef"><b>Definition:</b> <a href="mmosal_8h_source.html#l00913">mmosal.h:913</a></div></div>
+<div class="ttc" id="agroup__MMOSAL__ASSERT_html_gae9a238e70e8ae1b8da15fe9ca36f802e"><div class="ttname"><a href="group__MMOSAL__ASSERT.html#gae9a238e70e8ae1b8da15fe9ca36f802e">MMOSAL_FILEID</a></div><div class="ttdeci">#define MMOSAL_FILEID</div><div class="ttdoc">File identifier: if not provided by compiler then define to zero.</div><div class="ttdef"><b>Definition:</b> <a href="mmosal_8h_source.html#l00856">mmosal.h:856</a></div></div>
+<div class="ttc" id="astructmmosal__failure__info_html"><div class="ttname"><a href="structmmosal__failure__info.html">mmosal_failure_info</a></div><div class="ttdoc">Data structure used to store information about a failure that can be preserved across reset.</div><div class="ttdef"><b>Definition:</b> <a href="mmosal_8h_source.html#l00868">mmosal.h:869</a></div></div>
+<div class="ttc" id="astructmmosal__failure__info_html_a530aa0570e831d7bbc8c498732f8e85e"><div class="ttname"><a href="structmmosal__failure__info.html#a530aa0570e831d7bbc8c498732f8e85e">mmosal_failure_info::lr</a></div><div class="ttdeci">uint32_t lr</div><div class="ttdoc">Content of the LR register at assertion.</div><div class="ttdef"><b>Definition:</b> <a href="mmosal_8h_source.html#l00873">mmosal.h:873</a></div></div>
 </div><!-- fragment -->
 <p>Initialize a <a class="el" href="structmmosal__failure__info.html" title="Data structure used to store information about a failure that can be preserved across reset.">mmosal_failure_info</a> struct based on current state and invoke <a class="el" href="group__MMOSAL__ASSERT.html#ga351ea740e61f98a4e92442ace45ab24e" title="Log failure information in a way that it is preserved across reboots so that it can be available for ...">mmosal_log_failure_info()</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmosal_8h_source.html#l00937">937</a> of file <a class="el" href="mmosal_8h_source.html">mmosal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmosal_8h_source.html#l00897">897</a> of file <a class="el" href="mmosal_8h_source.html">mmosal.h</a>.</p>
+
+</div>
+</div>
+<a id="ga98c9317eeccabe1644c790812bcad227" name="ga98c9317eeccabe1644c790812bcad227"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga98c9317eeccabe1644c790812bcad227">&#9670;&nbsp;</a></span>MMOSAL_MAX_FAILURE_RECORDS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define MMOSAL_MAX_FAILURE_RECORDS&#160;&#160;&#160;4</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Maximum number of failure records to buffer (must be a power of 2). </p>
+<p >Defaults to 4 if no platform-specific definition exists. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmosal_8h_source.html#l00864">864</a> of file <a class="el" href="mmosal_8h_source.html">mmosal.h</a>.</p>
 
 </div>
 </div>

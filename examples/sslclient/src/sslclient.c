@@ -379,7 +379,7 @@ void app_init(void)
 
     static char sslclient_server[64];
     strncpy(sslclient_server, DEFAULT_SERVER, sizeof(sslclient_server));
-    mmconfig_read_string("sslclient.server", sslclient_server, sizeof(sslclient_server));
+    (void)mmconfig_read_string("sslclient.server", sslclient_server, sizeof(sslclient_server));
     if ((ret = mbedtls_ssl_set_hostname(&ssl, sslclient_server)) != 0)
     {
         printf(" failed %d\n\n", ret);
@@ -393,7 +393,7 @@ void app_init(void)
     /* First parse the URL to extract the server, port and resource */
     static char sslclient_port[8];
     strncpy(sslclient_port, DEFAULT_PORT, sizeof(sslclient_port));
-    mmconfig_read_string("sslclient.port", sslclient_port, sizeof(sslclient_port));
+    (void)mmconfig_read_string("sslclient.port", sslclient_port, sizeof(sslclient_port));
 
     printf("Connecting to %s:%s...", sslclient_server, sslclient_port);
     fflush(stdout);

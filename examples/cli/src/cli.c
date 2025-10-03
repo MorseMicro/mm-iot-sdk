@@ -107,7 +107,7 @@ bool cli_set_deep_sleep_mode_handler(enum mmagic_deep_sleep_mode mode, void *arg
 void app_init(void)
 {
     char cli_mode[4] = "cli";
-    mmconfig_read_string("cli.mode", cli_mode, sizeof(cli_mode));
+    (void)mmconfig_read_string("cli.mode", cli_mode, sizeof(cli_mode));
 
     mmhal_uart_init(cli_uart_rx_handler, NULL);
 

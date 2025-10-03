@@ -249,20 +249,15 @@ void mmhal_log_flush(void)
     mmhal_log_flush_uart();
 }
 
-void mmhal_read_mac_addr(uint8_t *mac_addr)
+/**
+ * Generate a stable, device-unique MAC address based on the MCU UID. This address is not globally
+ * unique, but is consistent across boots on the same device and marked as locally administered
+ * (0x02 prefix).
+ *
+ * @param mac_addr Location where the MAC address will be stored.
+ */
+static void generate_stable_mac_addr_from_uid(uint8_t *mac_addr)
 {
-    /*
-     * MAC address is determined by the following order of precedence:
-     * 1. The value returned in mac_addr by this function (if non-zero)
-     *    a. If MMHAL_MAC_ADDR_OVERRIDE_ENABLED is defined then mac_addr will be set to
-     *       a unique number derived from the chip unique ID.
-     *    b. If wlan.macaddr is set in persistent store, then mac_addr will be set to this value.
-     * 2. If this function returns an all zero mac_addr (as neither setting above was found), then:
-     *    a. If the tranceiver has a MAC address, then that is used by the firmware.
-     *    b. Otherwise a randomly generated MAC address is used by the firmware.
-     */
-
-#ifdef MMHAL_MAC_ADDR_OVERRIDE_ENABLED
     /* Shorten the UID */
     uint32_t uid = LL_GetUID_Word0() ^ LL_GetUID_Word1() ^ LL_GetUID_Word2();
 
@@ -270,13 +265,22 @@ void mmhal_read_mac_addr(uint8_t *mac_addr)
     mac_addr[0] = 0x02;
     mac_addr[1] = 0x00;
     memcpy(&mac_addr[2], &uid, sizeof(uid));
-#else
-    /* Load MAC Address */
+}
+
+/**
+ * Attempts to read a MAC address from the "wlan.macaddr" key in mmconfig persistent configuration.
+ *
+ * @param mac_addr Location where the MAC address will be stored if there is a valid MAC address in
+ *                 mmconfig persistent storage.
+ */
+static void get_mmconfig_mac_addr(uint8_t *mac_addr)
+{
     char strval[32];
     if (mmconfig_read_string("wlan.macaddr", strval, sizeof(strval)) > 0)
     {
         /* Need to provide an array of ints to sscanf otherwise it will overflow */
         int temp[MMWLAN_MAC_ADDR_LEN];
+        uint8_t validated_mac[MMWLAN_MAC_ADDR_LEN];
         int i;
 
         int ret = sscanf(strval, "%x:%x:%x:%x:%x:%x",
@@ -288,17 +292,44 @@ void mmhal_read_mac_addr(uint8_t *mac_addr)
             {
                 if (temp[i] > UINT8_MAX || temp[i] < 0)
                 {
-                    /* Invalid value, ignore and reset to default */
+                    /* Invalid value, ignore and exit without updating mac_addr */
                     printf("Invalid MAC address found in [wlan.macaddr], rejecting!\n");
-                    memset(mac_addr, 0, MMWLAN_MAC_ADDR_LEN);
-                    break;
+                    return;
                 }
-
-                mac_addr[i] = (uint8_t)temp[i];
+                validated_mac[i] = (uint8_t)temp[i];
             }
+            /* We only override the value in mac_addr once the entire mmconfig MAC has been
+             * validated in case mac_addr already contains a MAC address. */
+            memcpy(mac_addr, validated_mac, MMWLAN_MAC_ADDR_LEN);
         }
     }
-#endif
+}
+
+void mmhal_read_mac_addr(uint8_t *mac_addr)
+{
+    /*
+     * MAC address is determined using the following precedence:
+     *
+     * 1. The value of the `wlan.macaddr` setting in persistent storage, if present and valid.
+     *
+     * 2. The MAC address in transceiver OTP (i.e., the value of mac_addr passed into this function,
+     *    if non-zero).
+     *
+     * 3. A stable MAC address generated from the MCU’s hardware UID. This value is consistent
+     *    across boots for the same device, but unique to each MCU.
+     *
+     * 4. Failing all of the above, the value of mac_addr will remain zero on return from this
+     *    function, in which case the driver will generate a random MAC address.
+     */
+
+    get_mmconfig_mac_addr(mac_addr);
+
+    if (!mm_mac_addr_is_zero(mac_addr))
+    {
+        return;
+    }
+
+    generate_stable_mac_addr_from_uid(mac_addr);
 }
 
 extern RNG_HandleTypeDef hrng;
@@ -860,22 +891,4 @@ void mmhal_wlan_read_fw_file(uint32_t offset, uint32_t requested_len, struct mmh
     firmware_len -= offset;
 
     robuf->len = (firmware_len < requested_len) ? firmware_len : requested_len;
-}
-
-const struct mmhal_flash_partition_config* mmhal_get_mmconfig_partition(void)
-{
-    /** Start of MMCONFIG region in flash. */
-    extern uint8_t mmconfig_start;
-
-    /** End of MMCONFIG region in flash. */
-    extern uint8_t mmconfig_end;
-
-    static struct mmhal_flash_partition_config mmconfig_partition =
-        MMHAL_FLASH_PARTITION_CONFIG_DEFAULT;
-
-    mmconfig_partition.partition_start = (uint32_t) &mmconfig_start;
-    mmconfig_partition.partition_size = (uint32_t) (&mmconfig_end - &mmconfig_start);
-    mmconfig_partition.not_memory_mapped = false;
-
-    return &mmconfig_partition;
 }

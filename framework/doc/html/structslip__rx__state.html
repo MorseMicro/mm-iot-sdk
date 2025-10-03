@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.8.2</span>
+   &#160;<span id="projectnumber">2.9.7</span>
    </div>
   </td>
  </tr>
@@ -101,7 +101,7 @@ $(document).ready(function(){initNavTree('structslip__rx__state.html',''); initR
 <div class="line"><span class="comment">// State data for SLIP processing on receive path.</span></div>
 <div class="line"><span class="keyword">struct </span><a class="code hl_struct" href="structslip__rx__state.html">slip_rx_state</a> <a class="code hl_function" href="group__SLIP.html#ga0b6ccde54d6cabd5d25d9319114bac08">slip_rx</a> = <a class="code hl_define" href="group__SLIP.html#ga58b6b036a6d81cf1f7ad252406b9bb93">SLIP_RX_STATE_INIT</a>(<a class="code hl_variable" href="rf-test_8c.html#ab5eda394424d5302fdc376b519cb9629">slip_rx_buffer</a>, <span class="keyword">sizeof</span>(<a class="code hl_variable" href="rf-test_8c.html#ab5eda394424d5302fdc376b519cb9629">slip_rx_buffer</a>));</div>
 <div class="ttc" id="agroup__SLIP_html_ga0b6ccde54d6cabd5d25d9319114bac08"><div class="ttname"><a href="group__SLIP.html#ga0b6ccde54d6cabd5d25d9319114bac08">slip_rx</a></div><div class="ttdeci">enum slip_rx_status slip_rx(struct slip_rx_state *state, uint8_t c)</div><div class="ttdoc">Handle reception of a character in a SLIP stream.</div></div>
-<div class="ttc" id="agroup__SLIP_html_ga58b6b036a6d81cf1f7ad252406b9bb93"><div class="ttname"><a href="group__SLIP.html#ga58b6b036a6d81cf1f7ad252406b9bb93">SLIP_RX_STATE_INIT</a></div><div class="ttdeci">#define SLIP_RX_STATE_INIT(_buffer, _buffer_length)</div><div class="ttdoc">Static initializer for slip_rx_state.</div><div class="ttdef"><b>Definition:</b> <a href="slip_8h_source.html#l00058">slip.h:58</a></div></div>
+<div class="ttc" id="agroup__SLIP_html_ga58b6b036a6d81cf1f7ad252406b9bb93"><div class="ttname"><a href="group__SLIP.html#ga58b6b036a6d81cf1f7ad252406b9bb93">SLIP_RX_STATE_INIT</a></div><div class="ttdeci">#define SLIP_RX_STATE_INIT(_buffer, _buffer_length)</div><div class="ttdoc">Static initializer for slip_rx_state.</div><div class="ttdef"><b>Definition:</b> <a href="slip_8h_source.html#l00059">slip.h:59</a></div></div>
 <div class="ttc" id="agroup__SLIP_html_ga9e17e8236b045af9f97c7f5121a31117"><div class="ttname"><a href="group__SLIP.html#ga9e17e8236b045af9f97c7f5121a31117">SLIP_RX_BUFFER_SIZE</a></div><div class="ttdeci">#define SLIP_RX_BUFFER_SIZE</div><div class="ttdoc">Recommended RX buffer size.</div><div class="ttdef"><b>Definition:</b> <a href="slip_8h_source.html#l00025">slip.h:25</a></div></div>
 <div class="ttc" id="arf-test_8c_html_ab5eda394424d5302fdc376b519cb9629"><div class="ttname"><a href="rf-test_8c.html#ab5eda394424d5302fdc376b519cb9629">slip_rx_buffer</a></div><div class="ttdeci">static uint8_t slip_rx_buffer[SLIP_RX_BUFFER_SIZE]</div><div class="ttdoc">Buffer for SLIP processing on receive path.</div><div class="ttdef"><b>Definition:</b> <a href="rf-test_8c_source.html#l00206">rf-test.c:206</a></div></div>
 <div class="ttc" id="astructslip__rx__state_html"><div class="ttname"><a href="structslip__rx__state.html">slip_rx_state</a></div><div class="ttdoc">Structure used to contain the current state for the SLIP receiver.</div><div class="ttdef"><b>Definition:</b> <a href="slip_8h_source.html#l00042">slip.h:43</a></div></div>
@@ -124,6 +124,9 @@ Data Fields</h2></td></tr>
 <tr class="memitem:a6bc697eea8043b5b6d2d43f08a4c11a2"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structslip__rx__state.html#a6bc697eea8043b5b6d2d43f08a4c11a2">escape</a></td></tr>
 <tr class="memdesc:a6bc697eea8043b5b6d2d43f08a4c11a2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Escape state.  <a href="structslip__rx__state.html#a6bc697eea8043b5b6d2d43f08a4c11a2">More...</a><br /></td></tr>
 <tr class="separator:a6bc697eea8043b5b6d2d43f08a4c11a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7437f725987b31f9851a401a71750e22"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structslip__rx__state.html#a7437f725987b31f9851a401a71750e22">frame_started</a></td></tr>
+<tr class="memdesc:a7437f725987b31f9851a401a71750e22"><td class="mdescLeft">&#160;</td><td class="mdescRight">Escape state.  <a href="structslip__rx__state.html#a7437f725987b31f9851a401a71750e22">More...</a><br /></td></tr>
+<tr class="separator:a7437f725987b31f9851a401a71750e22"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Field Documentation</h2>
 <a id="a71e234f23a3e1138d3607de8cb809b14" name="a71e234f23a3e1138d3607de8cb809b14"></a>
@@ -177,6 +180,24 @@ Data Fields</h2></td></tr>
 <p>Escape state. </p>
 
 <p class="definition">Definition at line <a class="el" href="slip_8h_source.html#l00047">47</a> of file <a class="el" href="slip_8h_source.html">slip.h</a>.</p>
+
+</div>
+</div>
+<a id="a7437f725987b31f9851a401a71750e22" name="a7437f725987b31f9851a401a71750e22"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7437f725987b31f9851a401a71750e22">&#9670;&nbsp;</a></span>frame_started</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool slip_rx_state::frame_started</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Escape state. </p>
+
+<p class="definition">Definition at line <a class="el" href="slip_8h_source.html#l00048">48</a> of file <a class="el" href="slip_8h_source.html">slip.h</a>.</p>
 
 </div>
 </div>

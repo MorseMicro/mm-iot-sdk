@@ -13,9 +13,6 @@
 #include "cli/autogen/mmagic_cli_internal.h"
 #include "cli/autogen/mmagic_cli_ping.h"
 
-/* This should be included after all the header files */
-#include "cli/autogen/mmagic_cli_ping.def"
-
 /** Interval (in milliseconds) at which to provide updates when the receive count has not
  *  changed. */
 #define UPDATE_INTERVAL_MS  (5000)

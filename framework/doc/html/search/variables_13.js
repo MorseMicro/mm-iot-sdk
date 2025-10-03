@@ -1,6 +1,10 @@
 var searchData=
 [
-  ['valid_5fchip_5fids_0',['valid_chip_ids',['../structchip__cfg.html#a0d5735d4eee454b11781751319dd7dc0',1,'chip_cfg']]],
-  ['vendor_5fies_1',['vendor_ies',['../structmmagic__wlan__beacon__rx__event__args.html#a76186ce9b159eaed80fbadd2835d54cf',1,'mmagic_wlan_beacon_rx_event_args']]],
-  ['version_2',['version',['../structmmwlan__bcf__metadata.html#adf230bcb317ee6f9fce43d306c9c7cbf',1,'mmwlan_bcf_metadata::version()'],['../structmmiperf__client__args.html#ae9b8e5d920fc9293340dde959d96ddde',1,'mmiperf_client_args::version()'],['../structmmiperf__server__args.html#a3998db290e0cc7247b7bdd90f3362a8c',1,'mmiperf_server_args::version()'],['../structmm__rsn__information.html#a48470713afc679e6de9c08043fbdc373',1,'mm_rsn_information::version()']]]
+  ['units_0',['units',['../iperf_8c.html#a144aa9e294a0ab9b5182f0d29b709739',1,'iperf.c']]],
+  ['uri_1',['uri',['../structrest__endpoint.html#afe99c19c7ae5fb7b5f1dbb157193541d',1,'rest_endpoint']]],
+  ['url_2',['url',['../structmmagic__core__tcp__connect__cmd__args.html#abe9286f3be6c05e6a74b018c7d6cf5fc',1,'mmagic_core_tcp_connect_cmd_args::url()'],['../structmmagic__core__mqtt__start__agent__cmd__args.html#a683ec2213957c9d62a7a7996e13b51df',1,'mmagic_core_mqtt_start_agent_cmd_args::url()']]],
+  ['use_5f4addr_3',['use_4addr',['../structmmwlan__sta__args.html#a4ea57619cc123ffad7079be7b9820103',1,'mmwlan_sta_args']]],
+  ['user_5ffunction_4',['user_function',['../structrest__endpoint.html#aef3bbacc985dae15b90a2f6c288c59d9',1,'rest_endpoint']]],
+  ['user_5fhardware_5fversion_5',['user_hardware_version',['../structstruct__version__info.html#a97f4bc3086789cb5de2f49b5391e5de7',1,'struct_version_info']]],
+  ['username_6',['username',['../structmmagic__core__mqtt__start__agent__cmd__args.html#adfa298896466d426921fa82662ed61fe',1,'mmagic_core_mqtt_start_agent_cmd_args']]]
 ];

@@ -16,22 +16,22 @@
 #include "lwip/inet.h"
 #include "mmping.h"
 #include "mmosal.h"
+#include "mmutils.h"
 #include "lwip/tcpip.h"
 
 #if !LWIP_RAW
 #error "LWIP RAW support required"
 #endif
 
-#if !(LWIP_IPV4  || LWIP_IPV6)
+#if !(LWIP_IPV4 || LWIP_IPV6)
 #error "LWIP IPV4 or LWIP_IPV6 support required"
 #endif
-
 
 /** If ping interval is >= this threshold then per-packet log messages will be displayed. */
 #define PING_DISPLAY_THRESHOLD_MS   (1000)
 
 /** Magic number we put in the packet to make sure that the payload gets echoed. */
-#define PING_MAGIC_NUMBER           (0xabcd0123)
+#define PING_MAGIC_NUMBER           (0xabcd0123lu)
 
 /** Number of bits in our duplicate check bitmap. */
 #define N_DUP_CHECK_BITS            (128)
@@ -57,7 +57,8 @@ enum ping_state
 struct ping_session
 {
     /** Ping arguments. */
-    struct {
+    struct
+    {
         /** The local IP address, in binary format. */
         ip_addr_t ping_src;
         /** The IP address of the ping target, in binary format. */
@@ -80,7 +81,7 @@ struct ping_session
      *  no packets received yet. */
     volatile int32_t last_rx_seq_num;
     /** Bitmap used to check for duplicates. */
-    volatile uint32_t dup_check_bitmap[N_DUP_CHECK_BITS/sizeof(uint32_t)];
+    volatile uint32_t dup_check_bitmap[N_DUP_CHECK_BITS / sizeof(uint32_t)];
     /** Sum of all RTTs for this session. */
     volatile uint32_t rtt_sum_ms;
     /** Absolute time for the next timeout event for this session. */
@@ -94,13 +95,15 @@ struct ping_session
     volatile uint16_t num_retries;
     /** Current ping state. */
     volatile enum ping_state state;
+    /** Handle of the running ping task, or NULL if it is not running. */
+    struct mmosal_task *task_handle;
+    /** Semaphore to notify ping task of state changes. */
+    struct mmosal_semb *semb;
 };
 
 /** The current ping session. At present we only support a single session, but in future this
  *  may be an array of sessions. */
 static struct ping_session ping_session;
-/** Handle of the running ping task, or NULL if it is not running. */
-static struct mmosal_task *ping_task_handle;
 /** The next session ID to use. */
 static uint16_t ping_next_session_id;
 
@@ -110,12 +113,12 @@ static uint16_t ping_next_session_id;
  * @warning This function does not perfom bounds checking. @p bit_num must be less than
  *          @ref N_DUP_CHECK_BITS.
  *
- * @param session   The ping session data structure.
- * @param bit_num   The offset of the bit to set. Must be less than @ref N_DUP_CHECK_BITS.
+ * @param session The ping session data structure.
+ * @param bit_num The offset of the bit to set. Must be less than @ref N_DUP_CHECK_BITS.
  */
 static void dup_check_bitmap_set(volatile struct ping_session *session, uint16_t bit_num)
 {
-    size_t word_num = bit_num/sizeof(uint32_t);
+    size_t word_num = bit_num / sizeof(uint32_t);
     uint32_t mask = (1ul << bit_num % sizeof(uint32_t));
 
     session->dup_check_bitmap[word_num] |= mask;
@@ -127,12 +130,12 @@ static void dup_check_bitmap_set(volatile struct ping_session *session, uint16_t
  * @warning This function does not perfom bounds checking. @p bit_num must be less than
  *          @ref N_DUP_CHECK_BITS.
  *
- * @param session   The ping session data structure.
- * @param bit_num   The offset of the bit to clear. Must be less than @ref N_DUP_CHECK_BITS.
+ * @param session The ping session data structure.
+ * @param bit_num The offset of the bit to clear. Must be less than @ref N_DUP_CHECK_BITS.
  */
 static void dup_check_bitmap_clear(volatile struct ping_session *session, uint16_t bit_num)
 {
-    size_t word_num = bit_num/sizeof(uint32_t);
+    size_t word_num = bit_num / sizeof(uint32_t);
     uint32_t mask = (1ul << bit_num % sizeof(uint32_t));
 
     session->dup_check_bitmap[word_num] &= ~mask;
@@ -144,14 +147,14 @@ static void dup_check_bitmap_clear(volatile struct ping_session *session, uint16
  * @warning This function does not perfom bounds checking. @p bit_num must be less than
  *          @ref N_DUP_CHECK_BITS.
  *
- * @param session   The ping session data structure.
- * @param bit_num   The offset of the bit to check. Must be less than @ref N_DUP_CHECK_BITS.
+ * @param session The ping session data structure.
+ * @param bit_num The offset of the bit to check. Must be less than @ref N_DUP_CHECK_BITS.
  *
  * @returns @c true if the bit is set, else @c false.
  */
 static bool dup_check_bitmap_is_set(volatile struct ping_session *session, uint16_t bit_num)
 {
-    size_t word_num = bit_num/sizeof(uint32_t);
+    size_t word_num = bit_num / sizeof(uint32_t);
     uint32_t mask = (1ul << bit_num % sizeof(uint32_t));
 
     return (session->dup_check_bitmap[word_num] & mask) != 0;
@@ -181,41 +184,19 @@ static void process_ping_acknowledgement(struct ping_session *session)
         }
 
         /* Wake up the ping task to handle the state change. */
-        if (ping_task_handle != NULL)
-        {
-            mmosal_task_notify(ping_task_handle);
-        }
+        mmosal_semb_give(session->semb);
     }
 }
 
 /**
  * Performs the bulk of the handling for a ping response.
- *
- * @note length of ping packet must be validated before entry to this function (taking into
- *       account the first 8 octets of payload that we put information into).
  */
-static uint8_t process_ping_response(const uint8_t *hdr,
-                                     size_t payload_size,
-                                     const ip_addr_t *remote_ip_addr)
+static uint8_t process_ping_response(uint16_t ping_id, uint16_t seq_num,
+                                     uint32_t sent_time, uint32_t magic_number,
+                                     size_t icmp_echo_len, const ip_addr_t *remote_ip_addr)
 {
-    LWIP_UNUSED_ARG(payload_size);
+    LWIP_UNUSED_ARG(icmp_echo_len);
     struct ping_session *session = &ping_session;
-    uint16_t ping_id = 0;
-    uint16_t seq_num = 0;
-#if LWIP_IPV4
-    if (IP_IS_V4(remote_ip_addr))
-    {
-        ping_id = ntohs(((const struct icmp_echo_hdr *)hdr)->id);
-        seq_num = ntohs(((const struct icmp_echo_hdr *)hdr)->seqno);
-    }
-#endif
-#if LWIP_IPV6
-    if (IP_IS_V6(remote_ip_addr))
-    {
-        ping_id = ntohs(((const struct icmp6_echo_hdr *)hdr)->id);
-        seq_num = ntohs(((const struct icmp6_echo_hdr *)hdr)->seqno);
-    }
-#endif
 
     if (ping_id != session->session_id)
     {
@@ -240,30 +221,6 @@ static uint8_t process_ping_response(const uint8_t *hdr,
                      seq_num, session->last_rx_seq_num));
     }
 
-    /* Note: length of payload was validated before this function was invoked. */
-    const uint8_t *ping_payload = NULL;
-#if LWIP_IPV4
-    if (IP_IS_V4(remote_ip_addr))
-    {
-        ping_payload = (const uint8_t *)((const struct icmp_echo_hdr *)hdr + 1);
-    }
-#endif
-#if LWIP_IPV6
-    if (IP_IS_V6(remote_ip_addr))
-    {
-        ping_payload = (const uint8_t *)((const struct icmp6_echo_hdr *)hdr + 1);
-    }
-#endif
-    MMOSAL_ASSERT(ping_payload != NULL);
-
-    uint32_t sent_time =
-        (ping_payload[0] << 24) | (ping_payload[1] << 16) |
-        (ping_payload[2] << 8) | (ping_payload[3]);
-
-    uint32_t magic_number =
-        (ping_payload[4] << 24) | (ping_payload[5] << 16) |
-        (ping_payload[6] << 8) | (ping_payload[7]);
-
     if (magic_number != PING_MAGIC_NUMBER)
     {
         /* If the magic number does not match then we cannot calculate RTT. */
@@ -284,7 +241,8 @@ static uint8_t process_ping_response(const uint8_t *hdr,
     if (session->args.ping_interval_ms >= PING_DISPLAY_THRESHOLD_MS)
     {
         LWIP_DEBUGF(LWIP_DBG_LEVEL_ALL, ("%10lu | %u bytes from %s: seq=%u time=%lu ms\n",
-                    mmosal_get_time_ms(), payload_size, ip_addr_str, seq_num, ping_rtt));
+                                         mmosal_get_time_ms(), icmp_echo_len, ip_addr_str, seq_num,
+                                         ping_rtt));
     }
 
     if (ping_rtt < session->stats.ping_min_time_ms || session->stats.ping_recv_count == 0)
@@ -320,32 +278,68 @@ static uint8_t ping_recv(void *arg, struct raw_pcb *pcb, struct pbuf *p, const i
     LWIP_UNUSED_ARG(addr);
     LWIP_ASSERT("p != NULL", p != NULL);
 
-    size_t ip_hdr_len = 0;
-    size_t echo_hdr_size = 0;
+    size_t icmp_echo_len = 0;
+    uint16_t offset = 0;
 
+    uint16_t ping_id = 0;
+    uint16_t seq_num = 0;
 #if LWIP_IPV4
     if (IP_IS_V4(addr))
     {
-        ip_hdr_len = PBUF_IP_HLEN_V4;
-        echo_hdr_size = sizeof(struct icmp_echo_hdr);
+        struct icmp_echo_hdr hdr = {0};
+        offset = PBUF_IP_HLEN_V4;
+        uint16_t copy_len = pbuf_copy_partial(p, &hdr, sizeof(hdr), offset);
+        if (copy_len != sizeof(hdr))
+        {
+            LWIP_DEBUGF(LWIP_DBG_LEVEL_WARNING, ("Received ping packet too short\n"));
+            return 0;
+        }
+        offset += copy_len;
+        ping_id = ntohs(hdr.id);
+        seq_num = ntohs(hdr.seqno);
+        icmp_echo_len = p->tot_len - PBUF_IP_HLEN_V4;
     }
 #endif
 #if LWIP_IPV6
     if (IP_IS_V6(addr))
     {
-        ip_hdr_len = PBUF_IP_HLEN_V6;
-        echo_hdr_size = sizeof(struct icmp6_echo_hdr);
+        struct icmp6_echo_hdr hdr = {0};
+        offset = PBUF_IP_HLEN_V6;
+        uint16_t copy_len = pbuf_copy_partial(p, &hdr, sizeof(hdr), offset);
+        if (copy_len != sizeof(hdr))
+        {
+            LWIP_DEBUGF(LWIP_DBG_LEVEL_WARNING, ("Received ping packet too short\n"));
+            return 0;
+        }
+        offset += copy_len;
+        ping_id = ntohs(hdr.id);
+        seq_num = ntohs(hdr.seqno);
+        icmp_echo_len = p->tot_len - PBUF_IP_HLEN_V6;
     }
 #endif
+    if (offset == 0)
+    {
+        LWIP_DEBUGF(LWIP_DBG_LEVEL_WARNING, ("Received unsupported ping response\n"));
+        return 0;
+    }
 
-    if (p->tot_len < (ip_hdr_len + echo_hdr_size + MMPING_MIN_DATA_SIZE))
+    struct
+    {
+        uint32_t sent_time;
+        uint32_t magic_number;
+    } payload;
+
+    uint16_t copy_len = pbuf_copy_partial(p, &payload, sizeof(payload), offset);
+    if (copy_len != sizeof(payload))
     {
         LWIP_DEBUGF(LWIP_DBG_LEVEL_WARNING, ("Received ping packet too short\n"));
         return 0;
     }
 
-    uint8_t ret = process_ping_response((uint8_t *)p->payload + ip_hdr_len,
-                                        p->len - ip_hdr_len, addr);
+    uint8_t ret = process_ping_response(ping_id, seq_num,
+                                        ntohl(payload.sent_time),
+                                        ntohl(payload.magic_number),
+                                        icmp_echo_len, addr);
     if (ret != 0)
     {
         pbuf_free(p);
@@ -422,8 +416,8 @@ void ping_echo_pbuf(struct pbuf *p, struct ping_session *session,
     ICMPH_TYPE_SET(hdr, ICMP_ECHO);
 
     hdr->chksum = 0;
-    hdr->id     = lwip_htons(session->session_id);
-    hdr->seqno  = lwip_htons(seq_num);
+    hdr->id = lwip_htons(session->session_id);
+    hdr->seqno = lwip_htons(seq_num);
 
     uint8_t *ping_payload = (uint8_t *)p->payload + sizeof(*hdr);
     generate_ping_payload(ping_payload, session);
@@ -431,6 +425,7 @@ void ping_echo_pbuf(struct pbuf *p, struct ping_session *session,
     /* Note: checksum needs to be calculated AFTER payload is filled out. */
     hdr->chksum = inet_chksum(hdr, size);
 }
+
 #endif
 
 #if LWIP_IPV6
@@ -445,8 +440,8 @@ void ping6_echo_pbuf(struct pbuf *p, struct ping_session *session, uint16_t seq_
     ICMPH_TYPE_SET(hdr, ICMP6_TYPE_EREQ);
 
     hdr->chksum = 0;
-    hdr->id     = lwip_htons(session->session_id);
-    hdr->seqno  = lwip_htons(seq_num);
+    hdr->id = lwip_htons(session->session_id);
+    hdr->seqno = lwip_htons(seq_num);
 
     uint8_t *ping_payload = (uint8_t *)p->payload + sizeof(*hdr);
 
@@ -458,6 +453,7 @@ void ping6_echo_pbuf(struct pbuf *p, struct ping_session *session, uint16_t seq_
     hdr->chksum = ip6_chksum_pseudo(p, IP6_NEXTH_ICMP6, p->tot_len,
                                     ip_2_ip6(src), ip_2_ip6(dst));
 }
+
 #endif
 
 /**
@@ -466,7 +462,7 @@ void ping6_echo_pbuf(struct pbuf *p, struct ping_session *session, uint16_t seq_
  * @note Must be invoked with TCPIP core locked.
  */
 static void ping_send_req(struct raw_pcb *ping_pcb, struct ping_session *session,
-                           uint16_t seq_num)
+                          uint16_t seq_num)
 {
     err_t err = ERR_ABRT;
     struct pbuf *p;
@@ -610,15 +606,17 @@ void ping_task(void *arg)
         {
             ping_session_timeout(session, ping_pcb);
         }
-
-        uint32_t sleep_time = session->timeout_time_ms - mmosal_get_time_ms();
-        UNLOCK_TCPIP_CORE();
-        /* Sanity check that the current time hasn't passed the timeout time. */
-        if ((int32_t)sleep_time > 0)
+        else
         {
-            mmosal_task_wait_for_notification(sleep_time);
+            uint32_t sleep_time = session->timeout_time_ms - mmosal_get_time_ms();
+            UNLOCK_TCPIP_CORE();
+            /* Sanity check that the current time hasn't passed the timeout time. */
+            if ((int32_t)sleep_time > 0)
+            {
+                mmosal_semb_wait(session->semb, sleep_time);
+            }
+            LOCK_TCPIP_CORE();
         }
-        LOCK_TCPIP_CORE();
     }
 
     LWIP_DEBUGF(
@@ -626,24 +624,33 @@ void ping_task(void *arg)
         ("Ping summary: %lu sent/%lu received (%lu%% loss) %lu/%lu/%lu min/avg/max RTT ms\n",
          session->stats.ping_total_count, session->stats.ping_recv_count,
          (session->stats.ping_total_count - session->stats.ping_recv_count) * 100 /
-                        session->stats.ping_total_count,
+         session->stats.ping_total_count,
          session->stats.ping_min_time_ms,
-         session->rtt_sum_ms/session->stats.ping_recv_count,
+         session->rtt_sum_ms / session->stats.ping_recv_count,
          session->stats.ping_max_time_ms));
 
     raw_disconnect(ping_pcb);
     raw_remove(ping_pcb);
     UNLOCK_TCPIP_CORE();
-    ping_task_handle = NULL;
+    mmosal_semb_delete(session->semb);
+    session->semb = NULL;
+    session->task_handle = NULL;
 }
 
-void mmping_stats(struct mmping_stats* stats)
+void mmping_stats(struct mmping_stats *stats)
 {
     LOCK_TCPIP_CORE();
     struct ping_session *session = &ping_session;
     *stats = session->stats;
     stats->ping_is_running = (session->state != PING_IDLE);
-    stats->ping_avg_time_ms = session->rtt_sum_ms / session->stats.ping_recv_count;
+    if (session->stats.ping_recv_count)
+    {
+        stats->ping_avg_time_ms = session->rtt_sum_ms / session->stats.ping_recv_count;
+    }
+    else
+    {
+        stats->ping_avg_time_ms = 0;
+    }
     if (stats->ping_receiver[0] == '\0')
     {
         ipaddr_ntoa_r(&session->args.ping_target,
@@ -656,9 +663,14 @@ void mmping_stop(void)
 {
     struct ping_session *session = &ping_session;
     session->state = PING_IDLE;
-    if (ping_task_handle != NULL)
+
+    if (session->semb != NULL)
     {
-        mmosal_task_notify(ping_task_handle);
+        mmosal_semb_give(session->semb);
+    }
+    while (session->task_handle != NULL)
+    {
+        mmosal_task_sleep(50);
     }
 }
 
@@ -666,7 +678,7 @@ static struct ping_session *ping_get_empty_session(void)
 {
     struct ping_session *session = &ping_session;
 
-    if (session->state == PING_IDLE)
+    if (session->state == PING_IDLE && session->task_handle == NULL)
     {
         return session;
     }
@@ -676,12 +688,13 @@ static struct ping_session *ping_get_empty_session(void)
     }
 }
 
-uint16_t mmping_start(const struct mmping_args* args)
+uint16_t mmping_start(const struct mmping_args *args)
 {
     if (args->ping_size < MMPING_MIN_DATA_SIZE || args->ping_size > MMPING_MAX_DATA_SIZE)
     {
         LWIP_DEBUGF(LWIP_DBG_LEVEL_WARNING, ("Invalid ping size %lu (valid range %d-%d)\n",
-                    args->ping_size, MMPING_MIN_DATA_SIZE, MMPING_MAX_DATA_SIZE));
+                                             args->ping_size, MMPING_MIN_DATA_SIZE,
+                                             MMPING_MAX_DATA_SIZE));
         return 0;
     }
 
@@ -745,24 +758,24 @@ uint16_t mmping_start(const struct mmping_args* args)
         session->args.ping_count = MMPING_MAX_COUNT;
     }
 
-    /* There will be an unlikely race condition where the ping thread could be terminating
-     * but still be non-NULL. Then the session will not run. But it is very unlikely bordering
-     * impossible. */
-    if (ping_task_handle == NULL)
+    session->semb = mmosal_semb_create("ping");
+    if (session->semb == NULL)
     {
-        ping_task_handle = mmosal_task_create(ping_task, NULL, MMOSAL_TASK_PRI_LOW,
-                                              512, "ping_request");
-        if (ping_task_handle == NULL)
-        {
-            session->stats.ping_is_running = false;
-            return 0;
-        }
+        session->stats.ping_is_running = false;
+        session->state = PING_IDLE;
+        return 0;
     }
-    else
+
+    session->task_handle = mmosal_task_create(ping_task, NULL, MMOSAL_TASK_PRI_LOW,
+                                              512, "ping_request");
+    if (session->task_handle == NULL)
     {
-        /* Ping task is running, but probably asleep. Wake it up so we can send immediately. */
-        mmosal_task_notify(ping_task_handle);
-        LWIP_DEBUGF(LWIP_DBG_LEVEL_ALL, ("Ping task already running\n"));
+        mmosal_semb_delete(session->semb);
+        session->semb = NULL;
+
+        session->stats.ping_is_running = false;
+        session->state = PING_IDLE;
+        return 0;
     }
 
     return session->session_id;

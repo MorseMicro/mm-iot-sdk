@@ -470,8 +470,10 @@
 #define WLAN_EID_DEVICE_LOCATION 204
 #define WLAN_EID_WHITE_SPACE_MAP 205
 #define WLAN_EID_FTM_PARAMETERS 206
+#define WLAN_EID_AID_REQUEST 210
 #define WLAN_EID_AID_RESPONSE 211
 #define WLAN_EID_S1G_BCN_COMPAT 213
+#define WLAN_EID_S1G_SHORT_BCN_INTERVAL 214
 #define WLAN_EID_TWT 216
 #define WLAN_EID_S1G_CAPABILITIES 217
 #define WLAN_EID_VENDOR_SPECIFIC 221
@@ -1171,6 +1173,18 @@ struct ieee80211_mgmt {
 	} u;
 } STRUCT_PACKED;
 
+struct ieee80211_ext {
+	le16 frame_control;
+	le16 duration;
+	u8 sa[6];
+	union {
+		struct {
+			u8 timestamp[4];
+			u8 change_seq;
+			u8 variable[];
+		} STRUCT_PACKED beacon;
+	} u;
+} STRUCT_PACKED;
 
 #define IEEE80211_MAX_MMPDU_SIZE 2304
 
@@ -1432,6 +1446,14 @@ struct ieee80211_ampe_ie {
 #define S1G_CAP0_SGI_ALL	((u8) (S1G_CAP0_SGI_1MHZ | S1G_CAP0_SGI_2MHZ | \
 					S1G_CAP0_SGI_4MHZ | S1G_CAP0_SGI_8MHZ | \
 					S1G_CAP0_SGI_16MHZ))
+
+#define S1G_OPERATION_PRIMARY_CHANNEL_WIDTH_MASK        ((u8) BIT(0))
+#define S1G_OPERATION_PRIMARY_CHANNEL_WIDTH_SHIFT       (0)
+#define S1G_OPERATION_OPERATING_CHANNEL_WIDTH_MASK      ((u8) (BIT(1) | BIT(2) | BIT(3) | BIT(4)))
+#define S1G_OPERATION_OPERATING_CHANNEL_WIDTH_SHIFT     (1)
+#define S1G_OPERATION_PRIMARY_CHANNEL_LOC_MASK          ((u8) BIT(5))
+#define S1G_OPERATION_PRIMARY_CHANNEL_LOC_SHIFT         (5)
+#define S1G_OPERATION_NO_MCS10                          ((u8) BIT(7))
 
 /** Centralized Authentication Control (CAC) parameters */
 #define S1G_CAC_CONTROL			((u16) BIT(0))	/* 0 CAC, 1 DAC */
@@ -2626,6 +2648,29 @@ struct ieee80211_he_mu_edca_parameter_set {
 #define HE_QOS_INFO_TXOP_REQUEST ((u8) (BIT(6)))
 /* B7: Reserved if sent by an AP; More Data Ack if sent by a non-AP STA */
 #define HE_QOS_INFO_MORE_DATA_ACK ((u8) (BIT(7)))
+
+struct ieee80211_s1g_capabilities {
+	u8 capab_info[10];
+	u8 supp_mcs_nss[5];
+} STRUCT_PACKED;
+
+struct ieee80211_s1g_operation {
+	u8 ch_width;
+	u8 oper_class;
+	u8 primary_ch;
+	u8 oper_ch;
+	le16 basic_mcs_nss;
+} STRUCT_PACKED;
+
+#define S1G_OPER_IE_CHANWIDTH_PRIM_CH_MASK     (BIT(0))
+#define S1G_OPER_IE_CHANWIDTH_OPER_CH_MASK     (BIT(1) | BIT(2) | \
+						BIT(3) | BIT(4))
+#define S1G_OPER_IE_CHANWIDTH_PRIM_OFFSET      (BIT(5))
+#define S1G_OPER_IE_MAX_MCS_1_NSS_SHIFT        (2)
+#define S1G_OPER_IE_MAX_MCS_2_NSS_SHIFT        (6)
+#define S1G_OPER_IE_MAX_MCS_3_NSS_SHIFT        (10)
+#define S1G_OPER_IE_MAX_MCS_4_NSS_SHIFT        (14)
+
 
 /*
  * IEEE Std 802.11-2020 and IEEE Std 802.11ax-2021

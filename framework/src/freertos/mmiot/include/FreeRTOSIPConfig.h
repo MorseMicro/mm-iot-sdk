@@ -25,13 +25,12 @@
  * http://www.FreeRTOS.org
  */
 
-
 /*****************************************************************************
-*
-* See the following URL for configuration information.
-* http://www.freertos.org/FreeRTOS-Plus/FreeRTOS_Plus_TCP/TCP_IP_Configuration.html
-*
-*****************************************************************************/
+ *
+ * See the following URL for configuration information.
+ * http://www.freertos.org/FreeRTOS-Plus/FreeRTOS_Plus_TCP/TCP_IP_Configuration.html
+ *
+ *****************************************************************************/
 
 #include "mmosal.h"
 
@@ -73,8 +72,8 @@
  * 1 then FreeRTOS_debug_printf should be defined to the function used to print
  * out the debugging messages. */
 #define ipconfigHAS_DEBUG_PRINTF                   0
-#if ( ipconfigHAS_DEBUG_PRINTF == 1 )
-    #define FreeRTOS_debug_printf( X )    printf X
+#if (ipconfigHAS_DEBUG_PRINTF == 1)
+    #define FreeRTOS_debug_printf(X)    printf X
 #endif
 
 /* Set to 1 to print out non debugging messages, for example the output of the
@@ -82,8 +81,8 @@
  * then FreeRTOS_printf should be set to the function used to print out the
  * messages. */
 #define ipconfigHAS_PRINTF    0
-#if ( ipconfigHAS_PRINTF == 1 )
-    #define FreeRTOS_printf( X )    printf X
+#if (ipconfigHAS_PRINTF == 1)
+    #define FreeRTOS_printf(X)    printf X
 #endif
 
 /* Define the byte order of the target MCU (the MCU FreeRTOS+TCP is executing
@@ -99,8 +98,8 @@
  * performed, for example FreeRTOS_send() and FreeRTOS_recv().  The timeouts can be
  * set per socket, using setsockopt().  If not set, the times below will be
  * used as defaults. */
-#define ipconfigSOCK_DEFAULT_RECEIVE_BLOCK_TIME    ( 5000 )
-#define ipconfigSOCK_DEFAULT_SEND_BLOCK_TIME       ( 5000 )
+#define ipconfigSOCK_DEFAULT_RECEIVE_BLOCK_TIME    (5000)
+#define ipconfigSOCK_DEFAULT_SEND_BLOCK_TIME       (5000)
 
 /* Include support for DNS caching.  For TCP, having a small DNS cache is very
  * useful.  When a cache is present, ipconfigDNS_REQUEST_ATTEMPTS can be kept low
@@ -109,9 +108,9 @@
  * call to FreeRTOS_gethostbyname() will return immediately, without even creating
  * a socket.
  */
-#define ipconfigUSE_DNS_CACHE                      ( 1 )
-#define ipconfigDNS_CACHE_ADDRESSES_PER_ENTRY      ( 6 )
-#define ipconfigDNS_REQUEST_ATTEMPTS               ( 4 )
+#define ipconfigUSE_DNS_CACHE                      (1)
+#define ipconfigDNS_CACHE_ADDRESSES_PER_ENTRY      (6)
+#define ipconfigDNS_REQUEST_ATTEMPTS               (4)
 
 /* The IP stack executes it its own task (although any application task can make
  * use of its services through the published sockets API). ipconfigUDP_TASK_PRIORITY
@@ -122,14 +121,14 @@
  * FreeRTOSConfig.h, not FreeRTOSIPConfig.h. Consideration needs to be given as to
  * the priority assigned to the task executing the IP stack relative to the
  * priority assigned to tasks that use the IP stack. */
-#define ipconfigIP_TASK_PRIORITY                   ( MMOSAL_TASK_PRI_NORM )
+#define ipconfigIP_TASK_PRIORITY                   (MMOSAL_TASK_PRI_NORM)
 
 /* The size, in words (not bytes), of the stack allocated to the FreeRTOS+TCP
  * task.  This setting is less important when the FreeRTOS Win32 simulator is used
  * as the Win32 simulator only stores a fixed amount of information on the task
  * stack.  FreeRTOS includes optional stack overflow detection, see:
  * http://www.freertos.org/Stacks-and-stack-overflow-checking.html. */
-#define ipconfigIP_TASK_STACK_SIZE_WORDS           ( configMINIMAL_STACK_SIZE * 5 )
+#define ipconfigIP_TASK_STACK_SIZE_WORDS           (configMINIMAL_STACK_SIZE * 5)
 
 /* If ipconfigUSE_NETWORK_EVENT_HOOK is set to 1 then FreeRTOS+TCP will call the
  * network event hook at the appropriate times.  If ipconfigUSE_NETWORK_EVENT_HOOK
@@ -150,7 +149,7 @@
  * ipconfigMAX_SEND_BLOCK_TIME_TICKS is specified in RTOS ticks.  A time in
  * milliseconds can be converted to a time in ticks by dividing the time in
  * milliseconds by portTICK_PERIOD_MS. */
-#define ipconfigUDP_MAX_SEND_BLOCK_TIME_TICKS    ( 5000U / portTICK_PERIOD_MS )
+#define ipconfigUDP_MAX_SEND_BLOCK_TIME_TICKS    (5000U / portTICK_PERIOD_MS)
 
 /* If ipconfigUSE_DHCP is 1 then FreeRTOS+TCP will attempt to retrieve an IP
  * address, netmask, DNS server address and gateway address from a DHCP server.  If
@@ -176,7 +175,7 @@
  * re-transmission time interval reaches ipconfigMAXIMUM_DISCOVER_TX_PERIOD without
  * a DHCP reply being received. */
 #define ipconfigMAXIMUM_DISCOVER_TX_PERIOD \
-    ( 120000U / portTICK_PERIOD_MS )
+        (120000U / portTICK_PERIOD_MS)
 
 /* The ARP cache is a table that maps IP addresses to MAC addresses.  The IP
  * stack can only send a UDP message to a remove IP address if it knowns the MAC
@@ -192,7 +191,7 @@
 /* ARP requests that do not result in an ARP response will be re-transmitted a
  * maximum of ipconfigMAX_ARP_RETRANSMISSIONS times before the ARP request is
  * aborted. */
-#define ipconfigMAX_ARP_RETRANSMISSIONS           ( 5 )
+#define ipconfigMAX_ARP_RETRANSMISSIONS           (5)
 
 /* ipconfigMAX_ARP_AGE defines the maximum time between an entry in the ARP
  * table being created or refreshed and the entry being removed because it is stale.
@@ -224,7 +223,7 @@
  * be queued for processing at any one time.  The event queue must be a minimum of
  * 5 greater than the total number of network buffers. */
 #define ipconfigEVENT_QUEUE_LENGTH \
-    ( ipconfigNUM_NETWORK_BUFFER_DESCRIPTORS + 5 )
+        (ipconfigNUM_NETWORK_BUFFER_DESCRIPTORS + 5)
 
 /* The address of a socket is the combination of its IP address and its port
  * number.  FreeRTOS_bind() is used to manually allocate a port number to a socket
@@ -246,10 +245,10 @@
 #define ipconfigTCP_TIME_TO_LIVE                       128
 
 /* USE_TCP: Use TCP and all its features. */
-#define ipconfigUSE_TCP                                ( 1 )
+#define ipconfigUSE_TCP                                (1)
 
 /* USE_WIN: Let TCP use windowing mechanism. */
-#define ipconfigUSE_TCP_WIN                            ( 1 )
+#define ipconfigUSE_TCP_WIN                            (1)
 
 /* The MTU is the maximum number of bytes the payload of a network frame can
  * contain.  For normal Ethernet V2 frames the maximum MTU is 1500.  Setting a
@@ -291,7 +290,7 @@
 
 /* The windows simulator cannot really simulate MAC interrupts, and needs to
  * block occasionally to allow other tasks to run. */
-#define configWINDOWS_MAC_INTERRUPT_SIMULATOR_DELAY    ( 20 / portTICK_PERIOD_MS )
+#define configWINDOWS_MAC_INTERRUPT_SIMULATOR_DELAY    (20 / portTICK_PERIOD_MS)
 
 /* Advanced only: in order to access 32-bit fields in the IP packets with
  * 32-bit memory instructions, all packets will be stored 32-bit-aligned,
@@ -307,35 +306,35 @@
 
 /* Each TCP socket has a circular buffers for Rx and Tx, which have a fixed
  * maximum size.  Define the size of Rx buffer for TCP sockets. */
-#define ipconfigTCP_RX_BUFFER_LENGTH                   ( 20440 )
+#define ipconfigTCP_RX_BUFFER_LENGTH                   (20440)
 
 /* Define the size of Tx buffer for TCP sockets. */
-#define ipconfigTCP_TX_BUFFER_LENGTH                   ( 23360 )
+#define ipconfigTCP_TX_BUFFER_LENGTH                   (23360)
 
 /* When using call-back handlers, the driver may check if the handler points to
  * real program memory (RAM or flash) or just has a random non-zero value. */
-#define ipconfigIS_VALID_PROG_ADDRESS( x )    ( ( x ) != NULL )
+#define ipconfigIS_VALID_PROG_ADDRESS(x)    ( (x) != NULL)
 
 /* Include support for TCP keep-alive messages. */
-#define ipconfigTCP_KEEP_ALIVE                   ( 1 )
-#define ipconfigTCP_KEEP_ALIVE_INTERVAL          ( 20 ) /* Seconds. */
+#define ipconfigTCP_KEEP_ALIVE                   (1)
+#define ipconfigTCP_KEEP_ALIVE_INTERVAL          (20)   /* Seconds. */
 
 /* The socket semaphore is used to unblock the MQTT task. */
 #ifndef ipconfigSOCKET_HAS_USER_SEMAPHORE
-#define ipconfigSOCKET_HAS_USER_SEMAPHORE        ( 1 )
+#define ipconfigSOCKET_HAS_USER_SEMAPHORE        (1)
 #endif
 
-#define ipconfigSOCKET_HAS_USER_WAKE_CALLBACK    ( 1 )
-#define ipconfigUSE_CALLBACKS                    ( 1 )
+#define ipconfigSOCKET_HAS_USER_WAKE_CALLBACK    (1)
+#define ipconfigUSE_CALLBACKS                    (1)
 
 #define portINLINE                               __inline
 
 // This is a temporary workaround as it is not provided by our current version of FreeRTOS
-#define pdFREERTOS_ERRNO_EAFNOSUPPORT           ( 97 )
+#define pdFREERTOS_ERRNO_EAFNOSUPPORT           (97)
 
 /* Significantly increase gratuitous ARP period to reduce idle power consumption. */
 #ifndef arpGRATUITOUS_ARP_PERIOD
-#define arpGRATUITOUS_ARP_PERIOD                ( 0x7fffffff )
+#define arpGRATUITOUS_ARP_PERIOD                (0x7fffffff)
 #endif
 
 #endif /* FREERTOS_IP_CONFIG_H */

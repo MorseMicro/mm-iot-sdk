@@ -15,14 +15,16 @@
 struct hostapd_channel_data * hw_get_channel_chan(struct hostapd_hw_modes *mode,
 						  int chan, int *freq);
 struct hostapd_channel_data *
-hw_mode_get_channel(struct hostapd_hw_modes *mode, int freq, int *chan);
+hw_mode_get_channel(struct hostapd_hw_modes *mode, int freq,
+		    int freq_khz, int *chan);
 
 struct hostapd_channel_data *
-hw_get_channel_freq(enum hostapd_hw_mode mode, int freq, int *chan,
-		    struct hostapd_hw_modes *hw_features, int num_hw_features);
+hw_get_channel_freq(enum hostapd_hw_mode mode, int freq, int freq_khz,
+		    int *chan, struct hostapd_hw_modes *hw_features,
+		    int num_hw_features);
 
 int hw_get_freq(struct hostapd_hw_modes *mode, int chan);
-int hw_get_chan(enum hostapd_hw_mode mode, int freq,
+int hw_get_chan(enum hostapd_hw_mode mode, int freq, int freq_khz,
 		struct hostapd_hw_modes *hw_features, int num_hw_features);
 
 int allowed_ht40_channel_pair(enum hostapd_hw_mode mode,
@@ -39,16 +41,19 @@ void punct_update_legacy_bw(u16 bitmap, u8 pri_chan,
 			    enum oper_chan_width *width, u8 *seg0, u8 *seg1);
 int hostapd_set_freq_params(struct hostapd_freq_params *data,
 			    enum hostapd_hw_mode mode,
-			    int freq, int channel, int edmg, u8 edmg_channel,
+			    int freq, int freq_khz,
+			    int channel, int edmg, u8 edmg_channel,
 			    int ht_enabled,
 			    int vht_enabled, int he_enabled,
-			    bool eht_enabled, int sec_channel_offset,
+			    bool eht_enabled, int s1g_enabled,
+			    int sec_channel_offset,
 			    enum oper_chan_width oper_chwidth,
 			    int center_segment0,
 			    int center_segment1, u32 vht_caps,
 			    struct he_capabilities *he_caps,
 			    struct eht_capabilities *eht_cap,
-			    u16 punct_bitmap);
+			    u16 punct_bitmap,
+			    int prim_bandwidth, int prim_ch_index);
 void set_disable_ht40(struct ieee80211_ht_capabilities *htcaps,
 		      int disabled);
 int ieee80211ac_cap_check(u32 hw, u32 conf);

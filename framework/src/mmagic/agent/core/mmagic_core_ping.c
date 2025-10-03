@@ -15,9 +15,6 @@
 #include "mmagic.h"
 #include "mmagic_core_utils.h"
 
-/* This should be included after all the header files */
-#include "core/autogen/mmagic_core_ping.def"
-
 static struct mmagic_ping_config default_config =
 {
     .target = {.addr = "192.168.1.1"},
@@ -56,14 +53,14 @@ enum mmagic_status mmagic_core_ping_run(struct mmagic_data *core,
         status = mmipal_get_local_addr(ping_args.ping_src, ping_args.ping_target);
         if (status != MMIPAL_SUCCESS)
         {
-            printf("Failed to get local address for PING\n");
+            mmosal_printf("Failed to get local address for PING\n");
             return mmagic_mmipal_status_to_mmagic_status(status);
         }
 
         rsp_args->status.session_id = mmping_start(&ping_args);
         if (!rsp_args->status.session_id)
         {
-            printf("Failed to start ping session\n");
+            mmosal_printf("Failed to start ping session\n");
             return MMAGIC_STATUS_ERROR;
         }
     }

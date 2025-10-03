@@ -17,11 +17,7 @@ var group__MMOSAL__TASKS =
     [ "mmosal_task_enter_critical", "group__MMOSAL__TASKS.html#gad55a7694a5f5a9227571149104178df8", null ],
     [ "mmosal_task_exit_critical", "group__MMOSAL__TASKS.html#ga296769203050d0a061cbe0245a9d04a3", null ],
     [ "mmosal_task_get_active", "group__MMOSAL__TASKS.html#ga23471004fbe03bda76cbebae3be98baa", null ],
-    [ "mmosal_task_join", "group__MMOSAL__TASKS.html#ga0cdd217c5ff65498813d12367fd9a394", null ],
     [ "mmosal_task_name", "group__MMOSAL__TASKS.html#ga4b2d2b31bbf2e46da28f5540fac0199c", null ],
-    [ "mmosal_task_notify", "group__MMOSAL__TASKS.html#gaae85012294eac142c84cee6889a61d11", null ],
-    [ "mmosal_task_notify_from_isr", "group__MMOSAL__TASKS.html#ga10a70bf367b5d46a7cd46a726e744766", null ],
     [ "mmosal_task_sleep", "group__MMOSAL__TASKS.html#ga62710c8923b3dbfc3de33e11ffd49bd4", null ],
-    [ "mmosal_task_wait_for_notification", "group__MMOSAL__TASKS.html#gab10e895f652b30de6087629437ce3c2a", null ],
     [ "mmosal_task_yield", "group__MMOSAL__TASKS.html#ga12a063bcc8d3c70548cf5655b3efdce1", null ]
 ];

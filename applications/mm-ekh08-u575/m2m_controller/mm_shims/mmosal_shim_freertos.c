@@ -801,3 +801,18 @@ bool mmosal_is_timer_active(struct mmosal_timer *timer)
 
     return (ret != pdFALSE);
 }
+
+int mmosal_printf(const char *format, ...)
+{
+    int ret;
+    va_list args;
+    va_start(args, format);
+    ret = vprintf(format, args);
+    va_end(args);
+    return ret;
+}
+
+uint32_t mmosal_random_u32(uint32_t min, uint32_t max)
+{
+    return mmhal_random_u32(min, max);
+}

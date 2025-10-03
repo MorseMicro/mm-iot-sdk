@@ -50,6 +50,19 @@ def get_ping_stats(dutif):
     return rsp
 
 
+def print_ping_stats(dutif):
+    # Get ping stats
+    rsp = get_ping_stats(dutif)
+    if (rsp.num_sent == 0):
+        loss = 0
+    else:
+        loss = ((rsp.num_sent - rsp.num_received) * 100 / rsp.num_sent)
+    print(f"\n--- {ip_addr_bytes_to_str(rsp.ip_address)} ping statistics ---\n{rsp.num_sent} packets transmitted, {rsp.num_received} packets received, {loss}% packet loss")   # noqa: E501
+    print(f"round-trip min/avg/max = {rsp.min_latency}/{rsp.avg_latency}/{rsp.max_latency} ms\n")
+    if rsp.active:
+        print("Ping still running...\n")
+
+
 def _main():
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter,
                                      description=__doc__)
@@ -92,74 +105,54 @@ def _main():
 
     ip_address = ip_addr_to_bytes(args.ip_address)
 
-    if not args.results:
-        if not args.kill:
-            # Start ping request
-            print("Ping started...")
-            rsp = dutif.exec("lwip/ping_request",
-                             ip_address=ip_address,
-                             max_count=args.max_count,
-                             interval=args.interval,
-                             data_size=args.data_size)
+    if args.results:
+        print_ping_stats(dutif)
+        return
 
-            # If the start flag was provided then we do not want to wait for results
-            if args.start:
-                return
+    if args.kill:
+        print("Stopping Ping request...")
+        dutif.exec("lwip/ping_stop")
+        print_ping_stats(dutif)
+        return
 
-            # This timeout is used to stop ping request. After this timeout, a ping_stop
-            # is send to stop the mmping task and a ping_stats is send to get ping statistics.
-            timeout = None
-            if args.max_time:
-                timeout = datetime.now() + timedelta(seconds=args.max_time)
-                print(datetime.now())
-                print(timeout)
-            ping_running = True
-            aborted_by_user = False
-            prev_num_sent = 0
-            while ping_running:
-                try:
-                    interval_s = args.interval / 1000
-                    time.sleep(interval_s / 2)
-                except KeyboardInterrupt:
-                    aborted_by_user = True
-                    break
-                if timeout is not None and timeout <= datetime.now():
-                    logging.info("Session timed out")
-                    dutif.exec("lwip/ping_stop")
-                rsp = get_ping_stats(dutif)
-                if rsp.num_sent != prev_num_sent:
-                    print(f"packets transmitted/received = {rsp.num_sent}/{rsp.num_received}, round-trip min/avg/max = {rsp.min_latency}/{rsp.avg_latency}/{rsp.max_latency} ms")       # noqa: E501
-                    prev_num_sent = rsp.num_sent
-                ping_running = rsp.active
+    try:
+        # Start ping request
+        print("Ping started...")
+        rsp = dutif.exec("lwip/ping_request",
+                         ip_address=ip_address,
+                         max_count=args.max_count,
+                         interval=args.interval,
+                         data_size=args.data_size)
 
-            # If the ping was aborted by CTRL-C then stop it
-            if aborted_by_user:
+        # If the start flag was provided then we do not want to wait for results
+        if args.start:
+            return
+
+        # This timeout is used to stop ping request. After this timeout, a ping_stop
+        # is send to stop the mmping task and a ping_stats is send to get ping statistics.
+        timeout = None
+        if args.max_time:
+            timeout = datetime.now() + timedelta(seconds=args.max_time)
+            print(datetime.now())
+            print(timeout)
+        ping_running = True
+        prev_num_sent = 0
+        while ping_running:
+            interval_s = args.interval / 1000
+            time.sleep(interval_s / 2)
+            if timeout is not None and timeout <= datetime.now():
+                logging.info("Session timed out")
                 dutif.exec("lwip/ping_stop")
-        else:
-            print("Stopping Ping request...")
-            dutif.exec("lwip/ping_stop")
+            rsp = get_ping_stats(dutif)
+            if rsp.num_sent != prev_num_sent:
+                print(f"packets transmitted/received = {rsp.num_sent}/{rsp.num_received}, round-trip min/avg/max = {rsp.min_latency}/{rsp.avg_latency}/{rsp.max_latency} ms")       # noqa: E501
+                prev_num_sent = rsp.num_sent
+            ping_running = rsp.active
+    except KeyboardInterrupt:
+        print("\nKeyboardInterrupt: Stopping Ping request...")
+        dutif.exec("lwip/ping_stop")
 
-        # Get ping stats
-        rsp = get_ping_stats(dutif)
-        if (rsp.num_sent == 0):
-            loss = 0
-        else:
-            loss = ((rsp.num_sent - rsp.num_received) * 100 / rsp.num_sent)
-        print(f"\n--- {ip_addr_bytes_to_str(rsp.ip_address)} ping statistics ---\n{rsp.num_sent} packets transmitted, {rsp.num_received} packets received, {loss}% packet loss")   # noqa: E501
-        print(f"round-trip min/avg/max = {rsp.min_latency}/{rsp.avg_latency}/{rsp.max_latency} ms\n")     # noqa: E501
-        if rsp.active:
-            print("Ping still running...\n")
-    else:
-        print("Getting ping stats...")
-        rsp = get_ping_stats(dutif)
-        if (rsp.num_sent == 0):
-            loss = 0
-        else:
-            loss = ((rsp.num_sent - rsp.num_received) * 100 / rsp.num_sent)
-        print(f"\n--- {ip_addr_bytes_to_str(rsp.ip_address)} ping statistics ---\n{rsp.num_sent} packets transmitted, {rsp.num_received} packets received, {loss}% packet loss")   # noqa: E501
-        print(f"round-trip min/avg/max = {rsp.min_latency}/{rsp.avg_latency}/{rsp.max_latency} ms\n")     # noqa: E501
-        if rsp.active:
-            print("Ping still running...\n")
+    print_ping_stats(dutif)
 
 
 if __name__ == "__main__":

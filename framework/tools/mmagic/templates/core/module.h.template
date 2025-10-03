@@ -87,3 +87,20 @@ struct MM_PACKED mmagic_core_{{data.name}}_{{command.name}}_rsp_args
 {%- endif -%}
     );
 {% endfor %}
+{% if data.events %}
+/*
+ * ---------------------------------------------------------------------------------------------
+ * Internal API: to be used by the implementation C file only.
+ * ---------------------------------------------------------------------------------------------
+ */
+
+{% for event in data.events %}
+{{config.find_datatype("enum_status")}} mmagic_core_event_{{data.name}}_{{event.name}}(
+        struct mmagic_data *core
+{%- if event.event_args -%}
+        ,
+        const struct mmagic_core_event_{{data.name}}_{{event.name}}_args *args
+{%- endif -%}
+    );
+{% endfor %}
+{% endif -%}

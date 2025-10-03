@@ -351,6 +351,7 @@ static void wpa_bss_copy_res(struct wpa_bss *dst, struct wpa_scan_res *src,
 	dst->flags = src->flags;
 	os_memcpy(dst->bssid, src->bssid, ETH_ALEN);
 	dst->freq = src->freq;
+	dst->freq_khz = MHZ_TO_KHZ(src->freq) + src->freq_offset;
 	dst->max_cw = src->max_cw;
 	dst->beacon_int = src->beacon_int;
 	dst->caps = src->caps;
@@ -633,13 +634,10 @@ static struct wpa_bss * wpa_bss_add(struct wpa_supplicant *wpa_s,
 #endif /* CONFIG_IEEE80211AH */
 
 	wpa_dbg(wpa_s, MSG_DEBUG, "BSS: Add new id %u BSSID " MACSTR
-		" SSID '%s' %s %d%s",
+		" SSID '%s' freq %d %s%s",
 		bss->id, MAC2STR(bss->bssid), wpa_ssid_txt(ssid, ssid_len),
-#ifdef CONFIG_IEEE80211AH
-		"chan ", morse_ht_freq_to_s1g_chan(bss->freq),
-#else
-		"freq ", bss->freq,
-#endif
+		bss->freq_khz ? bss->freq_khz : bss->freq,
+		KHZ_PRINT_FREQ_UNITS(bss->freq_khz),
 		extra);
 	wpas_notify_bss_added(wpa_s, bss->bssid, bss->id);
 	return bss;

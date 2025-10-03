@@ -168,6 +168,12 @@ BUILD_DEFINES += configUSE_TICKLESS_IDLE=1
 ENABLE_DEBUG_IN_STOP_MODE ?= 1
 BUILD_DEFINES += ENABLE_DEBUG_IN_STOP_MODE=$(ENABLE_DEBUG_IN_STOP_MODE)
 
+# Enable log output through the ITM/SWO port
+DEBUG_BUILD_DEFINES += ENABLE_ITM_LOG
+
+# Reduce filesystem size to 128 KB for debug builds to allow for the increased code size.
+DEBUG_LINKFLAGS += -Wl,--defsym=__FILESYSTEM_SIZE=0x20000
+
 CONLYFLAGS += -include $(MMIOT_ROOT)/$(BSP_DRIVERS_DIR)/Drivers/CMSIS/Device/ST/STM32U5xx/Include/stm32u575xx.h
 CFLAGS-$(BSP_DRIVERS_DIR) += -Wno-c++-compat
 CFLAGS-$(BSP_DRIVERS_DIR) += -Wno-unused-parameter

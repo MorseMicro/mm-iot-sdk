@@ -317,6 +317,7 @@ struct hostapd_bss_config {
 	int max_num_sta; /* maximum number of STAs in station table */
 
 	int dtim_period;
+	int short_beacon_int;
 	unsigned int bss_load_update_period;
 	unsigned int chan_util_avg_period;
 
@@ -1243,6 +1244,13 @@ struct hostapd_config {
 	bool require_he;
 #endif /* CONFIG_IEEE80211AX */
 
+#ifdef CONFIG_IEEE80211AH
+	u32 s1g_start_freq;
+	u8 s1g_oper_centr_freq_idx;
+	enum s1g_oper_chwidth s1g_oper_chwidth;
+	u16 s1g_basic_mcs_nss_set;
+#endif /* CONFIG_IEEE80211AH */
+
 	/* VHT enable/disable config from CHAN_SWITCH */
 #define CH_SWITCH_VHT_ENABLED BIT(0)
 #define CH_SWITCH_VHT_DISABLED BIT(1)
@@ -1312,6 +1320,25 @@ hostapd_get_oper_chwidth(struct hostapd_config *conf)
 	if (conf->ieee80211ax)
 		return conf->he_oper_chwidth;
 #endif /* CONFIG_IEEE80211AX */
+#ifdef CONFIG_IEEE80211AH
+	if (conf->ieee80211ah) {
+		switch (conf->s1g_oper_chwidth)
+		{
+		case S1G_OPER_CHWIDTH_1:
+			return CONF_OPER_CHWIDTH_1MHz;
+		case S1G_OPER_CHWIDTH_2:
+			return CONF_OPER_CHWIDTH_2MHz;
+		case S1G_OPER_CHWIDTH_4:
+			return CONF_OPER_CHWIDTH_4MHz;
+		case S1G_OPER_CHWIDTH_8:
+			return CONF_OPER_CHWIDTH_8MHz;
+		case S1G_OPER_CHWIDTH_16:
+			return CONF_OPER_CHWIDTH_16MHz;
+		default:
+			break;
+		}
+	}
+#endif
 	return conf->vht_oper_chwidth;
 }
 

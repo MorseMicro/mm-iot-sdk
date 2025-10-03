@@ -142,19 +142,6 @@ enum pbc_status {
 	WPS_PBC_STATUS_OVERLAP
 };
 
-enum s1g_oper_chwidth {
-	S1G_OPER_CHWIDTH_1,
-	S1G_OPER_CHWIDTH_2,
-	S1G_OPER_CHWIDTH_4,
-	S1G_OPER_CHWIDTH_8,
-	S1G_OPER_CHWIDTH_16,
-};
-
-enum s1g_prim_chwidth {
-	S1G_PRIM_CHWIDTH_1,
-	S1G_PRIM_CHWIDTH_2,
-};
-
 struct wps_stat {
 	enum wps_status status;
 	enum wps_error_indication failure_reason;
@@ -655,6 +642,7 @@ struct hostapd_iface {
 	struct hostapd_rate_data *current_rates;
 	int *basic_rates;
 	int freq;
+	int freq_khz;
 
 	bool radar_detected;
 
@@ -844,8 +832,8 @@ void hostapd_event_connect_failed_reason(struct hostapd_data *hapd,
 int hostapd_probe_req_rx(struct hostapd_data *hapd, const u8 *sa, const u8 *da,
 			 const u8 *bssid, const u8 *ie, size_t ie_len,
 			 int ssi_signal);
-void hostapd_event_ch_switch(struct hostapd_data *hapd, int freq, int ht,
-			     int offset, int width, int cf1, int cf2,
+void hostapd_event_ch_switch(struct hostapd_data *hapd, int freq, int freq_khz,
+			     int ht, int offset, int width, int cf1, int cf2,
 			     u16 punct_bitmap, int finished);
 struct survey_results;
 void hostapd_event_get_survey(struct hostapd_iface *iface,

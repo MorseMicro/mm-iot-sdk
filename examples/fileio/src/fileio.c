@@ -71,8 +71,7 @@ void app_init(void)
         }
         else
         {
-            printf("File I/O is currently supported only on the mm-ekh08-f429"
-                   " and mm-ekh08-u575 platforms!\n");
+            printf("File I/O is currently not supported on this platform!\n");
         }
     }
     else

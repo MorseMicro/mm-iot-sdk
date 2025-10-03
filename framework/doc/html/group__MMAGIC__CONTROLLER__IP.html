@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.4"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Morse Micro IoT SDK: IP Stack Management subsystem (ip)</title>
+<title>Morse Micro IoT SDK: Module ip: IP Stack Management</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.8.2</span>
+   &#160;<span id="projectnumber">2.9.7</span>
    </div>
   </td>
  </tr>
@@ -90,8 +90,9 @@ $(document).ready(function(){initNavTree('group__MMAGIC__CONTROLLER__IP.html',''
   <div class="summary">
 <a href="#groups">Modules</a> &#124;
 <a href="#nested-classes">Data Structures</a> &#124;
+<a href="#typedef-members">Typedefs</a> &#124;
 <a href="#func-members">Functions</a>  </div>
-  <div class="headertitle"><div class="title">IP Stack Management subsystem (ip)<div class="ingroups"><a class="el" href="group__MMAGIC.html">MMAGIC: CLI and Machine-to-Machine interface infrastructure</a> &raquo; <a class="el" href="group__MMAGIC__CONTROLLER.html">Morse M2M Interface Controller API</a></div></div></div>
+  <div class="headertitle"><div class="title">Module ip: IP Stack Management<div class="ingroups"><a class="el" href="group__MMAGIC.html">MMAGIC: CLI and Machine-to-Machine interface infrastructure</a> &raquo; <a class="el" href="group__MMAGIC__CONTROLLER.html">Morse M2M Interface Controller API</a></div></div></div>
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -112,6 +113,15 @@ Data Structures</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmagic__core__ip__set__whitelist__filter__cmd__args.html">mmagic_core_ip_set_whitelist_filter_cmd_args</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Command arguments structure for ip_set_whitelist_filter.  <a href="structmmagic__core__ip__set__whitelist__filter__cmd__args.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmagic__ip__link__status__event__args.html">mmagic_ip_link_status_event_args</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Event arguments structure for ip_link_status.  <a href="structmmagic__ip__link__status__event__args.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:ga9f31a68c37d1365cc67421359a6916da"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__IP.html#ga9f31a68c37d1365cc67421359a6916da">mmagic_ip_link_status_event_handler_t</a>) (const struct <a class="el" href="structmmagic__ip__link__status__event__args.html">mmagic_ip_link_status_event_args</a> *event_args, void *arg)</td></tr>
+<tr class="memdesc:ga9f31a68c37d1365cc67421359a6916da"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handler for the ip-link_status event.  <a href="group__MMAGIC__CONTROLLER__IP.html#ga9f31a68c37d1365cc67421359a6916da">More...</a><br /></td></tr>
+<tr class="separator:ga9f31a68c37d1365cc67421359a6916da"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -133,7 +143,39 @@ Functions</h2></td></tr>
 <tr class="memitem:ga21da01928c171a33ff9fa5d6b9c6b6b4"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__IP.html#ga21da01928c171a33ff9fa5d6b9c6b6b4">mmagic_controller_ip_clear_whitelist_filter</a> (struct mmagic_controller *controller)</td></tr>
 <tr class="memdesc:ga21da01928c171a33ff9fa5d6b9c6b6b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears any applied whitelist filters.  <a href="group__MMAGIC__CONTROLLER__IP.html#ga21da01928c171a33ff9fa5d6b9c6b6b4">More...</a><br /></td></tr>
 <tr class="separator:ga21da01928c171a33ff9fa5d6b9c6b6b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga56f63ca4244adfd379d1f0d1a9fb79f1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__IP.html#ga56f63ca4244adfd379d1f0d1a9fb79f1">mmagic_controller_register_ip_link_status_handler</a> (struct mmagic_controller *controller, <a class="el" href="group__MMAGIC__CONTROLLER__IP.html#ga9f31a68c37d1365cc67421359a6916da">mmagic_ip_link_status_event_handler_t</a> handler, void *arg)</td></tr>
+<tr class="memdesc:ga56f63ca4244adfd379d1f0d1a9fb79f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register a handler for the ip-link_status event.  <a href="group__MMAGIC__CONTROLLER__IP.html#ga56f63ca4244adfd379d1f0d1a9fb79f1">More...</a><br /></td></tr>
+<tr class="separator:ga56f63ca4244adfd379d1f0d1a9fb79f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Typedef Documentation</h2>
+<a id="ga9f31a68c37d1365cc67421359a6916da" name="ga9f31a68c37d1365cc67421359a6916da"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga9f31a68c37d1365cc67421359a6916da">&#9670;&nbsp;</a></span>mmagic_ip_link_status_event_handler_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef void(* mmagic_ip_link_status_event_handler_t) (const struct <a class="el" href="structmmagic__ip__link__status__event__args.html">mmagic_ip_link_status_event_args</a> *event_args, void *arg)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Handler for the ip-link_status event. </p>
+<p >Triggered when the IP stack has a valid address.</p>
+<dl class="section note"><dt>Note</dt><dd>This function will be invoked in the context of the controller data link thread and should perform minimal processing.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>This function must not invoke any mmagic API functions.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">event_args</td><td>Notication arguments received from the agent. </td></tr>
+    <tr><td class="paramname">arg</td><td>Opaque argument that was provided when the callback was registered. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l04100">4100</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+
+</div>
+</div>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="ga21da01928c171a33ff9fa5d6b9c6b6b4" name="ga21da01928c171a33ff9fa5d6b9c6b6b4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga21da01928c171a33ff9fa5d6b9c6b6b4">&#9670;&nbsp;</a></span>mmagic_controller_ip_clear_whitelist_filter()</h2>
@@ -168,7 +210,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03452">3452</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l04060">4060</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -205,7 +247,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03382">3382</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03984">3984</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -254,7 +296,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03356">3356</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03955">3955</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -291,7 +333,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03320">3320</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03916">3916</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -339,7 +381,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03426">3426</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l04031">4031</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -387,7 +429,54 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03296">3296</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03890">3890</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+
+</div>
+</div>
+<a id="ga56f63ca4244adfd379d1f0d1a9fb79f1" name="ga56f63ca4244adfd379d1f0d1a9fb79f1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga56f63ca4244adfd379d1f0d1a9fb79f1">&#9670;&nbsp;</a></span>mmagic_controller_register_ip_link_status_handler()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void mmagic_controller_register_ip_link_status_handler </td>
+          <td>(</td>
+          <td class="paramtype">struct mmagic_controller *&#160;</td>
+          <td class="paramname"><em>controller</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__MMAGIC__CONTROLLER__IP.html#ga9f31a68c37d1365cc67421359a6916da">mmagic_ip_link_status_event_handler_t</a>&#160;</td>
+          <td class="paramname"><em>handler</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>arg</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Register a handler for the ip-link_status event. </p>
+<p >Triggered when the IP stack has a valid address.</p>
+<dl class="section note"><dt>Note</dt><dd>The handler callbacks will be invoked in the context of the controller data link thread. The handler should perform minimal processing.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>The handler callback must not invoke any mmagic API functions.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">controller</td><td>Reference to the the controller handle. </td></tr>
+    <tr><td class="paramname">handler</td><td>The handler function to register. </td></tr>
+    <tr><td class="paramname">arg</td><td>Opaque argument to be passed to the handler when it is invoked. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

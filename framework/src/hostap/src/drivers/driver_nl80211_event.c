@@ -1195,7 +1195,8 @@ static int calculate_chan_offset(int width, int freq, int cf1, int cf2)
 
 static void mlme_event_ch_switch(struct wpa_driver_nl80211_data *drv,
 				 struct nlattr *ifindex, struct nlattr *link,
-				 struct nlattr *freq, struct nlattr *type,
+				 struct nlattr *freq, struct nlattr *freq_off,
+				 struct nlattr *type,
 				 struct nlattr *bw, struct nlattr *cf1,
 				 struct nlattr *cf2,
 				 struct nlattr *punct_bitmap,
@@ -1252,6 +1253,8 @@ static void mlme_event_ch_switch(struct wpa_driver_nl80211_data *drv,
 
 	os_memset(&data, 0, sizeof(data));
 	data.ch_switch.freq = nla_get_u32(freq);
+	data.ch_switch.freq_khz = MHZ_TO_KHZ(data.ch_switch.freq) +
+		nla_get_u32(freq_off);
 	data.ch_switch.ht_enabled = ht_enabled;
 	data.ch_switch.ch_offset = chan_offset;
 	if (punct_bitmap)
@@ -1658,7 +1661,8 @@ nl80211_get_link_id_by_freq(struct i802_bss *bss, unsigned int freq)
 static void mlme_event(struct i802_bss *bss,
 		       enum nl80211_commands cmd, struct nlattr *frame,
 		       struct nlattr *addr, struct nlattr *timed_out,
-		       struct nlattr *freq, struct nlattr *ack,
+		       struct nlattr *freq, struct nlattr *freq_offset,
+		       struct nlattr *ack,
 		       struct nlattr *cookie, struct nlattr *sig,
 		       struct nlattr *wmm, struct nlattr *req_ie,
 		       struct nlattr *link)
@@ -4038,7 +4042,9 @@ static void do_process_drv_event(struct i802_bss *bss, int cmd,
 	case NL80211_CMD_UNPROT_DISASSOCIATE:
 		mlme_event(bss, cmd, tb[NL80211_ATTR_FRAME],
 			   tb[NL80211_ATTR_MAC], tb[NL80211_ATTR_TIMED_OUT],
-			   tb[NL80211_ATTR_WIPHY_FREQ], tb[NL80211_ATTR_ACK],
+			   tb[NL80211_ATTR_WIPHY_FREQ],
+			   tb[NL80211_ATTR_WIPHY_FREQ_OFFSET],
+			   tb[NL80211_ATTR_ACK],
 			   tb[NL80211_ATTR_COOKIE],
 			   tb[NL80211_ATTR_RX_SIGNAL_DBM],
 			   tb[NL80211_ATTR_STA_WME],
@@ -4067,6 +4073,7 @@ static void do_process_drv_event(struct i802_bss *bss, int cmd,
 				     tb[NL80211_ATTR_IFINDEX],
 				     tb[NL80211_ATTR_MLO_LINK_ID],
 				     tb[NL80211_ATTR_WIPHY_FREQ],
+				     tb[NL80211_ATTR_WIPHY_FREQ_OFFSET],
 				     tb[NL80211_ATTR_WIPHY_CHANNEL_TYPE],
 				     tb[NL80211_ATTR_CHANNEL_WIDTH],
 				     tb[NL80211_ATTR_CENTER_FREQ1],
@@ -4079,6 +4086,7 @@ static void do_process_drv_event(struct i802_bss *bss, int cmd,
 				     tb[NL80211_ATTR_IFINDEX],
 				     tb[NL80211_ATTR_MLO_LINK_ID],
 				     tb[NL80211_ATTR_WIPHY_FREQ],
+				     tb[NL80211_ATTR_WIPHY_FREQ_OFFSET],
 				     tb[NL80211_ATTR_WIPHY_CHANNEL_TYPE],
 				     tb[NL80211_ATTR_CHANNEL_WIDTH],
 				     tb[NL80211_ATTR_CENTER_FREQ1],
@@ -4270,6 +4278,8 @@ int process_global_event(struct nl_msg *msg, void *arg)
 				wiphy_idx = nl80211_get_wiphy_index(bss);
 			if ((ifidx == -1 && !wiphy_idx_set && !wdev_id_set) ||
 			    ifidx == bss->ifindex ||
+			    (bss->br_ifindex > 0 &&
+			     nl80211_has_ifidx(drv, bss->br_ifindex, ifidx)) ||
 			    (wiphy_idx_set && wiphy_idx == wiphy_idx_rx) ||
 			    (wdev_id_set && bss->wdev_id_set &&
 			     wdev_id == bss->wdev_id)) {
@@ -4326,7 +4336,9 @@ int process_bss_event(struct nl_msg *msg, void *arg)
 	case NL80211_CMD_FRAME_TX_STATUS:
 		mlme_event(bss, gnlh->cmd, tb[NL80211_ATTR_FRAME],
 			   tb[NL80211_ATTR_MAC], tb[NL80211_ATTR_TIMED_OUT],
-			   tb[NL80211_ATTR_WIPHY_FREQ], tb[NL80211_ATTR_ACK],
+			   tb[NL80211_ATTR_WIPHY_FREQ],
+			   tb[NL80211_ATTR_WIPHY_FREQ_OFFSET],
+			   tb[NL80211_ATTR_ACK],
 			   tb[NL80211_ATTR_COOKIE],
 			   tb[NL80211_ATTR_RX_SIGNAL_DBM],
 			   tb[NL80211_ATTR_STA_WME], NULL,

@@ -33,6 +33,9 @@ extern "C" {
  * @{
  */
 
+#define MMAGIC_LLC_PROTOCOL_VERSION    1U
+MM_STATIC_ASSERT(MMAGIC_LLC_PROTOCOL_VERSION < UINT8_MAX, "Protocol version must be uint8");
+
 /** The maximum size of packets we support */
 #define MMAGIC_LLC_MAX_PACKET_SIZE    2048
 
@@ -81,6 +84,14 @@ enum mmagic_llc_packet_type
 
     /** Notifies the other party that a packet was missed due to a gap in the sequence numbers */
     MMAGIC_LLC_PTYPE_PACKET_LOSS_DETECTED     = 9,
+
+    /** Sent by the Controller to request the Agent to send a SYNC_RESP. Does not increment
+     *  the sequence number counter. Sequence number counter is ignored by the Agent. */
+    MMAGIC_LLC_PTYPE_SYNC_REQ                 = 10,
+
+    /** Sent by the Agent in response to the Controller. Does not increment the sequence number
+     *  counter. */
+    MMAGIC_LLC_PTYPE_SYNC_RESP                = 11,
 };
 
 struct MM_PACKED mmagic_llc_header
@@ -92,6 +103,32 @@ struct MM_PACKED mmagic_llc_header
     /** Length of the llc packet not including the header. */
     uint16_t length;
 };
+
+struct MM_PACKED mmagic_llc_sync_req
+{
+    /** Token to match respones to requests. */
+    uint8_t token[4];
+};
+
+struct MM_PACKED mmagic_llc_sync_rsp
+{
+    /** Token to match respones to requests. */
+    uint8_t token[4];
+    /** The last seen sequence number for Controller to Agent transmissions. */
+    uint8_t last_seen_seq;
+    /** LLC protocol version. */
+    uint8_t protocol_version;
+};
+
+MM_STATIC_ASSERT(MM_MEMBER_SIZE(struct mmagic_llc_sync_req, token) ==
+                 MM_MEMBER_SIZE(struct mmagic_llc_sync_rsp, token),
+                 "REQ and RESP tokens must match");
+
+MM_STATIC_ASSERT(MM_MEMBER_SIZE(struct mmagic_llc_sync_req, token) == sizeof(uint32_t),
+                 "Token must match generated token type");
+
+/** Invalid token value in sync req/resp */
+#define INVALID_TOKEN_U32 0U
 
 /** @} */
 
@@ -152,9 +189,9 @@ void mmagic_llc_agent_deinit(struct mmagic_llc_agent *agent_llc);
  *
  * @note This will block until the start notification packet has been transmitted.
  *
- * @return @c true if the packet was succesfully transmitted, else @c false.
+ * @return @c MMAGIC_STATUS_OK on success, else appropriate @ref mmagic_status error.
  */
-bool mmagic_llc_send_start_notification(struct mmagic_llc_agent *agent_llc);
+enum mmagic_status mmagic_llc_send_start_notification(struct mmagic_llc_agent *agent_llc);
 
 /**
  * This function allocates an @c mmbuf for use with @ref mmagic_llc_agent_tx(). If a payload is
@@ -177,13 +214,16 @@ struct mmbuf *mmagic_llc_agent_alloc_buffer_for_tx(uint8_t *payload, size_t payl
  * be called as many times as required to add more data to the queue, but take care not to exhaust
  * the available memory.
  *
- * @param agent_llc The LLC handle.
- * @param ptype     The LLC packet type.
- * @param sid       The stream ID to queue this data to.
- * @param tx_buffer The @c mmbuf to add to the TX queue for the specified stream.
+ * @param  agent_llc The LLC handle.
+ * @param  ptype     The LLC packet type.
+ * @param  sid       The stream ID to queue this data to.
+ * @param  tx_buffer The @c mmbuf to add to the TX queue for the specified stream.
+ *
+ * @return           @c MMAGIC_STATUS_OK on success, else appropriate @ref mmagic_status error.
  */
-void mmagic_llc_agent_tx(struct mmagic_llc_agent *agent_llc, enum mmagic_llc_packet_type ptype,
-                         uint8_t sid, struct mmbuf *tx_buffer);
+enum mmagic_status mmagic_llc_agent_tx(struct mmagic_llc_agent *agent_llc,
+                                       enum mmagic_llc_packet_type ptype,
+                                       uint8_t sid, struct mmbuf *tx_buffer);
 
 /**
  * Set the deep sleep mode. See @ref mmagic_deep_sleep_mode for possible deep sleep modes.

@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.8.2</span>
+   &#160;<span id="projectnumber">2.9.7</span>
    </div>
   </td>
  </tr>
@@ -97,7 +97,7 @@ $(document).ready(function(){initNavTree('porting__assistant_8c.html',''); initR
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Porting assistant self test tool to validate hardware and HALs. </p>
 <dl class="section note"><dt>Note</dt><dd>It is assumed that you have followed the steps in the <a class="el" href="GETTING_STARTED.html">Getting Started</a> guide and are therefore familiar with how to build, flash, and monitor an application using the MM-IoT-SDK framework.</dd></dl>
-<p>The Morse Micro Porting Assistant is a tool that assists with validating OSAL, HALs, and platform hardware. It runs a sequence of tests and displays the results of each along with information about potential causes on failure.</p>
+<p>The Morse Micro Porting Assistant is a tool that assists with validating OSAL, HALs, and platform hardware necessary for communicating with a Morse Micro chip. It runs a sequence of tests and displays the results of each along with information about potential causes on failure.</p>
 <p >This tool has been provided as an example application on the Morse Micro reference platforms. Running this application on a known-good platform should result in a 100% pass rate.</p>
 <p >When bringing up a new platform, it is recommended to first port this example application to your new platform. It will then assist in diagnosing fundamental issues that may be more difficult to identify or debug when using other example applications. </p>
 
@@ -200,10 +200,6 @@ const struct <a class="el" href="structtest__step.html">test_step</a>&#160;</td>
 const struct <a class="el" href="structtest__step.html">test_step</a>&#160;</td><td class="memItemRight" valign="bottom"><b>test_step_mmhal_wlan_validate_bcf</b></td></tr>
 <tr class="memdesc:a0cd1d3f133e8b404c6fff2558775a1e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Test definition. <br /></td></tr>
 <tr class="separator:a0cd1d3f133e8b404c6fff2558775a1e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a99fc640e86caff4a9029c53b9673611e"><td class="memItemLeft" align="right" valign="top"><a id="a99fc640e86caff4a9029c53b9673611e" name="a99fc640e86caff4a9029c53b9673611e"></a>
-const struct <a class="el" href="structtest__step.html">test_step</a>&#160;</td><td class="memItemRight" valign="bottom"><b>test_step_enable_leds</b></td></tr>
-<tr class="memdesc:a99fc640e86caff4a9029c53b9673611e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Test definition. <br /></td></tr>
-<tr class="separator:a99fc640e86caff4a9029c53b9673611e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3acb34d8e879ccc4a3bbde3bbc5c6eb4"><td class="memItemLeft" align="right" valign="top"><a id="a3acb34d8e879ccc4a3bbde3bbc5c6eb4" name="a3acb34d8e879ccc4a3bbde3bbc5c6eb4"></a>
 const struct <a class="el" href="structtest__step.html">test_step</a>&#160;</td><td class="memItemRight" valign="bottom"><b>test_step_verify_busy_pin</b></td></tr>
 <tr class="memdesc:a3acb34d8e879ccc4a3bbde3bbc5c6eb4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Test definition. <br /></td></tr>
@@ -232,7 +228,7 @@ const struct <a class="el" href="structtest__step.html">test_step</a>&#160;</td>
 <p>Main entry point to the application. </p>
 <p >This will be invoked in a thread once operating system and hardware initialization has completed. It may return, but it does not have to. </p>
 
-<p class="definition">Definition at line <a class="el" href="porting__assistant_8c_source.html#l00160">160</a> of file <a class="el" href="porting__assistant_8c_source.html">porting_assistant.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="porting__assistant_8c_source.html#l00158">158</a> of file <a class="el" href="porting__assistant_8c_source.html">porting_assistant.c</a>.</p>
 
 </div>
 </div>
@@ -269,7 +265,7 @@ const struct <a class="el" href="structtest__step.html">test_step</a>&#160;</td>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the string representation of the result code (including color if enabled). </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="porting__assistant_8c_source.html#l00091">91</a> of file <a class="el" href="porting__assistant_8c_source.html">porting_assistant.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="porting__assistant_8c_source.html#l00089">89</a> of file <a class="el" href="porting__assistant_8c_source.html">porting_assistant.c</a>.</p>
 
 </div>
 </div>
@@ -323,7 +319,7 @@ const struct <a class="el" href="structtest__step.html">test_step</a>&#160;</td>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="porting__assistant_8c_source.html#l00112">112</a> of file <a class="el" href="porting__assistant_8c_source.html">porting_assistant.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="porting__assistant_8c_source.html#l00110">110</a> of file <a class="el" href="porting__assistant_8c_source.html">porting_assistant.c</a>.</p>
 
 </div>
 </div>
@@ -361,7 +357,6 @@ const struct <a class="el" href="structtest__step.html">test_step</a>&#160;</td>
 <div class="line">    &amp;<a class="code hl_variable" href="porting__assistant_8c.html#a626d84bb86f7056f3036d17c9c36a361">test_step_raw_tput</a>,</div>
 <div class="line">    &amp;<a class="code hl_variable" href="porting__assistant_8c.html#a6e77f8a79750cee36f9a25a9428edaaf">test_step_mmhal_wlan_validate_fw</a>,</div>
 <div class="line">    &amp;<a class="code hl_variable" href="porting__assistant_8c.html#a0cd1d3f133e8b404c6fff2558775a1e1">test_step_mmhal_wlan_validate_bcf</a>,</div>
-<div class="line">    &amp;<a class="code hl_variable" href="porting__assistant_8c.html#a99fc640e86caff4a9029c53b9673611e">test_step_enable_leds</a>,</div>
 <div class="line">}</div>
 <div class="ttc" id="aporting__assistant_8c_html_a0cd1d3f133e8b404c6fff2558775a1e1"><div class="ttname"><a href="porting__assistant_8c.html#a0cd1d3f133e8b404c6fff2558775a1e1">test_step_mmhal_wlan_validate_bcf</a></div><div class="ttdeci">const struct test_step test_step_mmhal_wlan_validate_bcf</div><div class="ttdoc">Test definition.</div></div>
 <div class="ttc" id="aporting__assistant_8c_html_a0f64a18752e6bbe2bd95aa9b3d5a3f1a"><div class="ttname"><a href="porting__assistant_8c.html#a0f64a18752e6bbe2bd95aa9b3d5a3f1a">test_step_read_chip_id</a></div><div class="ttdeci">const struct test_step test_step_read_chip_id</div><div class="ttdoc">Test definition.</div></div>
@@ -373,14 +368,13 @@ const struct <a class="el" href="structtest__step.html">test_step</a>&#160;</td>
 <div class="ttc" id="aporting__assistant_8c_html_a6e77f8a79750cee36f9a25a9428edaaf"><div class="ttname"><a href="porting__assistant_8c.html#a6e77f8a79750cee36f9a25a9428edaaf">test_step_mmhal_wlan_validate_fw</a></div><div class="ttdeci">const struct test_step test_step_mmhal_wlan_validate_fw</div><div class="ttdoc">Test definition.</div></div>
 <div class="ttc" id="aporting__assistant_8c_html_a75e008674a87e3eb2fb3d227d982ffb0"><div class="ttname"><a href="porting__assistant_8c.html#a75e008674a87e3eb2fb3d227d982ffb0">test_step_bulk_write_read</a></div><div class="ttdeci">const struct test_step test_step_bulk_write_read</div><div class="ttdoc">Test definition.</div></div>
 <div class="ttc" id="aporting__assistant_8c_html_a93c9264e18588dbaa6428bf4f8e5724c"><div class="ttname"><a href="porting__assistant_8c.html#a93c9264e18588dbaa6428bf4f8e5724c">test_step_os_time</a></div><div class="ttdeci">const struct test_step test_step_os_time</div><div class="ttdoc">Test definition.</div></div>
-<div class="ttc" id="aporting__assistant_8c_html_a99fc640e86caff4a9029c53b9673611e"><div class="ttname"><a href="porting__assistant_8c.html#a99fc640e86caff4a9029c53b9673611e">test_step_enable_leds</a></div><div class="ttdeci">const struct test_step test_step_enable_leds</div><div class="ttdoc">Test definition.</div></div>
 <div class="ttc" id="aporting__assistant_8c_html_aa5ba534559ea01f2b5d522508189e15e"><div class="ttname"><a href="porting__assistant_8c.html#aa5ba534559ea01f2b5d522508189e15e">test_step_mmhal_wlan_hard_reset</a></div><div class="ttdeci">const struct test_step test_step_mmhal_wlan_hard_reset</div><div class="ttdoc">Test definition.</div></div>
 <div class="ttc" id="aporting__assistant_8c_html_ad3bcc858a9a91b6debf8c9ac4e154eae"><div class="ttname"><a href="porting__assistant_8c.html#ad3bcc858a9a91b6debf8c9ac4e154eae">test_step_os_task_creation</a></div><div class="ttdeci">const struct test_step test_step_os_task_creation</div><div class="ttdoc">Test definition.</div></div>
 <div class="ttc" id="aporting__assistant_8c_html_ae7e4e54271f9f691de54d84661d7dbd4"><div class="ttname"><a href="porting__assistant_8c.html#ae7e4e54271f9f691de54d84661d7dbd4">test_step_mmhal_wlan_init</a></div><div class="ttdeci">const struct test_step test_step_mmhal_wlan_init</div><div class="ttdoc">Test definition.</div></div>
 </div><!-- fragment -->
 <p>Array of test steps. </p>
 
-<p class="definition">Definition at line <a class="el" href="porting__assistant_8c_source.html#l00056">56</a> of file <a class="el" href="porting__assistant_8c_source.html">porting_assistant.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="porting__assistant_8c_source.html#l00055">55</a> of file <a class="el" href="porting__assistant_8c_source.html">porting_assistant.c</a>.</p>
 
 </div>
 </div>
@@ -390,7 +384,7 @@ const struct <a class="el" href="structtest__step.html">test_step</a>&#160;</td>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_1051a0a86fe889e57b2c2b0562fadebe.html">examples</a></li><li class="navelem"><a class="el" href="dir_8680d3b1e4d9c8d2042ff186a07eb91a.html">porting_assistant</a></li><li class="navelem"><a class="el" href="dir_2590928e824f9e94daf984b4721e2aec.html">src</a></li><li class="navelem"><a class="el" href="porting__assistant_8c.html">porting_assistant.c</a></li>
+    <li class="navelem"><a class="el" href="dir_91b8f418cff946e8d8b598a9068417a8.html">examples</a></li><li class="navelem"><a class="el" href="dir_7de8b8c8b2ab5cd087fb005fc8243698.html">porting_assistant</a></li><li class="navelem"><a class="el" href="dir_79a7522752d9b58767ff1718f87ed209.html">src</a></li><li class="navelem"><a class="el" href="porting__assistant_8c.html">porting_assistant.c</a></li>
     <li class="footer">Copyright 2021 Morse Micro </li>
   </ul>
 </div>

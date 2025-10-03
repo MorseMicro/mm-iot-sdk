@@ -39,15 +39,14 @@
 #include "mmhal.h"
 #include "mmosal.h"
 
-
 #ifdef MBEDTLS_THREADING_ALT
 
 /**
  * @brief Creates a mutex.
  *
- * @param[in, out] pMutex mbedtls mutex handle.
+ * @param[in,out] pMutex mbedtls mutex handle.
  */
-static void mbedtls_platform_mutex_init(mbedtls_threading_mutex_t * pMutex)
+static void mbedtls_platform_mutex_init(mbedtls_threading_mutex_t *pMutex)
 {
     MMOSAL_ASSERT(pMutex != NULL);
 
@@ -64,7 +63,7 @@ static void mbedtls_platform_mutex_init(mbedtls_threading_mutex_t * pMutex)
  * @note This function is an empty stub as nothing needs to be done to free
  * a statically allocated FreeRTOS mutex.
  */
-static void mbedtls_platform_mutex_free(mbedtls_threading_mutex_t * pMutex)
+static void mbedtls_platform_mutex_free(mbedtls_threading_mutex_t *pMutex)
 {
     /* Delete the mutex */
     mmosal_mutex_delete(pMutex->mutexHandle);
@@ -75,16 +74,16 @@ static void mbedtls_platform_mutex_free(mbedtls_threading_mutex_t * pMutex)
  *
  * @param[in] pMutex mbedtls mutex handle.
  *
- * @return 0 (success) is always returned as any other failure is asserted.
+ * @return           0 (success) is always returned as any other failure is asserted.
  */
-static int mbedtls_platform_mutex_lock(mbedtls_threading_mutex_t * pMutex)
+static int mbedtls_platform_mutex_lock(mbedtls_threading_mutex_t *pMutex)
 {
     bool mutexStatus = false;
 
     MMOSAL_ASSERT(pMutex != NULL);
 
     /* mutexStatus is not used if asserts are disabled. */
-    ( void ) mutexStatus;
+    (void)mutexStatus;
 
     /* This function should never fail if the mutex is initialized. */
     mutexStatus = mmosal_mutex_get(pMutex->mutexHandle, UINT32_MAX);
@@ -98,15 +97,15 @@ static int mbedtls_platform_mutex_lock(mbedtls_threading_mutex_t * pMutex)
  *
  * @param[in] pMutex mbedtls mutex handle.
  *
- * @return 0 is always returned as any other failure is asserted.
+ * @return           0 is always returned as any other failure is asserted.
  */
-static int mbedtls_platform_mutex_unlock( mbedtls_threading_mutex_t * pMutex )
+static int mbedtls_platform_mutex_unlock(mbedtls_threading_mutex_t *pMutex)
 {
     bool mutexStatus = false;
 
     MMOSAL_ASSERT(pMutex != NULL);
     /* mutexStatus is not used if asserts are disabled. */
-    ( void ) mutexStatus;
+    (void)mutexStatus;
 
     /* This function should never fail if the mutex is initialized. */
     mutexStatus = mmosal_mutex_release(pMutex->mutexHandle);
@@ -146,20 +145,20 @@ void mbedtls_platform_threading_deinit(void)
  *
  * Calls the Random number generator via MMHAL
  *
- * @param[in] data Callback context.
+ * @param[in]  data   Callback context.
  * @param[out] output The address of the buffer that receives the random number.
- * @param[in] len Maximum size of the random number to be generated.
- * @param[out] olen The size, in bytes, of the #output buffer.
+ * @param[in]  len    Maximum size of the random number to be generated.
+ * @param[out] olen   The size, in bytes, of the #output buffer.
  *
- * @return 0 if no critical failures occurred,
+ * @return            0 if no critical failures occurred,
  */
 int mbedtls_hardware_poll(void *data, unsigned char *output, size_t len, size_t *olen)
 {
     uint32_t random = 0;
     size_t i;
-    ((void) data);
+    ((void)data);
 
-    for (i = 0; i < len; i ++)
+    for (i = 0; i < len; i++)
     {
         if ((i & 0x03) == 0)
         {
@@ -177,4 +176,5 @@ mbedtls_ms_time_t mbedtls_ms_time(void)
 {
     return mmosal_get_time_ms();
 }
+
 #endif

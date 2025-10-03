@@ -37,10 +37,6 @@
 
 /* Default Application configurations. These are used if the required parameters cannot be found in
  * the configstore*/
-#ifndef DEFAULT_PING_REMOTE_IP
-/** IP address of the remote host to ping. */
-#define DEFAULT_PING_REMOTE_IP                  "192.168.1.1"
-#endif
 #ifndef DEFAULT_PING_COUNT
 /** Number of ping requests to send. Set to 0 to continue indefinitely. */
 #define DEFAULT_PING_COUNT                      10
@@ -60,6 +56,11 @@
 #ifndef POST_PING_DELAY_MS
 /** Delay in ms to wait before terminating connection on completion of ping. */
 #define POST_PING_DELAY_MS                10000
+#endif
+#ifndef UPDATE_INTERVAL_MS
+/** Interval (in milliseconds) at which to provide updates when the receive count has not
+ *  changed. */
+#define UPDATE_INTERVAL_MS  (5000)
 #endif
 
 /**
@@ -124,14 +125,25 @@ static void execute_ping_request(int iteration)
     set_debug_state(iteration == 0 ? DEBUG_STATE_PINGING_0 : DEBUG_STATE_PINGING_1);
 
     /* Get the target IP */
-    strncpy(args.ping_target, DEFAULT_PING_REMOTE_IP, sizeof(args.ping_target));
-    mmconfig_read_string("ping.target", args.ping_target, sizeof(args.ping_target));
+    struct mmipal_ip_config ip_config = MMIPAL_IP_CONFIG_DEFAULT;
+    enum mmipal_status status = mmipal_get_ip_config(&ip_config);
+    if (status == MMIPAL_SUCCESS)
+    {
+        memcpy(args.ping_target, ip_config.gateway_addr, sizeof(ip_config.gateway_addr));
+    }
+    else
+    {
+        printf("Failed to retrieve IP config\n");
+    }
+    /* If ping.target is set, we use it as an override */
+    (void)mmconfig_read_string("ping.target", args.ping_target, sizeof(args.ping_target));
 
-    enum mmipal_status status = mmipal_get_local_addr(args.ping_src, args.ping_target);
+    status = mmipal_get_local_addr(args.ping_src, args.ping_target);
     if (status != MMIPAL_SUCCESS)
     {
         printf("failed to get local address for PING\n");
     }
+
     args.ping_count = DEFAULT_PING_COUNT;
     mmconfig_read_uint32("ping.count", &args.ping_count);
 
@@ -144,18 +156,25 @@ static void execute_ping_request(int iteration)
     mmping_start(&args);
     printf("\nPing %s %lu(%lu) bytes of data.\n", args.ping_target, args.ping_size,
            MMPING_ICMP_ECHO_HDR_LEN + args.ping_size);
-    mmosal_task_sleep(args.ping_interval_ms);
 
     struct mmping_stats stats;
+    uint32_t next_update_time_ms = mmosal_get_time_ms() + UPDATE_INTERVAL_MS;
+    unsigned last_ping_recv_count = 0;
     mmping_stats(&stats);
     while (stats.ping_is_running)
     {
-        mmosal_task_sleep(args.ping_interval_ms);
+        mmosal_task_sleep(args.ping_interval_ms / 2);
         mmping_stats(&stats);
-        printf("(%s) packets transmitted/received = %lu/%lu, "
-               "round-trip min/avg/max = %lu/%lu/%lu ms\n",
-               stats.ping_receiver, stats.ping_total_count, stats.ping_recv_count,
-               stats.ping_min_time_ms, stats.ping_avg_time_ms, stats.ping_max_time_ms);
+        if (stats.ping_recv_count != last_ping_recv_count ||
+            mmosal_time_has_passed(next_update_time_ms))
+        {
+            printf("(%s) packets transmitted/received = %lu/%lu, "
+                   "round-trip min/avg/max = %lu/%lu/%lu ms\n",
+                   stats.ping_receiver, stats.ping_total_count, stats.ping_recv_count,
+                   stats.ping_min_time_ms, stats.ping_avg_time_ms, stats.ping_max_time_ms);
+            last_ping_recv_count = stats.ping_recv_count;
+            next_update_time_ms = mmosal_get_time_ms() + UPDATE_INTERVAL_MS;
+        }
     }
     uint32_t loss = 0;
     if (stats.ping_total_count == 0)

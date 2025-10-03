@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#include "mmekh08_hal_common.h"
+#include "mm_hal_common.h"
 
 
 /** 10x8bit training seq */

@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.8.2</span>
+   &#160;<span id="projectnumber">2.9.7</span>
    </div>
   </td>
  </tr>
@@ -142,9 +142,6 @@ Include dependency graph for wnm_sleep.c:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:afb92bea4a697b14d9a1116d58bda79c8"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="wnm__sleep_8c.html#afb92bea4a697b14d9a1116d58bda79c8">DEFAULT_PING_REMOTE_IP</a>&#160;&#160;&#160;&quot;192.168.1.1&quot;</td></tr>
-<tr class="memdesc:afb92bea4a697b14d9a1116d58bda79c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">IP address of the remote host to ping.  <a href="wnm__sleep_8c.html#afb92bea4a697b14d9a1116d58bda79c8">More...</a><br /></td></tr>
-<tr class="separator:afb92bea4a697b14d9a1116d58bda79c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af8310053672488c01e69dcb1ef561b39"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="wnm__sleep_8c.html#af8310053672488c01e69dcb1ef561b39">DEFAULT_PING_COUNT</a>&#160;&#160;&#160;10</td></tr>
 <tr class="memdesc:af8310053672488c01e69dcb1ef561b39"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of ping requests to send.  <a href="wnm__sleep_8c.html#af8310053672488c01e69dcb1ef561b39">More...</a><br /></td></tr>
 <tr class="separator:af8310053672488c01e69dcb1ef561b39"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -160,6 +157,9 @@ Macros</h2></td></tr>
 <tr class="memitem:aa74a8e27191a3077ea4cf00ea7507962"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="wnm__sleep_8c.html#aa74a8e27191a3077ea4cf00ea7507962">POST_PING_DELAY_MS</a>&#160;&#160;&#160;10000</td></tr>
 <tr class="memdesc:aa74a8e27191a3077ea4cf00ea7507962"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delay in ms to wait before terminating connection on completion of ping.  <a href="wnm__sleep_8c.html#aa74a8e27191a3077ea4cf00ea7507962">More...</a><br /></td></tr>
 <tr class="separator:aa74a8e27191a3077ea4cf00ea7507962"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad4602c729fef5a16a7f3dcf974eeee14"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="wnm__sleep_8c.html#ad4602c729fef5a16a7f3dcf974eeee14">UPDATE_INTERVAL_MS</a>&#160;&#160;&#160;(5000)</td></tr>
+<tr class="memdesc:ad4602c729fef5a16a7f3dcf974eeee14"><td class="mdescLeft">&#160;</td><td class="mdescRight">Interval (in milliseconds) at which to provide updates when the receive count has not changed.  <a href="wnm__sleep_8c.html#ad4602c729fef5a16a7f3dcf974eeee14">More...</a><br /></td></tr>
+<tr class="separator:ad4602c729fef5a16a7f3dcf974eeee14"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -231,7 +231,7 @@ Functions</h2></td></tr>
 <p>Number of ping requests to send. </p>
 <p >Set to 0 to continue indefinitely. </p>
 
-<p class="definition">Definition at line <a class="el" href="wnm__sleep_8c_source.html#l00046">46</a> of file <a class="el" href="wnm__sleep_8c_source.html">wnm_sleep.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="wnm__sleep_8c_source.html#l00042">42</a> of file <a class="el" href="wnm__sleep_8c_source.html">wnm_sleep.c</a>.</p>
 
 </div>
 </div>
@@ -249,7 +249,7 @@ Functions</h2></td></tr>
 
 <p>Size of the ping request data, excluding 8-byte ICMP header. </p>
 
-<p class="definition">Definition at line <a class="el" href="wnm__sleep_8c_source.html#l00050">50</a> of file <a class="el" href="wnm__sleep_8c_source.html">wnm_sleep.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="wnm__sleep_8c_source.html#l00046">46</a> of file <a class="el" href="wnm__sleep_8c_source.html">wnm_sleep.c</a>.</p>
 
 </div>
 </div>
@@ -267,25 +267,7 @@ Functions</h2></td></tr>
 
 <p>Interval between successive ping requests. </p>
 
-<p class="definition">Definition at line <a class="el" href="wnm__sleep_8c_source.html#l00054">54</a> of file <a class="el" href="wnm__sleep_8c_source.html">wnm_sleep.c</a>.</p>
-
-</div>
-</div>
-<a id="afb92bea4a697b14d9a1116d58bda79c8" name="afb92bea4a697b14d9a1116d58bda79c8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afb92bea4a697b14d9a1116d58bda79c8">&#9670;&nbsp;</a></span>DEFAULT_PING_REMOTE_IP</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DEFAULT_PING_REMOTE_IP&#160;&#160;&#160;&quot;192.168.1.1&quot;</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>IP address of the remote host to ping. </p>
-
-<p class="definition">Definition at line <a class="el" href="wnm__sleep_8c_source.html#l00042">42</a> of file <a class="el" href="wnm__sleep_8c_source.html">wnm_sleep.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="wnm__sleep_8c_source.html#l00050">50</a> of file <a class="el" href="wnm__sleep_8c_source.html">wnm_sleep.c</a>.</p>
 
 </div>
 </div>
@@ -303,7 +285,7 @@ Functions</h2></td></tr>
 
 <p>Duration to remain in wnm sleep between transmissions. </p>
 
-<p class="definition">Definition at line <a class="el" href="wnm__sleep_8c_source.html#l00058">58</a> of file <a class="el" href="wnm__sleep_8c_source.html">wnm_sleep.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="wnm__sleep_8c_source.html#l00054">54</a> of file <a class="el" href="wnm__sleep_8c_source.html">wnm_sleep.c</a>.</p>
 
 </div>
 </div>
@@ -321,7 +303,25 @@ Functions</h2></td></tr>
 
 <p>Delay in ms to wait before terminating connection on completion of ping. </p>
 
-<p class="definition">Definition at line <a class="el" href="wnm__sleep_8c_source.html#l00062">62</a> of file <a class="el" href="wnm__sleep_8c_source.html">wnm_sleep.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="wnm__sleep_8c_source.html#l00058">58</a> of file <a class="el" href="wnm__sleep_8c_source.html">wnm_sleep.c</a>.</p>
+
+</div>
+</div>
+<a id="ad4602c729fef5a16a7f3dcf974eeee14" name="ad4602c729fef5a16a7f3dcf974eeee14"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad4602c729fef5a16a7f3dcf974eeee14">&#9670;&nbsp;</a></span>UPDATE_INTERVAL_MS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define UPDATE_INTERVAL_MS&#160;&#160;&#160;(5000)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Interval (in milliseconds) at which to provide updates when the receive count has not changed. </p>
+
+<p class="definition">Definition at line <a class="el" href="wnm__sleep_8c_source.html#l00063">63</a> of file <a class="el" href="wnm__sleep_8c_source.html">wnm_sleep.c</a>.</p>
 
 </div>
 </div>
@@ -389,7 +389,7 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="wnm__sleep_8c_source.html#l00071">71</a> of file <a class="el" href="wnm__sleep_8c_source.html">wnm_sleep.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="wnm__sleep_8c_source.html#l00072">72</a> of file <a class="el" href="wnm__sleep_8c_source.html">wnm_sleep.c</a>.</p>
 
 </div>
 </div>
@@ -413,7 +413,7 @@ Functions</h2></td></tr>
 <p>Main entry point to the application. </p>
 <p >This will be invoked in a thread once operating system and hardware initialization has completed. It may return, but it does not have to. </p>
 
-<p class="definition">Definition at line <a class="el" href="wnm__sleep_8c_source.html#l00279">279</a> of file <a class="el" href="wnm__sleep_8c_source.html">wnm_sleep.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="wnm__sleep_8c_source.html#l00298">298</a> of file <a class="el" href="wnm__sleep_8c_source.html">wnm_sleep.c</a>.</p>
 
 </div>
 </div>
@@ -450,7 +450,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="wnm__sleep_8c_source.html#l00120">120</a> of file <a class="el" href="wnm__sleep_8c_source.html">wnm_sleep.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="wnm__sleep_8c_source.html#l00121">121</a> of file <a class="el" href="wnm__sleep_8c_source.html">wnm_sleep.c</a>.</p>
 
 </div>
 </div>
@@ -486,7 +486,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="wnm__sleep_8c_source.html#l00185">185</a> of file <a class="el" href="wnm__sleep_8c_source.html">wnm_sleep.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="wnm__sleep_8c_source.html#l00204">204</a> of file <a class="el" href="wnm__sleep_8c_source.html">wnm_sleep.c</a>.</p>
 
 </div>
 </div>
@@ -523,7 +523,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="wnm__sleep_8c_source.html#l00231">231</a> of file <a class="el" href="wnm__sleep_8c_source.html">wnm_sleep.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="wnm__sleep_8c_source.html#l00250">250</a> of file <a class="el" href="wnm__sleep_8c_source.html">wnm_sleep.c</a>.</p>
 
 </div>
 </div>
@@ -559,7 +559,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="wnm__sleep_8c_source.html#l00108">108</a> of file <a class="el" href="wnm__sleep_8c_source.html">wnm_sleep.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="wnm__sleep_8c_source.html#l00109">109</a> of file <a class="el" href="wnm__sleep_8c_source.html">wnm_sleep.c</a>.</p>
 
 </div>
 </div>
@@ -569,7 +569,7 @@ Functions</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_1051a0a86fe889e57b2c2b0562fadebe.html">examples</a></li><li class="navelem"><a class="el" href="dir_0dc0aee58da1edfd033f855b3e2d4f56.html">wnm_sleep</a></li><li class="navelem"><a class="el" href="dir_492e343570b7cafd2b4d3d62cdff14d3.html">src</a></li><li class="navelem"><a class="el" href="wnm__sleep_8c.html">wnm_sleep.c</a></li>
+    <li class="navelem"><a class="el" href="dir_91b8f418cff946e8d8b598a9068417a8.html">examples</a></li><li class="navelem"><a class="el" href="dir_07dc07595313a6a5472ae1527db4d3c7.html">wnm_sleep</a></li><li class="navelem"><a class="el" href="dir_f44d99cfaa92af5492c9862a413ff9d6.html">src</a></li><li class="navelem"><a class="el" href="wnm__sleep_8c.html">wnm_sleep.c</a></li>
     <li class="footer">Copyright 2021 Morse Micro </li>
   </ul>
 </div>

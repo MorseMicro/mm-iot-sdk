@@ -119,6 +119,7 @@ typedef struct mbedtls_net_context
         void *socket_set;
     } freertos;
 }
+
 mbedtls_net_context;
 
 /**

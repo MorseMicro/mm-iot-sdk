@@ -69,6 +69,7 @@ PLACE_IN_SECTION("MB_MEM2") ALIGN(4) static uint8_t BleSpareEvtBuffer[sizeof(TL_
 static struct mmosal_mutex *MtxShciId = NULL;
 static struct mmosal_sem *SemShciId = NULL;
 static struct mmosal_task *shci_task_handle;
+static struct mmosal_semb *shci_semb;
 
 /* Private functions prototypes-----------------------------------------------*/
 static void shci_user_event_task(void *arg);
@@ -323,7 +324,7 @@ static void shci_user_event_task(void *arg)
 
     for (;;)
     {
-        mmosal_task_wait_for_notification(UINT32_MAX);
+        mmosal_semb_wait(shci_semb, UINT32_MAX);
         shci_user_evt_proc();
     }
 }
@@ -344,6 +345,9 @@ static void appe_Tl_Init(void)
                                         CFG_SHCI_USER_EVT_PROCESS_STACK_SIZE,
                                         CFG_SHCI_USER_EVT_PROCESS_NAME);
   MMOSAL_ASSERT(shci_task_handle != NULL);
+
+  shci_semb = mmosal_semb_create("shci");
+  MMOSAL_ASSERT(shci_semb != NULL);
 
   SHci_Tl_Init_Conf.p_cmdbuffer = (uint8_t*)&SystemCmdBuffer;
   SHci_Tl_Init_Conf.StatusNotCallBack = APPE_SysStatusNot;
@@ -580,7 +584,7 @@ void HAL_Delay(uint32_t Delay)
 
 void shci_notify_asynch_evt(void* pdata)
 {
-    mmosal_task_notify_from_isr(shci_task_handle);
+    mmosal_semb_give_from_isr(shci_semb);
     return;
 }
 

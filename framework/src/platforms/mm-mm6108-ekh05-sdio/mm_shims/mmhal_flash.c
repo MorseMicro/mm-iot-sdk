@@ -8,7 +8,25 @@
 
 #include <string.h>
 
-#include "mmekh05_hal_common.h"
+#include "mm_hal_common.h"
+
+const struct mmhal_flash_partition_config* mmhal_get_mmconfig_partition(void)
+{
+    /** Start of MMCONFIG region in flash. */
+    extern uint8_t mmconfig_start;
+
+    /** End of MMCONFIG region in flash. */
+    extern uint8_t mmconfig_end;
+
+    static struct mmhal_flash_partition_config mmconfig_partition =
+        MMHAL_FLASH_PARTITION_CONFIG_DEFAULT;
+
+    mmconfig_partition.partition_start = (uint32_t) &mmconfig_start;
+    mmconfig_partition.partition_size = (uint32_t) (&mmconfig_end - &mmconfig_start);
+    mmconfig_partition.not_memory_mapped = false;
+
+    return &mmconfig_partition;
+}
 
 uint32_t mmhal_flash_getblocksize(uint32_t block_address)
 {

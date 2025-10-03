@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.8.2</span>
+   &#160;<span id="projectnumber">2.9.7</span>
    </div>
   </td>
  </tr>
@@ -307,7 +307,7 @@ $(document).ready(function(){initNavTree('sslclient_8c_source.html',''); initRes
 <div class="line"><a id="l00379" name="l00379"></a><span class="lineno">  379</span> </div>
 <div class="line"><a id="l00380" name="l00380"></a><span class="lineno">  380</span>    <span class="keyword">static</span> <span class="keywordtype">char</span> sslclient_server[64];</div>
 <div class="line"><a id="l00381" name="l00381"></a><span class="lineno">  381</span>    strncpy(sslclient_server, <a class="code hl_define" href="sslclient_8c.html#a6445d726464369e3b587bb4b179797d5">DEFAULT_SERVER</a>, <span class="keyword">sizeof</span>(sslclient_server));</div>
-<div class="line"><a id="l00382" name="l00382"></a><span class="lineno">  382</span>    <a class="code hl_function" href="group__MMCONFIG__API.html#ga49a03e759500ae9d9395a22d3846c11e">mmconfig_read_string</a>(<span class="stringliteral">&quot;sslclient.server&quot;</span>, sslclient_server, <span class="keyword">sizeof</span>(sslclient_server));</div>
+<div class="line"><a id="l00382" name="l00382"></a><span class="lineno">  382</span>    (void)<a class="code hl_function" href="group__MMCONFIG__API.html#ga49a03e759500ae9d9395a22d3846c11e">mmconfig_read_string</a>(<span class="stringliteral">&quot;sslclient.server&quot;</span>, sslclient_server, <span class="keyword">sizeof</span>(sslclient_server));</div>
 <div class="line"><a id="l00383" name="l00383"></a><span class="lineno">  383</span>    <span class="keywordflow">if</span> ((ret = mbedtls_ssl_set_hostname(&amp;ssl, sslclient_server)) != 0)</div>
 <div class="line"><a id="l00384" name="l00384"></a><span class="lineno">  384</span>    {</div>
 <div class="line"><a id="l00385" name="l00385"></a><span class="lineno">  385</span>        printf(<span class="stringliteral">&quot; failed %d\n\n&quot;</span>, ret);</div>
@@ -321,7 +321,7 @@ $(document).ready(function(){initNavTree('sslclient_8c_source.html',''); initRes
 <div class="line"><a id="l00393" name="l00393"></a><span class="lineno">  393</span>    <span class="comment">/* First parse the URL to extract the server, port and resource */</span></div>
 <div class="line"><a id="l00394" name="l00394"></a><span class="lineno">  394</span>    <span class="keyword">static</span> <span class="keywordtype">char</span> sslclient_port[8];</div>
 <div class="line"><a id="l00395" name="l00395"></a><span class="lineno">  395</span>    strncpy(sslclient_port, <a class="code hl_define" href="sslclient_8c.html#a16b710f592bf8f7900666392adc444dc">DEFAULT_PORT</a>, <span class="keyword">sizeof</span>(sslclient_port));</div>
-<div class="line"><a id="l00396" name="l00396"></a><span class="lineno">  396</span>    <a class="code hl_function" href="group__MMCONFIG__API.html#ga49a03e759500ae9d9395a22d3846c11e">mmconfig_read_string</a>(<span class="stringliteral">&quot;sslclient.port&quot;</span>, sslclient_port, <span class="keyword">sizeof</span>(sslclient_port));</div>
+<div class="line"><a id="l00396" name="l00396"></a><span class="lineno">  396</span>    (void)<a class="code hl_function" href="group__MMCONFIG__API.html#ga49a03e759500ae9d9395a22d3846c11e">mmconfig_read_string</a>(<span class="stringliteral">&quot;sslclient.port&quot;</span>, sslclient_port, <span class="keyword">sizeof</span>(sslclient_port));</div>
 <div class="line"><a id="l00397" name="l00397"></a><span class="lineno">  397</span> </div>
 <div class="line"><a id="l00398" name="l00398"></a><span class="lineno">  398</span>    printf(<span class="stringliteral">&quot;Connecting to %s:%s...&quot;</span>, sslclient_server, sslclient_port);</div>
 <div class="line"><a id="l00399" name="l00399"></a><span class="lineno">  399</span>    fflush(stdout);</div>
@@ -471,7 +471,7 @@ $(document).ready(function(){initNavTree('sslclient_8c_source.html',''); initRes
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_1051a0a86fe889e57b2c2b0562fadebe.html">examples</a></li><li class="navelem"><a class="el" href="dir_5498feaa66cf78111966ac5ddcadb181.html">sslclient</a></li><li class="navelem"><a class="el" href="dir_42aa13663c3c66b0ac1961f59783b456.html">src</a></li><li class="navelem"><a class="el" href="sslclient_8c.html">sslclient.c</a></li>
+    <li class="navelem"><a class="el" href="dir_91b8f418cff946e8d8b598a9068417a8.html">examples</a></li><li class="navelem"><a class="el" href="dir_ce3747c650aef722ff1e3fe2fb88ac1c.html">sslclient</a></li><li class="navelem"><a class="el" href="dir_6bb299079a1a7d21b7029232ee54626a.html">src</a></li><li class="navelem"><a class="el" href="sslclient_8c.html">sslclient.c</a></li>
     <li class="footer">Copyright 2021 Morse Micro </li>
   </ul>
 </div>

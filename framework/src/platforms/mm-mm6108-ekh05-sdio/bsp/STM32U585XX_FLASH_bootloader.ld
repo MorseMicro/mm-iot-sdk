@@ -41,6 +41,8 @@ _estack = ORIGIN(RAM) + LENGTH(RAM);	/* end of "RAM" Ram type memory */
 _Min_Heap_Size = 0x200 ;	/* required amount of heap  */
 _Min_Stack_Size = 0x400 ;	/* required amount of stack */
 
+__FILESYSTEM_SIZE = DEFINED(__FILESYSTEM_SIZE) ? __FILESYSTEM_SIZE : 0xE0000;
+
 /* Memories definition */
 MEMORY
 {
@@ -48,10 +50,8 @@ MEMORY
   SRAM4         (xrw)   : ORIGIN = 0x28000000,  LENGTH = 16K
   BOOTLOADER    (rx)    : ORIGIN = 0x08000000,  LENGTH = 16K
   CONFIG        (r)     : ORIGIN = 0x08004000,  LENGTH = 16K
-  FLASH         (rx)    : ORIGIN = 0x08008000,  LENGTH = 1120K
-  /* Reserve 896 KB for the filesystem, you may adjust this if required but remember
-   * to change the LENGTH of the FLASH section above to compensate. */
-  FILESYSTEM    (r)     : ORIGIN = 0x08120000,  LENGTH = 896K
+  FLASH         (rx)    : ORIGIN = 0x08008000, LENGTH = (0x08200000 - 0x08008000) - __FILESYSTEM_SIZE
+  FILESYSTEM    (r)     : ORIGIN = (0x08200000 - __FILESYSTEM_SIZE), LENGTH = __FILESYSTEM_SIZE
 }
 
 /* Sections */

@@ -24,6 +24,8 @@ var group__MMWLAN__TEST =
       [ "MMWLAN_MCS_5", "group__MMWLAN__TEST.html#gga717653d3f72f5265b2c583db54f9f7baaedad03dc71fc928a799d0100bf60d152", null ],
       [ "MMWLAN_MCS_6", "group__MMWLAN__TEST.html#gga717653d3f72f5265b2c583db54f9f7baaa5e6d54f5438349ffe164ee78f03e850", null ],
       [ "MMWLAN_MCS_7", "group__MMWLAN__TEST.html#gga717653d3f72f5265b2c583db54f9f7baa1379b6cf30539d19f219b5f9c059a347", null ],
+      [ "MMWLAN_MCS_8", "group__MMWLAN__TEST.html#gga717653d3f72f5265b2c583db54f9f7baa2a0a3af6525047230b724f494211dd4e", null ],
+      [ "MMWLAN_MCS_9", "group__MMWLAN__TEST.html#gga717653d3f72f5265b2c583db54f9f7baa791187d16df760f2e854146bfccbe69d", null ],
       [ "MMWLAN_MCS_MAX", "group__MMWLAN__TEST.html#gga717653d3f72f5265b2c583db54f9f7baaafd2b6bd1024cc6444c70bbd2f84507b", null ]
     ] ],
     [ "mmwlan_ate_execute_command", "group__MMWLAN__TEST.html#ga9c6f77ec164d316302624fa08af7e692", null ],

@@ -40,13 +40,13 @@ struct PACKED mmconfig_partition_header
 struct PACKED mmconfig_key_header
 {
     uint8_t key_len;        /**< Length of the key in bytes */
-    char    key[];          /**< Key name, not NULL terminated */
+    char key[];             /**< Key name, not NULL terminated */
 };
 
 struct PACKED mmconfig_data_header
 {
     uint16_t data_len;      /**< Length of the data in bytes */
-    uint8_t  data[];        /**< Data blob */
+    uint8_t data[];         /**< Data blob */
 };
 
 /** Pointer to primary MMCONFIG partition */
@@ -61,12 +61,12 @@ static uint32_t mmconfig_partition_size = 0;
 /**
  * This function converts an unsigned integer to string
  *
- * @param buf       The buffer to place the converted string in
- * @param bufsize   The length of the buffer
- * @param val       The unsigned integer to convert to string
- * @return          Pointer to the converted string or NULL on error
+ * @param  buf     The buffer to place the converted string in
+ * @param  bufsize The length of the buffer
+ * @param  val     The unsigned integer to convert to string
+ * @return         Pointer to the converted string or NULL on error
  */
-static char* mmconfig_uint_to_str(char *buf, size_t bufsize, uint32_t val)
+static char *mmconfig_uint_to_str(char *buf, size_t bufsize, uint32_t val)
 {
     uint32_t len;
 
@@ -114,7 +114,9 @@ static char* mmconfig_uint_to_str(char *buf, size_t bufsize, uint32_t val)
 
     /* Do we have enough space in the buffer? */
     if (bufsize <= len)
+    {
         return NULL;
+    }
 
     char *tmp = buf + len;
 
@@ -122,7 +124,8 @@ static char* mmconfig_uint_to_str(char *buf, size_t bufsize, uint32_t val)
     *tmp-- = 0;
 
     /* Then create the string from the end */
-    do {
+    do
+    {
         char digit = (char)('0' + (val % 10));
         *tmp-- = digit;
         val = val / 10;
@@ -136,12 +139,12 @@ static char* mmconfig_uint_to_str(char *buf, size_t bufsize, uint32_t val)
 /**
  * This function converts an unsigned integer to string
  *
- * @param buf       The buffer to place the converted string in
- * @param bufsize   The length of the buffer
- * @param val       The signed integer to convert to string
- * @return          Pointer to the converted string or NULL on error
+ * @param  buf     The buffer to place the converted string in
+ * @param  bufsize The length of the buffer
+ * @param  val     The signed integer to convert to string
+ * @return         Pointer to the converted string or NULL on error
  */
-static char* mmconfig_int_to_str(char *buf, size_t bufsize, int32_t val)
+static char *mmconfig_int_to_str(char *buf, size_t bufsize, int32_t val)
 {
     if (val >= 0)
     {
@@ -158,7 +161,9 @@ static char* mmconfig_int_to_str(char *buf, size_t bufsize, int32_t val)
                 return NULL;
             }
             else
+            {
                 return buf;
+            }
         }
     }
     return NULL;
@@ -168,9 +173,9 @@ static char* mmconfig_int_to_str(char *buf, size_t bufsize, int32_t val)
  * This function converts a string representation of a decimal or hexadecimal
  * number to an unsigned integer.
  *
- * @param str       The string representation of a decimal or hexadecimal number
- * @param val       The unsigned integer to return the value in, unchanged on error
- * @return          MMCONFIG_OK on success or an error code on failure
+ * @param  str The string representation of a decimal or hexadecimal number
+ * @param  val The unsigned integer to return the value in, unchanged on error
+ * @return     MMCONFIG_OK on success or an error code on failure
  */
 static int mmconfig_str_to_uint(char *str, uint32_t *val)
 {
@@ -180,7 +185,8 @@ static int mmconfig_str_to_uint(char *str, uint32_t *val)
     /* Is it a hexadecimal string? */
     if ((str[0] == '0') && ((str[1] == 'x') || (str[1] == 'X')))
     {
-        for (ii = 2; str[ii] != '\0'; ii++) {
+        for (ii = 2; str[ii] != '\0'; ii++)
+        {
             if ((str[ii] >= '0') && (str[ii] <= '9'))
             {
                 num = num * 16 + (str[ii] - '0');
@@ -202,7 +208,8 @@ static int mmconfig_str_to_uint(char *str, uint32_t *val)
     }
     else
     {
-        for (ii = 0; str[ii] != '\0'; ii++) {
+        for (ii = 0; str[ii] != '\0'; ii++)
+        {
             if ((str[ii] < '0') || (str[ii] > '9'))
             {
                 /* Invalid code, return error */
@@ -228,9 +235,9 @@ static int mmconfig_str_to_uint(char *str, uint32_t *val)
  * This function converts a string representation of a signed decimal or hexadecimal
  * number to an signed integer.
  *
- * @param str       The string representation of a signed decimal or hexadecimal number
- * @param val       The signed integer to return the value in, unchanged on error
- * @return          MMCONFIG_OK on success or an error code on failure
+ * @param  str The string representation of a signed decimal or hexadecimal number
+ * @param  val The signed integer to return the value in, unchanged on error
+ * @return     MMCONFIG_OK on success or an error code on failure
  */
 static int mmconfig_str_to_int(char *str, int *val)
 {
@@ -266,9 +273,9 @@ static int mmconfig_str_to_int(char *str, int *val)
  *
  * The checksum is literally a sum of all the bytes in the data.
  *
- * @param checksum  A pointer to the current checksum which is then updated.
- * @param data      A pointer to the data.
- * @param size      The length of the data in bytes.
+ * @param checksum A pointer to the current checksum which is then updated.
+ * @param data     A pointer to the data.
+ * @param size     The length of the data in bytes.
  */
 static void mmconfig_update_checksum(uint32_t *checksum, const uint8_t *data, size_t size)
 {
@@ -286,11 +293,11 @@ static void mmconfig_update_checksum(uint32_t *checksum, const uint8_t *data, si
 /**
  * Does a case insensitive compare of the requested and found keys.
  *
- * @param requested_key     The requested key.
- * @param requested_key_len The length of the requested key.
- * @param found_key         The key found in flash.
- * @param found_key_len     The length of the key found in flash.
- * @return                  True if keys match.
+ * @param  requested_key     The requested key.
+ * @param  requested_key_len The length of the requested key.
+ * @param  found_key         The key found in flash.
+ * @param  found_key_len     The length of the key found in flash.
+ * @return                   True if keys match.
  */
 static bool mmconfig_key_match(const char *requested_key, size_t requested_key_len,
                                const char *found_key, size_t found_key_len)
@@ -308,7 +315,9 @@ static bool mmconfig_key_match(const char *requested_key, size_t requested_key_l
     {
         /* Dissimilar sizes? Of course they don't match */
         if (requested_key_len != found_key_len)
+        {
             return false;
+        }
     }
     else
     {
@@ -316,7 +325,9 @@ static bool mmconfig_key_match(const char *requested_key, size_t requested_key_l
          * it cannot be a match either
          */
         if ((requested_key_len - 1) > found_key_len)
+        {
             return false;
+        }
     }
 
     for (i = 0; i < found_key_len; i++)
@@ -381,11 +392,10 @@ int mmconfig_validate_key(const char *key)
     return MMCONFIG_OK;
 }
 
-
 /**
  * Validates the provided partition.
- * @param partition The partition to validate.
- * @return          MMCONFIG_OK if partition is valid and checksum passes.
+ * @param  partition The partition to validate.
+ * @return           MMCONFIG_OK if partition is valid and checksum passes.
  */
 static int mmconfig_validate_partition(struct mmconfig_partition_header *partition)
 {
@@ -399,35 +409,38 @@ static int mmconfig_validate_partition(struct mmconfig_partition_header *partiti
 
     /* Find the first keyheader which is at the end of mmconfig_partition_header */
     struct mmconfig_key_header *keyheader_ptr =
-            (struct mmconfig_key_header*) (partition->data);
+        (struct mmconfig_key_header *)(partition->data);
 
     /* Loop till we find a terminator marked by key_len of @c LIST_TERMINATOR or 0 */
     while ((keyheader_ptr->key_len != LIST_TERMINATOR) &&
            (keyheader_ptr->key_len != 0) &&
-           ((uint32_t) keyheader_ptr < (uint32_t) partition + mmconfig_partition_size))
+           ((uint32_t)keyheader_ptr < (uint32_t)partition + mmconfig_partition_size))
     {
         struct mmconfig_data_header *dataheader_ptr =
-                (struct mmconfig_data_header *) (keyheader_ptr->key + keyheader_ptr->key_len);
+            (struct mmconfig_data_header *)(keyheader_ptr->key + keyheader_ptr->key_len);
 
         /* Break out if we run into erased flash.  The Flash writing is done by
          * mmconfig_buffered_write() in chunks of 128 bytes. So it is possible that the lower
          * byte of data_len was written but not the higher byte (eg: power removed during a write
-         * operation). In which case the data_len will contain @c MMHAL_FLASH_ERASE_VALUE in the upper byte,
+         * operation). In which case the data_len will contain @c MMHAL_FLASH_ERASE_VALUE in the
+         * upper byte,
          * so check for this. We don't repeat this check in mmconfig_read_data() as we have already
          * validated the partition here.
          */
         if ((dataheader_ptr->data_len >> 8) == MMHAL_FLASH_ERASE_VALUE)
+        {
             return MMCONFIG_ERR_INVALID_PARTITION;
+        }
 
         /* Compute number of bytes in key & data */
         size_t bytecount = sizeof(struct mmconfig_key_header) + keyheader_ptr->key_len +
-                           sizeof(struct mmconfig_data_header) + dataheader_ptr->data_len;
+            sizeof(struct mmconfig_data_header) + dataheader_ptr->data_len;
 
-        mmconfig_update_checksum(&checksum, (uint8_t*) keyheader_ptr, bytecount);
+        mmconfig_update_checksum(&checksum, (uint8_t *)keyheader_ptr, bytecount);
 
         /* Move to next record */
-        keyheader_ptr = (struct mmconfig_key_header*)
-                (dataheader_ptr->data + dataheader_ptr->data_len);
+        keyheader_ptr = (struct mmconfig_key_header *)
+            (dataheader_ptr->data + dataheader_ptr->data_len);
     }
 
     /* Verify checksum matches */
@@ -444,9 +457,9 @@ static int mmconfig_validate_partition(struct mmconfig_partition_header *partiti
  *
  * Erasing the flash block shall reset all bytes in the flash block to @c MMHAL_FLASH_ERASE_VALUE.
  *
- * @param partition A pointer to the partition start.
- * @param size      The size of the partition in bytes.
- * @return          MMCONFIG_OK on success, negative number on error.
+ * @param  partition A pointer to the partition start.
+ * @param  size      The size of the partition in bytes.
+ * @return           MMCONFIG_OK on success, negative number on error.
  */
 static int mmconfig_erase_partition(struct mmconfig_partition_header *partition, size_t size)
 {
@@ -459,7 +472,8 @@ static int mmconfig_erase_partition(struct mmconfig_partition_header *partition,
         uint32_t block_size = mmhal_flash_getblocksize(block_address);
         MMOSAL_ASSERT(block_size != 0);
 
-        /* This function is expected to erase all bytes in the flash block to @c MMHAL_FLASH_ERASE_VALUE. */
+        /* This function is expected to erase all bytes in the flash block to @c
+         * MMHAL_FLASH_ERASE_VALUE. */
         mmhal_flash_erase(block_address);
         block_address += block_size;
     }
@@ -482,8 +496,8 @@ static uint32_t mmconfig_flashing_address;
  * Pushes the string of bytes to staging buffer, if the staging buffer is full
  * then contents of staging buffer are written to flash.
  *
- * @param data  The data to push.
- * @param size  The length of the data in bytes.
+ * @param data The data to push.
+ * @param size The length of the data in bytes.
  */
 static void mmconfig_buffered_write(const uint8_t *data, size_t size)
 {
@@ -492,10 +506,10 @@ static void mmconfig_buffered_write(const uint8_t *data, size_t size)
     {
         /* We have enough data to flush the staging buffer to flash */
         memcpy(&mmconfig_staging_buffer[mmconfig_buffer_index], data,
-                sizeof(mmconfig_staging_buffer) - mmconfig_buffer_index);
+               sizeof(mmconfig_staging_buffer) - mmconfig_buffer_index);
 
-        mmhal_flash_write((uint32_t) mmconfig_flashing_address,
-                           mmconfig_staging_buffer, sizeof(mmconfig_staging_buffer));
+        mmhal_flash_write((uint32_t)mmconfig_flashing_address,
+                          mmconfig_staging_buffer, sizeof(mmconfig_staging_buffer));
         data += sizeof(mmconfig_staging_buffer) - mmconfig_buffer_index;
         size -= sizeof(mmconfig_staging_buffer) - mmconfig_buffer_index;
         mmconfig_flashing_address += sizeof(mmconfig_staging_buffer);
@@ -519,12 +533,12 @@ static void mmconfig_buffered_write(const uint8_t *data, size_t size)
  * mmconfig_update_checksum() for use by mmconfig_process_existing_storage().
  *
  * @param checksum Unused
- * @param data  The data to push.
- * @param size  The length of the data in bytes.
+ * @param data     The data to push.
+ * @param size     The length of the data in bytes.
  */
 static void mmconfig_buffered_write_wrapper(uint32_t *checksum, const uint8_t *data, size_t size)
 {
-    (void) checksum;
+    (void)checksum;
 
     mmconfig_buffered_write(data, size);
 }
@@ -542,7 +556,7 @@ static void mmconfig_start_flashing(struct mmconfig_partition_header *partition,
     /* Initialise Flashing buffer with erase values */
     memset(mmconfig_staging_buffer, MMHAL_FLASH_ERASE_VALUE, sizeof(mmconfig_staging_buffer));
     mmconfig_buffer_index = 0;
-    mmconfig_flashing_address = (uint32_t) partition;
+    mmconfig_flashing_address = (uint32_t)partition;
 
     /* Write partition header */
     struct mmconfig_partition_header partition_header = {
@@ -550,7 +564,7 @@ static void mmconfig_start_flashing(struct mmconfig_partition_header *partition,
         .checksum = checksum,                       /* The computed checksum */
         .version = version,                         /* The version number */
     };
-    mmconfig_buffered_write((uint8_t*) &partition_header, sizeof(partition_header));
+    mmconfig_buffered_write((uint8_t *)&partition_header, sizeof(partition_header));
 }
 
 /**
@@ -559,7 +573,7 @@ static void mmconfig_start_flashing(struct mmconfig_partition_header *partition,
 static void mmconfig_end_flashing(void)
 {
     /* Write any unwritten data */
-    mmhal_flash_write((uint32_t) mmconfig_flashing_address,
+    mmhal_flash_write((uint32_t)mmconfig_flashing_address,
                       mmconfig_staging_buffer, mmconfig_buffer_index);
 }
 
@@ -571,7 +585,8 @@ static void mmconfig_end_flashing(void)
  * unchanged when the update is applied.  Otherwise, the key/data in the flash is skipped over as
  * it is invalidated by the update.
  *
- * The resulting action is taken by the given @c retain_entry_fn function. In practice, this is either:
+ * The resulting action is taken by the given @c retain_entry_fn function. In practice, this is
+ * either:
  *  - mmconfig_update_checksum - to add the key and associated data to the new checksum being
  *    calculated.  This may be a prelude to a write, for which the checksum is needed up front for
  *    the partition header.  Alternatively it may be for the side effect of calculating how much
@@ -583,7 +598,8 @@ static void mmconfig_end_flashing(void)
  *    calculated as it has already been written into the header.  skipped_key_space_out is unlikely
  *    to be of interest at this stage.
  *
- *  In both cases the data pointer and size provided to @c retain_entry_fn is the start of the raw data
+ *  In both cases the data pointer and size provided to @c retain_entry_fn is the start of the raw
+ * data
  *  in the current flash partition, including the key header, key, data header and data.
  *
  * This function deals only with filtering out keys in the flash that are also in the update list.
@@ -600,9 +616,9 @@ static void mmconfig_end_flashing(void)
  * @param skipped_key_space_out The number of bytes skipped over because the key was found in the
  *                              update list.
  */
-static void mmconfig_process_existing_storage(void(*retain_entry_fn)(uint32_t *checksum,
-                                                                     const uint8_t *data,
-                                                                     size_t size),
+static void mmconfig_process_existing_storage(void (*retain_entry_fn)(uint32_t *checksum,
+                                                                      const uint8_t *data,
+                                                                      size_t size),
                                               const struct mmconfig_update_node *node_list,
                                               struct mmconfig_key_header **keyheader_ptr_out,
                                               uint32_t *checksum_out,
@@ -617,17 +633,17 @@ static void mmconfig_process_existing_storage(void(*retain_entry_fn)(uint32_t *c
     struct mmconfig_partition_header *mmconfig_current_image = mmconfig_primary_image;
 
     /* Find the first keyheader which is at the end of mmconfig_partition_header */
-    struct mmconfig_key_header *keyheader_ptr = (struct mmconfig_key_header*)
-                                                            (mmconfig_current_image->data);
+    struct mmconfig_key_header *keyheader_ptr = (struct mmconfig_key_header *)
+        (mmconfig_current_image->data);
 
     /* Loop till we find a terminator marked by key_len of @c LIST_TERMINATOR or 0 */
     while ((keyheader_ptr->key_len != LIST_TERMINATOR) &&
            (keyheader_ptr->key_len != 0) &&
-           ((uint32_t) keyheader_ptr < (uint32_t) mmconfig_current_image + mmconfig_partition_size))
+           ((uint32_t)keyheader_ptr < (uint32_t)mmconfig_current_image + mmconfig_partition_size))
     {
         /* Find data header and data */
         struct mmconfig_data_header *dataheader_ptr = (struct mmconfig_data_header *)
-                                                    (keyheader_ptr->key + keyheader_ptr->key_len);
+            (keyheader_ptr->key + keyheader_ptr->key_len);
         uint8_t *data_ptr = dataheader_ptr->data;
 
         const struct mmconfig_update_node *node = node_list;
@@ -639,7 +655,7 @@ static void mmconfig_process_existing_storage(void(*retain_entry_fn)(uint32_t *c
                                    keyheader_ptr->key, keyheader_ptr->key_len))
             {
                 skipped_key_space += sizeof(struct mmconfig_key_header) + keyheader_ptr->key_len +
-                                     sizeof(struct mmconfig_data_header) + dataheader_ptr->data_len;
+                    sizeof(struct mmconfig_data_header) + dataheader_ptr->data_len;
                 break;
             }
             node = node->next;
@@ -649,14 +665,14 @@ static void mmconfig_process_existing_storage(void(*retain_entry_fn)(uint32_t *c
         {
             /* Key in flash does not match any update node, so compute number of bytes to retain */
             size_t bytecount = sizeof(struct mmconfig_key_header) + keyheader_ptr->key_len +
-                               sizeof(struct mmconfig_data_header) + dataheader_ptr->data_len;
+                sizeof(struct mmconfig_data_header) + dataheader_ptr->data_len;
 
             /* Retain key header, key name, data header and data */
-            retain_entry_fn(&checksum, (uint8_t*) keyheader_ptr, bytecount);
+            retain_entry_fn(&checksum, (uint8_t *)keyheader_ptr, bytecount);
         }
 
         /* Move to next record */
-        keyheader_ptr = (struct mmconfig_key_header*) (data_ptr + dataheader_ptr->data_len);
+        keyheader_ptr = (struct mmconfig_key_header *)(data_ptr + dataheader_ptr->data_len);
     }
 
     *keyheader_ptr_out = keyheader_ptr;
@@ -667,11 +683,11 @@ static void mmconfig_process_existing_storage(void(*retain_entry_fn)(uint32_t *c
 /**
  * Predicts the checksum after a new key has been added.
  *
- * @param node_list Pointer to a linked list of nodes to be included in the checksum.
- * @param checksum The computed checksum is returned in this.
- * @param bytes_used The number of bytes that are required to store all the data after updates
- * @param bytes_remaining The number of bytes that will still be available after update is applied
- * @return         Returns MMCONFIG_OK on success or an error code.
+ * @param  node_list       Pointer to a linked list of nodes to be included in the checksum.
+ * @param  checksum        The computed checksum is returned in this.
+ * @param  bytes_used      The number of bytes that are required to store all the data after updates
+ * @param  bytes_remaining The number of bytes that will still be available after update is applied
+ * @return                 Returns MMCONFIG_OK on success or an error code.
  *                  For @c MMCONFIG_ERR_FULL, bytes_used and bytes_remaining will be valid
  *                      @c MMCONFIG_ERR_INVALID_KEY if a key in node_list is invalid
  */
@@ -719,23 +735,23 @@ static uint32_t mmconfig_compute_new_checksum(const struct mmconfig_update_node 
             };
 
             required_space += sizeof(keyheader) + keyheader.key_len +
-                              sizeof(dataheader) + dataheader.data_len;
+                sizeof(dataheader) + dataheader.data_len;
 
             /* Checksum new keyheader and key */
-            mmconfig_update_checksum(checksum, (uint8_t*) &keyheader, sizeof(keyheader));
-            mmconfig_update_checksum(checksum, (const uint8_t*) node->key, keyheader.key_len);
+            mmconfig_update_checksum(checksum, (uint8_t *)&keyheader, sizeof(keyheader));
+            mmconfig_update_checksum(checksum, (const uint8_t *)node->key, keyheader.key_len);
 
             /* Checksum new dataheader and data */
-            mmconfig_update_checksum(checksum, (uint8_t*) &dataheader, sizeof(dataheader));
-            mmconfig_update_checksum(checksum, (const uint8_t*) node->data, node->size);
+            mmconfig_update_checksum(checksum, (uint8_t *)&dataheader, sizeof(dataheader));
+            mmconfig_update_checksum(checksum, (const uint8_t *)node->data, node->size);
         }
         node = node->next;
     }
 
     /* Check that we won't exceed available space in partition */
-    uint32_t space_required = ((uint32_t) keyheader_ptr - (uint32_t) mmconfig_primary_image) +
-                              (required_space - skipped_key_space);
-    uint32_t space_available =  mmconfig_partition_size;
+    uint32_t space_required = ((uint32_t)keyheader_ptr - (uint32_t)mmconfig_primary_image) +
+        (required_space - skipped_key_space);
+    uint32_t space_available = mmconfig_partition_size;
 
     if (bytes_remaining != NULL)
     {
@@ -762,9 +778,9 @@ static uint32_t mmconfig_compute_new_checksum(const struct mmconfig_update_node 
  * any data that matches the key. If the data pointer is NULL then the key
  * is deleted if found. The version is incremented.
  *
- * @param node_list     Pointer to a linked list of nodes to be included in the
+ * @param  node_list Pointer to a linked list of nodes to be included in the
  *                      update.
- * @return      MMCONFIG_OK on success.
+ * @return           MMCONFIG_OK on success.
  */
 static int mmconfig_update_secondary_image(const struct mmconfig_update_node *node_list)
 {
@@ -814,12 +830,12 @@ static int mmconfig_update_secondary_image(const struct mmconfig_update_node *no
             };
 
             /* Push new keyheader and key */
-            mmconfig_buffered_write((uint8_t*) &keyheader, sizeof(keyheader));
-            mmconfig_buffered_write((const uint8_t*) node->key, keyheader.key_len);
+            mmconfig_buffered_write((uint8_t *)&keyheader, sizeof(keyheader));
+            mmconfig_buffered_write((const uint8_t *)node->key, keyheader.key_len);
 
             /* Push new dataheader and data */
-            mmconfig_buffered_write((uint8_t*) &dataheader, sizeof(dataheader));
-            mmconfig_buffered_write((const uint8_t*) node->data, node->size);
+            mmconfig_buffered_write((uint8_t *)&dataheader, sizeof(dataheader));
+            mmconfig_buffered_write((const uint8_t *)node->data, node->size);
         }
 
         node = node->next;
@@ -891,10 +907,10 @@ static int mmconfig_init(void)
 
     /* Start off assigning the first partition as primary partition */
     mmconfig_primary_image =
-        (struct mmconfig_partition_header *) mmconfig_partition->partition_start;
+        (struct mmconfig_partition_header *)mmconfig_partition->partition_start;
     mmconfig_secondary_image =
-        (struct mmconfig_partition_header *) (mmconfig_partition->partition_start +
-                                              mmconfig_partition_size);
+        (struct mmconfig_partition_header *)(mmconfig_partition->partition_start +
+                                             mmconfig_partition_size);
 
     if (mmconfig_validate_partition(mmconfig_primary_image) == MMCONFIG_OK)
     {
@@ -908,7 +924,7 @@ static int mmconfig_init(void)
                 /* Ooh, secondary is actually newer, swap them */
                 mmconfig_primary_image = mmconfig_secondary_image;
                 mmconfig_secondary_image =
-                    (struct mmconfig_partition_header *) mmconfig_partition->partition_start;
+                    (struct mmconfig_partition_header *)mmconfig_partition->partition_start;
             }
         }
         /* At this point nobody cares if secondary partition is corrupt */
@@ -918,7 +934,7 @@ static int mmconfig_init(void)
         /* Primary is corrupt, but secondary is good, so swap them */
         mmconfig_primary_image = mmconfig_secondary_image;
         mmconfig_secondary_image =
-            (struct mmconfig_partition_header *) mmconfig_partition->partition_start;
+            (struct mmconfig_partition_header *)mmconfig_partition->partition_start;
     }
     else
     {
@@ -958,9 +974,9 @@ int mmconfig_eraseall(void)
 
     /* Write to both partitions */
     mmhal_flash_write((uint32_t)mmconfig_primary_image,
-                      (uint8_t*)&partition_header, sizeof(partition_header));
+                      (uint8_t *)&partition_header, sizeof(partition_header));
     mmhal_flash_write((uint32_t)mmconfig_secondary_image,
-                      (uint8_t*)&partition_header, sizeof(partition_header));
+                      (uint8_t *)&partition_header, sizeof(partition_header));
 
     /* All done, release mutex */
     mmosal_mutex_release(mmconfig_mutex);
@@ -972,15 +988,15 @@ int mmconfig_eraseall(void)
  * Reads data identified by the supplied key from persistent memory returning a pointer.
  * @note This is an internal function.
  *
- * @param key           Identifies the data element in persistent storage and is a
+ * @param  key  Identifies the data element in persistent storage and is a
  *                      case insensitive alphanumeric (plus underscore) string starting
  *                      with an alpha. Same rules as a C variable name, but case insensitive.
  *                      Must be a null terminated string.
- * @param data          Returns a live pointer to the data in flash memory.  It is the callers
+ * @param  data Returns a live pointer to the data in flash memory.  It is the callers
  *                      responsibility to consume it immediately or take a copy as this pointer
  *                      will be invalidated on the next config store write.
  *                      Returns NULL on any error.
- * @return              Returns number of bytes read and allocated on success. On error returns:
+ * @return      Returns number of bytes read and allocated on success. On error returns:
  *                          @c MMCONFIG_ERR_INVALID_KEY if key is invalid
  *                          @c MMCONFIG_ERR_NOT_FOUND if the specified key was not found
  *                          Other negative number for other errors.
@@ -1006,31 +1022,31 @@ static int mmconfig_read_data(const char *key, void **data)
 
     /* Find the first keyheader which is at the end of mmconfig_partition_header */
     struct mmconfig_key_header *keyheader_ptr =
-            (struct mmconfig_key_header*) (mmconfig_current_image->data);
+        (struct mmconfig_key_header *)(mmconfig_current_image->data);
 
     /* Loop till we find a terminator marked by key_len of @c LIST_TERMINATOR */
     while ((keyheader_ptr->key_len != LIST_TERMINATOR) &&
            (keyheader_ptr->key_len != 0) &&
-           ((uint32_t) keyheader_ptr < (uint32_t) mmconfig_current_image + mmconfig_partition_size))
+           ((uint32_t)keyheader_ptr < (uint32_t)mmconfig_current_image + mmconfig_partition_size))
     {
         uint8_t *data_ptr;
         char *keyname_ptr = keyheader_ptr->key;
 
         struct mmconfig_data_header *dataheader_ptr =
-                (struct mmconfig_data_header *) (keyname_ptr + keyheader_ptr->key_len);
+            (struct mmconfig_data_header *)(keyname_ptr + keyheader_ptr->key_len);
         data_ptr = dataheader_ptr->data;
 
         if (mmconfig_key_match(key, strlen(key), keyname_ptr, keyheader_ptr->key_len))
         {
             if (data)
             {
-                *data = (void *) data_ptr;
+                *data = (void *)data_ptr;
             }
             return dataheader_ptr->data_len;
         }
 
         /* Move to next record */
-        keyheader_ptr = (struct mmconfig_key_header*) (data_ptr + dataheader_ptr->data_len);
+        keyheader_ptr = (struct mmconfig_key_header *)(data_ptr + dataheader_ptr->data_len);
     }
 
     return MMCONFIG_ERR_NOT_FOUND;
@@ -1125,8 +1141,8 @@ int mmconfig_write_data(const char *key, const void *data, size_t size)
      */
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wcast-qual"
-    node.key = (char *) key;
-    node.data = (void *) data;
+    node.key = (char *)key;
+    node.data = (void *)data;
 #pragma GCC diagnostic pop
     node.size = size;
     node.next = NULL;
@@ -1168,7 +1184,7 @@ int mmconfig_write_update_node_list(const struct mmconfig_update_node *node_list
     return retval;
 }
 
-int mmconfig_read_bytes(const char *key, void *buffer,  uint32_t buffsize, uint32_t offset)
+int mmconfig_read_bytes(const char *key, void *buffer, uint32_t buffsize, uint32_t offset)
 {
     int length;
     uint8_t *data;
@@ -1184,7 +1200,7 @@ int mmconfig_read_bytes(const char *key, void *buffer,  uint32_t buffsize, uint3
     mmosal_mutex_get(mmconfig_mutex, UINT32_MAX);
 
     /* Look for the key in config store */
-    length = mmconfig_read_data(key, (void**)&data);
+    length = mmconfig_read_data(key, (void **)&data);
 
     if (length < 0)
     {
@@ -1198,7 +1214,6 @@ int mmconfig_read_bytes(const char *key, void *buffer,  uint32_t buffsize, uint3
         result = MMCONFIG_ERR_OUT_OF_BOUNDS;
         goto mmconfig_read_bytes_cleanup;
     }
-
 
     /* If buffer is NULL, just return the length required */
     if (buffer == NULL)
@@ -1220,7 +1235,7 @@ mmconfig_read_bytes_cleanup:
 int mmconfig_write_string(const char *key, const char *value)
 {
     /* Treat the string as raw data including the NULL terminator */
-    return mmconfig_write_data(key, (const void *) value, strlen(value) + 1);
+    return mmconfig_write_data(key, (const void *)value, strlen(value) + 1);
 }
 
 int mmconfig_read_string(const char *key, char *buffer, int bufsize)
@@ -1233,7 +1248,7 @@ int mmconfig_read_string(const char *key, char *buffer, int bufsize)
     }
 
     mmosal_mutex_get(mmconfig_mutex, UINT32_MAX);
-    int retval =  mmconfig_read_data(key, (void**) &value);
+    int retval = mmconfig_read_data(key, (void **)&value);
 
     /* Check for error */
     if (retval < 0)
@@ -1294,7 +1309,7 @@ int mmconfig_read_int(const char *key, int *value)
     }
 
     mmosal_mutex_get(mmconfig_mutex, UINT32_MAX);
-    int retval =  mmconfig_read_data(key, (void**) &data);
+    int retval = mmconfig_read_data(key, (void **)&data);
 
     /* Check for error */
     if (retval < 0)
@@ -1351,7 +1366,7 @@ int mmconfig_read_uint32(const char *key, uint32_t *value)
 
     mmosal_mutex_get(mmconfig_mutex, UINT32_MAX);
 
-    int retval =  mmconfig_read_data(key, (void**) &data);
+    int retval = mmconfig_read_data(key, (void **)&data);
 
     /* Check for error */
     if (retval < 0)
@@ -1413,7 +1428,7 @@ int mmconfig_read_bool(const char *key, bool *value)
 
     mmosal_mutex_get(mmconfig_mutex, UINT32_MAX);
 
-    int retval =  mmconfig_read_data(key, (void**) &data);
+    int retval = mmconfig_read_data(key, (void **)&data);
 
     /* Check for error */
     if (retval < 0)

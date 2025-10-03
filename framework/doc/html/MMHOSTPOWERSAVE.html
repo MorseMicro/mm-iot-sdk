@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.8.2</span>
+   &#160;<span id="projectnumber">2.9.7</span>
    </div>
   </td>
  </tr>
@@ -90,14 +90,14 @@ $(document).ready(function(){initNavTree('MMHOSTPOWERSAVE.html',''); initResizab
   <div class="headertitle"><div class="title">Host Power Save </div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p ><a class="anchor" id="md__root_workspace_build_mhs_binaries_mhs_res_doc_hostpowersave"></a></p>
+<div class="textblock"><p ><a class="anchor" id="md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_res_doc_hostpowersave"></a></p>
 <p >The Morse Micro IoT SDK provides out-of-the-box support for host side power saving for mm-ekh08-u575 and mm-ekh08-wb55 reference platforms. This is achieved using the tickless idle mechanism of FreeRTOS.</p>
-<h1><a class="anchor" id="autotoc_md75"></a>
+<h1><a class="anchor" id="autotoc_md72"></a>
 Overview</h1>
 <p >In normal operation, FreeRTOS relies on a periodic tick for the passage of time. In the MM-IoT-SDK, this tick is configured with a 1 ms period. However, when all FreeRTOS tasks (except the idle task) are blocked FreeRTOS can opt to enter tickless sleep for a specified period of time. In tickless sleep the periodic tick (normally provided by SysTick) is suspended and the MCU can enter a low power sleep mode until an interrupt occurs. It is necessary to use an MCU timer to ensure that the MCU does not sleep for longer than the period requested by FreeRTOS.</p>
 <p >The sleep implementation provided by the MM-IoT-SDK is split into two parts, the hook function <code>vPortSuppressTicksAndSleep()</code> in <code><a class="el" href="hooks_8c_source.html">hooks.c</a></code>, which is platform independent, and platform-specific HAL functions.</p>
 <p >There are three sleep states supported by the HAL: disabled, shallow sleep and deep sleep. On STM32 platforms the shallow sleep corresponds to the MCU <code>Sleep</code> mode, while deep sleep corresponds to <code>Stop 2</code> mode. Because deep sleep requires more time to wake up, there are restrictions placed on when this mode may be entered.</p>
-<h1><a class="anchor" id="autotoc_md76"></a>
+<h1><a class="anchor" id="autotoc_md73"></a>
 Implementation</h1>
 <p >A custom implementation of the function <code>vPortSuppressTicksAndSleep()</code> is provided as part of the MM-IoT-SDK in <code><a class="el" href="hooks_8c_source.html">hooks.c</a></code>. This is invoked by FreeRTOS to enter tickless sleep. This function begins by invoking the HAL-specific function <code><a class="el" href="group__MMHAL.html#gaba693440d2efbbc6c36b8288489ffd04" title="Function to prepare MCU to enter sleep.">mmhal_sleep_prepare()</a></code>, to prepare the system for entry to sleep. This function makes the decision as to which <code>mmhal_sleep_state</code> to enter and disables the systick, if applicable to the sleep state.</p>
 <p ><code>vPortSuppressTicksAndSleep()</code> then confirms with FreeRTOS that it still is able to enter sleep by invoking <code>eTaskConfirmSleepModeStatus()</code>. If this returns <code>eAbortSleep</code> then the sleep process is aborted and the HAL function <code><a class="el" href="group__MMHAL.html#ga427d8210d481cb4b205a1230e0f624c8" title="Function to abort the MCU sleep state.">mmhal_sleep_abort()</a></code> is invoked. Otherwise, <code><a class="el" href="group__MMHAL.html#ga2ebb1c4e63ff30a284273f221e98e3d1" title="Function to enter MCU sleep.">mmhal_sleep()</a></code> is invoked to enter sleep. This function is responsible for scheduling a timer so that it does not sleep for longer than the specified expected idle time. However, it may sleep for a shorter period of time if woken by an interrupt.</p>
@@ -107,7 +107,7 @@ Implementation</h1>
 <img src="inline_umlgraph_1.png" />
 </div>
  </p>
-<h1><a class="anchor" id="autotoc_md77"></a>
+<h1><a class="anchor" id="autotoc_md74"></a>
 Deep sleep decision logic</h1>
 <p >The decision whether to enter deep or shallow sleep is made based on several factors:</p>
 <ul>
@@ -116,7 +116,7 @@ Deep sleep decision logic</h1>
 <li>There must be no higher-layer veto of deep sleep.</li>
 </ul>
 <p >A HAL API is provided to allow higher layers to prevent entry into deep sleep. This is via the functions <code><a class="el" href="group__MMHAL.html#ga3e8f1b40b2a974a117bbb7fb51682633" title="Sets a deep sleep veto that will prevent the device from entering deep sleep.">mmhal_set_deep_sleep_veto()</a></code> and <code><a class="el" href="group__MMHAL.html#gaf3a3b184fe97a6258b17017b7d7fd8c2" title="Clears a deep sleep veto that was preventing the device from entering deep sleep (see mmhal_set_deep_...">mmhal_clear_deep_sleep_veto()</a></code>. There may be up to 32 veto sources, each of which is allocated a unique identifier. These IDs are allocated to various subsystems (see <code>mmhal_veto_id</code>). An application may use veto IDs <a class="el" href="group__MMHAL.html#ggaac79b1527fe06a43a80df65ca4b39e94af1ac39d44848259e25b2fab02d03ea27">MMHAL_VETO_ID_APP_MIN</a> to <a class="el" href="group__MMHAL.html#ggaac79b1527fe06a43a80df65ca4b39e94a25514bca0193571d44d4801418772d9b">MMHAL_VETO_ID_APP_MAX</a> (inclusive). It may use there, for example, to protect important operations where timing is critical.</p>
-<h1><a class="anchor" id="autotoc_md78"></a>
+<h1><a class="anchor" id="autotoc_md75"></a>
 Deep sleep exceptions</h1>
 <p >Currently the deep sleep state is not supported by the following subsystems:</p>
 <ul>
@@ -129,6 +129,7 @@ Debugging during deep sleep</h1>
 <p >In normal operation, when the MCU is in deep sleep it is not possible to attach a debugger (e.g., ST-Link). However, it is possible to enable a special mode in the MCU that keeps the clocks required by the debugger active, at the expense of higher power consumption.</p>
 <p >The MM-IoT-SDK provides a build define to enable/disable this mode called ENABLE_DEBUG_IN_STOP_MODE. If this is set to 0 then the debugger will not attach in stop mode (i.e., deep sleep). If set to a non-zero value then it will be possible to attach a debugger even if the MCU is in deep sleep. The default value for this is 1 (i.e., enabled). Note that with this flag enabled the MCU will not be able to achieve its lowest possible power consumption.</p>
 <p >If ENABLE_DEBUG_IN_STOP_MODE is not enabled then it is not possible to start OpenOCD while the MCU is in deep sleep unless the MCU is held in reset. This can be achieved by adding <code>-c "set CONNECT_ASSERT_SRST 1"</code> to the OpenOCD command line before <code>-f openocd.cfg</code>. Be warned that this flag will cause the device to be reset when OpenOCD is started, potentially causing it to lose any volatile state.</p>
+<p >Note, for EKH05 platforms, debugging in stop mode can optionally be controlled via OpenOCD. Debugging during deep sleep is enabled by default, and can be disabled by adding <code>-c "set DISABLE_DEEP_SLEEP_DEBUG 1"</code> to the OpenOCD command line before <code>-f openocd.cfg</code>. As above, you may need to hold the MCU in reset on connection if debugging in deep sleep is disabled. You can enable both DISABLE_DEEP_SLEEP_DEBUG and CONNECT_ASSERT_SRST together through a single helper variable <code>-c "set MM_PROGRAM 1"</code>, which must be passed to the OpenOCD command line before <code>-f openocd.cfg</code>. For best power results, it is recommended to disable debugging in deep sleep on both the MCU, by passing <code>ENABLE_DEBUG_IN_STOP_MODE=0</code> when compiling, and in OpenOCD, by passing <code>-c "set DISABLE_DEEP_SLEEP_DEBUG 1"</code> as described above.</p>
 <p >See also <em>Unable to connect to the MCU with OpenOCD</em> in the <a class="el" href="GETTING_STARTED.html">Getting Started</a> guide. </p>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->

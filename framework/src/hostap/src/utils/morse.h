@@ -31,7 +31,7 @@
 #define MORSE_JP_S1G_NON_OVERLAP_CHAN 21
 
 #define S1G_OP_CLASS_IE_LEN 3 /* eid + ie len + op class */
-extern const int S1G_OP_CLASSES_LEN;
+extern const unsigned int S1G_OP_CLASSES_LEN;
 
 /* Define Maximum interfaces supported for MBSSID IE */
 #define MBSSID_MAX_INTERFACES 2
@@ -51,16 +51,6 @@ enum morse_vendor_attributes {
 	MORSE_VENDOR_ATTR_MGMT_FRAME_TYPE = 1,
 };
 
-struct ah_class {
-	u32 s1g_freq_start;
-	u8 s1g_op_class;
-	/* Array index to select class based on regdomain */
-	u8 s1g_op_class_idx;
-	u8 global_op_class;
-	u8 s1g_width;
-	char cc_list[COUNTRY_CODE_MAX][COUNTRY_CODE_LEN];
-	u64 chans;
-};
 
 struct morse_twt {
 	u8 enable;
@@ -82,6 +72,7 @@ enum morse_dot11ah_region {
 	MORSE_AU,
 	MORSE_CA,
 	MORSE_EU,
+	MORSE_GB,
 	MORSE_IN,
 	MORSE_JP,
 	MORSE_KR,
@@ -101,26 +92,6 @@ enum morse_dot11ah_region {
 #define container_of(ptr, type, member) ({\
 	const typeof(((type *)0)->member)*__mptr = (const typeof(((type *)0)->member) *)(ptr); \
 	(type *)((char *)__mptr - offsetof(type, member)); })
-
-/**
- * morse_set_s1g_ht_chan_pairs - Set the s1g->ht channelisation pairs
- *
- * @cc: The country code for the required channelisation scheme.
- *	Passing NULL selects the default scheme (AU/US etc.)
- */
-void morse_set_s1g_ht_chan_pairs(const char *cc);
-
-/* Convert ht channel to s1g channel */
-int morse_ht_chan_to_s1g_chan(int ht_chan);
-
-/* Convert ht frequency to s1g channel */
-int morse_ht_freq_to_s1g_chan(int ht_freq);
-
-/* Convert s1g channel to ht channel */
-int morse_s1g_chan_to_ht_chan(int s1g_chan);
-
-/* Convert s1g channel to bandwidth */
-int morse_s1g_chan_to_bw(int s1g_chan);
 
 /* RAW limits */
 #define MORSE_RAW_MAX_3BIT_SLOTS		(0b111)
@@ -142,67 +113,12 @@ int morse_s1g_chan_to_bw(int s1g_chan);
 /* This is an existing limitation which can be removed with native s1g support. */
 #define MAX_AID					(2007)
 
-/* Convert an operating class to channel width */
-int morse_s1g_op_class_to_ch_width(u8 s1g_op_class);
-
-/* Convert an operating class to country code */
-int morse_s1g_op_class_to_country(u8 s1g_op_class, char *cc);
-
-/* Convert a country code to a global operating class */
-int morse_s1g_country_to_global_op_class(char *cc);
-
-/* Convert an operating class and s1g channel to frequency (kHz) */
-int morse_s1g_op_class_chan_to_freq(u8 s1g_op_class, int s1g_chan);
-
-/* Convert ht channel and s1g operating class to s1g frequency (kHz) */
-int morse_s1g_op_class_ht_chan_to_s1g_freq(u8 s1g_op_class, int ht_chan);
-
-/* Convert an operating class and ht frequency into a s1g frequency (kHz) */
-int morse_s1g_op_class_ht_freq_to_s1g_freq(u8 s1g_op_class, int ht_freq);
-
-/* Convert a country and ht frequency into a s1g frequency (kHz) */
-int morse_cc_ht_freq_to_s1g_freq(char *cc, int ht_freq);
-
-/* Convert a country and S1G frequency (kHz) into an HT frequency (MHz) */
-int morse_s1g_freq_and_cc_to_ht_freq(int s1g_frequency, const char *cc);
-
-/* Return the first valid channel from an s1g operating class */
-int morse_s1g_op_class_first_chan(u8 s1g_op_class);
-
-/* Returns the center channel, taking into account VHT channel offsets */
-int morse_ht_chan_to_ht_chan_center(struct hostapd_config *conf, int ht_chan);
-
-/* Returns the ht channel, taking into account VHT channel offsets */
-int morse_ht_center_chan_to_ht_chan(struct hostapd_config *conf, int ht_chan);
-
-/*
- * Verify operating class and country code (no channel).
- * Returns S1G local operating class if valid combination, negative if invalid.
- */
-int morse_s1g_verify_op_class_country(u8 s1g_op_class, char *cc, u8 s1g_1mhz_prim_index);
-
-/*
- * Verify operating class, country code and channel.
- * Returns S1G local operating class if valid combination, negative if invalid.
- */
-int morse_s1g_verify_op_class_country_channel(u8 s1g_op_class, char *cc, int s1g_chan,
-					u8 s1g_1mhz_prim_index);
-
-/* Validate ht centre channel with index and returns corresponding ht channel */
-int morse_validate_ht_channel_with_idx(u8 s1g_op_class, int ht_center_channel, int *oper_chwidth,
-				int s1g_prim_1mhz_chan_index, struct hostapd_config *conf);
 
 int morse_s1g_validate_csa_params(struct hostapd_iface *iface, struct csa_settings *settings);
 
-/*
- * Map the given S1G frequency in KHz onto the matching 5GHz one in MHz.
- */
-int morse_convert_s1g_freq_to_ht_freq(int s1g_freq, const char *country);
 
-/*
- * Get the lowest center frequency for a given country.
- */
-int morse_s1g_get_first_center_freq_for_country(char *cc);
+/* Return the configured 1 or 2MHz primary channel */
+int morse_s1g_get_primary_channel(struct hostapd_config *conf, int bw);
 
 /* Defined in driver/driver/h */
 enum wnm_oper;
@@ -222,18 +138,6 @@ int morse_wnm_oper(const char *ifname, enum wnm_oper oper);
 #endif
 
 /**
- * Execute a morse_cli command line.
- *
- * @param iface		Optional interface name. If specified then "-i <iface>" will be included in
- *			the command line.
- * @param args_fmt	printf format string for morse_cli arguments.
- * @param ...		Variadic arguments for format string.
- *
- * @returns 0 on success, else an error code.
- */
-int morse_cli(const char *iface, const char *args_fmt, ...);
-
-/**
  * Issue a Morse control command to enable or disable long sleep (i.e., sleep through DTIMs).
  *
  * @param iface		The name of the interface (e.g., wlan0)
@@ -242,34 +146,6 @@ int morse_cli(const char *iface, const char *args_fmt, ...);
  * @returns 0 on success, else an error code.
  */
 int morse_set_long_sleep_enabled(const char *iface, bool enabled);
-
-int morse_s1g_op_class_first_chan(u8 s1g_op_class);
-
-/**
- * Issue a morse_cli command to set the S1G operating class for the S1G operating element in
- * management frames
- *
- * @param ifname	The name of the interface (e.g., wlan0)
- * @param opclass	The S1G operating class
- *
- * @returns 0 on success, else an error code.
- */
-int morse_set_s1g_op_class(const char* ifname, u8 opclass, u8 prim_opclass);
-
-/**
- * Issue a morse_cli command to set the channel parameters
- *
- * @param ifname		The name of the interface (e.g., wlan0)
- * @param oper_freq		Operating center frequency in KHz
- * @param oper_chwidth		Operating bandwidth in MHz (1, 2, 4, 8)
- * @param prim_chwidth		Primary channel width in MHz (1, 2)
- * @param prim_1mhz_ch_idx	Primary 1MHz channel index (0-7 for 8MHz BW, 0-3 for 4MHz,
- *				0-1 for 2MHz, and 0 for 1MHz)
- *
- * @returns 0 on success, else an error code.
- */
-int morse_set_channel(const char* ifname, int oper_freq, int oper_chwidth, u8 prim_chwidth,
-			u8 prim_1mhz_ch_idx);
 
 /**
  * Issue a morse_cli command to store session information after succesful association
@@ -280,30 +156,6 @@ int morse_set_channel(const char* ifname, int oper_freq, int oper_chwidth, u8 pr
  */
 void morse_standby_session_store(const char* ifname, const u8* bssid,
 	const char* standby_session_dir);
-
-/**
- * Classify an operating class number as S1G local, global or invalid.
- * Also returns a mapping for local operating classes (if ch_map NOT NULL).
- *
- * @param s1g_op_class	The S1G operating class
- * @param class		ah_class structure
- *
- * @returns OP_CLASS_INVALID, OP_CLASS_S1G_LOCAL or OP_CLASS_S1G_GLOBAL based on the the op_class
- */
-enum s1g_op_class_type morse_s1g_op_class_valid(u8 s1g_op_class, const struct ah_class **class);
-
-/**
- * Fill the current operating class and list of supported operating class
- * ie parameters
- *
- * @param buf				Pointer to the buffer for filling ies
- * @param cc				country code
- * @param s1g_chwidth			Operating bandwidth for operating channel
- * @param s1g_op_chan			S1G Operating Channel
- *
- * @returns MORSE_SUCCESS on success, MORSE_S1G_RETURN_ERROR on failure
- */
-int morse_insert_supported_op_class(struct wpabuf *buf, char *cc, int s1g_chwidth, int s1g_op_chan);
 
 #ifdef CONFIG_MORSE_KEEP_ALIVE_OFFLOAD
 
@@ -353,117 +205,6 @@ int morse_set_mbssid_info(const char *ifname, const char *tx_iface_idx,
  * @returns 0 on success, else an error code.
  */
 int morse_cac_conf(const char* ifname, bool enable);
-
-/**
- * Derives primary s1g channel
- *
- * @param op_bw_mhz		Operating bandwidth in MHz
- * @param pr_bw_mhz		Primary bandwidth in MHz
- * @param s1g_op_chan		S1G channel for operating center frequency
- * @param prim_1mhz_ch_idx	1MHz channel index of primary channel
- *
- * @returns derived channel on success, else error code.
- */
-int morse_calculate_primary_s1g_channel(int op_bw_mhz, int pr_bw_mhz, int s1g_op_chan,
-					int pr_1mhz_chan_idx);
-
-/**
- * Derives class for s1g channel based on channel width
- *
- * @param s1g_bw		Primary/Operating band in MHz
- * @param cc			Pointer to country code
- * @param s1g_chan		S1G primary/operating channel
- */
-const struct ah_class *morse_s1g_ch_to_op_class(u8 s1g_bw, char *cc, int s1g_chan);
-
-/**
- * For "JP" get offset value to derive HT channel
- *
- * @param chan			S1G/HT primary channel
- * @param primary_1MHz_chan	S1G primary 1MHz channel for s1g channel, invalid otherwise
- * @param ht			Flag to select HT/S1G channel as input
- */
-int morse_ht_chan_offset_jp(int chan, int primary_1MHz_chan, int ht);
-
-/**
- * Derive primary channel for configured channel and bw in a country
- *
- * @param op_bw_mhz		Operating band in MHz
- * @param pr_bw_mhz		Primary band in MHz
- * @param pr_1mhz_chan_idx	Primary 1MHZ channel index
- * @param cc			Pointer to country code
- */
-int morse_cc_get_primary_s1g_channel(int op_bw_mhz, int pr_bw_mhz,
-		int s1g_op_chan, int pr_1mhz_chan_idx, char *cc);
-
-/**
- * Derive primary 1MHz channel for "JP"
- *
- * @param op_bw_mhz		Operating band in MHz
- * @param pr_bw_mhz		Primary band in MHz
- * @param s1g_op_chan		S1G Operating channel
- * @param pr_1mhz_chan_idx	Primary 1MHz channel index
- */
-int morse_calculate_primary_s1g_channel_jp(int op_bw_mhz, int pr_bw_mhz, int s1g_op_chan,
-						int pr_1mhz_chan_idx);
-
-/**
- * Get the secondary channel offset to derive primary 2MHz channel
- * from 1MHz primary channel for primary bw 2MHz
- *
- * @param sec_chan_offset	Secondary channel offset flag
- * @param cc			Pointer to country code
- */
-int morse_cc_get_sec_channel_offset(int sec_chan_offset, char *cc);
-
-/**
- * Remove duplicate entries and sort buffer
- *
- * @param buf			Pointer to buffer to be sorted
- * @param buf_offset		Offset at which buffer should start sorting
- */
-int morse_remove_duplicates_and_sort_buf(struct wpabuf *buf, int buf_offset);
-
-/**
- * Pass the Mesh configuration parameters to driver
- *
- * @param ifname	The name of the interface (e.g., mesh0)
- * @param mesh_id	Mesh ID for the mesh interface
- * @param mesh_id_len	Length of Mesh ID
- * @param beaconless_mode Beaconless mode
- * @param max_plinks	maximum number of peer links
- */
-int morse_set_mesh_config(const char *ifname, u8 *mesh_id, u8 mesh_id_len, u8 beaconless_mode,
-	u8 max_plinks);
-
-/**
- * Configure MBCA parameters
- *
- * @param ifname	The name of the interface (e.g., mesh0)
- * @param mbca_config	MBCA Configuration
- * @param min_beacon_gap	Minimum gap between our's and neighbor beacon.
- * @param tbtt_adj_interval	TBTT adjustment interval.
- * @param beacon_timing_report_int	Beacon Timing report interval.
- * @param mbss_start_scan_duration	Initial scan duration to find other peers in MBSS.
- *
- * @returns 0 on success, else an error code.
- */
-int morse_mbca_conf(const char *ifname, u8 mbca_config, u8 min_beacon_gap, u8 tbtt_adj_interval,
-	u8 beacon_timing_report_interval, u16 mbss_start_scan_duration);
-
-/**
- * Configure Mesh Dynamic Peering parameters
- *
- * @param ifname	The name of the interface (e.g., mesh0)
- * @param enabled	True to enable dynamic peering, false to disable dynamic peering
- * @param rssi_margin	RSSI margin to consider while selecting a peer to kickout.
- * @param blacklist_timeout	Duration in seconds, a kicked out peer is blacklisted.
- *
- * @returns 0 on success, else an error code.
- */
-int morse_set_mesh_dynamic_peering(const char *ifname, bool enabled, u8 rssi_margin,
-	u32 blacklist_timeout);
-
 
 /**
  * Globally enable / disable RAW

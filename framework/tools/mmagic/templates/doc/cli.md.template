@@ -11,6 +11,8 @@
     string
 {%- elif config.datatype_is_string(type_name) -%}
     string
+{%- elif config.datatype_is_raw(type_name) -%}
+    raw octet string
 {%- else -%}
     @ref CLI_{{ type_name }}
 {%- endif -%}
@@ -54,7 +56,7 @@ the IP configuration variables will not take effect until the `ip-reload` comman
 
 {% for module in config.modules -%}
 {% if module.cli_support %}
-## {{ module.description }} ({{ module.name }}) module
+## Module {{ module.name }}: {{ module.description }}
 
 {% if module.configs %}
 ### Configuration variables
@@ -76,10 +78,10 @@ the IP configuration variables will not take effect until the `ip-reload` comman
 {{ cmd.description }}
 
 ```
-> {{ module.name }}-{{ cmd.name }} {% for arg in  cmd.command_args %}<{{arg.name}}> {% endfor %}
+> {{ module.name }}-{{ cmd.name }} {% for arg in cmd.command_args %}<{{arg.name}}> {% endfor %}
 ```
 
-{% for arg in  cmd.command_args %}
+{% for arg in cmd.command_args %}
 * `{{arg.name}}`: {{arg.description}}
 {% endfor %}
 

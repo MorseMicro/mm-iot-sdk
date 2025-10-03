@@ -1,35 +1,35 @@
-# Copyright 2023-2024 Morse Micro
+# Copyright 2023-2025 Morse Micro
 #
 # SPDX-License-Identifier: Apache-2.0
 #
 ---
 enums:
   - name: enum_security_type
-    description: Connection security type
+    description: Connection security type.
     values:
       - name: sae
         value: 0
         description: >-
-          Simultaneous Authentication of Equals (password-based authentication)
+          Simultaneous Authentication of Equals (password-based authentication).
 
       - name: owe
         value: 1
-        description: Opportunistic Wireless Encryption (encrypted, passwordless)
+        description: Opportunistic Wireless Encryption (encrypted, passwordless).
 
       - name: open
         value: 2
-        description: No security enabled at all
+        description: No security enabled at all.
 
   - name: enum_pmf_mode
-    description: Protected management frame mode
+    description: Protected management frame mode.
     values:
       - name: required
         value: 0
-        description: Protected management frames must be used
+        description: Protected management frames must be used.
 
       - name: disabled
         value: 1
-        description: No protected management frames
+        description: No protected management frames.
 
   - name: enum_power_save_mode
     description: Enumeration of supported 802.11 power save modes.
@@ -41,6 +41,7 @@ enums:
       - name: enabled
         value: 1
         description: Power save enabled.
+
   - name: enum_mcs10_mode
     description: Enumeration of MCS10 modes.
     values:
@@ -53,6 +54,16 @@ enums:
       - name: auto
         value: 2
         description: MCS10 is used on retries instead of MCS0 when the bandwidth is 1 MHz.
+
+  - name: enum_duty_cycle_mode
+    description: Enumeration of duty cycle modes.
+    values:
+      - name: spread
+        value: 0
+        description: Duty cycle air time is evenly spread.
+      - name: burst
+        value: 1
+        description: Duty cycle air time available in burst.
 
   - name: enum_station_type
     description: Enumeration of S1G non-AP STA types.
@@ -86,7 +97,7 @@ enums:
 
       - name: timeout
         value: 4
-        description: The operation failed due to an invalid argument.
+        description: The operation timed out.
 
       - name: invalid_stream
         value: 5
@@ -134,7 +145,7 @@ enums:
 
       - name: unknown_host
         value: 16
-        description: Failed to get an IP address for the given hostname
+        description: Failed to get an IP address for the given hostname.
 
       - name: socket_failed
         value: 17
@@ -152,6 +163,60 @@ enums:
         value: 20
         description: Socket listen failed.
 
+      - name: ntp_kod_received
+        value: 21
+        description: NTP server returned Kiss-o'-Death.
+
+      - name: ntp_kod_backoff_received
+        value: 22
+        description: >-
+          NTP server returned Kiss-o'-Death with rate code.
+          Client should backoff then retry.
+
+      - name: socket_send_failed
+        value: 23
+        description: Socket send failed.
+
+      - name: invalid_credentials
+        value: 24
+        description: >-
+          Credentials provided were invalid.
+          Possible cause: missing null terminator on a PEM key/certificate.
+
+      - name: handshake_failed
+        value: 25
+        description: Error during TLS handshake.
+
+      - name: authentication_failed
+        value: 26
+        description: Credentials provided by the server were not valid.
+
+      - name: missing_credentials
+        value: 27
+        description: >-
+          Missing certificate or key to open TLS connection.
+          Provided through the TLS module configuration.
+
+      - name: time_not_synchronized
+        value: 28
+        description: >-
+          Internal time has not been synchronized.
+          This is required for certificate verification for TLS.
+          Use the NTP module to synchronize internal time.
+
+      - name: mqtt_refused
+        value: 29
+        description: The server refused a CONNECT or SUBSCRIBE.
+
+      - name: mqtt_keepalive_timeout
+        value: 30
+        description: >-
+            Timed out while waiting for PINGRESP.
+            Connection to the broker has been lost.
+
+      - name: bad_version
+        value: 32
+        description: Operation failed due to a version mismatch.
 
   - name: enum_iperf_mode
     description: Mode to use when running the iperf.
@@ -243,49 +308,60 @@ enums:
         value: 7
         description: Hardware scan failed to start.
 
+  - name: enum_sta_state
+    description: Station states
+    values:
+      - name: disconnected
+        value: 1
+        description: Disconnected from the AP.
+      - name: connecting
+        value: 2
+        description: Connecting to the AP.
+      - name: connected
+        value: 3
+        description: Connected to the AP.
+
+  - name: enum_sta_event
+    description: Station connection events.
+    values:
+      - name: scan_request
+        value: 0
+        description: The STA is starting a scan.
+
+      - name: scan_complete
+        value: 1
+        description: The STA has finished a scan.
+
+      - name: scan_abort
+        value: 2
+        description: The STA has aborted a scan early.
+
+      - name: auth_request
+        value: 3
+        description: The STA is sending an authentication request to the AP.
+
+      - name: assoc_request
+        value: 4
+        description: The STA is sending an association request to the AP.
+
+      - name: deauth_tx
+        value: 5
+        description: The STA is sending an de-authorization request to the AP.
+
+      - name: ctrl_port_open
+        value: 6
+        description: The Supplicant IEEE 802.1X Controlled Port is now open.
+
+      - name: ctrl_port_closed
+        value: 7
+        description: The Supplicant IEEE 802.1X Controlled Port is now closed.
+
 structs:
-  - name: struct_packet_buffer
-    description: Packet buffer for standard 1536 byte size packets
-    elements:
-      - name: len
-        description: Length of the data in @c data
-        type: uint16_t
-
-      - name: data
-        description: Array containing the data
-        type: array1536_uint8_t
-
-  - name: struct_string_254
-    description: >-
-      Data type for string up to 254 characters (with space for a null terminating character).
-
-    elements:
-      - name: len
-        description: Length of the data in @c data (excluding null terminator)
-        type: uint8_t
-
-      - name: data
-        description: Array containing the string
-        type: array255_uint8_t
-
-  - name: struct_string_32
-    description: >-
-      Data type for string up to 32 characters (with space for a null terminating character).
-
-    elements:
-      - name: len
-        description: Length of the data in @c data (excluding null terminator)
-        type: uint8_t
-
-      - name: data
-        description: Array containing the string
-        type: array33_uint8_t
-
   - name: struct_mac_addr
-    description: Data type to contain mac address byte array
+    description: Data type to contain mac address byte array.
     elements:
       - name: addr
-        description: Array containing the mac addr
+        description: Array containing the mac addr.
         type: array6_uint8_t
 
   - name: struct_country_code
@@ -301,7 +377,7 @@ structs:
     description: Data type to contain a three octet OUI.
     elements:
       - name: oui
-        description: The 3 octet OUI
+        description: The 3 octet OUI.
         type: array3_uint8_t
 
   - name: struct_oui_list
@@ -319,7 +395,7 @@ structs:
     elements:
       - name: ssid
         description: SSID of the AP.
-        type: struct_string_32
+        type: string32
 
       - name: bssid
         description: BSSID of the AP network.
@@ -329,42 +405,76 @@ structs:
         description: RSSI of the AP in dBm.
         type: int32_t
 
+      - name: ies
+        description: Pointer to the start of the Information Elements within the Probe Response
+                     frame.
+        type: raw255
+
+      - name: received_ies_len
+        description: Length of the ies field in the received frame. May exceed the size of the ies
+                     buffer in this structure.
+        type: uint16_t
+
+      - name: beacon_interval
+        description: Value of the Beacon Interval field.
+        type: uint16_t
+
+      - name: capability_info
+        description: Value of the Capability Information field.
+        type: uint16_t
+
+      - name: channel_freq_hz
+        description: Center frequency in Hz of the channel where the frame was received.
+        type: uint32_t
+
+      - name: bw_mhz
+        description: Bandwidth, in MHz, where the frame was received.
+        type: uint8_t
+
+      - name: op_bw_mhz
+        description: Operating bandwidth, in MHz, of the access point.
+        type: uint8_t
+
+      - name: tsf
+        description: TSF timestamp in the Probe Response frame.
+        type: uint64_t
+
   - name: struct_version_info
     description: Structure for devise firmware and hardware versions.
     elements:
       - name: application_version
         description: Version of the application software.
-        type: struct_string_32
+        type: string32
 
       - name: bootloader_version
         description: Version of the bootloader software.
-        type: struct_string_32
+        type: string32
 
       - name: user_hardware_version
         description: Version of the user hardware.
-        type: struct_string_32
+        type: string32
 
       - name: morse_firmware_version
         description: Version of the Morse firmware.
-        type: struct_string_32
+        type: string32
 
       - name: morselib_version
         description: Version of the Morse IoT SDK library.
-        type: struct_string_32
+        type: string32
 
       - name: morse_hardware_version
         description: Version of the Morse hardware.
-        type: struct_string_32
+        type: string32
 
   - name: struct_scan_status
-    description: Structure for returning the scan status
+    description: Structure for returning the scan status.
     elements:
       - name: results
         description: Array of scan results.
         type: array10_struct_scan_result
 
       - name: num
-        description: Number of results retrieved
+        description: Number of results retrieved.
         type: uint8_t
 
   - name: struct_ip_addr
@@ -373,117 +483,117 @@ structs:
       addresses and colon-separated hexadecimal notation for IPv6 addresses.
     elements:
       - name: addr
-        description: Array containing the IP string
+        description: Array containing the IP string.
         type: array48_char
 
   - name: struct_ip_status
-    description: Structure to contain the current IP status
+    description: Structure to contain the current IP status.
     elements:
       - name: link_state
-        description: Current link state
+        description: Current link state.
         type: enum_ip_link_state
 
       - name: dhcp_enabled
-        description: Whether or not dhcp is enabled
+        description: Whether or not dhcp is enabled.
         type: bool
 
       - name: ip_addr
-        description: Current IP address
+        description: Current IP address.
         type: struct_ip_addr
 
       - name: netmask
-        description: Current IP network mask
+        description: Current IP network mask.
         type: struct_ip_addr
 
       - name: gateway
-        description: Current IP gateway
+        description: Current IP gateway.
         type: struct_ip_addr
 
       - name: broadcast
-        description: Current broadcast IP address
+        description: Current broadcast IP address.
         type: struct_ip_addr
 
       - name: dns_servers
-        description: DNS server IP addresses
+        description: DNS server IP addresses.
         type: array2_struct_ip_addr
 
   - name: struct_ping_status
-    description: Data structure to store ping results
+    description: Data structure to store ping results.
     elements:
       - name: receiver_addr
-        description: IP address of the device receiving the ping requests
+        description: IP address of the device receiving the ping requests.
         type: struct_ip_addr
 
       - name: total_count
-        description: Total number of requests sent
+        description: Total number of requests sent.
         type: uint32_t
 
       - name: recv_count
-        description: The number of ping responses received
+        description: The number of ping responses received.
         type: uint32_t
 
       - name: min_time_ms
-        description: The minimum latency in ms between request sent and response received
+        description: The minimum latency in ms between request sent and response received.
         type: uint32_t
 
       - name: avg_time_ms
-        description: The average latency in ms between request sent and response received
+        description: The average latency in ms between request sent and response received.
         type: uint32_t
 
       - name: max_time_ms
-        description: The maximum latency in ms between request sent and response received
+        description: The maximum latency in ms between request sent and response received.
         type: uint32_t
 
       - name: session_id
-        description: Stores non-zero session ID whilst ping session is running
+        description: Stores non-zero session ID whilst ping session is running.
         type: uint16_t
 
   - name: struct_iperf_status
-    description: Data structure to store iperf results
+    description: Data structure to store iperf results.
     elements:
       - name: remote_addr
-        description: IP address of the remote device
+        description: IP address of the remote device.
         type: struct_ip_addr
 
       - name: remote_port
-        description: Port number of the remote device
+        description: Port number of the remote device.
         type: uint16_t
 
       - name: local_addr
-        description: IP address of the local device
+        description: IP address of the local device.
         type: struct_ip_addr
 
       - name: local_port
-        description: Port number of the local device
+        description: Port number of the local device.
         type: uint16_t
 
       - name: bytes_transferred
-        description: The number of bytes of data transferred during the iperf test
+        description: The number of bytes of data transferred during the iperf test.
         type: uint64_t
 
       - name: duration_ms
-        description: The duration of the iperf test in milliseconds
+        description: The duration of the iperf test in milliseconds.
         type: uint32_t
 
       - name: bandwidth_kbitpsec
-        description: The average throughput in kbps
+        description: The average throughput in kbps.
         type: uint32_t
 
   - name: struct_buffer64
-    description: Generic 64 byte buffer
+    description: Generic 64 byte buffer.
     elements:
       - name: buffer
-        description: The 64 byte buffer
+        description: The 64 byte buffer.
         type: array64_uint8_t
 
       - name: len
-        description: Leangth of data in the buffer
+        description: Length of data in the buffer.
         type: uint8_t
 
 modules:
   - name: wlan
     id: 1
-    description: Wireless LAN management
+    description: Wireless LAN management.
 
     configs:
       - name: country_code
@@ -494,12 +604,12 @@ modules:
       - name: ssid
         id: 1
         description: SSID of the AP to connect to, can be 1-32 characters long.
-        type: struct_string_32
+        type: string32
 
       - name: password
         id: 2
-        description: Password used when associating, 1-32 characters long.
-        type: struct_string_32
+        description: Password used when associating, 1-100 characters long.
+        type: string100
 
       - name: security
         id: 3
@@ -520,7 +630,7 @@ modules:
 
       - name: pmf_mode
         id: 6
-        description: Protected Management Frame mode to use (802.11w)
+        description: Protected Management Frame mode to use (802.11w).
         type: enum_pmf_mode
 
       - name: station_type
@@ -630,7 +740,7 @@ modules:
           the following comma separated integer values (in order): `aifs,cw_min,cw_max,txop_max_us`.
           For example: `3,15,1023,15008`. More information about the individual parameters can be
           found in the API documentation for `mmwlan_qos_queue_params`.
-        type: struct_string_32
+        type: string32
 
       - name: qos_1_params
         id: 23
@@ -640,7 +750,7 @@ modules:
           the following comma separated integer values (in order): `aifs,cw_min,cw_max,txop_max_us`.
           For example: `7,15,1023,15008`. More information about the individual parameters can be
           found in the API documentation for `mmwlan_qos_queue_params`.
-        type: struct_string_32
+        type: string32
 
       - name: qos_2_params
         id: 24
@@ -650,7 +760,7 @@ modules:
           the following comma separated integer values (in order): `aifs,cw_min,cw_max,txop_max_us`.
           For example: `2,7,15,15008`. More information about the individual parameters can be
           found in the API documentation for `mmwlan_qos_queue_params`.
-        type: struct_string_32
+        type: string32
 
       - name: qos_3_params
         id: 25
@@ -660,7 +770,7 @@ modules:
           the following comma separated integer values (in order): `aifs,cw_min,cw_max,txop_max_us`.
           For example: `2,3,7,15008`. More information about the individual parameters can be
           found in the API documentation for `mmwlan_qos_queue_params`.
-        type: struct_string_32
+        type: string32
 
       - name: mcs10_mode
         id: 26
@@ -670,6 +780,21 @@ modules:
           forced, which will always use MCS10 instead of MCS0 if the bandwidth is 1 MHz, and auto,
           which will use MCS10 on retries instead of MCS0 when the bandwidth is 1 MHz.
         type: enum_mcs10_mode
+
+      - name: sta_evt_en
+        id: 27
+        description: >-
+          When set to true, STA event notifications will be provided. Setting this to
+          false will suppress these notifications. Defaults to false.
+        type: bool
+
+      - name: duty_cycle_mode
+        id: 28
+        description: >-
+          The duty cycle air time distribution mode. The duty cycle mode can be set to spread, where
+          the air time is spread evenly across the window; or burst, where air time is available to
+          be consumed immediately.
+        type: enum_duty_cycle_mode
 
     commands:
       - name: connect
@@ -682,7 +807,7 @@ modules:
             description: >-
               Duration in milliseconds to wait for connection establish, if connection does not get
               established an explicit disconnect will be sent. 0 to return immediately without
-              waiting
+              waiting.
             type: uint32_t
 
       - name: disconnect
@@ -694,7 +819,7 @@ modules:
         description: Starts an undirected scan for available networks.
         command_args:
           - name: ssid
-            type: struct_string_32
+            type: string32
             description: >-
               Optional SSID to include in probe requests.
           - name: timeout
@@ -802,18 +927,18 @@ modules:
 
         command_args:
           - name: notify_period_s
-            description: Interval in seconds for transmitting Standby status packets. (Default 15s)
+            description: Interval in seconds for transmitting Standby status packets (Default 15s).
             type: uint32_t
           - name: src_ip
-            description: Source IP address to use for the standby status packets. (Default 0.0.0.0)
+            description: Source IP address to use for the standby status packets (Default 0.0.0.0).
             type: struct_ip_addr
           - name: dst_ip
-            description: Destination IP address for the standby status packets. (Default 0.0.0.0)
+            description: Destination IP address for the standby status packets (Default 0.0.0.0).
             type: struct_ip_addr
           - name: dst_port
             description: >-
               Destination UDP Port for the standby status packets, also used the source port for
-              outgoing UDP port for outgoing UDP packets. (Default 22000)
+              outgoing UDP port for outgoing UDP packets (Default 22000).
             type: uint16_t
           - name: bss_inactivity_s
             description: >-
@@ -823,19 +948,27 @@ modules:
             description: >-
               The interval in seconds to wake periodically from snooze mode and check for beacons.
               If no beacons are found then the Morse chip will re-enter snooze mode. If beacons are
-              found then the Morse chip will exit standby mode so the host can reassociate.
-              (Default 60s)
+              found then the Morse chip will exit standby mode so the host can reassociate
+              (Default 60s).
             type: uint32_t
           - name: snooze_increment_s
             description: >-
               The amount in seconds to increase successive snooze intervals. This saves power
               by snoozing for longer before checking for beacons again if no beacons are found.
-              (Default 0s)
+              (Default 0s).
             type: uint32_t
           - name: snooze_max_s
             description: >-
-              The maximum time in seconds to snooze for after increments. (Default unlimited)
+              The maximum time in seconds to snooze for after increments (Default unlimited).
             type: uint32_t
+
+      - name: get_sta_status
+        id: 21
+        description: Retrieves the STA status of the WLAN interface.
+        response_args:
+          - name: sta_status
+            description: The current STA status.
+            type: enum_sta_state
 
     events:
       - name: beacon_rx
@@ -851,7 +984,7 @@ modules:
               IEs are present then they are concatenated in the buffer. Each IE is a TLV where
               the first byte is the Tag (0xDD for Vendor Specific IE), followed by a byte
               specifying the length IE contents (i.e., excluding the Tag and Length).
-            type: struct_packet_buffer
+            type: raw1536
 
       - name: standby_exit
         id: 2
@@ -864,6 +997,17 @@ modules:
               Reason why we exited standby mode. If we manually exited standby mode through a call
               to wlan-standby_exit, then the reason will be standby_exit_none.
             type: enum_standby_mode_exit_reason
+
+      - name: sta_event
+        id: 3
+        description: >-
+          Triggered when STA event occurs when in STA mode.
+
+        event_args:
+          - name: event
+            description: >-
+              The reported WLAN STA evt.
+            type: enum_sta_event
 
   - name: ip
     id: 2
@@ -903,7 +1047,7 @@ modules:
         id: 4
         description: >-
           Secondary DNS server IP address. If a value is specified this will override the secondary
-          DNS server provided by DHCP (if any). Changes  will take effect when the reload command
+          DNS server provided by DHCP (if any). Changes will take effect when the reload command
           is successfully executed. Note that this option may be ignored by some IP stacks.
         type: struct_ip_addr
 
@@ -921,6 +1065,13 @@ modules:
           If true, enables DHCP offload which allows the Morse chip to directly handle
           DHCP discovery and leases without waking up the host processor. Note: this comes into
           effect only if ip.dhcp_enabled is also true.
+        type: bool
+
+      - name: link_status_evt_en
+        id: 7
+        description: >-
+          When set to true, IP link status notifications will be provided. Setting this to false
+          will suppress these notifications. Defaults to true.
         type: bool
 
     commands:
@@ -976,7 +1127,7 @@ modules:
             type: struct_ip_addr
           - name: dest_ip
             description: >-
-              The IPv4 destination address to match, 0.0.0.0 for any. (Usually our IP address)
+              The IPv4 destination address to match, 0.0.0.0 for any (Usually our IP address).
             type: struct_ip_addr
           - name: netmask
             description: The netmask to apply to the source or destination IP, 0.0.0.0 for any.
@@ -1000,9 +1151,22 @@ modules:
         id: 13
         description: Clears any applied whitelist filters.
 
+    events:
+      - name: link_status
+        id: 4
+        description: >-
+          Triggered when the IP stack has a valid address.
+
+        event_args:
+          - name: ip_link_status
+            description: >-
+              Link status for the WLAN interface. This is only valid when the WLAN interface is
+              configured to be a STA rather than an AP.
+            type: struct_ip_status
+
   - name: ping
     id: 3
-    description: Ping application
+    description: Ping application.
 
     configs:
       - name: target
@@ -1035,7 +1199,7 @@ modules:
 
   - name: iperf
     id: 4
-    description: Iperf application
+    description: Iperf application.
 
     configs:
       - name: mode
@@ -1078,7 +1242,7 @@ modules:
 
   - name: sys
     id: 5
-    description: System management
+    description: System management.
 
     commands:
       - name: reset
@@ -1103,21 +1267,26 @@ modules:
 
   - name: tcp
     id: 6
-    description: TCP Socket IO
+    description: TCP Socket IO, supports secure connections using TLS.
     cli_support: False
 
     commands:
       - name: connect
         id: 8
-        description: Opens a client TCP socket and returns its stream ID
+        description: Opens a client TCP socket and returns its stream ID.
+        response_timeout_ms: 15000
         command_args:
           - name: url
             description: URL of the server to connect to.
-            type: struct_string_254
+            type: string254
 
           - name: port
             description: TCP port to connect to.
             type: uint16_t
+
+          - name: enable_tls
+            description: Enables TLS. Configure certificates through the TLS module.
+            type: bool
 
         response_args:
           - name: stream_id
@@ -1126,7 +1295,7 @@ modules:
 
       - name: bind
         id: 9
-        description: Opens a server TCP socket and returns its stream ID
+        description: Opens a server TCP socket and returns its stream ID.
         command_args:
           - name: port
             description: TCP port to listen on.
@@ -1139,7 +1308,7 @@ modules:
 
       - name: recv
         id: 10
-        description: Reads from a socket
+        description: Reads from a socket.
         stream_type: True
         command_args:
           - name: stream_id
@@ -1157,11 +1326,11 @@ modules:
         response_args:
           - name: buffer
             description: Buffer of read data.
-            type: struct_packet_buffer
+            type: raw1536
 
       - name: send
         id: 11
-        description: Writes to a socket
+        description: Writes to a socket.
         stream_type: True
         command_args:
           - name: stream_id
@@ -1170,11 +1339,11 @@ modules:
 
           - name: buffer
             description: Buffer to send.
-            type: struct_packet_buffer
+            type: raw1536
 
       - name: read_poll
         id: 12
-        description: Polls the socket till it is ready for reading
+        description: Polls the socket till it is ready for reading.
         stream_type: True
         command_args:
           - name: stream_id
@@ -1187,7 +1356,7 @@ modules:
 
       - name: write_poll
         id: 13
-        description: Polls the socket till it is ready for writing
+        description: Polls the socket till it is ready for writing.
         stream_type: True
         command_args:
           - name: stream_id
@@ -1202,6 +1371,7 @@ modules:
         id: 14
         description: Waits for an incoming socket connection and returns a new stream ID.
         stream_type: True
+        response_timeout_ms: -1
         command_args:
           - name: stream_id
             description: Stream ID of the bound socket.
@@ -1214,8 +1384,186 @@ modules:
 
       - name: close
         id: 15
-        description: Closes and frees the socket
+        description: Closes and frees the socket.
         command_args:
           - name: stream_id
             description: Stream ID of the socket to close.
             type: uint8_t
+
+  - name: tls
+    id: 7
+    description: TLS support.
+    cli_support: False
+
+    configs:
+      - name: root_ca_certificate
+        id: 0
+        description: >-
+            Root certificate authority certificate.
+            Supported formats are PEM and DER.
+            Must be null terminated if in PEM format.
+        type: raw1536
+
+      - name: client_certificate
+        id: 1
+        description: >-
+            Certificate to identify the client.
+            Supported formats are PEM and DER.
+            Must be null terminated if in PEM format.
+        type: raw1536
+
+      - name: client_private_key
+        id: 2
+        description: >-
+            Client private key.
+            Supported formats are PEM and DER.
+            Must be null terminated if in PEM format.
+        type: raw1536
+
+  - name: ntp
+    id: 8
+    description: Network Time Protocol.
+    cli_support: False
+
+    configs:
+      - name: server
+        id: 0
+        description: >-
+          The hostname or IP of the NTP server.
+          Defaults to "0.pool.ntp.org".
+        type: string254
+
+    commands:
+      - name: sync
+        id: 8
+        description: Synchronizes internal time using the NTP server.
+
+      - name: get_time
+        id: 9
+        description: Reads current internal time.
+        response_args:
+          - name: timestamp
+            description: Current internal time (Seconds since epoch, UTC).
+            type: uint64_t
+
+  - name: mqtt
+    id: 9
+    description: MQTT agent.
+    cli_support: False
+
+    commands:
+      - name: start_agent
+        id: 8
+        description: >-
+            Starts the MQTT agent. Automatically handles reconnects with a
+            backoff timer and saves up to 10 subscriptions across reconnects.
+            Listen to "broker_connection" events for information about
+            the state of the connection to the broker.
+        command_args:
+          - name: url
+            description: URL of the broker to connect to.
+            type: string254
+
+          - name: port
+            description: Port of the broker to connect to.
+            type: uint16_t
+
+          - name: username
+            description: Username to connect to the broker.
+            type: string100
+
+          - name: password
+            description: Password to connect to the broker.
+            type: string100
+
+          - name: secure
+            description: >-
+                Enables TLS for brokers that require it.
+                Configure certificates through the TLS module.
+            type: bool
+
+        response_args:
+          - name: stream_id
+            description: Stream ID of the opened socket.
+            type: uint8_t
+
+      - name: publish
+        id: 9
+        description: Publishes a message on a topic.
+        command_args:
+          - name: stream_id
+            description: Stream ID of the MQTT connection.
+            type: uint8_t
+
+          - name: topic
+            description: MQTT topic to publish to.
+            type: string254
+
+          - name: payload
+            description: Contents of the message.
+            type: raw1536
+
+          - name: qos
+            description: >-
+                MQTT quality of service (0-2).
+                Only 0 is supported for now.
+            type: uint8_t
+
+      - name: subscribe
+        id: 10
+        description: >-
+          Subscribes to a topic. Messages will arrive in the "message_received" event.
+        command_args:
+          - name: stream_id
+            description: Stream ID of the MQTT connection.
+            type: uint8_t
+
+          - name: topic
+            description: MQTT topic to subscribe to.
+            type: string254
+
+          - name: qos
+            description: >-
+                MQTT quality of service (0-2).
+                Only 0 is supported for now.
+            type: uint8_t
+
+      - name: stop_agent
+        id: 11
+        description: Stops the MQTT agent.
+        command_args:
+          - name: stream_id
+            description: Stream ID of the MQTT connection.
+            type: uint8_t
+
+    events:
+      - name: message_received
+        id: 5
+        description: >-
+          Triggered when a message is received on a topic that has been subscribed to.
+
+        event_args:
+          - name: stream_id
+            description: Stream ID of the MQTT connection.
+            type: uint8_t
+
+          - name: topic
+            description: MQTT topic the message was received on.
+            type: string254
+
+          - name: payload
+            description: Contents of the message.
+            type: raw1536
+
+      - name: broker_connection
+        id: 6
+        description: State of the connection to the broker (see mqtt-start).
+
+        event_args:
+          - name: stream_id
+            description: Stream ID of the MQTT connection.
+            type: uint8_t
+
+          - name: connection_state
+            description: Current state of the connection to the broker.
+            type: enum_status

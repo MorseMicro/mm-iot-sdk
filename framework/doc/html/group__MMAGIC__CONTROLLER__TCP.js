@@ -1,8 +1,9 @@
 var group__MMAGIC__CONTROLLER__TCP =
 [
     [ "mmagic_core_tcp_connect_cmd_args", "structmmagic__core__tcp__connect__cmd__args.html", [
+      [ "enable_tls", "structmmagic__core__tcp__connect__cmd__args.html#ac56625c217083a48d365a0010b1f1357", null ],
       [ "port", "structmmagic__core__tcp__connect__cmd__args.html#a7638284f7d05745198c30fcd1bf35c75", null ],
-      [ "url", "structmmagic__core__tcp__connect__cmd__args.html#a328645aee0e6f6967da930e276882f5d", null ]
+      [ "url", "structmmagic__core__tcp__connect__cmd__args.html#abe9286f3be6c05e6a74b018c7d6cf5fc", null ]
     ] ],
     [ "mmagic_core_tcp_connect_rsp_args", "structmmagic__core__tcp__connect__rsp__args.html", [
       [ "stream_id", "structmmagic__core__tcp__connect__rsp__args.html#a0db0c80faef6853d53c8f3b1cc0d2d6e", null ]
@@ -19,10 +20,10 @@ var group__MMAGIC__CONTROLLER__TCP =
       [ "timeout", "structmmagic__core__tcp__recv__cmd__args.html#a7864b115fb386c8f9df0da53c0966c0f", null ]
     ] ],
     [ "mmagic_core_tcp_recv_rsp_args", "structmmagic__core__tcp__recv__rsp__args.html", [
-      [ "buffer", "structmmagic__core__tcp__recv__rsp__args.html#a5068dd055df6bca7da77a3a155b88769", null ]
+      [ "buffer", "structmmagic__core__tcp__recv__rsp__args.html#afc0c1045d9d4447975dd6365038b9f45", null ]
     ] ],
     [ "mmagic_core_tcp_send_cmd_args", "structmmagic__core__tcp__send__cmd__args.html", [
-      [ "buffer", "structmmagic__core__tcp__send__cmd__args.html#a414ee0a42bc51c15f42a02e8fab1f882", null ],
+      [ "buffer", "structmmagic__core__tcp__send__cmd__args.html#a6caf2c885e859058c8eb492b8449f38b", null ],
       [ "stream_id", "structmmagic__core__tcp__send__cmd__args.html#ae493dd4ea07dc348f593ecc71b4fe0c8", null ]
     ] ],
     [ "mmagic_core_tcp_read_poll_cmd_args", "structmmagic__core__tcp__read__poll__cmd__args.html", [

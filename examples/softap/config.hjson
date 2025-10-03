@@ -1,0 +1,179 @@
+/*
+ * Copyright 2025 Morse Micro
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/*
+ * This is the config file for loading custom settings for the softap application.
+ * To load the settings on to a device, do the following from the `framework` directory:
+ *
+ *   - Ensure the MMIOT_ROOT environment variable is set to the path to the framework directory
+ *     of the MM-IoT-SDK package. This will be set automatically if using Platform IO and is
+ *     set by the environment setup script (`tools/setupscripts/env.sh`) if building
+ *     using command line make -- for more information see the Getting Started Guide.
+ *
+ *   - If this is the first time using the config store programmer ensure the pipenv is
+ *     synchronised by running the following command in the framework directory:
+ *     `pipenv sync`
+ *
+ *   - Connect the target on USB and run the following command from a shell
+ *     `openocd -f src/platforms/mm-ekh08-u575/openocd.cfg`
+ *     (Replace mm-ekh08-u575 with the actual name of your platform.)
+ *
+ *   - Now run the following command to load the keys to the device:
+ *     `pipenv run ./tools/platform/program-configstore.py -H localhost -p mm-ekh08-u575 write-json ../examples/softap/config.hjson`
+ *     (Replace mm-ekh08-u575 with the actual name of your platform.)
+ */
+{
+    /* You can specify a list of key/value strings in this section to write to config store
+     * this is equivalent to the write-string command */
+    "strings" : {
+        /* The Wi-Fi SSID */
+        "wlan.ssid": "MorseMicro"
+        /* The Wi-Fi password, not required if wlan.security is open */
+        "wlan.password": "12345678"
+        /* The Wi-Fi security to use, valid values are sae, owe and open */
+        "wlan.security": "sae"
+        /* The 2 letter country code to ensure the correct regulatory domain is used */
+        // "wlan.country_code": "XX"
+
+        /* If true use DHCP, else the static IP configuration will be used */
+        "ip.dhcp_enabled": "false"
+
+        /* These settings are ignored if DHCP is used, but mandatory if using static IP */
+        "ip.ip_addr": "192.168.1.2"
+        "ip.netmask": "255.255.255.0"
+        "ip.gateway": "192.168.1.1"
+
+        /* These settings are for IPv6, ip6.ip_addr is only required if ip6.autoconfig is
+         * false */
+        "ip6.autoconfig": "true"
+        // "ip6.ip_addr": "FE80::2"
+
+        /* Note: The following settings should be used only when explicitly required */
+        /* If specified, use this MAC address for the WLAN interface */
+        // "wlan.macaddr": "02:00:12:34:56:78"
+        /* BSSID of the AP to connect to. If non-zero, the STA will only connect to an AP
+         * that matches this value. */
+        // "wlan.bssid": "00:00:00:00:00:00"
+        /* S1G non-AP STA type, valid values are sensor and non_sensor */
+        // "wlan.station_type": "non_sensor"
+        /* Whether Centralized Authentication Controlled is enabled on the STA. */
+        // "wlan.cac_enabled": "true"
+        /* Priority used by the AP to assign a STA to a Restricted Access Window (RAW)
+         * group. Valid range is 0 - 7, or -1 to disable RAW. */
+        // "wlan.raw_priority": "-1"
+        // "wlan.power_save_mode": "enabled"
+        // "wlan.subbands_enabled": "true"
+        // "wlan.sgi_enabled": "true"
+        // "wlan.ampdu_enabled": "true"
+        // "wlan.fragment_threshold": "0"
+        // "wlan.rts_threshold": "0"
+        /* If true, enables ARP response offload which allows the Morse chip to directly
+         * respond to ARP requests without waking up the host processor. */
+        // "wlan.offload_arp_response": "true"
+        /* If non zero, enables ARP refresh offload with the specified interval in
+         * milliseconds. */
+        // "wlan.offload_arp_refresh_s": "60"
+        /* The minimum interval to wait after the last health check before triggering
+         * another. If this parameter is 0 then health checks will always happen at the
+         * max_interval_ms value. min_interval_ms must always be less than or equal to
+         * max_interval_ms. If only min_health_check_intvl_ms is specified, then
+         * max_health_check_intvl_ms is assumed to be unbounded. */
+        // "wlan.min_health_check_intvl_ms": "60000"
+        /* The maximum interval to wait after the last health check before triggering
+         * another. If this parameter is 0 then periodic health checks will be disabled.
+         * min_interval_ms must always be less than or equal to max_interval_ms. Set this
+         * to UINT32_MAX to have the maximum unbounded. If only max_health_check_intvl_ms
+         * is specified, then min_health_check_intvl_ms is assumed to be 0. */
+        // "wlan.max_health_check_intvl_ms": "120000"
+        /* Minimum time (in milliseconds) to dwell on a channel waiting for probe
+         * responses. */
+        // "wlan.sta_scan_dwell_time_ms": "30"
+        /* Boolean value indicating whether NDP probe support should be enabled. NDP probe
+         * requests are smaller than regular probe requests and will save energy when
+         * scanning. */
+        // "wlan.ndp_probe_enabled": "false"
+        /* Time to dwell on home channel in between channels during a scan, to allow
+         * traffic to still pass. This will only perform while connected to an AP and is
+         * ignored otherwise. If set to 0, the device will not return to the home channel
+         * during the scan. */
+        // "wlan.home_chan_dwell_time_ms": "200"
+        /* If true, enables DHCP offload which allows the Morse chip to directly handle
+         * DHCP discovery and leases without waking up the host processor. Note: this comes
+         * into effect only if ip.dhcp_enabled is also true. */
+        // "ip.dhcp_offload": "true"
+        /* Protected Management Frame mode to use (802.11w). Valid values are required and
+         * disabled */
+        // "wlan.pmf_mode": "required"
+        /* The base scan interval (in seconds) to use when connecting. An exponential back-
+         * off algorithm is applied such that for each consecutive failure to find the AP,
+         * the delay between scans will start at the base interval and grow exponentially
+         * until the limit interval is reached. If this limit is set to 0,
+         * MMWLAN_DEFAULT_SCAN_INTERVAL_LIMIT_S will be used. */
+        // "wlan.sta_scan_interval_base_s": "2"
+        /* The maximum interval (in seconds) between scan attempts when connecting. The
+         * scan algorithm will begin with the base scan interval and exponentially increase
+         * the interval until this limit is reached. The maximum valid value is UINT16_MAX.
+         * If this limit is set to 0, MMWLAN_DEFAULT_SCAN_INTERVAL_LIMIT_S will be used. */
+        // "wlan.sta_scan_interval_limit_s": "512"
+        /* Configuration of the rate adaptation behavior around selecting MCS10. Valid
+         * values are: disabled, which will never use MCS10, forced, which will always use
+         * MCS10 instead of MCS0 if the bandwidth is 1 MHz, and auto, which will use MCS10
+         * on retries instead of MCS0 when the bandwidth is 1 MHz. */
+        // "wlan.mcs10_mode": "disabled"
+        /* Configure the duty cycle behavior for air time distribution. Valid values are:
+         * burst, duty cycle air time is evenly spread across the allocation window spread,
+         * duty cycle air time for allocation window is available to consume immediately. */
+        // "wlan.duty_cycle_mode": "burst"
+
+        /* The following settings are required only for the softap app */
+        /* Operating Class (S1G or Global) to use for Soft AP. This together with
+         * S1G_CHANNEL must correspond to a channel in the regulatory database. */
+        "wlan.op_class": "25"
+        /* S1G Channel to use for Soft AP. This together with OP_CLASS must correspond to a
+         * channel in the regulatory database. */
+        "wlan.s1g_chan_num": "44"
+        /* Primary Bandwidth to use for Soft AP. Valid values:
+         *   * 0 (auto)
+         *   * 1
+         *   * 2 */
+        "wlan.pri_bw_mhz": "0"
+        /* Primary 1 MHz Channel Index to use for Soft AP. */
+        "wlan.pri_1mhz_chan_idx": "0"
+
+    },
+    /* You can specify a list of key/value hex-strings in this section to write to config store
+     * this is equivalent to the write-hex command */
+    "hex_strings" : {
+        
+    },
+    /*
+     * You can specify a list of files in this section to write to config store
+     * this is equivalent to the write-file command.
+     *
+     * If a relative path is specified then it is taken relative to the location of this JSON file
+     * unless the path starts with an environment variable, in which case the environment variable
+     * will be expanded relative to the working directory.
+     *
+     * For example:
+     *    ../../framework/morsefirmware/bcf_mf08551.mbin     is treated relative to this file
+     *    $MMIOT_ROOT/morsefirmware/bcf_mf08551.mbin         is treated relative to the working
+     *                                                       directory if $MMIOT_ROOT contains
+     *                                                       a relative path.
+     */
+    "files" : {
+        /* The Board Configuration File (BCF) is a configuration file for the Morse Micro
+         * chip that provides board-specific information and is required for the system to
+         * function properly. BCFs for Morse Micro modules are included in the MM-IoT-SDK
+         * package. These modules can be identified by the part numbers printed on their
+         * labels, which take the form MM6108-MFxxxxx. Uncomment the line below and replace
+         * `mf08551` with the appropriate value for the module that you have. For example,
+         * if your module were MM6108-MF12345 then you would change the value of this key
+         * to: $MMIOT_ROOT/morsefirmware/bcf_mf12345.mbin */
+        // "bcf_file": "$MMIOT_ROOT/morsefirmware/bcf_mf08551.mbin"
+
+        
+    }
+}

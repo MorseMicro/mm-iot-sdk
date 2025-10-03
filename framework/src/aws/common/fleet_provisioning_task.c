@@ -89,7 +89,8 @@
 /**
  * @brief Size of AWS IoT Thing name buffer.
  *
- * See @c https://docs.aws.amazon.com/iot/latest/apireference/API_CreateThing.html#iot-CreateThing-request-thingName
+ * See @c
+ * https://docs.aws.amazon.com/iot/latest/apireference/API_CreateThing.html#iot-CreateThing-request-thingName
  */
 #define MAX_THING_NAME_LENGTH                128
 
@@ -106,7 +107,8 @@
 /**
  * @brief Size of buffer in which to hold the certificate id.
  *
- * See @c https://docs.aws.amazon.com/iot/latest/apireference/API_Certificate.html#iot-Type-Certificate-certificateId
+ * See @c
+ * https://docs.aws.amazon.com/iot/latest/apireference/API_Certificate.html#iot-Type-Certificate-certificateId
  */
 #define CERT_ID_BUFFER_LENGTH                          64
 
@@ -139,37 +141,39 @@ typedef enum
     ResponseProvRejected
 } ResponseStatus_t;
 
-
 /*-----------------------------------------------------------*/
 
 /** Pointer to provisioning task */
 static struct mmosal_task *provisioning_task = NULL;
 
+/** Binary semaphore to use to by provisioning task to wait for completion of operations. */
+static struct mmosal_semb *(provisioning_semb) = NULL;
+
 /** Status reported from the MQTT publish callback */
 static ResponseStatus_t xResponseStatus;
 
 /** Buffer to hold responses received from the AWS IoT Fleet Provisioning API */
-static uint8_t* pucPayloadBuffer = NULL;
+static uint8_t *pucPayloadBuffer = NULL;
 
 /** Buffer to generate the CSR and receive the signed certificate in */
-static char* certificate_buffer = NULL;
+static char *certificate_buffer = NULL;
 
 /** Buffer to hold the generated private key in till its ready to be provisioned */
-static char* private_key_buffer = NULL;
+static char *private_key_buffer = NULL;
 
 /** Buffer to hold the generated private key in till its ready to be provisioned */
-static char* thing_name_buffer = NULL;
+static char *thing_name_buffer = NULL;
 
 /** Buffer to hold the register thing accepted topic */
-static char* register_thing_accepted_topic = NULL;
+static char *register_thing_accepted_topic = NULL;
 static uint16_t register_thing_accepted_topic_len = 0;
 
 /** Buffer to hold the register thing rejected topic */
-static char* register_thing_rejected_topic = NULL;
+static char *register_thing_rejected_topic = NULL;
 static uint16_t register_thing_rejected_topic_len = 0;
 
 /** Buffer to hold the register thing publish topic */
-static char* register_thing_publish_topic = NULL;
+static char *register_thing_publish_topic = NULL;
 static uint16_t register_thing_publish_topic_len = 0;
 
 /** Buffer to hold our serial number */
@@ -208,7 +212,7 @@ static bool prvSubscribeToRegisterThingResponseTopics(void);
 static bool prvUnsubscribeFromRegisterThingResponseTopics(void);
 
 static bool fpMQTTPublish(const char * const pacTopic, uint16_t topicLen,
-                   const char * pMsg, uint32_t msgSize)
+                          const char *pMsg, uint32_t msgSize)
 {
     MQTTStatus_t mqttStatus = MQTTBadParameter;
     MQTTAgentHandle_t xMQTTAgentHandle = xGetMqttAgentHandle();
@@ -244,11 +248,11 @@ static bool fpMQTTPublish(const char * const pacTopic, uint16_t topicLen,
  * Callback to receive the incoming publish messages from the MQTT
  * broker. Sets @c xResponseStatus if the correct response was received.
  *
- * @param[in] pxPublishInfo Pointer to publish info of the incoming publish.
+ * @param[in] pxPublishInfo      Pointer to publish info of the incoming publish.
  * @param[in] usPacketIdentifier Packet identifier of the incoming publish.
  */
-static void prvProcessCsrResponseAccepted(void * pxSubscriptionContext,
-                                          MQTTPublishInfo_t * pxPublishInfo)
+static void prvProcessCsrResponseAccepted(void *pxSubscriptionContext,
+                                          MQTTPublishInfo_t *pxPublishInfo)
 {
     bool result = true;
 
@@ -261,32 +265,32 @@ static void prvProcessCsrResponseAccepted(void * pxSubscriptionContext,
     certificate_len = CERT_BUFFER_LENGTH;
     certificateIdLength = CERT_ID_BUFFER_LENGTH;
     ownershipTokenLength = OWNERSHIP_TOKEN_BUFFER_LENGTH;
-    result = parseCsrResponse((const uint8_t*)pxPublishInfo->pPayload,
-                                pxPublishInfo->payloadLength,
-                                certificate_buffer,
-                                &certificate_len,
-                                certificateId,
-                                &certificateIdLength,
-                                ownershipToken,
-                                &ownershipTokenLength);
+    result = parseCsrResponse((const uint8_t *)pxPublishInfo->pPayload,
+                              pxPublishInfo->payloadLength,
+                              certificate_buffer,
+                              &certificate_len,
+                              certificateId,
+                              &certificateIdLength,
+                              ownershipToken,
+                              &ownershipTokenLength);
 
     if (result)
     {
         LogInfo(("Received certificate with Id: %s", certificateId));
         xResponseStatus = ResponseCSRAccepted;
     }
-    mmosal_task_notify(provisioning_task);
+    mmosal_semb_give(provisioning_semb);
 }
 
 /**
  * Callback if the subscription was rejected by the MQTT broker.
  * Sets @c xResponseStatus to indicate failure.
  *
- * @param[in] pxPublishInfo Pointer to publish info of the incoming publish.
+ * @param[in] pxPublishInfo      Pointer to publish info of the incoming publish.
  * @param[in] usPacketIdentifier Packet identifier of the incoming publish.
  */
-static void prvProcessCsrResponseRejected(void * pxSubscriptionContext,
-                                          MQTTPublishInfo_t * pxPublishInfo)
+static void prvProcessCsrResponseRejected(void *pxSubscriptionContext,
+                                          MQTTPublishInfo_t *pxPublishInfo)
 {
     (void)pxSubscriptionContext;
     (void)pxPublishInfo;
@@ -294,18 +298,18 @@ static void prvProcessCsrResponseRejected(void * pxSubscriptionContext,
     LogError(("Received rejected response from CreateCertificateFromCsr API."));
 
     xResponseStatus = ResponseCSRRejected;
-    mmosal_task_notify(provisioning_task);
+    mmosal_semb_give(provisioning_semb);
 }
 
 /**
  * Callback to receive the incoming publish messages from the MQTT
  * broker. Sets @c xResponseStatus if the correct response was received.
  *
- * @param[in] pxPublishInfo Pointer to publish info of the incoming publish.
+ * @param[in] pxPublishInfo      Pointer to publish info of the incoming publish.
  * @param[in] usPacketIdentifier Packet identifier of the incoming publish.
  */
-static void prvProcessRegisterThingAccepted(void * pxSubscriptionContext,
-                                            MQTTPublishInfo_t * pxPublishInfo)
+static void prvProcessRegisterThingAccepted(void *pxSubscriptionContext,
+                                            MQTTPublishInfo_t *pxPublishInfo)
 {
     bool result = true;
 
@@ -315,7 +319,7 @@ static void prvProcessRegisterThingAccepted(void * pxSubscriptionContext,
 
     /* Extract the Thing name from the response. */
     size_t xThingNameLength = MAX_THING_NAME_LENGTH;
-    result = parseRegisterThingResponse((const uint8_t*)pxPublishInfo->pPayload,
+    result = parseRegisterThingResponse((const uint8_t *)pxPublishInfo->pPayload,
                                         pxPublishInfo->payloadLength,
                                         thing_name_buffer,
                                         &xThingNameLength);
@@ -325,18 +329,18 @@ static void prvProcessRegisterThingAccepted(void * pxSubscriptionContext,
         LogInfo(("Received AWS IoT Thing name: %s", thing_name_buffer));
         xResponseStatus = ResponseProvAccepted;
     }
-    mmosal_task_notify(provisioning_task);
+    mmosal_semb_give(provisioning_semb);
 }
 
 /**
  * Callback if the subscription was rejected by the MQTT broker.
  * Sets @c xResponseStatus to indicate failure.
  *
- * @param[in] pxPublishInfo Pointer to publish info of the incoming publish.
+ * @param[in] pxPublishInfo      Pointer to publish info of the incoming publish.
  * @param[in] usPacketIdentifier Packet identifier of the incoming publish.
  */
-static void prvProcessRegisterThingRejected(void * pxSubscriptionContext,
-                                            MQTTPublishInfo_t * pxPublishInfo)
+static void prvProcessRegisterThingRejected(void *pxSubscriptionContext,
+                                            MQTTPublishInfo_t *pxPublishInfo)
 {
     (void)pxSubscriptionContext;
     (void)pxPublishInfo;
@@ -344,7 +348,7 @@ static void prvProcessRegisterThingRejected(void * pxSubscriptionContext,
     LogError(("Received rejected response from Fleet Provisioning RegisterThing API."));
 
     xResponseStatus = ResponseProvRejected;
-    mmosal_task_notify(provisioning_task);
+    mmosal_semb_give(provisioning_semb);
 }
 
 /*-----------------------------------------------------------*/
@@ -387,6 +391,7 @@ static bool prvSubscribeToCsrResponseTopics(void)
 
     return xMQTTStatus == MQTTSuccess;
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -426,6 +431,7 @@ static bool prvUnsubscribeFromCsrResponseTopics(void)
 
     return xMQTTStatus == MQTTSuccess;
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -467,6 +473,7 @@ static bool prvSubscribeToRegisterThingResponseTopics(void)
 
     return xMQTTStatus == MQTTSuccess;
 }
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -492,12 +499,12 @@ static bool prvUnsubscribeFromRegisterThingResponseTopics(void)
 
     if (xMQTTStatus == MQTTSuccess)
     {
-    xMQTTStatus =
-        MqttAgent_UnSubscribeSync(xMQTTAgentHandle,
-                                  register_thing_rejected_topic,
-                                  register_thing_rejected_topic_len,
-                                  prvProcessRegisterThingRejected,
-                                  NULL);
+        xMQTTStatus =
+            MqttAgent_UnSubscribeSync(xMQTTAgentHandle,
+                                      register_thing_rejected_topic,
+                                      register_thing_rejected_topic_len,
+                                      prvProcessRegisterThingRejected,
+                                      NULL);
         if (xMQTTStatus != MQTTSuccess)
         {
             LogError(("Failed to unsubscribe from fleet provisioning topic: %s.",
@@ -507,11 +514,12 @@ static bool prvUnsubscribeFromRegisterThingResponseTopics(void)
 
     return xMQTTStatus == MQTTSuccess;
 }
+
 /*-----------------------------------------------------------*/
 
-bool generateKeyAndCsr(char * pCsrBuffer,
+bool generateKeyAndCsr(char *pCsrBuffer,
                        size_t csrBufferLength,
-                       size_t * pOutCsrLength)
+                       size_t *pOutCsrLength)
 {
     mbedtls_entropy_context entropy;
     mbedtls_ctr_drbg_context ctr_drbg;
@@ -525,7 +533,7 @@ bool generateKeyAndCsr(char * pCsrBuffer,
     mbedtls_x509write_csr_init(&req);
     mbedtls_x509write_csr_set_md_alg(&req, MBEDTLS_MD_SHA256);
     mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy,
-                          (const unsigned char *) device_serial, strlen(device_serial));
+                          (const unsigned char *)device_serial, strlen(device_serial));
 
     mbedtlsRet = mbedtls_pk_setup(&privKey, mbedtls_pk_info_from_type(MBEDTLS_PK_ECKEY));
     if (mbedtlsRet == 0)
@@ -538,7 +546,7 @@ bool generateKeyAndCsr(char * pCsrBuffer,
 
     if (mbedtlsRet == 0)
     {
-        mbedtlsRet = mbedtls_pk_write_key_pem(&privKey, (unsigned char*)private_key_buffer,
+        mbedtlsRet = mbedtls_pk_write_key_pem(&privKey, (unsigned char *)private_key_buffer,
                                               CERT_BUFFER_LENGTH);
     }
 
@@ -562,7 +570,7 @@ bool generateKeyAndCsr(char * pCsrBuffer,
     {
         mbedtls_x509write_csr_set_key(&req, &privKey);
 
-        mbedtlsRet = mbedtls_x509write_csr_pem(&req, (unsigned char *) pCsrBuffer, csrBufferLength,
+        mbedtlsRet = mbedtls_x509write_csr_pem(&req, (unsigned char *)pCsrBuffer, csrBufferLength,
                                                mbedtls_ctr_drbg_random, &ctr_drbg);
     }
 
@@ -586,10 +594,10 @@ bool generateKeyAndCsr(char * pCsrBuffer,
  * can then connect and proceed as normal with the newly created credentials at the next
  * boot.
  */
-void fleet_provisioning_task(void * pvParameters)
+void fleet_provisioning_task(void *pvParameters)
 {
     /* Not used */
-    (void) pvParameters;
+    (void)pvParameters;
 
     /* FreeRTOS APIs return status. */
     bool xResult = false;
@@ -597,48 +605,77 @@ void fleet_provisioning_task(void * pvParameters)
     size_t xCsrLength;
 
     MQTTAgentHandle_t xMQTTAgentHandle = NULL;
+    uint8_t mac_addr[MMWLAN_MAC_ADDR_LEN] = {0};
+    char provisioning_template[FP_TEMPLATENAME_MAX_LENGTH] = {0};
+
+    provisioning_semb = mmosal_semb_create("fltprov");
+    if (provisioning_semb == NULL)
+    {
+        LogError(("Memory allocation failed at %s:%d", __func__, __LINE__));
+        goto cleanup;
+    }
 
     /* Allocate buffers */
-    pucPayloadBuffer   = (unsigned char*) mmosal_malloc(PAYLOAD_BUFFER_SIZE);
-    certificate_buffer = (char*) mmosal_malloc(CERT_BUFFER_LENGTH);
-    private_key_buffer = (char*) mmosal_malloc(CERT_BUFFER_LENGTH);
-    thing_name_buffer  = (char*) mmosal_malloc(MAX_THING_NAME_LENGTH);
+    pucPayloadBuffer = (unsigned char *)mmosal_malloc(PAYLOAD_BUFFER_SIZE);
+    if (pucPayloadBuffer == NULL)
+    {
+        LogError(("Memory allocation failed at %s:%d", __func__, __LINE__));
+        goto cleanup;
+    }
+
+    certificate_buffer = (char *)mmosal_malloc(CERT_BUFFER_LENGTH);
+    if (certificate_buffer == NULL)
+    {
+        LogError(("Memory allocation failed at %s:%d", __func__, __LINE__));
+        goto cleanup;
+    }
+
+    private_key_buffer = (char *)mmosal_malloc(CERT_BUFFER_LENGTH);
+    if (private_key_buffer == NULL)
+    {
+        LogError(("Memory allocation failed at %s:%d", __func__, __LINE__));
+        goto cleanup;
+    }
+
+    thing_name_buffer = (char *)mmosal_malloc(MAX_THING_NAME_LENGTH);
+    if (thing_name_buffer == NULL)
+    {
+        LogError(("Memory allocation failed at %s:%d", __func__, __LINE__));
+        goto cleanup;
+    }
 
     /* Read provisioning template name - we know this key exists*/
-    char provisioning_template[FP_TEMPLATENAME_MAX_LENGTH];
-    mmconfig_read_string(AWS_KEY_PROVISIONING_TEMPLATE, provisioning_template,
-                         FP_TEMPLATENAME_MAX_LENGTH);
+    (void)mmconfig_read_string(AWS_KEY_PROVISIONING_TEMPLATE, provisioning_template,
+                               FP_TEMPLATENAME_MAX_LENGTH);
 
     /* Setup topics */
-    register_thing_accepted_topic = (char*) mmosal_malloc(TOPIC_BUFFER_LENGTH);
+    register_thing_accepted_topic = (char *)mmosal_malloc(TOPIC_BUFFER_LENGTH);
     MMOSAL_ASSERT(register_thing_accepted_topic);
     FleetProvisioning_GetRegisterThingTopic(register_thing_accepted_topic, TOPIC_BUFFER_LENGTH,
                                             FleetProvisioningCbor, FleetProvisioningAccepted,
                                             provisioning_template, strlen(provisioning_template),
                                             &register_thing_accepted_topic_len);
 
-    register_thing_rejected_topic = (char*) mmosal_malloc(TOPIC_BUFFER_LENGTH);
+    register_thing_rejected_topic = (char *)mmosal_malloc(TOPIC_BUFFER_LENGTH);
     MMOSAL_ASSERT(register_thing_rejected_topic);
     FleetProvisioning_GetRegisterThingTopic(register_thing_rejected_topic, TOPIC_BUFFER_LENGTH,
                                             FleetProvisioningCbor, FleetProvisioningRejected,
                                             provisioning_template, strlen(provisioning_template),
                                             &register_thing_rejected_topic_len);
 
-    register_thing_publish_topic = (char*) mmosal_malloc(TOPIC_BUFFER_LENGTH);
+    register_thing_publish_topic = (char *)mmosal_malloc(TOPIC_BUFFER_LENGTH);
     MMOSAL_ASSERT(register_thing_publish_topic);
     FleetProvisioning_GetRegisterThingTopic(register_thing_publish_topic, TOPIC_BUFFER_LENGTH,
                                             FleetProvisioningCbor, FleetProvisioningPublish,
                                             provisioning_template, strlen(provisioning_template),
                                             &register_thing_publish_topic_len);
 
-
     LogInfo(("Waiting until MQTT Agent is connected."));
 
     /* Get our serial number */
-    uint8_t mac_addr[MMWLAN_MAC_ADDR_LEN] = { 0 };
     MMOSAL_ASSERT(mmwlan_get_mac_addr(mac_addr) == MMWLAN_SUCCESS);
     snprintf(device_serial, sizeof(device_serial), "%02x:%02x:%02x:%02x:%02x:%02x",
-            mac_addr[0], mac_addr[1], mac_addr[2], mac_addr[3], mac_addr[4], mac_addr[5]);
+             mac_addr[0], mac_addr[1], mac_addr[2], mac_addr[3], mac_addr[4], mac_addr[5]);
 
     /* Wait for first mqtt connection */
     vSleepUntilMQTTAgentConnected();
@@ -687,18 +724,18 @@ void fleet_provisioning_task(void * pvParameters)
         /* Publish the CSR to the CreateCertificatefromCsr API. */
         xResult = fpMQTTPublish(FP_CBOR_CREATE_CERT_PUBLISH_TOPIC,
                                 FP_CBOR_CREATE_CERT_PUBLISH_LENGTH,
-                                (char*) pucPayloadBuffer,
+                                (char *)pucPayloadBuffer,
                                 xPayloadLength);
 
         if (xResult == false)
         {
             LogError(("Failed to publish to fleet provisioning topic: %s.",
-                     FP_CBOR_CREATE_CERT_PUBLISH_TOPIC));
+                      FP_CBOR_CREATE_CERT_PUBLISH_TOPIC));
         }
     }
 
     /* Wait for step to complete */
-    mmosal_task_wait_for_notification(UINT32_MAX);
+    mmosal_semb_wait(provisioning_semb, UINT32_MAX);
 
     /* Unsubscribe from topics. */
     prvUnsubscribeFromCsrResponseTopics();
@@ -713,8 +750,8 @@ void fleet_provisioning_task(void * pvParameters)
         }
 
         /* We then use the RegisterThing API to activate the received certificate,
-        * provision AWS IoT resources according to the provisioning template, and
-        * receive device configuration. */
+         * provision AWS IoT resources according to the provisioning template, and
+         * receive device configuration. */
         xResult = generateRegisterThingRequest(pucPayloadBuffer,
                                                PAYLOAD_BUFFER_SIZE,
                                                ownershipToken,
@@ -728,7 +765,7 @@ void fleet_provisioning_task(void * pvParameters)
             /* Publish the RegisterThing request. */
             xResult = fpMQTTPublish(register_thing_publish_topic,
                                     register_thing_publish_topic_len,
-                                    (char*) pucPayloadBuffer,
+                                    (char *)pucPayloadBuffer,
                                     xPayloadLength);
 
             if (xResult == false)
@@ -739,7 +776,7 @@ void fleet_provisioning_task(void * pvParameters)
         }
 
         /* Wait for step to complete */
-        mmosal_task_wait_for_notification(UINT32_MAX);
+        mmosal_semb_wait(provisioning_semb, UINT32_MAX);
 
         /* Unsubscribe from topics. */
         prvUnsubscribeFromRegisterThingResponseTopics();
@@ -750,23 +787,23 @@ void fleet_provisioning_task(void * pvParameters)
         /* Provisioning was a success, write certificates and reboot */
         struct mmconfig_update_node certificate_node, privatekey_node, thingname_node;
 
-        certificate_node.key  = AWS_KEY_DEVICE_CERTIFICATE;
-        certificate_node.data = (void *) certificate_buffer;
+        certificate_node.key = AWS_KEY_DEVICE_CERTIFICATE;
+        certificate_node.data = (void *)certificate_buffer;
         certificate_node.size = strlen(certificate_buffer) + 1;
         certificate_node.next = &privatekey_node;
 
-        privatekey_node.key  = AWS_KEY_DEVICE_KEYS;
-        privatekey_node.data = (void *) private_key_buffer;
+        privatekey_node.key = AWS_KEY_DEVICE_KEYS;
+        privatekey_node.data = (void *)private_key_buffer;
         privatekey_node.size = strlen(private_key_buffer) + 1;
         privatekey_node.next = &thingname_node;
 
-        thingname_node.key  = AWS_KEY_THING_NAME;
-        thingname_node.data = (void *) thing_name_buffer;
+        thingname_node.key = AWS_KEY_THING_NAME;
+        thingname_node.data = (void *)thing_name_buffer;
         thingname_node.size = strlen(thing_name_buffer) + 1;
         thingname_node.next = NULL;
 
         /* This call will atomically write all the keys above. The config store is guaranteed
-        * to accept all the changes on success or reject all the changes on failure. */
+         * to accept all the changes on success or reject all the changes on failure. */
         mmconfig_write_update_node_list(&certificate_node);
 
         /* Reset device to start wuth new credentials */
@@ -774,13 +811,19 @@ void fleet_provisioning_task(void * pvParameters)
     }
 
     /* Free memory */
-    mmosal_free((void*)pucPayloadBuffer);
-    mmosal_free((void*)certificate_buffer);
-    mmosal_free((void*)private_key_buffer);
-    mmosal_free((void*)thing_name_buffer);
-    mmosal_free((void*)register_thing_publish_topic);
-    mmosal_free((void*)register_thing_accepted_topic);
-    mmosal_free((void*)register_thing_rejected_topic);
+cleanup:
+    if (provisioning_semb != NULL)
+    {
+        mmosal_semb_delete(provisioning_semb);
+        provisioning_semb = NULL;
+    }
+    mmosal_free((void *)pucPayloadBuffer);
+    mmosal_free((void *)certificate_buffer);
+    mmosal_free((void *)private_key_buffer);
+    mmosal_free((void *)thing_name_buffer);
+    mmosal_free((void *)register_thing_publish_topic);
+    mmosal_free((void *)register_thing_accepted_topic);
+    mmosal_free((void *)register_thing_rejected_topic);
 }
 
 /**
@@ -797,10 +840,10 @@ void do_fleet_provisioning(void)
 {
     /* Start fleet provisioning in its own task due to stack requirements */
     provisioning_task = mmosal_task_create(fleet_provisioning_task,
-                                        NULL,
-                                        MMOSAL_TASK_PRI_LOW,
-                                        2048,
-                                        "FleetProv");
+                                           NULL,
+                                           MMOSAL_TASK_PRI_LOW,
+                                           2048,
+                                           "FleetProv");
     /* Wait till completion, should not return on success */
     mmosal_task_join(provisioning_task);
 

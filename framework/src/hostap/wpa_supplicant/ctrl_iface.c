@@ -10371,6 +10371,7 @@ static int wpas_ctrl_resend_assoc(struct wpa_supplicant *wpa_s)
 	params.ssid = wpa_s->sme.ssid;
 	params.ssid_len = wpa_s->sme.ssid_len;
 	params.freq.freq = wpa_s->sme.freq;
+	params.freq.freq_khz = wpa_s->sme.freq_khz;
 	if (wpa_s->last_assoc_req_wpa_ie) {
 		params.wpa_ie = wpabuf_head(wpa_s->last_assoc_req_wpa_ie);
 		params.wpa_ie_len = wpabuf_len(wpa_s->last_assoc_req_wpa_ie);

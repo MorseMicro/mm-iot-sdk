@@ -3,9 +3,9 @@ var wnm__sleep_8c =
     [ "DEFAULT_PING_COUNT", "wnm__sleep_8c.html#af8310053672488c01e69dcb1ef561b39", null ],
     [ "DEFAULT_PING_DATA_SIZE", "wnm__sleep_8c.html#a65c1f4f55abfd44ea1b3c43df8396349", null ],
     [ "DEFAULT_PING_INTERVAL_MS", "wnm__sleep_8c.html#a9c53f19b1618b391a4682f10815834b2", null ],
-    [ "DEFAULT_PING_REMOTE_IP", "wnm__sleep_8c.html#afb92bea4a697b14d9a1116d58bda79c8", null ],
     [ "DEFAULT_WNM_SLEEP_DURATION_MS", "wnm__sleep_8c.html#ac24997810835e75377c3eb4feca862af", null ],
     [ "POST_PING_DELAY_MS", "wnm__sleep_8c.html#aa74a8e27191a3077ea4cf00ea7507962", null ],
+    [ "UPDATE_INTERVAL_MS", "wnm__sleep_8c.html#ad4602c729fef5a16a7f3dcf974eeee14", null ],
     [ "debug_state", "wnm__sleep_8c.html#af6267920b504273777e2451780e565af", [
       [ "DEBUG_STATE_INIT", "ping_8c.html#af6267920b504273777e2451780e565afa17e21038455993a59d0355198b35a29c", null ],
       [ "DEBUG_STATE_BOOTING_CHIP", "ping_8c.html#af6267920b504273777e2451780e565afa363738676fccdeb6095a33b02d4a52a6", null ],

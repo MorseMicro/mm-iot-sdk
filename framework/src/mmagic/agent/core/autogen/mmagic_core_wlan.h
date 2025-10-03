@@ -17,9 +17,9 @@ struct mmagic_wlan_config
     /** Two character country code used to identify the regulatory domain. */
     struct struct_country_code country_code;
     /** SSID of the AP to connect to, can be 1-32 characters long. */
-    struct struct_string_32 ssid;
-    /** Password used when associating, 1-32 characters long. */
-    struct struct_string_32 password;
+    struct string32 ssid;
+    /** Password used when associating, 1-100 characters long. */
+    struct string100 password;
     /** Security type to used when associating. */
     enum mmagic_security_type security;
     /** Priority to request if raw is supported by the AP. Valid priorities are 0-7. -1
@@ -27,7 +27,7 @@ struct mmagic_wlan_config
     int16_t raw_priority;
     /** BSSID of the ap to associate to, all 0x00 for any. */
     struct struct_mac_addr bssid;
-    /** Protected Management Frame mode to use (802.11w) */
+    /** Protected Management Frame mode to use (802.11w). */
     enum mmagic_pmf_mode pmf_mode;
     /** S1G non-AP STA type. */
     enum mmagic_station_type station_type;
@@ -81,34 +81,41 @@ struct mmagic_wlan_config
      * `aifs,cw_min,cw_max,txop_max_us`. For example: `3,15,1023,15008`. More
      * information about the individual parameters can be found in the API
      * documentation for `mmwlan_qos_queue_params`. */
-    struct struct_string_32 qos_0_params;
+    struct string32 qos_0_params;
     /** The default QoS queue configuration for Access Category 1 (AC_BK) that is active
      * while the station is connecting to an Access Point. This is a string containing
      * the following comma separated integer values (in order):
      * `aifs,cw_min,cw_max,txop_max_us`. For example: `7,15,1023,15008`. More
      * information about the individual parameters can be found in the API
      * documentation for `mmwlan_qos_queue_params`. */
-    struct struct_string_32 qos_1_params;
+    struct string32 qos_1_params;
     /** The default QoS queue configuration for Access Category 2 (AC_VI) that is active
      * while the station is connecting to an Access Point. This is a string containing
      * the following comma separated integer values (in order):
      * `aifs,cw_min,cw_max,txop_max_us`. For example: `2,7,15,15008`. More information
      * about the individual parameters can be found in the API documentation for
      * `mmwlan_qos_queue_params`. */
-    struct struct_string_32 qos_2_params;
+    struct string32 qos_2_params;
     /** The default QoS queue configuration for Access Category 3 (AC_VO) that is active
      * while the station is connecting to an Access Point. This is a string containing
      * the following comma separated integer values (in order):
      * `aifs,cw_min,cw_max,txop_max_us`. For example: `2,3,7,15008`. More information
      * about the individual parameters can be found in the API documentation for
      * `mmwlan_qos_queue_params`. */
-    struct struct_string_32 qos_3_params;
+    struct string32 qos_3_params;
     /** The currently configured MCS10 behavior. This only takes effect after calling
      * the WLAN connect command. This is an enum with 3 modes: disabled, which will
      * never use MCS10, forced, which will always use MCS10 instead of MCS0 if the
      * bandwidth is 1 MHz, and auto, which will use MCS10 on retries instead of MCS0
      * when the bandwidth is 1 MHz. */
     enum mmagic_mcs10_mode mcs10_mode;
+    /** When set to true, STA event notifications will be provided. Setting this to
+     * false will suppress these notifications. Defaults to false. */
+    bool sta_evt_en;
+    /** The duty cycle air time distribution mode. The duty cycle mode can be set to
+     * spread, where the air time is spread evenly across the window; or burst, where
+     * air time is available to be consumed immediately. */
+    enum mmagic_duty_cycle_mode duty_cycle_mode;
 };
 
 struct mmagic_wlan_data
@@ -160,7 +167,7 @@ enum mmagic_status mmagic_core_wlan_disconnect(
 /** Command arguments structure for wlan_scan */
 struct MM_PACKED mmagic_core_wlan_scan_cmd_args
 {
-    struct struct_string_32 ssid;
+    struct string32 ssid;
     uint32_t timeout;
 };
 
@@ -261,3 +268,31 @@ struct MM_PACKED mmagic_core_wlan_standby_set_config_cmd_args
 enum mmagic_status mmagic_core_wlan_standby_set_config(
     struct mmagic_data *core,
     const struct mmagic_core_wlan_standby_set_config_cmd_args *cmd_args);
+
+/** Response arguments structure for wlan_get_sta_status */
+struct MM_PACKED mmagic_core_wlan_get_sta_status_rsp_args
+{
+    enum mmagic_sta_state sta_status;
+};
+
+enum mmagic_status mmagic_core_wlan_get_sta_status(
+    struct mmagic_data *core,
+    struct mmagic_core_wlan_get_sta_status_rsp_args *rsp_args);
+
+/*
+ * ---------------------------------------------------------------------------------------------
+ * Internal API: to be used by the implementation C file only.
+ * ---------------------------------------------------------------------------------------------
+ */
+
+enum mmagic_status mmagic_core_event_wlan_beacon_rx(
+    struct mmagic_data *core,
+    const struct mmagic_core_event_wlan_beacon_rx_args *args);
+
+enum mmagic_status mmagic_core_event_wlan_standby_exit(
+    struct mmagic_data *core,
+    const struct mmagic_core_event_wlan_standby_exit_args *args);
+
+enum mmagic_status mmagic_core_event_wlan_sta_event(
+    struct mmagic_data *core,
+    const struct mmagic_core_event_wlan_sta_event_args *args);

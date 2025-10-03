@@ -38,6 +38,7 @@ static struct mmosal_timer *otaTimer[OtaNumOfTimers];
 
 /* OTA Timer callbacks.*/
 static void requestTimerCallback(struct mmosal_timer *);
+
 static void selfTestTimerCallback(struct mmosal_timer *);
 
 /** Template for timer callback */
@@ -47,11 +48,11 @@ void (*timerCallback[OtaNumOfTimers])(struct mmosal_timer *) =
     selfTestTimerCallback
 };
 
-OtaOsStatus_t OtaInitEvent_MMOSAL(OtaEventContext_t * pEventCtx)
+OtaOsStatus_t OtaInitEvent_MMOSAL(OtaEventContext_t *pEventCtx)
 {
     OtaOsStatus_t otaOsStatus = OtaOsSuccess;
 
-    (void) pEventCtx;
+    (void)pEventCtx;
 
     otaEventQueue = mmosal_queue_create(MAX_MESSAGES, MAX_MSG_SIZE, "OTA_Q");
     if (otaEventQueue == NULL)
@@ -62,13 +63,13 @@ OtaOsStatus_t OtaInitEvent_MMOSAL(OtaEventContext_t * pEventCtx)
     return otaOsStatus;
 }
 
-OtaOsStatus_t OtaSendEvent_MMOSAL(OtaEventContext_t * pEventCtx,
-                                  const void * pEventMsg,
+OtaOsStatus_t OtaSendEvent_MMOSAL(OtaEventContext_t *pEventCtx,
+                                  const void *pEventMsg,
                                   unsigned int timeout)
 {
     OtaOsStatus_t otaOsStatus = OtaOsSuccess;
 
-    (void) pEventCtx;
+    (void)pEventCtx;
 
     /* Send the event to OTA event queue.*/
     if (!mmosal_queue_push(otaEventQueue, pEventMsg, timeout))
@@ -79,13 +80,13 @@ OtaOsStatus_t OtaSendEvent_MMOSAL(OtaEventContext_t * pEventCtx,
     return otaOsStatus;
 }
 
-OtaOsStatus_t OtaReceiveEvent_MMOSAL(OtaEventContext_t * pEventCtx,
-                                     void * pEventMsg,
+OtaOsStatus_t OtaReceiveEvent_MMOSAL(OtaEventContext_t *pEventCtx,
+                                     void *pEventMsg,
                                      uint32_t timeout)
 {
     OtaOsStatus_t otaOsStatus = OtaOsSuccess;
 
-    (void) pEventCtx;
+    (void)pEventCtx;
 
     if (!mmosal_queue_pop(otaEventQueue, pEventMsg, timeout))
     {
@@ -95,11 +96,11 @@ OtaOsStatus_t OtaReceiveEvent_MMOSAL(OtaEventContext_t * pEventCtx,
     return otaOsStatus;
 }
 
-OtaOsStatus_t OtaDeinitEvent_MMOSAL(OtaEventContext_t * pEventCtx)
+OtaOsStatus_t OtaDeinitEvent_MMOSAL(OtaEventContext_t *pEventCtx)
 {
     OtaOsStatus_t otaOsStatus = OtaOsSuccess;
 
-    (void) pEventCtx;
+    (void)pEventCtx;
 
     /* Remove the event queue.*/
     if (otaEventQueue != NULL)
@@ -115,9 +116,9 @@ OtaOsStatus_t OtaDeinitEvent_MMOSAL(OtaEventContext_t * pEventCtx)
  *
  * @param T A reference to the timer that fired
  */
-static void selfTestTimerCallback(struct mmosal_timer * T)
+static void selfTestTimerCallback(struct mmosal_timer *T)
 {
-    (void) T;
+    (void)T;
 
     if (otaTimerCallbackPtr != NULL)
     {
@@ -130,9 +131,9 @@ static void selfTestTimerCallback(struct mmosal_timer * T)
  *
  * @param T A reference to the timer that fired
  */
-static void requestTimerCallback(struct mmosal_timer * T)
+static void requestTimerCallback(struct mmosal_timer *T)
 {
-    (void) T;
+    (void)T;
 
     if (otaTimerCallbackPtr != NULL)
     {
@@ -222,12 +223,12 @@ OtaOsStatus_t OtaDeleteTimer_MMOSAL(OtaTimerId_t otaTimerId)
     return otaOsStatus;
 }
 
-void * Malloc_MMOSAL(size_t size)
+void *Malloc_MMOSAL(size_t size)
 {
     return mmosal_malloc(size);
 }
 
-void Free_MMOSAL(void * ptr)
+void Free_MMOSAL(void *ptr)
 {
     mmosal_free(ptr);
 }

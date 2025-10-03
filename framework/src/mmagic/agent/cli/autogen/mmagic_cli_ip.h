@@ -67,3 +67,7 @@ void mmagic_cli_ip_load(struct mmagic_cli *ctx, EmbeddedCli *cli);
  * @param ctx Reference to the global mmagic data structure.
  */
 void mmagic_cli_ip_init(struct mmagic_cli *ctx);
+
+void mmagic_cli_ip_handle_event_link_status(
+    struct mmagic_cli *ctx,
+    const struct mmagic_core_event_ip_link_status_args *args);

@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.8.2</span>
+   &#160;<span id="projectnumber">2.9.7</span>
    </div>
   </td>
  </tr>
@@ -108,13 +108,13 @@ Modules</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:ga784ce5fcd4e6f4d10eab385b8af7997c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMUTILS.html#ga784ce5fcd4e6f4d10eab385b8af7997c">MM_MIN</a>(_x,  _y)&#160;&#160;&#160;(((_x)&lt;(_y))?(_x):(_y))</td></tr>
+<tr class="memitem:ga784ce5fcd4e6f4d10eab385b8af7997c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMUTILS.html#ga784ce5fcd4e6f4d10eab385b8af7997c">MM_MIN</a>(_x,  _y)&#160;&#160;&#160;(((_x) &lt; (_y)) ? (_x) : (_y))</td></tr>
 <tr class="memdesc:ga784ce5fcd4e6f4d10eab385b8af7997c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the minimum of 2 values.  <a href="group__MMUTILS.html#ga784ce5fcd4e6f4d10eab385b8af7997c">More...</a><br /></td></tr>
 <tr class="separator:ga784ce5fcd4e6f4d10eab385b8af7997c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga794e1b1e074758195cf4baad3674f33b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMUTILS.html#ga794e1b1e074758195cf4baad3674f33b">MM_MAX</a>(_x,  _y)&#160;&#160;&#160;(((_x)&gt;(_y))?(_x):(_y))</td></tr>
+<tr class="memitem:ga794e1b1e074758195cf4baad3674f33b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMUTILS.html#ga794e1b1e074758195cf4baad3674f33b">MM_MAX</a>(_x,  _y)&#160;&#160;&#160;(((_x) &gt; (_y)) ? (_x) : (_y))</td></tr>
 <tr class="memdesc:ga794e1b1e074758195cf4baad3674f33b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the maximum of 2 values.  <a href="group__MMUTILS.html#ga794e1b1e074758195cf4baad3674f33b">More...</a><br /></td></tr>
 <tr class="separator:ga794e1b1e074758195cf4baad3674f33b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga695315db4f1a49abe1178b6869356265"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMUTILS.html#ga695315db4f1a49abe1178b6869356265">MM_FAST_ROUND_UP</a>(x,  m)&#160;&#160;&#160;((((x)-1) | ((m)-1)) + 1)</td></tr>
+<tr class="memitem:ga695315db4f1a49abe1178b6869356265"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMUTILS.html#ga695315db4f1a49abe1178b6869356265">MM_FAST_ROUND_UP</a>(x,  m)&#160;&#160;&#160;((((x) - 1) | ((m) - 1)) + 1)</td></tr>
 <tr class="memdesc:ga695315db4f1a49abe1178b6869356265"><td class="mdescLeft">&#160;</td><td class="mdescRight">Round <code>x</code> up to the next multiple of <code>m</code> (where <code>m</code> is a power of 2).  <a href="group__MMUTILS.html#ga695315db4f1a49abe1178b6869356265">More...</a><br /></td></tr>
 <tr class="separator:ga695315db4f1a49abe1178b6869356265"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga0157597bdd038d83fbb0f2f488e6e4ee"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMUTILS.html#ga0157597bdd038d83fbb0f2f488e6e4ee">MM_UNUSED</a>(_x)&#160;&#160;&#160;(void)(_x)</td></tr>
@@ -132,9 +132,12 @@ Macros</h2></td></tr>
 <tr class="memitem:ga88c3ad1ebe87a29a9bb932305d4d737d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMUTILS.html#ga88c3ad1ebe87a29a9bb932305d4d737d">MM_STATIC_ASSERT</a>(_expression,  _message)&#160;&#160;&#160;_Static_assert((_expression), _message)</td></tr>
 <tr class="memdesc:ga88c3ad1ebe87a29a9bb932305d4d737d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Assertion check that is evaluated at compile time.  <a href="group__MMUTILS.html#ga88c3ad1ebe87a29a9bb932305d4d737d">More...</a><br /></td></tr>
 <tr class="separator:ga88c3ad1ebe87a29a9bb932305d4d737d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gae620c8867523894d4dae229f5e6ec0d2"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMUTILS.html#gae620c8867523894d4dae229f5e6ec0d2">MM_ARRAY_COUNT</a>(_a)&#160;&#160;&#160;(sizeof(_a)/sizeof((_a)[0]))</td></tr>
+<tr class="memitem:gae620c8867523894d4dae229f5e6ec0d2"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMUTILS.html#gae620c8867523894d4dae229f5e6ec0d2">MM_ARRAY_COUNT</a>(_a)&#160;&#160;&#160;(sizeof(_a) / sizeof((_a)[0]))</td></tr>
 <tr class="memdesc:gae620c8867523894d4dae229f5e6ec0d2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the number of elements in the given array.  <a href="group__MMUTILS.html#gae620c8867523894d4dae229f5e6ec0d2">More...</a><br /></td></tr>
 <tr class="separator:gae620c8867523894d4dae229f5e6ec0d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga2f02ac1fabb35f58dd519761ce0be31b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMUTILS.html#ga2f02ac1fabb35f58dd519761ce0be31b">MM_MEMBER_SIZE</a>(_type,  _member)&#160;&#160;&#160;(sizeof(((_type *)0)-&gt;_member))</td></tr>
+<tr class="memdesc:ga2f02ac1fabb35f58dd519761ce0be31b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the size of a structs member.  <a href="group__MMUTILS.html#ga2f02ac1fabb35f58dd519761ce0be31b">More...</a><br /></td></tr>
+<tr class="separator:ga2f02ac1fabb35f58dd519761ce0be31b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -154,7 +157,7 @@ Functions</h2></td></tr>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname">_a</td><td>)</td>
-          <td>&#160;&#160;&#160;(sizeof(_a)/sizeof((_a)[0]))</td>
+          <td>&#160;&#160;&#160;(sizeof(_a) / sizeof((_a)[0]))</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -213,7 +216,7 @@ Functions</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td>&#160;&#160;&#160;((((x)-1) | ((m)-1)) + 1)</td>
+          <td></td><td>&#160;&#160;&#160;((((x) - 1) | ((m) - 1)) + 1)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -246,7 +249,7 @@ Functions</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td>&#160;&#160;&#160;(((_x)&gt;(_y))?(_x):(_y))</td>
+          <td></td><td>&#160;&#160;&#160;(((_x) &gt; (_y)) ? (_x) : (_y))</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -266,6 +269,46 @@ Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>the maximum of <code>_x</code> and <code>_y</code>. </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00057">57</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
+
+</div>
+</div>
+<a id="ga2f02ac1fabb35f58dd519761ce0be31b" name="ga2f02ac1fabb35f58dd519761ce0be31b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga2f02ac1fabb35f58dd519761ce0be31b">&#9670;&nbsp;</a></span>MM_MEMBER_SIZE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define MM_MEMBER_SIZE</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">_type, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">_member&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;(sizeof(((_type *)0)-&gt;_member))</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Return the size of a structs member. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">_type</td><td>The struct type </td></tr>
+    <tr><td class="paramname">_member</td><td>The name of the member to get the size of.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>the size of the struct member. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00120">120</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
 
 </div>
 </div>
@@ -290,7 +333,7 @@ Functions</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td>&#160;&#160;&#160;(((_x)&lt;(_y))?(_x):(_y))</td>
+          <td></td><td>&#160;&#160;&#160;(((_x) &lt; (_y)) ? (_x) : (_y))</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -448,7 +491,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The character that represents the hexadecimal value of the lower 4 bits of <code>nibble</code>. Values greater than 0x09 will be represented with upper case characters. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00123">123</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00134">134</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
 
 </div>
 </div>

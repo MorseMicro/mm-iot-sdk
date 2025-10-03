@@ -42,13 +42,13 @@ void vApplicationTickHook(void)
 #if (configUSE_TICKLESS_IDLE == 1)
 
 /**
-  * Custom implementation of the FreeRTOS @c vPortSuppressTicksAndSleep function. This is used for
-  * Tickless Idle. This implementation allows us to halt the systick and enter ultra low power modes.
-  *
-  * @param expected_idle_time_ms Expected time to sleep in milliseconds.
-  *
-  * @retval None
-  */
+ * Custom implementation of the FreeRTOS @c vPortSuppressTicksAndSleep function. This is used for
+ * Tickless Idle. This implementation allows us to halt the systick and enter ultra low power modes.
+ *
+ * @param expected_idle_time_ms Expected time to sleep in milliseconds.
+ *
+ * @retval None
+ */
 void vPortSuppressTicksAndSleep(uint32_t expected_idle_time_ms)
 {
     enum mmhal_sleep_state sleep_state;
@@ -63,7 +63,7 @@ void vPortSuppressTicksAndSleep(uint32_t expected_idle_time_ms)
         }
 
         /* If a context switch is pending or a task is waiting for the scheduler
-        * to be unsuspended then abandon the low power entry. */
+         * to be unsuspended then abandon the low power entry. */
         if (eTaskConfirmSleepModeStatus() == eAbortSleep)
         {
             mmhal_sleep_abort(sleep_state);
@@ -80,7 +80,7 @@ void vPortSuppressTicksAndSleep(uint32_t expected_idle_time_ms)
         }
 
         /* If a context switch is pending or a task is waiting for the scheduler
-        * to be unsuspended then abandon the low power entry. */
+         * to be unsuspended then abandon the low power entry. */
         if (eTaskConfirmSleepModeStatus() == eAbortSleep)
         {
             mmhal_sleep_abort(sleep_state);

@@ -188,7 +188,7 @@ elif upload_protocol.startswith("jlink"):
     def _jlink_cmd_script(env, source):
         build_dir = env.subst("$BUILD_DIR")
         if not isdir(build_dir):
-            makedirs(build_dir)
+            makedirs(build_dir, exist_ok=True)
         script_path = join(build_dir, "upload.jlink")
         commands = [
             "h",

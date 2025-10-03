@@ -148,8 +148,7 @@ void test_morse_s1g_oper_class_to_ch_width(void)
 	TEST_ASSERT_EQUAL(MORSE_S1G_RETURN_ERROR, morse_s1g_op_class_to_ch_width(5));
 	/* valid */
 	TEST_ASSERT_EQUAL(1, morse_s1g_op_class_to_ch_width(6));
-	/* reserved */
-	TEST_ASSERT_EQUAL(MORSE_S1G_RETURN_ERROR, morse_s1g_op_class_to_ch_width(7));
+	TEST_ASSERT_EQUAL(2, morse_s1g_op_class_to_ch_width(7));
 	/* valid */
 	TEST_ASSERT_EQUAL(1, morse_s1g_op_class_to_ch_width(8));
 	TEST_ASSERT_EQUAL(2, morse_s1g_op_class_to_ch_width(9));
@@ -219,7 +218,7 @@ void test_morse_s1g_oper_class_to_country(void)
 	MORSE_TEST_S1G_OPER_CLASS_TO_COUNTRY_FAIL(5);
 	MORSE_TEST_S1G_OPER_CLASS_TO_COUNTRY("EU", 6);
 	MORSE_TEST_S1G_OPER_CLASS_TO_COUNTRY("IN", 31);
-	MORSE_TEST_S1G_OPER_CLASS_TO_COUNTRY_FAIL(7);
+	MORSE_TEST_S1G_OPER_CLASS_TO_COUNTRY("EU", 7);
 	MORSE_TEST_S1G_OPER_CLASS_TO_COUNTRY("JP", 8);
 	MORSE_TEST_S1G_OPER_CLASS_TO_COUNTRY("JP", 9);
 	MORSE_TEST_S1G_OPER_CLASS_TO_COUNTRY("JP", 10);
@@ -902,6 +901,9 @@ void test_morse_s1g_get_start_freq_for_country(void)
 	/* Get the start frequency for EU */
 	TEST_ASSERT_EQUAL(901400, morse_s1g_get_start_freq_for_country("EU", 922000, 4));
 	TEST_ASSERT_EQUAL(863000, morse_s1g_get_start_freq_for_country("EU", 866500, 1));
+	/* Get the start frequency for GB */
+	TEST_ASSERT_EQUAL(901400, morse_s1g_get_start_freq_for_country("GB", 922000, 4));
+	TEST_ASSERT_EQUAL(863000, morse_s1g_get_start_freq_for_country("GB", 866500, 1));
 	/* Get the start frequency for IN */
 	TEST_ASSERT_EQUAL(863000, morse_s1g_get_start_freq_for_country("IN", 867500, 1));
 	/* Get the start frequency for KR */

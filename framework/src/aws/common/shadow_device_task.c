@@ -36,7 +36,8 @@
  *
  * This example assumes there is a @c powerOn state in the device shadow. It does the
  * following operations:
- * 1. Assemble strings for the MQTT topics of device shadow, by using macros defined by the Device Shadow library.
+ * 1. Assemble strings for the MQTT topics of device shadow, by using macros defined by the Device
+ * Shadow library.
  * 2. Subscribe to those MQTT topics using the MQTT Agent.
  * 3. Register callbacks for incoming shadow topic publishes with the subscription_manager.
  * 3. Publish to report the current state of @c powerOn.
@@ -99,10 +100,10 @@ static char *pcThingName = NULL;
  *
  * @return true if the subscribe is successful; false otherwise.
  */
-static bool prvSubscribeToTopic(const char* pcShadowName,
-                                 ShadowTopicStringType_t topic,
-                                 IncomingPubCallback_t callback,
-                                 void *ctx)
+static bool prvSubscribeToTopic(const char *pcShadowName,
+                                ShadowTopicStringType_t topic,
+                                IncomingPubCallback_t callback,
+                                void *ctx)
 {
     int xStatus = MQTTSuccess;
     char TopicBuffer[MAX_TOPIC_LEN];
@@ -127,11 +128,11 @@ static bool prvSubscribeToTopic(const char* pcShadowName,
     if (xStatus == MQTTSuccess)
     {
         xStatus = MqttAgent_SubscribeSync(xAgentHandle,
-                                         TopicBuffer,
-                                         TopicLen,
-                                         MQTTQoS1,
-                                         callback,
-                                         ctx);
+                                          TopicBuffer,
+                                          TopicLen,
+                                          MQTTQoS1,
+                                          callback,
+                                          ctx);
     }
 
     if (xStatus != MQTTSuccess)
@@ -148,10 +149,10 @@ static bool prvSubscribeToTopic(const char* pcShadowName,
  *
  * @return true if the subscribe is successful; false otherwise.
  */
-static bool prvUnSubscribeToTopic(const char* pcShadowName,
-                                 ShadowTopicStringType_t topic,
-                                 IncomingPubCallback_t callback,
-                                 void *ctx)
+static bool prvUnSubscribeToTopic(const char *pcShadowName,
+                                  ShadowTopicStringType_t topic,
+                                  IncomingPubCallback_t callback,
+                                  void *ctx)
 {
     int xStatus = MQTTSuccess;
     char TopicBuffer[MAX_TOPIC_LEN];
@@ -196,55 +197,54 @@ static bool prvUnSubscribeToTopic(const char* pcShadowName,
  * The callback to execute when there is an incoming publish on the
  * topic for delta updates.
  *
- * @param pvCtx          The context passed when subscribing to this topic.
- * @param pxPublishInfo  The published data structure
+ * @param pvCtx         The context passed when subscribing to this topic.
+ * @param pxPublishInfo The published data structure
  */
-static void prvIncomingPublishUpdateDeltaCallback(void * pvCtx,
-                                                  MQTTPublishInfo_t * pxPublishInfo)
+static void prvIncomingPublishUpdateDeltaCallback(void *pvCtx,
+                                                  MQTTPublishInfo_t *pxPublishInfo)
 {
     MMOSAL_ASSERT(pvCtx != NULL);
     MMOSAL_ASSERT(pxPublishInfo != NULL);
     MMOSAL_ASSERT(pxPublishInfo->pPayload != NULL);
 
-    shadow_update_cb_fn_t pUserCallback = (shadow_update_cb_fn_t) pvCtx;
-    pUserCallback((char*)pxPublishInfo->pPayload, pxPublishInfo->payloadLength, UPDATE_DELTA);
+    shadow_update_cb_fn_t pUserCallback = (shadow_update_cb_fn_t)pvCtx;
+    pUserCallback((char *)pxPublishInfo->pPayload, pxPublishInfo->payloadLength, UPDATE_DELTA);
 }
 
 /**
  * The callback to execute when there is an incoming publish on the
  * topic for accepted messages.
  *
- * @param pvCtx          The context passed when subscribing to this topic.
- * @param pxPublishInfo  The published data structure
+ * @param pvCtx         The context passed when subscribing to this topic.
+ * @param pxPublishInfo The published data structure
  */
-static void prvIncomingPublishUpdateAcceptedCallback(void * pvCtx,
-                                                      MQTTPublishInfo_t * pxPublishInfo)
+static void prvIncomingPublishUpdateAcceptedCallback(void *pvCtx,
+                                                     MQTTPublishInfo_t *pxPublishInfo)
 {
     MMOSAL_ASSERT(pvCtx != NULL);
     MMOSAL_ASSERT(pxPublishInfo != NULL);
     MMOSAL_ASSERT(pxPublishInfo->pPayload != NULL);
 
-    shadow_update_cb_fn_t pUserCallback = (shadow_update_cb_fn_t) pvCtx;
-    pUserCallback((char*)pxPublishInfo->pPayload, pxPublishInfo->payloadLength, UPDATE_ACCEPTED);
+    shadow_update_cb_fn_t pUserCallback = (shadow_update_cb_fn_t)pvCtx;
+    pUserCallback((char *)pxPublishInfo->pPayload, pxPublishInfo->payloadLength, UPDATE_ACCEPTED);
 }
-
 
 /**
  * The callback to execute when there is an incoming publish on the
  * topic for rejected messages.
  *
- * @param pvCtx          The context passed when subscribing to this topic.
- * @param pxPublishInfo  The published data structure
+ * @param pvCtx         The context passed when subscribing to this topic.
+ * @param pxPublishInfo The published data structure
  */
-static void prvIncomingPublishUpdateRejectedCallback(void * pvCtx,
-                                                     MQTTPublishInfo_t * pxPublishInfo)
+static void prvIncomingPublishUpdateRejectedCallback(void *pvCtx,
+                                                     MQTTPublishInfo_t *pxPublishInfo)
 {
     MMOSAL_ASSERT(pvCtx != NULL);
     MMOSAL_ASSERT(pxPublishInfo != NULL);
     MMOSAL_ASSERT(pxPublishInfo->pPayload != NULL);
 
-    shadow_update_cb_fn_t pUserCallback = (shadow_update_cb_fn_t) pvCtx;
-    pUserCallback((char*)pxPublishInfo->pPayload, pxPublishInfo->payloadLength, UPDATE_REJECTED);
+    shadow_update_cb_fn_t pUserCallback = (shadow_update_cb_fn_t)pvCtx;
+    pUserCallback((char *)pxPublishInfo->pPayload, pxPublishInfo->payloadLength, UPDATE_REJECTED);
 }
 
 /*-----------------------------------------------------------*/
@@ -252,11 +252,11 @@ static void prvIncomingPublishUpdateRejectedCallback(void * pvCtx,
 /**
  * Publishes to the shadow update topic: @c "$aws/things/thingName/shadow/update"
  *
- * @param pcShadowName Name of the shadow, NULL or empty string for classic shadow.
- * @param json         The JSON document to publish.
- * @return             true on success.
+ * @param  pcShadowName Name of the shadow, NULL or empty string for classic shadow.
+ * @param  json         The JSON document to publish.
+ * @return              true on success.
  */
-bool aws_publish_shadow(char *pcShadowName, char* json)
+bool aws_publish_shadow(char *pcShadowName, char *json)
 {
     int xStatus;
 
@@ -317,9 +317,9 @@ bool aws_publish_shadow(char *pcShadowName, char* json)
         xPublishInfo.payloadLength = strlen(PayloadBuffer);
 
         /* Set up the MQTTAgentCommandInfo_t for the publish.
-        * We do not need a completion callback here since for publishes, we expect to get a
-        * response on the appropriate topics for accepted or rejected reports, and for pings
-        * we do not care about the completion. */
+         * We do not need a completion callback here since for publishes, we expect to get a
+         * response on the appropriate topics for accepted or rejected reports, and for pings
+         * we do not care about the completion. */
         xCommandParams.blockTimeMs = MAX_COMMAND_SEND_BLOCK_TIME_MS;
         xCommandParams.cmdCompleteCallback = NULL;
         xCommandParams.pCmdCompleteCallbackContext = NULL;
@@ -343,9 +343,9 @@ bool aws_publish_shadow(char *pcShadowName, char* json)
  * Creates the AWS Shadow device task for the specified shadow.
  * You may call this multiple times for multiple shadows.
  *
- * @param pcShadowName        Name of the named shadow, pass NULL if using classic shadow.
- * @param pfnUpdateCallback   Callback for shadow updates.
- * @return                    true on success.
+ * @param  pcShadowName      Name of the named shadow, pass NULL if using classic shadow.
+ * @param  pfnUpdateCallback Callback for shadow updates.
+ * @return                   true on success.
  */
 bool aws_create_shadow(char *pcShadowName, shadow_update_cb_fn_t pfnUpdateCallback)
 {
@@ -360,24 +360,27 @@ bool aws_create_shadow(char *pcShadowName, shadow_update_cb_fn_t pfnUpdateCallba
     /* Fetch thing name from config store on first run */
     if (pcThingName == NULL)
     {
-        mmconfig_alloc_and_load(AWS_KEY_THING_NAME, (void**) &pcThingName);
+        mmconfig_alloc_and_load(AWS_KEY_THING_NAME, (void **)&pcThingName);
     }
 
     if (pcThingName == NULL)
     {
         printf("Could not find key for thing name in config store.\n");
         printf("Please refer to the user documentation for instructions\n"
-                "on configuring the device for this application.\n");
+               "on configuring the device for this application.\n");
         return false;
     }
 
     /* Subscribe to Shadow topics. */
     bStatus &= prvSubscribeToTopic(pcShadowName, ShadowTopicStringTypeUpdateDelta,
-                                   prvIncomingPublishUpdateDeltaCallback, (void*)pfnUpdateCallback);
+                                   prvIncomingPublishUpdateDeltaCallback,
+                                   (void *)pfnUpdateCallback);
     bStatus &= prvSubscribeToTopic(pcShadowName, ShadowTopicStringTypeUpdateAccepted,
-                                   prvIncomingPublishUpdateAcceptedCallback, (void*)pfnUpdateCallback);
+                                   prvIncomingPublishUpdateAcceptedCallback,
+                                   (void *)pfnUpdateCallback);
     bStatus &= prvSubscribeToTopic(pcShadowName, ShadowTopicStringTypeUpdateRejected,
-                                   prvIncomingPublishUpdateRejectedCallback, (void*)pfnUpdateCallback);
+                                   prvIncomingPublishUpdateRejectedCallback,
+                                   (void *)pfnUpdateCallback);
 
     return bStatus;
 }
@@ -385,17 +388,17 @@ bool aws_create_shadow(char *pcShadowName, shadow_update_cb_fn_t pfnUpdateCallba
 /**
  * Releases the AWS Shadow resources for the specified shadow.
  *
- * @param pcShadowName       Name of the named shadow, pass NULL if using classic shadow.
- * @param pfnUpdateCallback  Callback for shadow updates, required to match the correct resource.
+ * @param  pcShadowName      Name of the named shadow, pass NULL if using classic shadow.
+ * @param  pfnUpdateCallback Callback for shadow updates, required to match the correct resource.
  * @return                   true on success.
  */
 void aws_close_shadow(char *pcShadowName, shadow_update_cb_fn_t pfnUpdateCallback)
 {
     /* Unsubscribe to Shadow topics. */
     prvUnSubscribeToTopic(pcShadowName, ShadowTopicStringTypeUpdateDelta,
-                          prvIncomingPublishUpdateDeltaCallback, (void*)pfnUpdateCallback);
+                          prvIncomingPublishUpdateDeltaCallback, (void *)pfnUpdateCallback);
     prvUnSubscribeToTopic(pcShadowName, ShadowTopicStringTypeUpdateAccepted,
-                          prvIncomingPublishUpdateAcceptedCallback, (void*)pfnUpdateCallback);
+                          prvIncomingPublishUpdateAcceptedCallback, (void *)pfnUpdateCallback);
     prvUnSubscribeToTopic(pcShadowName, ShadowTopicStringTypeUpdateRejected,
-                          prvIncomingPublishUpdateRejectedCallback, (void*)pfnUpdateCallback);
+                          prvIncomingPublishUpdateRejectedCallback, (void *)pfnUpdateCallback);
 }

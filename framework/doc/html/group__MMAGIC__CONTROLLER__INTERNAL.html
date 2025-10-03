@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.8.2</span>
+   &#160;<span id="projectnumber">2.9.7</span>
    </div>
   </td>
  </tr>
@@ -102,6 +102,9 @@ Macros</h2></td></tr>
 <tr class="memitem:ga195590b69a12f5a2d32c4cde73405783"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#ga195590b69a12f5a2d32c4cde73405783">CONTROL_STREAM</a>&#160;&#160;&#160;0</td></tr>
 <tr class="memdesc:ga195590b69a12f5a2d32c4cde73405783"><td class="mdescLeft">&#160;</td><td class="mdescRight">The stream ID of the control stream.  <a href="group__MMAGIC__CONTROLLER__INTERNAL.html#ga195590b69a12f5a2d32c4cde73405783">More...</a><br /></td></tr>
 <tr class="separator:ga195590b69a12f5a2d32c4cde73405783"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaefacf9f1f161e924b1adecc934223270"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#gaefacf9f1f161e924b1adecc934223270">MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS</a>&#160;&#160;&#160;1000</td></tr>
+<tr class="memdesc:gaefacf9f1f161e924b1adecc934223270"><td class="mdescLeft">&#160;</td><td class="mdescRight">The default timeout when waiting for a response from a command sent to the agent in ms.  <a href="group__MMAGIC__CONTROLLER__INTERNAL.html#gaefacf9f1f161e924b1adecc934223270">More...</a><br /></td></tr>
+<tr class="separator:gaefacf9f1f161e924b1adecc934223270"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -139,6 +142,9 @@ Enumerations</h2></td></tr>
 &#160;&#160;<a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#gga3fdd29b88bd1bef6ea91cd677513167aa02182f25943d7bd3b58296bb0fffa8fe">MMAGIC_WLAN_VAR_QOS_2_PARAMS</a> = 24
 , <a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#gga3fdd29b88bd1bef6ea91cd677513167aae927596fb15debe62200bbba09e2cceb">MMAGIC_WLAN_VAR_QOS_3_PARAMS</a> = 25
 , <a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#gga3fdd29b88bd1bef6ea91cd677513167aa9d75ae1863fc408790b9e28a660537d1">MMAGIC_WLAN_VAR_MCS10_MODE</a> = 26
+, <a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#gga3fdd29b88bd1bef6ea91cd677513167aae384afe212fb87ae8bd86e5bfe76ca0f">MMAGIC_WLAN_VAR_STA_EVT_EN</a> = 27
+, <br />
+&#160;&#160;<a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#gga3fdd29b88bd1bef6ea91cd677513167aae1c4e92d65fba757a30376e8e9feda2d">MMAGIC_WLAN_VAR_DUTY_CYCLE_MODE</a> = 28
 <br />
  }</td></tr>
 <tr class="memdesc:ga3fdd29b88bd1bef6ea91cd677513167a"><td class="mdescLeft">&#160;</td><td class="mdescRight">wlan configuration variable IDs  <a href="group__MMAGIC__CONTROLLER__INTERNAL.html#ga3fdd29b88bd1bef6ea91cd677513167a">More...</a><br /></td></tr>
@@ -165,6 +171,7 @@ Enumerations</h2></td></tr>
 , <a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#gga64b6394bbbc22303cd3297d10f1da48ea858282e9f8e9876ef1634950b5fc7f42">MMAGIC_WLAN_CMD_STANDBY_SET_WAKE_FILTER</a> = 19
 , <br />
 &#160;&#160;<a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#gga64b6394bbbc22303cd3297d10f1da48ea863bf115e703ddcdc29ce73842491220">MMAGIC_WLAN_CMD_STANDBY_SET_CONFIG</a> = 20
+, <a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#gga64b6394bbbc22303cd3297d10f1da48ea74022bdc4ffe7c51110f3f393ef20372">MMAGIC_WLAN_CMD_GET_STA_STATUS</a> = 21
 <br />
  }</td></tr>
 <tr class="memdesc:ga64b6394bbbc22303cd3297d10f1da48e"><td class="mdescLeft">&#160;</td><td class="mdescRight">wlan configuration command IDs  <a href="group__MMAGIC__CONTROLLER__INTERNAL.html#ga64b6394bbbc22303cd3297d10f1da48e">More...</a><br /></td></tr>
@@ -178,6 +185,7 @@ Enumerations</h2></td></tr>
 &#160;&#160;<a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#gga295c6136c314a7f9e7d2cd8abc0f9796ac2ac89d3ab61c6d480bcdd939a4c47d8">MMAGIC_IP_VAR_DNS_SERVER1</a> = 4
 , <a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#gga295c6136c314a7f9e7d2cd8abc0f9796a878fd79fcf8c2d9db5dfd91c4c6554b6">MMAGIC_IP_VAR_DHCP_ENABLED</a> = 5
 , <a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#gga295c6136c314a7f9e7d2cd8abc0f9796a3e383f5529a1131f198e65730b713b30">MMAGIC_IP_VAR_DHCP_OFFLOAD</a> = 6
+, <a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#gga295c6136c314a7f9e7d2cd8abc0f9796aa402cf12ce59410e79c6c0e1d926a5e0">MMAGIC_IP_VAR_LINK_STATUS_EVT_EN</a> = 7
 <br />
  }</td></tr>
 <tr class="memdesc:ga295c6136c314a7f9e7d2cd8abc0f9796"><td class="mdescLeft">&#160;</td><td class="mdescRight">ip configuration variable IDs  <a href="group__MMAGIC__CONTROLLER__INTERNAL.html#ga295c6136c314a7f9e7d2cd8abc0f9796">More...</a><br /></td></tr>
@@ -266,15 +274,64 @@ Enumerations</h2></td></tr>
  }</td></tr>
 <tr class="memdesc:ga312e79693c039e54a608fc8c338a5999"><td class="mdescLeft">&#160;</td><td class="mdescRight">tcp configuration command IDs  <a href="group__MMAGIC__CONTROLLER__INTERNAL.html#ga312e79693c039e54a608fc8c338a5999">More...</a><br /></td></tr>
 <tr class="separator:ga312e79693c039e54a608fc8c338a5999"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga80fb73e8198f5442255ba540a66a8842"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#ga80fb73e8198f5442255ba540a66a8842">mmagic_tls_var</a> { <a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#gga80fb73e8198f5442255ba540a66a8842a179c7e8e62df9fb331e66ce040374472">MMAGIC_TLS_VAR_ROOT_CA_CERTIFICATE</a> = 0
+, <a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#gga80fb73e8198f5442255ba540a66a8842a7d1c4f0afc5fc600366faf0fab49f8ee">MMAGIC_TLS_VAR_CLIENT_CERTIFICATE</a> = 1
+, <a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#gga80fb73e8198f5442255ba540a66a8842a8143ebce7d0a6f0f8d93a2295d7bfc27">MMAGIC_TLS_VAR_CLIENT_PRIVATE_KEY</a> = 2
+ }</td></tr>
+<tr class="memdesc:ga80fb73e8198f5442255ba540a66a8842"><td class="mdescLeft">&#160;</td><td class="mdescRight">tls configuration variable IDs  <a href="group__MMAGIC__CONTROLLER__INTERNAL.html#ga80fb73e8198f5442255ba540a66a8842">More...</a><br /></td></tr>
+<tr class="separator:ga80fb73e8198f5442255ba540a66a8842"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf4d996affed4bf516104a1656042ed35"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#gaf4d996affed4bf516104a1656042ed35">mmagic_tls_cmd</a> { <a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#ggaf4d996affed4bf516104a1656042ed35a66556ecf6395c90f4df8c7c1eab5e18d">MMAGIC_TLS_CMD_GET</a> = 0
+, <a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#ggaf4d996affed4bf516104a1656042ed35a1c382bc244e8db5d6916342efc818dcd">MMAGIC_TLS_CMD_SET</a> = 1
+, <a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#ggaf4d996affed4bf516104a1656042ed35a171089a3c85389959c7bcbbd325887c9">MMAGIC_TLS_CMD_LOAD</a> = 2
+, <a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#ggaf4d996affed4bf516104a1656042ed35acf900987eba4738627158fedc0c1984f">MMAGIC_TLS_CMD_COMMIT</a> = 3
+ }</td></tr>
+<tr class="memdesc:gaf4d996affed4bf516104a1656042ed35"><td class="mdescLeft">&#160;</td><td class="mdescRight">tls configuration command IDs  <a href="group__MMAGIC__CONTROLLER__INTERNAL.html#gaf4d996affed4bf516104a1656042ed35">More...</a><br /></td></tr>
+<tr class="separator:gaf4d996affed4bf516104a1656042ed35"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga9e1273601083b6388fbc79ecc1ed0555"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#ga9e1273601083b6388fbc79ecc1ed0555">mmagic_ntp_var</a> { <a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#gga9e1273601083b6388fbc79ecc1ed0555a8e382d90a7aa8e25b5e61c86cb41cd7f">MMAGIC_NTP_VAR_SERVER</a> = 0
+ }</td></tr>
+<tr class="memdesc:ga9e1273601083b6388fbc79ecc1ed0555"><td class="mdescLeft">&#160;</td><td class="mdescRight">ntp configuration variable IDs  <a href="group__MMAGIC__CONTROLLER__INTERNAL.html#ga9e1273601083b6388fbc79ecc1ed0555">More...</a><br /></td></tr>
+<tr class="separator:ga9e1273601083b6388fbc79ecc1ed0555"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga4f02a77206d62e1dc86625e17e8b0e68"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#ga4f02a77206d62e1dc86625e17e8b0e68">mmagic_ntp_cmd</a> { <br />
+&#160;&#160;<a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#gga4f02a77206d62e1dc86625e17e8b0e68a75f0ead8cd98150a49029bc68acccb71">MMAGIC_NTP_CMD_GET</a> = 0
+, <a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#gga4f02a77206d62e1dc86625e17e8b0e68ad1192d84c2c73e77041cff8c6cd1d577">MMAGIC_NTP_CMD_SET</a> = 1
+, <a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#gga4f02a77206d62e1dc86625e17e8b0e68ab6d2bc14557222e3cb2f61b9f50c51ee">MMAGIC_NTP_CMD_LOAD</a> = 2
+, <a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#gga4f02a77206d62e1dc86625e17e8b0e68a5e090682614af8f09a41fd1e8709f2ce">MMAGIC_NTP_CMD_COMMIT</a> = 3
+, <br />
+&#160;&#160;<a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#gga4f02a77206d62e1dc86625e17e8b0e68a83f6550fbf47ca877b463821c4d9038d">MMAGIC_NTP_CMD_SYNC</a> = 8
+, <a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#gga4f02a77206d62e1dc86625e17e8b0e68ad6a1d88498918d02cb96446e40f5e45f">MMAGIC_NTP_CMD_GET_TIME</a> = 9
+<br />
+ }</td></tr>
+<tr class="memdesc:ga4f02a77206d62e1dc86625e17e8b0e68"><td class="mdescLeft">&#160;</td><td class="mdescRight">ntp configuration command IDs  <a href="group__MMAGIC__CONTROLLER__INTERNAL.html#ga4f02a77206d62e1dc86625e17e8b0e68">More...</a><br /></td></tr>
+<tr class="separator:ga4f02a77206d62e1dc86625e17e8b0e68"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga20a207962f87f68ad096307e118f505c"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#ga20a207962f87f68ad096307e118f505c">mmagic_mqtt_cmd</a> { <br />
+&#160;&#160;<a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#gga20a207962f87f68ad096307e118f505cac9c9b425983ddf251b9d6b091457c4eb">MMAGIC_MQTT_CMD_GET</a> = 0
+, <a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#gga20a207962f87f68ad096307e118f505ca6e1ea4fbd8f1222e20f1468eaa6bda80">MMAGIC_MQTT_CMD_SET</a> = 1
+, <a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#gga20a207962f87f68ad096307e118f505ca7aada136d43ce1fbb9548f2aca1a5994">MMAGIC_MQTT_CMD_LOAD</a> = 2
+, <a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#gga20a207962f87f68ad096307e118f505ca4121c1847f58c5d73c593b8c5bd88bb8">MMAGIC_MQTT_CMD_COMMIT</a> = 3
+, <br />
+&#160;&#160;<a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#gga20a207962f87f68ad096307e118f505ca4af800e838cc98cc7b26ba59721a59e9">MMAGIC_MQTT_CMD_START_AGENT</a> = 8
+, <a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#gga20a207962f87f68ad096307e118f505ca31ad941eff6260c3db1fe48f8a08c29c">MMAGIC_MQTT_CMD_PUBLISH</a> = 9
+, <a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#gga20a207962f87f68ad096307e118f505cab02b9cff70e81d54ed58c625fd9fce0a">MMAGIC_MQTT_CMD_SUBSCRIBE</a> = 10
+, <a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#gga20a207962f87f68ad096307e118f505cab4037f23b34926149d71c7cd6cadbd9d">MMAGIC_MQTT_CMD_STOP_AGENT</a> = 11
+<br />
+ }</td></tr>
+<tr class="memdesc:ga20a207962f87f68ad096307e118f505c"><td class="mdescLeft">&#160;</td><td class="mdescRight">mqtt configuration command IDs  <a href="group__MMAGIC__CONTROLLER__INTERNAL.html#ga20a207962f87f68ad096307e118f505c">More...</a><br /></td></tr>
+<tr class="separator:ga20a207962f87f68ad096307e118f505c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:gab4226b7ba529c28a40f83e6ee9e93e24"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#gab4226b7ba529c28a40f83e6ee9e93e24">mmagic_controller_tx</a> (struct mmagic_controller *controller, uint8_t stream_id, uint8_t submodule_id, uint8_t command_id, uint8_t subcommand_id, const uint8_t *buffer, size_t buffer_length)</td></tr>
 <tr class="memdesc:gab4226b7ba529c28a40f83e6ee9e93e24"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sends a command to the agent.  <a href="group__MMAGIC__CONTROLLER__INTERNAL.html#gab4226b7ba529c28a40f83e6ee9e93e24">More...</a><br /></td></tr>
 <tr class="separator:gab4226b7ba529c28a40f83e6ee9e93e24"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga0184171219adefe23f0d5c67f6f43125"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#ga0184171219adefe23f0d5c67f6f43125">mmagic_controller_rx</a> (struct mmagic_controller *controller, uint8_t stream_id, uint8_t submodule_id, uint8_t command_id, uint8_t subcommand_id, uint8_t *buffer, size_t buffer_length)</td></tr>
-<tr class="memdesc:ga0184171219adefe23f0d5c67f6f43125"><td class="mdescLeft">&#160;</td><td class="mdescRight">Waits for a response from the agent.  <a href="group__MMAGIC__CONTROLLER__INTERNAL.html#ga0184171219adefe23f0d5c67f6f43125">More...</a><br /></td></tr>
-<tr class="separator:ga0184171219adefe23f0d5c67f6f43125"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga1bcf1fa931f47be00dc3d68ac6373a17"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#ga1bcf1fa931f47be00dc3d68ac6373a17">mmagic_controller_rx</a> (struct mmagic_controller *controller, uint8_t stream_id, uint8_t submodule_id, uint8_t command_id, uint8_t subcommand_id, uint8_t *buffer, size_t buffer_length, uint32_t timeout_ms)</td></tr>
+<tr class="memdesc:ga1bcf1fa931f47be00dc3d68ac6373a17"><td class="mdescLeft">&#160;</td><td class="mdescRight">Waits for a response from the agent.  <a href="group__MMAGIC__CONTROLLER__INTERNAL.html#ga1bcf1fa931f47be00dc3d68ac6373a17">More...</a><br /></td></tr>
+<tr class="separator:ga1bcf1fa931f47be00dc3d68ac6373a17"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga6fae28dbdafe6b74af2381d87538e6fe"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#ga6fae28dbdafe6b74af2381d87538e6fe">mmagic_controller_agent_sync</a> (struct mmagic_controller *controller, uint32_t timeout_ms)</td></tr>
+<tr class="memdesc:ga6fae28dbdafe6b74af2381d87538e6fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sends a sync request to the agent and waits for a sync response.  <a href="group__MMAGIC__CONTROLLER__INTERNAL.html#ga6fae28dbdafe6b74af2381d87538e6fe">More...</a><br /></td></tr>
+<tr class="separator:ga6fae28dbdafe6b74af2381d87538e6fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga8319f854924df575680199aa66f79d5a"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#ga8319f854924df575680199aa66f79d5a">mmagic_controller_request_agent_reset</a> (struct mmagic_controller *controller)</td></tr>
+<tr class="memdesc:ga8319f854924df575680199aa66f79d5a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sends a reset request to the agent.  <a href="group__MMAGIC__CONTROLLER__INTERNAL.html#ga8319f854924df575680199aa66f79d5a">More...</a><br /></td></tr>
+<tr class="separator:ga8319f854924df575680199aa66f79d5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="ga195590b69a12f5a2d32c4cde73405783" name="ga195590b69a12f5a2d32c4cde73405783"></a>
@@ -291,7 +348,25 @@ Functions</h2></td></tr>
 
 <p>The stream ID of the control stream. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00464">464</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00578">578</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+
+</div>
+</div>
+<a id="gaefacf9f1f161e924b1adecc934223270" name="gaefacf9f1f161e924b1adecc934223270"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaefacf9f1f161e924b1adecc934223270">&#9670;&nbsp;</a></span>MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS&#160;&#160;&#160;1000</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The default timeout when waiting for a response from a command sent to the agent in ms. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00581">581</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -333,7 +408,7 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00684">684</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00848">848</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -372,9 +447,12 @@ Functions</h2></td></tr>
 <tr><td class="fieldname"><a id="gga295c6136c314a7f9e7d2cd8abc0f9796a3e383f5529a1131f198e65730b713b30" name="gga295c6136c314a7f9e7d2cd8abc0f9796a3e383f5529a1131f198e65730b713b30"></a>MMAGIC_IP_VAR_DHCP_OFFLOAD&#160;</td><td class="fielddoc"><p >If true, enables DHCP offload which allows the Morse chip to directly handle DHCP discovery and leases without waking up the host processor. </p>
 <p >Note: this comes into effect only if ip.dhcp_enabled is also true. </p>
 </td></tr>
+<tr><td class="fieldname"><a id="gga295c6136c314a7f9e7d2cd8abc0f9796aa402cf12ce59410e79c6c0e1d926a5e0" name="gga295c6136c314a7f9e7d2cd8abc0f9796aa402cf12ce59410e79c6c0e1d926a5e0"></a>MMAGIC_IP_VAR_LINK_STATUS_EVT_EN&#160;</td><td class="fielddoc"><p >When set to true, IP link status notifications will be provided. </p>
+<p >Setting this to false will suppress these notifications. Defaults to true. </p>
+</td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00654">654</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00815">815</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -404,7 +482,7 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00758">758</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00922">922</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -434,7 +512,100 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00741">741</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00905">905</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+
+</div>
+</div>
+<a id="ga20a207962f87f68ad096307e118f505c" name="ga20a207962f87f68ad096307e118f505c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga20a207962f87f68ad096307e118f505c">&#9670;&nbsp;</a></span>mmagic_mqtt_cmd</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#ga20a207962f87f68ad096307e118f505c">mmagic_mqtt_cmd</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>mqtt configuration command IDs </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="gga20a207962f87f68ad096307e118f505cac9c9b425983ddf251b9d6b091457c4eb" name="gga20a207962f87f68ad096307e118f505cac9c9b425983ddf251b9d6b091457c4eb"></a>MMAGIC_MQTT_CMD_GET&#160;</td><td class="fielddoc"><p >Retrieve the value of a configuration variable. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga20a207962f87f68ad096307e118f505ca6e1ea4fbd8f1222e20f1468eaa6bda80" name="gga20a207962f87f68ad096307e118f505ca6e1ea4fbd8f1222e20f1468eaa6bda80"></a>MMAGIC_MQTT_CMD_SET&#160;</td><td class="fielddoc"><p >Set the value of a configuration variable. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga20a207962f87f68ad096307e118f505ca7aada136d43ce1fbb9548f2aca1a5994" name="gga20a207962f87f68ad096307e118f505ca7aada136d43ce1fbb9548f2aca1a5994"></a>MMAGIC_MQTT_CMD_LOAD&#160;</td><td class="fielddoc"><p >Reserved (unused) </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga20a207962f87f68ad096307e118f505ca4121c1847f58c5d73c593b8c5bd88bb8" name="gga20a207962f87f68ad096307e118f505ca4121c1847f58c5d73c593b8c5bd88bb8"></a>MMAGIC_MQTT_CMD_COMMIT&#160;</td><td class="fielddoc"><p >Commit the current configuration to flash. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga20a207962f87f68ad096307e118f505ca4af800e838cc98cc7b26ba59721a59e9" name="gga20a207962f87f68ad096307e118f505ca4af800e838cc98cc7b26ba59721a59e9"></a>MMAGIC_MQTT_CMD_START_AGENT&#160;</td><td class="fielddoc"><p >Starts the MQTT agent. </p>
+<p >Automatically handles reconnects with a backoff timer and saves up to 10 subscriptions across reconnects. Listen to "broker_connection" events for information about the state of the connection to the broker. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga20a207962f87f68ad096307e118f505ca31ad941eff6260c3db1fe48f8a08c29c" name="gga20a207962f87f68ad096307e118f505ca31ad941eff6260c3db1fe48f8a08c29c"></a>MMAGIC_MQTT_CMD_PUBLISH&#160;</td><td class="fielddoc"><p >Publishes a message on a topic. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga20a207962f87f68ad096307e118f505cab02b9cff70e81d54ed58c625fd9fce0a" name="gga20a207962f87f68ad096307e118f505cab02b9cff70e81d54ed58c625fd9fce0a"></a>MMAGIC_MQTT_CMD_SUBSCRIBE&#160;</td><td class="fielddoc"><p >Subscribes to a topic. </p>
+<p >Messages will arrive in the "message_received" event. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga20a207962f87f68ad096307e118f505cab4037f23b34926149d71c7cd6cadbd9d" name="gga20a207962f87f68ad096307e118f505cab4037f23b34926149d71c7cd6cadbd9d"></a>MMAGIC_MQTT_CMD_STOP_AGENT&#160;</td><td class="fielddoc"><p >Stops the MQTT agent. </p>
+</td></tr>
+</table>
+
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l01036">1036</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+
+</div>
+</div>
+<a id="ga4f02a77206d62e1dc86625e17e8b0e68" name="ga4f02a77206d62e1dc86625e17e8b0e68"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga4f02a77206d62e1dc86625e17e8b0e68">&#9670;&nbsp;</a></span>mmagic_ntp_cmd</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#ga4f02a77206d62e1dc86625e17e8b0e68">mmagic_ntp_cmd</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>ntp configuration command IDs </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="gga4f02a77206d62e1dc86625e17e8b0e68a75f0ead8cd98150a49029bc68acccb71" name="gga4f02a77206d62e1dc86625e17e8b0e68a75f0ead8cd98150a49029bc68acccb71"></a>MMAGIC_NTP_CMD_GET&#160;</td><td class="fielddoc"><p >Retrieve the value of a configuration variable. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga4f02a77206d62e1dc86625e17e8b0e68ad1192d84c2c73e77041cff8c6cd1d577" name="gga4f02a77206d62e1dc86625e17e8b0e68ad1192d84c2c73e77041cff8c6cd1d577"></a>MMAGIC_NTP_CMD_SET&#160;</td><td class="fielddoc"><p >Set the value of a configuration variable. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga4f02a77206d62e1dc86625e17e8b0e68ab6d2bc14557222e3cb2f61b9f50c51ee" name="gga4f02a77206d62e1dc86625e17e8b0e68ab6d2bc14557222e3cb2f61b9f50c51ee"></a>MMAGIC_NTP_CMD_LOAD&#160;</td><td class="fielddoc"><p >Reserved (unused) </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga4f02a77206d62e1dc86625e17e8b0e68a5e090682614af8f09a41fd1e8709f2ce" name="gga4f02a77206d62e1dc86625e17e8b0e68a5e090682614af8f09a41fd1e8709f2ce"></a>MMAGIC_NTP_CMD_COMMIT&#160;</td><td class="fielddoc"><p >Commit the current configuration to flash. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga4f02a77206d62e1dc86625e17e8b0e68a83f6550fbf47ca877b463821c4d9038d" name="gga4f02a77206d62e1dc86625e17e8b0e68a83f6550fbf47ca877b463821c4d9038d"></a>MMAGIC_NTP_CMD_SYNC&#160;</td><td class="fielddoc"><p >Synchronizes internal time using the NTP server. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga4f02a77206d62e1dc86625e17e8b0e68ad6a1d88498918d02cb96446e40f5e45f" name="gga4f02a77206d62e1dc86625e17e8b0e68ad6a1d88498918d02cb96446e40f5e45f"></a>MMAGIC_NTP_CMD_GET_TIME&#160;</td><td class="fielddoc"><p >Reads current internal time. </p>
+</td></tr>
+</table>
+
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l01019">1019</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+
+</div>
+</div>
+<a id="ga9e1273601083b6388fbc79ecc1ed0555" name="ga9e1273601083b6388fbc79ecc1ed0555"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga9e1273601083b6388fbc79ecc1ed0555">&#9670;&nbsp;</a></span>mmagic_ntp_var</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#ga9e1273601083b6388fbc79ecc1ed0555">mmagic_ntp_var</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>ntp configuration variable IDs </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="gga9e1273601083b6388fbc79ecc1ed0555a8e382d90a7aa8e25b5e61c86cb41cd7f" name="gga9e1273601083b6388fbc79ecc1ed0555a8e382d90a7aa8e25b5e61c86cb41cd7f"></a>MMAGIC_NTP_VAR_SERVER&#160;</td><td class="fielddoc"><p >The hostname or IP of the NTP server. </p>
+<p >Defaults to "0.pool.ntp.org". </p>
+</td></tr>
+</table>
+
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l01012">1012</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -464,7 +635,7 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00726">726</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00890">890</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -491,7 +662,7 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00714">714</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00878">878</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -525,7 +696,7 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00773">773</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00937">937</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -569,7 +740,64 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00792">792</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00956">956</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+
+</div>
+</div>
+<a id="gaf4d996affed4bf516104a1656042ed35" name="gaf4d996affed4bf516104a1656042ed35"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaf4d996affed4bf516104a1656042ed35">&#9670;&nbsp;</a></span>mmagic_tls_cmd</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#gaf4d996affed4bf516104a1656042ed35">mmagic_tls_cmd</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>tls configuration command IDs </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ggaf4d996affed4bf516104a1656042ed35a66556ecf6395c90f4df8c7c1eab5e18d" name="ggaf4d996affed4bf516104a1656042ed35a66556ecf6395c90f4df8c7c1eab5e18d"></a>MMAGIC_TLS_CMD_GET&#160;</td><td class="fielddoc"><p >Retrieve the value of a configuration variable. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ggaf4d996affed4bf516104a1656042ed35a1c382bc244e8db5d6916342efc818dcd" name="ggaf4d996affed4bf516104a1656042ed35a1c382bc244e8db5d6916342efc818dcd"></a>MMAGIC_TLS_CMD_SET&#160;</td><td class="fielddoc"><p >Set the value of a configuration variable. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ggaf4d996affed4bf516104a1656042ed35a171089a3c85389959c7bcbbd325887c9" name="ggaf4d996affed4bf516104a1656042ed35a171089a3c85389959c7bcbbd325887c9"></a>MMAGIC_TLS_CMD_LOAD&#160;</td><td class="fielddoc"><p >Reserved (unused) </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ggaf4d996affed4bf516104a1656042ed35acf900987eba4738627158fedc0c1984f" name="ggaf4d996affed4bf516104a1656042ed35acf900987eba4738627158fedc0c1984f"></a>MMAGIC_TLS_CMD_COMMIT&#160;</td><td class="fielddoc"><p >Commit the current configuration to flash. </p>
+</td></tr>
+</table>
+
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00999">999</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+
+</div>
+</div>
+<a id="ga80fb73e8198f5442255ba540a66a8842" name="ga80fb73e8198f5442255ba540a66a8842"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga80fb73e8198f5442255ba540a66a8842">&#9670;&nbsp;</a></span>mmagic_tls_var</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__MMAGIC__CONTROLLER__INTERNAL.html#ga80fb73e8198f5442255ba540a66a8842">mmagic_tls_var</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>tls configuration variable IDs </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="gga80fb73e8198f5442255ba540a66a8842a179c7e8e62df9fb331e66ce040374472" name="gga80fb73e8198f5442255ba540a66a8842a179c7e8e62df9fb331e66ce040374472"></a>MMAGIC_TLS_VAR_ROOT_CA_CERTIFICATE&#160;</td><td class="fielddoc"><p >Root certificate authority certificate. </p>
+<p >Supported formats are PEM and DER. Must be null terminated if in PEM format. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga80fb73e8198f5442255ba540a66a8842a7d1c4f0afc5fc600366faf0fab49f8ee" name="gga80fb73e8198f5442255ba540a66a8842a7d1c4f0afc5fc600366faf0fab49f8ee"></a>MMAGIC_TLS_VAR_CLIENT_CERTIFICATE&#160;</td><td class="fielddoc"><p >Certificate to identify the client. </p>
+<p >Supported formats are PEM and DER. Must be null terminated if in PEM format. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga80fb73e8198f5442255ba540a66a8842a8143ebce7d0a6f0f8d93a2295d7bfc27" name="gga80fb73e8198f5442255ba540a66a8842a8143ebce7d0a6f0f8d93a2295d7bfc27"></a>MMAGIC_TLS_VAR_CLIENT_PRIVATE_KEY&#160;</td><td class="fielddoc"><p >Client private key. </p>
+<p >Supported formats are PEM and DER. Must be null terminated if in PEM format. </p>
+</td></tr>
+</table>
+
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00985">985</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -627,9 +855,11 @@ Functions</h2></td></tr>
 <tr><td class="fieldname"><a id="gga64b6394bbbc22303cd3297d10f1da48ea863bf115e703ddcdc29ce73842491220" name="gga64b6394bbbc22303cd3297d10f1da48ea863bf115e703ddcdc29ce73842491220"></a>MMAGIC_WLAN_CMD_STANDBY_SET_CONFIG&#160;</td><td class="fielddoc"><p >Sets the standby mode configuration parameters. </p>
 <p >If this command is not executed then the defaults are as specified. </p>
 </td></tr>
+<tr><td class="fieldname"><a id="gga64b6394bbbc22303cd3297d10f1da48ea74022bdc4ffe7c51110f3f393ef20372" name="gga64b6394bbbc22303cd3297d10f1da48ea74022bdc4ffe7c51110f3f393ef20372"></a>MMAGIC_WLAN_CMD_GET_STA_STATUS&#160;</td><td class="fielddoc"><p >Retrieves the STA status of the WLAN interface. </p>
+</td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00600">600</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00759">759</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -651,7 +881,7 @@ Functions</h2></td></tr>
 </td></tr>
 <tr><td class="fieldname"><a id="gga3fdd29b88bd1bef6ea91cd677513167aaa8ec6eccf41d0804edd2660c956b12df" name="gga3fdd29b88bd1bef6ea91cd677513167aaa8ec6eccf41d0804edd2660c956b12df"></a>MMAGIC_WLAN_VAR_SSID&#160;</td><td class="fielddoc"><p >SSID of the AP to connect to, can be 1-32 characters long. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="gga3fdd29b88bd1bef6ea91cd677513167aa1369f1f1fe9f291eea5b17b77c34c81d" name="gga3fdd29b88bd1bef6ea91cd677513167aa1369f1f1fe9f291eea5b17b77c34c81d"></a>MMAGIC_WLAN_VAR_PASSWORD&#160;</td><td class="fielddoc"><p >Password used when associating, 1-32 characters long. </p>
+<tr><td class="fieldname"><a id="gga3fdd29b88bd1bef6ea91cd677513167aa1369f1f1fe9f291eea5b17b77c34c81d" name="gga3fdd29b88bd1bef6ea91cd677513167aa1369f1f1fe9f291eea5b17b77c34c81d"></a>MMAGIC_WLAN_VAR_PASSWORD&#160;</td><td class="fielddoc"><p >Password used when associating, 1-100 characters long. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="gga3fdd29b88bd1bef6ea91cd677513167aa0bc0f240a64ecdd141c13085eab8ec24" name="gga3fdd29b88bd1bef6ea91cd677513167aa0bc0f240a64ecdd141c13085eab8ec24"></a>MMAGIC_WLAN_VAR_SECURITY&#160;</td><td class="fielddoc"><p >Security type to used when associating. </p>
 </td></tr>
@@ -660,7 +890,7 @@ Functions</h2></td></tr>
 </td></tr>
 <tr><td class="fieldname"><a id="gga3fdd29b88bd1bef6ea91cd677513167aa0213f1d85ba5666c05b8940afd07ae94" name="gga3fdd29b88bd1bef6ea91cd677513167aa0213f1d85ba5666c05b8940afd07ae94"></a>MMAGIC_WLAN_VAR_BSSID&#160;</td><td class="fielddoc"><p >BSSID of the ap to associate to, all 0x00 for any. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="gga3fdd29b88bd1bef6ea91cd677513167aa4898a7bffc466c4756fbdea9f78b065e" name="gga3fdd29b88bd1bef6ea91cd677513167aa4898a7bffc466c4756fbdea9f78b065e"></a>MMAGIC_WLAN_VAR_PMF_MODE&#160;</td><td class="fielddoc"><p >Protected Management Frame mode to use (802.11w) </p>
+<tr><td class="fieldname"><a id="gga3fdd29b88bd1bef6ea91cd677513167aa4898a7bffc466c4756fbdea9f78b065e" name="gga3fdd29b88bd1bef6ea91cd677513167aa4898a7bffc466c4756fbdea9f78b065e"></a>MMAGIC_WLAN_VAR_PMF_MODE&#160;</td><td class="fielddoc"><p >Protected Management Frame mode to use (802.11w). </p>
 </td></tr>
 <tr><td class="fieldname"><a id="gga3fdd29b88bd1bef6ea91cd677513167aa9618c68587f656e78c89dac7ef99d2fe" name="gga3fdd29b88bd1bef6ea91cd677513167aa9618c68587f656e78c89dac7ef99d2fe"></a>MMAGIC_WLAN_VAR_STATION_TYPE&#160;</td><td class="fielddoc"><p >S1G non-AP STA type. </p>
 </td></tr>
@@ -714,15 +944,91 @@ Functions</h2></td></tr>
 <tr><td class="fieldname"><a id="gga3fdd29b88bd1bef6ea91cd677513167aa9d75ae1863fc408790b9e28a660537d1" name="gga3fdd29b88bd1bef6ea91cd677513167aa9d75ae1863fc408790b9e28a660537d1"></a>MMAGIC_WLAN_VAR_MCS10_MODE&#160;</td><td class="fielddoc"><p >The currently configured MCS10 behavior. </p>
 <p >This only takes effect after calling the WLAN connect command. This is an enum with 3 modes: disabled, which will never use MCS10, forced, which will always use MCS10 instead of MCS0 if the bandwidth is 1 MHz, and auto, which will use MCS10 on retries instead of MCS0 when the bandwidth is 1 MHz. </p>
 </td></tr>
+<tr><td class="fieldname"><a id="gga3fdd29b88bd1bef6ea91cd677513167aae384afe212fb87ae8bd86e5bfe76ca0f" name="gga3fdd29b88bd1bef6ea91cd677513167aae384afe212fb87ae8bd86e5bfe76ca0f"></a>MMAGIC_WLAN_VAR_STA_EVT_EN&#160;</td><td class="fielddoc"><p >When set to true, STA event notifications will be provided. </p>
+<p >Setting this to false will suppress these notifications. Defaults to false. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga3fdd29b88bd1bef6ea91cd677513167aae1c4e92d65fba757a30376e8e9feda2d" name="gga3fdd29b88bd1bef6ea91cd677513167aae1c4e92d65fba757a30376e8e9feda2d"></a>MMAGIC_WLAN_VAR_DUTY_CYCLE_MODE&#160;</td><td class="fielddoc"><p >The duty cycle air time distribution mode. </p>
+<p >The duty cycle mode can be set to spread, where the air time is spread evenly across the window; or burst, where air time is available to be consumed immediately. </p>
+</td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00505">505</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00657">657</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="ga0184171219adefe23f0d5c67f6f43125" name="ga0184171219adefe23f0d5c67f6f43125"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga0184171219adefe23f0d5c67f6f43125">&#9670;&nbsp;</a></span>mmagic_controller_rx()</h2>
+<a id="ga6fae28dbdafe6b74af2381d87538e6fe" name="ga6fae28dbdafe6b74af2381d87538e6fe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga6fae28dbdafe6b74af2381d87538e6fe">&#9670;&nbsp;</a></span>mmagic_controller_agent_sync()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a> mmagic_controller_agent_sync </td>
+          <td>(</td>
+          <td class="paramtype">struct mmagic_controller *&#160;</td>
+          <td class="paramname"><em>controller</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>timeout_ms</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sends a sync request to the agent and waits for a sync response. </p>
+<p >This function will block waiting for a response from the agent or until the provided timeout duration elapses.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">controller</td><td>Controller context. </td></tr>
+    <tr><td class="paramname">timeout_ms</td><td>Duration to wait for a sync response from the agent.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>MMAGIC_STATUS_OK on successful sync, else an appropriate error code. </dd></dl>
+
+</div>
+</div>
+<a id="ga8319f854924df575680199aa66f79d5a" name="ga8319f854924df575680199aa66f79d5a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga8319f854924df575680199aa66f79d5a">&#9670;&nbsp;</a></span>mmagic_controller_request_agent_reset()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a> mmagic_controller_request_agent_reset </td>
+          <td>(</td>
+          <td class="paramtype">struct mmagic_controller *&#160;</td>
+          <td class="paramname"><em>controller</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sends a reset request to the agent. </p>
+<p >A reset is considered successful when the agent returns a start notification. On success, the controller <code>agent_start_cb</code> function will be executed.</p>
+<dl class="section note"><dt>Note</dt><dd>This function will return once a reset request has been transmitted. It is up to the application to handle waiting for the start callback to be called.</dd>
+<dd>
+Both this function and <a class="el" href="group__MMAGIC__CONTROLLER__SYS.html#gaa7f1e6628203692cbb8e70a4c717f7ea">mmagic_controller_sys_reset</a> will perform a soft reset of the agent, however this function should be preferred as the reset is handled at a lower layer in the agents MMAGIC stack.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">controller</td><td>Controller context.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>MMAGIC_STATUS_OK on successful transmission, else an error code. </dd></dl>
+
+</div>
+</div>
+<a id="ga1bcf1fa931f47be00dc3d68ac6373a17" name="ga1bcf1fa931f47be00dc3d68ac6373a17"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga1bcf1fa931f47be00dc3d68ac6373a17">&#9670;&nbsp;</a></span>mmagic_controller_rx()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -767,7 +1073,13 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>buffer_length</em>&#160;</td>
+          <td class="paramname"><em>buffer_length</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>timeout_ms</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -786,7 +1098,8 @@ Functions</h2></td></tr>
     <tr><td class="paramname">command_id</td><td>The command to wait on. </td></tr>
     <tr><td class="paramname">subcommand_id</td><td>A sub command or resource id if applicable. </td></tr>
     <tr><td class="paramname">buffer</td><td>A pointer to a buffer to load with any returned data. May be NULL if none. </td></tr>
-    <tr><td class="paramname">buffer_length</td><td>Length of above buffer.</td></tr>
+    <tr><td class="paramname">buffer_length</td><td>Length of above buffer. </td></tr>
+    <tr><td class="paramname">timeout_ms</td><td>The time in milliseconds to wait for a response from the agent, set to <code>UINT32_MAX</code> for an indefinite wait.</td></tr>
   </table>
   </dd>
 </dl>

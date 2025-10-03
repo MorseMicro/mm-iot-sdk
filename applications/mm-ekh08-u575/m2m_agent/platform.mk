@@ -9,6 +9,12 @@ CORE := arm-cortex-m33f
 # Platform specific files
 BSP_DIR = $(APP_DIR)/bsp
 
+# This platform is well resourced so we can use statically allocated pktmem with generous
+# allocations.
+MMPKTMEM_TYPE = static
+MMPKTMEM_TX_POOL_N_BLOCKS = 32
+MMPKTMEM_RX_POOL_N_BLOCKS = 32
+
 BSP_SRCS_MAIN_C ?= Core/Src/main.c
 BSP_SRCS_C += $(BSP_SRCS_MAIN_C)
 BSP_SRCS_C += Core/Src/stm32u5xx_hal_msp.c
@@ -163,6 +169,9 @@ BUILD_DEFINES += USE_FULL_LL_DRIVER
 BUILD_DEFINES += configUSE_TICKLESS_IDLE=1
 ENABLE_DEBUG_IN_STOP_MODE ?= 1
 BUILD_DEFINES += ENABLE_DEBUG_IN_STOP_MODE=$(ENABLE_DEBUG_IN_STOP_MODE)
+
+# Enable log output through the ITM/SWO port
+DEBUG_BUILD_DEFINES += ENABLE_ITM_LOG
 
 CONLYFLAGS += -include $(MMIOT_ROOT)/$(BSP_DRIVERS_DIR)/Drivers/CMSIS/Device/ST/STM32U5xx/Include/stm32u575xx.h
 CFLAGS-$(BSP_DRIVERS_DIR) += -Wno-c++-compat

@@ -19,8 +19,10 @@ var group__MMWLAN__UMAC__STATS =
       [ "hw_restart_counter", "structmmwlan__stats__umac__data.html#ab260f8195923c43a77477eb980341e80", null ],
       [ "last_tx_time", "structmmwlan__stats__umac__data.html#aeca592208aa02c61b3aca10dfca95e71", null ],
       [ "num_scans_complete", "structmmwlan__stats__umac__data.html#a823370d0202b2975843237953563819d", null ],
-      [ "rssi", "structmmwlan__stats__umac__data.html#a8f162036d07ff09d23812af97ed32e33", null ]
+      [ "rssi", "structmmwlan__stats__umac__data.html#a8f162036d07ff09d23812af97ed32e33", null ],
+      [ "timeouts_fired", "structmmwlan__stats__umac__data.html#a2666ef421f82bf9eefed2f37f80675c6", null ]
     ] ],
     [ "mmwlan_stats_connect_timestamp_index", "group__MMWLAN__UMAC__STATS.html#gad1b6b54658564b0b671a5d05244131c7", null ],
+    [ "mmwlan_clear_umac_stats", "group__MMWLAN__UMAC__STATS.html#gab25b8e9e34b36938fe8816e44cfcc96c", null ],
     [ "mmwlan_get_umac_stats", "group__MMWLAN__UMAC__STATS.html#gab6c2dc43ea23189256d14019e0b04c1c", null ]
 ];

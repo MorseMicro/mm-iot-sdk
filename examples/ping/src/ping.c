@@ -30,10 +30,6 @@
 #include "mm_app_common.h"
 
 /* Ping configurations. */
-#ifndef PING_REMOTE_IP
-/** IP address of the remote host to ping. */
-#define PING_REMOTE_IP                  "192.168.1.1"
-#endif
 #ifndef PING_COUNT
 /** Number of ping requests to send. Set to 0 to continue indefinitely. */
 #define PING_COUNT                      10
@@ -127,14 +123,25 @@ void app_init(void)
     set_debug_state(DEBUG_STATE_PINGING);
 
     /* Get the target IP */
-    strncpy(args.ping_target, PING_REMOTE_IP, sizeof(args.ping_target));
-    mmconfig_read_string("ping.target", args.ping_target, sizeof(args.ping_target));
+    struct mmipal_ip_config ip_config = MMIPAL_IP_CONFIG_DEFAULT;
+    enum mmipal_status status = mmipal_get_ip_config(&ip_config);
+    if (status == MMIPAL_SUCCESS)
+    {
+        memcpy(args.ping_target, ip_config.gateway_addr, sizeof(ip_config.gateway_addr));
+    }
+    else
+    {
+        printf("Failed to retrieve IP config\n");
+    }
+    /* If ping.target is set, we use it as an override */
+    (void)mmconfig_read_string("ping.target", args.ping_target, sizeof(args.ping_target));
 
-    enum mmipal_status status = mmipal_get_local_addr(args.ping_src, args.ping_target);
+    status = mmipal_get_local_addr(args.ping_src, args.ping_target);
     if (status != MMIPAL_SUCCESS)
     {
         printf("Failed to get local address for PING\n");
     }
+
     args.ping_count = PING_COUNT;
     mmconfig_read_uint32("ping.count", &args.ping_count);
 
@@ -147,7 +154,6 @@ void app_init(void)
     mmping_start(&args);
     printf("\nPing %s %lu(%lu) bytes of data.\n", args.ping_target, args.ping_size,
             (MMPING_ICMP_ECHO_HDR_LEN + args.ping_size));
-    mmosal_task_sleep(args.ping_interval_ms);
 
     struct mmping_stats stats;
     uint32_t next_update_time_ms = mmosal_get_time_ms() + UPDATE_INTERVAL_MS;
@@ -155,7 +161,7 @@ void app_init(void)
     mmping_stats(&stats);
     while (stats.ping_is_running)
     {
-        mmosal_task_sleep(10);
+        mmosal_task_sleep(args.ping_interval_ms / 2);
         mmping_stats(&stats);
         if (stats.ping_recv_count != last_ping_recv_count ||
             mmosal_time_has_passed(next_update_time_ms))

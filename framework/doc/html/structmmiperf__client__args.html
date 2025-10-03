@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.8.2</span>
+   &#160;<span id="projectnumber">2.9.7</span>
    </div>
   </td>
  </tr>
@@ -96,10 +96,10 @@ $(document).ready(function(){initNavTree('structmmiperf__client__args.html','');
 <div class="textblock"><p >Iperf client arguments data structure. </p>
 <p >For forward compatibility this structure should be initialized using <code>MMIPERF_CLIENT_ARGS_DEFAULT</code>. For example:</p>
 <div class="fragment"><div class="line"><span class="keyword">struct </span><a class="code hl_struct" href="structmmiperf__client__args.html">mmiperf_client_args</a> args = <a class="code hl_define" href="group__MMIPERF.html#ga4f10814c20514ad3a82f6b084d11edc2">MMIPERF_CLIENT_ARGS_DEFAULT</a>;</div>
-<div class="ttc" id="agroup__MMIPERF_html_ga4f10814c20514ad3a82f6b084d11edc2"><div class="ttname"><a href="group__MMIPERF.html#ga4f10814c20514ad3a82f6b084d11edc2">MMIPERF_CLIENT_ARGS_DEFAULT</a></div><div class="ttdeci">#define MMIPERF_CLIENT_ARGS_DEFAULT</div><div class="ttdoc">Initializer for mmiperf_client_args.</div><div class="ttdef"><b>Definition:</b> <a href="mmiperf_8h_source.html#l00182">mmiperf.h:182</a></div></div>
-<div class="ttc" id="astructmmiperf__client__args_html"><div class="ttname"><a href="structmmiperf__client__args.html">mmiperf_client_args</a></div><div class="ttdoc">Iperf client arguments data structure.</div><div class="ttdef"><b>Definition:</b> <a href="mmiperf_8h_source.html#l00157">mmiperf.h:158</a></div></div>
+<div class="ttc" id="agroup__MMIPERF_html_ga4f10814c20514ad3a82f6b084d11edc2"><div class="ttname"><a href="group__MMIPERF.html#ga4f10814c20514ad3a82f6b084d11edc2">MMIPERF_CLIENT_ARGS_DEFAULT</a></div><div class="ttdeci">#define MMIPERF_CLIENT_ARGS_DEFAULT</div><div class="ttdoc">Initializer for mmiperf_client_args.</div><div class="ttdef"><b>Definition:</b> <a href="mmiperf_8h_source.html#l00181">mmiperf.h:181</a></div></div>
+<div class="ttc" id="astructmmiperf__client__args_html"><div class="ttname"><a href="structmmiperf__client__args.html">mmiperf_client_args</a></div><div class="ttdoc">Iperf client arguments data structure.</div><div class="ttdef"><b>Definition:</b> <a href="mmiperf_8h_source.html#l00156">mmiperf.h:157</a></div></div>
 </div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="mmiperf_8h_source.html#l00157">157</a> of file <a class="el" href="mmiperf_8h_source.html">mmiperf.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmiperf_8h_source.html#l00156">156</a> of file <a class="el" href="mmiperf_8h_source.html">mmiperf.h</a>.</p>
 </div>
 <p><code>#include &lt;<a class="el" href="mmiperf_8h_source.html">mmiperf.h</a>&gt;</code></p>
 <table class="memberdecls">
@@ -145,7 +145,7 @@ Data Fields</h2></td></tr>
 
 <p>If positive specifies how many bytes to transfer; if negative the absolute value specifies the duration of the test in hundredths of seconds. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmiperf_8h_source.html#l00172">172</a> of file <a class="el" href="mmiperf_8h_source.html">mmiperf.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmiperf_8h_source.html#l00171">171</a> of file <a class="el" href="mmiperf_8h_source.html">mmiperf.h</a>.</p>
 
 </div>
 </div>
@@ -164,7 +164,7 @@ Data Fields</h2></td></tr>
 <p>Packet size to use. </p>
 <p >Only applies to UDP iperf tests. When set to zero, appropriate value of <code>MMIPERF_DEFAULT_UDP_PACKET_SIZE_V4</code> or <code>MMIPERF_DEFAULT_UDP_PACKET_SIZE_V6</code> will be used depending on whether the given server_addr is <code>IPv4</code> or <code>IPv6</code> address. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmiperf_8h_source.html#l00169">169</a> of file <a class="el" href="mmiperf_8h_source.html">mmiperf.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmiperf_8h_source.html#l00168">168</a> of file <a class="el" href="mmiperf_8h_source.html">mmiperf.h</a>.</p>
 
 </div>
 </div>
@@ -183,7 +183,7 @@ Data Fields</h2></td></tr>
 <p>Opaque argument to pass to the report callback. </p>
 <p >May be <code>NULL</code>. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmiperf_8h_source.html#l00176">176</a> of file <a class="el" href="mmiperf_8h_source.html">mmiperf.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmiperf_8h_source.html#l00175">175</a> of file <a class="el" href="mmiperf_8h_source.html">mmiperf.h</a>.</p>
 
 </div>
 </div>
@@ -202,7 +202,7 @@ Data Fields</h2></td></tr>
 <p>Report callback function to invoke on completion/abort. </p>
 <p >May be <code>NULL</code>. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmiperf_8h_source.html#l00174">174</a> of file <a class="el" href="mmiperf_8h_source.html">mmiperf.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmiperf_8h_source.html#l00173">173</a> of file <a class="el" href="mmiperf_8h_source.html">mmiperf.h</a>.</p>
 
 </div>
 </div>
@@ -220,7 +220,7 @@ Data Fields</h2></td></tr>
 
 <p>IP address of iperf server to communicate with (as a string). </p>
 
-<p class="definition">Definition at line <a class="el" href="mmiperf_8h_source.html#l00160">160</a> of file <a class="el" href="mmiperf_8h_source.html">mmiperf.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmiperf_8h_source.html#l00159">159</a> of file <a class="el" href="mmiperf_8h_source.html">mmiperf.h</a>.</p>
 
 </div>
 </div>
@@ -238,7 +238,7 @@ Data Fields</h2></td></tr>
 
 <p>Port on iperf server to communicate with. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmiperf_8h_source.html#l00162">162</a> of file <a class="el" href="mmiperf_8h_source.html">mmiperf.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmiperf_8h_source.html#l00161">161</a> of file <a class="el" href="mmiperf_8h_source.html">mmiperf.h</a>.</p>
 
 </div>
 </div>
@@ -256,7 +256,7 @@ Data Fields</h2></td></tr>
 
 <p>Bandwidth limit (in kbps) to communicate with (0 indicates no limit). </p>
 
-<p class="definition">Definition at line <a class="el" href="mmiperf_8h_source.html#l00164">164</a> of file <a class="el" href="mmiperf_8h_source.html">mmiperf.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmiperf_8h_source.html#l00163">163</a> of file <a class="el" href="mmiperf_8h_source.html">mmiperf.h</a>.</p>
 
 </div>
 </div>
@@ -274,7 +274,7 @@ Data Fields</h2></td></tr>
 
 <p>Iperf version used to parse packet header. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmiperf_8h_source.html#l00178">178</a> of file <a class="el" href="mmiperf_8h_source.html">mmiperf.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmiperf_8h_source.html#l00177">177</a> of file <a class="el" href="mmiperf_8h_source.html">mmiperf.h</a>.</p>
 
 </div>
 </div>

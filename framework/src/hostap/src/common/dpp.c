@@ -374,6 +374,9 @@ static int dpp_parse_uri_supported_curves(struct dpp_bootstrap_info *bi,
 
 static int dpp_parse_uri_host(struct dpp_bootstrap_info *bi, const char *txt)
 {
+#ifdef MM_IOT_DPP_DISABLE_URI_HOST
+	return 0;
+#endif
 	const char *end;
 	char *port;
 	struct hostapd_ip_addr addr;
@@ -693,6 +696,10 @@ int dpp_prepare_channel_list(struct dpp_authentication *auth,
 
 int dpp_gen_uri(struct dpp_bootstrap_info *bi)
 {
+#ifdef MM_IOT_DPP_DISABLE_URI_HOST
+	return 0;
+#endif
+
 	char macstr[ETH_ALEN * 2 + 10];
 	size_t len;
 	char supp_curves[10];
@@ -3342,7 +3349,7 @@ static int dpp_parse_conf_obj(struct dpp_authentication *auth,
 		   (auth->peer_version >= 2 && dpp_akm_legacy(conf->akm))) {
 		if (dpp_parse_cred_dpp(auth, conf, cred) < 0)
 			goto fail;
-#ifdef CONFIG_DPP2
+#if  defined(CONFIG_DPP2) && !defined(MM_IOT_DPP_DISABLE_DOT1X)
 	} else if (conf->akm == DPP_AKM_DOT1X) {
 		if (dpp_parse_cred_dot1x(auth, conf, cred) < 0 ||
 		    dpp_parse_cred_dpp(auth, conf, cred) < 0)
@@ -5112,7 +5119,7 @@ void dpp_global_clear(struct dpp_global *dpp)
 
 	dpp_bootstrap_del(dpp, 0);
 	dpp_configurator_del(dpp, 0);
-#ifdef CONFIG_DPP2
+#if defined(CONFIG_DPP2) && !defined(MM_IOT_DPP_DISABLE_TCP)
 	dpp_tcp_init_flush(dpp);
 	dpp_relay_flush_controllers(dpp);
 	dpp_controller_stop(dpp);
