@@ -1,8 +1,6 @@
 <map id="arm&#45;cortex&#45;m33f" name="arm&#45;cortex&#45;m33f">
-<area shape="rect" id="node2" href="dir_fa2336b2496a59822d458e91099cced3.html" title="mm&#45;ekh08&#45;u575" alt="" coords="617,63,748,111"/>
-<area shape="rect" id="node3" href="dir_3b8272d2a4cb85df1b6e460d98c0b142.html" title="mm&#45;ekh08&#45;u575&#45;sdio" alt="" coords="431,63,593,111"/>
-<area shape="rect" id="node4" href="dir_052ba9e71b6e6b3bab9b78c9f52c00dc.html" title="mm&#45;mm6108&#45;ekh05" alt="" coords="250,63,406,111"/>
-<area shape="rect" id="node5" href="dir_7af3a0f333875df6e6f4c2789fac09d1.html" title="mm&#45;mm6108&#45;ekh05&#45;sdio" alt="" coords="38,63,226,111"/>
-<area shape="rect" id="clust2" href="dir_0fb8fdd18ce434fa0d9cb69735629804.html" alt="" coords="27,52,916,121"/>
-<area shape="rect" id="clust1" href="dir_c2729ddf18bab012de856b523eb05d8f.html" title="platforms" alt="" coords="16,16,927,132"/>
+<area shape="rect" id="node2" href="dir_856cf41be24e48c1f021c2b568acee0b.html" title="mm&#45;mm8108&#45;ekh05" alt="" coords="250,63,406,111"/>
+<area shape="rect" id="node3" href="dir_0363345201cfee5369335c3b0cb997fb.html" title="mm&#45;mm8108&#45;ekh05&#45;sdio" alt="" coords="38,63,226,111"/>
+<area shape="rect" id="clust2" href="dir_0fb8fdd18ce434fa0d9cb69735629804.html" alt="" coords="27,52,575,121"/>
+<area shape="rect" id="clust1" href="dir_c2729ddf18bab012de856b523eb05d8f.html" title="platforms" alt="" coords="16,16,585,132"/>
 </map>

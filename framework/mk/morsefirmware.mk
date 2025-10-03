@@ -1,5 +1,5 @@
 #
-# Copyright 2022-2023 Morse Micro
+# Copyright 2024 Morse Micro
 #
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -9,7 +9,7 @@
 # MM_FIRMWARE_EXTERNAL_START_ADDR is set to the external storage start address
 # and so the firmware is not linked into the application.  However, the MBIN
 # file should still be generated for manually writing to the external storage.
-FW_MBIN  ?= $(MMIOT_ROOT)/morsefirmware/mm6108.mbin
+FW_MBIN  ?= $(MMIOT_ROOT)/morsefirmware/mm8108b2-rl.mbin
 ifeq ($(MM_FIRMWARE_EXTERNAL_START_ADDR),)
 FW_OBJ  := $(patsubst %.mbin,$(BUILD_DIR)/%.mbin.o,$(notdir $(FW_MBIN)))
 OBJS += $(FW_OBJ)

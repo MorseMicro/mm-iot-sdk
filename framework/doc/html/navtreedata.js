@@ -26,7 +26,12 @@ var NAVTREE =
 [
   [ "Morse Micro IoT SDK", "index.html", [
     [ "Introduction", "index.html", null ],
-    [ "Morse Micro IoT Reference Platforms", "MMPLATFORMS.html", "MMPLATFORMS" ],
+    [ "Morse Micro IoT Reference Platforms", "MMPLATFORMS.html", [
+      [ "mm-mm6108-ekh05 Platform", "MMPLATFORMS.html#mm-mm6108-ekh05", null ],
+      [ "mm-ekh08-u575 Platform", "MMPLATFORMS.html#mm-ekh08-u575", null ],
+      [ "mm-ekh08-wb55 Platform", "MMPLATFORMS.html#mm-ekh08-wb55", null ],
+      [ "mm-ekh08-h753 Platform", "MMPLATFORMS.html#mm-ekh08-h753", null ]
+    ] ],
     [ "Getting Started", "GETTING_STARTED.html", [
       [ "Prerequisites", "GETTING_STARTED.html#autotoc_md54", null ],
       [ "Unpacking the software package", "GETTING_STARTED.html#UNPACKING_THE_SW", null ],
@@ -139,6 +144,30 @@ var NAVTREE =
       ] ]
     ] ],
     [ "Example Applications", "MMAPPS.html", null ],
+    [ "stubs", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_build_mcu_hosted_mm8108_release_doc_stubs.html", [
+      [ "Stub Section", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_build_mcu_hosted_mm8108_release_doc_stubs.html#MM_EKH08_H753_README", null ],
+      [ "Stub Section", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_build_mcu_hosted_mm8108_release_doc_stubs.html#MM_EKH08_U575_README", null ],
+      [ "Stub Section", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_build_mcu_hosted_mm8108_release_doc_stubs.html#MM_EKH08_U575_SDIO_README", null ],
+      [ "Stub Section", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_build_mcu_hosted_mm8108_release_doc_stubs.html#MM_EKH08_WB55_BLE_README", null ],
+      [ "Stub Section", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_build_mcu_hosted_mm8108_release_doc_stubs.html#MM_EKH08_WB55_README", null ],
+      [ "Stub Section", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_build_mcu_hosted_mm8108_release_doc_stubs.html#MM_MM6108_EKH05_README", null ],
+      [ "Stub Section", "md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_build_mcu_hosted_mm8108_release_doc_stubs.html#MM_MM6108_EKH05_SDIO_README", null ]
+    ] ],
+    [ "mm-mm8108-ekh05 Readme", "MM_MM8108_EKH05_README.html", [
+      [ "Summary", "MM_MM8108_EKH05_README.html#autotoc_md117", [
+        [ "Pinout STM32 to HaLow Module", "MM_MM8108_EKH05_README.html#autotoc_md118", null ]
+      ] ]
+    ] ],
+    [ "mm-mm8108-ekh05 SDIO (mm-mm8108-ekh05-sdio) Readme", "MM_MM8108_EKH05_SDIO_README.html", [
+      [ "Summary", "MM_MM8108_EKH05_SDIO_README.html#autotoc_md119", [
+        [ "Pinout STM32 to HaLow Module", "MM_MM8108_EKH05_SDIO_README.html#autotoc_md120", null ]
+      ] ]
+    ] ],
+    [ "mm-ekh18-wb55 Readme", "MM_EKH18_WB55_README.html", [
+      [ "Summary", "MM_EKH18_WB55_README.html#autotoc_md121", [
+        [ "Pinout MMECH18", "MM_EKH18_WB55_README.html#autotoc_md122", null ]
+      ] ]
+    ] ],
     [ "Deprecated List", "deprecated.html", null ],
     [ "Modules", "modules.html", "modules" ],
     [ "Data Structures", "annotated.html", [
@@ -167,16 +196,16 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "GETTING_STARTED.html",
-"fileio_8c.html",
-"group__MMAGIC__CONTROLLER__INTERNAL.html#gga2b2777499fd16ac7f9e19eba64cb07a6a06d2592e5a0c10ba3bded0a54246b907",
-"group__MMAGIC__CONTROLLER__WLAN__CONFIG.html#gaab072c33a928ef6f433f68da4c266695",
-"group__MMHAL__WLAN__SPI.html#gaf2b75b0c2e4e8e75f0690af9b3980d0a",
-"group__MMUTILS__WLAN.html#gga17aef4cfb2a7b065d016e047ebb13dc2ab5d97a5640b93ce4cc60b54047cefb76",
-"group__MMWLAN__TEST.html#gga717653d3f72f5265b2c583db54f9f7baaa5e6d54f5438349ffe164ee78f03e850",
-"porting__assistant_8c.html#ae7e4e54271f9f691de54d84661d7dbd4",
-"structmmconfig__update__node.html#a2b33d5c71d4d5619ce2041c158f4a5f2",
-"structmmwlan__sta__args.html#a68ce383b62a427bdc89639b0ec32ddfb",
-"wnm__sleep_8c.html#aa74a8e27191a3077ea4cf00ea7507962"
+"functions_t.html",
+"group__MMAGIC__CONTROLLER__INTERNAL.html#gga3fdd29b88bd1bef6ea91cd677513167aa4907722961673c21bdce293864efe91d",
+"group__MMAGIC__CONTROLLER__WLAN__CONFIG.html#gafe8966534dfe6dafe5a0e0bb583aef7b",
+"group__MMIPAL.html#gae440845377bec95b95986abdf02287f6",
+"group__MMWLAN.html#gacacf7f8ff268c397c2938a751857afc1",
+"group__SLIP.html",
+"rf-test_8c.html#afc1d7081d64ee9ac4421d2755dc58ee7",
+"structmmhal__wlan__sdio__cmd53__read__args.html#a283bbc0ad64e85a42bd96a0d0c016b21",
+"structmmwlan__standby__config.html",
+"wnm__sleep_8c.html#af6267920b504273777e2451780e565afa3adbaca7b3bbb8e759ef13e7f2627dc1"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
