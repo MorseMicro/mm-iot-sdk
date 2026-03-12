@@ -6,14 +6,19 @@
 
 CORE := arm-cortex-m33f
 
+MMHAL_CHIP_TYPE ?= mmhal_mm6108
+BUILD_DEFINES += MMHAL_CHIP_TYPE=$(MMHAL_CHIP_TYPE)
+
+FW_MBIN ?= mm6108.mbin
+
 # Platform specific files
 BSP_DIR = $(APP_DIR)/bsp
 
 # This platform is well resourced so we can use statically allocated pktmem with generous
 # allocations.
 MMPKTMEM_TYPE = static
-MMPKTMEM_TX_POOL_N_BLOCKS = 32
-MMPKTMEM_RX_POOL_N_BLOCKS = 32
+MMPKTMEM_TX_POOL_N_BLOCKS ?= 32
+MMPKTMEM_RX_POOL_N_BLOCKS ?= 32
 
 BSP_SRCS_MAIN_C ?= Core/Src/main.c
 BSP_SRCS_C += $(BSP_SRCS_MAIN_C)

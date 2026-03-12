@@ -9,7 +9,7 @@
 
 #include "core/autogen/mmagic_core_types.h"
 #include "mmagic_core_utils.h"
-#include "mmhal.h"
+#include "mmhal_app.h"
 #include "mmutils.h"
 #include "core/autogen/mmagic_core_data.h"
 #include "sntp_client.h"

@@ -7,6 +7,11 @@
 CORE = arm-cortex-m7f
 PLATFORM_PATH = src/platforms/mm-ekh08-h753
 
+MMHAL_CHIP_TYPE ?= mmhal_mm6108
+BUILD_DEFINES += MMHAL_CHIP_TYPE=$(MMHAL_CHIP_TYPE)
+
+FW_MBIN ?= mm6108.mbin
+
 # Platform specific files
 BSP_DIR = $(PLATFORM_PATH)/bsp
 

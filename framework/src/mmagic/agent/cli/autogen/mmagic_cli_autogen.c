@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Morse Micro
+ * Copyright 2026 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -22,10 +22,13 @@ void mmagic_cli_init_modules(struct mmagic_cli *ctx)
     mmagic_cli_iperf_init(ctx);
 
     mmagic_cli_sys_init(ctx);
-}
+};
 
-enum mmagic_status mmagic_cli_handle_event(
-    void *arg, uint8_t subsystem_id, uint8_t event_id, const uint8_t *payload, size_t payload_len)
+enum mmagic_status mmagic_cli_handle_event(void *arg,
+                                           uint8_t subsystem_id,
+                                           uint8_t event_id,
+                                           const uint8_t *payload,
+                                           size_t payload_len)
 {
     struct mmagic_cli *ctx = (struct mmagic_cli *)arg;
 
@@ -34,48 +37,45 @@ enum mmagic_status mmagic_cli_handle_event(
 
     switch (subsystem_id)
     {
-    case mmagic_wlan:
-        switch (event_id)
-        {
-        case mmagic_wlan_event_beacon_rx:
-            mmagic_cli_wlan_handle_event_beacon_rx(
-                ctx,
-                (const struct mmagic_core_event_wlan_beacon_rx_args *)payload);
-            return MMAGIC_STATUS_OK;
+        case mmagic_wlan:
+            switch (event_id)
+            {
+                case mmagic_wlan_event_beacon_rx:
+                    mmagic_cli_wlan_handle_event_beacon_rx(
+                        ctx,
+                        (const struct mmagic_core_event_wlan_beacon_rx_args *)payload);
+                    return MMAGIC_STATUS_OK;
+                case mmagic_wlan_event_standby_exit:
+                    mmagic_cli_wlan_handle_event_standby_exit(
+                        ctx,
+                        (const struct mmagic_core_event_wlan_standby_exit_args *)payload);
+                    return MMAGIC_STATUS_OK;
+                case mmagic_wlan_event_sta_event:
+                    mmagic_cli_wlan_handle_event_sta_event(
+                        ctx,
+                        (const struct mmagic_core_event_wlan_sta_event_args *)payload);
+                    return MMAGIC_STATUS_OK;
 
-        case mmagic_wlan_event_standby_exit:
-            mmagic_cli_wlan_handle_event_standby_exit(
-                ctx,
-                (const struct mmagic_core_event_wlan_standby_exit_args *)payload);
-            return MMAGIC_STATUS_OK;
+                default:
+                    break;
+            }
+            break;
+        case mmagic_ip:
+            switch (event_id)
+            {
+                case mmagic_ip_event_link_status:
+                    mmagic_cli_ip_handle_event_link_status(
+                        ctx,
+                        (const struct mmagic_core_event_ip_link_status_args *)payload);
+                    return MMAGIC_STATUS_OK;
 
-        case mmagic_wlan_event_sta_event:
-            mmagic_cli_wlan_handle_event_sta_event(
-                ctx,
-                (const struct mmagic_core_event_wlan_sta_event_args *)payload);
-            return MMAGIC_STATUS_OK;
+                default:
+                    break;
+            }
+            break;
 
         default:
             break;
-        }
-        break;
-
-    case mmagic_ip:
-        switch (event_id)
-        {
-        case mmagic_ip_event_link_status:
-            mmagic_cli_ip_handle_event_link_status(
-                ctx,
-                (const struct mmagic_core_event_ip_link_status_args *)payload);
-            return MMAGIC_STATUS_OK;
-
-        default:
-            break;
-        }
-        break;
-
-    default:
-        break;
     }
 
     /* If we get here this indicates programming error since this should only be invoked

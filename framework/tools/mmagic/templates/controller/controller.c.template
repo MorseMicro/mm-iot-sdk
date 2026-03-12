@@ -373,7 +373,8 @@ static void mmagic_llc_controller_rx_callback(struct mmagic_datalink_controller 
         (ptype != MMAGIC_LLC_PTYPE_SYNC_RESP) &&
         (ptype != MMAGIC_LLC_PTYPE_AGENT_START_NOTIFICATION))
     {
-        mmosal_printf("MMAGIC_LLC: Repeated packet dropped!\n");
+        mmosal_printf("MMAGIC_LLC: Repeated packet dropped! (ptype %u, seq %u, sid %u, len %u)\n",
+                      ptype, seq, sid, length);
         goto exit;
     }
 

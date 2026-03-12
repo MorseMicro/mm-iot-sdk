@@ -862,9 +862,12 @@ struct hostapd_s1g_freq_params {
 	int s1g_prim_bw;
 
 	/**
-	 * s1g_prim_channel_index_1MHz - Index of primary 1MHz channel
+	 * Location of 1 MHz primary channel within the 2 MHz primary channel.
+	 *
+	 * - 0: lower side of 2 MHz primary channel.
+	 * - 1: upper side of 2 MHz primary channel.
 	 */
-	int s1g_prim_channel_index_1MHz;
+	int s1g_prim_1mhz_channel_loc;
 
 	/**
 	 * s1g_oper_freq - New S1g Operating frequency
@@ -963,16 +966,9 @@ struct hostapd_freq_params {
 
 #ifdef CONFIG_IEEE80211AH
 	/**
-	 * prim_bandwidth - S1G Primary Channel bandwidth
-	 *
-	 * 0 = 1 MHz
-	 * 1 = 2 MHz
+	 * prim_bandwidth - S1G Primary Channel bandwidth in MHz (1 or 2)
 	 */
 	int prim_bandwidth;
-	/**
-	 * prim_index - S1G Primary Channel index within the operating channel.
-	 */
-	int prim_ch_index;
 #endif /* CONFIG_IEEE80211AH */
 
 	/**

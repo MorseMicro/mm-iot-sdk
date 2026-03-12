@@ -1,14 +1,12 @@
 /*
- * Copyright 2021-2023 Morse Micro
+ * Copyright 2021-2025 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  */
 
-
-#include "main.h"
 #include "mmhal_wlan.h"
-#include "mmconfig.h"
 #include "mmosal.h"
+#include "mmconfig.h"
 
 /*
  * ---------------------------------------------------------------------------------------------
@@ -19,6 +17,7 @@
 /*
  * The following implementation reads the BCF File from the config store.
  */
+
 void mmhal_wlan_read_bcf_file(uint32_t offset, uint32_t requested_len, struct mmhal_robuf *robuf)
 {
 #ifdef INCLUDE_BCF_FILE_IN_APPLICATION
@@ -42,7 +41,7 @@ void mmhal_wlan_read_bcf_file(uint32_t offset, uint32_t requested_len, struct mm
         return;
     }
 
-    robuf->buf = (uint8_t*)&bcf_binary_start + offset;
+    robuf->buf = (uint8_t *)&bcf_binary_start + offset;
     robuf->len = bcf_len - offset;
     robuf->len = (robuf->len < requested_len) ? robuf->len : requested_len;
 #else
@@ -60,15 +59,15 @@ void mmhal_wlan_read_bcf_file(uint32_t offset, uint32_t requested_len, struct mm
     /* If data returned */
     if (length > 0)
     {
-        if ((uint32_t) length > requested_len)
+        if ((uint32_t)length > requested_len)
         {
-            length = (int) requested_len;
+            length = (int)requested_len;
         }
         /* Allocate buffer and free callbacks */
         void *buf = mmosal_malloc(length);
         if (buf)
         {
-            robuf->buf = (uint8_t*) buf;
+            robuf->buf = (uint8_t *)buf;
             robuf->free_arg = buf;
             robuf->len = length;
             robuf->free_cb = mmosal_free;

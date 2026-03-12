@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Morse Micro
+ * Copyright 2026 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -18,26 +18,26 @@
  * This must be kept in sync with Agent.
  */
 
-#define MMAGIC_LLC_PROTOCOL_VERSION    1U
+#define MMAGIC_LLC_PROTOCOL_VERSION 1U
 MM_STATIC_ASSERT(MMAGIC_LLC_PROTOCOL_VERSION < UINT8_MAX, "Protocol version must be uint8");
 
 /** The maximum size of packets we support */
-#define MMAGIC_LLC_MAX_PACKET_SIZE    2048
+#define MMAGIC_LLC_MAX_PACKET_SIZE 2048
 
 /** Extracts the packet type from the TSEQ field */
-#define MMAGIC_LLC_GET_PTYPE(x)       ((x) >> 4)
+#define MMAGIC_LLC_GET_PTYPE(x) ((x) >> 4)
 
 /** Extracts the sequence number from the TSEQ field */
-#define MMAGIC_LLC_GET_SEQ(x)         ((x) & 0x0F)
+#define MMAGIC_LLC_GET_SEQ(x) ((x) & 0x0F)
 
 /** Gets the next SEQ number */
-#define MMAGIC_LLC_GET_NEXT_SEQ(x)    ((x + 1) & 0x0F)
+#define MMAGIC_LLC_GET_NEXT_SEQ(x) ((x + 1) & 0x0F)
 
 /** Sets the packet type and seq in the the TSEQ field */
-#define MMAGIC_LLC_SET_TSEQ(t, s)   (((t) << 4) | (s & 0x0F))
+#define MMAGIC_LLC_SET_TSEQ(t, s) (((t) << 4) | (s & 0x0F))
 
 /* An invalid sequence ID that can never be encountered normally */
-#define MMAGIC_LLC_INVALID_SEQUENCE   0xFF
+#define MMAGIC_LLC_INVALID_SEQUENCE 0xFF
 
 /**
  * The LLC uses these packet types to sequence communications between the
@@ -47,36 +47,36 @@ MM_STATIC_ASSERT(MMAGIC_LLC_PROTOCOL_VERSION < UINT8_MAX, "Protocol version must
 enum mmagic_llc_packet_type
 {
     /** This is a command from the controller to the agent */
-    MMAGIC_LLC_PTYPE_COMMAND                  = 0,
+    MMAGIC_LLC_PTYPE_COMMAND = 0,
 
     /** This is a response from the agent to the controller. */
-    MMAGIC_LLC_PTYPE_RESPONSE                 = 1,
+    MMAGIC_LLC_PTYPE_RESPONSE = 1,
 
     /** This is an unsolicited event from Agent to Controller. */
-    MMAGIC_LLC_PTYPE_EVENT                    = 2,
+    MMAGIC_LLC_PTYPE_EVENT = 2,
 
     /** An unspecified error condition has occured */
-    MMAGIC_LLC_PTYPE_ERROR                    = 3,
+    MMAGIC_LLC_PTYPE_ERROR = 3,
 
     /** Instructs the agent to reset itself */
-    MMAGIC_LLC_PTYPE_AGENT_RESET              = 4,
+    MMAGIC_LLC_PTYPE_AGENT_RESET = 4,
 
     /** Notifies the controller that the agent was just reset or started */
     MMAGIC_LLC_PTYPE_AGENT_START_NOTIFICATION = 5,
 
     /** Notifies the other party that the referenced stream is invalid or not opened yet */
-    MMAGIC_LLC_PTYPE_INVALID_STREAM           = 8,
+    MMAGIC_LLC_PTYPE_INVALID_STREAM = 8,
 
     /** Notifies the other party that a packet was missed due to a gap in the sequence numbers */
-    MMAGIC_LLC_PTYPE_PACKET_LOSS_DETECTED     = 9,
+    MMAGIC_LLC_PTYPE_PACKET_LOSS_DETECTED = 9,
 
     /** Sent by the Controller to request the Agent to send a SYNC_RESP. Does not increment
      *  the sequence number counter. Sequence number counter is ignored by the Agent. */
-    MMAGIC_LLC_PTYPE_SYNC_REQ                 = 10,
+    MMAGIC_LLC_PTYPE_SYNC_REQ = 10,
 
     /** Sent by the Agent in response to the Controller. Does not increment the sequence number
      *  counter. */
-    MMAGIC_LLC_PTYPE_SYNC_RESP                = 11,
+    MMAGIC_LLC_PTYPE_SYNC_RESP = 11,
 };
 
 struct MM_PACKED mmagic_llc_header
@@ -106,7 +106,7 @@ struct MM_PACKED mmagic_llc_sync_rsp
 };
 
 MM_STATIC_ASSERT(MM_MEMBER_SIZE(struct mmagic_llc_sync_req, token) ==
-                 MM_MEMBER_SIZE(struct mmagic_llc_sync_rsp, token),
+                     MM_MEMBER_SIZE(struct mmagic_llc_sync_rsp, token),
                  "REQ and RESP tokens must match");
 
 MM_STATIC_ASSERT(MM_MEMBER_SIZE(struct mmagic_llc_sync_req, token) == sizeof(uint32_t),
@@ -177,11 +177,12 @@ struct MM_PACKED mmagic_m2m_event_header
 /** Enumeration of event identifiers. These are unique within a given subsystem. */
 enum mmagic_m2m_event_id
 {
-    MMAGIC_WLAN_EVT_BEACON_RX         = 1,
-    MMAGIC_WLAN_EVT_STANDBY_EXIT      = 2,
-    MMAGIC_WLAN_EVT_STA_EVENT         = 3,
-    MMAGIC_IP_EVT_LINK_STATUS         = 4,
-    MMAGIC_MQTT_EVT_MESSAGE_RECEIVED  = 5,
+    MMAGIC_WLAN_EVT_BEACON_RX = 1,
+    MMAGIC_WLAN_EVT_STANDBY_EXIT = 2,
+    MMAGIC_WLAN_EVT_STA_EVENT = 3,
+    MMAGIC_IP_EVT_LINK_STATUS = 4,
+    MMAGIC_TCP_EVT_RX_READY = 1,
+    MMAGIC_MQTT_EVT_MESSAGE_RECEIVED = 5,
     MMAGIC_MQTT_EVT_BROKER_CONNECTION = 6,
 };
 
@@ -190,7 +191,7 @@ enum mmagic_m2m_event_id
  */
 
 /** Maximum number of streams possible. */
-#define MMAGIC_LLC_MAX_STREAMS  (8)
+#define MMAGIC_LLC_MAX_STREAMS (8)
 
 struct mmagic_controller
 {
@@ -218,6 +219,8 @@ struct mmagic_controller
         void *wlan_sta_event_arg;
         mmagic_ip_link_status_event_handler_t ip_link_status;
         void *ip_link_status_arg;
+        mmagic_tcp_rx_ready_event_handler_t tcp_rx_ready;
+        void *tcp_rx_ready_arg;
         mmagic_mqtt_message_received_event_handler_t mqtt_message_received;
         void *mqtt_message_received_arg;
         mmagic_mqtt_broker_connection_event_handler_t mqtt_broker_connection;
@@ -234,11 +237,13 @@ struct mmagic_controller
     void *agent_start_arg;
 };
 
-static void mmagic_m2m_controller_rx_callback(struct mmagic_controller *controller, uint8_t sid,
+static void mmagic_m2m_controller_rx_callback(struct mmagic_controller *controller,
+                                              uint8_t sid,
                                               struct mmbuf *rx_buffer);
 
 static void mmagic_m2m_controller_event_rx_callback(struct mmagic_controller *controller,
-                                                    uint8_t sid, struct mmbuf *rx_buffer);
+                                                    uint8_t sid,
+                                                    struct mmbuf *rx_buffer);
 
 /* -------------------------------------------------------------------------------------------- */
 
@@ -278,6 +283,14 @@ void mmagic_controller_register_ip_link_status_handler(
     controller->event_handlers.ip_link_status_arg = arg;
 }
 
+void mmagic_controller_register_tcp_rx_ready_handler(struct mmagic_controller *controller,
+                                                     mmagic_tcp_rx_ready_event_handler_t handler,
+                                                     void *arg)
+{
+    controller->event_handlers.tcp_rx_ready = handler;
+    controller->event_handlers.tcp_rx_ready_arg = arg;
+}
+
 void mmagic_controller_register_mqtt_message_received_handler(
     struct mmagic_controller *controller,
     mmagic_mqtt_message_received_event_handler_t handler,
@@ -299,7 +312,8 @@ void mmagic_controller_register_mqtt_broker_connection_handler(
 /* -------------------------------------------------------------------------------------------- */
 
 struct mmbuf *mmagic_llc_controller_alloc_buffer_for_tx(struct mmagic_controller *controller,
-                                                        uint8_t *payload, size_t payload_size)
+                                                        uint8_t *payload,
+                                                        size_t payload_size)
 {
     struct mmbuf *mmbuffer =
         mmagic_datalink_controller_alloc_buffer_for_tx(controller->controller_llc.controller_dl,
@@ -339,7 +353,8 @@ static void mmagic_llc_handle_sync_resp(struct mmagic_controller *controller,
         recieved_token != controller->controller_llc.sync_token)
     {
         mmosal_printf("MMAGIC_LLC: Agent sync response has bad token %lx, expected %lx\n",
-                      recieved_token, controller->controller_llc.sync_token);
+                      recieved_token,
+                      controller->controller_llc.sync_token);
         return;
     }
 
@@ -348,14 +363,16 @@ static void mmagic_llc_handle_sync_resp(struct mmagic_controller *controller,
     if (sync_resp->protocol_version != MMAGIC_LLC_PROTOCOL_VERSION)
     {
         mmosal_printf("MMAGIC_LLC: Agent has wrong protocol version %lu, expected %lu\n",
-                      sync_resp->protocol_version, MMAGIC_LLC_PROTOCOL_VERSION);
+                      sync_resp->protocol_version,
+                      MMAGIC_LLC_PROTOCOL_VERSION);
         sync_status = MMAGIC_STATUS_BAD_VERSION;
     }
 
     if (sync_resp->last_seen_seq != controller->controller_llc.last_sent_seq)
     {
         mmosal_printf("MMAGIC_LLC: Agent was out of sync %lu, expected %lu\n",
-                      sync_resp->last_seen_seq, controller->controller_llc.last_sent_seq);
+                      sync_resp->last_seen_seq,
+                      controller->controller_llc.last_sent_seq);
     }
 
     /* Clear prev sync token */
@@ -364,7 +381,8 @@ static void mmagic_llc_handle_sync_resp(struct mmagic_controller *controller,
 }
 
 static void mmagic_llc_controller_rx_callback(struct mmagic_datalink_controller *controller_dl,
-                                              void *arg, struct mmbuf *rx_buffer)
+                                              void *arg,
+                                              struct mmbuf *rx_buffer)
 {
     MM_UNUSED(controller_dl);
     if (rx_buffer == NULL)
@@ -407,7 +425,8 @@ static void mmagic_llc_controller_rx_callback(struct mmagic_datalink_controller 
     if (mmbuf_get_data_length(rx_buffer) < length)
     {
         mmosal_printf("MMAGIC_LLC: Buffer smaller than length specified (%u < %u)!\n",
-                      mmbuf_get_data_length(rx_buffer), length);
+                      mmbuf_get_data_length(rx_buffer),
+                      length);
         goto exit;
     }
 
@@ -417,65 +436,69 @@ static void mmagic_llc_controller_rx_callback(struct mmagic_datalink_controller 
         (ptype != MMAGIC_LLC_PTYPE_SYNC_RESP) &&
         (ptype != MMAGIC_LLC_PTYPE_AGENT_START_NOTIFICATION))
     {
-        mmosal_printf("MMAGIC_LLC: Repeated packet dropped!\n");
+        mmosal_printf("MMAGIC_LLC: Repeated packet dropped! (ptype %u, seq %u, sid %u, len %u)\n",
+                      ptype,
+                      seq,
+                      sid,
+                      length);
         goto exit;
     }
 
     switch (ptype)
     {
-    case MMAGIC_LLC_PTYPE_RESPONSE:
-        /* Response from agent, pass to appropriate stream queue */
-        mmagic_m2m_controller_rx_callback(controller, sid, rx_buffer);
+        case MMAGIC_LLC_PTYPE_RESPONSE:
+            /* Response from agent, pass to appropriate stream queue */
+            mmagic_m2m_controller_rx_callback(controller, sid, rx_buffer);
 
-        /* mmagic_m2m_controller_rx_callback() takes ownership of rx_buffer, so we set the
-         * reference to NULL here since we do not want it to be freed when this function
-         * returns. */
-        rx_buffer = NULL;
-        break;
+            /* mmagic_m2m_controller_rx_callback() takes ownership of rx_buffer, so we set the
+             * reference to NULL here since we do not want it to be freed when this function
+             * returns. */
+            rx_buffer = NULL;
+            break;
 
-    case MMAGIC_LLC_PTYPE_EVENT:
-        mmagic_m2m_controller_event_rx_callback(controller, sid, rx_buffer);
+        case MMAGIC_LLC_PTYPE_EVENT:
+            mmagic_m2m_controller_event_rx_callback(controller, sid, rx_buffer);
 
-        /* mmagic_m2m_controller_event_rx_callback() takes ownership of rx_buffer, so we set
-         * the reference to NULL here since we do not want it to be freed when this function
-         * returns. */
-        rx_buffer = NULL;
-        break;
+            /* mmagic_m2m_controller_event_rx_callback() takes ownership of rx_buffer, so we set
+             * the reference to NULL here since we do not want it to be freed when this function
+             * returns. */
+            rx_buffer = NULL;
+            break;
 
-    case MMAGIC_LLC_PTYPE_ERROR:
-        /* Log error and continue for now - we have to handle this explicitly or else we
-         * could end up in an 'error loop' with both sides bouncing the error back and
-         * forth. */
-        mmosal_printf("MMAGIC_LLC: Received error event from agent!\n");
-        break;
+        case MMAGIC_LLC_PTYPE_ERROR:
+            /* Log error and continue for now - we have to handle this explicitly or else we
+             * could end up in an 'error loop' with both sides bouncing the error back and
+             * forth. */
+            mmosal_printf("MMAGIC_LLC: Received error event from agent!\n");
+            break;
 
-    case MMAGIC_LLC_PTYPE_AGENT_START_NOTIFICATION:
-        mmosal_printf("MMAGIC_LLC: Received agent START event!\n");
-        if (controller->agent_start_cb)
-        {
-            controller->agent_start_cb(controller, controller->agent_start_arg);
-        }
-        break;
+        case MMAGIC_LLC_PTYPE_AGENT_START_NOTIFICATION:
+            mmosal_printf("MMAGIC_LLC: Received agent START event!\n");
+            if (controller->agent_start_cb)
+            {
+                controller->agent_start_cb(controller, controller->agent_start_arg);
+            }
+            break;
 
-    case MMAGIC_LLC_PTYPE_INVALID_STREAM:
-        mmosal_printf("MMAGIC_LLC: Agent reports invalid stream!\n");
-        break;
+        case MMAGIC_LLC_PTYPE_INVALID_STREAM:
+            mmosal_printf("MMAGIC_LLC: Agent reports invalid stream!\n");
+            break;
 
-    case MMAGIC_LLC_PTYPE_PACKET_LOSS_DETECTED:
-        mmosal_printf("MMAGIC_LLC: Agent reports packet loss!\n");
-        break;
+        case MMAGIC_LLC_PTYPE_PACKET_LOSS_DETECTED:
+            mmosal_printf("MMAGIC_LLC: Agent reports packet loss!\n");
+            break;
 
-    case MMAGIC_LLC_PTYPE_SYNC_RESP:
-        mmagic_llc_handle_sync_resp(controller, rx_buffer);
-        break;
+        case MMAGIC_LLC_PTYPE_SYNC_RESP:
+            mmagic_llc_handle_sync_resp(controller, rx_buffer);
+            break;
 
-    case MMAGIC_LLC_PTYPE_COMMAND:
-    case MMAGIC_LLC_PTYPE_AGENT_RESET:
-    case MMAGIC_LLC_PTYPE_SYNC_REQ:
-    default:
-        /* We have encountered an unexpected command or error. */
-        mmosal_printf("MMAGIC_LLC: Received invalid packet of ptype: %u\n", ptype);
-        break;
+        case MMAGIC_LLC_PTYPE_COMMAND:
+        case MMAGIC_LLC_PTYPE_AGENT_RESET:
+        case MMAGIC_LLC_PTYPE_SYNC_REQ:
+        default:
+            /* We have encountered an unexpected command or error. */
+            mmosal_printf("MMAGIC_LLC: Received invalid packet of ptype: %u\n", ptype);
+            break;
     }
 
     /* Check if we missed a packet */
@@ -485,7 +508,8 @@ static void mmagic_llc_controller_rx_callback(struct mmagic_datalink_controller 
     {
         /* We have encountered an out of order sequence */
         mmosal_printf("MMAGIC_LLC: Observed packet loss - seq num observed: %u expected: %u\n",
-                      seq, MMAGIC_LLC_GET_NEXT_SEQ(controller->controller_llc.last_seen_seq));
+                      seq,
+                      MMAGIC_LLC_GET_NEXT_SEQ(controller->controller_llc.last_seen_seq));
     }
 
 exit:
@@ -497,7 +521,8 @@ exit:
 
 static enum mmagic_status mmagic_llc_controller_tx(struct mmagic_controller *controller,
                                                    enum mmagic_llc_packet_type ptype,
-                                                   uint8_t sid, struct mmbuf *tx_buffer)
+                                                   uint8_t sid,
+                                                   struct mmbuf *tx_buffer)
 {
     struct mmagic_llc_header *txheader;
     if (tx_buffer == NULL)
@@ -529,8 +554,8 @@ static enum mmagic_status mmagic_llc_controller_tx(struct mmagic_controller *con
 
     /* Send the buffer - tx_buffer will be freed by mmhal_datalink */
     enum mmagic_status status = MMAGIC_STATUS_TX_ERROR;
-    if (mmagic_datalink_controller_tx_buffer(controller->controller_llc.controller_dl,
-                                             tx_buffer) > 0)
+    if (mmagic_datalink_controller_tx_buffer(controller->controller_llc.controller_dl, tx_buffer) >
+        0)
     {
         /* Update last_sent_seq if datalink indicates data sent */
         status = MMAGIC_STATUS_OK;
@@ -547,7 +572,7 @@ static enum mmagic_status mmagic_llc_controller_tx(struct mmagic_controller *con
  *
  * @note While this may look inefficient, the compiler should be smart in optimizing it.
  *
- * @param status The input status code (integer type).
+ * @param status    The input status code (integer type).
  *
  * @returns The status code (as @c mmagic_status). Unrecognized input values will result in a
  *          return value of @c MMAGIC_STATUS_ERROR.
@@ -556,111 +581,118 @@ static enum mmagic_status mmagic_status_from_u8(uint8_t status)
 {
     switch (status)
     {
-    case MMAGIC_STATUS_OK:
-        return MMAGIC_STATUS_OK;
+        case MMAGIC_STATUS_OK:
+            return MMAGIC_STATUS_OK;
 
-    case MMAGIC_STATUS_ERROR:
-        return MMAGIC_STATUS_ERROR;
+        case MMAGIC_STATUS_ERROR:
+            return MMAGIC_STATUS_ERROR;
 
-    case MMAGIC_STATUS_INVALID_ARG:
-        return MMAGIC_STATUS_INVALID_ARG;
+        case MMAGIC_STATUS_INVALID_ARG:
+            return MMAGIC_STATUS_INVALID_ARG;
 
-    case MMAGIC_STATUS_UNAVAILABLE:
-        return MMAGIC_STATUS_UNAVAILABLE;
+        case MMAGIC_STATUS_UNAVAILABLE:
+            return MMAGIC_STATUS_UNAVAILABLE;
 
-    case MMAGIC_STATUS_TIMEOUT:
-        return MMAGIC_STATUS_TIMEOUT;
+        case MMAGIC_STATUS_TIMEOUT:
+            return MMAGIC_STATUS_TIMEOUT;
 
-    case MMAGIC_STATUS_INVALID_STREAM:
-        return MMAGIC_STATUS_INVALID_STREAM;
+        case MMAGIC_STATUS_INVALID_STREAM:
+            return MMAGIC_STATUS_INVALID_STREAM;
 
-    case MMAGIC_STATUS_NOT_FOUND:
-        return MMAGIC_STATUS_NOT_FOUND;
+        case MMAGIC_STATUS_NOT_FOUND:
+            return MMAGIC_STATUS_NOT_FOUND;
 
-    case MMAGIC_STATUS_NOT_SUPPORTED:
-        return MMAGIC_STATUS_NOT_SUPPORTED;
+        case MMAGIC_STATUS_NOT_SUPPORTED:
+            return MMAGIC_STATUS_NOT_SUPPORTED;
 
-    case MMAGIC_STATUS_TX_ERROR:
-        return MMAGIC_STATUS_TX_ERROR;
+        case MMAGIC_STATUS_TX_ERROR:
+            return MMAGIC_STATUS_TX_ERROR;
 
-    case MMAGIC_STATUS_NO_MEM:
-        return MMAGIC_STATUS_NO_MEM;
+        case MMAGIC_STATUS_NO_MEM:
+            return MMAGIC_STATUS_NO_MEM;
 
-    case MMAGIC_STATUS_CLOSED:
-        return MMAGIC_STATUS_CLOSED;
+        case MMAGIC_STATUS_CLOSED:
+            return MMAGIC_STATUS_CLOSED;
 
-    case MMAGIC_STATUS_CHANNEL_LIST_NOT_SET:
-        return MMAGIC_STATUS_CHANNEL_LIST_NOT_SET;
+        case MMAGIC_STATUS_CHANNEL_LIST_NOT_SET:
+            return MMAGIC_STATUS_CHANNEL_LIST_NOT_SET;
 
-    case MMAGIC_STATUS_SHUTDOWN_BLOCKED:
-        return MMAGIC_STATUS_SHUTDOWN_BLOCKED;
+        case MMAGIC_STATUS_SHUTDOWN_BLOCKED:
+            return MMAGIC_STATUS_SHUTDOWN_BLOCKED;
 
-    case MMAGIC_STATUS_CHANNEL_INVALID:
-        return MMAGIC_STATUS_CHANNEL_INVALID;
+        case MMAGIC_STATUS_CHANNEL_INVALID:
+            return MMAGIC_STATUS_CHANNEL_INVALID;
 
-    case MMAGIC_STATUS_NOT_RUNNING:
-        return MMAGIC_STATUS_NOT_RUNNING;
+        case MMAGIC_STATUS_NOT_RUNNING:
+            return MMAGIC_STATUS_NOT_RUNNING;
 
-    case MMAGIC_STATUS_NO_LINK:
-        return MMAGIC_STATUS_NO_LINK;
+        case MMAGIC_STATUS_NO_LINK:
+            return MMAGIC_STATUS_NO_LINK;
 
-    case MMAGIC_STATUS_UNKNOWN_HOST:
-        return MMAGIC_STATUS_UNKNOWN_HOST;
+        case MMAGIC_STATUS_UNKNOWN_HOST:
+            return MMAGIC_STATUS_UNKNOWN_HOST;
 
-    case MMAGIC_STATUS_SOCKET_FAILED:
-        return MMAGIC_STATUS_SOCKET_FAILED;
+        case MMAGIC_STATUS_SOCKET_FAILED:
+            return MMAGIC_STATUS_SOCKET_FAILED;
 
-    case MMAGIC_STATUS_SOCKET_CONNECT_FAILED:
-        return MMAGIC_STATUS_SOCKET_CONNECT_FAILED;
+        case MMAGIC_STATUS_SOCKET_CONNECT_FAILED:
+            return MMAGIC_STATUS_SOCKET_CONNECT_FAILED;
 
-    case MMAGIC_STATUS_SOCKET_BIND_FAILED:
-        return MMAGIC_STATUS_SOCKET_BIND_FAILED;
+        case MMAGIC_STATUS_SOCKET_BIND_FAILED:
+            return MMAGIC_STATUS_SOCKET_BIND_FAILED;
 
-    case MMAGIC_STATUS_SOCKET_LISTEN_FAILED:
-        return MMAGIC_STATUS_SOCKET_LISTEN_FAILED;
+        case MMAGIC_STATUS_SOCKET_LISTEN_FAILED:
+            return MMAGIC_STATUS_SOCKET_LISTEN_FAILED;
 
-    case MMAGIC_STATUS_NTP_KOD_RECEIVED:
-        return MMAGIC_STATUS_NTP_KOD_RECEIVED;
+        case MMAGIC_STATUS_NTP_KOD_RECEIVED:
+            return MMAGIC_STATUS_NTP_KOD_RECEIVED;
 
-    case MMAGIC_STATUS_NTP_KOD_BACKOFF_RECEIVED:
-        return MMAGIC_STATUS_NTP_KOD_BACKOFF_RECEIVED;
+        case MMAGIC_STATUS_NTP_KOD_BACKOFF_RECEIVED:
+            return MMAGIC_STATUS_NTP_KOD_BACKOFF_RECEIVED;
 
-    case MMAGIC_STATUS_SOCKET_SEND_FAILED:
-        return MMAGIC_STATUS_SOCKET_SEND_FAILED;
+        case MMAGIC_STATUS_SOCKET_SEND_FAILED:
+            return MMAGIC_STATUS_SOCKET_SEND_FAILED;
 
-    case MMAGIC_STATUS_INVALID_CREDENTIALS:
-        return MMAGIC_STATUS_INVALID_CREDENTIALS;
+        case MMAGIC_STATUS_INVALID_CREDENTIALS:
+            return MMAGIC_STATUS_INVALID_CREDENTIALS;
 
-    case MMAGIC_STATUS_HANDSHAKE_FAILED:
-        return MMAGIC_STATUS_HANDSHAKE_FAILED;
+        case MMAGIC_STATUS_HANDSHAKE_FAILED:
+            return MMAGIC_STATUS_HANDSHAKE_FAILED;
 
-    case MMAGIC_STATUS_AUTHENTICATION_FAILED:
-        return MMAGIC_STATUS_AUTHENTICATION_FAILED;
+        case MMAGIC_STATUS_AUTHENTICATION_FAILED:
+            return MMAGIC_STATUS_AUTHENTICATION_FAILED;
 
-    case MMAGIC_STATUS_MISSING_CREDENTIALS:
-        return MMAGIC_STATUS_MISSING_CREDENTIALS;
+        case MMAGIC_STATUS_MISSING_CREDENTIALS:
+            return MMAGIC_STATUS_MISSING_CREDENTIALS;
 
-    case MMAGIC_STATUS_TIME_NOT_SYNCHRONIZED:
-        return MMAGIC_STATUS_TIME_NOT_SYNCHRONIZED;
+        case MMAGIC_STATUS_TIME_NOT_SYNCHRONIZED:
+            return MMAGIC_STATUS_TIME_NOT_SYNCHRONIZED;
 
-    case MMAGIC_STATUS_MQTT_REFUSED:
-        return MMAGIC_STATUS_MQTT_REFUSED;
+        case MMAGIC_STATUS_MQTT_REFUSED:
+            return MMAGIC_STATUS_MQTT_REFUSED;
 
-    case MMAGIC_STATUS_MQTT_KEEPALIVE_TIMEOUT:
-        return MMAGIC_STATUS_MQTT_KEEPALIVE_TIMEOUT;
+        case MMAGIC_STATUS_MQTT_KEEPALIVE_TIMEOUT:
+            return MMAGIC_STATUS_MQTT_KEEPALIVE_TIMEOUT;
 
-    case MMAGIC_STATUS_BAD_VERSION:
-        return MMAGIC_STATUS_BAD_VERSION;
+        case MMAGIC_STATUS_NOT_INITIALIZED:
+            return MMAGIC_STATUS_NOT_INITIALIZED;
 
-    default:
-        return MMAGIC_STATUS_ERROR;
+        case MMAGIC_STATUS_BAD_VERSION:
+            return MMAGIC_STATUS_BAD_VERSION;
+
+        default:
+            return MMAGIC_STATUS_ERROR;
     }
 }
 
-enum mmagic_status mmagic_controller_rx(struct mmagic_controller *controller, uint8_t stream_id,
-                                        uint8_t submodule_id, uint8_t command_id,
-                                        uint8_t subcommand_id, uint8_t *buffer,
-                                        size_t buffer_length, uint32_t timeout_ms)
+enum mmagic_status mmagic_controller_rx(struct mmagic_controller *controller,
+                                        uint8_t stream_id,
+                                        uint8_t submodule_id,
+                                        uint8_t command_id,
+                                        uint8_t subcommand_id,
+                                        uint8_t *buffer,
+                                        size_t buffer_length,
+                                        uint32_t timeout_ms)
 {
     struct mmbuf *rx_buffer = NULL;
     struct mmagic_m2m_response_header *rx_header;
@@ -681,8 +713,8 @@ enum mmagic_status mmagic_controller_rx(struct mmagic_controller *controller, ui
         return MMAGIC_STATUS_INVALID_STREAM;
     }
 
-    rx_header = (struct mmagic_m2m_response_header *)mmbuf_remove_from_start(rx_buffer,
-                                                                             sizeof(*rx_header));
+    rx_header =
+        (struct mmagic_m2m_response_header *)mmbuf_remove_from_start(rx_buffer, sizeof(*rx_header));
     if (rx_header == NULL)
     {
         /* Packet too small */
@@ -712,7 +744,8 @@ enum mmagic_status mmagic_controller_rx(struct mmagic_controller *controller, ui
         return MMAGIC_STATUS_INVALID_ARG;
     }
 
-    if ((rx_header->command == command_id) && (rx_header->subsystem == submodule_id) &&
+    if ((rx_header->command == command_id) &&
+        (rx_header->subsystem == submodule_id) &&
         (rx_header->subcommand == subcommand_id))
     {
         if (payload_len)
@@ -730,7 +763,8 @@ enum mmagic_status mmagic_controller_rx(struct mmagic_controller *controller, ui
 }
 
 static void mmagic_m2m_controller_rx_callback(struct mmagic_controller *controller,
-                                              uint8_t sid, struct mmbuf *rx_buffer)
+                                              uint8_t sid,
+                                              struct mmbuf *rx_buffer)
 {
     if (rx_buffer == NULL)
     {
@@ -748,7 +782,8 @@ static void mmagic_m2m_controller_rx_callback(struct mmagic_controller *controll
 }
 
 static void mmagic_m2m_controller_event_rx_callback(struct mmagic_controller *controller,
-                                                    uint8_t sid, struct mmbuf *rx_buffer)
+                                                    uint8_t sid,
+                                                    struct mmbuf *rx_buffer)
 {
     struct mmagic_m2m_event_header *rx_header;
 
@@ -763,8 +798,8 @@ static void mmagic_m2m_controller_event_rx_callback(struct mmagic_controller *co
         goto cleanup;
     }
 
-    rx_header = (struct mmagic_m2m_event_header *)mmbuf_remove_from_start(
-        rx_buffer, sizeof(*rx_header));
+    rx_header =
+        (struct mmagic_m2m_event_header *)mmbuf_remove_from_start(rx_buffer, sizeof(*rx_header));
     if (rx_header == NULL)
     {
         /* Packet too small */
@@ -773,144 +808,178 @@ static void mmagic_m2m_controller_event_rx_callback(struct mmagic_controller *co
 
     switch (rx_header->subsystem)
     {
-    case MMAGIC_WLAN:
-        switch (rx_header->event)
-        {
-        case MMAGIC_WLAN_EVT_BEACON_RX:
-            if (controller->event_handlers.wlan_beacon_rx != NULL)
+        case MMAGIC_WLAN:
+            switch (rx_header->event)
             {
-                /** Event arguments structure for wlan_beacon_rx */
-                struct mmagic_wlan_beacon_rx_event_args *args =
-                    (struct mmagic_wlan_beacon_rx_event_args *)
-                    mmbuf_remove_from_start(rx_buffer, sizeof(*args));
-                if (args == NULL)
-                {
-                    goto cleanup;
-                }
+                case MMAGIC_WLAN_EVT_BEACON_RX:
+                    if (controller->event_handlers.wlan_beacon_rx != NULL)
+                    {
+                        /** Event arguments structure for wlan_beacon_rx */
+                        struct mmagic_wlan_beacon_rx_event_args *args =
+                            (struct mmagic_wlan_beacon_rx_event_args *)mmbuf_remove_from_start(
+                                rx_buffer,
+                                sizeof(*args));
+                        if (args == NULL)
+                        {
+                            goto cleanup;
+                        }
 
-                controller->event_handlers.wlan_beacon_rx(
-                    args, controller->event_handlers.wlan_beacon_rx_arg);
+                        controller->event_handlers.wlan_beacon_rx(
+                            args,
+                            controller->event_handlers.wlan_beacon_rx_arg);
+                    }
+                    break;
+                case MMAGIC_WLAN_EVT_STANDBY_EXIT:
+                    if (controller->event_handlers.wlan_standby_exit != NULL)
+                    {
+                        /** Event arguments structure for wlan_standby_exit */
+                        struct mmagic_wlan_standby_exit_event_args *args =
+                            (struct mmagic_wlan_standby_exit_event_args *)mmbuf_remove_from_start(
+                                rx_buffer,
+                                sizeof(*args));
+                        if (args == NULL)
+                        {
+                            goto cleanup;
+                        }
+
+                        controller->event_handlers.wlan_standby_exit(
+                            args,
+                            controller->event_handlers.wlan_standby_exit_arg);
+                    }
+                    break;
+                case MMAGIC_WLAN_EVT_STA_EVENT:
+                    if (controller->event_handlers.wlan_sta_event != NULL)
+                    {
+                        /** Event arguments structure for wlan_sta_event */
+                        struct mmagic_wlan_sta_event_event_args *args =
+                            (struct mmagic_wlan_sta_event_event_args *)mmbuf_remove_from_start(
+                                rx_buffer,
+                                sizeof(*args));
+                        if (args == NULL)
+                        {
+                            goto cleanup;
+                        }
+
+                        controller->event_handlers.wlan_sta_event(
+                            args,
+                            controller->event_handlers.wlan_sta_event_arg);
+                    }
+                    break;
+
+                default:
+                    break;
             }
             break;
-
-        case MMAGIC_WLAN_EVT_STANDBY_EXIT:
-            if (controller->event_handlers.wlan_standby_exit != NULL)
+        case MMAGIC_IP:
+            switch (rx_header->event)
             {
-                /** Event arguments structure for wlan_standby_exit */
-                struct mmagic_wlan_standby_exit_event_args *args =
-                    (struct mmagic_wlan_standby_exit_event_args *)
-                    mmbuf_remove_from_start(rx_buffer, sizeof(*args));
-                if (args == NULL)
-                {
-                    goto cleanup;
-                }
+                case MMAGIC_IP_EVT_LINK_STATUS:
+                    if (controller->event_handlers.ip_link_status != NULL)
+                    {
+                        /** Event arguments structure for ip_link_status */
+                        struct mmagic_ip_link_status_event_args *args =
+                            (struct mmagic_ip_link_status_event_args *)mmbuf_remove_from_start(
+                                rx_buffer,
+                                sizeof(*args));
+                        if (args == NULL)
+                        {
+                            goto cleanup;
+                        }
 
-                controller->event_handlers.wlan_standby_exit(
-                    args, controller->event_handlers.wlan_standby_exit_arg);
+                        controller->event_handlers.ip_link_status(
+                            args,
+                            controller->event_handlers.ip_link_status_arg);
+                    }
+                    break;
+
+                default:
+                    break;
             }
             break;
-
-        case MMAGIC_WLAN_EVT_STA_EVENT:
-            if (controller->event_handlers.wlan_sta_event != NULL)
+        case MMAGIC_TCP:
+            switch (rx_header->event)
             {
-                /** Event arguments structure for wlan_sta_event */
-                struct mmagic_wlan_sta_event_event_args *args =
-                    (struct mmagic_wlan_sta_event_event_args *)
-                    mmbuf_remove_from_start(rx_buffer, sizeof(*args));
-                if (args == NULL)
-                {
-                    goto cleanup;
-                }
+                case MMAGIC_TCP_EVT_RX_READY:
+                    if (controller->event_handlers.tcp_rx_ready != NULL)
+                    {
+                        /** Event arguments structure for tcp_rx_ready */
+                        struct mmagic_tcp_rx_ready_event_args *args =
+                            (struct mmagic_tcp_rx_ready_event_args *)mmbuf_remove_from_start(
+                                rx_buffer,
+                                sizeof(*args));
+                        if (args == NULL)
+                        {
+                            goto cleanup;
+                        }
 
-                controller->event_handlers.wlan_sta_event(
-                    args, controller->event_handlers.wlan_sta_event_arg);
+                        controller->event_handlers.tcp_rx_ready(
+                            args,
+                            controller->event_handlers.tcp_rx_ready_arg);
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+            break;
+        case MMAGIC_MQTT:
+            switch (rx_header->event)
+            {
+                case MMAGIC_MQTT_EVT_MESSAGE_RECEIVED:
+                    if (controller->event_handlers.mqtt_message_received != NULL)
+                    {
+                        /** Event arguments structure for mqtt_message_received */
+                        struct mmagic_mqtt_message_received_event_args *args =
+                            (struct mmagic_mqtt_message_received_event_args *)
+                                mmbuf_remove_from_start(rx_buffer, sizeof(*args));
+                        if (args == NULL)
+                        {
+                            goto cleanup;
+                        }
+
+                        controller->event_handlers.mqtt_message_received(
+                            args,
+                            controller->event_handlers.mqtt_message_received_arg);
+                    }
+                    break;
+                case MMAGIC_MQTT_EVT_BROKER_CONNECTION:
+                    if (controller->event_handlers.mqtt_broker_connection != NULL)
+                    {
+                        /** Event arguments structure for mqtt_broker_connection */
+                        struct mmagic_mqtt_broker_connection_event_args *args =
+                            (struct mmagic_mqtt_broker_connection_event_args *)
+                                mmbuf_remove_from_start(rx_buffer, sizeof(*args));
+                        if (args == NULL)
+                        {
+                            goto cleanup;
+                        }
+
+                        controller->event_handlers.mqtt_broker_connection(
+                            args,
+                            controller->event_handlers.mqtt_broker_connection_arg);
+                    }
+                    break;
+
+                default:
+                    break;
             }
             break;
 
         default:
             break;
-        }
-        break;
-
-    case MMAGIC_IP:
-        switch (rx_header->event)
-        {
-        case MMAGIC_IP_EVT_LINK_STATUS:
-            if (controller->event_handlers.ip_link_status != NULL)
-            {
-                /** Event arguments structure for ip_link_status */
-                struct mmagic_ip_link_status_event_args *args =
-                    (struct mmagic_ip_link_status_event_args *)
-                    mmbuf_remove_from_start(rx_buffer, sizeof(*args));
-                if (args == NULL)
-                {
-                    goto cleanup;
-                }
-
-                controller->event_handlers.ip_link_status(
-                    args, controller->event_handlers.ip_link_status_arg);
-            }
-            break;
-
-        default:
-            break;
-        }
-        break;
-
-    case MMAGIC_MQTT:
-        switch (rx_header->event)
-        {
-        case MMAGIC_MQTT_EVT_MESSAGE_RECEIVED:
-            if (controller->event_handlers.mqtt_message_received != NULL)
-            {
-                /** Event arguments structure for mqtt_message_received */
-                struct mmagic_mqtt_message_received_event_args *args =
-                    (struct mmagic_mqtt_message_received_event_args *)
-                    mmbuf_remove_from_start(rx_buffer, sizeof(*args));
-                if (args == NULL)
-                {
-                    goto cleanup;
-                }
-
-                controller->event_handlers.mqtt_message_received(
-                    args, controller->event_handlers.mqtt_message_received_arg);
-            }
-            break;
-
-        case MMAGIC_MQTT_EVT_BROKER_CONNECTION:
-            if (controller->event_handlers.mqtt_broker_connection != NULL)
-            {
-                /** Event arguments structure for mqtt_broker_connection */
-                struct mmagic_mqtt_broker_connection_event_args *args =
-                    (struct mmagic_mqtt_broker_connection_event_args *)
-                    mmbuf_remove_from_start(rx_buffer, sizeof(*args));
-                if (args == NULL)
-                {
-                    goto cleanup;
-                }
-
-                controller->event_handlers.mqtt_broker_connection(
-                    args, controller->event_handlers.mqtt_broker_connection_arg);
-            }
-            break;
-
-        default:
-            break;
-        }
-        break;
-
-    default:
-        break;
     }
 
 cleanup:
     mmbuf_release(rx_buffer);
 }
 
-enum mmagic_status mmagic_controller_tx(struct mmagic_controller *controller, uint8_t stream_id,
-                                        uint8_t submodule_id, uint8_t command_id,
+enum mmagic_status mmagic_controller_tx(struct mmagic_controller *controller,
+                                        uint8_t stream_id,
+                                        uint8_t submodule_id,
+                                        uint8_t command_id,
                                         uint8_t subcommand_id,
-                                        const uint8_t *buffer, size_t buffer_length)
+                                        const uint8_t *buffer,
+                                        size_t buffer_length)
 {
     if (buffer_length && buffer == NULL)
     {
@@ -918,10 +987,10 @@ enum mmagic_status mmagic_controller_tx(struct mmagic_controller *controller, ui
     }
 
     struct mmagic_m2m_command_header tx_header;
-    struct mmbuf *tx_buffer =
-        mmagic_llc_controller_alloc_buffer_for_tx(controller, NULL,
-                                                  sizeof(struct mmagic_m2m_command_header) +
-                                                  buffer_length);
+    struct mmbuf *tx_buffer = mmagic_llc_controller_alloc_buffer_for_tx(
+        controller,
+        NULL,
+        sizeof(struct mmagic_m2m_command_header) + buffer_length);
     if (!tx_buffer)
     {
         return MMAGIC_STATUS_NO_MEM;
@@ -960,9 +1029,8 @@ enum mmagic_status mmagic_controller_agent_sync(struct mmagic_controller *contro
         return MMAGIC_STATUS_NO_MEM;
     }
 
-    enum mmagic_status status = mmagic_llc_controller_tx(controller, MMAGIC_LLC_PTYPE_SYNC_REQ,
-                                                         CONTROL_STREAM,
-                                                         tx_buffer);
+    enum mmagic_status status =
+        mmagic_llc_controller_tx(controller, MMAGIC_LLC_PTYPE_SYNC_REQ, CONTROL_STREAM, tx_buffer);
     if (status != MMAGIC_STATUS_OK)
     {
         return status;
@@ -973,7 +1041,11 @@ enum mmagic_status mmagic_controller_agent_sync(struct mmagic_controller *contro
     controller->controller_llc.sync_status = MMAGIC_STATUS_TIMEOUT;
 
     const uint32_t wait_until_ms = mmosal_get_time_ms() + timeout_ms;
-    enum { SYNC_POLL_PERIOD_MS = 1, };
+
+    enum
+    {
+        SYNC_POLL_PERIOD_MS = 1,
+    };
 
     while (controller->controller_llc.sync_token != INVALID_TOKEN_U32)
     {
@@ -994,7 +1066,9 @@ enum mmagic_status mmagic_controller_request_agent_reset(struct mmagic_controlle
         return MMAGIC_STATUS_NO_MEM;
     }
 
-    return mmagic_llc_controller_tx(controller, MMAGIC_LLC_PTYPE_AGENT_RESET, CONTROL_STREAM,
+    return mmagic_llc_controller_tx(controller,
+                                    MMAGIC_LLC_PTYPE_AGENT_RESET,
+                                    CONTROL_STREAM,
                                     tx_buffer);
 }
 

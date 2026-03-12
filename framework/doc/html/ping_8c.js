@@ -4,6 +4,8 @@ var ping_8c =
     [ "PING_DATA_SIZE", "ping_8c.html#aae49a47b7be864d302fa11ad0b3b9589", null ],
     [ "PING_INTERVAL_MS", "ping_8c.html#aa7e73448526543d4ed006bba737609de", null ],
     [ "POST_PING_DELAY_MS", "ping_8c.html#aa74a8e27191a3077ea4cf00ea7507962", null ],
+    [ "PWR_MEAS_DELAY_MS", "ping_8c.html#a9eee8fea5a3d57694eb81599e056e177", null ],
+    [ "SET_DEBUG_STATE", "ping_8c.html#a0ccfca4a41cf735693919b5bbf815dc5", null ],
     [ "UPDATE_INTERVAL_MS", "ping_8c.html#ad4602c729fef5a16a7f3dcf974eeee14", null ],
     [ "debug_state", "ping_8c.html#af6267920b504273777e2451780e565af", [
       [ "DEBUG_STATE_INIT", "ping_8c.html#af6267920b504273777e2451780e565afa17e21038455993a59d0355198b35a29c", null ],
@@ -30,6 +32,5 @@ var ping_8c =
       [ "DEBUG_STATE_WNM_SLEEP_POWER_DOWN_DONE", "wnm__sleep_8c.html#af6267920b504273777e2451780e565afaa2f0bd3ea57c94cd206b6b5b2250b178", null ],
       [ "DEBUG_STATE_TERMINATING", "wnm__sleep_8c.html#af6267920b504273777e2451780e565afad80fa7cbc3a54f74032429011ccaabcf", null ]
     ] ],
-    [ "app_init", "ping_8c.html#add3190cf715f513666f4be42874d91e2", null ],
-    [ "set_debug_state", "ping_8c.html#a8a7d25ccf1d8c01f542f342c48dee069", null ]
+    [ "app_init", "ping_8c.html#add3190cf715f513666f4be42874d91e2", null ]
 ];

@@ -20,7 +20,8 @@
 #include "mmbuf.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 /**
@@ -32,9 +33,19 @@ extern "C" {
  */
 
 #define MMAGIC_DATALINK_PAYLOAD_TYPE_SIZE (1)
-#define MMAGIC_DATALINK_PAYLOAD_LEN_SIZE (2)
-#define MMAGIC_DATALINK_PAYLOAD_HEADER_SIZE (MMAGIC_DATALINK_PAYLOAD_TYPE_SIZE + \
-                                             MMAGIC_DATALINK_PAYLOAD_LEN_SIZE)
+#define MMAGIC_DATALINK_PAYLOAD_LEN_SIZE  (2)
+#define MMAGIC_DATALINK_PAYLOAD_HEADER_SIZE \
+    (MMAGIC_DATALINK_PAYLOAD_TYPE_SIZE + MMAGIC_DATALINK_PAYLOAD_LEN_SIZE)
+
+#if defined(MMAGIC_DATALINK_TRANSMISSION_HOOK_ENABLED) && MMAGIC_DATALINK_TRANSMISSION_HOOK_ENABLED
+/**
+ * Optional hook called by the mmagic datalink before and after a packet transmission
+ *
+ * @param transaction_active is true when the hook is called before the
+ * transmission starts, false when it's called after the transmission is over
+ */
+void mmagic_datalink_transmission_hook(bool transmission_active);
+#endif
 
 enum mmagic_datalink_payload_type
 {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Morse Micro
+ * Copyright 2026 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -14,13 +14,13 @@
  * Maximum allowed length of any value string. Needs to accomodate WLAN password, IP and MAC address
  * strings.
  */
-#define MAX_VAL_LEN     101
+#define MAX_VAL_LEN 101
 
 void mmagic_core_wlan_load_all(struct mmagic_data *core)
 {
     struct mmagic_wlan_data *data = &core->wlan_data;
     {
-        char val[MAX_VAL_LEN] = {0};
+        char val[MAX_VAL_LEN] = { 0 };
         if (mmconfig_read_string("wlan.country_code", val, sizeof(val)) > 0)
         {
             (void)mmagic_string_to_struct_country_code(&data->config.country_code, val);
@@ -28,7 +28,7 @@ void mmagic_core_wlan_load_all(struct mmagic_data *core)
     }
 
     {
-        char val[MAX_VAL_LEN] = {0};
+        char val[MAX_VAL_LEN] = { 0 };
         if (mmconfig_read_string("wlan.ssid", val, sizeof(val)) > 0)
         {
             (void)mmagic_string_to_string32(&data->config.ssid, val);
@@ -36,7 +36,7 @@ void mmagic_core_wlan_load_all(struct mmagic_data *core)
     }
 
     {
-        char val[MAX_VAL_LEN] = {0};
+        char val[MAX_VAL_LEN] = { 0 };
         if (mmconfig_read_string("wlan.password", val, sizeof(val)) > 0)
         {
             (void)mmagic_string_to_string100(&data->config.password, val);
@@ -44,7 +44,7 @@ void mmagic_core_wlan_load_all(struct mmagic_data *core)
     }
 
     {
-        char val[MAX_VAL_LEN] = {0};
+        char val[MAX_VAL_LEN] = { 0 };
         if (mmconfig_read_string("wlan.security", val, sizeof(val)) > 0)
         {
             (void)mmagic_string_to_enum_security_type(&data->config.security, val);
@@ -52,7 +52,7 @@ void mmagic_core_wlan_load_all(struct mmagic_data *core)
     }
 
     {
-        char val[MAX_VAL_LEN] = {0};
+        char val[MAX_VAL_LEN] = { 0 };
         if (mmconfig_read_string("wlan.raw_priority", val, sizeof(val)) > 0)
         {
             (void)mmagic_string_to_int16_t(&data->config.raw_priority, val);
@@ -60,7 +60,7 @@ void mmagic_core_wlan_load_all(struct mmagic_data *core)
     }
 
     {
-        char val[MAX_VAL_LEN] = {0};
+        char val[MAX_VAL_LEN] = { 0 };
         if (mmconfig_read_string("wlan.bssid", val, sizeof(val)) > 0)
         {
             (void)mmagic_string_to_struct_mac_addr(&data->config.bssid, val);
@@ -68,7 +68,7 @@ void mmagic_core_wlan_load_all(struct mmagic_data *core)
     }
 
     {
-        char val[MAX_VAL_LEN] = {0};
+        char val[MAX_VAL_LEN] = { 0 };
         if (mmconfig_read_string("wlan.pmf_mode", val, sizeof(val)) > 0)
         {
             (void)mmagic_string_to_enum_pmf_mode(&data->config.pmf_mode, val);
@@ -76,7 +76,7 @@ void mmagic_core_wlan_load_all(struct mmagic_data *core)
     }
 
     {
-        char val[MAX_VAL_LEN] = {0};
+        char val[MAX_VAL_LEN] = { 0 };
         if (mmconfig_read_string("wlan.station_type", val, sizeof(val)) > 0)
         {
             (void)mmagic_string_to_enum_station_type(&data->config.station_type, val);
@@ -84,7 +84,7 @@ void mmagic_core_wlan_load_all(struct mmagic_data *core)
     }
 
     {
-        char val[MAX_VAL_LEN] = {0};
+        char val[MAX_VAL_LEN] = { 0 };
         if (mmconfig_read_string("wlan.rts_threshold", val, sizeof(val)) > 0)
         {
             (void)mmagic_string_to_uint32_t(&data->config.rts_threshold, val);
@@ -92,7 +92,7 @@ void mmagic_core_wlan_load_all(struct mmagic_data *core)
     }
 
     {
-        char val[MAX_VAL_LEN] = {0};
+        char val[MAX_VAL_LEN] = { 0 };
         if (mmconfig_read_string("wlan.sgi_enabled", val, sizeof(val)) > 0)
         {
             (void)mmagic_string_to_bool(&data->config.sgi_enabled, val);
@@ -100,7 +100,7 @@ void mmagic_core_wlan_load_all(struct mmagic_data *core)
     }
 
     {
-        char val[MAX_VAL_LEN] = {0};
+        char val[MAX_VAL_LEN] = { 0 };
         if (mmconfig_read_string("wlan.subbands_enabled", val, sizeof(val)) > 0)
         {
             (void)mmagic_string_to_bool(&data->config.subbands_enabled, val);
@@ -108,7 +108,7 @@ void mmagic_core_wlan_load_all(struct mmagic_data *core)
     }
 
     {
-        char val[MAX_VAL_LEN] = {0};
+        char val[MAX_VAL_LEN] = { 0 };
         if (mmconfig_read_string("wlan.ampdu_enabled", val, sizeof(val)) > 0)
         {
             (void)mmagic_string_to_bool(&data->config.ampdu_enabled, val);
@@ -116,7 +116,7 @@ void mmagic_core_wlan_load_all(struct mmagic_data *core)
     }
 
     {
-        char val[MAX_VAL_LEN] = {0};
+        char val[MAX_VAL_LEN] = { 0 };
         if (mmconfig_read_string("wlan.power_save_mode", val, sizeof(val)) > 0)
         {
             (void)mmagic_string_to_enum_power_save_mode(&data->config.power_save_mode, val);
@@ -124,7 +124,7 @@ void mmagic_core_wlan_load_all(struct mmagic_data *core)
     }
 
     {
-        char val[MAX_VAL_LEN] = {0};
+        char val[MAX_VAL_LEN] = { 0 };
         if (mmconfig_read_string("wlan.fragment_threshold", val, sizeof(val)) > 0)
         {
             (void)mmagic_string_to_uint32_t(&data->config.fragment_threshold, val);
@@ -132,7 +132,7 @@ void mmagic_core_wlan_load_all(struct mmagic_data *core)
     }
 
     {
-        char val[MAX_VAL_LEN] = {0};
+        char val[MAX_VAL_LEN] = { 0 };
         if (mmconfig_read_string("wlan.cac_enabled", val, sizeof(val)) > 0)
         {
             (void)mmagic_string_to_bool(&data->config.cac_enabled, val);
@@ -140,23 +140,7 @@ void mmagic_core_wlan_load_all(struct mmagic_data *core)
     }
 
     {
-        char val[MAX_VAL_LEN] = {0};
-        if (mmconfig_read_string("wlan.offload_arp_response", val, sizeof(val)) > 0)
-        {
-            (void)mmagic_string_to_bool(&data->config.offload_arp_response, val);
-        }
-    }
-
-    {
-        char val[MAX_VAL_LEN] = {0};
-        if (mmconfig_read_string("wlan.offload_arp_refresh_s", val, sizeof(val)) > 0)
-        {
-            (void)mmagic_string_to_uint32_t(&data->config.offload_arp_refresh_s, val);
-        }
-    }
-
-    {
-        char val[MAX_VAL_LEN] = {0};
+        char val[MAX_VAL_LEN] = { 0 };
         if (mmconfig_read_string("wlan.min_health_check_intvl_ms", val, sizeof(val)) > 0)
         {
             (void)mmagic_string_to_uint32_t(&data->config.min_health_check_intvl_ms, val);
@@ -164,7 +148,7 @@ void mmagic_core_wlan_load_all(struct mmagic_data *core)
     }
 
     {
-        char val[MAX_VAL_LEN] = {0};
+        char val[MAX_VAL_LEN] = { 0 };
         if (mmconfig_read_string("wlan.max_health_check_intvl_ms", val, sizeof(val)) > 0)
         {
             (void)mmagic_string_to_uint32_t(&data->config.max_health_check_intvl_ms, val);
@@ -172,7 +156,7 @@ void mmagic_core_wlan_load_all(struct mmagic_data *core)
     }
 
     {
-        char val[MAX_VAL_LEN] = {0};
+        char val[MAX_VAL_LEN] = { 0 };
         if (mmconfig_read_string("wlan.ndp_probe_enabled", val, sizeof(val)) > 0)
         {
             (void)mmagic_string_to_bool(&data->config.ndp_probe_enabled, val);
@@ -180,7 +164,7 @@ void mmagic_core_wlan_load_all(struct mmagic_data *core)
     }
 
     {
-        char val[MAX_VAL_LEN] = {0};
+        char val[MAX_VAL_LEN] = { 0 };
         if (mmconfig_read_string("wlan.sta_scan_interval_base_s", val, sizeof(val)) > 0)
         {
             (void)mmagic_string_to_uint16_t(&data->config.sta_scan_interval_base_s, val);
@@ -188,7 +172,7 @@ void mmagic_core_wlan_load_all(struct mmagic_data *core)
     }
 
     {
-        char val[MAX_VAL_LEN] = {0};
+        char val[MAX_VAL_LEN] = { 0 };
         if (mmconfig_read_string("wlan.sta_scan_interval_limit_s", val, sizeof(val)) > 0)
         {
             (void)mmagic_string_to_uint16_t(&data->config.sta_scan_interval_limit_s, val);
@@ -196,7 +180,7 @@ void mmagic_core_wlan_load_all(struct mmagic_data *core)
     }
 
     {
-        char val[MAX_VAL_LEN] = {0};
+        char val[MAX_VAL_LEN] = { 0 };
         if (mmconfig_read_string("wlan.qos_0_params", val, sizeof(val)) > 0)
         {
             (void)mmagic_string_to_string32(&data->config.qos_0_params, val);
@@ -204,7 +188,7 @@ void mmagic_core_wlan_load_all(struct mmagic_data *core)
     }
 
     {
-        char val[MAX_VAL_LEN] = {0};
+        char val[MAX_VAL_LEN] = { 0 };
         if (mmconfig_read_string("wlan.qos_1_params", val, sizeof(val)) > 0)
         {
             (void)mmagic_string_to_string32(&data->config.qos_1_params, val);
@@ -212,7 +196,7 @@ void mmagic_core_wlan_load_all(struct mmagic_data *core)
     }
 
     {
-        char val[MAX_VAL_LEN] = {0};
+        char val[MAX_VAL_LEN] = { 0 };
         if (mmconfig_read_string("wlan.qos_2_params", val, sizeof(val)) > 0)
         {
             (void)mmagic_string_to_string32(&data->config.qos_2_params, val);
@@ -220,7 +204,7 @@ void mmagic_core_wlan_load_all(struct mmagic_data *core)
     }
 
     {
-        char val[MAX_VAL_LEN] = {0};
+        char val[MAX_VAL_LEN] = { 0 };
         if (mmconfig_read_string("wlan.qos_3_params", val, sizeof(val)) > 0)
         {
             (void)mmagic_string_to_string32(&data->config.qos_3_params, val);
@@ -228,7 +212,7 @@ void mmagic_core_wlan_load_all(struct mmagic_data *core)
     }
 
     {
-        char val[MAX_VAL_LEN] = {0};
+        char val[MAX_VAL_LEN] = { 0 };
         if (mmconfig_read_string("wlan.mcs10_mode", val, sizeof(val)) > 0)
         {
             (void)mmagic_string_to_enum_mcs10_mode(&data->config.mcs10_mode, val);
@@ -236,7 +220,7 @@ void mmagic_core_wlan_load_all(struct mmagic_data *core)
     }
 
     {
-        char val[MAX_VAL_LEN] = {0};
+        char val[MAX_VAL_LEN] = { 0 };
         if (mmconfig_read_string("wlan.sta_evt_en", val, sizeof(val)) > 0)
         {
             (void)mmagic_string_to_bool(&data->config.sta_evt_en, val);
@@ -244,7 +228,7 @@ void mmagic_core_wlan_load_all(struct mmagic_data *core)
     }
 
     {
-        char val[MAX_VAL_LEN] = {0};
+        char val[MAX_VAL_LEN] = { 0 };
         if (mmconfig_read_string("wlan.duty_cycle_mode", val, sizeof(val)) > 0)
         {
             (void)mmagic_string_to_enum_duty_cycle_mode(&data->config.duty_cycle_mode, val);
@@ -347,18 +331,6 @@ void mmagic_core_wlan_save_all(struct mmagic_data *core)
 
     {
         char val[MAX_VAL_LEN];
-        mmagic_bool_to_string(data->config.offload_arp_response, val, sizeof(val));
-        mmconfig_write_string("wlan.offload_arp_response", val);
-    }
-
-    {
-        char val[MAX_VAL_LEN];
-        mmagic_uint32_t_to_string(data->config.offload_arp_refresh_s, val, sizeof(val));
-        mmconfig_write_string("wlan.offload_arp_refresh_s", val);
-    }
-
-    {
-        char val[MAX_VAL_LEN];
         mmagic_uint32_t_to_string(data->config.min_health_check_intvl_ms, val, sizeof(val));
         mmconfig_write_string("wlan.min_health_check_intvl_ms", val);
     }
@@ -437,9 +409,11 @@ enum mmagic_status mmagic_core_event_wlan_beacon_rx(
     const uint8_t *payload = (const uint8_t *)args;
     size_t payload_len = sizeof(*args);
     MMOSAL_ASSERT(core->event_fn != NULL);
-    return core->event_fn(
-        core->event_fn_arg, mmagic_wlan,
-        mmagic_wlan_event_beacon_rx, payload, payload_len);
+    return core->event_fn(core->event_fn_arg,
+                          mmagic_wlan,
+                          mmagic_wlan_event_beacon_rx,
+                          payload,
+                          payload_len);
 }
 
 enum mmagic_status mmagic_core_event_wlan_standby_exit(
@@ -449,9 +423,11 @@ enum mmagic_status mmagic_core_event_wlan_standby_exit(
     const uint8_t *payload = (const uint8_t *)args;
     size_t payload_len = sizeof(*args);
     MMOSAL_ASSERT(core->event_fn != NULL);
-    return core->event_fn(
-        core->event_fn_arg, mmagic_wlan,
-        mmagic_wlan_event_standby_exit, payload, payload_len);
+    return core->event_fn(core->event_fn_arg,
+                          mmagic_wlan,
+                          mmagic_wlan_event_standby_exit,
+                          payload,
+                          payload_len);
 }
 
 enum mmagic_status mmagic_core_event_wlan_sta_event(
@@ -461,7 +437,9 @@ enum mmagic_status mmagic_core_event_wlan_sta_event(
     const uint8_t *payload = (const uint8_t *)args;
     size_t payload_len = sizeof(*args);
     MMOSAL_ASSERT(core->event_fn != NULL);
-    return core->event_fn(
-        core->event_fn_arg, mmagic_wlan,
-        mmagic_wlan_event_sta_event, payload, payload_len);
+    return core->event_fn(core->event_fn_arg,
+                          mmagic_wlan,
+                          mmagic_wlan_event_sta_event,
+                          payload,
+                          payload_len);
 }

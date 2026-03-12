@@ -19,7 +19,7 @@
 #include "mmipal.h"
 #include "mmosal.h"
 #include "mm_app_loadconfig.h"
-#include "mm_app_regdb.h"
+#include "mmregdb.h"
 
 #ifndef COUNTRY_CODE
 #define COUNTRY_CODE "??"
@@ -28,54 +28,53 @@
 /* Default SSID  */
 #ifndef SSID
 /** SSID of the AP to connect to. (Do not quote; it will be stringified.) */
-#define SSID                            MorseMicro
+#define SSID MorseMicro
 #endif
 
 /* Default passphrase  */
 #ifndef SAE_PASSPHRASE
 /** Passphrase of the AP (ignored if security type is not SAE).
  *  (Do not quote; it will be stringified.) */
-#define SAE_PASSPHRASE                  12345678
+#define SAE_PASSPHRASE 12345678
 #endif
 
 /* Default security type  */
 #ifndef SECURITY_TYPE
 /** Security type (@see mmwlan_security_type). */
-#define SECURITY_TYPE                   MMWLAN_SAE
+#define SECURITY_TYPE MMWLAN_SAE
 #endif
 
 /* Default PMF mode */
 #ifndef PMF_MODE
 /** Protected Management Frames (PMF) mode (@see mmwlan_pmf_mode). */
-#define PMF_MODE                        MMWLAN_PMF_REQUIRED
+#define PMF_MODE MMWLAN_PMF_REQUIRED
 #endif
 
 /* Configure the STA to use DHCP, this overrides any static configuration.
  * If the @c ip.dhcp_enabled is set in the config store that will take priority */
 #ifndef ENABLE_DHCP
-#define ENABLE_DHCP                     (1)
+#define ENABLE_DHCP (1)
 #endif
 
 /* Static Network configuration */
 #ifndef STATIC_LOCAL_IP
 /** Statically configured IP address (if ENABLE_DHCP is not set). */
-#define STATIC_LOCAL_IP                 "192.168.1.2"
+#define STATIC_LOCAL_IP "192.168.1.2"
 #endif
 #ifndef STATIC_GATEWAY
 /** Statically configured gateway address (if ENABLE_DHCP is not set). */
-#define STATIC_GATEWAY                  "192.168.1.1"
+#define STATIC_GATEWAY "192.168.1.1"
 #endif
 #ifndef STATIC_NETMASK
 /** Statically configured netmask (if ENABLE_DHCP is not set). */
-#define STATIC_NETMASK                  "255.255.255.0"
+#define STATIC_NETMASK "255.255.255.0"
 #endif
 
 /* Static Network configuration */
 #ifndef STATIC_LOCAL_IP6
 /** Statically configured IP address (if ENABLE_AUTOCONFIG is not set). */
-#define STATIC_LOCAL_IP6                 "FE80::2"
+#define STATIC_LOCAL_IP6 "FE80::2"
 #endif
-
 
 /** Stringify macro. Do not use directly; use @ref STRINGIFY(). */
 #define _STRINGIFY(x) #x
@@ -113,7 +112,7 @@ void load_mmipal_init_args(struct mmipal_init_args *args)
         if (boolval)
         {
             boolval = false;
-            (void) mmconfig_read_bool("ip.dhcp_offload", &boolval);
+            (void)mmconfig_read_bool("ip.dhcp_offload", &boolval);
             if (boolval)
             {
                 /* DHCP offload mode */
@@ -121,8 +120,8 @@ void load_mmipal_init_args(struct mmipal_init_args *args)
             }
             else
             {
-            /* DHCP mode */
-            args->mode = MMIPAL_DHCP;
+                /* DHCP mode */
+                args->mode = MMIPAL_DHCP;
             }
         }
         else
@@ -145,9 +144,10 @@ void load_mmipal_init_args(struct mmipal_init_args *args)
     }
 
     /* Check if any offload features are enabled */
-    (void)mmconfig_read_bool("wlan.offload_arp_response", &args->offload_arp_response);
-    (void)mmconfig_read_uint32("wlan.offload_arp_refresh_s", &args->offload_arp_refresh_s);
+    (void)mmconfig_read_bool("ip.offload_arp_response", &args->offload_arp_response);
+    (void)mmconfig_read_uint32("ip.offload_arp_refresh_s", &args->offload_arp_refresh_s);
 
+#if defined(MMIPAL_IPV6_ENABLED) && MMIPAL_IPV6_ENABLED
     /* Load default static IPv6 in case we don't find the key */
     (void)mmosal_safer_strcpy(args->ip6_addr, STATIC_LOCAL_IP6, sizeof(args->ip6_addr));
     (void)mmconfig_read_string("ip6.ip_addr", args->ip6_addr, sizeof(args->ip6_addr));
@@ -177,9 +177,10 @@ void load_mmipal_init_args(struct mmipal_init_args *args)
     {
         printf("Initialize IPv6 with static IP %s\n", args->ip6_addr);
     }
+#endif
 }
 
-const struct mmwlan_s1g_channel_list* load_channel_list(void)
+const struct mmwlan_s1g_channel_list *load_channel_list(void)
 {
     char strval[16];
     const struct mmwlan_s1g_channel_list *channel_list;
@@ -205,14 +206,16 @@ void load_mmwlan_sta_args(struct mmwlan_sta_args *sta_config)
     bool boolval;
 
     /* Load SSID */
-    (void)mmosal_safer_strcpy((char*)sta_config->ssid, STRINGIFY(SSID), sizeof(sta_config->ssid));
-    (void)mmconfig_read_string("wlan.ssid", (char*) sta_config->ssid, sizeof(sta_config->ssid));
-    sta_config->ssid_len = strlen((char*)sta_config->ssid);
+    (void)mmosal_safer_strcpy((char *)sta_config->ssid, STRINGIFY(SSID), sizeof(sta_config->ssid));
+    (void)mmconfig_read_string("wlan.ssid", (char *)sta_config->ssid, sizeof(sta_config->ssid));
+    sta_config->ssid_len = strlen((char *)sta_config->ssid);
 
     /* Load password */
-    (void)mmosal_safer_strcpy(sta_config->passphrase, STRINGIFY(SAE_PASSPHRASE),
+    (void)mmosal_safer_strcpy(sta_config->passphrase,
+                              STRINGIFY(SAE_PASSPHRASE),
                               sizeof(sta_config->passphrase));
-    (void)mmconfig_read_string("wlan.password", sta_config->passphrase,
+    (void)mmconfig_read_string("wlan.password",
+                               sta_config->passphrase,
                                sizeof(sta_config->passphrase));
     sta_config->passphrase_len = strlen(sta_config->passphrase);
 
@@ -255,9 +258,14 @@ void load_mmwlan_sta_args(struct mmwlan_sta_args *sta_config)
         int temp[6];
         int i;
 
-        int ret = sscanf(strval, "%x:%x:%x:%x:%x:%x",
-                         &temp[0], &temp[1], &temp[2],
-                         &temp[3], &temp[4], &temp[5]);
+        int ret = sscanf(strval,
+                         "%x:%x:%x:%x:%x:%x",
+                         &temp[0],
+                         &temp[1],
+                         &temp[2],
+                         &temp[3],
+                         &temp[4],
+                         &temp[5]);
         if (ret == 6)
         {
             for (i = 0; i < 6; i++)
@@ -296,7 +304,7 @@ void load_mmwlan_sta_args(struct mmwlan_sta_args *sta_config)
     /* Load raw priority if specified */
     if (mmconfig_read_int("wlan.raw_priority", &intval) == MMCONFIG_OK)
     {
-        sta_config->raw_sta_priority = (int16_t) intval;
+        sta_config->raw_sta_priority = (int16_t)intval;
     }
 
     /* Load scan interval parameters, if specified */
@@ -412,7 +420,7 @@ void load_mmwlan_settings(void)
     }
 }
 
-bool country_code_in_regulatory_domain(const char * code)
+bool country_code_in_regulatory_domain(const char *code)
 {
     if (mmwlan_lookup_regulatory_domain(get_regulatory_db(), code) == NULL)
     {

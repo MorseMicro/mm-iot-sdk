@@ -18,7 +18,7 @@
 #include "mmutils.h"
 
 #include "mmagic.h"
-#include "mm_app_regdb.h"
+#include "mmregdb.h"
 
 #if !defined(MBEDTLS_CONFIG_FILE)
 #include "mbedtls/mbedtls_config.h"
@@ -28,7 +28,6 @@
 #ifdef MBEDTLS_THREADING_ALT
 #include "threading_alt.h"
 #endif
-
 
 #ifndef APPLICATION_VERSION
 #error Please define APPLICATION_VERSION to an appropriate value.
@@ -43,7 +42,7 @@ struct mmagic_cli *mmagic_cli_ctx;
  * @param data      Received data.
  * @param length    Length of received data.
  * @param arg       Opaque argument (unused).
-*/
+ */
 void cli_uart_rx_handler(const uint8_t *data, size_t length, void *arg)
 {
     MM_UNUSED(arg);
@@ -53,14 +52,13 @@ void cli_uart_rx_handler(const uint8_t *data, size_t length, void *arg)
     }
 }
 
-
 /**
  * Handler for the CLI transmit callback.
  *
  * @param data      Data to transmit.
  * @param length    Length of data to transmit.
  * @param arg       Opaque argument (unused).
-*/
+ */
 void cli_tx_handler(const char *data, size_t length, void *arg)
 {
     MM_UNUSED(arg);
@@ -74,7 +72,7 @@ void cli_tx_handler(const char *data, size_t length, void *arg)
  * @param arg       Opaque argument (unused).
  *
  * @returns true on success, false on failure.
-*/
+ */
 bool cli_set_deep_sleep_mode_handler(enum mmagic_deep_sleep_mode mode, void *arg)
 {
     enum mmhal_uart_deep_sleep_mode mode_uart;
@@ -83,18 +81,18 @@ bool cli_set_deep_sleep_mode_handler(enum mmagic_deep_sleep_mode mode, void *arg
 
     switch (mode)
     {
-    case MMAGIC_DEEP_SLEEP_MODE_DISABLED:
-        mode_uart = MMHAL_UART_DEEP_SLEEP_DISABLED;
-        break;
+        case MMAGIC_DEEP_SLEEP_MODE_DISABLED:
+            mode_uart = MMHAL_UART_DEEP_SLEEP_DISABLED;
+            break;
 
-    case MMAGIC_DEEP_SLEEP_MODE_ONE_SHOT:
-        mode_uart = MMHAL_UART_DEEP_SLEEP_ONE_SHOT;
-        /* 1ms delay to flush out the LF that follows a CR - or else this will wake us up */
-        mmosal_task_sleep(1);
-        break;
+        case MMAGIC_DEEP_SLEEP_MODE_ONE_SHOT:
+            mode_uart = MMHAL_UART_DEEP_SLEEP_ONE_SHOT;
+            /* 1ms delay to flush out the LF that follows a CR - or else this will wake us up */
+            mmosal_task_sleep(1);
+            break;
 
-    default:
-        return false;
+        default:
+            return false;
     }
 
     return mmhal_uart_set_deep_sleep_mode(mode_uart);

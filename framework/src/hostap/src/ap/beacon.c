@@ -2834,8 +2834,7 @@ static int __ieee802_11_set_beacon(struct hostapd_data *hapd)
 				    cmode->vht_capab,
 				    &cmode->he_capab[IEEE80211_MODE_AP],
 				    &cmode->eht_capab[IEEE80211_MODE_AP],
-				    hostapd_get_punct_bitmap(hapd),
-				    iconf->s1g_prim_chwidth, iconf->s1g_prim_1mhz_chan_index ) == 0) {
+				    hostapd_get_punct_bitmap(hapd)) == 0) {
 		freq.link_id = -1;
 #ifdef CONFIG_IEEE80211BE
 		if (hapd->conf->mld_ap)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Morse Micro
+ * Copyright 2026 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -18,54 +18,70 @@
 #include "m2m_api/mmagic_m2m_agent.h"
 
 /* Maximum allowed length of any value string, needs to accomodate IP and MAC address strings */
-#define MAX_VAL_LEN     32
+#define MAX_VAL_LEN 32
 
 /********* M2M Command Handlers **********/
 
 static struct mmbuf *mmagic_m2m_tcp_connect(struct mmagic_m2m_agent *agent,
-                                            uint8_t sid, uint8_t subcommand,
+                                            uint8_t sid,
+                                            uint8_t subcommand,
                                             struct mmbuf *commandbuffer)
 {
     enum mmagic_status status;
     struct mmagic_core_tcp_connect_cmd_args *cmd_args =
         (struct mmagic_core_tcp_connect_cmd_args *)mmbuf_get_data_start(commandbuffer);
     MM_UNUSED(sid);
-    struct mmagic_core_tcp_connect_rsp_args rsp_args = { };
+    struct mmagic_core_tcp_connect_rsp_args rsp_args = {};
     status = mmagic_core_tcp_connect(&agent->core, cmd_args, &rsp_args);
-    return mmagic_m2m_create_response(mmagic_tcp, mmagic_tcp_cmd_connect,
-                                      subcommand, status, &rsp_args, sizeof(rsp_args));
+    return mmagic_m2m_create_response(mmagic_tcp,
+                                      mmagic_tcp_cmd_connect,
+                                      subcommand,
+                                      status,
+                                      &rsp_args,
+                                      sizeof(rsp_args));
 }
 
 static struct mmbuf *mmagic_m2m_tcp_bind(struct mmagic_m2m_agent *agent,
-                                         uint8_t sid, uint8_t subcommand,
+                                         uint8_t sid,
+                                         uint8_t subcommand,
                                          struct mmbuf *commandbuffer)
 {
     enum mmagic_status status;
     struct mmagic_core_tcp_bind_cmd_args *cmd_args =
         (struct mmagic_core_tcp_bind_cmd_args *)mmbuf_get_data_start(commandbuffer);
     MM_UNUSED(sid);
-    struct mmagic_core_tcp_bind_rsp_args rsp_args = { };
+    struct mmagic_core_tcp_bind_rsp_args rsp_args = {};
     status = mmagic_core_tcp_bind(&agent->core, cmd_args, &rsp_args);
-    return mmagic_m2m_create_response(mmagic_tcp, mmagic_tcp_cmd_bind,
-                                      subcommand, status, &rsp_args, sizeof(rsp_args));
+    return mmagic_m2m_create_response(mmagic_tcp,
+                                      mmagic_tcp_cmd_bind,
+                                      subcommand,
+                                      status,
+                                      &rsp_args,
+                                      sizeof(rsp_args));
 }
 
 static struct mmbuf *mmagic_m2m_tcp_recv(struct mmagic_m2m_agent *agent,
-                                         uint8_t sid, uint8_t subcommand,
+                                         uint8_t sid,
+                                         uint8_t subcommand,
                                          struct mmbuf *commandbuffer)
 {
     enum mmagic_status status;
     struct mmagic_core_tcp_recv_cmd_args *cmd_args =
         (struct mmagic_core_tcp_recv_cmd_args *)mmbuf_get_data_start(commandbuffer);
     MM_UNUSED(sid);
-    struct mmagic_core_tcp_recv_rsp_args rsp_args = { };
+    struct mmagic_core_tcp_recv_rsp_args rsp_args = {};
     status = mmagic_core_tcp_recv(&agent->core, cmd_args, &rsp_args);
-    return mmagic_m2m_create_response(mmagic_tcp, mmagic_tcp_cmd_recv,
-                                      subcommand, status, &rsp_args, sizeof(rsp_args));
+    return mmagic_m2m_create_response(mmagic_tcp,
+                                      mmagic_tcp_cmd_recv,
+                                      subcommand,
+                                      status,
+                                      &rsp_args,
+                                      sizeof(rsp_args));
 }
 
 static struct mmbuf *mmagic_m2m_tcp_send(struct mmagic_m2m_agent *agent,
-                                         uint8_t sid, uint8_t subcommand,
+                                         uint8_t sid,
+                                         uint8_t subcommand,
                                          struct mmbuf *commandbuffer)
 {
     enum mmagic_status status;
@@ -73,12 +89,12 @@ static struct mmbuf *mmagic_m2m_tcp_send(struct mmagic_m2m_agent *agent,
         (struct mmagic_core_tcp_send_cmd_args *)mmbuf_get_data_start(commandbuffer);
     MM_UNUSED(sid);
     status = mmagic_core_tcp_send(&agent->core, cmd_args);
-    return mmagic_m2m_create_response(mmagic_tcp, mmagic_tcp_cmd_send,
-                                      subcommand, status, NULL, 0);
+    return mmagic_m2m_create_response(mmagic_tcp, mmagic_tcp_cmd_send, subcommand, status, NULL, 0);
 }
 
 static struct mmbuf *mmagic_m2m_tcp_read_poll(struct mmagic_m2m_agent *agent,
-                                              uint8_t sid, uint8_t subcommand,
+                                              uint8_t sid,
+                                              uint8_t subcommand,
                                               struct mmbuf *commandbuffer)
 {
     enum mmagic_status status;
@@ -86,12 +102,17 @@ static struct mmbuf *mmagic_m2m_tcp_read_poll(struct mmagic_m2m_agent *agent,
         (struct mmagic_core_tcp_read_poll_cmd_args *)mmbuf_get_data_start(commandbuffer);
     MM_UNUSED(sid);
     status = mmagic_core_tcp_read_poll(&agent->core, cmd_args);
-    return mmagic_m2m_create_response(mmagic_tcp, mmagic_tcp_cmd_read_poll,
-                                      subcommand, status, NULL, 0);
+    return mmagic_m2m_create_response(mmagic_tcp,
+                                      mmagic_tcp_cmd_read_poll,
+                                      subcommand,
+                                      status,
+                                      NULL,
+                                      0);
 }
 
 static struct mmbuf *mmagic_m2m_tcp_write_poll(struct mmagic_m2m_agent *agent,
-                                               uint8_t sid, uint8_t subcommand,
+                                               uint8_t sid,
+                                               uint8_t subcommand,
                                                struct mmbuf *commandbuffer)
 {
     enum mmagic_status status;
@@ -99,26 +120,36 @@ static struct mmbuf *mmagic_m2m_tcp_write_poll(struct mmagic_m2m_agent *agent,
         (struct mmagic_core_tcp_write_poll_cmd_args *)mmbuf_get_data_start(commandbuffer);
     MM_UNUSED(sid);
     status = mmagic_core_tcp_write_poll(&agent->core, cmd_args);
-    return mmagic_m2m_create_response(mmagic_tcp, mmagic_tcp_cmd_write_poll,
-                                      subcommand, status, NULL, 0);
+    return mmagic_m2m_create_response(mmagic_tcp,
+                                      mmagic_tcp_cmd_write_poll,
+                                      subcommand,
+                                      status,
+                                      NULL,
+                                      0);
 }
 
 static struct mmbuf *mmagic_m2m_tcp_accept(struct mmagic_m2m_agent *agent,
-                                           uint8_t sid, uint8_t subcommand,
+                                           uint8_t sid,
+                                           uint8_t subcommand,
                                            struct mmbuf *commandbuffer)
 {
     enum mmagic_status status;
     struct mmagic_core_tcp_accept_cmd_args *cmd_args =
         (struct mmagic_core_tcp_accept_cmd_args *)mmbuf_get_data_start(commandbuffer);
     MM_UNUSED(sid);
-    struct mmagic_core_tcp_accept_rsp_args rsp_args = { };
+    struct mmagic_core_tcp_accept_rsp_args rsp_args = {};
     status = mmagic_core_tcp_accept(&agent->core, cmd_args, &rsp_args);
-    return mmagic_m2m_create_response(mmagic_tcp, mmagic_tcp_cmd_accept,
-                                      subcommand, status, &rsp_args, sizeof(rsp_args));
+    return mmagic_m2m_create_response(mmagic_tcp,
+                                      mmagic_tcp_cmd_accept,
+                                      subcommand,
+                                      status,
+                                      &rsp_args,
+                                      sizeof(rsp_args));
 }
 
 static struct mmbuf *mmagic_m2m_tcp_close(struct mmagic_m2m_agent *agent,
-                                          uint8_t sid, uint8_t subcommand,
+                                          uint8_t sid,
+                                          uint8_t subcommand,
                                           struct mmbuf *commandbuffer)
 {
     enum mmagic_status status;
@@ -126,11 +157,35 @@ static struct mmbuf *mmagic_m2m_tcp_close(struct mmagic_m2m_agent *agent,
         (struct mmagic_core_tcp_close_cmd_args *)mmbuf_get_data_start(commandbuffer);
     MM_UNUSED(sid);
     status = mmagic_core_tcp_close(&agent->core, cmd_args);
-    return mmagic_m2m_create_response(mmagic_tcp, mmagic_tcp_cmd_close,
-                                      subcommand, status, NULL, 0);
+    return mmagic_m2m_create_response(mmagic_tcp,
+                                      mmagic_tcp_cmd_close,
+                                      subcommand,
+                                      status,
+                                      NULL,
+                                      0);
 }
 
-struct mmbuf *mmagic_m2m_tcp_process(struct mmagic_m2m_agent *agent, uint8_t sid,
+static struct mmbuf *mmagic_m2m_tcp_set_rx_ready_evt_enabled(struct mmagic_m2m_agent *agent,
+                                                             uint8_t sid,
+                                                             uint8_t subcommand,
+                                                             struct mmbuf *commandbuffer)
+{
+    enum mmagic_status status;
+    struct mmagic_core_tcp_set_rx_ready_evt_enabled_cmd_args *cmd_args =
+        (struct mmagic_core_tcp_set_rx_ready_evt_enabled_cmd_args *)mmbuf_get_data_start(
+            commandbuffer);
+    MM_UNUSED(sid);
+    status = mmagic_core_tcp_set_rx_ready_evt_enabled(&agent->core, cmd_args);
+    return mmagic_m2m_create_response(mmagic_tcp,
+                                      mmagic_tcp_cmd_set_rx_ready_evt_enabled,
+                                      subcommand,
+                                      status,
+                                      NULL,
+                                      0);
+}
+
+struct mmbuf *mmagic_m2m_tcp_process(struct mmagic_m2m_agent *agent,
+                                     uint8_t sid,
                                      struct mmagic_m2m_command_header *header,
                                      struct mmbuf *cmd_buf)
 {
@@ -138,42 +193,52 @@ struct mmbuf *mmagic_m2m_tcp_process(struct mmagic_m2m_agent *agent, uint8_t sid
     {
         switch (header->command)
         {
-        case mmagic_tcp_cmd_connect:
-            return mmagic_m2m_tcp_connect(agent, sid, header->subcommand, cmd_buf);
-            break;
+            case mmagic_tcp_cmd_connect:
+                return mmagic_m2m_tcp_connect(agent, sid, header->subcommand, cmd_buf);
+                break;
 
-        case mmagic_tcp_cmd_bind:
-            return mmagic_m2m_tcp_bind(agent, sid, header->subcommand, cmd_buf);
-            break;
+            case mmagic_tcp_cmd_bind:
+                return mmagic_m2m_tcp_bind(agent, sid, header->subcommand, cmd_buf);
+                break;
 
-        case mmagic_tcp_cmd_recv:
-            return mmagic_m2m_tcp_recv(agent, sid, header->subcommand, cmd_buf);
-            break;
+            case mmagic_tcp_cmd_recv:
+                return mmagic_m2m_tcp_recv(agent, sid, header->subcommand, cmd_buf);
+                break;
 
-        case mmagic_tcp_cmd_send:
-            return mmagic_m2m_tcp_send(agent, sid, header->subcommand, cmd_buf);
-            break;
+            case mmagic_tcp_cmd_send:
+                return mmagic_m2m_tcp_send(agent, sid, header->subcommand, cmd_buf);
+                break;
 
-        case mmagic_tcp_cmd_read_poll:
-            return mmagic_m2m_tcp_read_poll(agent, sid, header->subcommand, cmd_buf);
-            break;
+            case mmagic_tcp_cmd_read_poll:
+                return mmagic_m2m_tcp_read_poll(agent, sid, header->subcommand, cmd_buf);
+                break;
 
-        case mmagic_tcp_cmd_write_poll:
-            return mmagic_m2m_tcp_write_poll(agent, sid, header->subcommand, cmd_buf);
-            break;
+            case mmagic_tcp_cmd_write_poll:
+                return mmagic_m2m_tcp_write_poll(agent, sid, header->subcommand, cmd_buf);
+                break;
 
-        case mmagic_tcp_cmd_accept:
-            return mmagic_m2m_tcp_accept(agent, sid, header->subcommand, cmd_buf);
-            break;
+            case mmagic_tcp_cmd_accept:
+                return mmagic_m2m_tcp_accept(agent, sid, header->subcommand, cmd_buf);
+                break;
 
-        case mmagic_tcp_cmd_close:
-            return mmagic_m2m_tcp_close(agent, sid, header->subcommand, cmd_buf);
-            break;
+            case mmagic_tcp_cmd_close:
+                return mmagic_m2m_tcp_close(agent, sid, header->subcommand, cmd_buf);
+                break;
 
-        default:
-            return mmagic_m2m_create_response(header->subsystem, header->command,
-                                              header->subcommand, MMAGIC_STATUS_NOT_SUPPORTED, NULL,
-                                              0);
+            case mmagic_tcp_cmd_set_rx_ready_evt_enabled:
+                return mmagic_m2m_tcp_set_rx_ready_evt_enabled(agent,
+                                                               sid,
+                                                               header->subcommand,
+                                                               cmd_buf);
+                break;
+
+            default:
+                return mmagic_m2m_create_response(header->subsystem,
+                                                  header->command,
+                                                  header->subcommand,
+                                                  MMAGIC_STATUS_NOT_SUPPORTED,
+                                                  NULL,
+                                                  0);
         }
     }
     else

@@ -21,7 +21,7 @@
 #include "m2m_api/mmagic_m2m_agent.h"
 
 #define KEEP_ALIVE_INTERVAL_S (60U)
-#define MAX_CLIENT_ID_LEN (64U)
+#define MAX_CLIENT_ID_LEN     (64U)
 
 /* Temporary storage for MQTT agent config
  * When MQTT connect is called, mmagic puts the config here and the MQTT Agent task
@@ -65,7 +65,8 @@ void mqtt_agent_config_initialise_connect_info(MQTTConnectInfo_t *pxConnectInfo)
         if (pxConnectInfo->pUserName != NULL)
         {
             pxConnectInfo->userNameLength = mqtt_agent_config_connect_info.userNameLength;
-            memcpy((void *)pxConnectInfo->pUserName, mqtt_agent_config_connect_info.pUserName,
+            memcpy((void *)pxConnectInfo->pUserName,
+                   mqtt_agent_config_connect_info.pUserName,
                    mqtt_agent_config_connect_info.userNameLength + 1);
         }
     }
@@ -76,7 +77,8 @@ void mqtt_agent_config_initialise_connect_info(MQTTConnectInfo_t *pxConnectInfo)
         if (pxConnectInfo->pPassword != NULL)
         {
             pxConnectInfo->passwordLength = mqtt_agent_config_connect_info.passwordLength;
-            memcpy((void *)pxConnectInfo->pPassword, mqtt_agent_config_connect_info.pPassword,
+            memcpy((void *)pxConnectInfo->pPassword,
+                   mqtt_agent_config_connect_info.pPassword,
                    mqtt_agent_config_connect_info.passwordLength + 1);
         }
     }
@@ -89,12 +91,17 @@ void mqtt_agent_config_initialise_connect_info(MQTTConnectInfo_t *pxConnectInfo)
         return;
     }
     MMOSAL_ASSERT(mmwlan_get_mac_addr(mac_addr) == MMWLAN_SUCCESS);
-    snprintf(client_id, MAX_CLIENT_ID_LEN,
+    snprintf(client_id,
+             MAX_CLIENT_ID_LEN,
              "MM_Client_ID_%02x:%02x:%02x:%02x:%02x:%02x",
-             mac_addr[0], mac_addr[1], mac_addr[2], mac_addr[3], mac_addr[4], mac_addr[5]);
+             mac_addr[0],
+             mac_addr[1],
+             mac_addr[2],
+             mac_addr[3],
+             mac_addr[4],
+             mac_addr[5]);
     pxConnectInfo->pClientIdentifier = client_id;
-    pxConnectInfo->clientIdentifierLength =
-        strlen(pxConnectInfo->pClientIdentifier);
+    pxConnectInfo->clientIdentifierLength = strlen(pxConnectInfo->pClientIdentifier);
 }
 
 MQTTStatus_t mqtt_agent_config_validate_connect_info(MQTTConnectInfo_t *pxConnectInfo)
@@ -141,7 +148,8 @@ void mqtt_agent_config_initialise_mqtt_broker_endpoint(MQTTBrokerEndpoint_t *pxB
     if (pxBrokerEndpoint->pcMqttEndpoint != NULL)
     {
         pxBrokerEndpoint->uxMqttEndpointLen = mqtt_agent_config_endpoint.uxMqttEndpointLen;
-        memcpy((void *)pxBrokerEndpoint->pcMqttEndpoint, mqtt_agent_config_endpoint.pcMqttEndpoint,
+        memcpy((void *)pxBrokerEndpoint->pcMqttEndpoint,
+               mqtt_agent_config_endpoint.pcMqttEndpoint,
                mqtt_agent_config_endpoint.uxMqttEndpointLen + 1);
     }
 }
@@ -194,11 +202,10 @@ void mqtt_agent_broker_connection_event(MQTTStatus_t mqtt_status,
 
 /* MMAGIC commands */
 
-enum mmagic_status mmagic_core_mqtt_start_agent(struct mmagic_data *core,
-                                                const struct mmagic_core_mqtt_start_agent_cmd_args *
-                                                cmd_args,
-                                                struct mmagic_core_mqtt_start_agent_rsp_args *
-                                                rsp_args)
+enum mmagic_status mmagic_core_mqtt_start_agent(
+    struct mmagic_data *core,
+    const struct mmagic_core_mqtt_start_agent_cmd_args *cmd_args,
+    struct mmagic_core_mqtt_start_agent_rsp_args *rsp_args)
 {
     MMOSAL_ASSERT(core != NULL);
     MMOSAL_ASSERT(cmd_args != NULL);
@@ -216,8 +223,8 @@ enum mmagic_status mmagic_core_mqtt_start_agent(struct mmagic_data *core,
     if (cmd_args->secure)
     {
         struct mmagic_tls_data *tls_data = mmagic_data_get_tls(core);
-        enum mmagic_status status = mmagic_init_tls_credentials(&mqtt_agent_config_credentials,
-                                                                tls_data);
+        enum mmagic_status status =
+            mmagic_init_tls_credentials(&mqtt_agent_config_credentials, tls_data);
         if (status != MMAGIC_STATUS_OK)
         {
             return status;
@@ -225,8 +232,8 @@ enum mmagic_status mmagic_core_mqtt_start_agent(struct mmagic_data *core,
     }
 
     /* MMagic stream, will be useful if we want to support multiple MQTT connections */
-    enum mmagic_status stream_status = mmagic_m2m_agent_open_stream(core, NULL,
-                                                                    &rsp_args->stream_id);
+    enum mmagic_status stream_status =
+        mmagic_m2m_agent_open_stream(core, NULL, mmagic_mqtt, &rsp_args->stream_id);
     if (stream_status != MMAGIC_STATUS_OK)
     {
         return stream_status;
@@ -269,7 +276,7 @@ enum mmagic_status mmagic_core_mqtt_start_agent(struct mmagic_data *core,
     MQTTStatus_t error_code = mqtt_agent_task_init_get_error_code();
     if (error_code != MQTTSuccess)
     {
-        mmagic_m2m_agent_close_stream(core, rsp_args->stream_id);
+        (void)mmagic_m2m_agent_close_stream(core, rsp_args->stream_id);
         return mmagic_mqtt_status_to_mmagic_status(error_code);
     }
     return MMAGIC_STATUS_OK;
@@ -337,13 +344,12 @@ enum mmagic_status mmagic_core_mqtt_subscribe(
 
     /* Topic filter is copied to a heap allocated buffer managed by mqtt_agent_task */
     /* Careful if we decide to get rid of the subscription manager */
-    MQTTStatus_t status = MqttAgent_SubscribeSync(
-        xGetMqttAgentHandle(),
-        cmd_args->topic.data,
-        cmd_args->topic.len,
-        (MQTTQoS_t)cmd_args->qos,
-        mqtt_agent_message_received_cb,
-        NULL);
+    MQTTStatus_t status = MqttAgent_SubscribeSync(xGetMqttAgentHandle(),
+                                                  cmd_args->topic.data,
+                                                  cmd_args->topic.len,
+                                                  (MQTTQoS_t)cmd_args->qos,
+                                                  mqtt_agent_message_received_cb,
+                                                  NULL);
 
     if (status != MQTTSuccess)
     {
@@ -365,7 +371,7 @@ enum mmagic_status mmagic_core_mqtt_stop_agent(
     MQTTAgentCommandInfo_t cmdinfo = { 0 };
     MQTTAgent_Terminate(ctx, &cmdinfo);
 
-    mmagic_m2m_agent_close_stream(core, cmd_args->stream_id);
+    (void)mmagic_m2m_agent_close_stream(core, cmd_args->stream_id);
 
     /* Waits for the MQTT agent task to terminate */
     while (mqtt_agent_task_get_state() != MQTT_AGENT_TASK_TERMINATED)

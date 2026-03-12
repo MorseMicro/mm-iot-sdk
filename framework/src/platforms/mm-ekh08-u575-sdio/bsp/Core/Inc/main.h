@@ -70,6 +70,13 @@ extern "C" {
 #define WLAN_SDMMC              SDMMC1
 #define WLAN_SDMMC_IRQ          SDMMC1_IRQn
 #define WLAN_SDMMC_IRQHandler   SDMMC1_IRQHandler
+
+/* LOG_USART_RX GPIO is used as deep sleep one-shot interrupt */
+#define LOG_USART_RX_IRQn           (EXTI10_IRQn)
+#define LOG_USART_RX_IRQ_LINE       (LL_EXTI_LINE_10)
+#define LOG_USART_RX_IRQ_HANDLER    EXTI10_IRQHandler
+#define LOG_USART_RX_EXTI_Port      (LL_EXTI_EXTI_PORTA)
+#define LOG_USART_RX_EXTI_Line      (LL_EXTI_EXTI_LINE10)
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/

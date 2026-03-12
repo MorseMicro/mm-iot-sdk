@@ -1,7 +1,7 @@
 var searchData=
 [
   ['data_0',['data',['../structmmhal__wlan__sdio__cmd53__write__args.html#a3dd013d60ce3211ec0c064948407f45e',1,'mmhal_wlan_sdio_cmd53_write_args::data()'],['../structudp__broadcast__rx__payload.html#af1081221de317035d89a4f78905e9cbf',1,'udp_broadcast_rx_payload::data()'],['../structraw1536.html#a43f2147e4d686df68715e883e1dbef9f',1,'raw1536::data()'],['../structraw255.html#a9467dd36e203f1166f8a839b86a48ed2',1,'raw255::data()'],['../structstring254.html#af9c3411660b91093147dda79c2479417',1,'string254::data()'],['../structstring32.html#a8e32479e94435e25682b09a16bec5b40',1,'string32::data()'],['../structmmconfig__update__node.html#a7807055e49be92575611543ddfcc647b',1,'mmconfig_update_node::data()'],['../structmmhal__wlan__sdio__cmd53__read__args.html#ac95af2902eddbb6bdfdef2d9bbe9f4f4',1,'mmhal_wlan_sdio_cmd53_read_args::data()'],['../structstring100.html#ae75bbe037c78b0b665dfbae576d0495d',1,'string100::data()']]],
-  ['data_5flen_1',['data_len',['../structmmpkt.html#a2c7b78347fdd57c3a1c182f09cbcabce',1,'mmpkt::data_len()'],['../structmmbuf.html#aeb89be7faa9ad9a01642f4f892c4887d',1,'mmbuf::data_len()']]],
+  ['data_5flen_1',['data_len',['../structmmbuf.html#aeb89be7faa9ad9a01642f4f892c4887d',1,'mmbuf']]],
   ['datapath_5fdriver_5frx_5falloc_5ffailures_2',['datapath_driver_rx_alloc_failures',['../structmmwlan__stats__umac__data.html#ad7f090571106fd5fdeed842f71b08d29',1,'mmwlan_stats_umac_data']]],
   ['datapath_5fdriver_5frx_5fread_5ffailures_3',['datapath_driver_rx_read_failures',['../structmmwlan__stats__umac__data.html#aec5a37dafc4449614b86c5eaba84cc0c',1,'mmwlan_stats_umac_data']]],
   ['datapath_5frx_5fccmp_5ffailures_4',['datapath_rx_ccmp_failures',['../structmmwlan__stats__umac__data.html#acf3a52beb4d63ca415a457c687240acb',1,'mmwlan_stats_umac_data']]],
@@ -28,7 +28,7 @@ var searchData=
   ['dpp_5fevent_5fcb_5farg_25',['dpp_event_cb_arg',['../structmmwlan__dpp__args.html#a64edddfc8829d6f563dfdbc6171a61be',1,'mmwlan_dpp_args']]],
   ['dst_5fip_26',['dst_ip',['../structmmwlan__standby__config.html#add35768489993093939aefb7390b1dbd',1,'mmwlan_standby_config::dst_ip()'],['../structmmagic__core__wlan__standby__set__config__cmd__args.html#add7c73e1d01d468ae83d6698b0182533',1,'mmagic_core_wlan_standby_set_config_cmd_args::dst_ip()']]],
   ['dst_5fport_27',['dst_port',['../structmmwlan__standby__config.html#a3c871ae8513ae592e450442d7d80fd3c',1,'mmwlan_standby_config::dst_port()'],['../structmmagic__core__wlan__standby__set__config__cmd__args.html#a9d09555a045f9c420fa88fdecc303862',1,'mmagic_core_wlan_standby_set_config_cmd_args::dst_port()']]],
-  ['dtim_5fperiod_28',['dtim_period',['../structmmwlan__softap__args.html#ae04d9251d5f87ef7ce351660b039a3a4',1,'mmwlan_softap_args']]],
+  ['dtim_5fperiod_28',['dtim_period',['../structmmwlan__ap__args.html#aff9b412cd2d164200d644ef47444da5c',1,'mmwlan_ap_args']]],
   ['duration_5fms_29',['duration_ms',['../structmmiperf__report.html#aeef06ec4c455624245cb66d8ad9e7432',1,'mmiperf_report::duration_ms()'],['../structstruct__iperf__status.html#addc610e21d82be0333733ac5ab26daf1',1,'struct_iperf_status::duration_ms()']]],
   ['duty_5fcycle_30',['duty_cycle',['../structmmwlan__duty__cycle__stats.html#aa9339f72b79dd157936fd2ff2b1763a1',1,'mmwlan_duty_cycle_stats']]],
   ['duty_5fcycle_5fomit_5fctrl_5fresp_31',['duty_cycle_omit_ctrl_resp',['../structmmwlan__s1g__channel.html#a7c03ee9be00d571eda99569dc3fdf95b',1,'mmwlan_s1g_channel']]],

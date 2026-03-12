@@ -13,7 +13,8 @@
 #include "mmwlan.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 /**
@@ -221,10 +222,10 @@ extern "C" {
  */
 
 /** The stream ID of the control stream */
-#define CONTROL_STREAM  0
+#define CONTROL_STREAM 0
 
 /** Maximum length of the @c app_version string (excluding null terminator). */
-#define MMAGIC_SYS_MAX_APP_VERSION_LENGTH   (31)
+#define MMAGIC_SYS_MAX_APP_VERSION_LENGTH (31)
 
 /**
  * Typedef for callback function that is invoked by MMAGIC to request a change in deep sleep

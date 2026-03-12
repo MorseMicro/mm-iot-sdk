@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+/* clang-format off */
 /**
  * @file
  * @brief AWS IoT example to demonstrate connecting to AWS Shadow service and demonstrate a
@@ -500,9 +501,10 @@
  *   of requiring less resources by not needing to keep a copy of the claim certificate and
  *   key which saves around 3KB of storage in persistent store.
  */
+/* clang-format on */
 
 #include <string.h>
-#include "mmhal.h"
+#include "mmhal_app.h"
 #include "mmosal.h"
 #include "mmconfig.h"
 #include "mm_app_loadconfig.h"
@@ -523,13 +525,13 @@
 #include "aws_iot_config.h"
 
 /** Minimum NTP timeout per attempt */
-#define NTP_MIN_TIMEOUT             3000
+#define NTP_MIN_TIMEOUT 3000
 /** We need to back-off at least 60 seconds or most NTP Servers will tell us to go away */
-#define NTP_MIN_BACKOFF             60000
+#define NTP_MIN_BACKOFF 60000
 /** Minimum back-off jitter per attempt */
-#define NTP_MIN_BACKOFF_JITTER      3000
+#define NTP_MIN_BACKOFF_JITTER 3000
 /** Maximum back-off jitter per attempt */
-#define NTP_MAX_BACKOFF_JITTER      60000
+#define NTP_MAX_BACKOFF_JITTER 60000
 
 /**
  * Format string representing a Shadow document with a "reported" state.
@@ -550,14 +552,14 @@
  * but may be reused once the update is completed. For this demo, a timestamp
  * is used for a client token.
  */
-#define SHADOW_PUBLISH_JSON               \
-    "{"                                   \
-        "\"state\":{"                     \
-            "\"reported\":{"              \
-                "\"powerOn\":%lu"         \
-            "}"                           \
-        "},"                              \
-        "\"clientToken\":\"%06lu\""       \
+#define SHADOW_PUBLISH_JSON     \
+    "{"                         \
+    "\"state\":{"               \
+    "\"reported\":{"            \
+    "\"powerOn\":%lu"           \
+    "}"                         \
+    "},"                        \
+    "\"clientToken\":\"%06lu\"" \
     "}"
 
 #if defined(ENABLE_OTA_APP) && ENABLE_OTA_APP
@@ -625,8 +627,7 @@ struct mmosal_sem *state_change_sem = NULL;
  * @param json_len The length of the JSON update message.
  * @param status   The status of the update.
  */
-void shadow_update_callback(char *json, size_t json_len,
-                            enum shadow_update_status status)
+void shadow_update_callback(char *json, size_t json_len, enum shadow_update_status status)
 {
     /* Make sure the payload is a valid json document. */
     int result = JSON_Validate(json, json_len);
@@ -645,138 +646,142 @@ void shadow_update_callback(char *json, size_t json_len,
 
     switch (status)
     {
-    case UPDATE_DELTA:
-        /* The json will look similar to this:
-         * @code
-         * {
-         *      "state": {
-         *          "powerOn": 1
-         *      },
-         *      "metadata": {
-         *          "powerOn": {
-         *              "timestamp": 1595437367
-         *          }
-         *      },
-         *      "timestamp": 1595437367,
-         *      "clientToken": "388062",
-         *      "version": 12
-         * }
-         * @endcode
-         */
+        case UPDATE_DELTA:
+            /* The json will look similar to this:
+             * @code
+             * {
+             *      "state": {
+             *          "powerOn": 1
+             *      },
+             *      "metadata": {
+             *          "powerOn": {
+             *              "timestamp": 1595437367
+             *          }
+             *      },
+             *      "timestamp": 1595437367,
+             *      "clientToken": "388062",
+             *      "version": 12
+             * }
+             * @endcode
+             */
 
-        /* Obtain the version value. */
-        result = JSON_Search(json, json_len,
-                             "version", strlen("version"),
-                             &pcOutValue,
-                             (size_t *)&ulOutValueLength);
+            /* Obtain the version value. */
+            result = JSON_Search(json,
+                                 json_len,
+                                 "version",
+                                 strlen("version"),
+                                 &pcOutValue,
+                                 (size_t *)&ulOutValueLength);
 
-        if (result != JSONSuccess)
-        {
-            printf("ERR:Version field not found in JSON document\n");
-            return;
-        }
-        /* Convert the extracted value to an unsigned integer value. */
-        ulVersion = (uint32_t)strtoul(pcOutValue, NULL, 10);
-        /* Make sure the version is newer than the last one we received. */
-        if (ulVersion <= ulCurrentVersion)
-        {
-            /* In this demo, we discard the incoming message
-             * if the version number is not newer than the latest
-             * that we've received before. Your application may use a
-             * different approach. */
-            printf("ERR:Received unexpected delta update with version %u, "
-                   "current version is %u\n",
-                   (unsigned int)ulVersion,
-                   (unsigned int)ulCurrentVersion);
-            return;
-        }
-        /* Set received version as the current version. */
-        ulCurrentVersion = ulVersion;
+            if (result != JSONSuccess)
+            {
+                printf("ERR:Version field not found in JSON document\n");
+                return;
+            }
+            /* Convert the extracted value to an unsigned integer value. */
+            ulVersion = (uint32_t)strtoul(pcOutValue, NULL, 10);
+            /* Make sure the version is newer than the last one we received. */
+            if (ulVersion <= ulCurrentVersion)
+            {
+                /* In this demo, we discard the incoming message
+                 * if the version number is not newer than the latest
+                 * that we've received before. Your application may use a
+                 * different approach. */
+                printf("ERR:Received unexpected delta update with version %u, "
+                       "current version is %u\n",
+                       (unsigned int)ulVersion,
+                       (unsigned int)ulCurrentVersion);
+                return;
+            }
+            /* Set received version as the current version. */
+            ulCurrentVersion = ulVersion;
 
-        /* Get powerOn state from json documents. */
-        result = JSON_Search(json, json_len,
-                             "state.powerOn",
-                             sizeof("state.powerOn") - 1,
-                             &pcOutValue,
-                             (size_t *)&ulOutValueLength);
+            /* Get powerOn state from json documents. */
+            result = JSON_Search(json,
+                                 json_len,
+                                 "state.powerOn",
+                                 sizeof("state.powerOn") - 1,
+                                 &pcOutValue,
+                                 (size_t *)&ulOutValueLength);
 
-        if (result != JSONSuccess)
-        {
-            printf("ERR:powerOn field not found in JSON document\n");
-        }
-        else
-        {
-            /* Convert the powerOn state value to an unsigned integer value. */
-            ulDesiredPowerOnState = (uint32_t)strtoul(pcOutValue, NULL, 10);
+            if (result != JSONSuccess)
+            {
+                printf("ERR:powerOn field not found in JSON document\n");
+            }
+            else
+            {
+                /* Convert the powerOn state value to an unsigned integer value. */
+                ulDesiredPowerOnState = (uint32_t)strtoul(pcOutValue, NULL, 10);
 
-            /* Signal user task about change of state */
-            mmosal_sem_give(state_change_sem);
-        }
-        break;
+                /* Signal user task about change of state */
+                mmosal_sem_give(state_change_sem);
+            }
+            break;
 
-    case UPDATE_ACCEPTED:
-        /* Handle the reported state with state change in /update/accepted topic.
-         * Thus we will retrieve the client token from the JSON document to see if
-         * it's the same one we sent with reported state on the /update topic.
-         * The payload will look similar to this:
-         * @code
-         *  {
-         *      "state": {
-         *          "reported": {
-         *             "powerOn": 1
-         *          }
-         *      },
-         *      "metadata": {
-         *          "reported": {
-         *              "powerOn": {
-         *                  "timestamp": 1596573647
-         *              }
-         *          }
-         *      },
-         *      "version": 14698,
-         *      "timestamp": 1596573647,
-         *      "clientToken": "022485"
-         *  }
-         * @endcode
-         */
+        case UPDATE_ACCEPTED:
+            /* Handle the reported state with state change in /update/accepted topic.
+             * Thus we will retrieve the client token from the JSON document to see if
+             * it's the same one we sent with reported state on the /update topic.
+             * The payload will look similar to this:
+             * @code
+             *  {
+             *      "state": {
+             *          "reported": {
+             *             "powerOn": 1
+             *          }
+             *      },
+             *      "metadata": {
+             *          "reported": {
+             *              "powerOn": {
+             *                  "timestamp": 1596573647
+             *              }
+             *          }
+             *      },
+             *      "version": 14698,
+             *      "timestamp": 1596573647,
+             *      "clientToken": "022485"
+             *  }
+             * @endcode
+             */
 
-        /* We do not need to do anything here unless we want to implement positive confirmation
-         * that our reported state was received and acted on by the server. In which case ensure
-         * you check that the @c clientToken matches the one we sent in the report. */
-        break;
+            /* We do not need to do anything here unless we want to implement positive confirmation
+             * that our reported state was received and acted on by the server. In which case ensure
+             * you check that the @c clientToken matches the one we sent in the report. */
+            break;
 
-    case UPDATE_REJECTED:
-        /* The payload will look similar to this:
-         * {
-         *    "code": error-code,
-         *    "message": "error-message",
-         *    "timestamp": timestamp,
-         *    "clientToken": "token"
-         * }
-         */
+        case UPDATE_REJECTED:
+            /* The payload will look similar to this:
+             * {
+             *    "code": error-code,
+             *    "message": "error-message",
+             *    "timestamp": timestamp,
+             *    "clientToken": "token"
+             * }
+             */
 
-        /*  Obtain the error code. */
-        result = JSON_Search(json, json_len,
-                             "code",
-                             sizeof("code") - 1,
-                             &pcOutValue,
-                             (size_t *)&ulOutValueLength);
+            /*  Obtain the error code. */
+            result = JSON_Search(json,
+                                 json_len,
+                                 "code",
+                                 sizeof("code") - 1,
+                                 &pcOutValue,
+                                 (size_t *)&ulOutValueLength);
 
-        /* Convert the code to an unsigned integer value. */
-        ulCode = (uint32_t)strtoul(pcOutValue, NULL, 10);
+            /* Convert the code to an unsigned integer value. */
+            ulCode = (uint32_t)strtoul(pcOutValue, NULL, 10);
 
-        printf("ERR:Received rejected response code %lu\n",
-               ulCode);
+            printf("ERR:Received rejected response code %lu\n", ulCode);
 
-        /*  Obtain the message string. */
-        result = JSON_Search(json, json_len,
-                             "message",
-                             sizeof("message") - 1,
-                             &pcOutValue,
-                             (size_t *)&ulOutValueLength);
-        printf("    Message: %.*s\n", (int)ulOutValueLength, pcOutValue);
+            /*  Obtain the message string. */
+            result = JSON_Search(json,
+                                 json_len,
+                                 "message",
+                                 sizeof("message") - 1,
+                                 &pcOutValue,
+                                 (size_t *)&ulOutValueLength);
+            printf("    Message: %.*s\n", (int)ulOutValueLength, pcOutValue);
 
-        break;
+            break;
     }
 }
 
@@ -819,8 +824,11 @@ void aws_shadow_loop(char *shadow_name)
 
         /* Generate update report. */
         (void)memset(UpdateDocument, 0x00, sizeof(UpdateDocument));
-        snprintf(UpdateDocument, MAX_JSON_LEN, SHADOW_PUBLISH_JSON,
-                 ulCurrentPowerOnState, ulClientToken);
+        snprintf(UpdateDocument,
+                 MAX_JSON_LEN,
+                 SHADOW_PUBLISH_JSON,
+                 ulCurrentPowerOnState,
+                 ulClientToken);
 
         /* Send update. */
         aws_publish_shadow(shadow_name, UpdateDocument);
@@ -846,8 +854,12 @@ void app_init(void)
     char sntp_server[64];
     strncpy(sntp_server, "0.pool.ntp.org", sizeof(sntp_server)); /* default if key is not found */
     (void)mmconfig_read_string("sntp.server", sntp_server, sizeof(sntp_server));
-    sntp_sync_with_backoff(sntp_server, NTP_MIN_TIMEOUT, NTP_MIN_BACKOFF,
-                           NTP_MIN_BACKOFF_JITTER, NTP_MAX_BACKOFF_JITTER, UINT32_MAX);
+    sntp_sync_with_backoff(sntp_server,
+                           NTP_MIN_TIMEOUT,
+                           NTP_MIN_BACKOFF,
+                           NTP_MIN_BACKOFF_JITTER,
+                           NTP_MAX_BACKOFF_JITTER,
+                           UINT32_MAX);
 
     /* Display current time */
     time_t now;

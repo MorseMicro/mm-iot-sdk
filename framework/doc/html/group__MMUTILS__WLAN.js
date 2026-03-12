@@ -38,6 +38,9 @@ var group__MMUTILS__WLAN =
     [ "mm_find_ie_from_offset", "group__MMUTILS__WLAN.html#gaee0b491755f8074b58823922a1476551", null ],
     [ "mm_find_vendor_specific_ie", "group__MMUTILS__WLAN.html#ga0e68dafaaae1487f57f31513e8a0b423", null ],
     [ "mm_find_vendor_specific_ie_from_offset", "group__MMUTILS__WLAN.html#gaa09630ac598efaef8ef2ecb039a19074", null ],
+    [ "mm_mac_addr_is_broadcast", "group__MMUTILS__WLAN.html#gaaa69a9c0d44b25858aa58514c12dbbb9", null ],
+    [ "mm_mac_addr_is_equal", "group__MMUTILS__WLAN.html#ga8bf8e749b51a63f830695647a3a8c820", null ],
+    [ "mm_mac_addr_is_multicast", "group__MMUTILS__WLAN.html#ga845987d45e8078e61641c16f942286af", null ],
     [ "mm_mac_addr_is_zero", "group__MMUTILS__WLAN.html#ga25e73fe74043c7fe69afde82cd51eee0", null ],
     [ "mm_parse_rsn_information", "group__MMUTILS__WLAN.html#gacae95f09408e208f9c8a0cf7b7ebe53d", null ],
     [ "mm_parse_s1g_operation", "group__MMUTILS__WLAN.html#ga764f142f61dcb585663b33137faeda1f", null ]

@@ -30,7 +30,7 @@
  */
 #if !(defined(ANSI_ESCAPE_ENABLED) && ANSI_ESCAPE_ENABLED == 0)
 /** ANSI escape sequence for bold text. */
-#define ANSI_BOLD  "\x1b[1m"
+#define ANSI_BOLD "\x1b[1m"
 /** ANSI escape sequence to reset font. */
 #define ANSI_RESET "\x1b[0m"
 #else
@@ -42,7 +42,7 @@
 
 /** Length of string representation of a MAC address (i.e., "XX:XX:XX:XX:XX:XX")
  * including null terminator. */
-#define MAC_ADDR_STR_LEN    (18)
+#define MAC_ADDR_STR_LEN (18)
 
 /** Number of results found. */
 static int num_scan_results;
@@ -62,15 +62,22 @@ static void scan_rx_callback(const struct mmwlan_scan_result *result, void *arg)
     struct mm_rsn_information rsn_info;
 
     num_scan_results++;
-    snprintf(bssid_str, MAC_ADDR_STR_LEN, "%02x:%02x:%02x:%02x:%02x:%02x",
-             result->bssid[0], result->bssid[1], result->bssid[2], result->bssid[3],
-             result->bssid[4], result->bssid[5]);
-    snprintf(ssid_str, (result->ssid_len+1), "%s", result->ssid);
+    snprintf(bssid_str,
+             MAC_ADDR_STR_LEN,
+             "%02x:%02x:%02x:%02x:%02x:%02x",
+             result->bssid[0],
+             result->bssid[1],
+             result->bssid[2],
+             result->bssid[3],
+             result->bssid[4],
+             result->bssid[5]);
+    snprintf(ssid_str, (result->ssid_len + 1), "%s", result->ssid);
 
     printf(ANSI_BOLD "%s" ANSI_RESET "\n", ssid_str);
-    printf("    Operating BW: %u MHz\n",  result->op_bw_mhz);
+    printf("    Operating BW: %u MHz\n", result->op_bw_mhz);
     printf("    BSSID: %s\n", bssid_str);
-    printf("    RSSI: %3d\n", result->rssi);
+    printf("    RSSI: %3d dBm\n", result->rssi);
+    printf("    Noise: %3d dBm\n", result->noise_dbm);
     printf("    Beacon Interval(TUs): %u\n", result->beacon_interval);
     printf("    Capability Info: 0x%04x\n", result->capability_info);
 
@@ -99,14 +106,10 @@ static void scan_rx_callback(const struct mmwlan_scan_result *result, void *arg)
     if (ret == 0)
     {
         printf("    S1G Operation:\n");
-        printf("        Operating class: %u\n",
-               s1g_operation.operating_class);
-        printf("        Primary channel: %u\n",
-               s1g_operation.primary_channel_number);
-        printf("        Primary channel width: %u MHz\n",
-               s1g_operation.primary_channel_width_mhz);
-        printf("        Operating channel: %u\n",
-               s1g_operation.operating_channel_number);
+        printf("        Operating class: %u\n", s1g_operation.operating_class);
+        printf("        Primary channel: %u\n", s1g_operation.primary_channel_number);
+        printf("        Primary channel width: %u MHz\n", s1g_operation.primary_channel_width_mhz);
+        printf("        Operating channel: %u\n", s1g_operation.operating_channel_number);
         printf("        Operating channel width: %u MHz\n",
                s1g_operation.operating_channel_width_mhz);
     }
@@ -134,11 +137,12 @@ void app_init(void)
     enum mmwlan_status status;
     struct mmwlan_version version;
 
-    printf("\n\nMorse Scan Demo (Built "__DATE__ " " __TIME__ ")\n\n");
+    printf("\n\nMorse Scan Demo (Built "__DATE__
+           " " __TIME__ ")\n\n");
 
     mmwlan_init();
 
-    const struct mmwlan_s1g_channel_list* channel_list = load_channel_list();
+    const struct mmwlan_s1g_channel_list *channel_list = load_channel_list();
     status = mmwlan_set_channel_list(channel_list);
     if (status != MMWLAN_SUCCESS)
     {
@@ -153,7 +157,9 @@ void app_init(void)
     status = mmwlan_get_version(&version);
     MMOSAL_ASSERT(status == MMWLAN_SUCCESS);
     printf("Morse firmware version %s, morselib version %s, Morse chip ID 0x%lx\n\n",
-           version.morse_fw_version, version.morselib_version, version.morse_chip_id);
+           version.morse_fw_version,
+           version.morselib_version,
+           version.morse_chip_id);
 
     num_scan_results = 0;
     struct mmwlan_scan_req scan_req = MMWLAN_SCAN_REQ_INIT;

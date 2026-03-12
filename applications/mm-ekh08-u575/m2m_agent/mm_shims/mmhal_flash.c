@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 Morse Micro
+ * Copyright 2023-2025 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  * @file
@@ -7,7 +7,7 @@
  */
 
 #include <string.h>
-#include "mmhal.h"
+#include "mmhal_flash.h"
 #include "mmosal.h"
 #include "main.h"
 
@@ -183,7 +183,7 @@ int mmhal_flash_write(uint32_t write_address, const uint8_t *data, size_t size)
     return retval;
 }
 
-const struct lfs_config *mmhal_get_littlefs_config(void)
+const struct lfs_config* mmhal_get_littlefs_config(void)
 {
     return NULL;
 }

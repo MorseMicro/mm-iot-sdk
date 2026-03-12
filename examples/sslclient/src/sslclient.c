@@ -150,7 +150,6 @@
  * configuration options for this application can be found in the config.hjson file.
  */
 
-
 #include <string.h>
 #include "mmosal.h"
 #include "mmwlan.h"
@@ -187,12 +186,11 @@ char buf[1408];
  */
 void my_debug(void *ctx, int level, const char *file, int line, const char *str)
 {
-    ((void) level);
-    ((void) ctx);
+    ((void)level);
+    ((void)ctx);
 
     printf("%s:%04d: %s", file, line, str);
 }
-
 
 /**
  * Main entry point to the application. This will be invoked in a thread once operating system
@@ -240,8 +238,11 @@ void app_init(void)
     mbedtls_ctr_drbg_init(&ctr_drbg);
     mbedtls_entropy_init(&entropy);
 
-    ret = mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy,
-            (const unsigned char *) pers, strlen(pers));
+    ret = mbedtls_ctr_drbg_seed(&ctr_drbg,
+                                mbedtls_entropy_func,
+                                &entropy,
+                                (const unsigned char *)pers,
+                                strlen(pers));
     if (ret != 0)
     {
         printf(" failed %d in mbedtls_ctr_drbg_seed()\n\n", ret);
@@ -252,12 +253,12 @@ void app_init(void)
     /*
      * 1. Load & setup certificates
      */
-    allocptr = (uint8_t*)DEFAULT_ROOT_CERT;
-    len =  mmconfig_read_bytes("sslclient.rootca", NULL, 0, 0);
+    allocptr = (uint8_t *)DEFAULT_ROOT_CERT;
+    len = mmconfig_read_bytes("sslclient.rootca", NULL, 0, 0);
     if (len > 0)
     {
         /* Looks like we have a valid certificate */
-        allocptr = (uint8_t*) mmosal_malloc(len + 1);
+        allocptr = (uint8_t *)mmosal_malloc(len + 1);
         if (allocptr)
         {
             /* Now read the bytes in */
@@ -284,12 +285,12 @@ void app_init(void)
     }
     printf(" ok\n");
 
-    allocptr = (uint8_t*)DEFAULT_CLIENT_CERT;
-    len =  mmconfig_read_bytes("sslclient.clientcert", NULL, 0, 0);
+    allocptr = (uint8_t *)DEFAULT_CLIENT_CERT;
+    len = mmconfig_read_bytes("sslclient.clientcert", NULL, 0, 0);
     if (len > 0)
     {
         /* Looks like we have a valid certificate */
-        allocptr = (uint8_t*) mmosal_malloc(len + 1);
+        allocptr = (uint8_t *)mmosal_malloc(len + 1);
         if (allocptr)
         {
             /* Now read the bytes in */
@@ -316,12 +317,12 @@ void app_init(void)
     }
     printf(" ok\n");
 
-    allocptr = (uint8_t*)DEFAULT_CLIENT_KEY;
-    len =  mmconfig_read_bytes("sslclient.clientkey", NULL, 0, 0);
+    allocptr = (uint8_t *)DEFAULT_CLIENT_KEY;
+    len = mmconfig_read_bytes("sslclient.clientkey", NULL, 0, 0);
     if (len > 0)
     {
         /* Looks like we have a valid certificate */
-        allocptr = (uint8_t*) mmosal_malloc(len + 1);
+        allocptr = (uint8_t *)mmosal_malloc(len + 1);
         if (allocptr)
         {
             /* Now read the bytes in */
@@ -360,8 +361,10 @@ void app_init(void)
      * 2. Setup SSL
      */
     printf("Setting up SSL...");
-    ret = mbedtls_ssl_config_defaults(&conf, MBEDTLS_SSL_IS_CLIENT,
-            MBEDTLS_SSL_TRANSPORT_STREAM, MBEDTLS_SSL_PRESET_DEFAULT);
+    ret = mbedtls_ssl_config_defaults(&conf,
+                                      MBEDTLS_SSL_IS_CLIENT,
+                                      MBEDTLS_SSL_TRANSPORT_STREAM,
+                                      MBEDTLS_SSL_PRESET_DEFAULT);
     if (ret != 0)
     {
         printf(" failed %d in mbedtls_ssl_config_defaults()\n\n", ret);
@@ -438,7 +441,7 @@ void app_init(void)
      * 6. Write the GET request
      */
     printf("Write to server:");
-    ret = mbedtls_ssl_write(&ssl, (const unsigned char *) GET_REQUEST, sizeof(GET_REQUEST) - 1);
+    ret = mbedtls_ssl_write(&ssl, (const unsigned char *)GET_REQUEST, sizeof(GET_REQUEST) - 1);
     if (ret <= 0)
     {
         // mbedtls_ssl_write failed
@@ -452,7 +455,7 @@ void app_init(void)
      */
     printf("Reading response from server:\n");
     memset(buf, 0, sizeof(buf));
-    ret = mbedtls_ssl_read(&ssl, (unsigned char*)buf, sizeof(buf) - 1);
+    ret = mbedtls_ssl_read(&ssl, (unsigned char *)buf, sizeof(buf) - 1);
 
     if (ret > 0)
     {
@@ -460,7 +463,7 @@ void app_init(void)
         printf("Printing headers only:\n\n");
 
         /* Search for blank line signifying end of headers */
-        char* end_headers = strstr(buf, "\n\n");
+        char *end_headers = strstr(buf, "\n\n");
         if (end_headers)
         {
             /* terminate the string at end of headers */
@@ -479,13 +482,17 @@ void app_init(void)
         /* Read the rest */
         while (1)
         {
-            ret = mbedtls_ssl_read(&ssl, (unsigned char*)buf, sizeof(buf));
+            ret = mbedtls_ssl_read(&ssl, (unsigned char *)buf, sizeof(buf));
 
             if (ret == MBEDTLS_ERR_SSL_WANT_READ || ret == MBEDTLS_ERR_SSL_WANT_WRITE)
+            {
                 continue;
+            }
 
             if (ret == MBEDTLS_ERR_SSL_PEER_CLOSE_NOTIFY)
+            {
                 break;
+            }
 
             if (ret < 0)
             {

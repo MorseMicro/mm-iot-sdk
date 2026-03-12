@@ -6,13 +6,13 @@
 
 #include "porting_assistant.h"
 #include "sdio_spi.h"
-#include "mmhal.h"
 #include "mmlog.h"
 #include "mmutils.h"
 #include "chip_cfg.h"
+#include "mmhal_wlan.h"
 
 /** Address used when measuring raw throughput */
-#define BENCHMARK_ADDR_START      0x80100000
+#define BENCHMARK_ADDR_START 0x80100000
 
 /** Packet length used for bulk read/write operations. Chosen because it is the approximate size of
  * a max data frame. */
@@ -20,7 +20,6 @@
 
 /** Duration to perform the benchmark over. This was arbitrarily chosen. */
 #define BENCHMARK_WAIT_MS (2500)
-
 
 /** The chip configuration as detected by probing the chip ID register. */
 const struct chip_cfg *probed_chip_cfg;
@@ -95,60 +94,56 @@ TEST_STEP(test_step_mmhal_wlan_sdio_startup, "SDIO/SPI Startup")
 
     switch (ret)
     {
-    case 0:
-        return TEST_PASSED;
+        case 0:
+            return TEST_PASSED;
 
-    case MMHAL_SDIO_HW_ERROR:
-        TEST_LOG_APPEND(
-            "SDIO/SPI controller hardware error. Possible causes:\n"
-            " - SDIO/SPI controller not configured correctly\n"
-            " - SDIO/SPI controller clock not enabled\n\n");
-        return TEST_FAILED;
+        case MMHAL_SDIO_HW_ERROR:
+            TEST_LOG_APPEND("SDIO/SPI controller hardware error. Possible causes:\n"
+                            " - SDIO/SPI controller not configured correctly\n"
+                            " - SDIO/SPI controller clock not enabled\n\n");
+            return TEST_FAILED;
 
-    case MMHAL_SDIO_CMD_TIMEOUT:
-        TEST_LOG_APPEND(
-            "Timeout while executing an SDIO command. Possible causes:\n"
-            " - SDIO/SPI pins not set to correct function (e.g., output instead of alternative)\n"
-            " - SPI chip select not being asserted\n"
-            " - MM chip not powered on\n\n");
-        return TEST_FAILED;
+        case MMHAL_SDIO_CMD_TIMEOUT:
+            TEST_LOG_APPEND("Timeout while executing an SDIO command. Possible causes:\n"
+                            " - SDIO/SPI pins not set to correct function (e.g., output instead of "
+                            "alternative)\n"
+                            " - SPI chip select not being asserted\n"
+                            " - MM chip not powered on\n\n");
+            return TEST_FAILED;
 
-    case MMHAL_SDIO_CMD_CRC_ERROR:
-        TEST_LOG_APPEND(
-            "CRC error in command or response while executing an SDIO command. Possible causes:\n"
-            " - Noise on SPI/SDIO lines\n"
-            " - Wrong SPI device selected\n\n");
-        return TEST_FAILED;
+        case MMHAL_SDIO_CMD_CRC_ERROR:
+            TEST_LOG_APPEND("CRC error in command or response while executing an SDIO command. "
+                            "Possible causes:\n"
+                            " - Noise on SPI/SDIO lines\n"
+                            " - Wrong SPI device selected\n\n");
+            return TEST_FAILED;
 
-    case MMHAL_SDIO_DATA_TIMEOUT:
-        TEST_LOG_APPEND(
-            "Timeout while transferring data. Possible causes:\n"
-            " - Communication errors due to noise on SPI/SDIO lines\n"
-            " - SPI/SDIO clock rate too low\n"
-            " - SPI/SDIO data timeout to aggressive\n\n");
-        return TEST_FAILED;
+        case MMHAL_SDIO_DATA_TIMEOUT:
+            TEST_LOG_APPEND("Timeout while transferring data. Possible causes:\n"
+                            " - Communication errors due to noise on SPI/SDIO lines\n"
+                            " - SPI/SDIO clock rate too low\n"
+                            " - SPI/SDIO data timeout to aggressive\n\n");
+            return TEST_FAILED;
 
-    case MMHAL_SDIO_DATA_UNDERFLOW:
-        TEST_LOG_APPEND(
-            "Data underflow. Possible causes:\n"
-            " - DMA incorrectly configured\n"
-            " - Data being fed into the SPI/SDIO controller FIFO too slowly\n\n");
-        return TEST_FAILED;
+        case MMHAL_SDIO_DATA_UNDERFLOW:
+            TEST_LOG_APPEND("Data underflow. Possible causes:\n"
+                            " - DMA incorrectly configured\n"
+                            " - Data being fed into the SPI/SDIO controller FIFO too slowly\n\n");
+            return TEST_FAILED;
 
-    case MMHAL_SDIO_DATA_OVERRUN:
-        TEST_LOG_APPEND(
-            "Data overrun. Possible causes:\n"
-            " - DMA incorrectly configured\n"
-            " - Data being read from the SPI/SDIO controller FIFO too slowly\n\n");
-        return TEST_FAILED;
+        case MMHAL_SDIO_DATA_OVERRUN:
+            TEST_LOG_APPEND("Data overrun. Possible causes:\n"
+                            " - DMA incorrectly configured\n"
+                            " - Data being read from the SPI/SDIO controller FIFO too slowly\n\n");
+            return TEST_FAILED;
 
-    default:
-        TEST_LOG_APPEND(
-            "An unspecified error occurred. This may be due to communications or other isuses.\n"
-            "Possible causes may include:\n"
-            " - SDIO/SPI controller not configured correctly\n"
-            " - Communication errors due to noise on SPI/SDIO lines\n\n");
-        return TEST_FAILED;
+        default:
+            TEST_LOG_APPEND("An unspecified error occurred. This may be due to communications or "
+                            "other isuses.\n"
+                            "Possible causes may include:\n"
+                            " - SDIO/SPI controller not configured correctly\n"
+                            " - Communication errors due to noise on SPI/SDIO lines\n\n");
+            return TEST_FAILED;
     }
 }
 
@@ -192,6 +187,7 @@ TEST_STEP(test_step_read_chip_id, "Read chip id from the MM chip")
             if (validate_chip_id(data, &chip_cfgs[chip_cfg_idx]))
             {
                 probed_chip_cfg = &chip_cfgs[chip_cfg_idx];
+                TEST_LOG_APPEND("\tChip ID: 0x%04lx\n\n", data);
                 return TEST_PASSED;
             }
             ret = MMHAL_SDIO_OTHER_ERROR;
@@ -204,30 +200,31 @@ TEST_STEP(test_step_read_chip_id, "Read chip id from the MM chip")
 
     switch (ret)
     {
-    case MMHAL_SDIO_CMD_TIMEOUT:
-        /* We shouldn't get this error code in this test, since it should have caused the
-         * previous test to fail. */
-        TEST_LOG_APPEND(
-            "Failed to read chip id due to a command timeout. Possible causes:\n"
-            " - SPI/SDIO controller not configured correctly\n"
-            " - SPI/SDIO pins not set to correct function (e.g., output instead of alternative)\n"
-            " - SPI Chip Select not being asserted (should be low during the transfer)\n"
-            " - MM chip not powered on\n\n");
-        break;
+        case MMHAL_SDIO_CMD_TIMEOUT:
+            /* We shouldn't get this error code in this test, since it should have caused the
+             * previous test to fail. */
+            TEST_LOG_APPEND(
+                "Failed to read chip id due to a command timeout. Possible causes:\n"
+                " - SPI/SDIO controller not configured correctly\n"
+                " - SPI/SDIO pins not set to correct function (e.g., output instead of "
+                "alternative)\n"
+                " - SPI Chip Select not being asserted (should be low during the transfer)\n"
+                " - MM chip not powered on\n\n");
+            break;
 
-    case MMHAL_SDIO_CMD_CRC_ERROR:
-        TEST_LOG_APPEND("Failed to validate CRC for recieved data. Possible causes:\n"
-                        " - Error in reading data from SPI/SDIO peripheral\n"
-                        " - Possible noise on the SPI/SDIO lines causing corruption\n\n");
-        break;
+        case MMHAL_SDIO_CMD_CRC_ERROR:
+            TEST_LOG_APPEND("Failed to validate CRC for recieved data. Possible causes:\n"
+                            " - Error in reading data from SPI/SDIO peripheral\n"
+                            " - Possible noise on the SPI/SDIO lines causing corruption\n\n");
+            break;
 
-    case MMHAL_SDIO_OTHER_ERROR:
-        TEST_LOG_APPEND("Failed to match a valid chip ID\n");
-        break;
+        case MMHAL_SDIO_OTHER_ERROR:
+            TEST_LOG_APPEND("Failed to match a valid chip ID\n");
+            break;
 
-    default:
-        TEST_LOG_APPEND("Failed to read chip ID due to an unknown error\n\n");
-        break;
+        default:
+            TEST_LOG_APPEND("Failed to read chip ID due to an unknown error\n\n");
+            break;
     }
 
     return TEST_FAILED;
@@ -248,35 +245,36 @@ bool process_sdio_spi_multi_byte_return(int ret, char *log_buf, size_t log_buf_l
 {
     switch (ret)
     {
-    case 0:
-        return true;
-        break;
+        case 0:
+            return true;
+            break;
 
-    case MMHAL_SDIO_CMD_TIMEOUT:
-        /* We shouldn't get this error code in this test, since it should have caused the
-         * previous test to fail. */
-        TEST_LOG_APPEND(
-            "Failed to read chip ID due to the timeout. Possible causes:\n"
-            " - SPI/SDIO controller not configured correctly\n"
-            " - SPI/SDIO pins not set to correct function (e.g., output instead of alternative)\n"
-            " - SPI Chip Select not being asserted (should be low during the transfer)\n"
-            " - MM chip not powered on\n\n");
-        break;
+        case MMHAL_SDIO_CMD_TIMEOUT:
+            /* We shouldn't get this error code in this test, since it should have caused the
+             * previous test to fail. */
+            TEST_LOG_APPEND(
+                "Failed to read chip ID due to the timeout. Possible causes:\n"
+                " - SPI/SDIO controller not configured correctly\n"
+                " - SPI/SDIO pins not set to correct function (e.g., output instead of "
+                "alternative)\n"
+                " - SPI Chip Select not being asserted (should be low during the transfer)\n"
+                " - MM chip not powered on\n\n");
+            break;
 
-    case MMHAL_SDIO_CMD_CRC_ERROR:
-        TEST_LOG_APPEND("Failed to validate CRC for recieved data. Possible causes:\n"
-                        " - Error in reading data from SPI peripheral\n"
-                        " - Possible noise on the SPI lines causing corruption\n\n");
-        break;
+        case MMHAL_SDIO_CMD_CRC_ERROR:
+            TEST_LOG_APPEND("Failed to validate CRC for recieved data. Possible causes:\n"
+                            " - Error in reading data from SPI peripheral\n"
+                            " - Possible noise on the SPI lines causing corruption\n\n");
+            break;
 
-    case MMHAL_SDIO_INVALID_ARGUMENT:
-        /* We should not reach this. */
-        TEST_LOG_APPEND("Invalid input was given to sdio_spi_read_le32().\n"
-                        "Likely a NULL pointer for the data variable\n\n");
-        break;
+        case MMHAL_SDIO_INVALID_ARGUMENT:
+            /* We should not reach this. */
+            TEST_LOG_APPEND("Invalid input was given to sdio_spi_read_le32().\n"
+                            "Likely a NULL pointer for the data variable\n\n");
+            break;
 
-    default:
-        TEST_LOG_APPEND("Failed multi byte operation due to an unknown error\n\n");
+        default:
+            TEST_LOG_APPEND("Failed multi byte operation due to an unknown error\n\n");
     }
 
     return TEST_FAILED;
@@ -315,7 +313,10 @@ bool valid_buffer(uint8_t *data, uint32_t length, uint32_t offset)
         if (data[cnt] != value++)
         {
             printf("\nInvalid data at %lu (offset=%lu, expect %02x got %02x)\n",
-                   cnt, offset, value, data[cnt]);
+                   cnt,
+                   offset,
+                   value,
+                   data[cnt]);
             return false;
         }
     }
@@ -378,7 +379,6 @@ exit:
     return result;
 }
 
-
 TEST_STEP(test_step_raw_tput, "Raw throughput test")
 {
     /*
@@ -414,7 +414,8 @@ TEST_STEP(test_step_raw_tput, "Raw throughput test")
     while (mmosal_time_le(mmosal_get_time_ms(), benchmark_end_time))
     {
         offset += 4;
-        ret = sdio_spi_write_multi_byte(BENCHMARK_ADDR_START, tx_data + (offset & 15),
+        ret = sdio_spi_write_multi_byte(BENCHMARK_ADDR_START,
+                                        tx_data + (offset & 15),
                                         BULK_RW_PACKET_LEN_BYTES);
         ok = process_sdio_spi_multi_byte_return(ret, log_buf, log_buf_len);
         if (!ok)
@@ -424,8 +425,7 @@ TEST_STEP(test_step_raw_tput, "Raw throughput test")
             goto exit;
         }
 
-        ret = sdio_spi_read_multi_byte(BENCHMARK_ADDR_START, rx_data,
-                                       BULK_RW_PACKET_LEN_BYTES);
+        ret = sdio_spi_read_multi_byte(BENCHMARK_ADDR_START, rx_data, BULK_RW_PACKET_LEN_BYTES);
         ok = process_sdio_spi_multi_byte_return(ret, log_buf, log_buf_len);
         if (!ok)
         {
@@ -525,9 +525,9 @@ TEST_STEP(test_step_verify_busy_pin, "Verify BUSY pin")
     }
     if (irq_counter > 2)
     {
-      TEST_LOG_APPEND("Busy IRQ is still enabled.\n\n");
-      result = TEST_FAILED;
-      goto exit;
+        TEST_LOG_APPEND("Busy IRQ is still enabled.\n\n");
+        result = TEST_FAILED;
+        goto exit;
     }
 
 exit:

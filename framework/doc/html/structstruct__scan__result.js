@@ -6,6 +6,7 @@ var structstruct__scan__result =
     [ "capability_info", "structstruct__scan__result.html#a6b0c9f4e42d8ef6da31298d0d54aff9b", null ],
     [ "channel_freq_hz", "structstruct__scan__result.html#a6b14358d78a5b2f21d8514096696a2e2", null ],
     [ "ies", "structstruct__scan__result.html#acc24ceafb055f780cf99bf70f7cc573a", null ],
+    [ "noise_dbm", "structstruct__scan__result.html#ad80db3e5b17e68d46ca792ce6e72d97f", null ],
     [ "op_bw_mhz", "structstruct__scan__result.html#a65eb1e52b8e6d5717aad59f8e4ef4930", null ],
     [ "received_ies_len", "structstruct__scan__result.html#a0992c101cca3374e30505fd368729c04", null ],
     [ "rssi", "structstruct__scan__result.html#aa318eb3c7cc708d898c13f8f4f2d61b2", null ],

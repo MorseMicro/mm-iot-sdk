@@ -23,9 +23,6 @@ from acelib import DutIf  # noqa: E402
 DEFAULT_GDB_PORT = 3333
 DEFAULT_TCL_PORT = 6666
 
-DEFAULT_SERVER_IP = "192.168.1.1"
-DEFAULT_AMOUNT = -10 * 100  # 10 seconds
-
 
 def _main():
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter,

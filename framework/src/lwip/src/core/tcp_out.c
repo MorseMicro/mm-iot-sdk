@@ -782,6 +782,7 @@ tcp_write(struct tcp_pcb *pcb, const void *arg, u16_t len, u8_t apiflags)
   pcb->snd_lbb += len;
   pcb->snd_buf -= len;
   pcb->snd_queuelen = queuelen;
+  TCP_TIMER_NEEDED();
 
   LWIP_DEBUGF(TCP_QLEN_DEBUG, ("tcp_write: %"S16_F" (after enqueued)\n",
                                pcb->snd_queuelen));
@@ -981,6 +982,7 @@ tcp_split_unsent_seg(struct tcp_pcb *pcb, u16_t split)
   }
 #endif /* TCP_OVERSIZE */
 
+  TCP_TIMER_NEEDED();
   return ERR_OK;
 memerr:
   TCP_STATS_INC(tcp.memerr);
@@ -1130,6 +1132,8 @@ tcp_enqueue_flags(struct tcp_pcb *pcb, u8_t flags)
                 pcb->unacked != NULL || pcb->unsent != NULL);
   }
 
+  TCP_TIMER_NEEDED();
+
   return ERR_OK;
 }
 
@@ -1229,6 +1233,9 @@ tcp_build_wnd_scale_option(u32_t *opts)
 }
 #endif
 
+static err_t
+tcp_output_impl(struct tcp_pcb *pcb);
+
 /**
  * @ingroup tcp_raw
  * Find out what we can send and send it
@@ -1239,6 +1246,15 @@ tcp_build_wnd_scale_option(u32_t *opts)
  */
 err_t
 tcp_output(struct tcp_pcb *pcb)
+{
+  TCP_UPDATE_TICK();
+  err_t err = tcp_output_impl(pcb);
+  TCP_TIMER_NEEDED();
+  return err;
+}
+
+static err_t
+tcp_output_impl(struct tcp_pcb *pcb)
 {
   struct tcp_seg *seg, *useg;
   u32_t wnd, snd_nxt;
@@ -2036,7 +2052,7 @@ tcp_rst(const struct tcp_pcb *pcb, u32_t seqno, u32_t ackno,
         u16_t local_port, u16_t remote_port)
 {
   struct pbuf *p;
-  
+
   p = tcp_rst_common(pcb, seqno, ackno, local_ip, remote_ip, local_port, remote_port);
   if (p != NULL) {
     tcp_output_control_segment(pcb, p, local_ip, remote_ip);

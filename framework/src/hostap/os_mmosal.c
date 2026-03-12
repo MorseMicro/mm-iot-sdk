@@ -5,8 +5,9 @@
  */
 
 #include <stdarg.h>
+#include <time.h>
 
-#include "mmhal.h"
+#include "mmhal_core.h"
 #include "mmosal.h"
 #include "hostap_morse_common.h"
 #include "utils/os.h"
@@ -54,9 +55,8 @@ int os_mktime(int year, int month, int day, int hour, int min, int sec, os_time_
 {
     struct tm tm;
 
-    if (year < 1970 || month < 1 || month > 12 || day < 1 || day > 31 ||
-        hour < 0 || hour > 23 || min < 0 || min > 59 || sec < 0 ||
-        sec > 60)
+    if ((year < 1970 || month < 1 || month > 12 || day < 1 || day > 31) ||
+        (hour < 0 || hour > 23 || min < 0 || min > 59 || sec < 0 || sec > 60))
     {
         return -1;
     }

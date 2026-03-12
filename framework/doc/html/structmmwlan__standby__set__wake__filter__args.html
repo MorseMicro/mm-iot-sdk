@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.9.7</span>
+   &#160;<span id="projectnumber">2.10.4</span>
    </div>
   </td>
  </tr>
@@ -89,20 +89,20 @@ $(document).ready(function(){initNavTree('structmmwlan__standby__set__wake__filt
 <div class="header">
   <div class="summary">
 <a href="#pub-attribs">Data Fields</a>  </div>
-  <div class="headertitle"><div class="title">mmwlan_standby_set_wake_filter_args Struct Reference<div class="ingroups"><a class="el" href="group__MMWLAN.html">Morse Micro Wireless LAN (mmwlan) API</a> &#124; <a class="el" href="group__MMWLAN.html">Morse Micro Wireless LAN (mmwlan) API</a> &raquo; <a class="el" href="group__MMWLAN__OFFLOAD.html">WLAN offload features</a> &raquo; <a class="el" href="group__MMWLAN__STANDBY.html">WLAN Standby features</a></div></div></div>
+  <div class="headertitle"><div class="title">mmwlan_standby_set_wake_filter_args Struct Reference<div class="ingroups"><a class="el" href="group__MMWLAN.html">Morse Micro Wireless LAN (mmwlan) API</a> &raquo; <a class="el" href="group__MMWLAN__STA.html">WLAN Control API for Station (STA) mode</a> &#124; <a class="el" href="group__MMWLAN.html">Morse Micro Wireless LAN (mmwlan) API</a> &raquo; <a class="el" href="group__MMWLAN__STA.html">WLAN Control API for Station (STA) mode</a> &raquo; <a class="el" href="group__MMWLAN__OFFLOAD.html">[Deprecated] WLAN offload features</a> &raquo; <a class="el" href="group__MMWLAN__STANDBY.html">[Deprecated] WLAN Standby features</a></div></div></div>
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p >Arguments for <a class="el" href="group__MMWLAN__STANDBY.html#ga6814b0721a36cb55fa40e8cf9ae8b215">mmwlan_standby_set_wake_filter</a> <br  />
- </p>
+<div class="textblock"><p >Arguments for <a class="el" href="group__MMWLAN__STANDBY.html#ga6814b0721a36cb55fa40e8cf9ae8b215">mmwlan_standby_set_wake_filter</a>. </p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000028">Deprecated:</a></b></dt><dd>It is not recommended to use the WLAN Offload features API. It is deprecated and will be removed in a future release. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01911">1911</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01908">1908</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 </div>
 <p><code>#include &lt;<a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Data Fields</h2></td></tr>
-<tr class="memitem:a5ddfa3da8dbd5cc67ac9b5d032b4b4a4"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__standby__set__wake__filter__args.html#a5ddfa3da8dbd5cc67ac9b5d032b4b4a4">filter</a> [<a class="el" href="group__MMWLAN.html#gae65281a566a88f746c21c004a7971341">MMWLAN_STANDBY_WAKE_FRAME_USER_FILTER_MAXLEN</a>]</td></tr>
+<tr class="memitem:a5ddfa3da8dbd5cc67ac9b5d032b4b4a4"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__standby__set__wake__filter__args.html#a5ddfa3da8dbd5cc67ac9b5d032b4b4a4">filter</a> [<a class="el" href="group__MMWLAN__STANDBY.html#gae65281a566a88f746c21c004a7971341">MMWLAN_STANDBY_WAKE_FRAME_USER_FILTER_MAXLEN</a>]</td></tr>
 <tr class="memdesc:a5ddfa3da8dbd5cc67ac9b5d032b4b4a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Data to match with for filtering.  <a href="structmmwlan__standby__set__wake__filter__args.html#a5ddfa3da8dbd5cc67ac9b5d032b4b4a4">More...</a><br /></td></tr>
 <tr class="separator:a5ddfa3da8dbd5cc67ac9b5d032b4b4a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ade66e79ae5a295a8addee8a302a1b083"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__standby__set__wake__filter__args.html#ade66e79ae5a295a8addee8a302a1b083">filter_len</a></td></tr>
@@ -120,14 +120,14 @@ Data Fields</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">uint8_t mmwlan_standby_set_wake_filter_args::filter[<a class="el" href="group__MMWLAN.html#gae65281a566a88f746c21c004a7971341">MMWLAN_STANDBY_WAKE_FRAME_USER_FILTER_MAXLEN</a>]</td>
+          <td class="memname">uint8_t mmwlan_standby_set_wake_filter_args::filter[<a class="el" href="group__MMWLAN__STANDBY.html#gae65281a566a88f746c21c004a7971341">MMWLAN_STANDBY_WAKE_FRAME_USER_FILTER_MAXLEN</a>]</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>Data to match with for filtering. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01914">1914</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01911">1911</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -144,9 +144,9 @@ Data Fields</h2></td></tr>
 </div><div class="memdoc">
 
 <p>The length of the filter data in bytes. </p>
-<p >See <a class="el" href="group__MMWLAN.html#gae65281a566a88f746c21c004a7971341">MMWLAN_STANDBY_WAKE_FRAME_USER_FILTER_MAXLEN</a> for maximum filter length. </p>
+<p >See <a class="el" href="group__MMWLAN__STANDBY.html#gae65281a566a88f746c21c004a7971341">MMWLAN_STANDBY_WAKE_FRAME_USER_FILTER_MAXLEN</a> for maximum filter length. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01919">1919</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01916">1916</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -164,7 +164,7 @@ Data Fields</h2></td></tr>
 
 <p>The offset within the packet to search for the filter match. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01921">1921</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01918">1918</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -178,7 +178,7 @@ Data Fields</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="structmmwlan__standby__set__wake__filter__args.html">mmwlan_standby_set_wake_filter_args</a></li>
-    <li class="footer">Copyright 2021 Morse Micro </li>
+    <li class="footer">Copyright 2021-2025 Morse Micro </li>
   </ul>
 </div>
 </body>

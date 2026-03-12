@@ -26,6 +26,8 @@ struct mmagic_{{data.name}}_config
 struct mmagic_{{data.name}}_data
 {
     struct mmagic_{{data.name}}_config config;
+    /** Subsystem private data (to be allocated/managed by the subsystem implementation). */
+    void *priv;
 };
 
 /**

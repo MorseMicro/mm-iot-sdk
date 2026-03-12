@@ -8,7 +8,7 @@
 #include "task.h"
 #include "queue.h"
 
-#include "mmhal.h"
+#include "mmhal_os.h"
 
 void vApplicationMallocFailedHook(void)
 {

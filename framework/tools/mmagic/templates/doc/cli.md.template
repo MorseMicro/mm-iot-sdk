@@ -115,7 +115,7 @@ the IP configuration variables will not take effect until the `ip-reload` comman
 | Label | Value | Description |
 |-------|-------|-------------|
 {% for value in enum.values -%}
-| `{{ value.name }}` | {{ loop.index0 }} | {{ value.description }} |
+| `{{ value.name }}` | {{ value.value }} | {{ value.description }} |
 {% endfor -%}
 
 {% endfor %}

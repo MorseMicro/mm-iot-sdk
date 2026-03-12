@@ -23,6 +23,8 @@ var group__MMWLAN__STANDBY =
       [ "snooze_period_s", "structmmwlan__standby__config.html#a7f8ef17584a786d352b0a02e7cfe7d59", null ],
       [ "src_ip", "structmmwlan__standby__config.html#a59818637d9efc939d4f4f5dc8ae3144d", null ]
     ] ],
+    [ "MMWLAN_STANDBY_STATUS_FRAME_USER_PAYLOAD_MAXLEN", "group__MMWLAN__STANDBY.html#ga84f1a76137b3e5d01dd0942e2c4ee564", null ],
+    [ "MMWLAN_STANDBY_WAKE_FRAME_USER_FILTER_MAXLEN", "group__MMWLAN__STANDBY.html#gae65281a566a88f746c21c004a7971341", null ],
     [ "mmwlan_standby_exit_cb_t", "group__MMWLAN__STANDBY.html#gaebeeb1a17a43cb3981ba60c42fc5f71b", null ],
     [ "mmwlan_standby_exit_reason", "group__MMWLAN__STANDBY.html#ga7be2c8d7da01c0a12e0d4cb171ef7764", [
       [ "MMWLAN_STANDBY_EXIT_REASON_NONE", "group__MMWLAN__STANDBY.html#gga7be2c8d7da01c0a12e0d4cb171ef7764af1d814b5327bae1804dd31ee2ef77943", null ],

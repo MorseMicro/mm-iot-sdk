@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Morse Micro
+ * Copyright 2026 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -43,38 +43,46 @@ struct mmagic_ip_config
     /** When set to true, IP link status notifications will be provided. Setting this to
      * false will suppress these notifications. Defaults to true. */
     bool link_status_evt_en;
+    /** If true, enables ARP response offload which allows the Morse chip to directly
+     * respond to ARP requests without waking up the host processor. */
+    bool offload_arp_response;
+    /** If non zero, enables ARP refresh offload with the specified interval in seconds.
+     * Note: ARP response offload needs to be enabled for this feature to work. */
+    uint32_t offload_arp_refresh_s;
 };
 
 struct mmagic_ip_data
 {
     struct mmagic_ip_config config;
+    /** Subsystem private data (to be allocated/managed by the subsystem implementation). */
+    void *priv;
 };
 
 /**
  * Function to initialize the core data structure and register the ops functions.
  *
- * @param core Reference to to global mmagic context struct.
+ * @param core   Reference to to global mmagic context struct.
  */
 void mmagic_core_ip_init(struct mmagic_data *core);
 
 /**
  * Function to load settings from persistent store for the core ip subsystem.
  *
- * @param core Reference to to global mmagic context struct.
+ * @param core   Reference to to global mmagic context struct.
  */
 void mmagic_core_ip_load_all(struct mmagic_data *core);
 
 /**
  * Function to save settings to persistent store for the core ip subsystem.
  *
- * @param core Reference to to global mmagic context struct.
+ * @param core   Reference to to global mmagic context struct.
  */
 void mmagic_core_ip_save_all(struct mmagic_data *core);
 
 /**
  * Function to start any of the core processes for the core ip subsystem.
  *
- * @param core Reference to to global mmagic context struct.
+ * @param core   Reference to to global mmagic context struct.
  */
 void mmagic_core_ip_start(struct mmagic_data *core);
 
@@ -84,12 +92,10 @@ struct MM_PACKED mmagic_core_ip_status_rsp_args
     struct struct_ip_status status;
 };
 
-enum mmagic_status mmagic_core_ip_status(
-    struct mmagic_data *core,
-    struct mmagic_core_ip_status_rsp_args *rsp_args);
+enum mmagic_status mmagic_core_ip_status(struct mmagic_data *core,
+                                         struct mmagic_core_ip_status_rsp_args *rsp_args);
 
-enum mmagic_status mmagic_core_ip_reload(
-    struct mmagic_data *core);
+enum mmagic_status mmagic_core_ip_reload(struct mmagic_data *core);
 
 /** Command arguments structure for ip_enable_tcp_keepalive_offload */
 struct MM_PACKED mmagic_core_ip_enable_tcp_keepalive_offload_cmd_args
@@ -103,8 +109,7 @@ enum mmagic_status mmagic_core_ip_enable_tcp_keepalive_offload(
     struct mmagic_data *core,
     const struct mmagic_core_ip_enable_tcp_keepalive_offload_cmd_args *cmd_args);
 
-enum mmagic_status mmagic_core_ip_disable_tcp_keepalive_offload(
-    struct mmagic_data *core);
+enum mmagic_status mmagic_core_ip_disable_tcp_keepalive_offload(struct mmagic_data *core);
 
 /** Command arguments structure for ip_set_whitelist_filter */
 struct MM_PACKED mmagic_core_ip_set_whitelist_filter_cmd_args
@@ -122,8 +127,7 @@ enum mmagic_status mmagic_core_ip_set_whitelist_filter(
     struct mmagic_data *core,
     const struct mmagic_core_ip_set_whitelist_filter_cmd_args *cmd_args);
 
-enum mmagic_status mmagic_core_ip_clear_whitelist_filter(
-    struct mmagic_data *core);
+enum mmagic_status mmagic_core_ip_clear_whitelist_filter(struct mmagic_data *core);
 
 /*
  * ---------------------------------------------------------------------------------------------

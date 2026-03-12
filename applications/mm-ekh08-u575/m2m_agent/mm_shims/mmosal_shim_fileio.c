@@ -32,7 +32,7 @@
 #include <errno.h>
 
 #include "mmosal.h"
-#include "mmhal.h"
+#include "mmhal_flash.h"
 #include "mmutils.h"
 
 #include "lfs.h"

@@ -7,9 +7,7 @@
 
 #pragma once
 
-#include "mmhal.h"
-#include "mmosal.h"
-#include "main.h"
+#include "mmhal_core.h"
 
 /** Example hardware version string used for @c mmhal_get_hardware_version() */
 #define MMHAL_HARDWARE_VERSION "MM-EKH08-H753"
@@ -23,3 +21,8 @@ enum mmhal_deep_sleep_veto_id
     /** UART HAL deep sleep veto. */
     MMHAL_VETO_ID_HAL_UART = MMHAL_VETO_ID_HAL_MIN,
 };
+
+/**
+ * Initialize mmhal resources for random number generator
+ */
+void mmhal_random_init(void);

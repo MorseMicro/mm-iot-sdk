@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.9.7</span>
+   &#160;<span id="projectnumber">2.10.4</span>
    </div>
   </td>
  </tr>
@@ -90,11 +90,13 @@ $(document).ready(function(){initNavTree('group__MMWLAN__REGDB.html',''); initRe
   <div class="summary">
 <a href="#nested-classes">Data Structures</a> &#124;
 <a href="#define-members">Macros</a> &#124;
+<a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">WLAN Regulatory Database API<div class="ingroups"><a class="el" href="group__MMWLAN.html">Morse Micro Wireless LAN (mmwlan) API</a></div></div></div>
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<p >API for configuration of the regulatory domain. </p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Data Structures</h2></td></tr>
@@ -107,6 +109,9 @@ Data Structures</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__regulatory__db.html">mmwlan_regulatory_db</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Regulatory database data structure.  <a href="structmmwlan__regulatory__db.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__duty__cycle__stats.html">mmwlan_duty_cycle_stats</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Duty cycle configuration and statistics.  <a href="structmmwlan__duty__cycle__stats.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
@@ -117,6 +122,14 @@ Macros</h2></td></tr>
 <tr class="memdesc:gafc029d1ba4706f95eb0e0f3d52a4f949"><td class="mdescLeft">&#160;</td><td class="mdescRight">Length of the two character country code string (null-terminated).  <a href="group__MMWLAN__REGDB.html#gafc029d1ba4706f95eb0e0f3d52a4f949">More...</a><br /></td></tr>
 <tr class="separator:gafc029d1ba4706f95eb0e0f3d52a4f949"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:ga69f89b9ee99f9d1cae10474be1acf5e8"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__REGDB.html#ga69f89b9ee99f9d1cae10474be1acf5e8">mmwlan_duty_cycle_mode</a> { <a class="el" href="group__MMWLAN__REGDB.html#gga69f89b9ee99f9d1cae10474be1acf5e8ab9ee23f3cb0fcb042e0a1212a6c7a632">MMWLAN_DUTY_CYCLE_MODE_SPREAD</a> = 0
+, <a class="el" href="group__MMWLAN__REGDB.html#gga69f89b9ee99f9d1cae10474be1acf5e8ac3e646bfb0bcc7c0fd659340e6b98b82">MMWLAN_DUTY_CYCLE_MODE_BURST</a> = 1
+ }</td></tr>
+<tr class="memdesc:ga69f89b9ee99f9d1cae10474be1acf5e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enumeration of Duty Cycle modes.  <a href="group__MMWLAN__REGDB.html#ga69f89b9ee99f9d1cae10474be1acf5e8">More...</a><br /></td></tr>
+<tr class="separator:ga69f89b9ee99f9d1cae10474be1acf5e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:ga64bab9d2f8a49a77267686a3489ed803"><td class="memItemLeft" align="right" valign="top">static const struct <a class="el" href="structmmwlan__s1g__channel__list.html">mmwlan_s1g_channel_list</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__REGDB.html#ga64bab9d2f8a49a77267686a3489ed803">mmwlan_lookup_regulatory_domain</a> (const struct <a class="el" href="structmmwlan__regulatory__db.html">mmwlan_regulatory_db</a> *db, const char *country_code)</td></tr>
@@ -125,6 +138,12 @@ Functions</h2></td></tr>
 <tr class="memitem:ga73b6742a29b62bf0091a9b6c9cc770db"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__REGDB.html#ga73b6742a29b62bf0091a9b6c9cc770db">mmwlan_set_channel_list</a> (const struct <a class="el" href="structmmwlan__s1g__channel__list.html">mmwlan_s1g_channel_list</a> *channel_list)</td></tr>
 <tr class="memdesc:ga73b6742a29b62bf0091a9b6c9cc770db"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the list of channels that are supported by the regulatory domain in which the device resides.  <a href="group__MMWLAN__REGDB.html#ga73b6742a29b62bf0091a9b6c9cc770db">More...</a><br /></td></tr>
 <tr class="separator:ga73b6742a29b62bf0091a9b6c9cc770db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga7c1eb7c9f6f40f2aa056e6213548ec64"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__REGDB.html#ga7c1eb7c9f6f40f2aa056e6213548ec64">mmwlan_set_duty_cycle_mode</a> (enum <a class="el" href="group__MMWLAN__REGDB.html#ga69f89b9ee99f9d1cae10474be1acf5e8">mmwlan_duty_cycle_mode</a> duty_cycle_mode)</td></tr>
+<tr class="memdesc:ga7c1eb7c9f6f40f2aa056e6213548ec64"><td class="mdescLeft">&#160;</td><td class="mdescRight">Configure the duty cycle behavior for air time distribution.  <a href="group__MMWLAN__REGDB.html#ga7c1eb7c9f6f40f2aa056e6213548ec64">More...</a><br /></td></tr>
+<tr class="separator:ga7c1eb7c9f6f40f2aa056e6213548ec64"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga576ad2a5faf5743ede209bd0f043e72a"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__REGDB.html#ga576ad2a5faf5743ede209bd0f043e72a">mmwlan_get_duty_cycle_stats</a> (struct <a class="el" href="structmmwlan__duty__cycle__stats.html">mmwlan_duty_cycle_stats</a> *stats)</td></tr>
+<tr class="memdesc:ga576ad2a5faf5743ede209bd0f043e72a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieve the transmit duty cycle configuration and statistics.  <a href="group__MMWLAN__REGDB.html#ga576ad2a5faf5743ede209bd0f043e72a">More...</a><br /></td></tr>
+<tr class="separator:ga576ad2a5faf5743ede209bd0f043e72a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="gafc029d1ba4706f95eb0e0f3d52a4f949" name="gafc029d1ba4706f95eb0e0f3d52a4f949"></a>
@@ -141,7 +160,7 @@ Functions</h2></td></tr>
 
 <p>Length of the two character country code string (null-terminated). </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00270">270</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00175">175</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -159,11 +178,63 @@ Functions</h2></td></tr>
 
 <p>If either the global or s1g operating class is set to this, the operating class will not be checked when associating to an AP. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00240">240</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00145">145</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="ga69f89b9ee99f9d1cae10474be1acf5e8" name="ga69f89b9ee99f9d1cae10474be1acf5e8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga69f89b9ee99f9d1cae10474be1acf5e8">&#9670;&nbsp;</a></span>mmwlan_duty_cycle_mode</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__MMWLAN__REGDB.html#ga69f89b9ee99f9d1cae10474be1acf5e8">mmwlan_duty_cycle_mode</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Enumeration of Duty Cycle modes. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="gga69f89b9ee99f9d1cae10474be1acf5e8ab9ee23f3cb0fcb042e0a1212a6c7a632" name="gga69f89b9ee99f9d1cae10474be1acf5e8ab9ee23f3cb0fcb042e0a1212a6c7a632"></a>MMWLAN_DUTY_CYCLE_MODE_SPREAD&#160;</td><td class="fielddoc"><p >Duty cycle air time evenly spread. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga69f89b9ee99f9d1cae10474be1acf5e8ac3e646bfb0bcc7c0fd659340e6b98b82" name="gga69f89b9ee99f9d1cae10474be1acf5e8ac3e646bfb0bcc7c0fd659340e6b98b82"></a>MMWLAN_DUTY_CYCLE_MODE_BURST&#160;</td><td class="fielddoc"><p >Duty cycle air time available in burst. </p>
+</td></tr>
+</table>
+
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00252">252</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="ga576ad2a5faf5743ede209bd0f043e72a" name="ga576ad2a5faf5743ede209bd0f043e72a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga576ad2a5faf5743ede209bd0f043e72a">&#9670;&nbsp;</a></span>mmwlan_get_duty_cycle_stats()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a> mmwlan_get_duty_cycle_stats </td>
+          <td>(</td>
+          <td class="paramtype">struct <a class="el" href="structmmwlan__duty__cycle__stats.html">mmwlan_duty_cycle_stats</a> *&#160;</td>
+          <td class="paramname"><em>stats</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Retrieve the transmit duty cycle configuration and statistics. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">stats</td><td>Pointer to a duty cycle statistics structure.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> on success, else an appropriate error code. </dd></dl>
+
+</div>
+</div>
 <a id="ga64bab9d2f8a49a77267686a3489ed803" name="ga64bab9d2f8a49a77267686a3489ed803"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga64bab9d2f8a49a77267686a3489ed803">&#9670;&nbsp;</a></span>mmwlan_lookup_regulatory_domain()</h2>
 
@@ -208,7 +279,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the matching channel list if found, else NULL. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00306">306</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00210">210</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -241,13 +312,41 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="ga7c1eb7c9f6f40f2aa056e6213548ec64" name="ga7c1eb7c9f6f40f2aa056e6213548ec64"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga7c1eb7c9f6f40f2aa056e6213548ec64">&#9670;&nbsp;</a></span>mmwlan_set_duty_cycle_mode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a> mmwlan_set_duty_cycle_mode </td>
+          <td>(</td>
+          <td class="paramtype">enum <a class="el" href="group__MMWLAN__REGDB.html#ga69f89b9ee99f9d1cae10474be1acf5e8">mmwlan_duty_cycle_mode</a>&#160;</td>
+          <td class="paramname"><em>duty_cycle_mode</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Configure the duty cycle behavior for air time distribution. </p>
+<dl class="section note"><dt>Note</dt><dd>This only guaranteed to take effect on subsequent invocation of <a class="el" href="group__MMWLAN__STA.html#ga9cdcf82a952afa692f82430f1d6b93a0">mmwlan_sta_enable()</a> or <a class="el" href="group__MMWLAN__AP.html#gacce06602f53a434834463df53d7ff942">mmwlan_ap_enable()</a>.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">duty_cycle_mode</td><td>Sets the duty cycle mode. See <a class="el" href="group__MMWLAN__REGDB.html#ga69f89b9ee99f9d1cae10474be1acf5e8">mmwlan_duty_cycle_mode</a> for what each mode means.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> on success, else an appropriate error code. </dd></dl>
+
+</div>
+</div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.17-->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Copyright 2021 Morse Micro </li>
+    <li class="footer">Copyright 2021-2025 Morse Micro </li>
   </ul>
 </div>
 </body>

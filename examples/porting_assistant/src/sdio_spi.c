@@ -6,144 +6,142 @@
 
 #include "porting_assistant.h"
 #include "sdio_spi.h"
-#include "mmhal.h"
-
+#include "mmhal_wlan.h"
 
 /* Series of defines used when writing to the MM chip */
-#define MORSE_REG_ADDRESS_BASE      0x10000
-#define MORSE_REG_ADDRESS_WINDOW_0  MORSE_REG_ADDRESS_BASE
-#define MORSE_REG_ADDRESS_WINDOW_1  (MORSE_REG_ADDRESS_BASE + 1)
-#define MORSE_REG_ADDRESS_CONFIG    (MORSE_REG_ADDRESS_BASE + 2)
+#define MORSE_REG_ADDRESS_BASE     0x10000
+#define MORSE_REG_ADDRESS_WINDOW_0 MORSE_REG_ADDRESS_BASE
+#define MORSE_REG_ADDRESS_WINDOW_1 (MORSE_REG_ADDRESS_BASE + 1)
+#define MORSE_REG_ADDRESS_CONFIG   (MORSE_REG_ADDRESS_BASE + 2)
 
-#define MORSE_CONFIG_ACCESS_1BYTE   0
-#define MORSE_CONFIG_ACCESS_2BYTE   1
-#define MORSE_CONFIG_ACCESS_4BYTE   2
+#define MORSE_CONFIG_ACCESS_1BYTE  0
+#define MORSE_CONFIG_ACCESS_2BYTE  1
+#define MORSE_CONFIG_ACCESS_4BYTE  2
 
 /** PACK byte array to 16 bit data (little endian/LSB first) */
-#define PACK_LE16(dst16_data, src8_array)                   \
-    do {                                                    \
-        dst16_data = *src8_array;                           \
-        dst16_data |= ((uint16_t)*(src8_array+1) << 8);     \
+#define PACK_LE16(dst16_data, src8_array)                 \
+    do {                                                  \
+        dst16_data = *src8_array;                         \
+        dst16_data |= ((uint16_t)*(src8_array + 1) << 8); \
     } while (0)
 
 /** PACK byte array to 16 bit data (big endian/MSB first) */
-#define PACK_BE16(dst16_data, src8_array)                   \
-    do {                                                    \
-        dst16_data = *(src8_array+1);                       \
-        dst16_data |= ((uint16_t)*(src8_array) << 8);     \
+#define PACK_BE16(dst16_data, src8_array)             \
+    do {                                              \
+        dst16_data = *(src8_array + 1);               \
+        dst16_data |= ((uint16_t)*(src8_array) << 8); \
     } while (0)
 
 /** UNPACK 16 bit data to byte array (little endian/LSB first) */
-#define UNPACK_LE16(dst8_array, src16_data)                 \
-    do {                                                    \
-        *dst8_array     = (uint8_t)(src16_data);            \
-        *(dst8_array+1) = (uint8_t)(src16_data >> 8);       \
+#define UNPACK_LE16(dst8_array, src16_data)             \
+    do {                                                \
+        *dst8_array = (uint8_t)(src16_data);            \
+        *(dst8_array + 1) = (uint8_t)(src16_data >> 8); \
     } while (0)
 
 /** UNPACK 16 bit data to byte array (big endian/MSB first) */
-#define UNPACK_BE16(dst8_array, src16_data)                 \
-    do {                                                    \
-        *(dst8_array+1) = (uint8_t)(src16_data);            \
-        *(dst8_array)   = (uint8_t)(src16_data >> 8);       \
+#define UNPACK_BE16(dst8_array, src16_data)         \
+    do {                                            \
+        *(dst8_array + 1) = (uint8_t)(src16_data);  \
+        *(dst8_array) = (uint8_t)(src16_data >> 8); \
     } while (0)
 
 /** PACK byte array to 32 bit data (little endian/LSB first) */
-#define PACK_LE32(dst32_data, src8_array)                   \
-    do {                                                    \
-        dst32_data = *src8_array;                           \
-        dst32_data |= ((uint32_t)*(src8_array+1) << 8);     \
-        dst32_data |= ((uint32_t)*(src8_array+2) << 16);    \
-        dst32_data |= ((uint32_t)*(src8_array+3) << 24);    \
+#define PACK_LE32(dst32_data, src8_array)                  \
+    do {                                                   \
+        dst32_data = *src8_array;                          \
+        dst32_data |= ((uint32_t)*(src8_array + 1) << 8);  \
+        dst32_data |= ((uint32_t)*(src8_array + 2) << 16); \
+        dst32_data |= ((uint32_t)*(src8_array + 3) << 24); \
     } while (0)
 
 /** PACK byte array to 32 bit data (big endian/MSB first) */
-#define PACK_BE32(dst32_data, src8_array)                   \
-    do {                                                    \
-        dst32_data = *(src8_array+3);                       \
-        dst32_data |= ((uint32_t)*(src8_array+2) << 8);     \
-        dst32_data |= ((uint32_t)*(src8_array+1) << 16);    \
-        dst32_data |= ((uint32_t)*(src8_array)   << 24);    \
+#define PACK_BE32(dst32_data, src8_array)                  \
+    do {                                                   \
+        dst32_data = *(src8_array + 3);                    \
+        dst32_data |= ((uint32_t)*(src8_array + 2) << 8);  \
+        dst32_data |= ((uint32_t)*(src8_array + 1) << 16); \
+        dst32_data |= ((uint32_t)*(src8_array) << 24);     \
     } while (0)
 
 /** UNPACK 32 bit data to byte array (little endian/LSB first) */
-#define UNPACK_LE32(dst8_array, src32_data)                 \
-    do {                                                    \
-        *dst8_array     = (uint8_t)(src32_data);            \
-        *(dst8_array+1) = (uint8_t)(src32_data >> 8);       \
-        *(dst8_array+2) = (uint8_t)(src32_data >> 16);      \
-        *(dst8_array+3) = (uint8_t)(src32_data >> 24);      \
+#define UNPACK_LE32(dst8_array, src32_data)              \
+    do {                                                 \
+        *dst8_array = (uint8_t)(src32_data);             \
+        *(dst8_array + 1) = (uint8_t)(src32_data >> 8);  \
+        *(dst8_array + 2) = (uint8_t)(src32_data >> 16); \
+        *(dst8_array + 3) = (uint8_t)(src32_data >> 24); \
     } while (0)
 
 /** UNPACK 32 bit data to byte array (big endian/MSB first) */
-#define UNPACK_BE32(dst8_array, src32_data)                 \
-    do {                                                    \
-        *(dst8_array+3) = (uint8_t)(src32_data);            \
-        *(dst8_array+2) = (uint8_t)(src32_data >> 8);       \
-        *(dst8_array+1) = (uint8_t)(src32_data >> 16);      \
-        *(dst8_array)   = (uint8_t)(src32_data >> 24);      \
+#define UNPACK_BE32(dst8_array, src32_data)              \
+    do {                                                 \
+        *(dst8_array + 3) = (uint8_t)(src32_data);       \
+        *(dst8_array + 2) = (uint8_t)(src32_data >> 8);  \
+        *(dst8_array + 1) = (uint8_t)(src32_data >> 16); \
+        *(dst8_array) = (uint8_t)(src32_data >> 24);     \
     } while (0)
 
 /** PACK byte array to 64 bit data (little endian/LSB first) */
-#define PACK_LE64(dst64_data, src8_array)                   \
-    do {                                                    \
-        dst64_data  = ((uint64_t)*(src8_array+0) << 0);     \
-        dst64_data |= ((uint64_t)*(src8_array+1) << 8);     \
-        dst64_data |= ((uint64_t)*(src8_array+2) << 16);    \
-        dst64_data |= ((uint64_t)*(src8_array+3) << 24);    \
-        dst64_data |= ((uint64_t)*(src8_array+4) << 32);    \
-        dst64_data |= ((uint64_t)*(src8_array+5) << 40);    \
-        dst64_data |= ((uint64_t)*(src8_array+6) << 48);    \
-        dst64_data |= ((uint64_t)*(src8_array+7) << 56);    \
+#define PACK_LE64(dst64_data, src8_array)                  \
+    do {                                                   \
+        dst64_data = ((uint64_t)*(src8_array + 0) << 0);   \
+        dst64_data |= ((uint64_t)*(src8_array + 1) << 8);  \
+        dst64_data |= ((uint64_t)*(src8_array + 2) << 16); \
+        dst64_data |= ((uint64_t)*(src8_array + 3) << 24); \
+        dst64_data |= ((uint64_t)*(src8_array + 4) << 32); \
+        dst64_data |= ((uint64_t)*(src8_array + 5) << 40); \
+        dst64_data |= ((uint64_t)*(src8_array + 6) << 48); \
+        dst64_data |= ((uint64_t)*(src8_array + 7) << 56); \
     } while (0)
 
 /** PACK byte array to 64 bit data (big endian/MSB first) */
-#define PACK_BE64(dst64_data, src8_array)                   \
-    do {                                                    \
-        dst64_data  = ((uint64_t)*(src8_array+7) << 0);     \
-        dst64_data |= ((uint64_t)*(src8_array+6) << 8);     \
-        dst64_data |= ((uint64_t)*(src8_array+5) << 16);    \
-        dst64_data |= ((uint64_t)*(src8_array+4) << 24);    \
-        dst64_data |= ((uint64_t)*(src8_array+3) << 32);    \
-        dst64_data |= ((uint64_t)*(src8_array+2) << 40);    \
-        dst64_data |= ((uint64_t)*(src8_array+1) << 48);    \
-        dst64_data |= ((uint64_t)*(src8_array+0) << 56);    \
+#define PACK_BE64(dst64_data, src8_array)                  \
+    do {                                                   \
+        dst64_data = ((uint64_t)*(src8_array + 7) << 0);   \
+        dst64_data |= ((uint64_t)*(src8_array + 6) << 8);  \
+        dst64_data |= ((uint64_t)*(src8_array + 5) << 16); \
+        dst64_data |= ((uint64_t)*(src8_array + 4) << 24); \
+        dst64_data |= ((uint64_t)*(src8_array + 3) << 32); \
+        dst64_data |= ((uint64_t)*(src8_array + 2) << 40); \
+        dst64_data |= ((uint64_t)*(src8_array + 1) << 48); \
+        dst64_data |= ((uint64_t)*(src8_array + 0) << 56); \
     } while (0)
 
 /** UNPACK 64 bit data to byte array (little endian/LSB first) */
-#define UNPACK_LE64(dst8_array, src64_data)                 \
-    do {                                                    \
-        *(dst8_array+0) = (uint8_t)(src64_data >> 0);       \
-        *(dst8_array+1) = (uint8_t)(src64_data >> 8);       \
-        *(dst8_array+2) = (uint8_t)(src64_data >> 16);      \
-        *(dst8_array+3) = (uint8_t)(src64_data >> 24);      \
-        *(dst8_array+4) = (uint8_t)(src64_data >> 32);      \
-        *(dst8_array+5) = (uint8_t)(src64_data >> 40);      \
-        *(dst8_array+6) = (uint8_t)(src64_data >> 48);      \
-        *(dst8_array+7) = (uint8_t)(src64_data >> 56);      \
+#define UNPACK_LE64(dst8_array, src64_data)              \
+    do {                                                 \
+        *(dst8_array + 0) = (uint8_t)(src64_data >> 0);  \
+        *(dst8_array + 1) = (uint8_t)(src64_data >> 8);  \
+        *(dst8_array + 2) = (uint8_t)(src64_data >> 16); \
+        *(dst8_array + 3) = (uint8_t)(src64_data >> 24); \
+        *(dst8_array + 4) = (uint8_t)(src64_data >> 32); \
+        *(dst8_array + 5) = (uint8_t)(src64_data >> 40); \
+        *(dst8_array + 6) = (uint8_t)(src64_data >> 48); \
+        *(dst8_array + 7) = (uint8_t)(src64_data >> 56); \
     } while (0)
 
 /** UNPACK 64 bit data to byte array (big endian/MSB first) */
-#define UNPACK_BE64(dst8_array, src64_data)                 \
-    do {                                                    \
-        *(dst8_array+7) = (uint8_t)(src64_data >> 0);       \
-        *(dst8_array+6) = (uint8_t)(src64_data >> 8);       \
-        *(dst8_array+5) = (uint8_t)(src64_data >> 16);      \
-        *(dst8_array+4) = (uint8_t)(src64_data >> 24);      \
-        *(dst8_array+3) = (uint8_t)(src64_data >> 32);      \
-        *(dst8_array+2) = (uint8_t)(src64_data >> 40);      \
-        *(dst8_array+1) = (uint8_t)(src64_data >> 48);      \
-        *(dst8_array+0) = (uint8_t)(src64_data >> 56);      \
+#define UNPACK_BE64(dst8_array, src64_data)              \
+    do {                                                 \
+        *(dst8_array + 7) = (uint8_t)(src64_data >> 0);  \
+        *(dst8_array + 6) = (uint8_t)(src64_data >> 8);  \
+        *(dst8_array + 5) = (uint8_t)(src64_data >> 16); \
+        *(dst8_array + 4) = (uint8_t)(src64_data >> 24); \
+        *(dst8_array + 3) = (uint8_t)(src64_data >> 32); \
+        *(dst8_array + 2) = (uint8_t)(src64_data >> 40); \
+        *(dst8_array + 1) = (uint8_t)(src64_data >> 48); \
+        *(dst8_array + 0) = (uint8_t)(src64_data >> 56); \
     } while (0)
-
 
 /* MAX blocks for single CMD53 read/write*/
 #define CMD53_MAX_BLOCKS 128
 
 enum block_size
 {
-    BLOCK_SIZE_FN1      = 8,
+    BLOCK_SIZE_FN1 = 8,
     BLOCK_SIZE_FN1_LOG2 = 3,
-    BLOCK_SIZE_FN2      = 512,
+    BLOCK_SIZE_FN2 = 512,
     BLOCK_SIZE_FN2_LOG2 = 9,
 };
 
@@ -153,10 +151,9 @@ enum max_block_transfer_size
     MAX_BLOCK_TRANSFER_SIZE_FN2 = BLOCK_SIZE_FN2 * CMD53_MAX_BLOCKS,
 };
 
-
 /* MORSE set chip active for CMD62 and CMD63 */
-#define CHIP_ACTIVE_SEQ  (0x00000000)
-#define MAX_RETRY 3
+#define CHIP_ACTIVE_SEQ (0x00000000)
+#define MAX_RETRY       3
 
 /** Direction bit. */
 enum sdio_direction
@@ -192,7 +189,6 @@ enum sdio_cmd_index
 
 #define SDIO_CCCR_BIC_ADDR 0x07u
 #define SDIO_CCCR_BIC_ECSI (1u << 5)
-
 
 static inline uint32_t min_u32(uint32_t a, uint32_t b)
 {
@@ -240,8 +236,10 @@ static int morse_cmd52_write(uint32_t address, uint8_t data, enum mmhal_sdio_fun
  *
  * @note See SDIO Specification Part E1, Section 5.3.
  */
-static int morse_cmd53_read(enum mmhal_sdio_function function, uint32_t address,
-                            uint8_t *data, uint32_t len)
+static int morse_cmd53_read(enum mmhal_sdio_function function,
+                            uint32_t address,
+                            uint8_t *data,
+                            uint32_t len)
 {
     int result = -1;
 
@@ -259,8 +257,11 @@ static int morse_cmd53_read(enum mmhal_sdio_function function, uint32_t address,
     if (num_blocks > 0)
     {
         struct mmhal_wlan_sdio_cmd53_read_args args = {
-            .sdio_arg = mmhal_make_cmd53_arg(MMHAL_SDIO_READ, function, MMHAL_SDIO_MODE_BLOCK,
-                                             address & 0x0000ffff, num_blocks),
+            .sdio_arg = mmhal_make_cmd53_arg(MMHAL_SDIO_READ,
+                                             function,
+                                             MMHAL_SDIO_MODE_BLOCK,
+                                             address & 0x0000ffff,
+                                             num_blocks),
             .data = data,
             .transfer_length = num_blocks,
             .block_size = BLOCK_SIZE_FN2,
@@ -282,8 +283,11 @@ static int morse_cmd53_read(enum mmhal_sdio_function function, uint32_t address,
     if (len > 0)
     {
         struct mmhal_wlan_sdio_cmd53_read_args args = {
-            .sdio_arg = mmhal_make_cmd53_arg(MMHAL_SDIO_READ, function, MMHAL_SDIO_MODE_BYTE,
-                                             address & 0x0000ffff, len),
+            .sdio_arg = mmhal_make_cmd53_arg(MMHAL_SDIO_READ,
+                                             function,
+                                             MMHAL_SDIO_MODE_BYTE,
+                                             address & 0x0000ffff,
+                                             len),
             .data = data,
             .transfer_length = len,
             .block_size = 0,
@@ -310,8 +314,10 @@ exit:
  *
  * @note See SDIO Specification Part E1, Section 5.3.
  */
-static int morse_cmd53_write(enum mmhal_sdio_function function, uint32_t address,
-                             const uint8_t *data, uint32_t len)
+static int morse_cmd53_write(enum mmhal_sdio_function function,
+                             uint32_t address,
+                             const uint8_t *data,
+                             uint32_t len)
 {
     int result = MMHAL_SDIO_OTHER_ERROR;
 
@@ -329,8 +335,11 @@ static int morse_cmd53_write(enum mmhal_sdio_function function, uint32_t address
     if (num_blocks > 0)
     {
         struct mmhal_wlan_sdio_cmd53_write_args args = {
-            .sdio_arg = mmhal_make_cmd53_arg(MMHAL_SDIO_WRITE, function, MMHAL_SDIO_MODE_BLOCK,
-                                             address & 0x0000ffff, num_blocks),
+            .sdio_arg = mmhal_make_cmd53_arg(MMHAL_SDIO_WRITE,
+                                             function,
+                                             MMHAL_SDIO_MODE_BLOCK,
+                                             address & 0x0000ffff,
+                                             num_blocks),
             .data = (uint8_t *)data,
             .transfer_length = num_blocks,
             .block_size = BLOCK_SIZE_FN2,
@@ -352,8 +361,11 @@ static int morse_cmd53_write(enum mmhal_sdio_function function, uint32_t address
     if (len > 0)
     {
         struct mmhal_wlan_sdio_cmd53_write_args args = {
-            .sdio_arg = mmhal_make_cmd53_arg(MMHAL_SDIO_WRITE, function, MMHAL_SDIO_MODE_BYTE,
-                                             address & 0x0000ffff, len),
+            .sdio_arg = mmhal_make_cmd53_arg(MMHAL_SDIO_WRITE,
+                                             function,
+                                             MMHAL_SDIO_MODE_BYTE,
+                                             address & 0x0000ffff,
+                                             len),
             .data = (uint8_t *)data,
             .transfer_length = len,
             .block_size = 0,
@@ -376,7 +388,8 @@ exit:
  *
  * @return Result of operation
  */
-static int morse_address_base_set(uint32_t address, uint8_t access,
+static int morse_address_base_set(uint32_t address,
+                                  uint8_t access,
                                   enum mmhal_sdio_function function)
 {
     int result;
@@ -385,15 +398,13 @@ static int morse_address_base_set(uint32_t address, uint8_t access,
 
     MMOSAL_ASSERT(access <= MORSE_CONFIG_ACCESS_4BYTE);
 
-    result = morse_cmd52_write(MORSE_REG_ADDRESS_WINDOW_0, (uint8_t)(address >> 16),
-                               function);
+    result = morse_cmd52_write(MORSE_REG_ADDRESS_WINDOW_0, (uint8_t)(address >> 16), function);
     if (result != 0)
     {
         goto exit;
     }
 
-    result = morse_cmd52_write(MORSE_REG_ADDRESS_WINDOW_1, (uint8_t)(address >> 24),
-                               function);
+    result = morse_cmd52_write(MORSE_REG_ADDRESS_WINDOW_1, (uint8_t)(address >> 24), function);
     if (result != 0)
     {
         goto exit;
@@ -482,7 +493,8 @@ int sdio_spi_read_multi_byte(uint32_t address, uint8_t *data, uint32_t len)
          * this happens, reading will fetch the correct word.
          * NB: if repeated again, pass it anyway and upper layers will handle it
          */
-        if ((size >= 8) && !memcmp(data, data+4, 4)) {
+        if ((size >= 8) && !memcmp(data, data + 4, 4))
+        {
             /* Lets try one more time before passing up */
             printf("Corrupt Payload. Re-Read first 8 bytes\n");
             morse_cmd53_read(function, address, data, 8);
@@ -558,7 +570,7 @@ int sdio_spi_write_le32(uint32_t address, uint32_t data)
         goto exit;
     }
 
-    result = morse_cmd53_write(function, address, (uint8_t*)&data, sizeof(data));
+    result = morse_cmd53_write(function, address, (uint8_t *)&data, sizeof(data));
 
 exit:
     return result;

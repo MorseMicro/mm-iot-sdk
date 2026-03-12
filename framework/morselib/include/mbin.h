@@ -4,13 +4,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
- /**
-  * @defgroup MBIN Morse BINary Loader API
-  *
-  * This file defines the structure of the @c MBIN file.
-  *
-  * @{
-  */
+/**
+ * @defgroup MBIN Morse BINary Loader API
+ *
+ * This file defines the structure of the @c MBIN file.
+ *
+ * @{
+ */
 
 #pragma once
 
@@ -29,7 +29,7 @@ enum mbin_tlv_types
     FIELD_TYPE_BCF_BOARD_CONFIG = 0x8100,
     FIELD_TYPE_BCF_REGDOM = 0x8101,
     FIELD_TYPE_BCF_BOARD_DESC = 0x8102,
-    FIELD_TYPE_BCF_BUILD_VER  = 0x8103,
+    FIELD_TYPE_BCF_BUILD_VER = 0x8103,
     FIELD_TYPE_SW_SEGMENT = 0x8201,
     FIELD_TYPE_SW_SEGMENT_DEFLATED = 0x8202,
     FIELD_TYPE_EOF = 0x8f00,

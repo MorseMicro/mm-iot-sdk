@@ -57,10 +57,10 @@ BUILD_DEFINES += CONFIG_OPENSSL_INTERNAL_AES_WRAP=1
 # Build define so that we can get the dpp.h definitions when compiling morse_dpp_event()
 BUILD_DEFINES += MM_IOT_DPP_HEADER=1
 
-# Soft AP
-ifneq ($(BUILD_SUPPLICANT_WITH_SOFTAP),)
+# AP Mode
+ifneq ($(BUILD_SUPPLICANT_WITH_AP),)
 ifeq ($(BUILD_SUPPLICANT_FROM_SOURCE),)
-$(error BUILD_SUPPLICANT_FROM_SOURCE must be set if BUILD_SUPPLICANT_WITH_SOFTAP is set.)
+$(error BUILD_SUPPLICANT_FROM_SOURCE must be set if BUILD_SUPPLICANT_WITH_AP is set.)
 endif
 
 BUILD_DEFINES += CONFIG_AP=1
@@ -170,8 +170,8 @@ SUPP_SRCS_C += wpa_supplicant/wpas_glue.c
 SUPP_SRCS_C += wpa_supplicant/bssid_ignore.c
 SUPP_SRCS_C += wpa_supplicant/wnm_sta.c
 
-# SoftAP
-ifneq ($(BUILD_SUPPLICANT_WITH_SOFTAP),)
+# AP Mode
+ifneq ($(BUILD_SUPPLICANT_WITH_AP),)
 SUPP_SRCS_C += morse_stubs.c
 SUPP_SRCS_C += wpa_supplicant/ap.c
 SUPP_SRCS_C += src/ap/authsrv.c

@@ -31,8 +31,7 @@ void mmagic_cli_rx(struct mmagic_cli *ctx, const char *buf, size_t num)
      * (SIZE - 1) -> ring buffer keeps one space empty
      */
     const size_t buffer_space = (MMAGIC_CLI_RX_BUFFER_SIZE - 1);
-    do
-    {
+    do {
         int chars_to_process = num > buffer_space ? buffer_space : num;
         num -= chars_to_process;
 
@@ -66,8 +65,7 @@ void mmagic_cli_get(EmbeddedCli *cli, char *args, void *context)
     struct mmagic_cli_config_accessor *accessor;
     if (!strcmp("all", var))
     {
-        for (accessor = ctx->config_accessors;
-             accessor != NULL; accessor = accessor->next)
+        for (accessor = ctx->config_accessors; accessor != NULL; accessor = accessor->next)
         {
             accessor->get(ctx, ctx->cli, var);
         }
@@ -88,8 +86,7 @@ void mmagic_cli_get(EmbeddedCli *cli, char *args, void *context)
         module_len = strlen(var);
     }
 
-    for (accessor = ctx->config_accessors;
-         accessor != NULL; accessor = accessor->next)
+    for (accessor = ctx->config_accessors; accessor != NULL; accessor = accessor->next)
     {
         if (strlen(accessor->name) == module_len && !strncmp(accessor->name, var, module_len))
         {
@@ -139,8 +136,7 @@ void mmagic_cli_set(EmbeddedCli *cli, char *args, void *context)
     }
 
     struct mmagic_cli_config_accessor *accessor;
-    for (accessor = ctx->config_accessors;
-         accessor != NULL; accessor = accessor->next)
+    for (accessor = ctx->config_accessors; accessor != NULL; accessor = accessor->next)
     {
         if (strlen(accessor->name) == module_len && !strncmp(accessor->name, var, module_len))
         {
@@ -184,8 +180,7 @@ void mmagic_cli_commit(EmbeddedCli *cli, char *args, void *context)
         struct mmagic_cli_config_accessor *accessor;
         if (!strcmp("all", var))
         {
-            for (accessor = ctx->config_accessors;
-                 accessor != NULL; accessor = accessor->next)
+            for (accessor = ctx->config_accessors; accessor != NULL; accessor = accessor->next)
             {
                 accessor->commit(ctx, ctx->cli, var);
             }
@@ -206,8 +201,7 @@ void mmagic_cli_commit(EmbeddedCli *cli, char *args, void *context)
             module_len = strlen(var);
         }
 
-        for (accessor = ctx->config_accessors;
-             accessor != NULL; accessor = accessor->next)
+        for (accessor = ctx->config_accessors; accessor != NULL; accessor = accessor->next)
         {
             if (strlen(accessor->name) == module_len && !strncmp(accessor->name, var, module_len))
             {
@@ -225,30 +219,32 @@ void mmagic_cli_commit(EmbeddedCli *cli, char *args, void *context)
 
 static void mmagic_cli_register_default_bindings(struct mmagic_cli *ctx)
 {
-    embeddedCliAddBinding(ctx->cli, (CliCommandBinding) {
-        "get",
-        "Retrieves the value of a given config variable, `all` to list all available.\n"
-        "\tPrints (empty) when no value is set.",
-        true,
-        ctx,
-        mmagic_cli_get
-    });
+    embeddedCliAddBinding(
+        ctx->cli,
+        (CliCommandBinding){
+            "get",
+            "Retrieves the value of a given config variable, `all` to list all available.\n"
+            "\tPrints (empty) when no value is set.",
+            true,
+            ctx,
+            mmagic_cli_get });
 
-    embeddedCliAddBinding(ctx->cli, (CliCommandBinding) {
-        "set",
-        "Set the value of the variable specified. Providing no value will clear the variable.",
-        true,
-        ctx,
-        mmagic_cli_set
-    });
+    embeddedCliAddBinding(
+        ctx->cli,
+        (CliCommandBinding){
+            "set",
+            "Set the value of the variable specified. Providing no value will clear the variable.",
+            true,
+            ctx,
+            mmagic_cli_set });
 
-    embeddedCliAddBinding(ctx->cli, (CliCommandBinding) {
-        "commit",
-        "Commits the specified variables to persistent storage, use 'all' to commit everything.",
-        true,
-        ctx,
-        mmagic_cli_commit
-    });
+    embeddedCliAddBinding(ctx->cli,
+                          (CliCommandBinding){ "commit",
+                                               "Commits the specified variables to persistent "
+                                               "storage, use 'all' to commit everything.",
+                                               true,
+                                               ctx,
+                                               mmagic_cli_commit });
 }
 
 /**

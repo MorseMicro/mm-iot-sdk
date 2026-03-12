@@ -42,8 +42,8 @@
  */
 typedef struct
 {
-    const char *str;  /**< The string to print */
-    size_t length;    /**< Length of the string to print */
+    const char *str; /**< The string to print */
+    size_t length; /**< Length of the string to print */
 } CborPrintContext_t;
 
 /*-----------------------------------------------------------*/
@@ -58,9 +58,7 @@ typedef struct
  * @param fmt   @c printf style format string.
  * @param ...   arguments after format string.
  */
-static CborError cborPrinter(void *token,
-                             const char *fmt,
-                             ...);
+static CborError cborPrinter(void *token, const char *fmt, ...);
 
 /*-----------------------------------------------------------*/
 
@@ -114,7 +112,7 @@ bool generateCsrRequest(uint8_t *pBuffer,
         }
     }
 
-    return(cborRet == CborNoError);
+    return (cborRet == CborNoError);
 }
 
 /*-----------------------------------------------------------*/
@@ -199,7 +197,7 @@ bool generateRegisterThingRequest(uint8_t *pBuffer,
         }
     }
 
-    return(cborRet == CborNoError);
+    return (cborRet == CborNoError);
 }
 
 /*-----------------------------------------------------------*/
@@ -358,7 +356,7 @@ bool parseCsrResponse(const uint8_t *pResponse,
         }
     }
 
-    return(cborRet == CborNoError);
+    return (cborRet == CborNoError);
 }
 
 /*-----------------------------------------------------------*/
@@ -397,8 +395,7 @@ bool parseRegisterThingResponse(const uint8_t *pResponse,
 
         if (cborRet != CborNoError)
         {
-            LogError(("Error searching RegisterThing response: %s.",
-                      cbor_error_string(cborRet)));
+            LogError(("Error searching RegisterThing response: %s.", cbor_error_string(cborRet)));
         }
         else if (value.type == CborInvalidType)
         {
@@ -410,10 +407,8 @@ bool parseRegisterThingResponse(const uint8_t *pResponse,
         }
         else
         {
-            cborRet = cbor_value_copy_text_string(&value,
-                                                  pThingNameBuffer,
-                                                  pThingNameBufferLength,
-                                                  NULL);
+            cborRet =
+                cbor_value_copy_text_string(&value, pThingNameBuffer, pThingNameBufferLength, NULL);
 
             if (cborRet == CborErrorOutOfMemory)
             {
@@ -430,14 +425,12 @@ bool parseRegisterThingResponse(const uint8_t *pResponse,
         }
     }
 
-    return(cborRet == CborNoError);
+    return (cborRet == CborNoError);
 }
 
 /*-----------------------------------------------------------*/
 
-static CborError cborPrinter(void *token,
-                             const char *fmt,
-                             ...)
+static CborError cborPrinter(void *token, const char *fmt, ...)
 {
     int result;
     va_list args;
@@ -490,8 +483,7 @@ static CborError cborPrinter(void *token,
 
 /*-----------------------------------------------------------*/
 
-const char *getStringFromCbor(const uint8_t *cbor,
-                              size_t length)
+const char *getStringFromCbor(const uint8_t *cbor, size_t length)
 {
     CborPrintContext_t printCtx = { 0 };
     CborParser parser;
@@ -502,10 +494,7 @@ const char *getStringFromCbor(const uint8_t *cbor,
 
     if (error == CborNoError)
     {
-        error = cbor_value_to_pretty_stream(cborPrinter,
-                                            &printCtx,
-                                            &value,
-                                            CborPrettyDefaultFlags);
+        error = cbor_value_to_pretty_stream(cborPrinter, &printCtx, &value, CborPrettyDefaultFlags);
     }
 
     if (error != CborNoError)

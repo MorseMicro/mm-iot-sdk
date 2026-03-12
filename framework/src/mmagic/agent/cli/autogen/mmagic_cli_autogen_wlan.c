@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Morse Micro
+ * Copyright 2026 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -30,7 +30,7 @@ int mmagic_cli_wlan_get_country_code(struct mmagic_data *core, EmbeddedCli *cli)
     MM_STATIC_ASSERT((sizeof("wlan.country_code") - 1) < KEY_NAME_PADDING,
                      "Key must be shorter than padding");
 
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = { 0 };
     /* -1 to allow for a NULL terminator at the end */
     const size_t max_str_len = sizeof(buf) - 1;
     size_t cursor = 0;
@@ -43,7 +43,8 @@ int mmagic_cli_wlan_get_country_code(struct mmagic_data *core, EmbeddedCli *cli)
     }
     cursor += written;
     written = mmagic_struct_country_code_to_string(&data->config.country_code,
-                                                   &buf[cursor], max_str_len - cursor);
+                                                   &buf[cursor],
+                                                   max_str_len - cursor);
     if (written == 0)
     {
         /*
@@ -72,7 +73,7 @@ int mmagic_cli_wlan_get_ssid(struct mmagic_data *core, EmbeddedCli *cli)
     MM_STATIC_ASSERT((sizeof("wlan.ssid") - 1) < KEY_NAME_PADDING,
                      "Key must be shorter than padding");
 
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = { 0 };
     /* -1 to allow for a NULL terminator at the end */
     const size_t max_str_len = sizeof(buf) - 1;
     size_t cursor = 0;
@@ -84,8 +85,7 @@ int mmagic_cli_wlan_get_ssid(struct mmagic_data *core, EmbeddedCli *cli)
         return -1;
     }
     cursor += written;
-    written = mmagic_string32_to_string(&data->config.ssid,
-                                        &buf[cursor], max_str_len - cursor);
+    written = mmagic_string32_to_string(&data->config.ssid, &buf[cursor], max_str_len - cursor);
     if (written == 0)
     {
         /*
@@ -114,7 +114,7 @@ int mmagic_cli_wlan_get_password(struct mmagic_data *core, EmbeddedCli *cli)
     MM_STATIC_ASSERT((sizeof("wlan.password") - 1) < KEY_NAME_PADDING,
                      "Key must be shorter than padding");
 
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = { 0 };
     /* -1 to allow for a NULL terminator at the end */
     const size_t max_str_len = sizeof(buf) - 1;
     size_t cursor = 0;
@@ -126,8 +126,8 @@ int mmagic_cli_wlan_get_password(struct mmagic_data *core, EmbeddedCli *cli)
         return -1;
     }
     cursor += written;
-    written = mmagic_string100_to_string(&data->config.password,
-                                         &buf[cursor], max_str_len - cursor);
+    written =
+        mmagic_string100_to_string(&data->config.password, &buf[cursor], max_str_len - cursor);
     if (written == 0)
     {
         /*
@@ -156,7 +156,7 @@ int mmagic_cli_wlan_get_security(struct mmagic_data *core, EmbeddedCli *cli)
     MM_STATIC_ASSERT((sizeof("wlan.security") - 1) < KEY_NAME_PADDING,
                      "Key must be shorter than padding");
 
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = { 0 };
     /* -1 to allow for a NULL terminator at the end */
     const size_t max_str_len = sizeof(buf) - 1;
     size_t cursor = 0;
@@ -169,7 +169,8 @@ int mmagic_cli_wlan_get_security(struct mmagic_data *core, EmbeddedCli *cli)
     }
     cursor += written;
     written = mmagic_enum_security_type_to_string(data->config.security,
-                                                  &buf[cursor], max_str_len - cursor);
+                                                  &buf[cursor],
+                                                  max_str_len - cursor);
     if (written == 0)
     {
         /*
@@ -198,7 +199,7 @@ int mmagic_cli_wlan_get_raw_priority(struct mmagic_data *core, EmbeddedCli *cli)
     MM_STATIC_ASSERT((sizeof("wlan.raw_priority") - 1) < KEY_NAME_PADDING,
                      "Key must be shorter than padding");
 
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = { 0 };
     /* -1 to allow for a NULL terminator at the end */
     const size_t max_str_len = sizeof(buf) - 1;
     size_t cursor = 0;
@@ -210,8 +211,8 @@ int mmagic_cli_wlan_get_raw_priority(struct mmagic_data *core, EmbeddedCli *cli)
         return -1;
     }
     cursor += written;
-    written = mmagic_int16_t_to_string(data->config.raw_priority,
-                                       &buf[cursor], max_str_len - cursor);
+    written =
+        mmagic_int16_t_to_string(data->config.raw_priority, &buf[cursor], max_str_len - cursor);
     if (written == 0)
     {
         /*
@@ -240,7 +241,7 @@ int mmagic_cli_wlan_get_bssid(struct mmagic_data *core, EmbeddedCli *cli)
     MM_STATIC_ASSERT((sizeof("wlan.bssid") - 1) < KEY_NAME_PADDING,
                      "Key must be shorter than padding");
 
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = { 0 };
     /* -1 to allow for a NULL terminator at the end */
     const size_t max_str_len = sizeof(buf) - 1;
     size_t cursor = 0;
@@ -252,8 +253,8 @@ int mmagic_cli_wlan_get_bssid(struct mmagic_data *core, EmbeddedCli *cli)
         return -1;
     }
     cursor += written;
-    written = mmagic_struct_mac_addr_to_string(&data->config.bssid,
-                                               &buf[cursor], max_str_len - cursor);
+    written =
+        mmagic_struct_mac_addr_to_string(&data->config.bssid, &buf[cursor], max_str_len - cursor);
     if (written == 0)
     {
         /*
@@ -282,7 +283,7 @@ int mmagic_cli_wlan_get_pmf_mode(struct mmagic_data *core, EmbeddedCli *cli)
     MM_STATIC_ASSERT((sizeof("wlan.pmf_mode") - 1) < KEY_NAME_PADDING,
                      "Key must be shorter than padding");
 
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = { 0 };
     /* -1 to allow for a NULL terminator at the end */
     const size_t max_str_len = sizeof(buf) - 1;
     size_t cursor = 0;
@@ -294,8 +295,8 @@ int mmagic_cli_wlan_get_pmf_mode(struct mmagic_data *core, EmbeddedCli *cli)
         return -1;
     }
     cursor += written;
-    written = mmagic_enum_pmf_mode_to_string(data->config.pmf_mode,
-                                             &buf[cursor], max_str_len - cursor);
+    written =
+        mmagic_enum_pmf_mode_to_string(data->config.pmf_mode, &buf[cursor], max_str_len - cursor);
     if (written == 0)
     {
         /*
@@ -324,7 +325,7 @@ int mmagic_cli_wlan_get_station_type(struct mmagic_data *core, EmbeddedCli *cli)
     MM_STATIC_ASSERT((sizeof("wlan.station_type") - 1) < KEY_NAME_PADDING,
                      "Key must be shorter than padding");
 
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = { 0 };
     /* -1 to allow for a NULL terminator at the end */
     const size_t max_str_len = sizeof(buf) - 1;
     size_t cursor = 0;
@@ -337,7 +338,8 @@ int mmagic_cli_wlan_get_station_type(struct mmagic_data *core, EmbeddedCli *cli)
     }
     cursor += written;
     written = mmagic_enum_station_type_to_string(data->config.station_type,
-                                                 &buf[cursor], max_str_len - cursor);
+                                                 &buf[cursor],
+                                                 max_str_len - cursor);
     if (written == 0)
     {
         /*
@@ -366,7 +368,7 @@ int mmagic_cli_wlan_get_rts_threshold(struct mmagic_data *core, EmbeddedCli *cli
     MM_STATIC_ASSERT((sizeof("wlan.rts_threshold") - 1) < KEY_NAME_PADDING,
                      "Key must be shorter than padding");
 
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = { 0 };
     /* -1 to allow for a NULL terminator at the end */
     const size_t max_str_len = sizeof(buf) - 1;
     size_t cursor = 0;
@@ -378,8 +380,8 @@ int mmagic_cli_wlan_get_rts_threshold(struct mmagic_data *core, EmbeddedCli *cli
         return -1;
     }
     cursor += written;
-    written = mmagic_uint32_t_to_string(data->config.rts_threshold,
-                                        &buf[cursor], max_str_len - cursor);
+    written =
+        mmagic_uint32_t_to_string(data->config.rts_threshold, &buf[cursor], max_str_len - cursor);
     if (written == 0)
     {
         /*
@@ -408,7 +410,7 @@ int mmagic_cli_wlan_get_sgi_enabled(struct mmagic_data *core, EmbeddedCli *cli)
     MM_STATIC_ASSERT((sizeof("wlan.sgi_enabled") - 1) < KEY_NAME_PADDING,
                      "Key must be shorter than padding");
 
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = { 0 };
     /* -1 to allow for a NULL terminator at the end */
     const size_t max_str_len = sizeof(buf) - 1;
     size_t cursor = 0;
@@ -420,8 +422,7 @@ int mmagic_cli_wlan_get_sgi_enabled(struct mmagic_data *core, EmbeddedCli *cli)
         return -1;
     }
     cursor += written;
-    written = mmagic_bool_to_string(data->config.sgi_enabled,
-                                    &buf[cursor], max_str_len - cursor);
+    written = mmagic_bool_to_string(data->config.sgi_enabled, &buf[cursor], max_str_len - cursor);
     if (written == 0)
     {
         /*
@@ -450,7 +451,7 @@ int mmagic_cli_wlan_get_subbands_enabled(struct mmagic_data *core, EmbeddedCli *
     MM_STATIC_ASSERT((sizeof("wlan.subbands_enabled") - 1) < KEY_NAME_PADDING,
                      "Key must be shorter than padding");
 
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = { 0 };
     /* -1 to allow for a NULL terminator at the end */
     const size_t max_str_len = sizeof(buf) - 1;
     size_t cursor = 0;
@@ -462,8 +463,8 @@ int mmagic_cli_wlan_get_subbands_enabled(struct mmagic_data *core, EmbeddedCli *
         return -1;
     }
     cursor += written;
-    written = mmagic_bool_to_string(data->config.subbands_enabled,
-                                    &buf[cursor], max_str_len - cursor);
+    written =
+        mmagic_bool_to_string(data->config.subbands_enabled, &buf[cursor], max_str_len - cursor);
     if (written == 0)
     {
         /*
@@ -492,7 +493,7 @@ int mmagic_cli_wlan_get_ampdu_enabled(struct mmagic_data *core, EmbeddedCli *cli
     MM_STATIC_ASSERT((sizeof("wlan.ampdu_enabled") - 1) < KEY_NAME_PADDING,
                      "Key must be shorter than padding");
 
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = { 0 };
     /* -1 to allow for a NULL terminator at the end */
     const size_t max_str_len = sizeof(buf) - 1;
     size_t cursor = 0;
@@ -504,8 +505,7 @@ int mmagic_cli_wlan_get_ampdu_enabled(struct mmagic_data *core, EmbeddedCli *cli
         return -1;
     }
     cursor += written;
-    written = mmagic_bool_to_string(data->config.ampdu_enabled,
-                                    &buf[cursor], max_str_len - cursor);
+    written = mmagic_bool_to_string(data->config.ampdu_enabled, &buf[cursor], max_str_len - cursor);
     if (written == 0)
     {
         /*
@@ -534,7 +534,7 @@ int mmagic_cli_wlan_get_power_save_mode(struct mmagic_data *core, EmbeddedCli *c
     MM_STATIC_ASSERT((sizeof("wlan.power_save_mode") - 1) < KEY_NAME_PADDING,
                      "Key must be shorter than padding");
 
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = { 0 };
     /* -1 to allow for a NULL terminator at the end */
     const size_t max_str_len = sizeof(buf) - 1;
     size_t cursor = 0;
@@ -547,7 +547,8 @@ int mmagic_cli_wlan_get_power_save_mode(struct mmagic_data *core, EmbeddedCli *c
     }
     cursor += written;
     written = mmagic_enum_power_save_mode_to_string(data->config.power_save_mode,
-                                                    &buf[cursor], max_str_len - cursor);
+                                                    &buf[cursor],
+                                                    max_str_len - cursor);
     if (written == 0)
     {
         /*
@@ -576,7 +577,7 @@ int mmagic_cli_wlan_get_fragment_threshold(struct mmagic_data *core, EmbeddedCli
     MM_STATIC_ASSERT((sizeof("wlan.fragment_threshold") - 1) < KEY_NAME_PADDING,
                      "Key must be shorter than padding");
 
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = { 0 };
     /* -1 to allow for a NULL terminator at the end */
     const size_t max_str_len = sizeof(buf) - 1;
     size_t cursor = 0;
@@ -589,7 +590,8 @@ int mmagic_cli_wlan_get_fragment_threshold(struct mmagic_data *core, EmbeddedCli
     }
     cursor += written;
     written = mmagic_uint32_t_to_string(data->config.fragment_threshold,
-                                        &buf[cursor], max_str_len - cursor);
+                                        &buf[cursor],
+                                        max_str_len - cursor);
     if (written == 0)
     {
         /*
@@ -618,7 +620,7 @@ int mmagic_cli_wlan_get_cac_enabled(struct mmagic_data *core, EmbeddedCli *cli)
     MM_STATIC_ASSERT((sizeof("wlan.cac_enabled") - 1) < KEY_NAME_PADDING,
                      "Key must be shorter than padding");
 
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = { 0 };
     /* -1 to allow for a NULL terminator at the end */
     const size_t max_str_len = sizeof(buf) - 1;
     size_t cursor = 0;
@@ -630,92 +632,7 @@ int mmagic_cli_wlan_get_cac_enabled(struct mmagic_data *core, EmbeddedCli *cli)
         return -1;
     }
     cursor += written;
-    written = mmagic_bool_to_string(data->config.cac_enabled,
-                                    &buf[cursor], max_str_len - cursor);
-    if (written == 0)
-    {
-        /*
-         * The value we just tried writing ended up being empty. Move the cursor back to the end of
-         * the key and denote that it has an empty value.
-         */
-        const uint32_t key_len = strlen(key_name);
-        cursor = key_len;
-        written = snprintf(&buf[cursor], max_str_len - cursor, " (empty)");
-    }
-    if (written < 0 || (cursor + written) > max_str_len)
-    {
-        return -1;
-    }
-    cursor += written;
-
-    embeddedCliPrint(cli, buf);
-
-    return 0;
-}
-
-int mmagic_cli_wlan_get_offload_arp_response(struct mmagic_data *core, EmbeddedCli *cli)
-{
-    struct mmagic_wlan_data *data = mmagic_data_get_wlan(core);
-    const char *key_name = "wlan.offload_arp_response";
-    MM_STATIC_ASSERT((sizeof("wlan.offload_arp_response") - 1) < KEY_NAME_PADDING,
-                     "Key must be shorter than padding");
-
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
-    /* -1 to allow for a NULL terminator at the end */
-    const size_t max_str_len = sizeof(buf) - 1;
-    size_t cursor = 0;
-    int written = 0;
-
-    written = snprintf(&buf[cursor], max_str_len - cursor, "%-*s", KEY_NAME_PADDING, key_name);
-    if (written < 0 || (cursor + written) > max_str_len)
-    {
-        return -1;
-    }
-    cursor += written;
-    written = mmagic_bool_to_string(data->config.offload_arp_response,
-                                    &buf[cursor], max_str_len - cursor);
-    if (written == 0)
-    {
-        /*
-         * The value we just tried writing ended up being empty. Move the cursor back to the end of
-         * the key and denote that it has an empty value.
-         */
-        const uint32_t key_len = strlen(key_name);
-        cursor = key_len;
-        written = snprintf(&buf[cursor], max_str_len - cursor, " (empty)");
-    }
-    if (written < 0 || (cursor + written) > max_str_len)
-    {
-        return -1;
-    }
-    cursor += written;
-
-    embeddedCliPrint(cli, buf);
-
-    return 0;
-}
-
-int mmagic_cli_wlan_get_offload_arp_refresh_s(struct mmagic_data *core, EmbeddedCli *cli)
-{
-    struct mmagic_wlan_data *data = mmagic_data_get_wlan(core);
-    const char *key_name = "wlan.offload_arp_refresh_s";
-    MM_STATIC_ASSERT((sizeof("wlan.offload_arp_refresh_s") - 1) < KEY_NAME_PADDING,
-                     "Key must be shorter than padding");
-
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
-    /* -1 to allow for a NULL terminator at the end */
-    const size_t max_str_len = sizeof(buf) - 1;
-    size_t cursor = 0;
-    int written = 0;
-
-    written = snprintf(&buf[cursor], max_str_len - cursor, "%-*s", KEY_NAME_PADDING, key_name);
-    if (written < 0 || (cursor + written) > max_str_len)
-    {
-        return -1;
-    }
-    cursor += written;
-    written = mmagic_uint32_t_to_string(data->config.offload_arp_refresh_s,
-                                        &buf[cursor], max_str_len - cursor);
+    written = mmagic_bool_to_string(data->config.cac_enabled, &buf[cursor], max_str_len - cursor);
     if (written == 0)
     {
         /*
@@ -744,7 +661,7 @@ int mmagic_cli_wlan_get_min_health_check_intvl_ms(struct mmagic_data *core, Embe
     MM_STATIC_ASSERT((sizeof("wlan.min_health_check_intvl_ms") - 1) < KEY_NAME_PADDING,
                      "Key must be shorter than padding");
 
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = { 0 };
     /* -1 to allow for a NULL terminator at the end */
     const size_t max_str_len = sizeof(buf) - 1;
     size_t cursor = 0;
@@ -757,7 +674,8 @@ int mmagic_cli_wlan_get_min_health_check_intvl_ms(struct mmagic_data *core, Embe
     }
     cursor += written;
     written = mmagic_uint32_t_to_string(data->config.min_health_check_intvl_ms,
-                                        &buf[cursor], max_str_len - cursor);
+                                        &buf[cursor],
+                                        max_str_len - cursor);
     if (written == 0)
     {
         /*
@@ -786,7 +704,7 @@ int mmagic_cli_wlan_get_max_health_check_intvl_ms(struct mmagic_data *core, Embe
     MM_STATIC_ASSERT((sizeof("wlan.max_health_check_intvl_ms") - 1) < KEY_NAME_PADDING,
                      "Key must be shorter than padding");
 
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = { 0 };
     /* -1 to allow for a NULL terminator at the end */
     const size_t max_str_len = sizeof(buf) - 1;
     size_t cursor = 0;
@@ -799,7 +717,8 @@ int mmagic_cli_wlan_get_max_health_check_intvl_ms(struct mmagic_data *core, Embe
     }
     cursor += written;
     written = mmagic_uint32_t_to_string(data->config.max_health_check_intvl_ms,
-                                        &buf[cursor], max_str_len - cursor);
+                                        &buf[cursor],
+                                        max_str_len - cursor);
     if (written == 0)
     {
         /*
@@ -828,7 +747,7 @@ int mmagic_cli_wlan_get_ndp_probe_enabled(struct mmagic_data *core, EmbeddedCli 
     MM_STATIC_ASSERT((sizeof("wlan.ndp_probe_enabled") - 1) < KEY_NAME_PADDING,
                      "Key must be shorter than padding");
 
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = { 0 };
     /* -1 to allow for a NULL terminator at the end */
     const size_t max_str_len = sizeof(buf) - 1;
     size_t cursor = 0;
@@ -840,8 +759,8 @@ int mmagic_cli_wlan_get_ndp_probe_enabled(struct mmagic_data *core, EmbeddedCli 
         return -1;
     }
     cursor += written;
-    written = mmagic_bool_to_string(data->config.ndp_probe_enabled,
-                                    &buf[cursor], max_str_len - cursor);
+    written =
+        mmagic_bool_to_string(data->config.ndp_probe_enabled, &buf[cursor], max_str_len - cursor);
     if (written == 0)
     {
         /*
@@ -870,7 +789,7 @@ int mmagic_cli_wlan_get_sta_scan_interval_base_s(struct mmagic_data *core, Embed
     MM_STATIC_ASSERT((sizeof("wlan.sta_scan_interval_base_s") - 1) < KEY_NAME_PADDING,
                      "Key must be shorter than padding");
 
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = { 0 };
     /* -1 to allow for a NULL terminator at the end */
     const size_t max_str_len = sizeof(buf) - 1;
     size_t cursor = 0;
@@ -883,7 +802,8 @@ int mmagic_cli_wlan_get_sta_scan_interval_base_s(struct mmagic_data *core, Embed
     }
     cursor += written;
     written = mmagic_uint16_t_to_string(data->config.sta_scan_interval_base_s,
-                                        &buf[cursor], max_str_len - cursor);
+                                        &buf[cursor],
+                                        max_str_len - cursor);
     if (written == 0)
     {
         /*
@@ -912,7 +832,7 @@ int mmagic_cli_wlan_get_sta_scan_interval_limit_s(struct mmagic_data *core, Embe
     MM_STATIC_ASSERT((sizeof("wlan.sta_scan_interval_limit_s") - 1) < KEY_NAME_PADDING,
                      "Key must be shorter than padding");
 
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = { 0 };
     /* -1 to allow for a NULL terminator at the end */
     const size_t max_str_len = sizeof(buf) - 1;
     size_t cursor = 0;
@@ -925,7 +845,8 @@ int mmagic_cli_wlan_get_sta_scan_interval_limit_s(struct mmagic_data *core, Embe
     }
     cursor += written;
     written = mmagic_uint16_t_to_string(data->config.sta_scan_interval_limit_s,
-                                        &buf[cursor], max_str_len - cursor);
+                                        &buf[cursor],
+                                        max_str_len - cursor);
     if (written == 0)
     {
         /*
@@ -954,7 +875,7 @@ int mmagic_cli_wlan_get_qos_0_params(struct mmagic_data *core, EmbeddedCli *cli)
     MM_STATIC_ASSERT((sizeof("wlan.qos_0_params") - 1) < KEY_NAME_PADDING,
                      "Key must be shorter than padding");
 
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = { 0 };
     /* -1 to allow for a NULL terminator at the end */
     const size_t max_str_len = sizeof(buf) - 1;
     size_t cursor = 0;
@@ -966,8 +887,8 @@ int mmagic_cli_wlan_get_qos_0_params(struct mmagic_data *core, EmbeddedCli *cli)
         return -1;
     }
     cursor += written;
-    written = mmagic_string32_to_string(&data->config.qos_0_params,
-                                        &buf[cursor], max_str_len - cursor);
+    written =
+        mmagic_string32_to_string(&data->config.qos_0_params, &buf[cursor], max_str_len - cursor);
     if (written == 0)
     {
         /*
@@ -996,7 +917,7 @@ int mmagic_cli_wlan_get_qos_1_params(struct mmagic_data *core, EmbeddedCli *cli)
     MM_STATIC_ASSERT((sizeof("wlan.qos_1_params") - 1) < KEY_NAME_PADDING,
                      "Key must be shorter than padding");
 
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = { 0 };
     /* -1 to allow for a NULL terminator at the end */
     const size_t max_str_len = sizeof(buf) - 1;
     size_t cursor = 0;
@@ -1008,8 +929,8 @@ int mmagic_cli_wlan_get_qos_1_params(struct mmagic_data *core, EmbeddedCli *cli)
         return -1;
     }
     cursor += written;
-    written = mmagic_string32_to_string(&data->config.qos_1_params,
-                                        &buf[cursor], max_str_len - cursor);
+    written =
+        mmagic_string32_to_string(&data->config.qos_1_params, &buf[cursor], max_str_len - cursor);
     if (written == 0)
     {
         /*
@@ -1038,7 +959,7 @@ int mmagic_cli_wlan_get_qos_2_params(struct mmagic_data *core, EmbeddedCli *cli)
     MM_STATIC_ASSERT((sizeof("wlan.qos_2_params") - 1) < KEY_NAME_PADDING,
                      "Key must be shorter than padding");
 
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = { 0 };
     /* -1 to allow for a NULL terminator at the end */
     const size_t max_str_len = sizeof(buf) - 1;
     size_t cursor = 0;
@@ -1050,8 +971,8 @@ int mmagic_cli_wlan_get_qos_2_params(struct mmagic_data *core, EmbeddedCli *cli)
         return -1;
     }
     cursor += written;
-    written = mmagic_string32_to_string(&data->config.qos_2_params,
-                                        &buf[cursor], max_str_len - cursor);
+    written =
+        mmagic_string32_to_string(&data->config.qos_2_params, &buf[cursor], max_str_len - cursor);
     if (written == 0)
     {
         /*
@@ -1080,7 +1001,7 @@ int mmagic_cli_wlan_get_qos_3_params(struct mmagic_data *core, EmbeddedCli *cli)
     MM_STATIC_ASSERT((sizeof("wlan.qos_3_params") - 1) < KEY_NAME_PADDING,
                      "Key must be shorter than padding");
 
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = { 0 };
     /* -1 to allow for a NULL terminator at the end */
     const size_t max_str_len = sizeof(buf) - 1;
     size_t cursor = 0;
@@ -1092,8 +1013,8 @@ int mmagic_cli_wlan_get_qos_3_params(struct mmagic_data *core, EmbeddedCli *cli)
         return -1;
     }
     cursor += written;
-    written = mmagic_string32_to_string(&data->config.qos_3_params,
-                                        &buf[cursor], max_str_len - cursor);
+    written =
+        mmagic_string32_to_string(&data->config.qos_3_params, &buf[cursor], max_str_len - cursor);
     if (written == 0)
     {
         /*
@@ -1122,7 +1043,7 @@ int mmagic_cli_wlan_get_mcs10_mode(struct mmagic_data *core, EmbeddedCli *cli)
     MM_STATIC_ASSERT((sizeof("wlan.mcs10_mode") - 1) < KEY_NAME_PADDING,
                      "Key must be shorter than padding");
 
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = { 0 };
     /* -1 to allow for a NULL terminator at the end */
     const size_t max_str_len = sizeof(buf) - 1;
     size_t cursor = 0;
@@ -1135,7 +1056,8 @@ int mmagic_cli_wlan_get_mcs10_mode(struct mmagic_data *core, EmbeddedCli *cli)
     }
     cursor += written;
     written = mmagic_enum_mcs10_mode_to_string(data->config.mcs10_mode,
-                                               &buf[cursor], max_str_len - cursor);
+                                               &buf[cursor],
+                                               max_str_len - cursor);
     if (written == 0)
     {
         /*
@@ -1164,7 +1086,7 @@ int mmagic_cli_wlan_get_sta_evt_en(struct mmagic_data *core, EmbeddedCli *cli)
     MM_STATIC_ASSERT((sizeof("wlan.sta_evt_en") - 1) < KEY_NAME_PADDING,
                      "Key must be shorter than padding");
 
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = { 0 };
     /* -1 to allow for a NULL terminator at the end */
     const size_t max_str_len = sizeof(buf) - 1;
     size_t cursor = 0;
@@ -1176,8 +1098,7 @@ int mmagic_cli_wlan_get_sta_evt_en(struct mmagic_data *core, EmbeddedCli *cli)
         return -1;
     }
     cursor += written;
-    written = mmagic_bool_to_string(data->config.sta_evt_en,
-                                    &buf[cursor], max_str_len - cursor);
+    written = mmagic_bool_to_string(data->config.sta_evt_en, &buf[cursor], max_str_len - cursor);
     if (written == 0)
     {
         /*
@@ -1206,7 +1127,7 @@ int mmagic_cli_wlan_get_duty_cycle_mode(struct mmagic_data *core, EmbeddedCli *c
     MM_STATIC_ASSERT((sizeof("wlan.duty_cycle_mode") - 1) < KEY_NAME_PADDING,
                      "Key must be shorter than padding");
 
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = { 0 };
     /* -1 to allow for a NULL terminator at the end */
     const size_t max_str_len = sizeof(buf) - 1;
     size_t cursor = 0;
@@ -1219,7 +1140,8 @@ int mmagic_cli_wlan_get_duty_cycle_mode(struct mmagic_data *core, EmbeddedCli *c
     }
     cursor += written;
     written = mmagic_enum_duty_cycle_mode_to_string(data->config.duty_cycle_mode,
-                                                    &buf[cursor], max_str_len - cursor);
+                                                    &buf[cursor],
+                                                    max_str_len - cursor);
     if (written == 0)
     {
         /*
@@ -1383,7 +1305,8 @@ int mmagic_cli_wlan_set_sgi_enabled(struct mmagic_data *core, EmbeddedCli *cli, 
     return 0;
 }
 
-int mmagic_cli_wlan_set_subbands_enabled(struct mmagic_data *core, EmbeddedCli *cli,
+int mmagic_cli_wlan_set_subbands_enabled(struct mmagic_data *core,
+                                         EmbeddedCli *cli,
                                          const char *val)
 {
     struct mmagic_wlan_data *data = mmagic_data_get_wlan(core);
@@ -1426,7 +1349,8 @@ int mmagic_cli_wlan_set_power_save_mode(struct mmagic_data *core, EmbeddedCli *c
     return 0;
 }
 
-int mmagic_cli_wlan_set_fragment_threshold(struct mmagic_data *core, EmbeddedCli *cli,
+int mmagic_cli_wlan_set_fragment_threshold(struct mmagic_data *core,
+                                           EmbeddedCli *cli,
                                            const char *val)
 {
     struct mmagic_wlan_data *data = mmagic_data_get_wlan(core);
@@ -1455,37 +1379,8 @@ int mmagic_cli_wlan_set_cac_enabled(struct mmagic_data *core, EmbeddedCli *cli, 
     return 0;
 }
 
-int mmagic_cli_wlan_set_offload_arp_response(struct mmagic_data *core, EmbeddedCli *cli,
-                                             const char *val)
-{
-    struct mmagic_wlan_data *data = mmagic_data_get_wlan(core);
-
-    if (mmagic_string_to_bool(&data->config.offload_arp_response, val))
-    {
-        return -1;
-    }
-
-    mmagic_cli_wlan_get_offload_arp_response(core, cli);
-
-    return 0;
-}
-
-int mmagic_cli_wlan_set_offload_arp_refresh_s(struct mmagic_data *core, EmbeddedCli *cli,
-                                              const char *val)
-{
-    struct mmagic_wlan_data *data = mmagic_data_get_wlan(core);
-
-    if (mmagic_string_to_uint32_t(&data->config.offload_arp_refresh_s, val))
-    {
-        return -1;
-    }
-
-    mmagic_cli_wlan_get_offload_arp_refresh_s(core, cli);
-
-    return 0;
-}
-
-int mmagic_cli_wlan_set_min_health_check_intvl_ms(struct mmagic_data *core, EmbeddedCli *cli,
+int mmagic_cli_wlan_set_min_health_check_intvl_ms(struct mmagic_data *core,
+                                                  EmbeddedCli *cli,
                                                   const char *val)
 {
     struct mmagic_wlan_data *data = mmagic_data_get_wlan(core);
@@ -1500,7 +1395,8 @@ int mmagic_cli_wlan_set_min_health_check_intvl_ms(struct mmagic_data *core, Embe
     return 0;
 }
 
-int mmagic_cli_wlan_set_max_health_check_intvl_ms(struct mmagic_data *core, EmbeddedCli *cli,
+int mmagic_cli_wlan_set_max_health_check_intvl_ms(struct mmagic_data *core,
+                                                  EmbeddedCli *cli,
                                                   const char *val)
 {
     struct mmagic_wlan_data *data = mmagic_data_get_wlan(core);
@@ -1515,7 +1411,8 @@ int mmagic_cli_wlan_set_max_health_check_intvl_ms(struct mmagic_data *core, Embe
     return 0;
 }
 
-int mmagic_cli_wlan_set_ndp_probe_enabled(struct mmagic_data *core, EmbeddedCli *cli,
+int mmagic_cli_wlan_set_ndp_probe_enabled(struct mmagic_data *core,
+                                          EmbeddedCli *cli,
                                           const char *val)
 {
     struct mmagic_wlan_data *data = mmagic_data_get_wlan(core);
@@ -1530,7 +1427,8 @@ int mmagic_cli_wlan_set_ndp_probe_enabled(struct mmagic_data *core, EmbeddedCli 
     return 0;
 }
 
-int mmagic_cli_wlan_set_sta_scan_interval_base_s(struct mmagic_data *core, EmbeddedCli *cli,
+int mmagic_cli_wlan_set_sta_scan_interval_base_s(struct mmagic_data *core,
+                                                 EmbeddedCli *cli,
                                                  const char *val)
 {
     struct mmagic_wlan_data *data = mmagic_data_get_wlan(core);
@@ -1545,7 +1443,8 @@ int mmagic_cli_wlan_set_sta_scan_interval_base_s(struct mmagic_data *core, Embed
     return 0;
 }
 
-int mmagic_cli_wlan_set_sta_scan_interval_limit_s(struct mmagic_data *core, EmbeddedCli *cli,
+int mmagic_cli_wlan_set_sta_scan_interval_limit_s(struct mmagic_data *core,
+                                                  EmbeddedCli *cli,
                                                   const char *val)
 {
     struct mmagic_wlan_data *data = mmagic_data_get_wlan(core);
@@ -1664,44 +1563,47 @@ int mmagic_cli_wlan_set_duty_cycle_mode(struct mmagic_data *core, EmbeddedCli *c
  * a binary search which requires an ordered list.
  */
 struct mmagic_cli_config_elem wlan_cli_config_vars[] = {
-    {"ampdu_enabled", mmagic_cli_wlan_get_ampdu_enabled, mmagic_cli_wlan_set_ampdu_enabled},
-    {"bssid", mmagic_cli_wlan_get_bssid, mmagic_cli_wlan_set_bssid},
-    {"cac_enabled", mmagic_cli_wlan_get_cac_enabled, mmagic_cli_wlan_set_cac_enabled},
-    {"country_code", mmagic_cli_wlan_get_country_code, mmagic_cli_wlan_set_country_code},
-    {"duty_cycle_mode", mmagic_cli_wlan_get_duty_cycle_mode, mmagic_cli_wlan_set_duty_cycle_mode},
-    {"fragment_threshold", mmagic_cli_wlan_get_fragment_threshold,
-     mmagic_cli_wlan_set_fragment_threshold},
-    {"max_health_check_intvl_ms", mmagic_cli_wlan_get_max_health_check_intvl_ms,
-     mmagic_cli_wlan_set_max_health_check_intvl_ms},
-    {"mcs10_mode", mmagic_cli_wlan_get_mcs10_mode, mmagic_cli_wlan_set_mcs10_mode},
-    {"min_health_check_intvl_ms", mmagic_cli_wlan_get_min_health_check_intvl_ms,
-     mmagic_cli_wlan_set_min_health_check_intvl_ms},
-    {"ndp_probe_enabled", mmagic_cli_wlan_get_ndp_probe_enabled,
-     mmagic_cli_wlan_set_ndp_probe_enabled},
-    {"offload_arp_refresh_s", mmagic_cli_wlan_get_offload_arp_refresh_s,
-     mmagic_cli_wlan_set_offload_arp_refresh_s},
-    {"offload_arp_response", mmagic_cli_wlan_get_offload_arp_response,
-     mmagic_cli_wlan_set_offload_arp_response},
-    {"password", mmagic_cli_wlan_get_password, mmagic_cli_wlan_set_password},
-    {"pmf_mode", mmagic_cli_wlan_get_pmf_mode, mmagic_cli_wlan_set_pmf_mode},
-    {"power_save_mode", mmagic_cli_wlan_get_power_save_mode, mmagic_cli_wlan_set_power_save_mode},
-    {"qos_0_params", mmagic_cli_wlan_get_qos_0_params, mmagic_cli_wlan_set_qos_0_params},
-    {"qos_1_params", mmagic_cli_wlan_get_qos_1_params, mmagic_cli_wlan_set_qos_1_params},
-    {"qos_2_params", mmagic_cli_wlan_get_qos_2_params, mmagic_cli_wlan_set_qos_2_params},
-    {"qos_3_params", mmagic_cli_wlan_get_qos_3_params, mmagic_cli_wlan_set_qos_3_params},
-    {"raw_priority", mmagic_cli_wlan_get_raw_priority, mmagic_cli_wlan_set_raw_priority},
-    {"rts_threshold", mmagic_cli_wlan_get_rts_threshold, mmagic_cli_wlan_set_rts_threshold},
-    {"security", mmagic_cli_wlan_get_security, mmagic_cli_wlan_set_security},
-    {"sgi_enabled", mmagic_cli_wlan_get_sgi_enabled, mmagic_cli_wlan_set_sgi_enabled},
-    {"ssid", mmagic_cli_wlan_get_ssid, mmagic_cli_wlan_set_ssid},
-    {"sta_evt_en", mmagic_cli_wlan_get_sta_evt_en, mmagic_cli_wlan_set_sta_evt_en},
-    {"sta_scan_interval_base_s", mmagic_cli_wlan_get_sta_scan_interval_base_s,
-     mmagic_cli_wlan_set_sta_scan_interval_base_s},
-    {"sta_scan_interval_limit_s", mmagic_cli_wlan_get_sta_scan_interval_limit_s,
-     mmagic_cli_wlan_set_sta_scan_interval_limit_s},
-    {"station_type", mmagic_cli_wlan_get_station_type, mmagic_cli_wlan_set_station_type},
-    {"subbands_enabled", mmagic_cli_wlan_get_subbands_enabled,
-     mmagic_cli_wlan_set_subbands_enabled},
+    { "ampdu_enabled", mmagic_cli_wlan_get_ampdu_enabled, mmagic_cli_wlan_set_ampdu_enabled },
+    { "bssid", mmagic_cli_wlan_get_bssid, mmagic_cli_wlan_set_bssid },
+    { "cac_enabled", mmagic_cli_wlan_get_cac_enabled, mmagic_cli_wlan_set_cac_enabled },
+    { "country_code", mmagic_cli_wlan_get_country_code, mmagic_cli_wlan_set_country_code },
+    { "duty_cycle_mode", mmagic_cli_wlan_get_duty_cycle_mode, mmagic_cli_wlan_set_duty_cycle_mode },
+    { "fragment_threshold",
+      mmagic_cli_wlan_get_fragment_threshold,
+      mmagic_cli_wlan_set_fragment_threshold },
+    { "max_health_check_intvl_ms",
+      mmagic_cli_wlan_get_max_health_check_intvl_ms,
+      mmagic_cli_wlan_set_max_health_check_intvl_ms },
+    { "mcs10_mode", mmagic_cli_wlan_get_mcs10_mode, mmagic_cli_wlan_set_mcs10_mode },
+    { "min_health_check_intvl_ms",
+      mmagic_cli_wlan_get_min_health_check_intvl_ms,
+      mmagic_cli_wlan_set_min_health_check_intvl_ms },
+    { "ndp_probe_enabled",
+      mmagic_cli_wlan_get_ndp_probe_enabled,
+      mmagic_cli_wlan_set_ndp_probe_enabled },
+    { "password", mmagic_cli_wlan_get_password, mmagic_cli_wlan_set_password },
+    { "pmf_mode", mmagic_cli_wlan_get_pmf_mode, mmagic_cli_wlan_set_pmf_mode },
+    { "power_save_mode", mmagic_cli_wlan_get_power_save_mode, mmagic_cli_wlan_set_power_save_mode },
+    { "qos_0_params", mmagic_cli_wlan_get_qos_0_params, mmagic_cli_wlan_set_qos_0_params },
+    { "qos_1_params", mmagic_cli_wlan_get_qos_1_params, mmagic_cli_wlan_set_qos_1_params },
+    { "qos_2_params", mmagic_cli_wlan_get_qos_2_params, mmagic_cli_wlan_set_qos_2_params },
+    { "qos_3_params", mmagic_cli_wlan_get_qos_3_params, mmagic_cli_wlan_set_qos_3_params },
+    { "raw_priority", mmagic_cli_wlan_get_raw_priority, mmagic_cli_wlan_set_raw_priority },
+    { "rts_threshold", mmagic_cli_wlan_get_rts_threshold, mmagic_cli_wlan_set_rts_threshold },
+    { "security", mmagic_cli_wlan_get_security, mmagic_cli_wlan_set_security },
+    { "sgi_enabled", mmagic_cli_wlan_get_sgi_enabled, mmagic_cli_wlan_set_sgi_enabled },
+    { "ssid", mmagic_cli_wlan_get_ssid, mmagic_cli_wlan_set_ssid },
+    { "sta_evt_en", mmagic_cli_wlan_get_sta_evt_en, mmagic_cli_wlan_set_sta_evt_en },
+    { "sta_scan_interval_base_s",
+      mmagic_cli_wlan_get_sta_scan_interval_base_s,
+      mmagic_cli_wlan_set_sta_scan_interval_base_s },
+    { "sta_scan_interval_limit_s",
+      mmagic_cli_wlan_get_sta_scan_interval_limit_s,
+      mmagic_cli_wlan_set_sta_scan_interval_limit_s },
+    { "station_type", mmagic_cli_wlan_get_station_type, mmagic_cli_wlan_set_station_type },
+    { "subbands_enabled",
+      mmagic_cli_wlan_get_subbands_enabled,
+      mmagic_cli_wlan_set_subbands_enabled },
 };
 
 /********* WLAN Configuration Getter/Setter Handlers **********/
@@ -1726,8 +1628,8 @@ void mmagic_cli_wlan_get(struct mmagic_cli *ctx, EmbeddedCli *cli, const char *c
         return;
     }
 
-    struct mmagic_cli_config_elem *elem = mmagic_cli_element_search(wlan_cli_config_vars,
-                                                                    num_elements, config_var);
+    struct mmagic_cli_config_elem *elem =
+        mmagic_cli_element_search(wlan_cli_config_vars, num_elements, config_var);
     if (elem == NULL)
     {
         mmagic_cli_printf(cli, "Unable to find config variable 'wlan.%s'", config_var);
@@ -1746,15 +1648,17 @@ void mmagic_cli_wlan_get(struct mmagic_cli *ctx, EmbeddedCli *cli, const char *c
     }
 }
 
-void mmagic_cli_wlan_set(struct mmagic_cli *ctx, EmbeddedCli *cli, const char *config_var,
+void mmagic_cli_wlan_set(struct mmagic_cli *ctx,
+                         EmbeddedCli *cli,
+                         const char *config_var,
                          const char *val)
 {
     struct mmagic_data *core = &ctx->core;
 
     uint32_t num_elements = sizeof(wlan_cli_config_vars) / sizeof(wlan_cli_config_vars[0]);
 
-    struct mmagic_cli_config_elem *elem = mmagic_cli_element_search(wlan_cli_config_vars,
-                                                                    num_elements, config_var);
+    struct mmagic_cli_config_elem *elem =
+        mmagic_cli_element_search(wlan_cli_config_vars, num_elements, config_var);
     if (elem == NULL)
     {
         mmagic_cli_printf(cli, "Unable to find config variable 'wlan.%s'", config_var);
@@ -1795,147 +1699,154 @@ void mmagic_cli_wlan_load(struct mmagic_cli *ctx, EmbeddedCli *cli)
 /********* CLI Command Handlers **********/
 
 void mmagic_cli_wlan_connect(EmbeddedCli *cli, char *args, void *context);
-
 void mmagic_cli_wlan_disconnect(EmbeddedCli *cli, char *args, void *context);
-
 void mmagic_cli_wlan_scan(EmbeddedCli *cli, char *args, void *context);
-
 void mmagic_cli_wlan_get_rssi(EmbeddedCli *cli, char *args, void *context);
-
 void mmagic_cli_wlan_get_mac_addr(EmbeddedCli *cli, char *args, void *context);
-
 void mmagic_cli_wlan_wnm_sleep(EmbeddedCli *cli, char *args, void *context);
-
 void mmagic_cli_wlan_beacon_monitor_enable(EmbeddedCli *cli, char *args, void *context);
-
 void mmagic_cli_wlan_beacon_monitor_disable(EmbeddedCli *cli, char *args, void *context);
-
 void mmagic_cli_wlan_standby_enter(EmbeddedCli *cli, char *args, void *context);
-
 void mmagic_cli_wlan_standby_exit(EmbeddedCli *cli, char *args, void *context);
-
 void mmagic_cli_wlan_standby_set_status_payload(EmbeddedCli *cli, char *args, void *context);
-
 void mmagic_cli_wlan_standby_set_wake_filter(EmbeddedCli *cli, char *args, void *context);
-
 void mmagic_cli_wlan_standby_set_config(EmbeddedCli *cli, char *args, void *context);
-
 void mmagic_cli_wlan_get_sta_status(EmbeddedCli *cli, char *args, void *context);
 
 /********* Register bindings function definition **********/
 void mmagic_cli_wlan_register_bindings(EmbeddedCli *cli, struct mmagic_data *core)
 {
-    embeddedCliAddBinding(cli, (CliCommandBinding) {
-        "wlan-connect",
-        "Brings up the WLAN interface and connects to the AP with configured parameters.",
-        true,
-        core,
-        mmagic_cli_wlan_connect
-    });
+    embeddedCliAddBinding(
+        cli,
+        (CliCommandBinding){
+            "wlan-connect",
+            "Brings up the WLAN interface and connects to the AP with configured parameters.",
+            true,
+            core,
+            mmagic_cli_wlan_connect });
 
-    embeddedCliAddBinding(cli, (CliCommandBinding) {
-        "wlan-disconnect",
-        "Disconnects and brings down the WLAN interface.",
-        true,
-        core,
-        mmagic_cli_wlan_disconnect
-    });
+    embeddedCliAddBinding(cli,
+                          (CliCommandBinding){ "wlan-disconnect",
+                                               "Disconnects and brings down the WLAN interface.",
+                                               true,
+                                               core,
+                                               mmagic_cli_wlan_disconnect });
 
-    embeddedCliAddBinding(cli, (CliCommandBinding) {
-        "wlan-scan",
-        "Starts an undirected scan for available networks.",
-        true,
-        core,
-        mmagic_cli_wlan_scan
-    });
+    embeddedCliAddBinding(cli,
+                          (CliCommandBinding){ "wlan-scan",
+                                               "Starts an undirected scan for available networks.",
+                                               true,
+                                               core,
+                                               mmagic_cli_wlan_scan });
 
-    embeddedCliAddBinding(cli, (CliCommandBinding) {
-        "wlan-get_rssi",
-        "Retrieves the RSSI if the WLAN interface is up, else 0.",
-        true,
-        core,
-        mmagic_cli_wlan_get_rssi
-    });
+    embeddedCliAddBinding(
+        cli,
+        (CliCommandBinding){ "wlan-get_rssi",
+                             "Retrieves the RSSI if the WLAN interface is up, else 0.",
+                             true,
+                             core,
+                             mmagic_cli_wlan_get_rssi });
 
-    embeddedCliAddBinding(cli, (CliCommandBinding) {
-        "wlan-get_mac_addr",
-        "Retrieves the MAC address if the WLAN interface is up.",
-        true,
-        core,
-        mmagic_cli_wlan_get_mac_addr
-    });
+    embeddedCliAddBinding(
+        cli,
+        (CliCommandBinding){ "wlan-get_mac_addr",
+                             "Retrieves the MAC address if the WLAN interface is up.",
+                             true,
+                             core,
+                             mmagic_cli_wlan_get_mac_addr });
 
-    embeddedCliAddBinding(cli, (CliCommandBinding) {
-        "wlan-wnm_sleep",
-        "Requests entry or exit from extended sleep (wnm sleep) if the WLAN interface is up.",
-        true,
-        core,
-        mmagic_cli_wlan_wnm_sleep
-    });
+    embeddedCliAddBinding(
+        cli,
+        (CliCommandBinding){
+            "wlan-wnm_sleep",
+            "Requests entry or exit from extended sleep (wnm sleep) if the WLAN interface is up.",
+            true,
+            core,
+            mmagic_cli_wlan_wnm_sleep });
 
-    embeddedCliAddBinding(cli, (CliCommandBinding) {
-        "wlan-beacon_monitor_enable",
-        "Enable beacon monitoring with the given filter settings. If beacon monitoring is already enabled it will be reconfigured with the given arguments.",
-        true,
-        core,
-        mmagic_cli_wlan_beacon_monitor_enable
-    });
+    embeddedCliAddBinding(
+        cli,
+        (CliCommandBinding){
+            "wlan-beacon_monitor_enable",
+            "Enable beacon monitoring with the given filter settings. If beacon monitoring is "
+            "already enabled it will be reconfigured with the given arguments.",
+            true,
+            core,
+            mmagic_cli_wlan_beacon_monitor_enable });
 
-    embeddedCliAddBinding(cli, (CliCommandBinding) {
-        "wlan-beacon_monitor_disable",
-        "Disable beacon monitoring. If beacon monitor is not enabled then this has no effect.",
-        true,
-        core,
-        mmagic_cli_wlan_beacon_monitor_disable
-    });
+    embeddedCliAddBinding(
+        cli,
+        (CliCommandBinding){
+            "wlan-beacon_monitor_disable",
+            "Disable beacon monitoring. If beacon monitor is not enabled then this has no effect.",
+            true,
+            core,
+            mmagic_cli_wlan_beacon_monitor_disable });
 
-    embeddedCliAddBinding(cli, (CliCommandBinding) {
-        "wlan-standby_enter",
-        "This puts the Morse chip into standby mode allowing the host processor to go to sleep while the Morse chip takes over certain functionality to keep the connection alive with the provision to wake up the host processor when certain conditions are met.",
-        true,
-        core,
-        mmagic_cli_wlan_standby_enter
-    });
+    embeddedCliAddBinding(
+        cli,
+        (CliCommandBinding){
+            "wlan-standby_enter",
+            "This puts the Morse chip into standby mode allowing the host processor to go to sleep "
+            "while the Morse chip takes over certain functionality to keep the connection alive "
+            "with the provision to wake up the host processor when certain conditions are met.",
+            true,
+            core,
+            mmagic_cli_wlan_standby_enter });
 
-    embeddedCliAddBinding(cli, (CliCommandBinding) {
-        "wlan-standby_exit",
-        "Forces the Morse chip to exit standby mode. There may be certain instances such as a timer expiry, which cause the host chip to wake up independant of the Morse chip. In such situations, the host calls this function to instruct the Morse chip to exit standby mode and return to normal operating mode.",
-        true,
-        core,
-        mmagic_cli_wlan_standby_exit
-    });
+    embeddedCliAddBinding(
+        cli,
+        (CliCommandBinding){
+            "wlan-standby_exit",
+            "Forces the Morse chip to exit standby mode. There may be certain instances such as a "
+            "timer expiry, which cause the host chip to wake up independant of the Morse chip. In "
+            "such situations, the host calls this function to instruct the Morse chip to exit "
+            "standby mode and return to normal operating mode.",
+            true,
+            core,
+            mmagic_cli_wlan_standby_exit });
 
-    embeddedCliAddBinding(cli, (CliCommandBinding) {
-        "wlan-standby_set_status_payload",
-        "Sets the user payload for the standby status packet. Once standby mode is enabled, the Morse chip will periodically emit a UDP standby status packet regardless of whether it is in standby or not. The UDP packet will also be sent immediately upon entering or exiting Standby mode. If this command is not executed then the standby status packet will contain no payload.",
-        true,
-        core,
-        mmagic_cli_wlan_standby_set_status_payload
-    });
+    embeddedCliAddBinding(
+        cli,
+        (CliCommandBinding){
+            "wlan-standby_set_status_payload",
+            "Sets the user payload for the standby status packet. Once standby mode is enabled, "
+            "the Morse chip will periodically emit a UDP standby status packet regardless of "
+            "whether it is in standby or not. The UDP packet will also be sent immediately upon "
+            "entering or exiting Standby mode. If this command is not executed then the standby "
+            "status packet will contain no payload.",
+            true,
+            core,
+            mmagic_cli_wlan_standby_set_status_payload });
 
-    embeddedCliAddBinding(cli, (CliCommandBinding) {
-        "wlan-standby_set_wake_filter",
-        "Configures the standby mode UDP wake packet filter. The system can be woken up from standby mode by sending it a UDP wake packet. If a wake filter is set using this function then the wake packet will only wake up the system if the specified filter pattern matches the payload at the specified offset within the payload. If this command is not executed then any wake packet will wake up the system.",
-        true,
-        core,
-        mmagic_cli_wlan_standby_set_wake_filter
-    });
+    embeddedCliAddBinding(
+        cli,
+        (CliCommandBinding){
+            "wlan-standby_set_wake_filter",
+            "Configures the standby mode UDP wake packet filter. The system can be woken up from "
+            "standby mode by sending it a UDP wake packet. If a wake filter is set using this "
+            "function then the wake packet will only wake up the system if the specified filter "
+            "pattern matches the payload at the specified offset within the payload. If this "
+            "command is not executed then any wake packet will wake up the system.",
+            true,
+            core,
+            mmagic_cli_wlan_standby_set_wake_filter });
 
-    embeddedCliAddBinding(cli, (CliCommandBinding) {
-        "wlan-standby_set_config",
-        "Sets the standby mode configuration parameters. If this command is not executed then the defaults are as specified.",
-        true,
-        core,
-        mmagic_cli_wlan_standby_set_config
-    });
+    embeddedCliAddBinding(
+        cli,
+        (CliCommandBinding){ "wlan-standby_set_config",
+                             "Sets the standby mode configuration parameters. If this command is "
+                             "not executed then the defaults are as specified.",
+                             true,
+                             core,
+                             mmagic_cli_wlan_standby_set_config });
 
-    embeddedCliAddBinding(cli, (CliCommandBinding) {
-        "wlan-get_sta_status",
-        "Retrieves the STA status of the WLAN interface.",
-        true,
-        core,
-        mmagic_cli_wlan_get_sta_status
-    });
+    embeddedCliAddBinding(cli,
+                          (CliCommandBinding){ "wlan-get_sta_status",
+                                               "Retrieves the STA status of the WLAN interface.",
+                                               true,
+                                               core,
+                                               mmagic_cli_wlan_get_sta_status });
 }
 
 void mmagic_cli_wlan_init(struct mmagic_cli *ctx)

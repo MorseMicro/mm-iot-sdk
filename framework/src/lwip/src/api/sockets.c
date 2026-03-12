@@ -57,6 +57,7 @@
 #if LWIP_CHECKSUM_ON_COPY
 #include "lwip/inet_chksum.h"
 #endif
+#include "morse/on_demand_timers.h"
 
 #if LWIP_COMPAT_SOCKETS == 2 && LWIP_POSIX_SOCKETS_IO_NAMES
 #include <stdarg.h>
@@ -568,6 +569,8 @@ alloc_socket(struct netconn *newconn, int accepted)
        * (unless it has been created by accept()). */
       sockets[i].sendevent  = (NETCONNTYPE_GROUP(newconn->type) == NETCONN_TCP ? (accepted != 0) : 1);
       sockets[i].errevent   = 0;
+      sockets[i].rx_callback = NULL;
+      sockets[i].rx_callback_arg = NULL;
 #endif /* LWIP_SOCKET_SELECT || LWIP_SOCKET_POLL */
       return i + LWIP_SOCKET_OFFSET;
     }
@@ -2567,6 +2570,10 @@ event_callback(struct netconn *conn, enum netconn_evt evt, u16_t len)
       if (sock->rcvevent > 1) {
         check_waiters = 0;
       }
+      if (sock->rx_callback)
+      {
+        sock->rx_callback(sock->rx_callback_arg);
+      }
       break;
     case NETCONN_EVT_RCVMINUS:
       sock->rcvevent--;
@@ -3270,6 +3277,7 @@ lwip_setsockopt(int s, int level, int optname, const void *optval, socklen_t opt
   /* core-locking can just call the -impl function */
   LOCK_TCPIP_CORE();
   err = lwip_setsockopt_impl(s, level, optname, optval, optlen);
+  TCP_TIMER_NEEDED();
   UNLOCK_TCPIP_CORE();
 
 #else /* LWIP_TCPIP_CORE_LOCKING */
@@ -3337,6 +3345,7 @@ lwip_setsockopt_callback(void *arg)
 #endif /* LWIP_MPU_COMPATIBLE */
                                    data->optlen);
 
+  TCP_TIMER_NEEDED();
   sys_sem_signal((sys_sem_t *)(data->completed_sem));
 }
 #endif  /* LWIP_TCPIP_CORE_LOCKING */
@@ -4201,5 +4210,19 @@ lwip_socket_drop_registered_mld6_memberships(int s)
   done_socket(sock);
 }
 #endif /* LWIP_IPV6_MLD */
+
+int lwip_register_rx_callback(int s, lwip_rx_callback_t cb, void *arg)
+{
+    struct lwip_sock *sock = tryget_socket(s);
+    if (sock == NULL)
+    {
+        set_errno(EBADF);
+        return -1;
+    }
+
+    sock->rx_callback_arg = arg;
+    sock->rx_callback = cb;
+    return 0;
+}
 
 #endif /* LWIP_SOCKET */

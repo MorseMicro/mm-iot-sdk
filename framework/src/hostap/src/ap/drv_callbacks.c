@@ -1372,7 +1372,7 @@ void hostapd_event_ch_switch(struct hostapd_data *hapd, int freq, int freq_khz,
 		/* Update S1G parameters in hostapd conf */
 		if ((hapd->cs_s1g_freq_params.s1g_oper_freq > MIN_S1G_FREQ_KHZ) &&
 			(hapd->cs_s1g_freq_params.s1g_oper_freq < MAX_S1G_FREQ_KHZ)) {
-			hapd->iconf->s1g_prim_1mhz_chan_index = hapd->cs_s1g_freq_params.s1g_prim_channel_index_1MHz;
+			hapd->iconf->s1g_prim_1mhz_chan_loc = hapd->cs_s1g_freq_params.s1g_prim_1mhz_channel_loc;
 			hapd->iconf->s1g_op_class = hapd->cs_s1g_freq_params.s1g_global_op_class;
 			hapd->iconf->s1g_prim_chwidth = hapd->cs_s1g_freq_params.s1g_prim_bw - 1;
 			wpa_msg(hapd->msg_ctx, MSG_INFO, AP_CSA_FINISHED

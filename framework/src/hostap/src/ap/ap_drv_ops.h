@@ -75,8 +75,7 @@ int hostapd_set_freq(struct hostapd_data *hapd, enum hostapd_hw_mode mode,
 		     int ht_enabled, int vht_enabled, int he_enabled,
 		     bool eht_enabled, int s1g_enabled,
 		     int sec_channel_offset, int oper_chwidth,
-		     int center_segment0, int center_segment1,
-		     int prim_bandwidth, int prim_ch_index);
+		     int center_segment0, int center_segment1);
 int hostapd_set_rts(struct hostapd_data *hapd, int rts);
 int hostapd_set_frag(struct hostapd_data *hapd, int frag);
 int hostapd_sta_set_flags(struct hostapd_data *hapd, u8 *addr,
@@ -147,7 +146,6 @@ int hostapd_start_dfs_cac(struct hostapd_iface *iface,
 			  bool eht_enabled, int s1g_enabled,
 			  int sec_channel_offset, int oper_chwidth,
 			  int center_segment0, int center_segment1,
-			  int prim_bandwidth, int prim_ch_index,
 			  bool radar_background);
 int hostapd_drv_do_acs(struct hostapd_data *hapd);
 int hostapd_drv_update_dh_ie(struct hostapd_data *hapd, const u8 *peer,

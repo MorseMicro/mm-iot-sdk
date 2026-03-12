@@ -1,5 +1,5 @@
 /*
- * Copyright 2023-2025 Morse Micro
+ * Copyright 2023-2026 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -154,10 +154,10 @@
      * will be expanded relative to the working directory.
      *
      * For example:
-     *    ../../framework/morsefirmware/bcf_mf08551.mbin     is treated relative to this file
-     *    $MMIOT_ROOT/morsefirmware/bcf_mf08551.mbin         is treated relative to the working
-     *                                                       directory if $MMIOT_ROOT contains
-     *                                                       a relative path.
+     *    ../../framework/morsefirmware/mm6108/bcfs/bcf_mf08651_us.mbin     is treated relative to this file
+     *    $MMIOT_ROOT/morsefirmware/mm6108/bcfs/bcf_mf08651_us.mbin         is treated relative to the working
+     *                                                                      directory if $MMIOT_ROOT contains
+     *                                                                      a relative path.
      */
     "files" : {
         /* The Board Configuration File (BCF) is a configuration file for the Morse Micro
@@ -167,8 +167,8 @@
          * labels, which take the form MM6108-MFxxxxx. Uncomment the line below and replace
          * `mf08551` with the appropriate value for the module that you have. For example,
          * if your module were MM6108-MF12345 then you would change the value of this key
-         * to: $MMIOT_ROOT/morsefirmware/bcf_mf12345.mbin */
-        // "bcf_file": "$MMIOT_ROOT/morsefirmware/bcf_mf08551.mbin"
+         * to: $MMIOT_ROOT/morsefirmware/mm6108/bcfs/bcf_mf12345.mbin */
+        // "bcf_file": "$MMIOT_ROOT/morsefirmware/mm6108/bcfs/bcf_mf08651_us.mbin"
 
         
     }

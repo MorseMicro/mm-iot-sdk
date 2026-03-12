@@ -135,6 +135,7 @@ pbuf_free_ooseq(void)
       /** Free the ooseq pbufs of one PCB only */
       LWIP_DEBUGF(PBUF_DEBUG | LWIP_DBG_TRACE, ("pbuf_free_ooseq: freeing out-of-sequence pbufs\n"));
       tcp_free_ooseq(pcb);
+      TCP_TIMER_NEEDED();
       return;
     }
   }

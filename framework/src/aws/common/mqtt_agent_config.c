@@ -17,7 +17,7 @@
 /**
  * Specifies the maximum size of a generated Client ID.
  */
-#define MAX_CLIENT_ID_LEN                     64
+#define MAX_CLIENT_ID_LEN 64
 /**
  * The maximum time interval in seconds which is allowed to elapse
  *  between two Control Packets.
@@ -27,13 +27,13 @@
  *  absence of sending any other Control Packets, the Client MUST send a
  *  @c PINGREQ Packet.
  */
-#define KEEP_ALIVE_INTERVAL_S                 (60U)
+#define KEEP_ALIVE_INTERVAL_S (60U)
 
 /**
  * This is the maximum size of any placeholder files, we determine the file is a dummy
  * if it is less than this size.
  */
-#define DUMMY_FILE_SIZE                       100
+#define DUMMY_FILE_SIZE 100
 
 /* Ensure defines are present for optional configuration items if not defined.
  * By setting to an empty string, the mmconfig_ function will return no value.
@@ -58,9 +58,11 @@ char *mqtt_agent_config_get_default_user_agent_string(void)
 
     status = mmwlan_get_version(&version);
     MMOSAL_ASSERT(status == MMWLAN_SUCCESS);
-    snprintf(userAgent, sizeof(userAgent),
+    snprintf(userAgent,
+             sizeof(userAgent),
              "?SDK=MorseLib&Version=%s&Platform=MorseMicro&MQTTLib=%s",
-             version.morselib_version, MQTT_LIBRARY_VERSION);
+             version.morselib_version,
+             MQTT_LIBRARY_VERSION);
     return userAgent;
 }
 
@@ -89,31 +91,34 @@ void mqtt_agent_config_initialise_connect_info(MQTTConnectInfo_t *pxConnectInfo)
 
     /* Ignore return value for now, as it includes the NULL terminator in length if successful */
     mmconfig_alloc_and_load(CONFIG_KEY_MQTT_PASSWORD, (void **)&pxConnectInfo->pPassword);
-    pxConnectInfo->passwordLength = pxConnectInfo->pPassword ==
-        NULL ? 0 : strlen(pxConnectInfo->pPassword);
+    pxConnectInfo->passwordLength =
+        pxConnectInfo->pPassword == NULL ? 0 : strlen(pxConnectInfo->pPassword);
 
-    pxConnectInfo->clientIdentifierLength = mmconfig_alloc_and_load(AWS_KEY_THING_NAME,
-                                                                    (void **)&pxConnectInfo->
-                                                                        pClientIdentifier) - 1;
+    pxConnectInfo->clientIdentifierLength =
+        mmconfig_alloc_and_load(AWS_KEY_THING_NAME, (void **)&pxConnectInfo->pClientIdentifier) - 1;
     if (pxConnectInfo->pClientIdentifier == NULL)
     {
         /* If thingname is not found generate one using the MAC address */
         uint8_t mac_addr[MMWLAN_MAC_ADDR_LEN] = { 0 };
         char *client_id = (char *)mmosal_malloc(MAX_CLIENT_ID_LEN);
         MMOSAL_ASSERT(mmwlan_get_mac_addr(mac_addr) == MMWLAN_SUCCESS);
-        snprintf(client_id, MAX_CLIENT_ID_LEN,
+        snprintf(client_id,
+                 MAX_CLIENT_ID_LEN,
                  "MM_Client_ID_%02x:%02x:%02x:%02x:%02x:%02x",
-                 mac_addr[0], mac_addr[1], mac_addr[2], mac_addr[3], mac_addr[4], mac_addr[5]);
+                 mac_addr[0],
+                 mac_addr[1],
+                 mac_addr[2],
+                 mac_addr[3],
+                 mac_addr[4],
+                 mac_addr[5]);
         pxConnectInfo->pClientIdentifier = client_id;
-        pxConnectInfo->clientIdentifierLength =
-            strlen(pxConnectInfo->pClientIdentifier);
+        pxConnectInfo->clientIdentifierLength = strlen(pxConnectInfo->pClientIdentifier);
     }
 }
 
 MQTTStatus_t mqtt_agent_config_validate_connect_info(MQTTConnectInfo_t *pxConnectInfo)
 {
-    if (pxConnectInfo->pClientIdentifier == NULL ||
-        pxConnectInfo->pClientIdentifier[0] == '<')
+    if (pxConnectInfo->pClientIdentifier == NULL || pxConnectInfo->pClientIdentifier[0] == '<')
     {
         printf("Please specify a valid pClientIdentifier.\n");
         printf("Please refer to the documentation in aws_iot.c for "

@@ -15,7 +15,8 @@
 #pragma once
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 #include <stdbool.h>
@@ -33,26 +34,26 @@ extern "C" {
  * @{
  */
 
-#define MMAGIC_LLC_PROTOCOL_VERSION    1U
+#define MMAGIC_LLC_PROTOCOL_VERSION 1U
 MM_STATIC_ASSERT(MMAGIC_LLC_PROTOCOL_VERSION < UINT8_MAX, "Protocol version must be uint8");
 
 /** The maximum size of packets we support */
-#define MMAGIC_LLC_MAX_PACKET_SIZE    2048
+#define MMAGIC_LLC_MAX_PACKET_SIZE 2048
 
 /** Extracts the packet type from the TSEQ field */
-#define MMAGIC_LLC_GET_PTYPE(x)       ((x) >> 4)
+#define MMAGIC_LLC_GET_PTYPE(x) ((x) >> 4)
 
 /** Extracts the sequence number from the TSEQ field */
-#define MMAGIC_LLC_GET_SEQ(x)         ((x) & 0x0F)
+#define MMAGIC_LLC_GET_SEQ(x) ((x) & 0x0F)
 
 /** Gets the next SEQ number */
-#define MMAGIC_LLC_GET_NEXT_SEQ(x)    ((x + 1) & 0x0F)
+#define MMAGIC_LLC_GET_NEXT_SEQ(x) ((x + 1) & 0x0F)
 
 /** Sets the packet type and seq in the the TSEQ field */
-#define MMAGIC_LLC_SET_TSEQ(t, s)   (((t) << 4) | (s & 0x0F))
+#define MMAGIC_LLC_SET_TSEQ(t, s) (((t) << 4) | (s & 0x0F))
 
 /* An invalid sequence ID that can never be encountered normally */
-#define MMAGIC_LLC_INVALID_SEQUENCE   0xFF
+#define MMAGIC_LLC_INVALID_SEQUENCE 0xFF
 
 /**
  * The LLC uses these packet types to sequence communications between the
@@ -62,36 +63,36 @@ MM_STATIC_ASSERT(MMAGIC_LLC_PROTOCOL_VERSION < UINT8_MAX, "Protocol version must
 enum mmagic_llc_packet_type
 {
     /** This is a command from the controller to the agent */
-    MMAGIC_LLC_PTYPE_COMMAND                  = 0,
+    MMAGIC_LLC_PTYPE_COMMAND = 0,
 
     /** This is a response from the agent to the controller. */
-    MMAGIC_LLC_PTYPE_RESPONSE                 = 1,
+    MMAGIC_LLC_PTYPE_RESPONSE = 1,
 
     /** This is an unsolicited event from Agent to Controller. */
-    MMAGIC_LLC_PTYPE_EVENT                    = 2,
+    MMAGIC_LLC_PTYPE_EVENT = 2,
 
     /** An unspecified error condition has occured */
-    MMAGIC_LLC_PTYPE_ERROR                    = 3,
+    MMAGIC_LLC_PTYPE_ERROR = 3,
 
     /** Instructs the agent to reset itself */
-    MMAGIC_LLC_PTYPE_AGENT_RESET              = 4,
+    MMAGIC_LLC_PTYPE_AGENT_RESET = 4,
 
     /** Notifies the controller that the agent was just reset or started */
     MMAGIC_LLC_PTYPE_AGENT_START_NOTIFICATION = 5,
 
     /** Notifies the other party that the referenced stream is invalid or not opened yet */
-    MMAGIC_LLC_PTYPE_INVALID_STREAM           = 8,
+    MMAGIC_LLC_PTYPE_INVALID_STREAM = 8,
 
     /** Notifies the other party that a packet was missed due to a gap in the sequence numbers */
-    MMAGIC_LLC_PTYPE_PACKET_LOSS_DETECTED     = 9,
+    MMAGIC_LLC_PTYPE_PACKET_LOSS_DETECTED = 9,
 
     /** Sent by the Controller to request the Agent to send a SYNC_RESP. Does not increment
      *  the sequence number counter. Sequence number counter is ignored by the Agent. */
-    MMAGIC_LLC_PTYPE_SYNC_REQ                 = 10,
+    MMAGIC_LLC_PTYPE_SYNC_REQ = 10,
 
     /** Sent by the Agent in response to the Controller. Does not increment the sequence number
      *  counter. */
-    MMAGIC_LLC_PTYPE_SYNC_RESP                = 11,
+    MMAGIC_LLC_PTYPE_SYNC_RESP = 11,
 };
 
 struct MM_PACKED mmagic_llc_header
@@ -121,7 +122,7 @@ struct MM_PACKED mmagic_llc_sync_rsp
 };
 
 MM_STATIC_ASSERT(MM_MEMBER_SIZE(struct mmagic_llc_sync_req, token) ==
-                 MM_MEMBER_SIZE(struct mmagic_llc_sync_rsp, token),
+                     MM_MEMBER_SIZE(struct mmagic_llc_sync_rsp, token),
                  "REQ and RESP tokens must match");
 
 MM_STATIC_ASSERT(MM_MEMBER_SIZE(struct mmagic_llc_sync_req, token) == sizeof(uint32_t),
@@ -152,7 +153,8 @@ struct mmagic_llc_agent;
  * @return           @c MMAGIC_STATUS_OK if packet was handled succesfully, error otherwise.
  */
 typedef enum mmagic_status (*mmagic_llc_agent_rx_callback_t)(struct mmagic_llc_agent *agent_llc,
-                                                             void *arg, uint8_t sid,
+                                                             void *arg,
+                                                             uint8_t sid,
                                                              struct mmbuf *rx_buffer);
 
 /**
@@ -223,7 +225,8 @@ struct mmbuf *mmagic_llc_agent_alloc_buffer_for_tx(uint8_t *payload, size_t payl
  */
 enum mmagic_status mmagic_llc_agent_tx(struct mmagic_llc_agent *agent_llc,
                                        enum mmagic_llc_packet_type ptype,
-                                       uint8_t sid, struct mmbuf *tx_buffer);
+                                       uint8_t sid,
+                                       struct mmbuf *tx_buffer);
 
 /**
  * Set the deep sleep mode. See @ref mmagic_deep_sleep_mode for possible deep sleep modes.

@@ -17,193 +17,6 @@
 #include "ieee802_11.h"
 
 
-static inline void dot11_prim_1mhz_channel_idx_to_loc_and_pri(
-	int op_bw_mhz, int pr_bw_mhz, int chan_centre_freq_num, int idx,
-	int *pr_chan_num, int *chan_loc)
-{
-	*pr_chan_num = -1;
-	*chan_loc = -1;
-
-	switch (op_bw_mhz)
-	{
-	case 1:
-		*chan_loc = 0;
-		*pr_chan_num = chan_centre_freq_num;
-		break;
-
-	case 2:
-		if (pr_bw_mhz == 2)
-		{
-			*chan_loc = idx;
-			*pr_chan_num = chan_centre_freq_num;
-		}
-		else
-		{
-			*chan_loc = 0;
-			*pr_chan_num = chan_centre_freq_num + (idx * 2 - 1);
-		}
-
-		break;
-
-	case 4:
-		if (chan_centre_freq_num == 36)
-		{
-			// Japan 4 MHz Ch 36 special case
-			switch (idx)
-			{
-			case 0:
-				if (pr_bw_mhz == 1)
-				{
-					*pr_chan_num = 13;
-					*chan_loc = 0;
-				}
-				else
-				{
-					*pr_chan_num = 2;
-					*chan_loc = 0;
-				}
-				break;
-			case 1:
-				if (pr_bw_mhz == 1)
-				{
-					*pr_chan_num = 15;
-					*chan_loc = 0;
-				}
-				else
-				{
-					*pr_chan_num = 2;
-					*chan_loc = 0;
-				}
-				break;
-			case 2:
-				if (pr_bw_mhz == 1)
-				{
-					*pr_chan_num = 17;
-					*chan_loc = 0;
-				}
-				else
-				{
-					*pr_chan_num = 6;
-					*chan_loc = 0;
-				}
-				break;
-			case 3:
-				if (pr_bw_mhz == 1)
-				{
-					*pr_chan_num = 19;
-					*chan_loc = 0;
-				}
-				else
-				{
-					*pr_chan_num = 6;
-					*chan_loc = 0;
-				}
-				break;
-			default:
-				wpa_printf(MSG_ERROR,"Unsupported ch idx: %d\n", idx);
-				break;
-			}
-		}
-		else if (chan_centre_freq_num == 38)
-		{
-			// Japan 4 MHz Ch 38 special case
-			switch (idx)
-			{
-			case 0:
-				if (pr_bw_mhz == 1)
-				{
-					*pr_chan_num = 15;
-				}
-				else
-				{
-					*pr_chan_num = 4;
-				}
-				*chan_loc = 0;
-				break;
-			case 1:
-				if (pr_bw_mhz == 1)
-				{
-					*pr_chan_num = 17;
-					*chan_loc = 0;
-				}
-				else
-				{
-					*pr_chan_num = 4;
-					*chan_loc = 1;
-				}
-				break;
-			case 2:
-				if (pr_bw_mhz == 1)
-				{
-					*pr_chan_num = 19;
-					*chan_loc = 0;
-				}
-				else
-				{
-					*pr_chan_num = 8;
-					*chan_loc = 0;
-				}
-				break;
-			case 3:
-				if (pr_bw_mhz == 1)
-				{
-					*pr_chan_num = 21;
-					*chan_loc = 0;
-				}
-				else
-				{
-					*pr_chan_num = 8;
-					*chan_loc = 1;
-				}
-				break;
-			default:
-				wpa_printf(MSG_ERROR, "Unsupported ch idx: %d\n", idx);
-				break;
-			}
-		}
-		else if (pr_bw_mhz == 1)
-		{
-			int pr_chan_offset = (idx / pr_bw_mhz) * 2;
-			*pr_chan_num = chan_centre_freq_num - 3 + pr_chan_offset;
-			*chan_loc = 0;
-		}
-		else if (pr_bw_mhz == 2)
-		{
-			int pr_chan_offset = (idx / pr_bw_mhz) * 4;
-			*pr_chan_num = chan_centre_freq_num - 2 + pr_chan_offset;
-			*chan_loc = idx % pr_bw_mhz;
-		}
-		else
-		{
-			wpa_printf(MSG_ERROR, "Invalid pr_bw_mhz %d\n", pr_bw_mhz);
-		}
-		break;
-
-	case 8:
-		if (pr_bw_mhz == 1)
-		{
-			int pr_chan_offset = (idx / pr_bw_mhz) * 2;
-			*pr_chan_num = chan_centre_freq_num - 7 + pr_chan_offset;
-			*chan_loc = 0;
-		}
-		else if (pr_bw_mhz == 2)
-		{
-			int pr_chan_offset = (idx / pr_bw_mhz) * 4;
-			*pr_chan_num = chan_centre_freq_num - 6 + pr_chan_offset;
-			*chan_loc = idx % pr_bw_mhz;
-		}
-		else
-		{
-			wpa_printf(MSG_ERROR, "Invalid pr_bw_mhz %d\n", pr_bw_mhz);
-		}
-		break;
-
-	default:
-		wpa_printf(MSG_ERROR, "Unsupported BW: %d\n", op_bw_mhz);
-		break;
-	}
-}
-
 u8 * hostapd_eid_s1g_oper(struct hostapd_data *hapd, u8 *eid)
 {
 	struct ieee80211_s1g_operation *cap;
@@ -246,21 +59,12 @@ u8 * hostapd_eid_s1g_oper(struct hostapd_data *hapd, u8 *eid)
 	int pri_chan_num = -1;
 	int pri_chan_loc = -1;
 
-	dot11_prim_1mhz_channel_idx_to_loc_and_pri(
-		oper_chwidth_mhz, hapd->iconf->s1g_prim_chwidth,
-		hapd->iconf->channel, hapd->iconf->s1g_prim_1mhz_chan_index,
-		&pri_chan_num, &pri_chan_loc);
-	if (pri_chan_num < 0 || pri_chan_loc < 0) {
-		pri_chan_num = 0;
-		pri_chan_loc = 0;
-	}
-
-	cap->primary_ch = pri_chan_num;
+	cap->primary_ch = hapd->iconf->s1g_prim_channel;
 
 	cap->ch_width = 0;
 	cap->ch_width |= (hapd->iconf->s1g_prim_chwidth == 1) ? S1G_OPER_IE_CHANWIDTH_PRIM_CH_MASK : 0;
 	cap->ch_width |= ((s1g_supp_oper_chwidth_mask << 1) & S1G_OPER_IE_CHANWIDTH_OPER_CH_MASK);
-	cap->ch_width |= pri_chan_loc ?  S1G_OPER_IE_CHANWIDTH_PRIM_OFFSET : 0;
+	cap->ch_width |= hapd->iconf->s1g_prim_1mhz_chan_loc ?  S1G_OPER_IE_CHANWIDTH_PRIM_OFFSET : 0;
 
 	cap->oper_class = hapd->iconf->s1g_op_class;
 
@@ -350,7 +154,7 @@ static u8 hostapd_s1g_get_oper_class_s1g(u16 s1g_op,
 	unsigned start_freq;
 
 	/* S1G op class conversions to channel start frequency (kHz) and
-	 * channel bw (MHz) retrieved from IEEE Std 802.11-2020: Table E-5 */
+	 * channel bw (MHz) retrieved from IEEE Std 802.11-2024: Table E-5 */
 	switch (s1g_op) {
 	case 1:
 		bw = S1G_OPER_CHWIDTH_1;
@@ -376,9 +180,29 @@ static u8 hostapd_s1g_get_oper_class_s1g(u16 s1g_op,
 		bw = S1G_OPER_CHWIDTH_1;
 		start_freq = 863000;
 		break;
+	case 7:
+		bw = S1G_OPER_CHWIDTH_2;
+		start_freq = 863000;
+		break;
 	case 8:
 		bw = S1G_OPER_CHWIDTH_1;
 		start_freq = 916500;
+		break;
+	case 9:
+		bw = S1G_OPER_CHWIDTH_2;
+		start_freq = 922500;
+		break;
+	case 10:
+		bw = S1G_OPER_CHWIDTH_2;
+		start_freq = 922500;
+		break;
+	case 11:
+		bw = S1G_OPER_CHWIDTH_4;
+		start_freq = 906500;
+		break;
+	case 12:
+		bw = S1G_OPER_CHWIDTH_4;
+		start_freq = 906500;
 		break;
 	case 14:
 		bw = S1G_OPER_CHWIDTH_1;
@@ -447,6 +271,43 @@ static u8 hostapd_s1g_get_oper_class_s1g(u16 s1g_op,
 	case 30:
 		bw = S1G_OPER_CHWIDTH_1;
 		start_freq = 901400;
+		break;
+	case 31:
+		bw = S1G_OPER_CHWIDTH_8;
+		start_freq = 902000;
+		break;
+	case 32:
+		bw = S1G_OPER_CHWIDTH_1;
+		start_freq = 902000;
+		break;
+	case 33:
+		bw = S1G_OPER_CHWIDTH_2;
+		start_freq = 902000;
+		break;
+	case 34:
+		bw = S1G_OPER_CHWIDTH_4;
+		start_freq = 902000;
+		break;
+	case 35:
+		bw = S1G_OPER_CHWIDTH_2;
+		start_freq = 840000;
+		break;
+	case 36:
+		bw = S1G_OPER_CHWIDTH_4;
+		start_freq = 840000;
+		break;
+	case 37:
+		bw = S1G_OPER_CHWIDTH_8;
+		start_freq = 840000;
+		break;
+	/* S1G op class proposed in IEEE P802.11-REVmf D1.0 CID 147 */
+	case 39:
+		bw = S1G_OPER_CHWIDTH_4;
+		start_freq = 894000;
+		break;
+	case 40:
+		bw = S1G_OPER_CHWIDTH_8;
+		start_freq = 894000;
 		break;
 	default:
 		return -1;
@@ -583,7 +444,7 @@ u32 hostapd_s1g_get_oper_config(struct hostapd_iface *iface) {
 							 iface);
 		if (ret < 0)
 			return -1;
-	} else if (iface->conf->op_class && iface->conf->country) {
+	} else if (iface->conf->op_class) {
 		ret = hostapd_s1g_get_oper_global(iface->conf->op_class,
 						  iface->conf->country,
 						  iface);

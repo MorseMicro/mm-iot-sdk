@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Morse Micro
+ * Copyright 2026 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -30,7 +30,7 @@ int mmagic_cli_ping_get_target(struct mmagic_data *core, EmbeddedCli *cli)
     MM_STATIC_ASSERT((sizeof("ping.target") - 1) < KEY_NAME_PADDING,
                      "Key must be shorter than padding");
 
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = { 0 };
     /* -1 to allow for a NULL terminator at the end */
     const size_t max_str_len = sizeof(buf) - 1;
     size_t cursor = 0;
@@ -42,8 +42,8 @@ int mmagic_cli_ping_get_target(struct mmagic_data *core, EmbeddedCli *cli)
         return -1;
     }
     cursor += written;
-    written = mmagic_struct_ip_addr_to_string(&data->config.target,
-                                              &buf[cursor], max_str_len - cursor);
+    written =
+        mmagic_struct_ip_addr_to_string(&data->config.target, &buf[cursor], max_str_len - cursor);
     if (written == 0)
     {
         /*
@@ -72,7 +72,7 @@ int mmagic_cli_ping_get_interval(struct mmagic_data *core, EmbeddedCli *cli)
     MM_STATIC_ASSERT((sizeof("ping.interval") - 1) < KEY_NAME_PADDING,
                      "Key must be shorter than padding");
 
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = { 0 };
     /* -1 to allow for a NULL terminator at the end */
     const size_t max_str_len = sizeof(buf) - 1;
     size_t cursor = 0;
@@ -84,8 +84,7 @@ int mmagic_cli_ping_get_interval(struct mmagic_data *core, EmbeddedCli *cli)
         return -1;
     }
     cursor += written;
-    written = mmagic_uint32_t_to_string(data->config.interval,
-                                        &buf[cursor], max_str_len - cursor);
+    written = mmagic_uint32_t_to_string(data->config.interval, &buf[cursor], max_str_len - cursor);
     if (written == 0)
     {
         /*
@@ -114,7 +113,7 @@ int mmagic_cli_ping_get_count(struct mmagic_data *core, EmbeddedCli *cli)
     MM_STATIC_ASSERT((sizeof("ping.count") - 1) < KEY_NAME_PADDING,
                      "Key must be shorter than padding");
 
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = { 0 };
     /* -1 to allow for a NULL terminator at the end */
     const size_t max_str_len = sizeof(buf) - 1;
     size_t cursor = 0;
@@ -126,8 +125,7 @@ int mmagic_cli_ping_get_count(struct mmagic_data *core, EmbeddedCli *cli)
         return -1;
     }
     cursor += written;
-    written = mmagic_uint32_t_to_string(data->config.count,
-                                        &buf[cursor], max_str_len - cursor);
+    written = mmagic_uint32_t_to_string(data->config.count, &buf[cursor], max_str_len - cursor);
     if (written == 0)
     {
         /*
@@ -199,9 +197,9 @@ int mmagic_cli_ping_set_count(struct mmagic_data *core, EmbeddedCli *cli, const 
  * a binary search which requires an ordered list.
  */
 struct mmagic_cli_config_elem ping_cli_config_vars[] = {
-    {"count", mmagic_cli_ping_get_count, mmagic_cli_ping_set_count},
-    {"interval", mmagic_cli_ping_get_interval, mmagic_cli_ping_set_interval},
-    {"target", mmagic_cli_ping_get_target, mmagic_cli_ping_set_target},
+    { "count", mmagic_cli_ping_get_count, mmagic_cli_ping_set_count },
+    { "interval", mmagic_cli_ping_get_interval, mmagic_cli_ping_set_interval },
+    { "target", mmagic_cli_ping_get_target, mmagic_cli_ping_set_target },
 };
 
 /********* PING Configuration Getter/Setter Handlers **********/
@@ -226,8 +224,8 @@ void mmagic_cli_ping_get(struct mmagic_cli *ctx, EmbeddedCli *cli, const char *c
         return;
     }
 
-    struct mmagic_cli_config_elem *elem = mmagic_cli_element_search(ping_cli_config_vars,
-                                                                    num_elements, config_var);
+    struct mmagic_cli_config_elem *elem =
+        mmagic_cli_element_search(ping_cli_config_vars, num_elements, config_var);
     if (elem == NULL)
     {
         mmagic_cli_printf(cli, "Unable to find config variable 'ping.%s'", config_var);
@@ -246,15 +244,17 @@ void mmagic_cli_ping_get(struct mmagic_cli *ctx, EmbeddedCli *cli, const char *c
     }
 }
 
-void mmagic_cli_ping_set(struct mmagic_cli *ctx, EmbeddedCli *cli, const char *config_var,
+void mmagic_cli_ping_set(struct mmagic_cli *ctx,
+                         EmbeddedCli *cli,
+                         const char *config_var,
                          const char *val)
 {
     struct mmagic_data *core = &ctx->core;
 
     uint32_t num_elements = sizeof(ping_cli_config_vars) / sizeof(ping_cli_config_vars[0]);
 
-    struct mmagic_cli_config_elem *elem = mmagic_cli_element_search(ping_cli_config_vars,
-                                                                    num_elements, config_var);
+    struct mmagic_cli_config_elem *elem =
+        mmagic_cli_element_search(ping_cli_config_vars, num_elements, config_var);
     if (elem == NULL)
     {
         mmagic_cli_printf(cli, "Unable to find config variable 'ping.%s'", config_var);
@@ -299,13 +299,14 @@ void mmagic_cli_ping_run(EmbeddedCli *cli, char *args, void *context);
 /********* Register bindings function definition **********/
 void mmagic_cli_ping_register_bindings(EmbeddedCli *cli, struct mmagic_data *core)
 {
-    embeddedCliAddBinding(cli, (CliCommandBinding) {
-        "ping-run",
-        "Commences a ping session using the current values in the the subsystem config.",
-        true,
-        core,
-        mmagic_cli_ping_run
-    });
+    embeddedCliAddBinding(
+        cli,
+        (CliCommandBinding){
+            "ping-run",
+            "Commences a ping session using the current values in the the subsystem config.",
+            true,
+            core,
+            mmagic_cli_ping_run });
 }
 
 void mmagic_cli_ping_init(struct mmagic_cli *ctx)

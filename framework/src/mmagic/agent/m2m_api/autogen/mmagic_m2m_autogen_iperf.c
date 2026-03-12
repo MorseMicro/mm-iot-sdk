@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Morse Micro
+ * Copyright 2026 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -18,11 +18,12 @@
 #include "m2m_api/mmagic_m2m_agent.h"
 
 /* Maximum allowed length of any value string, needs to accomodate IP and MAC address strings */
-#define MAX_VAL_LEN     32
+#define MAX_VAL_LEN 32
 
 /********* M2M Command Handlers **********/
 static struct mmbuf *mmagic_m2m_iperf_get(struct mmagic_m2m_agent *agent,
-                                          uint8_t sid, uint8_t subcommand,
+                                          uint8_t sid,
+                                          uint8_t subcommand,
                                           struct mmbuf *commandbuffer)
 {
     MM_UNUSED(sid);
@@ -31,34 +32,51 @@ static struct mmbuf *mmagic_m2m_iperf_get(struct mmagic_m2m_agent *agent,
     struct mmagic_iperf_data *data = mmagic_data_get_iperf(&agent->core);
     switch (subcommand)
     {
-    case mmagic_iperf_var_mode:
-        return mmagic_m2m_create_response(mmagic_iperf, mmagic_iperf_cmd_get, subcommand,
-                                          MMAGIC_STATUS_OK, &data->config.mode,
-                                          sizeof(data->config.mode));
+        case mmagic_iperf_var_mode:
+            return mmagic_m2m_create_response(mmagic_iperf,
+                                              mmagic_iperf_cmd_get,
+                                              subcommand,
+                                              MMAGIC_STATUS_OK,
+                                              &data->config.mode,
+                                              sizeof(data->config.mode));
 
-    case mmagic_iperf_var_server:
-        return mmagic_m2m_create_response(mmagic_iperf, mmagic_iperf_cmd_get, subcommand,
-                                          MMAGIC_STATUS_OK, &data->config.server,
-                                          sizeof(data->config.server));
+        case mmagic_iperf_var_server:
+            return mmagic_m2m_create_response(mmagic_iperf,
+                                              mmagic_iperf_cmd_get,
+                                              subcommand,
+                                              MMAGIC_STATUS_OK,
+                                              &data->config.server,
+                                              sizeof(data->config.server));
 
-    case mmagic_iperf_var_port:
-        return mmagic_m2m_create_response(mmagic_iperf, mmagic_iperf_cmd_get, subcommand,
-                                          MMAGIC_STATUS_OK, &data->config.port,
-                                          sizeof(data->config.port));
+        case mmagic_iperf_var_port:
+            return mmagic_m2m_create_response(mmagic_iperf,
+                                              mmagic_iperf_cmd_get,
+                                              subcommand,
+                                              MMAGIC_STATUS_OK,
+                                              &data->config.port,
+                                              sizeof(data->config.port));
 
-    case mmagic_iperf_var_amount:
-        return mmagic_m2m_create_response(mmagic_iperf, mmagic_iperf_cmd_get, subcommand,
-                                          MMAGIC_STATUS_OK, &data->config.amount,
-                                          sizeof(data->config.amount));
+        case mmagic_iperf_var_amount:
+            return mmagic_m2m_create_response(mmagic_iperf,
+                                              mmagic_iperf_cmd_get,
+                                              subcommand,
+                                              MMAGIC_STATUS_OK,
+                                              &data->config.amount,
+                                              sizeof(data->config.amount));
 
-    default:
-        return mmagic_m2m_create_response(mmagic_iperf, mmagic_iperf_cmd_get, subcommand,
-                                          MMAGIC_STATUS_NOT_FOUND, NULL, 0);
+        default:
+            return mmagic_m2m_create_response(mmagic_iperf,
+                                              mmagic_iperf_cmd_get,
+                                              subcommand,
+                                              MMAGIC_STATUS_NOT_FOUND,
+                                              NULL,
+                                              0);
     }
 }
 
 static struct mmbuf *mmagic_m2m_iperf_set(struct mmagic_m2m_agent *agent,
-                                          uint8_t sid, uint8_t subcommand,
+                                          uint8_t sid,
+                                          uint8_t subcommand,
                                           struct mmbuf *commandbuffer)
 {
     MM_UNUSED(sid);
@@ -66,38 +84,59 @@ static struct mmbuf *mmagic_m2m_iperf_set(struct mmagic_m2m_agent *agent,
     void *args = (void *)mmbuf_get_data_start(commandbuffer);
     switch (subcommand)
     {
-    case mmagic_iperf_var_mode:
-        memcpy(&data->config.mode, args, sizeof(data->config.mode));
-        return mmagic_m2m_create_response(mmagic_iperf, mmagic_iperf_cmd_set,
-                                          subcommand, MMAGIC_STATUS_OK, NULL, 0);
-        break;
+        case mmagic_iperf_var_mode:
+            memcpy(&data->config.mode, args, sizeof(data->config.mode));
+            return mmagic_m2m_create_response(mmagic_iperf,
+                                              mmagic_iperf_cmd_set,
+                                              subcommand,
+                                              MMAGIC_STATUS_OK,
+                                              NULL,
+                                              0);
+            break;
 
-    case mmagic_iperf_var_server:
-        memcpy(&data->config.server, args, sizeof(data->config.server));
-        return mmagic_m2m_create_response(mmagic_iperf, mmagic_iperf_cmd_set,
-                                          subcommand, MMAGIC_STATUS_OK, NULL, 0);
-        break;
+        case mmagic_iperf_var_server:
+            memcpy(&data->config.server, args, sizeof(data->config.server));
+            return mmagic_m2m_create_response(mmagic_iperf,
+                                              mmagic_iperf_cmd_set,
+                                              subcommand,
+                                              MMAGIC_STATUS_OK,
+                                              NULL,
+                                              0);
+            break;
 
-    case mmagic_iperf_var_port:
-        memcpy(&data->config.port, args, sizeof(data->config.port));
-        return mmagic_m2m_create_response(mmagic_iperf, mmagic_iperf_cmd_set,
-                                          subcommand, MMAGIC_STATUS_OK, NULL, 0);
-        break;
+        case mmagic_iperf_var_port:
+            memcpy(&data->config.port, args, sizeof(data->config.port));
+            return mmagic_m2m_create_response(mmagic_iperf,
+                                              mmagic_iperf_cmd_set,
+                                              subcommand,
+                                              MMAGIC_STATUS_OK,
+                                              NULL,
+                                              0);
+            break;
 
-    case mmagic_iperf_var_amount:
-        memcpy(&data->config.amount, args, sizeof(data->config.amount));
-        return mmagic_m2m_create_response(mmagic_iperf, mmagic_iperf_cmd_set,
-                                          subcommand, MMAGIC_STATUS_OK, NULL, 0);
-        break;
+        case mmagic_iperf_var_amount:
+            memcpy(&data->config.amount, args, sizeof(data->config.amount));
+            return mmagic_m2m_create_response(mmagic_iperf,
+                                              mmagic_iperf_cmd_set,
+                                              subcommand,
+                                              MMAGIC_STATUS_OK,
+                                              NULL,
+                                              0);
+            break;
 
-    default:
-        return mmagic_m2m_create_response(mmagic_iperf, mmagic_iperf_cmd_set,
-                                          subcommand, MMAGIC_STATUS_NOT_FOUND, NULL, 0);
+        default:
+            return mmagic_m2m_create_response(mmagic_iperf,
+                                              mmagic_iperf_cmd_set,
+                                              subcommand,
+                                              MMAGIC_STATUS_NOT_FOUND,
+                                              NULL,
+                                              0);
     }
 }
 
 static struct mmbuf *mmagic_m2m_iperf_load(struct mmagic_m2m_agent *agent,
-                                           uint8_t sid, uint8_t subcommand,
+                                           uint8_t sid,
+                                           uint8_t subcommand,
                                            struct mmbuf *commandbuffer)
 {
     MM_UNUSED(sid);
@@ -105,12 +144,17 @@ static struct mmbuf *mmagic_m2m_iperf_load(struct mmagic_m2m_agent *agent,
 
     mmagic_core_iperf_load_all(&agent->core);
 
-    return mmagic_m2m_create_response(mmagic_iperf, mmagic_iperf_cmd_load,
-                                      subcommand, MMAGIC_STATUS_OK, NULL, 0);
+    return mmagic_m2m_create_response(mmagic_iperf,
+                                      mmagic_iperf_cmd_load,
+                                      subcommand,
+                                      MMAGIC_STATUS_OK,
+                                      NULL,
+                                      0);
 }
 
 static struct mmbuf *mmagic_m2m_iperf_commit(struct mmagic_m2m_agent *agent,
-                                             uint8_t sid, uint8_t subcommand,
+                                             uint8_t sid,
+                                             uint8_t subcommand,
                                              struct mmbuf *commandbuffer)
 {
     MM_UNUSED(sid);
@@ -118,24 +162,34 @@ static struct mmbuf *mmagic_m2m_iperf_commit(struct mmagic_m2m_agent *agent,
 
     mmagic_core_iperf_save_all(&agent->core);
 
-    return mmagic_m2m_create_response(mmagic_iperf, mmagic_iperf_cmd_commit,
-                                      subcommand, MMAGIC_STATUS_OK, NULL, 0);
+    return mmagic_m2m_create_response(mmagic_iperf,
+                                      mmagic_iperf_cmd_commit,
+                                      subcommand,
+                                      MMAGIC_STATUS_OK,
+                                      NULL,
+                                      0);
 }
 
 static struct mmbuf *mmagic_m2m_iperf_run(struct mmagic_m2m_agent *agent,
-                                          uint8_t sid, uint8_t subcommand,
+                                          uint8_t sid,
+                                          uint8_t subcommand,
                                           struct mmbuf *commandbuffer)
 {
     enum mmagic_status status;
     MM_UNUSED(commandbuffer);
     MM_UNUSED(sid);
-    struct mmagic_core_iperf_run_rsp_args rsp_args = { };
+    struct mmagic_core_iperf_run_rsp_args rsp_args = {};
     status = mmagic_core_iperf_run(&agent->core, &rsp_args);
-    return mmagic_m2m_create_response(mmagic_iperf, mmagic_iperf_cmd_run,
-                                      subcommand, status, &rsp_args, sizeof(rsp_args));
+    return mmagic_m2m_create_response(mmagic_iperf,
+                                      mmagic_iperf_cmd_run,
+                                      subcommand,
+                                      status,
+                                      &rsp_args,
+                                      sizeof(rsp_args));
 }
 
-struct mmbuf *mmagic_m2m_iperf_process(struct mmagic_m2m_agent *agent, uint8_t sid,
+struct mmbuf *mmagic_m2m_iperf_process(struct mmagic_m2m_agent *agent,
+                                       uint8_t sid,
                                        struct mmagic_m2m_command_header *header,
                                        struct mmbuf *cmd_buf)
 {
@@ -143,30 +197,33 @@ struct mmbuf *mmagic_m2m_iperf_process(struct mmagic_m2m_agent *agent, uint8_t s
     {
         switch (header->command)
         {
-        case mmagic_iperf_cmd_get:
-            return mmagic_m2m_iperf_get(agent, sid, header->subcommand, cmd_buf);
-            break;
+            case mmagic_iperf_cmd_get:
+                return mmagic_m2m_iperf_get(agent, sid, header->subcommand, cmd_buf);
+                break;
 
-        case mmagic_iperf_cmd_set:
-            return mmagic_m2m_iperf_set(agent, sid, header->subcommand, cmd_buf);
-            break;
+            case mmagic_iperf_cmd_set:
+                return mmagic_m2m_iperf_set(agent, sid, header->subcommand, cmd_buf);
+                break;
 
-        case mmagic_iperf_cmd_load:
-            return mmagic_m2m_iperf_load(agent, sid, header->subcommand, cmd_buf);
-            break;
+            case mmagic_iperf_cmd_load:
+                return mmagic_m2m_iperf_load(agent, sid, header->subcommand, cmd_buf);
+                break;
 
-        case mmagic_iperf_cmd_commit:
-            return mmagic_m2m_iperf_commit(agent, sid, header->subcommand, cmd_buf);
-            break;
+            case mmagic_iperf_cmd_commit:
+                return mmagic_m2m_iperf_commit(agent, sid, header->subcommand, cmd_buf);
+                break;
 
-        case mmagic_iperf_cmd_run:
-            return mmagic_m2m_iperf_run(agent, sid, header->subcommand, cmd_buf);
-            break;
+            case mmagic_iperf_cmd_run:
+                return mmagic_m2m_iperf_run(agent, sid, header->subcommand, cmd_buf);
+                break;
 
-        default:
-            return mmagic_m2m_create_response(header->subsystem, header->command,
-                                              header->subcommand, MMAGIC_STATUS_NOT_SUPPORTED, NULL,
-                                              0);
+            default:
+                return mmagic_m2m_create_response(header->subsystem,
+                                                  header->command,
+                                                  header->subcommand,
+                                                  MMAGIC_STATUS_NOT_SUPPORTED,
+                                                  NULL,
+                                                  0);
         }
     }
     else

@@ -7,11 +7,16 @@
 CORE := arm-cortex-m33f
 PLATFORM_PATH = src/platforms/mm-mm6108-ekh05-sdio
 
+MMHAL_CHIP_TYPE ?= mmhal_mm6108
+BUILD_DEFINES += MMHAL_CHIP_TYPE=$(MMHAL_CHIP_TYPE)
+
+FW_MBIN ?= mm6108.mbin
+
 # This platform is well resourced so we can use statically allocated pktmem with generous
 # allocations.
 MMPKTMEM_TYPE = static
-MMPKTMEM_TX_POOL_N_BLOCKS = 32
-MMPKTMEM_RX_POOL_N_BLOCKS = 32
+MMPKTMEM_TX_POOL_N_BLOCKS ?= 32
+MMPKTMEM_RX_POOL_N_BLOCKS ?= 32
 
 # Platform specific files
 BSP_DIR = $(PLATFORM_PATH)/bsp
@@ -22,7 +27,7 @@ BSP_SRCS_C += Core/Src/stm32u5xx_hal_msp.c
 BSP_SRCS_C += Core/Src/stm32u5xx_hal_timebase_tim.c
 BSP_SRCS_C += Core/Src/stm32u5xx_it.c
 BSP_SRCS_C += Core/Src/system_stm32u5xx.c
-ifeq ($(BUILD_WITH_MBEDTLS_ECC_HW_CRYPTO),y)
+ifneq ($(BUILD_WITH_MBEDTLS_ECC_HW_CRYPTO),)
 # Enable STM32U585 PKA hardware acceleration for ECC (mbedTLS ECP alternative implementation)
 BUILD_DEFINES += MBEDTLS_ECP_ALT=1
 

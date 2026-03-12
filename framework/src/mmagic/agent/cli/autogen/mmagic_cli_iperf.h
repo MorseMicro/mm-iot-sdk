@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Morse Micro
+ * Copyright 2026 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -16,7 +16,7 @@
 /**
  * Register the iperf command bindings with the cli.
  *
- * @param cli     Reference to the CLI instance.
+ * @param cli Reference to the CLI instance.
  * @param mmagicd Reference to the mmagic_core data structure.
  */
 void mmagic_cli_iperf_register_bindings(EmbeddedCli *cli, struct mmagic_data *mmagicd);
@@ -24,8 +24,8 @@ void mmagic_cli_iperf_register_bindings(EmbeddedCli *cli, struct mmagic_data *mm
 /**
  * Retrieve the value of the specified variable and display on the CLI.
  *
- * @param ctx        Reference to the global mmagic data structure.
- * @param cli        Reference to the CLI instance.
+ * @param ctx       Reference to the global mmagic data structure.
+ * @param cli       Reference to the CLI instance.
  * @param config_var Reference to a @c NULL terminated string containing the config variable to
  *                  display the value for. @c "all" for all of the available config
  */
@@ -34,20 +34,22 @@ void mmagic_cli_iperf_get(struct mmagic_cli *ctx, EmbeddedCli *cli, const char *
 /**
  * Set the value of the specified variable and display the new value on the CLI.
  *
- * @param ctx        Reference to the global mmagic data structure.
- * @param cli        Reference to the CLI instance.
+ * @param ctx       Reference to the global mmagic data structure.
+ * @param cli       Reference to the CLI instance.
  * @param config_var Reference to a @c NULL terminated string containing the config variable to
  *                  set the value for.
- * @param val        Reference to a @c NULL terminated string containing the value.
+ * @param val       Reference to a @c NULL terminated string containing the value.
  */
-void mmagic_cli_iperf_set(
-    struct mmagic_cli *ctx, EmbeddedCli *cli, const char *config_var, const char *val);
+void mmagic_cli_iperf_set(struct mmagic_cli *ctx,
+                          EmbeddedCli *cli,
+                          const char *config_var,
+                          const char *val);
 
 /**
  * Commit the value of the specified variable to persistent storage.
  *
- * @param ctx        Reference to the global mmagic data structure.
- * @param cli        Reference to the CLI instance.
+ * @param ctx       Reference to the global mmagic data structure.
+ * @param cli       Reference to the CLI instance.
  * @param config_var Reference to a @c NULL terminated string containing the config variable to
  *                  save. @c "all" for all of the available config
  */
@@ -56,14 +58,14 @@ void mmagic_cli_iperf_commit(struct mmagic_cli *ctx, EmbeddedCli *cli, const cha
 /**
  * Loads all stored variables of the module from persistent storage.
  *
- * @param ctx Reference to the global mmagic data structure.
- * @param cli Reference to the CLI instance.
+ * @param ctx       Reference to the global mmagic data structure.
+ * @param cli       Reference to the CLI instance.
  */
 void mmagic_cli_iperf_load(struct mmagic_cli *ctx, EmbeddedCli *cli);
 
 /**
  * Initializes the CLI iperf module.
  *
- * @param ctx Reference to the global mmagic data structure.
+ * @param ctx       Reference to the global mmagic data structure.
  */
 void mmagic_cli_iperf_init(struct mmagic_cli *ctx);

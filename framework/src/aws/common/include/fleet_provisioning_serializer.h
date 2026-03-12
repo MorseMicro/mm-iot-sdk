@@ -126,5 +126,4 @@ bool parseRegisterThingResponse(const uint8_t *pResponse,
  *
  * @returns The pretty printed string on success. "" on error.
  */
-const char *getStringFromCbor(const uint8_t *cbor,
-                              size_t length);
+const char *getStringFromCbor(const uint8_t *cbor, size_t length);

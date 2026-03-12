@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x0f\x65mmet-api.proto\x12\x05\x65mmet\"<\n\x08\x42\x61sicRsp\x12\x1f\n\x04\x63ode\x18\x01 \x01(\x0e\x32\x11.emmet.StatusCode\x12\x0f\n\x07message\x18\x02 \x01(\t\"1\n\nSysEchoCmd\x12\x0f\n\x07payload\x18\x01 \x01(\t\x12\x12\n\nintpayload\x18\x02 \x01(\x05\"1\n\nSysEchoRsp\x12\x0f\n\x07payload\x18\x01 \x01(\t\x12\x12\n\nintpayload\x18\x02 \x01(\x05\"@\n\x14SysTriggerFailureCmd\x12(\n\x0c\x66\x61ilure_type\x18\x01 \x01(\x0e\x32\x12.emmet.FailureType\"%\n\x12SysPrintMessageCmd\x12\x0f\n\x07message\x18\x01 \x01(\t\"\x0f\n\rSysGetTimeCmd\" \n\rSysGetTimeRsp\x12\x0f\n\x07time_ms\x18\x01 \x01(\r\"\xc8\x01\n\x06SysCmd\x12!\n\x04\x65\x63ho\x18\x01 \x01(\x0b\x32\x11.emmet.SysEchoCmdH\x00\x12\x36\n\x0ftrigger_failure\x18\x02 \x01(\x0b\x32\x1b.emmet.SysTriggerFailureCmdH\x00\x12\x32\n\rprint_message\x18\x03 \x01(\x0b\x32\x19.emmet.SysPrintMessageCmdH\x00\x12(\n\x08get_time\x18\x04 \x01(\x0b\x32\x14.emmet.SysGetTimeCmdH\x00\x42\x05\n\x03\x63md\"\\\n\x06SysRsp\x12!\n\x04\x65\x63ho\x18\x01 \x01(\x0b\x32\x11.emmet.SysEchoRspH\x00\x12(\n\x08get_time\x18\x02 \x01(\x0b\x32\x14.emmet.SysGetTimeRspH\x00\x42\x05\n\x03rsp\"_\n\x13IperfServerStartCmd\x12&\n\tport_type\x18\x01 \x01(\x0e\x32\x13.emmet.LwipPortType\x12\x0c\n\x04port\x18\x02 \x01(\r\x12\x12\n\nlocal_addr\x18\x03 \x01(\x0c\">\n\x13IperfServerStartRsp\x12\'\n\x0cserver_state\x18\x01 \x01(\x0e\x32\x11.emmet.IperfState\"\x9f\x01\n\x13IperfClientStartCmd\x12&\n\tport_type\x18\x01 \x01(\x0e\x32\x13.emmet.LwipPortType\x12\x13\n\x0bremote_addr\x18\x02 \x01(\x0c\x12\x13\n\x0bremote_port\x18\x03 \x01(\r\x12\x11\n\ttarget_bw\x18\x04 \x01(\r\x12\x13\n\x0bpacket_size\x18\x05 \x01(\r\x12\x0e\n\x06\x61mount\x18\x06 \x01(\x05\"X\n\x10IperfGetStatsCmd\x12&\n\tport_type\x18\x01 \x01(\x0e\x32\x13.emmet.LwipPortType\x12\x1c\n\x03\x64ir\x18\x02 \x01(\x0e\x32\x0f.emmet.IperfDir\"\xad\x02\n\x10IperfGetStatsRsp\x12 \n\x05state\x18\x01 \x01(\x0e\x32\x11.emmet.IperfState\x12\x12\n\nlocal_addr\x18\x02 \x01(\x0c\x12\x12\n\nlocal_port\x18\x03 \x01(\r\x12\x13\n\x0bremote_addr\x18\x04 \x01(\x0c\x12\x13\n\x0bremote_port\x18\x05 \x01(\r\x12\x19\n\x11\x62ytes_transferred\x18\x06 \x01(\x04\x12\x13\n\x0bms_duration\x18\x07 \x01(\r\x12\x1a\n\x12\x62\x61ndwidth_kbitpsec\x18\x08 \x01(\r\x12\x11\n\ttx_frames\x18\t \x01(\r\x12\x11\n\trx_frames\x18\n \x01(\r\x12\x1e\n\x16out_of_sequence_frames\x18\x0b \x01(\r\x12\x13\n\x0b\x65rror_count\x18\x0c \x01(\r\"\\\n\x0ePingRequestCmd\x12\x12\n\nip_address\x18\x01 \x01(\x0c\x12\x11\n\tmax_count\x18\x02 \x01(\r\x12\x10\n\x08interval\x18\x03 \x01(\r\x12\x11\n\tdata_size\x18\x04 \x01(\r\"\x0e\n\x0cPingStatsCmd\"\x99\x01\n\x0cPingStatsRsp\x12\x12\n\nip_address\x18\x01 \x01(\x0c\x12\x10\n\x08num_sent\x18\x02 \x01(\r\x12\x14\n\x0cnum_received\x18\x03 \x01(\r\x12\x13\n\x0bmin_latency\x18\x04 \x01(\r\x12\x13\n\x0b\x61vg_latency\x18\x05 \x01(\r\x12\x13\n\x0bmax_latency\x18\x06 \x01(\r\x12\x0e\n\x06\x61\x63tive\x18\x07 \x01(\x08\"\r\n\x0bPingStopCmd\"\x10\n\x0eGetIpConfigCmd\"^\n\x0eGetIpConfigRsp\x12\x14\n\x0c\x64hcp_enabled\x18\x01 \x01(\x08\x12\x0f\n\x07ip_addr\x18\x02 \x01(\x0c\x12\x0f\n\x07netmask\x18\x03 \x01(\x0c\x12\x14\n\x0cgateway_addr\x18\x04 \x01(\x0c\"^\n\x0eSetIpConfigCmd\x12\x14\n\x0c\x64hcp_enabled\x18\x01 \x01(\x08\x12\x0f\n\x07ip_addr\x18\x02 \x01(\x0c\x12\x0f\n\x07netmask\x18\x03 \x01(\x0c\x12\x14\n\x0cgateway_addr\x18\x04 \x01(\x0c\"\x10\n\x0eSetIpConfigRsp\"\x11\n\x0fGetIp6ConfigCmd\"B\n\x0fGetIp6ConfigRsp\x12 \n\x04mode\x18\x01 \x01(\x0e\x32\x12.emmet.Ip6AddrMode\x12\r\n\x05\x61\x64\x64rs\x18\x02 \x03(\x0c\"B\n\x0fSetIp6ConfigCmd\x12 \n\x04mode\x18\x01 \x01(\x0e\x32\x12.emmet.Ip6AddrMode\x12\r\n\x05\x61\x64\x64rs\x18\x02 \x03(\x0c\"!\n\x0eSetTxQosTidCmd\x12\x0f\n\x07qos_tid\x18\x01 \x01(\r\"\x11\n\x0fGetLinkStateCmd\"2\n\x0fGetLinkStateRsp\x12\x1f\n\x05state\x18\x01 \x01(\x0e\x32\x10.emmet.LinkState\"0\n\rTcpConnectCmd\x12\x11\n\tipv4_addr\x18\x01 \x01(\r\x12\x0c\n\x04port\x18\x02 \x01(\r\"\"\n\rTcpConnectRsp\x12\x11\n\tsocket_id\x18\x01 \x01(\x05\"-\n\nTcpSendCmd\x12\x11\n\tsocket_id\x18\x01 \x01(\x05\x12\x0c\n\x04\x64\x61ta\x18\x02 \x01(\x0c\"\xb6\x05\n\x07LwipCmd\x12\x38\n\x12iperf_server_start\x18\x01 \x01(\x0b\x32\x1a.emmet.IperfServerStartCmdH\x00\x12\x38\n\x12iperf_client_start\x18\x02 \x01(\x0b\x32\x1a.emmet.IperfClientStartCmdH\x00\x12\x32\n\x0fiperf_get_stats\x18\x03 \x01(\x0b\x32\x17.emmet.IperfGetStatsCmdH\x00\x12-\n\x0cping_request\x18\x04 \x01(\x0b\x32\x15.emmet.PingRequestCmdH\x00\x12)\n\nping_stats\x18\x05 \x01(\x0b\x32\x13.emmet.PingStatsCmdH\x00\x12\'\n\tping_stop\x18\x06 \x01(\x0b\x32\x12.emmet.PingStopCmdH\x00\x12.\n\rget_ip_config\x18\x07 \x01(\x0b\x32\x15.emmet.GetIpConfigCmdH\x00\x12.\n\rset_ip_config\x18\x08 \x01(\x0b\x32\x15.emmet.SetIpConfigCmdH\x00\x12\x30\n\x0eget_ip6_config\x18\t \x01(\x0b\x32\x16.emmet.GetIp6ConfigCmdH\x00\x12\x30\n\x0eset_ip6_config\x18\n \x01(\x0b\x32\x16.emmet.SetIp6ConfigCmdH\x00\x12/\n\x0eset_tx_qos_tid\x18\x0b \x01(\x0b\x32\x15.emmet.SetTxQosTidCmdH\x00\x12\x30\n\x0eget_link_state\x18\x0c \x01(\x0b\x32\x16.emmet.GetLinkStateCmdH\x00\x12+\n\x0btcp_connect\x18\x64 \x01(\x0b\x32\x14.emmet.TcpConnectCmdH\x00\x12%\n\x08tcp_send\x18\x65 \x01(\x0b\x32\x11.emmet.TcpSendCmdH\x00\x42\x05\n\x03\x63md\"\x9a\x03\n\x07LwipRsp\x12\x38\n\x12iperf_server_start\x18\x01 \x01(\x0b\x32\x1a.emmet.IperfServerStartRspH\x00\x12\x32\n\x0fiperf_get_stats\x18\x03 \x01(\x0b\x32\x17.emmet.IperfGetStatsRspH\x00\x12)\n\nping_stats\x18\x05 \x01(\x0b\x32\x13.emmet.PingStatsRspH\x00\x12.\n\rget_ip_config\x18\x07 \x01(\x0b\x32\x15.emmet.GetIpConfigRspH\x00\x12.\n\rset_ip_config\x18\x08 \x01(\x0b\x32\x15.emmet.SetIpConfigRspH\x00\x12\x30\n\x0eget_ip6_config\x18\t \x01(\x0b\x32\x16.emmet.GetIp6ConfigRspH\x00\x12\x30\n\x0eget_link_state\x18\x0c \x01(\x0b\x32\x16.emmet.GetLinkStateRspH\x00\x12+\n\x0btcp_connect\x18\x64 \x01(\x0b\x32\x14.emmet.TcpConnectRspH\x00\x42\x05\n\x03rsp\" \n\x11SetMcsOverrideCmd\x12\x0b\n\x03mcs\x18\x01 \x01(\x05\"\'\n\x12SetRtsThresholdCmd\x12\x11\n\tthreshold\x18\x01 \x01(\r\")\n\x11SetCountryCodeCmd\x12\x14\n\x0c\x63ountry_code\x18\x01 \x01(\t\"2\n\x15SetTxPowerOverrideCmd\x12\x19\n\x11tx_power_override\x18\x01 \x01(\r\"\'\n\x10SetSgiEnabledCmd\x12\x13\n\x0bsgi_enabled\x18\x01 \x01(\x08\"1\n\x15SetSubbandsEnabledCmd\x12\x18\n\x10subbands_enabled\x18\x01 \x01(\x08\"B\n\x13SetPowerSaveModeCmd\x12+\n\x0fpower_save_mode\x18\x01 \x01(\x0e\x32\x12.emmet.PwrSaveMode\"+\n\x12SetAmpduEnabledCmd\x12\x15\n\rampdu_enabled\x18\x01 \x01(\x08\"S\n\x15SetWNMSleepEnabledCmd\x12\x19\n\x11wnm_sleep_enabled\x18\x01 \x01(\x08\x12\x1f\n\x17\x63hip_power_down_enabled\x18\x02 \x01(\x08\",\n\x17SetFragmentThresholdCmd\x12\x11\n\tthreshold\x18\x01 \x01(\r\"O\n\x14SetStaAutoconnectCmd\x12\x37\n\x14sta_autoconnect_mode\x18\x01 \x01(\x0e\x32\x19.emmet.StaAutoconnectMode\"D\n\x10SetScanConfigCmd\x12\x15\n\rdwell_time_ms\x18\x01 \x01(\r\x12\x19\n\x11ndp_probe_enabled\x18\x02 \x01(\x08\"a\n\x19SetHealthCheckIntervalCmd\x12!\n\x19min_health_check_intvl_ms\x18\x01 \x01(\r\x12!\n\x19max_health_check_intvl_ms\x18\x02 \x01(\r\"m\n\x1bSetDefaultQosQueueParamsCmd\x12\x0b\n\x03\x61\x63i\x18\x01 \x01(\r\x12\x0c\n\x04\x61ifs\x18\x02 \x01(\r\x12\x0e\n\x06\x63w_min\x18\x03 \x01(\r\x12\x0e\n\x06\x63w_max\x18\x04 \x01(\r\x12\x13\n\x0btxop_max_us\x18\x05 \x01(\r\"1\n\x0fSetMCS10ModeCmd\x12\x1e\n\x04mode\x18\x01 \x01(\x0e\x32\x10.emmet.MCS10Mode\"9\n\x13SetDutyCycleModeCmd\x12\"\n\x04mode\x18\x01 \x01(\x0e\x32\x14.emmet.DutyCycleMode\"(\n\x14SetListenIntervalCmd\x12\x10\n\x08interval\x18\x01 \x01(\r\"\x97\x04\n\x0cStaEnableCmd\x12\x0c\n\x04ssid\x18\x01 \x01(\x0c\x12\x12\n\npassphrase\x18\x02 \x01(\x0c\x12)\n\x08security\x18\x03 \x01(\x0e\x32\x17.emmet.WlanSecurityType\x12$\n\x08pmf_mode\x18\x04 \x01(\x0e\x32\x12.emmet.WlanPmfMode\x12\x18\n\x10raw_sta_priority\x18\x05 \x01(\x05\x12\r\n\x05\x62ssid\x18\x06 \x01(\x0c\x12\x10\n\x08sta_type\x18\x07 \x01(\r\x12\x19\n\x11sae_owe_ec_groups\x18\x08 \x03(\r\x12\x13\n\x0b\x63\x61\x63_enabled\x18\t \x01(\x08\x12\x1f\n\x17\x62gscan_short_interval_s\x18\n \x01(\r\x12#\n\x1b\x62gscan_signal_threshold_dbm\x18\x0b \x01(\x05\x12\x1e\n\x16\x62gscan_long_interval_s\x18\x0c \x01(\r\x12\x13\n\x0btwt_enabled\x18\r \x01(\x08\x12\x1c\n\x14twt_wake_interval_us\x18\x0e \x01(\x04\x12 \n\x18twt_min_wake_duration_us\x18\x0f \x01(\r\x12\x31\n\x11twt_setup_command\x18\x10 \x01(\x0e\x32\x16.emmet.TwtSetupCommand\x12\x1c\n\x14scan_interval_base_s\x18\x11 \x01(\r\x12\x1d\n\x15scan_interval_limit_s\x18\x12 \x01(\r\"e\n\x11StaScanRequestCmd\x12\x15\n\rdwell_time_ms\x18\x01 \x01(\r\x12\x11\n\textra_ies\x18\x02 \x01(\x0c\x12\x0c\n\x04ssid\x18\x03 \x01(\x0c\x12\x18\n\x10\x64well_on_home_ms\x18\x04 \x01(\r\"\x11\n\x0fStaScanAbortCmd\"\x13\n\x11StaScanResultsCmd\"y\n\rStaScanResult\x12\x0c\n\x04rssi\x18\x01 \x01(\x05\x12\r\n\x05\x62ssid\x18\x02 \x01(\x0c\x12\x17\n\x0f\x62\x65\x61\x63on_interval\x18\x03 \x01(\r\x12\x17\n\x0f\x63\x61pability_info\x18\x04 \x01(\r\x12\x0c\n\x04ssid\x18\x05 \x01(\x0c\x12\x0b\n\x03ies\x18\x06 \x01(\x0c\"?\n\x11StaScanResultsRsp\x12*\n\x0cscan_results\x18\x01 \x03(\x0b\x32\x14.emmet.StaScanResult\"\x0f\n\rStaDisableCmd\"\x10\n\x0eStaGetStateCmd\"0\n\x0eStaGetStateRsp\x12\x1e\n\x05state\x18\x01 \x01(\x0e\x32\x0f.emmet.StaState\"\x12\n\x10GetMacAddressCmd\"\'\n\x10GetMacAddressRsp\x12\x13\n\x0bmac_address\x18\x01 \x01(\x0c\"\r\n\x0bGetBssidCmd\"\x1c\n\x0bGetBssidRsp\x12\r\n\x05\x62ssid\x18\x01 \x01(\x0c\"\x16\n\x14GetDutyCycleStatsCmd\"\x94\x01\n\x14GetDutyCycleStatsRsp\x12\x12\n\nduty_cycle\x18\x01 \x01(\r\x12\"\n\x04mode\x18\x02 \x01(\x0e\x32\x14.emmet.DutyCycleMode\x12\"\n\x1a\x62urst_airtime_remaining_us\x18\x03 \x01(\r\x12 \n\x18\x62urst_window_duration_us\x18\x04 \x01(\r\"\t\n\x07\x42ootCmd\"\r\n\x0bShutdownCmd\"\x0f\n\rGetVersionCmd\"x\n\rGetVersionRsp\x12\x18\n\x10morse_fw_version\x18\x01 \x01(\t\x12\x18\n\x10morselib_version\x18\x02 \x01(\t\x12\x15\n\rmorse_chip_id\x18\x03 \x01(\r\x12\x1c\n\x14morse_chip_id_string\x18\x04 \x01(\t\"\x13\n\x11GetBcfMetadataCmd\"\x83\x01\n\x11GetBcfMetadataRsp\x12\x15\n\rversion_major\x18\x01 \x01(\r\x12\x15\n\rversion_minor\x18\x02 \x01(\r\x12\x15\n\rversion_patch\x18\x03 \x01(\r\x12\x12\n\nboard_desc\x18\x04 \x01(\t\x12\x15\n\rbuild_version\x18\x05 \x01(\t\"\x0c\n\nGetRssiCmd\"\x1a\n\nGetRssiRsp\x12\x0c\n\x04rssi\x18\x01 \x01(\x05\"\x0f\n\rGetRcStatsCmd\"M\n\rGetRcStatsRsp\x12\x11\n\trate_info\x18\x01 \x03(\r\x12\x12\n\ntotal_sent\x18\x02 \x03(\r\x12\x15\n\rtotal_success\x18\x03 \x03(\r\"3\n\x10GetMorseStatsCmd\x12\x10\n\x08\x63ore_num\x18\x01 \x01(\r\x12\r\n\x05reset\x18\x02 \x01(\x08\"!\n\x10GetMorseStatsRsp\x12\r\n\x05stats\x18\x01 \x01(\x0c\"(\n\x14TriggerCoreAssertCmd\x12\x10\n\x08\x63ore_num\x18\x01 \x01(\r\"(\n\x15\x45xecuteTestCommandCmd\x12\x0f\n\x07\x63ommand\x18\x01 \x01(\x0c\")\n\x15\x45xecuteTestCommandRsp\x12\x10\n\x08response\x18\x01 \x01(\x0c\"\x0c\n\nGetKeysCmd\"=\n\x03Key\x12\n\n\x02id\x18\x01 \x01(\r\x12\x1c\n\x04type\x18\x02 \x01(\x0e\x32\x0e.emmet.KeyType\x12\x0c\n\x04\x64\x61ta\x18\x03 \x01(\x0c\"&\n\nGetKeysRsp\x12\x18\n\x04keys\x18\x01 \x03(\x0b\x32\n.emmet.Key\"\x11\n\x0fGetUmacStatsCmd\" \n\x0fGetUmacStatsRsp\x12\r\n\x05stats\x18\x01 \x01(\x0c\")\n\x1a\x42\x65\x61\x63onVendorIeFilterAddCmd\x12\x0b\n\x03oui\x18\x01 \x01(\x0c\"\x1e\n\x1c\x42\x65\x61\x63onVendorIeFilterClearCmd\"!\n\x1f\x42\x65\x61\x63onVendorIeFilterGetStatsCmd\"H\n\x18\x42\x65\x61\x63onVendorIeFilterStat\x12\x13\n\x0boccurrences\x18\x01 \x01(\x05\x12\n\n\x02ie\x18\x02 \x01(\x0c\x12\x0b\n\x03oui\x18\x03 \x01(\x0c\"Q\n\x1f\x42\x65\x61\x63onVendorIeFilterGetStatsRsp\x12.\n\x05stats\x18\x01 \x03(\x0b\x32\x1f.emmet.BeaconVendorIeFilterStat\"/\n\x1b\x45nableArpResponseOffloadCmd\x12\x10\n\x08\x61rp_addr\x18\x01 \x01(\r\"W\n\x1a\x45nableArpRefreshOffloadCmd\x12\x12\n\ninterval_s\x18\x01 \x01(\r\x12\x0f\n\x07\x64\x65st_ip\x18\x02 \x01(\r\x12\x14\n\x0csend_as_garp\x18\x03 \x01(\x08\"\x16\n\x14\x45nableDhcpOffloadCmd\"_\n\x1c\x45nableTCPKeepaliveOffloadCmd\x12\x10\n\x08period_s\x18\x01 \x01(\r\x12\x13\n\x0bretry_count\x18\x02 \x01(\r\x12\x18\n\x10retry_interval_s\x18\x03 \x01(\r\"\x1f\n\x1d\x44isableTCPKeepaliveOffloadCmd\"\x11\n\x0fStandbyEnterCmd\"\x10\n\x0eStandbyExitCmd\"\xd3\x01\n\x13StandbySetConfigCmd\x12\x17\n\x0fnotify_period_s\x18\x01 \x01(\r\x12\x0e\n\x06src_ip\x18\x02 \x01(\r\x12\x0e\n\x06\x64st_ip\x18\x03 \x01(\r\x12\x10\n\x08\x64st_port\x18\x04 \x01(\r\x12&\n\x1e\x62ss_inactivity_before_snooze_s\x18\x05 \x01(\r\x12\x17\n\x0fsnooze_period_s\x18\x06 \x01(\r\x12\x1a\n\x12snooze_increment_s\x18\x07 \x01(\r\x12\x14\n\x0csnooze_max_s\x18\x08 \x01(\r\">\n\x17StandbySetWakeFilterCmd\x12\x13\n\x0bwake_filter\x18\x01 \x01(\x0c\x12\x0e\n\x06offset\x18\x02 \x01(\r\"-\n\x1aStandbySetStatusPayloadCmd\x12\x0f\n\x07payload\x18\x01 \x01(\x0c\"\x19\n\x17StandbyGetExitReasonCmd\")\n\x17StandbyGetExitReasonRsp\x12\x0e\n\x06reason\x18\x01 \x01(\x05\"\x97\x01\n\x15SetWhitelistFilterCmd\x12\x0e\n\x06src_ip\x18\x01 \x01(\r\x12\x0e\n\x06\x64st_ip\x18\x02 \x01(\r\x12\x0f\n\x07netmask\x18\x03 \x01(\r\x12\x10\n\x08src_port\x18\x04 \x01(\r\x12\x10\n\x08\x64st_port\x18\x05 \x01(\r\x12\x13\n\x0bip_protocol\x18\x06 \x01(\r\x12\x14\n\x0cllc_protocol\x18\x07 \x01(\r\"\x19\n\x17\x43learWhitelistFilterCmd\"\x8e\x18\n\x07WlanCmd\x12\x34\n\x10set_mcs_override\x18\x01 \x01(\x0b\x32\x18.emmet.SetMcsOverrideCmdH\x00\x12\x36\n\x11set_rts_threshold\x18\x02 \x01(\x0b\x32\x19.emmet.SetRtsThresholdCmdH\x00\x12\x34\n\x10set_country_code\x18\x03 \x01(\x0b\x32\x18.emmet.SetCountryCodeCmdH\x00\x12=\n\x15set_tx_power_override\x18\x04 \x01(\x0b\x32\x1c.emmet.SetTxPowerOverrideCmdH\x00\x12\x32\n\x0fset_sgi_enabled\x18\x05 \x01(\x0b\x32\x17.emmet.SetSgiEnabledCmdH\x00\x12<\n\x14set_subbands_enabled\x18\x06 \x01(\x0b\x32\x1c.emmet.SetSubbandsEnabledCmdH\x00\x12\x39\n\x13set_power_save_mode\x18\x07 \x01(\x0b\x32\x1a.emmet.SetPowerSaveModeCmdH\x00\x12\x36\n\x11set_ampdu_enabled\x18\x08 \x01(\x0b\x32\x19.emmet.SetAmpduEnabledCmdH\x00\x12=\n\x15set_wnm_sleep_enabled\x18\t \x01(\x0b\x32\x1c.emmet.SetWNMSleepEnabledCmdH\x00\x12@\n\x16set_fragment_threshold\x18\n \x01(\x0b\x32\x1e.emmet.SetFragmentThresholdCmdH\x00\x12:\n\x13set_sta_autoconnect\x18\x0b \x01(\x0b\x32\x1b.emmet.SetStaAutoconnectCmdH\x00\x12\x32\n\x0fset_scan_config\x18\x0c \x01(\x0b\x32\x17.emmet.SetScanConfigCmdH\x00\x12\x45\n\x19set_health_check_interval\x18\r \x01(\x0b\x32 .emmet.SetHealthCheckIntervalCmdH\x00\x12J\n\x1cset_default_qos_queue_params\x18\x0e \x01(\x0b\x32\".emmet.SetDefaultQosQueueParamsCmdH\x00\x12\x30\n\x0eset_mcs10_mode\x18\x0f \x01(\x0b\x32\x16.emmet.SetMCS10ModeCmdH\x00\x12\x39\n\x13set_duty_cycle_mode\x18\x10 \x01(\x0b\x32\x1a.emmet.SetDutyCycleModeCmdH\x00\x12:\n\x13set_listen_interval\x18\x11 \x01(\x0b\x32\x1b.emmet.SetListenIntervalCmdH\x00\x12)\n\nsta_enable\x18\x32 \x01(\x0b\x32\x13.emmet.StaEnableCmdH\x00\x12+\n\x0bsta_disable\x18\x33 \x01(\x0b\x32\x14.emmet.StaDisableCmdH\x00\x12.\n\rsta_get_state\x18\x34 \x01(\x0b\x32\x15.emmet.StaGetStateCmdH\x00\x12\x32\n\x0fget_mac_address\x18\x35 \x01(\x0b\x32\x17.emmet.GetMacAddressCmdH\x00\x12\'\n\tget_bssid\x18\x36 \x01(\x0b\x32\x12.emmet.GetBssidCmdH\x00\x12\x1e\n\x04\x62oot\x18\x37 \x01(\x0b\x32\x0e.emmet.BootCmdH\x00\x12&\n\x08shutdown\x18\x38 \x01(\x0b\x32\x12.emmet.ShutdownCmdH\x00\x12+\n\x0bget_version\x18\x39 \x01(\x0b\x32\x14.emmet.GetVersionCmdH\x00\x12\x34\n\x10get_bcf_metadata\x18: \x01(\x0b\x32\x18.emmet.GetBcfMetadataCmdH\x00\x12;\n\x14get_duty_cycle_stats\x18; \x01(\x0b\x32\x1b.emmet.GetDutyCycleStatsCmdH\x00\x12%\n\x08get_rssi\x18< \x01(\x0b\x32\x11.emmet.GetRssiCmdH\x00\x12\x34\n\x10sta_scan_request\x18= \x01(\x0b\x32\x18.emmet.StaScanRequestCmdH\x00\x12\x30\n\x0esta_scan_abort\x18> \x01(\x0b\x32\x16.emmet.StaScanAbortCmdH\x00\x12\x34\n\x10sta_scan_results\x18? \x01(\x0b\x32\x18.emmet.StaScanResultsCmdH\x00\x12,\n\x0cget_rc_stats\x18\x46 \x01(\x0b\x32\x14.emmet.GetRcStatsCmdH\x00\x12\x32\n\x0fget_morse_stats\x18G \x01(\x0b\x32\x17.emmet.GetMorseStatsCmdH\x00\x12:\n\x13trigger_core_assert\x18H \x01(\x0b\x32\x1b.emmet.TriggerCoreAssertCmdH\x00\x12<\n\x14\x65xecute_test_command\x18I \x01(\x0b\x32\x1c.emmet.ExecuteTestCommandCmdH\x00\x12%\n\x08get_keys\x18J \x01(\x0b\x32\x11.emmet.GetKeysCmdH\x00\x12\x30\n\x0eget_umac_stats\x18K \x01(\x0b\x32\x16.emmet.GetUmacStatsCmdH\x00\x12H\n\x1b\x62\x65\x61\x63on_vendor_ie_filter_add\x18P \x01(\x0b\x32!.emmet.BeaconVendorIeFilterAddCmdH\x00\x12L\n\x1d\x62\x65\x61\x63on_vendor_ie_filter_clear\x18Q \x01(\x0b\x32#.emmet.BeaconVendorIeFilterClearCmdH\x00\x12S\n!beacon_vendor_ie_filter_get_stats\x18R \x01(\x0b\x32&.emmet.BeaconVendorIeFilterGetStatsCmdH\x00\x12I\n\x1b\x65nable_arp_response_offload\x18Z \x01(\x0b\x32\".emmet.EnableArpResponseOffloadCmdH\x00\x12G\n\x1a\x65nable_arp_refresh_offload\x18[ \x01(\x0b\x32!.emmet.EnableArpRefreshOffloadCmdH\x00\x12:\n\x13\x65nable_dhcp_offload\x18\\ \x01(\x0b\x32\x1b.emmet.EnableDhcpOffloadCmdH\x00\x12/\n\rstandby_enter\x18] \x01(\x0b\x32\x16.emmet.StandbyEnterCmdH\x00\x12-\n\x0cstandby_exit\x18^ \x01(\x0b\x32\x15.emmet.StandbyExitCmdH\x00\x12\x38\n\x12standby_set_config\x18_ \x01(\x0b\x32\x1a.emmet.StandbySetConfigCmdH\x00\x12\x41\n\x17standby_set_wake_filter\x18` \x01(\x0b\x32\x1e.emmet.StandbySetWakeFilterCmdH\x00\x12G\n\x1astandby_set_status_payload\x18\x61 \x01(\x0b\x32!.emmet.StandbySetStatusPayloadCmdH\x00\x12\x41\n\x17standby_get_exit_reason\x18\x62 \x01(\x0b\x32\x1e.emmet.StandbyGetExitReasonCmdH\x00\x12K\n\x1c\x65nable_tcp_keepalive_offload\x18\x63 \x01(\x0b\x32#.emmet.EnableTCPKeepaliveOffloadCmdH\x00\x12M\n\x1d\x64isable_tcp_keepalive_offload\x18\x64 \x01(\x0b\x32$.emmet.DisableTCPKeepaliveOffloadCmdH\x00\x12<\n\x14set_whitelist_filter\x18\x65 \x01(\x0b\x32\x1c.emmet.SetWhitelistFilterCmdH\x00\x12@\n\x16\x63lear_whitelist_filter\x18\x66 \x01(\x0b\x32\x1e.emmet.ClearWhitelistFilterCmdH\x00\x42\x05\n\x03\x63md\"\xab\x06\n\x07WlanRsp\x12.\n\rsta_get_state\x18\x34 \x01(\x0b\x32\x15.emmet.StaGetStateRspH\x00\x12\x32\n\x0fget_mac_address\x18\x35 \x01(\x0b\x32\x17.emmet.GetMacAddressRspH\x00\x12\'\n\tget_bssid\x18\x36 \x01(\x0b\x32\x12.emmet.GetBssidRspH\x00\x12+\n\x0bget_version\x18\x39 \x01(\x0b\x32\x14.emmet.GetVersionRspH\x00\x12\x34\n\x10get_bcf_metadata\x18: \x01(\x0b\x32\x18.emmet.GetBcfMetadataRspH\x00\x12;\n\x14get_duty_cycle_stats\x18; \x01(\x0b\x32\x1b.emmet.GetDutyCycleStatsRspH\x00\x12%\n\x08get_rssi\x18< \x01(\x0b\x32\x11.emmet.GetRssiRspH\x00\x12\x34\n\x10sta_scan_results\x18? \x01(\x0b\x32\x18.emmet.StaScanResultsRspH\x00\x12,\n\x0cget_rc_stats\x18\x46 \x01(\x0b\x32\x14.emmet.GetRcStatsRspH\x00\x12\x32\n\x0fget_morse_stats\x18G \x01(\x0b\x32\x17.emmet.GetMorseStatsRspH\x00\x12<\n\x14\x65xecute_test_command\x18I \x01(\x0b\x32\x1c.emmet.ExecuteTestCommandRspH\x00\x12%\n\x08get_keys\x18J \x01(\x0b\x32\x11.emmet.GetKeysRspH\x00\x12\x30\n\x0eget_umac_stats\x18K \x01(\x0b\x32\x16.emmet.GetUmacStatsRspH\x00\x12S\n!beacon_vendor_ie_filter_get_stats\x18R \x01(\x0b\x32&.emmet.BeaconVendorIeFilterGetStatsRspH\x00\x12\x41\n\x17standby_get_exit_reason\x18\x62 \x01(\x0b\x32\x1e.emmet.StandbyGetExitReasonRspH\x00\x42\x05\n\x03rsp\"\x16\n\x14\x43\x61piDeviceGetInfoCmd\"F\n\x14\x43\x61piDeviceGetInfoRsp\x12\x0e\n\x06vendor\x18\x01 \x01(\t\x12\r\n\x05model\x18\x02 \x01(\t\x12\x0f\n\x07version\x18\x03 \x01(\t\"4\n\x1b\x43\x61piDeviceListInterfacesCmd\x12\x15\n\rinterfacetype\x18\x01 \x01(\t\"I\n\x1b\x43\x61piDeviceListInterfacesRsp\x12\x15\n\rinterfacetype\x18\x01 \x01(\t\x12\x13\n\x0binterfaceid\x18\x02 \x01(\t\"G\n\x16\x43\x61piStaResetDefaultCmd\x12\x11\n\tinterface\x18\x01 \x01(\t\x12\x0c\n\x04prog\x18\x02 \x01(\t\x12\x0c\n\x04type\x18\x03 \x01(\t\"e\n\x1e\x43\x61piStaPresetTestparametersCmd\x12\x11\n\tinterface\x18\x01 \x01(\t\x12\x12\n\nsupplicant\x18\x02 \x01(\t\x12\x0c\n\x04mode\x18\x03 \x01(\t\x12\x0e\n\x06\x66rgmnt\x18\x04 \x01(\t\",\n\x17\x43\x61piStaGetMacAddressCmd\x12\x11\n\tinterface\x18\x01 \x01(\t\"&\n\x17\x43\x61piStaGetMacAddressRsp\x12\x0b\n\x03mac\x18\x01 \x01(\t\"\x8d\x05\n\x15\x43\x61piStaSetWirelessCmd\x12\x11\n\tinterface\x18\x01 \x01(\t\x12\x0f\n\x07program\x18\x02 \x01(\t\x12\x13\n\x0btxsp_stream\x18\x03 \x01(\t\x12\x13\n\x0brxsp_stream\x18\x04 \x01(\t\x12\r\n\x05width\x18\x05 \x01(\t\x12\x18\n\x10sta_type_support\x18\x06 \x01(\t\x12\x15\n\rdup_1mhz_supt\x18\x07 \x01(\t\x12\x0b\n\x03sgi\x18\x08 \x01(\t\x12\r\n\x05\x61mpdu\x18\t \x01(\t\x12\x15\n\rmcs_fixedrate\x18\n \x01(\t\x12\x17\n\x0flisten_interval\x18\x0b \x01(\t\x12\x0b\n\x03usf\x18\x0c \x01(\t\x12\x19\n\x11unscaled_interval\x18\r \x01(\t\x12\x13\n\x0bnontim_mode\x18\x0e \x01(\t\x12\x1e\n\x16\x63trlresp_1mhz_preamble\x18\x0f \x01(\t\x12\x1b\n\x13ndp_probing_support\x18\x10 \x01(\t\x12\x16\n\x0etwt_reqsupport\x18\x11 \x01(\t\x12\x14\n\x0cndppagingind\x18\x12 \x01(\t\x12\x12\n\nresppmmode\x18\x13 \x01(\t\x12\x11\n\ttwt_setup\x18\x14 \x01(\t\x12\x14\n\x0csetupcommand\x18\x15 \x01(\t\x12\x10\n\x08implicit\x18\x16 \x01(\t\x12\x10\n\x08\x66lowtype\x18\x17 \x01(\t\x12\x16\n\x0e\x66lowtype_frame\x18\x18 \x01(\t\x12\x17\n\x0fwakeintervalexp\x18\x19 \x01(\t\x12\x12\n\nprotection\x18\x1a \x01(\t\x12\x19\n\x11nominalminwakedur\x18\x1b \x01(\t\x12\x1c\n\x14wakeintervalmantissa\x18\x1c \x01(\t\x12\x13\n\x0btwt_channel\x18\x1d \x01(\t\"\xb2\x01\n\x15\x43\x61piStaSetSecurityCmd\x12\x11\n\tinterface\x18\x01 \x01(\t\x12\x0c\n\x04ssid\x18\x02 \x01(\t\x12\x0c\n\x04type\x18\x03 \x01(\t\x12\x13\n\x0bkeymgmttype\x18\x04 \x01(\t\x12\x10\n\x08\x65ncptype\x18\x05 \x01(\t\x12\x0b\n\x03pmf\x18\x06 \x01(\t\x12\x12\n\npassphrase\x18\x07 \x01(\t\x12\x0f\n\x07sae_pwe\x18\x08 \x01(\t\x12\x11\n\tecgroupid\x18\t \x01(\t\"j\n\x15\x43\x61piStaSetIpConfigCmd\x12\x11\n\tinterface\x18\x01 \x01(\t\x12\x0c\n\x04\x64hcp\x18\x02 \x01(\t\x12\n\n\x02ip\x18\x03 \x01(\t\x12\x0c\n\x04mask\x18\x04 \x01(\t\x12\x16\n\x0e\x64\x65\x66\x61ultgateway\x18\x05 \x01(\t\"E\n\x13\x43\x61piStaAssociateCmd\x12\x11\n\tinterface\x18\x01 \x01(\t\x12\x0c\n\x04ssid\x18\x02 \x01(\t\x12\r\n\x05\x62ssid\x18\x03 \x01(\t\"*\n\x15\x43\x61piStaIsConnectedCmd\x12\x11\n\tinterface\x18\x01 \x01(\t\"*\n\x15\x43\x61piStaIsConnectedRsp\x12\x11\n\tconnected\x18\x01 \x01(\x05\"\'\n\x12\x43\x61piStaGetBssidCmd\x12\x11\n\tinterface\x18\x01 \x01(\t\"#\n\x12\x43\x61piStaGetBssidRsp\x12\r\n\x05\x62ssid\x18\x01 \x01(\t\"*\n\x15\x43\x61piStaGetIpConfigCmd\x12\x11\n\tinterface\x18\x01 \x01(\t\"T\n\x15\x43\x61piStaGetIpConfigRsp\x12\x0c\n\x04\x64hcp\x18\x01 \x01(\x05\x12\n\n\x02ip\x18\x02 \x01(\t\x12\x0c\n\x04mask\x18\x03 \x01(\t\x12\x13\n\x0bprimary_dns\x18\x04 \x01(\t\"C\n\x14\x43\x61piStaDisconnectCmd\x12\x11\n\tinterface\x18\x01 \x01(\t\x12\x18\n\x10maintain_profile\x18\x02 \x01(\t\"O\n\x16\x43\x61piStaSetPowerSaveCmd\x12\x11\n\tinterface\x18\x01 \x01(\t\x12\x0f\n\x07program\x18\x02 \x01(\t\x12\x11\n\tpowersave\x18\x03 \x01(\t\"\x86\x01\n\x15\x43\x61piStaSetRfeatureCmd\x12\x11\n\tinterface\x18\x01 \x01(\t\x12\x0c\n\x04prog\x18\x02 \x01(\t\x12\x0f\n\x07program\x18\x03 \x01(\t\x12\x1e\n\x16\x63trlresp_1mhz_preamble\x18\x04 \x01(\t\x12\x1b\n\x13response_indication\x18\x05 \x01(\t\"a\n\x14\x43\x61piStaExecActionCmd\x12\x11\n\tinterface\x18\x01 \x01(\t\x12\x0c\n\x04prog\x18\x02 \x01(\t\x12\x11\n\tidle_mode\x18\x03 \x01(\t\x12\x15\n\ridle_duration\x18\x04 \x01(\t\"3\n\x14\x43\x61piStaExecActionRsp\x12\x0e\n\x06\x65rrmsg\x18\x01 \x01(\t\x12\x0b\n\x03mac\x18\x02 \x01(\t\"G\n\x13\x43\x61piStaSendAddbaCmd\x12\x11\n\tinterface\x18\x01 \x01(\t\x12\x10\n\x08\x64\x65st_mac\x18\x02 \x01(\t\x12\x0b\n\x03tid\x18\x03 \x01(\t\"F\n\x11\x43\x61piStaReassocCmd\x12\x11\n\tinterface\x18\x01 \x01(\t\x12\x0f\n\x07\x63hannel\x18\x02 \x01(\t\x12\r\n\x05\x62ssid\x18\x03 \x01(\t\"M\n\x0e\x43\x61piStaScanCmd\x12\x11\n\tinterface\x18\x01 \x01(\t\x12\x0b\n\x03ndp\x18\x02 \x01(\t\x12\x1b\n\x13req_probe_resp_type\x18\x03 \x01(\t\"\x1a\n\x18\x43\x61piTrafficAgentResetCmd\"e\n\x16\x43\x61piTrafficSendPingCmd\x12\x13\n\x0b\x64\x65stination\x18\x01 \x01(\t\x12\x11\n\tframesize\x18\x02 \x01(\t\x12\x11\n\tframerate\x18\x03 \x01(\t\x12\x10\n\x08\x64uration\x18\x04 \x01(\t\"*\n\x16\x43\x61piTrafficSendPingRsp\x12\x10\n\x08streamid\x18\x01 \x01(\x05\"*\n\x16\x43\x61piTrafficStopPingCmd\x12\x10\n\x08streamid\x18\x01 \x01(\t\"7\n\x16\x43\x61piTrafficStopPingRsp\x12\x0c\n\x04sent\x18\x01 \x01(\x05\x12\x0f\n\x07replies\x18\x02 \x01(\x05\"\xee\x01\n\x19\x43\x61piTrafficAgentConfigCmd\x12\x0f\n\x07profile\x18\x01 \x01(\t\x12\x11\n\tdirection\x18\x02 \x01(\t\x12\x0e\n\x06source\x18\x03 \x01(\t\x12\x12\n\nsourceport\x18\x04 \x01(\t\x12\x13\n\x0b\x64\x65stination\x18\x05 \x01(\t\x12\x17\n\x0f\x64\x65stinationport\x18\x06 \x01(\t\x12\x10\n\x08\x64uration\x18\x07 \x01(\t\x12\x13\n\x0bpayloadsize\x18\x08 \x01(\t\x12\x14\n\x0ctrafficclass\x18\t \x01(\t\x12\x11\n\tframerate\x18\n \x01(\t\x12\x0b\n\x03hti\x18\x0b \x01(\t\"-\n\x19\x43\x61piTrafficAgentConfigRsp\x12\x10\n\x08streamid\x18\x01 \x01(\x05\"+\n\x17\x43\x61piTrafficAgentSendCmd\x12\x10\n\x08streamid\x18\x01 \x01(\t\"\x7f\n\x17\x43\x61piTrafficAgentSendRsp\x12\x10\n\x08streamid\x18\x01 \x01(\x05\x12\x10\n\x08txframes\x18\x02 \x01(\x05\x12\x10\n\x08rxframes\x18\x03 \x01(\x05\x12\x16\n\x0etxpayloadbytes\x18\x04 \x01(\x05\x12\x16\n\x0erxpayloadbytes\x18\x05 \x01(\x05\"3\n\x1f\x43\x61piTrafficAgentReceiveStartCmd\x12\x10\n\x08streamid\x18\x01 \x01(\t\"2\n\x1e\x43\x61piTrafficAgentReceiveStopCmd\x12\x10\n\x08streamid\x18\x01 \x01(\t\"\xa3\x01\n\x1e\x43\x61piTrafficAgentReceiveStopRsp\x12\x10\n\x08streamid\x18\x01 \x01(\x05\x12\x10\n\x08txframes\x18\x02 \x01(\x05\x12\x10\n\x08rxframes\x18\x03 \x01(\x05\x12\x16\n\x0etxpayloadbytes\x18\x04 \x01(\x05\x12\x16\n\x0erxpayloadbytes\x18\x05 \x01(\x05\x12\x1b\n\x13outofsequenceframes\x18\x06 \x01(\x05\"\xae\x0c\n\x07\x43\x61piCmd\x12\x36\n\x0f\x64\x65vice_get_info\x18\x01 \x01(\x0b\x32\x1b.emmet.CapiDeviceGetInfoCmdH\x00\x12\x44\n\x16\x64\x65vice_list_interfaces\x18\x02 \x01(\x0b\x32\".emmet.CapiDeviceListInterfacesCmdH\x00\x12:\n\x11sta_reset_default\x18\x03 \x01(\x0b\x32\x1d.emmet.CapiStaResetDefaultCmdH\x00\x12J\n\x19sta_preset_testparameters\x18\x04 \x01(\x0b\x32%.emmet.CapiStaPresetTestparametersCmdH\x00\x12=\n\x13sta_get_mac_address\x18\x05 \x01(\x0b\x32\x1e.emmet.CapiStaGetMacAddressCmdH\x00\x12\x38\n\x10sta_set_wireless\x18\x06 \x01(\x0b\x32\x1c.emmet.CapiStaSetWirelessCmdH\x00\x12\x38\n\x10sta_set_security\x18\x07 \x01(\x0b\x32\x1c.emmet.CapiStaSetSecurityCmdH\x00\x12\x39\n\x11sta_set_ip_config\x18\x08 \x01(\x0b\x32\x1c.emmet.CapiStaSetIpConfigCmdH\x00\x12\x33\n\rsta_associate\x18\t \x01(\x0b\x32\x1a.emmet.CapiStaAssociateCmdH\x00\x12\x38\n\x10sta_is_connected\x18\n \x01(\x0b\x32\x1c.emmet.CapiStaIsConnectedCmdH\x00\x12\x32\n\rsta_get_bssid\x18\x0b \x01(\x0b\x32\x19.emmet.CapiStaGetBssidCmdH\x00\x12\x39\n\x11sta_get_ip_config\x18\x0c \x01(\x0b\x32\x1c.emmet.CapiStaGetIpConfigCmdH\x00\x12\x35\n\x0esta_disconnect\x18\r \x01(\x0b\x32\x1b.emmet.CapiStaDisconnectCmdH\x00\x12;\n\x12sta_set_power_save\x18\x0e \x01(\x0b\x32\x1d.emmet.CapiStaSetPowerSaveCmdH\x00\x12\x38\n\x10sta_set_rfeature\x18\x0f \x01(\x0b\x32\x1c.emmet.CapiStaSetRfeatureCmdH\x00\x12\x36\n\x0fsta_exec_action\x18\x10 \x01(\x0b\x32\x1b.emmet.CapiStaExecActionCmdH\x00\x12\x34\n\x0esta_send_addba\x18\x11 \x01(\x0b\x32\x1a.emmet.CapiStaSendAddbaCmdH\x00\x12/\n\x0bsta_reassoc\x18\x12 \x01(\x0b\x32\x18.emmet.CapiStaReassocCmdH\x00\x12)\n\x08sta_scan\x18\x13 \x01(\x0b\x32\x15.emmet.CapiStaScanCmdH\x00\x12>\n\x13traffic_agent_reset\x18\x14 \x01(\x0b\x32\x1f.emmet.CapiTrafficAgentResetCmdH\x00\x12:\n\x11traffic_send_ping\x18\x15 \x01(\x0b\x32\x1d.emmet.CapiTrafficSendPingCmdH\x00\x12:\n\x11traffic_stop_ping\x18\x16 \x01(\x0b\x32\x1d.emmet.CapiTrafficStopPingCmdH\x00\x12@\n\x14traffic_agent_config\x18\x17 \x01(\x0b\x32 .emmet.CapiTrafficAgentConfigCmdH\x00\x12<\n\x12traffic_agent_send\x18\x18 \x01(\x0b\x32\x1e.emmet.CapiTrafficAgentSendCmdH\x00\x12M\n\x1btraffic_agent_receive_start\x18\x19 \x01(\x0b\x32&.emmet.CapiTrafficAgentReceiveStartCmdH\x00\x12K\n\x1atraffic_agent_receive_stop\x18\x1a \x01(\x0b\x32%.emmet.CapiTrafficAgentReceiveStopCmdH\x00\x42\x05\n\x03\x63md\"\xf3\x05\n\x07\x43\x61piRsp\x12\x36\n\x0f\x64\x65vice_get_info\x18\x01 \x01(\x0b\x32\x1b.emmet.CapiDeviceGetInfoRspH\x00\x12\x44\n\x16\x64\x65vice_list_interfaces\x18\x02 \x01(\x0b\x32\".emmet.CapiDeviceListInterfacesRspH\x00\x12=\n\x13sta_get_mac_address\x18\x05 \x01(\x0b\x32\x1e.emmet.CapiStaGetMacAddressRspH\x00\x12\x38\n\x10sta_is_connected\x18\n \x01(\x0b\x32\x1c.emmet.CapiStaIsConnectedRspH\x00\x12\x32\n\rsta_get_bssid\x18\x0b \x01(\x0b\x32\x19.emmet.CapiStaGetBssidRspH\x00\x12\x39\n\x11sta_get_ip_config\x18\x0c \x01(\x0b\x32\x1c.emmet.CapiStaGetIpConfigRspH\x00\x12\x36\n\x0fsta_exec_action\x18\x10 \x01(\x0b\x32\x1b.emmet.CapiStaExecActionRspH\x00\x12:\n\x11traffic_send_ping\x18\x15 \x01(\x0b\x32\x1d.emmet.CapiTrafficSendPingRspH\x00\x12:\n\x11traffic_stop_ping\x18\x16 \x01(\x0b\x32\x1d.emmet.CapiTrafficStopPingRspH\x00\x12@\n\x14traffic_agent_config\x18\x17 \x01(\x0b\x32 .emmet.CapiTrafficAgentConfigRspH\x00\x12<\n\x12traffic_agent_send\x18\x18 \x01(\x0b\x32\x1e.emmet.CapiTrafficAgentSendRspH\x00\x12K\n\x1atraffic_agent_receive_stop\x18\x1a \x01(\x0b\x32%.emmet.CapiTrafficAgentReceiveStopRspH\x00\x42\x05\n\x03rsp\"\x19\n\nCfgReadCmd\x12\x0b\n\x03key\x18\x01 \x01(\t\"*\n\nCfgReadRsp\x12\x0b\n\x03len\x18\x01 \x01(\x05\x12\x0f\n\x07payload\x18\x02 \x01(\x0c\"+\n\x0b\x43\x66gWriteCmd\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x0f\n\x07payload\x18\x02 \x01(\x0c\"\x18\n\tCfgDelCmd\x12\x0b\n\x03key\x18\x01 \x01(\t\"\x1f\n\x0b\x43\x66gEraseCmd\x12\x10\n\x08lowlevel\x18\x01 \x01(\x05\"\x9d\x01\n\x06\x43\x66gCmd\x12!\n\x04read\x18\x01 \x01(\x0b\x32\x11.emmet.CfgReadCmdH\x00\x12#\n\x05write\x18\x02 \x01(\x0b\x32\x12.emmet.CfgWriteCmdH\x00\x12\x1f\n\x03\x64\x65l\x18\x03 \x01(\x0b\x32\x10.emmet.CfgDelCmdH\x00\x12#\n\x05\x65rase\x18\x04 \x01(\x0b\x32\x12.emmet.CfgEraseCmdH\x00\x42\x05\n\x03\x63md\"2\n\x06\x43\x66gRsp\x12!\n\x04read\x18\x01 \x01(\x0b\x32\x11.emmet.CfgReadRspH\x00\x42\x05\n\x03rsp\"8\n\x0b\x46ileReadCmd\x12\x0c\n\x04path\x18\x01 \x01(\t\x12\x0e\n\x06offset\x18\x02 \x01(\x05\x12\x0b\n\x03len\x18\x03 \x01(\x05\"+\n\x0b\x46ileReadRsp\x12\x0b\n\x03len\x18\x01 \x01(\x05\x12\x0f\n\x07payload\x18\x02 \x01(\x0c\"-\n\x0c\x46ileWriteCmd\x12\x0c\n\x04path\x18\x01 \x01(\t\x12\x0f\n\x07payload\x18\x02 \x01(\x0c\"\x1a\n\nFileDelCmd\x12\x0c\n\x04path\x18\x01 \x01(\t\"|\n\x07\x46ileCmd\x12\"\n\x04read\x18\x01 \x01(\x0b\x32\x12.emmet.FileReadCmdH\x00\x12$\n\x05write\x18\x02 \x01(\x0b\x32\x13.emmet.FileWriteCmdH\x00\x12 \n\x03\x64\x65l\x18\x03 \x01(\x0b\x32\x11.emmet.FileDelCmdH\x00\x42\x05\n\x03\x63md\"4\n\x07\x46ileRsp\x12\"\n\x04read\x18\x01 \x01(\x0b\x32\x12.emmet.FileReadRspH\x00\x42\x05\n\x03rsp\"L\n\x0cHalSetLedCmd\x12\x1c\n\x06led_id\x18\x01 \x01(\x0e\x32\x0c.emmet.LedId\x12\x1e\n\x05level\x18\x02 \x01(\x0e\x32\x0f.emmet.LedLevel\"8\n\x0fHalGetButtonCmd\x12%\n\tbutton_id\x18\x01 \x01(\x0e\x32\x12.emmet.HalButtonId\">\n\x0fHalGetButtonRsp\x12+\n\x0c\x62utton_state\x18\x01 \x01(\x0e\x32\x15.emmet.HalButtonState\"e\n\x0fHalSetButtonCmd\x12%\n\tbutton_id\x18\x01 \x01(\x0e\x32\x12.emmet.HalButtonId\x12+\n\x0c\x62utton_state\x18\x02 \x01(\x0e\x32\x15.emmet.HalButtonState\"\x93\x01\n\x06HalCmd\x12&\n\x07set_led\x18\x01 \x01(\x0b\x32\x13.emmet.HalSetLedCmdH\x00\x12,\n\nget_button\x18\x02 \x01(\x0b\x32\x16.emmet.HalGetButtonCmdH\x00\x12,\n\nset_button\x18\x03 \x01(\x0b\x32\x16.emmet.HalSetButtonCmdH\x00\x42\x05\n\x03\x63md\"=\n\x06HalRsp\x12,\n\nget_button\x18\x01 \x01(\x0b\x32\x16.emmet.HalGetButtonRspH\x00\x42\x05\n\x03rsp\"\xef\x01\n\x06\x44utCmd\x12\x1c\n\x03sys\x18\x01 \x01(\x0b\x32\r.emmet.SysCmdH\x00\x12\x1e\n\x04lwip\x18\x02 \x01(\x0b\x32\x0e.emmet.LwipCmdH\x00\x12\x1e\n\x04wlan\x18\x03 \x01(\x0b\x32\x0e.emmet.WlanCmdH\x00\x12\x1e\n\x04\x63\x61pi\x18\x04 \x01(\x0b\x32\x0e.emmet.CapiCmdH\x00\x12\x1f\n\x06\x63onfig\x18\x05 \x01(\x0b\x32\r.emmet.CfgCmdH\x00\x12\x1e\n\x04\x66ile\x18\x06 \x01(\x0b\x32\x0e.emmet.FileCmdH\x00\x12\x1c\n\x03hal\x18\x07 \x01(\x0b\x32\r.emmet.HalCmdH\x00\x42\x08\n\x06\x63mdgrp\"\x91\x02\n\x06\x44utRsp\x12\x1c\n\x03sys\x18\x01 \x01(\x0b\x32\r.emmet.SysRspH\x00\x12\x1e\n\x04lwip\x18\x02 \x01(\x0b\x32\x0e.emmet.LwipRspH\x00\x12\x1e\n\x04wlan\x18\x03 \x01(\x0b\x32\x0e.emmet.WlanRspH\x00\x12\x1e\n\x04\x63\x61pi\x18\x04 \x01(\x0b\x32\x0e.emmet.CapiRspH\x00\x12\x1f\n\x06\x63onfig\x18\x05 \x01(\x0b\x32\r.emmet.CfgRspH\x00\x12\x1e\n\x04\x66ile\x18\x06 \x01(\x0b\x32\x0e.emmet.FileRspH\x00\x12\x1c\n\x03hal\x18\x07 \x01(\x0b\x32\r.emmet.HalRspH\x00\x12 \n\x05\x62\x61sic\x18\x7f \x01(\x0b\x32\x0f.emmet.BasicRspH\x00\x42\x08\n\x06rspgrp*\xc4\x02\n\nStatusCode\x12\x0b\n\x07SUCCESS\x10\x00\x12\x14\n\x10MALFORMED_PACKET\x10\x01\x12\x13\n\x0fINVALID_COMMAND\x10\x02\x12\x14\n\x10INVALID_ARGUMENT\x10\x03\x12\x15\n\x11RESPONSE_TOO_LONG\x10\x04\x12\x1d\n\x19MEMORY_ALLOCATION_FAILURE\x10\n\x12\x0f\n\x0bUNAVAILABLE\x10\x0b\x12\x18\n\x14\x43HANNEL_LIST_NOT_SET\x10\x0c\x12\n\n\x06NO_MEM\x10\r\x12\r\n\tTIMED_OUT\x10\x0e\x12\x14\n\x10SHUTDOWN_BLOCKED\x10\x0f\x12\x13\n\x0f\x43HANNEL_INVALID\x10\x10\x12\r\n\tNOT_FOUND\x10\x11\x12\x10\n\x0cSOCKET_ERROR\x10\x12\x12\x0f\n\x0bNOT_RUNNING\x10\x13\x12\x0f\n\x0bOTHER_ERROR\x10\x7f*.\n\x0b\x46\x61ilureType\x12\r\n\tASSERTION\x10\x00\x12\x10\n\x0cJUMP_TO_ZERO\x10\x01* \n\x0cLwipPortType\x12\x07\n\x03UDP\x10\x00\x12\x07\n\x03TCP\x10\x01*\"\n\x08IperfDir\x12\n\n\x06SERVER\x10\x00\x12\n\n\x06\x43LIENT\x10\x01*E\n\nIperfState\x12\x0f\n\x0bNOT_STARTED\x10\x00\x12\x0b\n\x07RUNNING\x10\x01\x12\x0c\n\x08\x46INISHED\x10\x02\x12\x0b\n\x07\x41\x42ORTED\x10\x03*>\n\x0bIp6AddrMode\x12\n\n\x06STATIC\x10\x00\x12\x0e\n\nAUTOCONFIG\x10\x01\x12\x13\n\x0f\x44HCP6_STATELESS\x10\x02*\'\n\tLinkState\x12\r\n\tLINK_DOWN\x10\x00\x12\x0b\n\x07LINK_UP\x10\x01*G\n\x10WlanSecurityType\x12\x0f\n\x0bNO_SECURITY\x10\x00\x12\x10\n\x0cOWE_SECURITY\x10\x01\x12\x10\n\x0cSAE_SECURITY\x10\x02*1\n\x0bWlanPmfMode\x12\x10\n\x0cPMF_REQUIRED\x10\x00\x12\x10\n\x0cPMF_DISABLED\x10\x01*C\n\x08StaState\x12\x10\n\x0cSTA_DISABLED\x10\x00\x12\x12\n\x0eSTA_CONNECTING\x10\x01\x12\x11\n\rSTA_CONNECTED\x10\x02*:\n\x0bPwrSaveMode\x12\x15\n\x11PWR_SAVE_DISABLED\x10\x00\x12\x14\n\x10PWR_SAVE_ENABLED\x10\x01*C\n\x0fTwtSetupCommand\x12\x0f\n\x0bTWT_REQUEST\x10\x00\x12\x0f\n\x0bTWT_SUGGEST\x10\x01\x12\x0e\n\nTWT_DEMAND\x10\x02*O\n\x12StaAutoconnectMode\x12\x1b\n\x17STA_AUTOCONNECT_ENABLED\x10\x00\x12\x1c\n\x18STA_AUTOCONNECT_DISABLED\x10\x01*P\n\tMCS10Mode\x12\x17\n\x13MCS10_MODE_DISABLED\x10\x00\x12\x15\n\x11MCS10_MODE_FORCED\x10\x01\x12\x13\n\x0fMCS10_MODE_AUTO\x10\x02*F\n\rDutyCycleMode\x12\x1a\n\x16\x44UTY_CYCLE_MODE_SPREAD\x10\x00\x12\x19\n\x15\x44UTY_CYCLE_MODE_BURST\x10\x01*,\n\x07KeyType\x12\x0c\n\x08PAIRWISE\x10\x00\x12\t\n\x05GROUP\x10\x01\x12\x08\n\x04IGTK\x10\x02*L\n\x05LedId\x12\x0e\n\nLED_ID_RED\x10\x00\x12\x10\n\x0cLED_ID_GREEN\x10\x01\x12\x0f\n\x0bLED_ID_BLUE\x10\x02\x12\x10\n\x0cLED_ID_WHITE\x10\x03*$\n\x08LedLevel\x12\x0b\n\x07LED_OFF\x10\x00\x12\x0b\n\x06LED_ON\x10\xff\x01*\"\n\x0bHalButtonId\x12\x13\n\x0f\x42UTTON_ID_USER0\x10\x00*9\n\x0eHalButtonState\x12\x13\n\x0f\x42UTTON_RELEASED\x10\x00\x12\x12\n\x0e\x42UTTON_PRESSED\x10\x01\x62\x06proto3'
+  serialized_pb=b'\n\x0f\x65mmet-api.proto\x12\x05\x65mmet\"<\n\x08\x42\x61sicRsp\x12\x1f\n\x04\x63ode\x18\x01 \x01(\x0e\x32\x11.emmet.StatusCode\x12\x0f\n\x07message\x18\x02 \x01(\t\"1\n\nSysEchoCmd\x12\x0f\n\x07payload\x18\x01 \x01(\t\x12\x12\n\nintpayload\x18\x02 \x01(\x05\"1\n\nSysEchoRsp\x12\x0f\n\x07payload\x18\x01 \x01(\t\x12\x12\n\nintpayload\x18\x02 \x01(\x05\"@\n\x14SysTriggerFailureCmd\x12(\n\x0c\x66\x61ilure_type\x18\x01 \x01(\x0e\x32\x12.emmet.FailureType\"%\n\x12SysPrintMessageCmd\x12\x0f\n\x07message\x18\x01 \x01(\t\"\x0f\n\rSysGetTimeCmd\" \n\rSysGetTimeRsp\x12\x0f\n\x07time_ms\x18\x01 \x01(\r\"\xc8\x01\n\x06SysCmd\x12!\n\x04\x65\x63ho\x18\x01 \x01(\x0b\x32\x11.emmet.SysEchoCmdH\x00\x12\x36\n\x0ftrigger_failure\x18\x02 \x01(\x0b\x32\x1b.emmet.SysTriggerFailureCmdH\x00\x12\x32\n\rprint_message\x18\x03 \x01(\x0b\x32\x19.emmet.SysPrintMessageCmdH\x00\x12(\n\x08get_time\x18\x04 \x01(\x0b\x32\x14.emmet.SysGetTimeCmdH\x00\x42\x05\n\x03\x63md\"\\\n\x06SysRsp\x12!\n\x04\x65\x63ho\x18\x01 \x01(\x0b\x32\x11.emmet.SysEchoRspH\x00\x12(\n\x08get_time\x18\x02 \x01(\x0b\x32\x14.emmet.SysGetTimeRspH\x00\x42\x05\n\x03rsp\"_\n\x13IperfServerStartCmd\x12&\n\tport_type\x18\x01 \x01(\x0e\x32\x13.emmet.LwipPortType\x12\x0c\n\x04port\x18\x02 \x01(\r\x12\x12\n\nlocal_addr\x18\x03 \x01(\x0c\">\n\x13IperfServerStartRsp\x12\'\n\x0cserver_state\x18\x01 \x01(\x0e\x32\x11.emmet.IperfState\"\x9f\x01\n\x13IperfClientStartCmd\x12&\n\tport_type\x18\x01 \x01(\x0e\x32\x13.emmet.LwipPortType\x12\x13\n\x0bremote_addr\x18\x02 \x01(\x0c\x12\x13\n\x0bremote_port\x18\x03 \x01(\r\x12\x11\n\ttarget_bw\x18\x04 \x01(\r\x12\x13\n\x0bpacket_size\x18\x05 \x01(\r\x12\x0e\n\x06\x61mount\x18\x06 \x01(\x05\"X\n\x10IperfGetStatsCmd\x12&\n\tport_type\x18\x01 \x01(\x0e\x32\x13.emmet.LwipPortType\x12\x1c\n\x03\x64ir\x18\x02 \x01(\x0e\x32\x0f.emmet.IperfDir\"\xad\x02\n\x10IperfGetStatsRsp\x12 \n\x05state\x18\x01 \x01(\x0e\x32\x11.emmet.IperfState\x12\x12\n\nlocal_addr\x18\x02 \x01(\x0c\x12\x12\n\nlocal_port\x18\x03 \x01(\r\x12\x13\n\x0bremote_addr\x18\x04 \x01(\x0c\x12\x13\n\x0bremote_port\x18\x05 \x01(\r\x12\x19\n\x11\x62ytes_transferred\x18\x06 \x01(\x04\x12\x13\n\x0bms_duration\x18\x07 \x01(\r\x12\x1a\n\x12\x62\x61ndwidth_kbitpsec\x18\x08 \x01(\r\x12\x11\n\ttx_frames\x18\t \x01(\r\x12\x11\n\trx_frames\x18\n \x01(\r\x12\x1e\n\x16out_of_sequence_frames\x18\x0b \x01(\r\x12\x13\n\x0b\x65rror_count\x18\x0c \x01(\r\"\\\n\x0ePingRequestCmd\x12\x12\n\nip_address\x18\x01 \x01(\x0c\x12\x11\n\tmax_count\x18\x02 \x01(\r\x12\x10\n\x08interval\x18\x03 \x01(\r\x12\x11\n\tdata_size\x18\x04 \x01(\r\"\x0e\n\x0cPingStatsCmd\"\x99\x01\n\x0cPingStatsRsp\x12\x12\n\nip_address\x18\x01 \x01(\x0c\x12\x10\n\x08num_sent\x18\x02 \x01(\r\x12\x14\n\x0cnum_received\x18\x03 \x01(\r\x12\x13\n\x0bmin_latency\x18\x04 \x01(\r\x12\x13\n\x0b\x61vg_latency\x18\x05 \x01(\r\x12\x13\n\x0bmax_latency\x18\x06 \x01(\r\x12\x0e\n\x06\x61\x63tive\x18\x07 \x01(\x08\"\r\n\x0bPingStopCmd\"\x10\n\x0eGetIpConfigCmd\"^\n\x0eGetIpConfigRsp\x12\x14\n\x0c\x64hcp_enabled\x18\x01 \x01(\x08\x12\x0f\n\x07ip_addr\x18\x02 \x01(\x0c\x12\x0f\n\x07netmask\x18\x03 \x01(\x0c\x12\x14\n\x0cgateway_addr\x18\x04 \x01(\x0c\"^\n\x0eSetIpConfigCmd\x12\x14\n\x0c\x64hcp_enabled\x18\x01 \x01(\x08\x12\x0f\n\x07ip_addr\x18\x02 \x01(\x0c\x12\x0f\n\x07netmask\x18\x03 \x01(\x0c\x12\x14\n\x0cgateway_addr\x18\x04 \x01(\x0c\"\x10\n\x0eSetIpConfigRsp\"\x11\n\x0fGetIp6ConfigCmd\"B\n\x0fGetIp6ConfigRsp\x12 \n\x04mode\x18\x01 \x01(\x0e\x32\x12.emmet.Ip6AddrMode\x12\r\n\x05\x61\x64\x64rs\x18\x02 \x03(\x0c\"B\n\x0fSetIp6ConfigCmd\x12 \n\x04mode\x18\x01 \x01(\x0e\x32\x12.emmet.Ip6AddrMode\x12\r\n\x05\x61\x64\x64rs\x18\x02 \x03(\x0c\"D\n\x0fSetStaticArpCmd\x12\x0e\n\x06remove\x18\x01 \x01(\x08\x12\x0f\n\x07ip_addr\x18\x02 \x01(\x0c\x12\x10\n\x08mac_addr\x18\x03 \x01(\x0c\"\x11\n\x0fSetStaticArpRsp\"!\n\x0eSetTxQosTidCmd\x12\x0f\n\x07qos_tid\x18\x01 \x01(\r\"\x11\n\x0fGetLinkStateCmd\"2\n\x0fGetLinkStateRsp\x12\x1f\n\x05state\x18\x01 \x01(\x0e\x32\x10.emmet.LinkState\"0\n\rTcpConnectCmd\x12\x11\n\tipv4_addr\x18\x01 \x01(\r\x12\x0c\n\x04port\x18\x02 \x01(\r\"\"\n\rTcpConnectRsp\x12\x11\n\tsocket_id\x18\x01 \x01(\x05\"-\n\nTcpSendCmd\x12\x11\n\tsocket_id\x18\x01 \x01(\x05\x12\x0c\n\x04\x64\x61ta\x18\x02 \x01(\x0c\"\xe8\x05\n\x07LwipCmd\x12\x38\n\x12iperf_server_start\x18\x01 \x01(\x0b\x32\x1a.emmet.IperfServerStartCmdH\x00\x12\x38\n\x12iperf_client_start\x18\x02 \x01(\x0b\x32\x1a.emmet.IperfClientStartCmdH\x00\x12\x32\n\x0fiperf_get_stats\x18\x03 \x01(\x0b\x32\x17.emmet.IperfGetStatsCmdH\x00\x12-\n\x0cping_request\x18\x04 \x01(\x0b\x32\x15.emmet.PingRequestCmdH\x00\x12)\n\nping_stats\x18\x05 \x01(\x0b\x32\x13.emmet.PingStatsCmdH\x00\x12\'\n\tping_stop\x18\x06 \x01(\x0b\x32\x12.emmet.PingStopCmdH\x00\x12.\n\rget_ip_config\x18\x07 \x01(\x0b\x32\x15.emmet.GetIpConfigCmdH\x00\x12.\n\rset_ip_config\x18\x08 \x01(\x0b\x32\x15.emmet.SetIpConfigCmdH\x00\x12\x30\n\x0eget_ip6_config\x18\t \x01(\x0b\x32\x16.emmet.GetIp6ConfigCmdH\x00\x12\x30\n\x0eset_ip6_config\x18\n \x01(\x0b\x32\x16.emmet.SetIp6ConfigCmdH\x00\x12/\n\x0eset_tx_qos_tid\x18\x0b \x01(\x0b\x32\x15.emmet.SetTxQosTidCmdH\x00\x12\x30\n\x0eget_link_state\x18\x0c \x01(\x0b\x32\x16.emmet.GetLinkStateCmdH\x00\x12\x30\n\x0eset_static_arp\x18\r \x01(\x0b\x32\x16.emmet.SetStaticArpCmdH\x00\x12+\n\x0btcp_connect\x18\x64 \x01(\x0b\x32\x14.emmet.TcpConnectCmdH\x00\x12%\n\x08tcp_send\x18\x65 \x01(\x0b\x32\x11.emmet.TcpSendCmdH\x00\x42\x05\n\x03\x63md\"\xcc\x03\n\x07LwipRsp\x12\x38\n\x12iperf_server_start\x18\x01 \x01(\x0b\x32\x1a.emmet.IperfServerStartRspH\x00\x12\x32\n\x0fiperf_get_stats\x18\x03 \x01(\x0b\x32\x17.emmet.IperfGetStatsRspH\x00\x12)\n\nping_stats\x18\x05 \x01(\x0b\x32\x13.emmet.PingStatsRspH\x00\x12.\n\rget_ip_config\x18\x07 \x01(\x0b\x32\x15.emmet.GetIpConfigRspH\x00\x12.\n\rset_ip_config\x18\x08 \x01(\x0b\x32\x15.emmet.SetIpConfigRspH\x00\x12\x30\n\x0eget_ip6_config\x18\t \x01(\x0b\x32\x16.emmet.GetIp6ConfigRspH\x00\x12\x30\n\x0eget_link_state\x18\x0c \x01(\x0b\x32\x16.emmet.GetLinkStateRspH\x00\x12\x30\n\x0eset_static_arp\x18\r \x01(\x0b\x32\x16.emmet.SetStaticArpRspH\x00\x12+\n\x0btcp_connect\x18\x64 \x01(\x0b\x32\x14.emmet.TcpConnectRspH\x00\x42\x05\n\x03rsp\" \n\x11SetMcsOverrideCmd\x12\x0b\n\x03mcs\x18\x01 \x01(\x05\"\'\n\x12SetRtsThresholdCmd\x12\x11\n\tthreshold\x18\x01 \x01(\r\")\n\x11SetCountryCodeCmd\x12\x14\n\x0c\x63ountry_code\x18\x01 \x01(\t\"2\n\x15SetTxPowerOverrideCmd\x12\x19\n\x11tx_power_override\x18\x01 \x01(\r\"\'\n\x10SetSgiEnabledCmd\x12\x13\n\x0bsgi_enabled\x18\x01 \x01(\x08\"1\n\x15SetSubbandsEnabledCmd\x12\x18\n\x10subbands_enabled\x18\x01 \x01(\x08\"B\n\x13SetPowerSaveModeCmd\x12+\n\x0fpower_save_mode\x18\x01 \x01(\x0e\x32\x12.emmet.PwrSaveMode\"+\n\x12SetAmpduEnabledCmd\x12\x15\n\rampdu_enabled\x18\x01 \x01(\x08\"S\n\x15SetWNMSleepEnabledCmd\x12\x19\n\x11wnm_sleep_enabled\x18\x01 \x01(\x08\x12\x1f\n\x17\x63hip_power_down_enabled\x18\x02 \x01(\x08\",\n\x17SetFragmentThresholdCmd\x12\x11\n\tthreshold\x18\x01 \x01(\r\"O\n\x14SetStaAutoconnectCmd\x12\x37\n\x14sta_autoconnect_mode\x18\x01 \x01(\x0e\x32\x19.emmet.StaAutoconnectMode\"D\n\x10SetScanConfigCmd\x12\x15\n\rdwell_time_ms\x18\x01 \x01(\r\x12\x19\n\x11ndp_probe_enabled\x18\x02 \x01(\x08\"a\n\x19SetHealthCheckIntervalCmd\x12!\n\x19min_health_check_intvl_ms\x18\x01 \x01(\r\x12!\n\x19max_health_check_intvl_ms\x18\x02 \x01(\r\"m\n\x1bSetDefaultQosQueueParamsCmd\x12\x0b\n\x03\x61\x63i\x18\x01 \x01(\r\x12\x0c\n\x04\x61ifs\x18\x02 \x01(\r\x12\x0e\n\x06\x63w_min\x18\x03 \x01(\r\x12\x0e\n\x06\x63w_max\x18\x04 \x01(\r\x12\x13\n\x0btxop_max_us\x18\x05 \x01(\r\"1\n\x0fSetMCS10ModeCmd\x12\x1e\n\x04mode\x18\x01 \x01(\x0e\x32\x10.emmet.MCS10Mode\"9\n\x13SetDutyCycleModeCmd\x12\"\n\x04mode\x18\x01 \x01(\x0e\x32\x14.emmet.DutyCycleMode\"(\n\x14SetListenIntervalCmd\x12\x10\n\x08interval\x18\x01 \x01(\r\"7\n\x17SetNonTimModeEnabledCmd\x12\x1c\n\x14non_tim_mode_enabled\x18\x01 \x01(\x08\">\n+SetControlResponsePreamble1mhzOutEnabledCmd\x12\x0f\n\x07\x65nabled\x18\x01 \x01(\x08\",\n\x16SetDynamicPSTimeoutCmd\x12\x12\n\ntimeout_ms\x18\x01 \x01(\r\"\xaa\x04\n\x0cStaEnableCmd\x12\x0c\n\x04ssid\x18\x01 \x01(\x0c\x12\x12\n\npassphrase\x18\x02 \x01(\x0c\x12)\n\x08security\x18\x03 \x01(\x0e\x32\x17.emmet.WlanSecurityType\x12$\n\x08pmf_mode\x18\x04 \x01(\x0e\x32\x12.emmet.WlanPmfMode\x12\x18\n\x10raw_sta_priority\x18\x05 \x01(\x05\x12\r\n\x05\x62ssid\x18\x06 \x01(\x0c\x12\x10\n\x08sta_type\x18\x07 \x01(\r\x12\x19\n\x11sae_owe_ec_groups\x18\x08 \x03(\r\x12\x13\n\x0b\x63\x61\x63_enabled\x18\t \x01(\x08\x12\x1f\n\x17\x62gscan_short_interval_s\x18\n \x01(\r\x12#\n\x1b\x62gscan_signal_threshold_dbm\x18\x0b \x01(\x05\x12\x1e\n\x16\x62gscan_long_interval_s\x18\x0c \x01(\r\x12\x13\n\x0btwt_enabled\x18\r \x01(\x08\x12\x1c\n\x14twt_wake_interval_us\x18\x0e \x01(\x04\x12 \n\x18twt_min_wake_duration_us\x18\x0f \x01(\r\x12\x31\n\x11twt_setup_command\x18\x10 \x01(\x0e\x32\x16.emmet.TwtSetupCommand\x12\x1c\n\x14scan_interval_base_s\x18\x11 \x01(\r\x12\x1d\n\x15scan_interval_limit_s\x18\x12 \x01(\r\x12\x11\n\tuse_4addr\x18\x13 \x01(\x08\"e\n\x11StaScanRequestCmd\x12\x15\n\rdwell_time_ms\x18\x01 \x01(\r\x12\x11\n\textra_ies\x18\x02 \x01(\x0c\x12\x0c\n\x04ssid\x18\x03 \x01(\x0c\x12\x18\n\x10\x64well_on_home_ms\x18\x04 \x01(\r\"\x11\n\x0fStaScanAbortCmd\"\x13\n\x11StaScanResultsCmd\"\x8c\x01\n\rStaScanResult\x12\x0c\n\x04rssi\x18\x01 \x01(\x05\x12\r\n\x05\x62ssid\x18\x02 \x01(\x0c\x12\x17\n\x0f\x62\x65\x61\x63on_interval\x18\x03 \x01(\r\x12\x17\n\x0f\x63\x61pability_info\x18\x04 \x01(\r\x12\x0c\n\x04ssid\x18\x05 \x01(\x0c\x12\x0b\n\x03ies\x18\x06 \x01(\x0c\x12\x11\n\tnoise_dbm\x18\x07 \x01(\x05\"c\n\x11StaScanResultsRsp\x12*\n\x0cscan_results\x18\x01 \x03(\x0b\x32\x14.emmet.StaScanResult\x12\"\n\x05state\x18\x02 \x01(\x0e\x32\x13.emmet.StaScanState\"\x0f\n\rStaDisableCmd\"\x10\n\x0eStaGetStateCmd\"0\n\x0eStaGetStateRsp\x12\x1e\n\x05state\x18\x01 \x01(\x0e\x32\x0f.emmet.StaState\"/\n\x10GetMacAddressCmd\x12\x1b\n\x03vif\x18\x01 \x01(\x0e\x32\x0e.emmet.WlanVif\"\'\n\x10GetMacAddressRsp\x12\x13\n\x0bmac_address\x18\x01 \x01(\x0c\"\r\n\x0bGetBssidCmd\"\x1c\n\x0bGetBssidRsp\x12\r\n\x05\x62ssid\x18\x01 \x01(\x0c\"\x16\n\x14GetDutyCycleStatsCmd\"\x94\x01\n\x14GetDutyCycleStatsRsp\x12\x12\n\nduty_cycle\x18\x01 \x01(\r\x12\"\n\x04mode\x18\x02 \x01(\x0e\x32\x14.emmet.DutyCycleMode\x12\"\n\x1a\x62urst_airtime_remaining_us\x18\x03 \x01(\r\x12 \n\x18\x62urst_window_duration_us\x18\x04 \x01(\r\"\t\n\x07\x42ootCmd\"\r\n\x0bShutdownCmd\"\x0f\n\rGetVersionCmd\"x\n\rGetVersionRsp\x12\x18\n\x10morse_fw_version\x18\x01 \x01(\t\x12\x18\n\x10morselib_version\x18\x02 \x01(\t\x12\x15\n\rmorse_chip_id\x18\x03 \x01(\r\x12\x1c\n\x14morse_chip_id_string\x18\x04 \x01(\t\"\x13\n\x11GetBcfMetadataCmd\"\x83\x01\n\x11GetBcfMetadataRsp\x12\x15\n\rversion_major\x18\x01 \x01(\r\x12\x15\n\rversion_minor\x18\x02 \x01(\r\x12\x15\n\rversion_patch\x18\x03 \x01(\r\x12\x12\n\nboard_desc\x18\x04 \x01(\t\x12\x15\n\rbuild_version\x18\x05 \x01(\t\"\x0c\n\nGetRssiCmd\"\x1a\n\nGetRssiRsp\x12\x0c\n\x04rssi\x18\x01 \x01(\x05\"\x0f\n\rGetRcStatsCmd\"M\n\rGetRcStatsRsp\x12\x11\n\trate_info\x18\x01 \x03(\r\x12\x12\n\ntotal_sent\x18\x02 \x03(\r\x12\x15\n\rtotal_success\x18\x03 \x03(\r\"3\n\x10GetMorseStatsCmd\x12\x10\n\x08\x63ore_num\x18\x01 \x01(\r\x12\r\n\x05reset\x18\x02 \x01(\x08\"!\n\x10GetMorseStatsRsp\x12\r\n\x05stats\x18\x01 \x01(\x0c\"(\n\x14TriggerCoreAssertCmd\x12\x10\n\x08\x63ore_num\x18\x01 \x01(\r\"(\n\x15\x45xecuteTestCommandCmd\x12\x0f\n\x07\x63ommand\x18\x01 \x01(\x0c\")\n\x15\x45xecuteTestCommandRsp\x12\x10\n\x08response\x18\x01 \x01(\x0c\"\x0c\n\nGetKeysCmd\"=\n\x03Key\x12\n\n\x02id\x18\x01 \x01(\r\x12\x1c\n\x04type\x18\x02 \x01(\x0e\x32\x0e.emmet.KeyType\x12\x0c\n\x04\x64\x61ta\x18\x03 \x01(\x0c\"&\n\nGetKeysRsp\x12\x18\n\x04keys\x18\x01 \x03(\x0b\x32\n.emmet.Key\"\x11\n\x0fGetUmacStatsCmd\" \n\x0fGetUmacStatsRsp\x12\r\n\x05stats\x18\x01 \x01(\x0c\"\x11\n\x0fGetTxFCStatsCmd\"B\n\x0fGetTxFCStatsRsp\x12\x17\n\x0fpaused_cb_count\x18\x01 \x01(\r\x12\x16\n\x0eready_cb_count\x18\x02 \x01(\r\")\n\x1a\x42\x65\x61\x63onVendorIeFilterAddCmd\x12\x0b\n\x03oui\x18\x01 \x01(\x0c\"\x1e\n\x1c\x42\x65\x61\x63onVendorIeFilterClearCmd\"!\n\x1f\x42\x65\x61\x63onVendorIeFilterGetStatsCmd\"H\n\x18\x42\x65\x61\x63onVendorIeFilterStat\x12\x13\n\x0boccurrences\x18\x01 \x01(\x05\x12\n\n\x02ie\x18\x02 \x01(\x0c\x12\x0b\n\x03oui\x18\x03 \x01(\x0c\"Q\n\x1f\x42\x65\x61\x63onVendorIeFilterGetStatsRsp\x12.\n\x05stats\x18\x01 \x03(\x0b\x32\x1f.emmet.BeaconVendorIeFilterStat\"/\n\x1b\x45nableArpResponseOffloadCmd\x12\x10\n\x08\x61rp_addr\x18\x01 \x01(\r\"W\n\x1a\x45nableArpRefreshOffloadCmd\x12\x12\n\ninterval_s\x18\x01 \x01(\r\x12\x0f\n\x07\x64\x65st_ip\x18\x02 \x01(\r\x12\x14\n\x0csend_as_garp\x18\x03 \x01(\x08\"\x16\n\x14\x45nableDhcpOffloadCmd\"_\n\x1c\x45nableTCPKeepaliveOffloadCmd\x12\x10\n\x08period_s\x18\x01 \x01(\r\x12\x13\n\x0bretry_count\x18\x02 \x01(\r\x12\x18\n\x10retry_interval_s\x18\x03 \x01(\r\"\x1f\n\x1d\x44isableTCPKeepaliveOffloadCmd\"\x11\n\x0fStandbyEnterCmd\"\x10\n\x0eStandbyExitCmd\"\xd3\x01\n\x13StandbySetConfigCmd\x12\x17\n\x0fnotify_period_s\x18\x01 \x01(\r\x12\x0e\n\x06src_ip\x18\x02 \x01(\r\x12\x0e\n\x06\x64st_ip\x18\x03 \x01(\r\x12\x10\n\x08\x64st_port\x18\x04 \x01(\r\x12&\n\x1e\x62ss_inactivity_before_snooze_s\x18\x05 \x01(\r\x12\x17\n\x0fsnooze_period_s\x18\x06 \x01(\r\x12\x1a\n\x12snooze_increment_s\x18\x07 \x01(\r\x12\x14\n\x0csnooze_max_s\x18\x08 \x01(\r\">\n\x17StandbySetWakeFilterCmd\x12\x13\n\x0bwake_filter\x18\x01 \x01(\x0c\x12\x0e\n\x06offset\x18\x02 \x01(\r\"-\n\x1aStandbySetStatusPayloadCmd\x12\x0f\n\x07payload\x18\x01 \x01(\x0c\"\x19\n\x17StandbyGetExitReasonCmd\")\n\x17StandbyGetExitReasonRsp\x12\x0e\n\x06reason\x18\x01 \x01(\x05\"\x97\x01\n\x15SetWhitelistFilterCmd\x12\x0e\n\x06src_ip\x18\x01 \x01(\r\x12\x0e\n\x06\x64st_ip\x18\x02 \x01(\r\x12\x0f\n\x07netmask\x18\x03 \x01(\r\x12\x10\n\x08src_port\x18\x04 \x01(\r\x12\x10\n\x08\x64st_port\x18\x05 \x01(\r\x12\x13\n\x0bip_protocol\x18\x06 \x01(\r\x12\x14\n\x0cllc_protocol\x18\x07 \x01(\r\"\x19\n\x17\x43learWhitelistFilterCmd\"\xc5\x02\n\x0b\x41pEnableCmd\x12\x0c\n\x04ssid\x18\x01 \x01(\x0c\x12\r\n\x05\x62ssid\x18\x02 \x01(\x0c\x12)\n\x08security\x18\x03 \x01(\x0e\x32\x17.emmet.WlanSecurityType\x12\x12\n\npassphrase\x18\x04 \x01(\x0c\x12$\n\x08pmf_mode\x18\x05 \x01(\x0e\x32\x12.emmet.WlanPmfMode\x12\x19\n\x11sae_owe_ec_groups\x18\x06 \x03(\r\x12\x10\n\x08op_class\x18\x07 \x01(\r\x12\x14\n\x0cs1g_chan_num\x18\x08 \x01(\r\x12\x1b\n\x13\x62\x65\x61\x63on_interval_tus\x18\t \x01(\r\x12\x13\n\x0b\x64tim_period\x18\n \x01(\r\x12\x12\n\npri_bw_mhz\x18\x0b \x01(\r\x12\x19\n\x11pri_1mhz_chan_idx\x18\x0c \x01(\r\x12\x10\n\x08max_stas\x18\r \x01(\r\"\x0e\n\x0c\x41pDisableCmd\"%\n\x11\x41pGetStaStatusCmd\x12\x10\n\x08sta_addr\x18\x01 \x01(\x0c\"B\n\x11\x41pGetStaStatusRsp\x12 \n\x05state\x18\x01 \x01(\x0e\x32\x11.emmet.ApStaState\x12\x0b\n\x03\x61id\x18\x02 \x01(\r\"\xba\x1b\n\x07WlanCmd\x12\x34\n\x10set_mcs_override\x18\x01 \x01(\x0b\x32\x18.emmet.SetMcsOverrideCmdH\x00\x12\x36\n\x11set_rts_threshold\x18\x02 \x01(\x0b\x32\x19.emmet.SetRtsThresholdCmdH\x00\x12\x34\n\x10set_country_code\x18\x03 \x01(\x0b\x32\x18.emmet.SetCountryCodeCmdH\x00\x12=\n\x15set_tx_power_override\x18\x04 \x01(\x0b\x32\x1c.emmet.SetTxPowerOverrideCmdH\x00\x12\x32\n\x0fset_sgi_enabled\x18\x05 \x01(\x0b\x32\x17.emmet.SetSgiEnabledCmdH\x00\x12<\n\x14set_subbands_enabled\x18\x06 \x01(\x0b\x32\x1c.emmet.SetSubbandsEnabledCmdH\x00\x12\x39\n\x13set_power_save_mode\x18\x07 \x01(\x0b\x32\x1a.emmet.SetPowerSaveModeCmdH\x00\x12\x36\n\x11set_ampdu_enabled\x18\x08 \x01(\x0b\x32\x19.emmet.SetAmpduEnabledCmdH\x00\x12=\n\x15set_wnm_sleep_enabled\x18\t \x01(\x0b\x32\x1c.emmet.SetWNMSleepEnabledCmdH\x00\x12@\n\x16set_fragment_threshold\x18\n \x01(\x0b\x32\x1e.emmet.SetFragmentThresholdCmdH\x00\x12:\n\x13set_sta_autoconnect\x18\x0b \x01(\x0b\x32\x1b.emmet.SetStaAutoconnectCmdH\x00\x12\x32\n\x0fset_scan_config\x18\x0c \x01(\x0b\x32\x17.emmet.SetScanConfigCmdH\x00\x12\x45\n\x19set_health_check_interval\x18\r \x01(\x0b\x32 .emmet.SetHealthCheckIntervalCmdH\x00\x12J\n\x1cset_default_qos_queue_params\x18\x0e \x01(\x0b\x32\".emmet.SetDefaultQosQueueParamsCmdH\x00\x12\x30\n\x0eset_mcs10_mode\x18\x0f \x01(\x0b\x32\x16.emmet.SetMCS10ModeCmdH\x00\x12\x39\n\x13set_duty_cycle_mode\x18\x10 \x01(\x0b\x32\x1a.emmet.SetDutyCycleModeCmdH\x00\x12:\n\x13set_listen_interval\x18\x11 \x01(\x0b\x32\x1b.emmet.SetListenIntervalCmdH\x00\x12\x42\n\x18set_non_tim_mode_enabled\x18\x12 \x01(\x0b\x32\x1e.emmet.SetNonTimModeEnabledCmdH\x00\x12g\n)set_control_response_preamble_1mhz_out_en\x18\x13 \x01(\x0b\x32\x32.emmet.SetControlResponsePreamble1mhzOutEnabledCmdH\x00\x12?\n\x16set_dynamic_ps_timeout\x18\x14 \x01(\x0b\x32\x1d.emmet.SetDynamicPSTimeoutCmdH\x00\x12)\n\nsta_enable\x18\x32 \x01(\x0b\x32\x13.emmet.StaEnableCmdH\x00\x12+\n\x0bsta_disable\x18\x33 \x01(\x0b\x32\x14.emmet.StaDisableCmdH\x00\x12.\n\rsta_get_state\x18\x34 \x01(\x0b\x32\x15.emmet.StaGetStateCmdH\x00\x12\x32\n\x0fget_mac_address\x18\x35 \x01(\x0b\x32\x17.emmet.GetMacAddressCmdH\x00\x12\'\n\tget_bssid\x18\x36 \x01(\x0b\x32\x12.emmet.GetBssidCmdH\x00\x12\x1e\n\x04\x62oot\x18\x37 \x01(\x0b\x32\x0e.emmet.BootCmdH\x00\x12&\n\x08shutdown\x18\x38 \x01(\x0b\x32\x12.emmet.ShutdownCmdH\x00\x12+\n\x0bget_version\x18\x39 \x01(\x0b\x32\x14.emmet.GetVersionCmdH\x00\x12\x34\n\x10get_bcf_metadata\x18: \x01(\x0b\x32\x18.emmet.GetBcfMetadataCmdH\x00\x12;\n\x14get_duty_cycle_stats\x18; \x01(\x0b\x32\x1b.emmet.GetDutyCycleStatsCmdH\x00\x12%\n\x08get_rssi\x18< \x01(\x0b\x32\x11.emmet.GetRssiCmdH\x00\x12\x34\n\x10sta_scan_request\x18= \x01(\x0b\x32\x18.emmet.StaScanRequestCmdH\x00\x12\x30\n\x0esta_scan_abort\x18> \x01(\x0b\x32\x16.emmet.StaScanAbortCmdH\x00\x12\x34\n\x10sta_scan_results\x18? \x01(\x0b\x32\x18.emmet.StaScanResultsCmdH\x00\x12,\n\x0cget_rc_stats\x18\x46 \x01(\x0b\x32\x14.emmet.GetRcStatsCmdH\x00\x12\x32\n\x0fget_morse_stats\x18G \x01(\x0b\x32\x17.emmet.GetMorseStatsCmdH\x00\x12:\n\x13trigger_core_assert\x18H \x01(\x0b\x32\x1b.emmet.TriggerCoreAssertCmdH\x00\x12<\n\x14\x65xecute_test_command\x18I \x01(\x0b\x32\x1c.emmet.ExecuteTestCommandCmdH\x00\x12%\n\x08get_keys\x18J \x01(\x0b\x32\x11.emmet.GetKeysCmdH\x00\x12\x30\n\x0eget_umac_stats\x18K \x01(\x0b\x32\x16.emmet.GetUmacStatsCmdH\x00\x12\x31\n\x0fget_tx_fc_stats\x18L \x01(\x0b\x32\x16.emmet.GetTxFCStatsCmdH\x00\x12H\n\x1b\x62\x65\x61\x63on_vendor_ie_filter_add\x18P \x01(\x0b\x32!.emmet.BeaconVendorIeFilterAddCmdH\x00\x12L\n\x1d\x62\x65\x61\x63on_vendor_ie_filter_clear\x18Q \x01(\x0b\x32#.emmet.BeaconVendorIeFilterClearCmdH\x00\x12S\n!beacon_vendor_ie_filter_get_stats\x18R \x01(\x0b\x32&.emmet.BeaconVendorIeFilterGetStatsCmdH\x00\x12I\n\x1b\x65nable_arp_response_offload\x18Z \x01(\x0b\x32\".emmet.EnableArpResponseOffloadCmdH\x00\x12G\n\x1a\x65nable_arp_refresh_offload\x18[ \x01(\x0b\x32!.emmet.EnableArpRefreshOffloadCmdH\x00\x12:\n\x13\x65nable_dhcp_offload\x18\\ \x01(\x0b\x32\x1b.emmet.EnableDhcpOffloadCmdH\x00\x12/\n\rstandby_enter\x18] \x01(\x0b\x32\x16.emmet.StandbyEnterCmdH\x00\x12-\n\x0cstandby_exit\x18^ \x01(\x0b\x32\x15.emmet.StandbyExitCmdH\x00\x12\x38\n\x12standby_set_config\x18_ \x01(\x0b\x32\x1a.emmet.StandbySetConfigCmdH\x00\x12\x41\n\x17standby_set_wake_filter\x18` \x01(\x0b\x32\x1e.emmet.StandbySetWakeFilterCmdH\x00\x12G\n\x1astandby_set_status_payload\x18\x61 \x01(\x0b\x32!.emmet.StandbySetStatusPayloadCmdH\x00\x12\x41\n\x17standby_get_exit_reason\x18\x62 \x01(\x0b\x32\x1e.emmet.StandbyGetExitReasonCmdH\x00\x12K\n\x1c\x65nable_tcp_keepalive_offload\x18\x63 \x01(\x0b\x32#.emmet.EnableTCPKeepaliveOffloadCmdH\x00\x12M\n\x1d\x64isable_tcp_keepalive_offload\x18\x64 \x01(\x0b\x32$.emmet.DisableTCPKeepaliveOffloadCmdH\x00\x12<\n\x14set_whitelist_filter\x18\x65 \x01(\x0b\x32\x1c.emmet.SetWhitelistFilterCmdH\x00\x12@\n\x16\x63lear_whitelist_filter\x18\x66 \x01(\x0b\x32\x1e.emmet.ClearWhitelistFilterCmdH\x00\x12\'\n\tap_enable\x18n \x01(\x0b\x32\x12.emmet.ApEnableCmdH\x00\x12)\n\nap_disable\x18o \x01(\x0b\x32\x13.emmet.ApDisableCmdH\x00\x12\x35\n\x11\x61p_get_sta_status\x18p \x01(\x0b\x32\x18.emmet.ApGetStaStatusCmdH\x00\x42\x05\n\x03\x63md\"\x95\x07\n\x07WlanRsp\x12.\n\rsta_get_state\x18\x34 \x01(\x0b\x32\x15.emmet.StaGetStateRspH\x00\x12\x32\n\x0fget_mac_address\x18\x35 \x01(\x0b\x32\x17.emmet.GetMacAddressRspH\x00\x12\'\n\tget_bssid\x18\x36 \x01(\x0b\x32\x12.emmet.GetBssidRspH\x00\x12+\n\x0bget_version\x18\x39 \x01(\x0b\x32\x14.emmet.GetVersionRspH\x00\x12\x34\n\x10get_bcf_metadata\x18: \x01(\x0b\x32\x18.emmet.GetBcfMetadataRspH\x00\x12;\n\x14get_duty_cycle_stats\x18; \x01(\x0b\x32\x1b.emmet.GetDutyCycleStatsRspH\x00\x12%\n\x08get_rssi\x18< \x01(\x0b\x32\x11.emmet.GetRssiRspH\x00\x12\x34\n\x10sta_scan_results\x18? \x01(\x0b\x32\x18.emmet.StaScanResultsRspH\x00\x12,\n\x0cget_rc_stats\x18\x46 \x01(\x0b\x32\x14.emmet.GetRcStatsRspH\x00\x12\x32\n\x0fget_morse_stats\x18G \x01(\x0b\x32\x17.emmet.GetMorseStatsRspH\x00\x12<\n\x14\x65xecute_test_command\x18I \x01(\x0b\x32\x1c.emmet.ExecuteTestCommandRspH\x00\x12%\n\x08get_keys\x18J \x01(\x0b\x32\x11.emmet.GetKeysRspH\x00\x12\x30\n\x0eget_umac_stats\x18K \x01(\x0b\x32\x16.emmet.GetUmacStatsRspH\x00\x12\x31\n\x0fget_tx_fc_stats\x18L \x01(\x0b\x32\x16.emmet.GetTxFCStatsRspH\x00\x12S\n!beacon_vendor_ie_filter_get_stats\x18R \x01(\x0b\x32&.emmet.BeaconVendorIeFilterGetStatsRspH\x00\x12\x41\n\x17standby_get_exit_reason\x18\x62 \x01(\x0b\x32\x1e.emmet.StandbyGetExitReasonRspH\x00\x12\x35\n\x11\x61p_get_sta_status\x18p \x01(\x0b\x32\x18.emmet.ApGetStaStatusRspH\x00\x42\x05\n\x03rsp\"\x16\n\x14\x43\x61piDeviceGetInfoCmd\"F\n\x14\x43\x61piDeviceGetInfoRsp\x12\x0e\n\x06vendor\x18\x01 \x01(\t\x12\r\n\x05model\x18\x02 \x01(\t\x12\x0f\n\x07version\x18\x03 \x01(\t\"4\n\x1b\x43\x61piDeviceListInterfacesCmd\x12\x15\n\rinterfacetype\x18\x01 \x01(\t\"I\n\x1b\x43\x61piDeviceListInterfacesRsp\x12\x15\n\rinterfacetype\x18\x01 \x01(\t\x12\x13\n\x0binterfaceid\x18\x02 \x01(\t\"G\n\x16\x43\x61piStaResetDefaultCmd\x12\x11\n\tinterface\x18\x01 \x01(\t\x12\x0c\n\x04prog\x18\x02 \x01(\t\x12\x0c\n\x04type\x18\x03 \x01(\t\"e\n\x1e\x43\x61piStaPresetTestparametersCmd\x12\x11\n\tinterface\x18\x01 \x01(\t\x12\x12\n\nsupplicant\x18\x02 \x01(\t\x12\x0c\n\x04mode\x18\x03 \x01(\t\x12\x0e\n\x06\x66rgmnt\x18\x04 \x01(\t\",\n\x17\x43\x61piStaGetMacAddressCmd\x12\x11\n\tinterface\x18\x01 \x01(\t\"&\n\x17\x43\x61piStaGetMacAddressRsp\x12\x0b\n\x03mac\x18\x01 \x01(\t\"\x8d\x05\n\x15\x43\x61piStaSetWirelessCmd\x12\x11\n\tinterface\x18\x01 \x01(\t\x12\x0f\n\x07program\x18\x02 \x01(\t\x12\x13\n\x0btxsp_stream\x18\x03 \x01(\t\x12\x13\n\x0brxsp_stream\x18\x04 \x01(\t\x12\r\n\x05width\x18\x05 \x01(\t\x12\x18\n\x10sta_type_support\x18\x06 \x01(\t\x12\x15\n\rdup_1mhz_supt\x18\x07 \x01(\t\x12\x0b\n\x03sgi\x18\x08 \x01(\t\x12\r\n\x05\x61mpdu\x18\t \x01(\t\x12\x15\n\rmcs_fixedrate\x18\n \x01(\t\x12\x17\n\x0flisten_interval\x18\x0b \x01(\t\x12\x0b\n\x03usf\x18\x0c \x01(\t\x12\x19\n\x11unscaled_interval\x18\r \x01(\t\x12\x13\n\x0bnontim_mode\x18\x0e \x01(\t\x12\x1e\n\x16\x63trlresp_1mhz_preamble\x18\x0f \x01(\t\x12\x1b\n\x13ndp_probing_support\x18\x10 \x01(\t\x12\x16\n\x0etwt_reqsupport\x18\x11 \x01(\t\x12\x14\n\x0cndppagingind\x18\x12 \x01(\t\x12\x12\n\nresppmmode\x18\x13 \x01(\t\x12\x11\n\ttwt_setup\x18\x14 \x01(\t\x12\x14\n\x0csetupcommand\x18\x15 \x01(\t\x12\x10\n\x08implicit\x18\x16 \x01(\t\x12\x10\n\x08\x66lowtype\x18\x17 \x01(\t\x12\x16\n\x0e\x66lowtype_frame\x18\x18 \x01(\t\x12\x17\n\x0fwakeintervalexp\x18\x19 \x01(\t\x12\x12\n\nprotection\x18\x1a \x01(\t\x12\x19\n\x11nominalminwakedur\x18\x1b \x01(\t\x12\x1c\n\x14wakeintervalmantissa\x18\x1c \x01(\t\x12\x13\n\x0btwt_channel\x18\x1d \x01(\t\"\xb2\x01\n\x15\x43\x61piStaSetSecurityCmd\x12\x11\n\tinterface\x18\x01 \x01(\t\x12\x0c\n\x04ssid\x18\x02 \x01(\t\x12\x0c\n\x04type\x18\x03 \x01(\t\x12\x13\n\x0bkeymgmttype\x18\x04 \x01(\t\x12\x10\n\x08\x65ncptype\x18\x05 \x01(\t\x12\x0b\n\x03pmf\x18\x06 \x01(\t\x12\x12\n\npassphrase\x18\x07 \x01(\t\x12\x0f\n\x07sae_pwe\x18\x08 \x01(\t\x12\x11\n\tecgroupid\x18\t \x01(\t\"j\n\x15\x43\x61piStaSetIpConfigCmd\x12\x11\n\tinterface\x18\x01 \x01(\t\x12\x0c\n\x04\x64hcp\x18\x02 \x01(\t\x12\n\n\x02ip\x18\x03 \x01(\t\x12\x0c\n\x04mask\x18\x04 \x01(\t\x12\x16\n\x0e\x64\x65\x66\x61ultgateway\x18\x05 \x01(\t\"E\n\x13\x43\x61piStaAssociateCmd\x12\x11\n\tinterface\x18\x01 \x01(\t\x12\x0c\n\x04ssid\x18\x02 \x01(\t\x12\r\n\x05\x62ssid\x18\x03 \x01(\t\"*\n\x15\x43\x61piStaIsConnectedCmd\x12\x11\n\tinterface\x18\x01 \x01(\t\"*\n\x15\x43\x61piStaIsConnectedRsp\x12\x11\n\tconnected\x18\x01 \x01(\x05\"\'\n\x12\x43\x61piStaGetBssidCmd\x12\x11\n\tinterface\x18\x01 \x01(\t\"#\n\x12\x43\x61piStaGetBssidRsp\x12\r\n\x05\x62ssid\x18\x01 \x01(\t\"*\n\x15\x43\x61piStaGetIpConfigCmd\x12\x11\n\tinterface\x18\x01 \x01(\t\"T\n\x15\x43\x61piStaGetIpConfigRsp\x12\x0c\n\x04\x64hcp\x18\x01 \x01(\x05\x12\n\n\x02ip\x18\x02 \x01(\t\x12\x0c\n\x04mask\x18\x03 \x01(\t\x12\x13\n\x0bprimary_dns\x18\x04 \x01(\t\"C\n\x14\x43\x61piStaDisconnectCmd\x12\x11\n\tinterface\x18\x01 \x01(\t\x12\x18\n\x10maintain_profile\x18\x02 \x01(\t\"O\n\x16\x43\x61piStaSetPowerSaveCmd\x12\x11\n\tinterface\x18\x01 \x01(\t\x12\x0f\n\x07program\x18\x02 \x01(\t\x12\x11\n\tpowersave\x18\x03 \x01(\t\"\x86\x01\n\x15\x43\x61piStaSetRfeatureCmd\x12\x11\n\tinterface\x18\x01 \x01(\t\x12\x0c\n\x04prog\x18\x02 \x01(\t\x12\x0f\n\x07program\x18\x03 \x01(\t\x12\x1e\n\x16\x63trlresp_1mhz_preamble\x18\x04 \x01(\t\x12\x1b\n\x13response_indication\x18\x05 \x01(\t\"a\n\x14\x43\x61piStaExecActionCmd\x12\x11\n\tinterface\x18\x01 \x01(\t\x12\x0c\n\x04prog\x18\x02 \x01(\t\x12\x11\n\tidle_mode\x18\x03 \x01(\t\x12\x15\n\ridle_duration\x18\x04 \x01(\t\"3\n\x14\x43\x61piStaExecActionRsp\x12\x0e\n\x06\x65rrmsg\x18\x01 \x01(\t\x12\x0b\n\x03mac\x18\x02 \x01(\t\"G\n\x13\x43\x61piStaSendAddbaCmd\x12\x11\n\tinterface\x18\x01 \x01(\t\x12\x10\n\x08\x64\x65st_mac\x18\x02 \x01(\t\x12\x0b\n\x03tid\x18\x03 \x01(\t\"F\n\x11\x43\x61piStaReassocCmd\x12\x11\n\tinterface\x18\x01 \x01(\t\x12\x0f\n\x07\x63hannel\x18\x02 \x01(\t\x12\r\n\x05\x62ssid\x18\x03 \x01(\t\"M\n\x0e\x43\x61piStaScanCmd\x12\x11\n\tinterface\x18\x01 \x01(\t\x12\x0b\n\x03ndp\x18\x02 \x01(\t\x12\x1b\n\x13req_probe_resp_type\x18\x03 \x01(\t\"\x1a\n\x18\x43\x61piTrafficAgentResetCmd\"e\n\x16\x43\x61piTrafficSendPingCmd\x12\x13\n\x0b\x64\x65stination\x18\x01 \x01(\t\x12\x11\n\tframesize\x18\x02 \x01(\t\x12\x11\n\tframerate\x18\x03 \x01(\t\x12\x10\n\x08\x64uration\x18\x04 \x01(\t\"*\n\x16\x43\x61piTrafficSendPingRsp\x12\x10\n\x08streamid\x18\x01 \x01(\x05\"*\n\x16\x43\x61piTrafficStopPingCmd\x12\x10\n\x08streamid\x18\x01 \x01(\t\"7\n\x16\x43\x61piTrafficStopPingRsp\x12\x0c\n\x04sent\x18\x01 \x01(\x05\x12\x0f\n\x07replies\x18\x02 \x01(\x05\"\xee\x01\n\x19\x43\x61piTrafficAgentConfigCmd\x12\x0f\n\x07profile\x18\x01 \x01(\t\x12\x11\n\tdirection\x18\x02 \x01(\t\x12\x0e\n\x06source\x18\x03 \x01(\t\x12\x12\n\nsourceport\x18\x04 \x01(\t\x12\x13\n\x0b\x64\x65stination\x18\x05 \x01(\t\x12\x17\n\x0f\x64\x65stinationport\x18\x06 \x01(\t\x12\x10\n\x08\x64uration\x18\x07 \x01(\t\x12\x13\n\x0bpayloadsize\x18\x08 \x01(\t\x12\x14\n\x0ctrafficclass\x18\t \x01(\t\x12\x11\n\tframerate\x18\n \x01(\t\x12\x0b\n\x03hti\x18\x0b \x01(\t\"-\n\x19\x43\x61piTrafficAgentConfigRsp\x12\x10\n\x08streamid\x18\x01 \x01(\x05\"+\n\x17\x43\x61piTrafficAgentSendCmd\x12\x10\n\x08streamid\x18\x01 \x01(\t\"\x7f\n\x17\x43\x61piTrafficAgentSendRsp\x12\x10\n\x08streamid\x18\x01 \x01(\x05\x12\x10\n\x08txframes\x18\x02 \x01(\x05\x12\x10\n\x08rxframes\x18\x03 \x01(\x05\x12\x16\n\x0etxpayloadbytes\x18\x04 \x01(\x05\x12\x16\n\x0erxpayloadbytes\x18\x05 \x01(\x05\"3\n\x1f\x43\x61piTrafficAgentReceiveStartCmd\x12\x10\n\x08streamid\x18\x01 \x01(\t\"2\n\x1e\x43\x61piTrafficAgentReceiveStopCmd\x12\x10\n\x08streamid\x18\x01 \x01(\t\"\xa3\x01\n\x1e\x43\x61piTrafficAgentReceiveStopRsp\x12\x10\n\x08streamid\x18\x01 \x01(\x05\x12\x10\n\x08txframes\x18\x02 \x01(\x05\x12\x10\n\x08rxframes\x18\x03 \x01(\x05\x12\x16\n\x0etxpayloadbytes\x18\x04 \x01(\x05\x12\x16\n\x0erxpayloadbytes\x18\x05 \x01(\x05\x12\x1b\n\x13outofsequenceframes\x18\x06 \x01(\x05\"\xea\x0c\n\x07\x43\x61piCmd\x12\x36\n\x0f\x64\x65vice_get_info\x18\x01 \x01(\x0b\x32\x1b.emmet.CapiDeviceGetInfoCmdH\x00\x12\x44\n\x16\x64\x65vice_list_interfaces\x18\x02 \x01(\x0b\x32\".emmet.CapiDeviceListInterfacesCmdH\x00\x12:\n\x11sta_reset_default\x18\x03 \x01(\x0b\x32\x1d.emmet.CapiStaResetDefaultCmdH\x00\x12J\n\x19sta_preset_testparameters\x18\x04 \x01(\x0b\x32%.emmet.CapiStaPresetTestparametersCmdH\x00\x12=\n\x13sta_get_mac_address\x18\x05 \x01(\x0b\x32\x1e.emmet.CapiStaGetMacAddressCmdH\x00\x12\x38\n\x10sta_set_wireless\x18\x06 \x01(\x0b\x32\x1c.emmet.CapiStaSetWirelessCmdH\x00\x12\x38\n\x10sta_set_security\x18\x07 \x01(\x0b\x32\x1c.emmet.CapiStaSetSecurityCmdH\x00\x12\x39\n\x11sta_set_ip_config\x18\x08 \x01(\x0b\x32\x1c.emmet.CapiStaSetIpConfigCmdH\x00\x12\x33\n\rsta_associate\x18\t \x01(\x0b\x32\x1a.emmet.CapiStaAssociateCmdH\x00\x12\x38\n\x10sta_is_connected\x18\n \x01(\x0b\x32\x1c.emmet.CapiStaIsConnectedCmdH\x00\x12\x32\n\rsta_get_bssid\x18\x0b \x01(\x0b\x32\x19.emmet.CapiStaGetBssidCmdH\x00\x12\x39\n\x11sta_get_ip_config\x18\x0c \x01(\x0b\x32\x1c.emmet.CapiStaGetIpConfigCmdH\x00\x12\x35\n\x0esta_disconnect\x18\r \x01(\x0b\x32\x1b.emmet.CapiStaDisconnectCmdH\x00\x12;\n\x12sta_set_power_save\x18\x0e \x01(\x0b\x32\x1d.emmet.CapiStaSetPowerSaveCmdH\x00\x12\x38\n\x10sta_set_rfeature\x18\x0f \x01(\x0b\x32\x1c.emmet.CapiStaSetRfeatureCmdH\x00\x12\x36\n\x0fsta_exec_action\x18\x10 \x01(\x0b\x32\x1b.emmet.CapiStaExecActionCmdH\x00\x12\x34\n\x0esta_send_addba\x18\x11 \x01(\x0b\x32\x1a.emmet.CapiStaSendAddbaCmdH\x00\x12/\n\x0bsta_reassoc\x18\x12 \x01(\x0b\x32\x18.emmet.CapiStaReassocCmdH\x00\x12)\n\x08sta_scan\x18\x13 \x01(\x0b\x32\x15.emmet.CapiStaScanCmdH\x00\x12>\n\x13traffic_agent_reset\x18\x14 \x01(\x0b\x32\x1f.emmet.CapiTrafficAgentResetCmdH\x00\x12:\n\x11traffic_send_ping\x18\x15 \x01(\x0b\x32\x1d.emmet.CapiTrafficSendPingCmdH\x00\x12:\n\x11traffic_stop_ping\x18\x16 \x01(\x0b\x32\x1d.emmet.CapiTrafficStopPingCmdH\x00\x12@\n\x14traffic_agent_config\x18\x17 \x01(\x0b\x32 .emmet.CapiTrafficAgentConfigCmdH\x00\x12<\n\x12traffic_agent_send\x18\x18 \x01(\x0b\x32\x1e.emmet.CapiTrafficAgentSendCmdH\x00\x12M\n\x1btraffic_agent_receive_start\x18\x19 \x01(\x0b\x32&.emmet.CapiTrafficAgentReceiveStartCmdH\x00\x12K\n\x1atraffic_agent_receive_stop\x18\x1a \x01(\x0b\x32%.emmet.CapiTrafficAgentReceiveStopCmdH\x00\x12:\n\x12sta_set_static_arp\x18\x1b \x01(\x0b\x32\x1c.emmet.CapiStaSetIpConfigCmdH\x00\x42\x05\n\x03\x63md\"\xf3\x05\n\x07\x43\x61piRsp\x12\x36\n\x0f\x64\x65vice_get_info\x18\x01 \x01(\x0b\x32\x1b.emmet.CapiDeviceGetInfoRspH\x00\x12\x44\n\x16\x64\x65vice_list_interfaces\x18\x02 \x01(\x0b\x32\".emmet.CapiDeviceListInterfacesRspH\x00\x12=\n\x13sta_get_mac_address\x18\x05 \x01(\x0b\x32\x1e.emmet.CapiStaGetMacAddressRspH\x00\x12\x38\n\x10sta_is_connected\x18\n \x01(\x0b\x32\x1c.emmet.CapiStaIsConnectedRspH\x00\x12\x32\n\rsta_get_bssid\x18\x0b \x01(\x0b\x32\x19.emmet.CapiStaGetBssidRspH\x00\x12\x39\n\x11sta_get_ip_config\x18\x0c \x01(\x0b\x32\x1c.emmet.CapiStaGetIpConfigRspH\x00\x12\x36\n\x0fsta_exec_action\x18\x10 \x01(\x0b\x32\x1b.emmet.CapiStaExecActionRspH\x00\x12:\n\x11traffic_send_ping\x18\x15 \x01(\x0b\x32\x1d.emmet.CapiTrafficSendPingRspH\x00\x12:\n\x11traffic_stop_ping\x18\x16 \x01(\x0b\x32\x1d.emmet.CapiTrafficStopPingRspH\x00\x12@\n\x14traffic_agent_config\x18\x17 \x01(\x0b\x32 .emmet.CapiTrafficAgentConfigRspH\x00\x12<\n\x12traffic_agent_send\x18\x18 \x01(\x0b\x32\x1e.emmet.CapiTrafficAgentSendRspH\x00\x12K\n\x1atraffic_agent_receive_stop\x18\x1a \x01(\x0b\x32%.emmet.CapiTrafficAgentReceiveStopRspH\x00\x42\x05\n\x03rsp\"\x19\n\nCfgReadCmd\x12\x0b\n\x03key\x18\x01 \x01(\t\"*\n\nCfgReadRsp\x12\x0b\n\x03len\x18\x01 \x01(\x05\x12\x0f\n\x07payload\x18\x02 \x01(\x0c\"+\n\x0b\x43\x66gWriteCmd\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x0f\n\x07payload\x18\x02 \x01(\x0c\"\x18\n\tCfgDelCmd\x12\x0b\n\x03key\x18\x01 \x01(\t\"\x1f\n\x0b\x43\x66gEraseCmd\x12\x10\n\x08lowlevel\x18\x01 \x01(\x05\"\x9d\x01\n\x06\x43\x66gCmd\x12!\n\x04read\x18\x01 \x01(\x0b\x32\x11.emmet.CfgReadCmdH\x00\x12#\n\x05write\x18\x02 \x01(\x0b\x32\x12.emmet.CfgWriteCmdH\x00\x12\x1f\n\x03\x64\x65l\x18\x03 \x01(\x0b\x32\x10.emmet.CfgDelCmdH\x00\x12#\n\x05\x65rase\x18\x04 \x01(\x0b\x32\x12.emmet.CfgEraseCmdH\x00\x42\x05\n\x03\x63md\"2\n\x06\x43\x66gRsp\x12!\n\x04read\x18\x01 \x01(\x0b\x32\x11.emmet.CfgReadRspH\x00\x42\x05\n\x03rsp\"8\n\x0b\x46ileReadCmd\x12\x0c\n\x04path\x18\x01 \x01(\t\x12\x0e\n\x06offset\x18\x02 \x01(\x05\x12\x0b\n\x03len\x18\x03 \x01(\x05\"+\n\x0b\x46ileReadRsp\x12\x0b\n\x03len\x18\x01 \x01(\x05\x12\x0f\n\x07payload\x18\x02 \x01(\x0c\"-\n\x0c\x46ileWriteCmd\x12\x0c\n\x04path\x18\x01 \x01(\t\x12\x0f\n\x07payload\x18\x02 \x01(\x0c\"\x1a\n\nFileDelCmd\x12\x0c\n\x04path\x18\x01 \x01(\t\"|\n\x07\x46ileCmd\x12\"\n\x04read\x18\x01 \x01(\x0b\x32\x12.emmet.FileReadCmdH\x00\x12$\n\x05write\x18\x02 \x01(\x0b\x32\x13.emmet.FileWriteCmdH\x00\x12 \n\x03\x64\x65l\x18\x03 \x01(\x0b\x32\x11.emmet.FileDelCmdH\x00\x42\x05\n\x03\x63md\"4\n\x07\x46ileRsp\x12\"\n\x04read\x18\x01 \x01(\x0b\x32\x12.emmet.FileReadRspH\x00\x42\x05\n\x03rsp\"L\n\x0cHalSetLedCmd\x12\x1c\n\x06led_id\x18\x01 \x01(\x0e\x32\x0c.emmet.LedId\x12\x1e\n\x05level\x18\x02 \x01(\x0e\x32\x0f.emmet.LedLevel\"8\n\x0fHalGetButtonCmd\x12%\n\tbutton_id\x18\x01 \x01(\x0e\x32\x12.emmet.HalButtonId\">\n\x0fHalGetButtonRsp\x12+\n\x0c\x62utton_state\x18\x01 \x01(\x0e\x32\x15.emmet.HalButtonState\"e\n\x0fHalSetButtonCmd\x12%\n\tbutton_id\x18\x01 \x01(\x0e\x32\x12.emmet.HalButtonId\x12+\n\x0c\x62utton_state\x18\x02 \x01(\x0e\x32\x15.emmet.HalButtonState\"\x93\x01\n\x06HalCmd\x12&\n\x07set_led\x18\x01 \x01(\x0b\x32\x13.emmet.HalSetLedCmdH\x00\x12,\n\nget_button\x18\x02 \x01(\x0b\x32\x16.emmet.HalGetButtonCmdH\x00\x12,\n\nset_button\x18\x03 \x01(\x0b\x32\x16.emmet.HalSetButtonCmdH\x00\x42\x05\n\x03\x63md\"=\n\x06HalRsp\x12,\n\nget_button\x18\x01 \x01(\x0b\x32\x16.emmet.HalGetButtonRspH\x00\x42\x05\n\x03rsp\"\xef\x01\n\x06\x44utCmd\x12\x1c\n\x03sys\x18\x01 \x01(\x0b\x32\r.emmet.SysCmdH\x00\x12\x1e\n\x04lwip\x18\x02 \x01(\x0b\x32\x0e.emmet.LwipCmdH\x00\x12\x1e\n\x04wlan\x18\x03 \x01(\x0b\x32\x0e.emmet.WlanCmdH\x00\x12\x1e\n\x04\x63\x61pi\x18\x04 \x01(\x0b\x32\x0e.emmet.CapiCmdH\x00\x12\x1f\n\x06\x63onfig\x18\x05 \x01(\x0b\x32\r.emmet.CfgCmdH\x00\x12\x1e\n\x04\x66ile\x18\x06 \x01(\x0b\x32\x0e.emmet.FileCmdH\x00\x12\x1c\n\x03hal\x18\x07 \x01(\x0b\x32\r.emmet.HalCmdH\x00\x42\x08\n\x06\x63mdgrp\"\x91\x02\n\x06\x44utRsp\x12\x1c\n\x03sys\x18\x01 \x01(\x0b\x32\r.emmet.SysRspH\x00\x12\x1e\n\x04lwip\x18\x02 \x01(\x0b\x32\x0e.emmet.LwipRspH\x00\x12\x1e\n\x04wlan\x18\x03 \x01(\x0b\x32\x0e.emmet.WlanRspH\x00\x12\x1e\n\x04\x63\x61pi\x18\x04 \x01(\x0b\x32\x0e.emmet.CapiRspH\x00\x12\x1f\n\x06\x63onfig\x18\x05 \x01(\x0b\x32\r.emmet.CfgRspH\x00\x12\x1e\n\x04\x66ile\x18\x06 \x01(\x0b\x32\x0e.emmet.FileRspH\x00\x12\x1c\n\x03hal\x18\x07 \x01(\x0b\x32\r.emmet.HalRspH\x00\x12 \n\x05\x62\x61sic\x18\x7f \x01(\x0b\x32\x0f.emmet.BasicRspH\x00\x42\x08\n\x06rspgrp*\xe8\x02\n\nStatusCode\x12\x0b\n\x07SUCCESS\x10\x00\x12\x14\n\x10MALFORMED_PACKET\x10\x01\x12\x13\n\x0fINVALID_COMMAND\x10\x02\x12\x14\n\x10INVALID_ARGUMENT\x10\x03\x12\x15\n\x11RESPONSE_TOO_LONG\x10\x04\x12\x1d\n\x19MEMORY_ALLOCATION_FAILURE\x10\n\x12\x0f\n\x0bUNAVAILABLE\x10\x0b\x12\x18\n\x14\x43HANNEL_LIST_NOT_SET\x10\x0c\x12\n\n\x06NO_MEM\x10\r\x12\r\n\tTIMED_OUT\x10\x0e\x12\x14\n\x10SHUTDOWN_BLOCKED\x10\x0f\x12\x13\n\x0f\x43HANNEL_INVALID\x10\x10\x12\r\n\tNOT_FOUND\x10\x11\x12\x10\n\x0cSOCKET_ERROR\x10\x12\x12\x0f\n\x0bNOT_RUNNING\x10\x13\x12\x13\n\x0fNOT_INITIALIZED\x10\x14\x12\r\n\tVIF_ERROR\x10\x15\x12\x0f\n\x0bOTHER_ERROR\x10\x7f*.\n\x0b\x46\x61ilureType\x12\r\n\tASSERTION\x10\x00\x12\x10\n\x0cJUMP_TO_ZERO\x10\x01* \n\x0cLwipPortType\x12\x07\n\x03UDP\x10\x00\x12\x07\n\x03TCP\x10\x01*\"\n\x08IperfDir\x12\n\n\x06SERVER\x10\x00\x12\n\n\x06\x43LIENT\x10\x01*E\n\nIperfState\x12\x0f\n\x0bNOT_STARTED\x10\x00\x12\x0b\n\x07RUNNING\x10\x01\x12\x0c\n\x08\x46INISHED\x10\x02\x12\x0b\n\x07\x41\x42ORTED\x10\x03*>\n\x0bIp6AddrMode\x12\n\n\x06STATIC\x10\x00\x12\x0e\n\nAUTOCONFIG\x10\x01\x12\x13\n\x0f\x44HCP6_STATELESS\x10\x02*\'\n\tLinkState\x12\r\n\tLINK_DOWN\x10\x00\x12\x0b\n\x07LINK_UP\x10\x01*G\n\x10WlanSecurityType\x12\x0f\n\x0bNO_SECURITY\x10\x00\x12\x10\n\x0cOWE_SECURITY\x10\x01\x12\x10\n\x0cSAE_SECURITY\x10\x02*1\n\x0bWlanPmfMode\x12\x10\n\x0cPMF_REQUIRED\x10\x00\x12\x10\n\x0cPMF_DISABLED\x10\x01*C\n\x08StaState\x12\x10\n\x0cSTA_DISABLED\x10\x00\x12\x12\n\x0eSTA_CONNECTING\x10\x01\x12\x11\n\rSTA_CONNECTED\x10\x02*:\n\x0bPwrSaveMode\x12\x15\n\x11PWR_SAVE_DISABLED\x10\x00\x12\x14\n\x10PWR_SAVE_ENABLED\x10\x01*C\n\x0fTwtSetupCommand\x12\x0f\n\x0bTWT_REQUEST\x10\x00\x12\x0f\n\x0bTWT_SUGGEST\x10\x01\x12\x0e\n\nTWT_DEMAND\x10\x02*O\n\x12StaAutoconnectMode\x12\x1b\n\x17STA_AUTOCONNECT_ENABLED\x10\x00\x12\x1c\n\x18STA_AUTOCONNECT_DISABLED\x10\x01*P\n\tMCS10Mode\x12\x17\n\x13MCS10_MODE_DISABLED\x10\x00\x12\x15\n\x11MCS10_MODE_FORCED\x10\x01\x12\x13\n\x0fMCS10_MODE_AUTO\x10\x02*F\n\rDutyCycleMode\x12\x1a\n\x16\x44UTY_CYCLE_MODE_SPREAD\x10\x00\x12\x19\n\x15\x44UTY_CYCLE_MODE_BURST\x10\x01*7\n\x07WlanVif\x12\x13\n\x0fVIF_UNSPECIFIED\x10\x00\x12\x0b\n\x07VIF_STA\x10\x01\x12\n\n\x06VIF_AP\x10\x02*I\n\x0cStaScanState\x12\x12\n\x0eSCAN_COMPLETED\x10\x00\x12\x13\n\x0fSCAN_TERMINATED\x10\x01\x12\x10\n\x0cSCAN_RUNNING\x10\x02*,\n\x07KeyType\x12\x0c\n\x08PAIRWISE\x10\x00\x12\t\n\x05GROUP\x10\x01\x12\x08\n\x04IGTK\x10\x02*9\n\nApStaState\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x0e\n\nASSOCIATED\x10\x01\x12\x0e\n\nAUTHORIZED\x10\x02*L\n\x05LedId\x12\x0e\n\nLED_ID_RED\x10\x00\x12\x10\n\x0cLED_ID_GREEN\x10\x01\x12\x0f\n\x0bLED_ID_BLUE\x10\x02\x12\x10\n\x0cLED_ID_WHITE\x10\x03*$\n\x08LedLevel\x12\x0b\n\x07LED_OFF\x10\x00\x12\x0b\n\x06LED_ON\x10\xff\x01*\"\n\x0bHalButtonId\x12\x13\n\x0f\x42UTTON_ID_USER0\x10\x00*9\n\x0eHalButtonState\x12\x13\n\x0f\x42UTTON_RELEASED\x10\x00\x12\x12\n\x0e\x42UTTON_PRESSED\x10\x01\x62\x06proto3'
 )
 
 _STATUSCODE = _descriptor.EnumDescriptor(
@@ -106,15 +106,25 @@ _STATUSCODE = _descriptor.EnumDescriptor(
       type=None,
       create_key=_descriptor._internal_create_key),
     _descriptor.EnumValueDescriptor(
-      name='OTHER_ERROR', index=15, number=127,
+      name='NOT_INITIALIZED', index=15, number=20,
+      serialized_options=None,
+      type=None,
+      create_key=_descriptor._internal_create_key),
+    _descriptor.EnumValueDescriptor(
+      name='VIF_ERROR', index=16, number=21,
+      serialized_options=None,
+      type=None,
+      create_key=_descriptor._internal_create_key),
+    _descriptor.EnumValueDescriptor(
+      name='OTHER_ERROR', index=17, number=127,
       serialized_options=None,
       type=None,
       create_key=_descriptor._internal_create_key),
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=19139,
-  serialized_end=19463,
+  serialized_start=20731,
+  serialized_end=21091,
 )
 _sym_db.RegisterEnumDescriptor(_STATUSCODE)
 
@@ -139,8 +149,8 @@ _FAILURETYPE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=19465,
-  serialized_end=19511,
+  serialized_start=21093,
+  serialized_end=21139,
 )
 _sym_db.RegisterEnumDescriptor(_FAILURETYPE)
 
@@ -165,8 +175,8 @@ _LWIPPORTTYPE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=19513,
-  serialized_end=19545,
+  serialized_start=21141,
+  serialized_end=21173,
 )
 _sym_db.RegisterEnumDescriptor(_LWIPPORTTYPE)
 
@@ -191,8 +201,8 @@ _IPERFDIR = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=19547,
-  serialized_end=19581,
+  serialized_start=21175,
+  serialized_end=21209,
 )
 _sym_db.RegisterEnumDescriptor(_IPERFDIR)
 
@@ -227,8 +237,8 @@ _IPERFSTATE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=19583,
-  serialized_end=19652,
+  serialized_start=21211,
+  serialized_end=21280,
 )
 _sym_db.RegisterEnumDescriptor(_IPERFSTATE)
 
@@ -258,8 +268,8 @@ _IP6ADDRMODE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=19654,
-  serialized_end=19716,
+  serialized_start=21282,
+  serialized_end=21344,
 )
 _sym_db.RegisterEnumDescriptor(_IP6ADDRMODE)
 
@@ -284,8 +294,8 @@ _LINKSTATE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=19718,
-  serialized_end=19757,
+  serialized_start=21346,
+  serialized_end=21385,
 )
 _sym_db.RegisterEnumDescriptor(_LINKSTATE)
 
@@ -315,8 +325,8 @@ _WLANSECURITYTYPE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=19759,
-  serialized_end=19830,
+  serialized_start=21387,
+  serialized_end=21458,
 )
 _sym_db.RegisterEnumDescriptor(_WLANSECURITYTYPE)
 
@@ -341,8 +351,8 @@ _WLANPMFMODE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=19832,
-  serialized_end=19881,
+  serialized_start=21460,
+  serialized_end=21509,
 )
 _sym_db.RegisterEnumDescriptor(_WLANPMFMODE)
 
@@ -372,8 +382,8 @@ _STASTATE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=19883,
-  serialized_end=19950,
+  serialized_start=21511,
+  serialized_end=21578,
 )
 _sym_db.RegisterEnumDescriptor(_STASTATE)
 
@@ -398,8 +408,8 @@ _PWRSAVEMODE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=19952,
-  serialized_end=20010,
+  serialized_start=21580,
+  serialized_end=21638,
 )
 _sym_db.RegisterEnumDescriptor(_PWRSAVEMODE)
 
@@ -429,8 +439,8 @@ _TWTSETUPCOMMAND = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=20012,
-  serialized_end=20079,
+  serialized_start=21640,
+  serialized_end=21707,
 )
 _sym_db.RegisterEnumDescriptor(_TWTSETUPCOMMAND)
 
@@ -455,8 +465,8 @@ _STAAUTOCONNECTMODE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=20081,
-  serialized_end=20160,
+  serialized_start=21709,
+  serialized_end=21788,
 )
 _sym_db.RegisterEnumDescriptor(_STAAUTOCONNECTMODE)
 
@@ -486,8 +496,8 @@ _MCS10MODE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=20162,
-  serialized_end=20242,
+  serialized_start=21790,
+  serialized_end=21870,
 )
 _sym_db.RegisterEnumDescriptor(_MCS10MODE)
 
@@ -512,12 +522,74 @@ _DUTYCYCLEMODE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=20244,
-  serialized_end=20314,
+  serialized_start=21872,
+  serialized_end=21942,
 )
 _sym_db.RegisterEnumDescriptor(_DUTYCYCLEMODE)
 
 DutyCycleMode = enum_type_wrapper.EnumTypeWrapper(_DUTYCYCLEMODE)
+_WLANVIF = _descriptor.EnumDescriptor(
+  name='WlanVif',
+  full_name='emmet.WlanVif',
+  filename=None,
+  file=DESCRIPTOR,
+  create_key=_descriptor._internal_create_key,
+  values=[
+    _descriptor.EnumValueDescriptor(
+      name='VIF_UNSPECIFIED', index=0, number=0,
+      serialized_options=None,
+      type=None,
+      create_key=_descriptor._internal_create_key),
+    _descriptor.EnumValueDescriptor(
+      name='VIF_STA', index=1, number=1,
+      serialized_options=None,
+      type=None,
+      create_key=_descriptor._internal_create_key),
+    _descriptor.EnumValueDescriptor(
+      name='VIF_AP', index=2, number=2,
+      serialized_options=None,
+      type=None,
+      create_key=_descriptor._internal_create_key),
+  ],
+  containing_type=None,
+  serialized_options=None,
+  serialized_start=21944,
+  serialized_end=21999,
+)
+_sym_db.RegisterEnumDescriptor(_WLANVIF)
+
+WlanVif = enum_type_wrapper.EnumTypeWrapper(_WLANVIF)
+_STASCANSTATE = _descriptor.EnumDescriptor(
+  name='StaScanState',
+  full_name='emmet.StaScanState',
+  filename=None,
+  file=DESCRIPTOR,
+  create_key=_descriptor._internal_create_key,
+  values=[
+    _descriptor.EnumValueDescriptor(
+      name='SCAN_COMPLETED', index=0, number=0,
+      serialized_options=None,
+      type=None,
+      create_key=_descriptor._internal_create_key),
+    _descriptor.EnumValueDescriptor(
+      name='SCAN_TERMINATED', index=1, number=1,
+      serialized_options=None,
+      type=None,
+      create_key=_descriptor._internal_create_key),
+    _descriptor.EnumValueDescriptor(
+      name='SCAN_RUNNING', index=2, number=2,
+      serialized_options=None,
+      type=None,
+      create_key=_descriptor._internal_create_key),
+  ],
+  containing_type=None,
+  serialized_options=None,
+  serialized_start=22001,
+  serialized_end=22074,
+)
+_sym_db.RegisterEnumDescriptor(_STASCANSTATE)
+
+StaScanState = enum_type_wrapper.EnumTypeWrapper(_STASCANSTATE)
 _KEYTYPE = _descriptor.EnumDescriptor(
   name='KeyType',
   full_name='emmet.KeyType',
@@ -543,12 +615,43 @@ _KEYTYPE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=20316,
-  serialized_end=20360,
+  serialized_start=22076,
+  serialized_end=22120,
 )
 _sym_db.RegisterEnumDescriptor(_KEYTYPE)
 
 KeyType = enum_type_wrapper.EnumTypeWrapper(_KEYTYPE)
+_APSTASTATE = _descriptor.EnumDescriptor(
+  name='ApStaState',
+  full_name='emmet.ApStaState',
+  filename=None,
+  file=DESCRIPTOR,
+  create_key=_descriptor._internal_create_key,
+  values=[
+    _descriptor.EnumValueDescriptor(
+      name='UNKNOWN', index=0, number=0,
+      serialized_options=None,
+      type=None,
+      create_key=_descriptor._internal_create_key),
+    _descriptor.EnumValueDescriptor(
+      name='ASSOCIATED', index=1, number=1,
+      serialized_options=None,
+      type=None,
+      create_key=_descriptor._internal_create_key),
+    _descriptor.EnumValueDescriptor(
+      name='AUTHORIZED', index=2, number=2,
+      serialized_options=None,
+      type=None,
+      create_key=_descriptor._internal_create_key),
+  ],
+  containing_type=None,
+  serialized_options=None,
+  serialized_start=22122,
+  serialized_end=22179,
+)
+_sym_db.RegisterEnumDescriptor(_APSTASTATE)
+
+ApStaState = enum_type_wrapper.EnumTypeWrapper(_APSTASTATE)
 _LEDID = _descriptor.EnumDescriptor(
   name='LedId',
   full_name='emmet.LedId',
@@ -579,8 +682,8 @@ _LEDID = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=20362,
-  serialized_end=20438,
+  serialized_start=22181,
+  serialized_end=22257,
 )
 _sym_db.RegisterEnumDescriptor(_LEDID)
 
@@ -605,8 +708,8 @@ _LEDLEVEL = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=20440,
-  serialized_end=20476,
+  serialized_start=22259,
+  serialized_end=22295,
 )
 _sym_db.RegisterEnumDescriptor(_LEDLEVEL)
 
@@ -626,8 +729,8 @@ _HALBUTTONID = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=20478,
-  serialized_end=20512,
+  serialized_start=22297,
+  serialized_end=22331,
 )
 _sym_db.RegisterEnumDescriptor(_HALBUTTONID)
 
@@ -652,8 +755,8 @@ _HALBUTTONSTATE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=20514,
-  serialized_end=20571,
+  serialized_start=22333,
+  serialized_end=22390,
 )
 _sym_db.RegisterEnumDescriptor(_HALBUTTONSTATE)
 
@@ -673,6 +776,8 @@ CHANNEL_INVALID = 16
 NOT_FOUND = 17
 SOCKET_ERROR = 18
 NOT_RUNNING = 19
+NOT_INITIALIZED = 20
+VIF_ERROR = 21
 OTHER_ERROR = 127
 ASSERTION = 0
 JUMP_TO_ZERO = 1
@@ -709,9 +814,18 @@ MCS10_MODE_FORCED = 1
 MCS10_MODE_AUTO = 2
 DUTY_CYCLE_MODE_SPREAD = 0
 DUTY_CYCLE_MODE_BURST = 1
+VIF_UNSPECIFIED = 0
+VIF_STA = 1
+VIF_AP = 2
+SCAN_COMPLETED = 0
+SCAN_TERMINATED = 1
+SCAN_RUNNING = 2
 PAIRWISE = 0
 GROUP = 1
 IGTK = 2
+UNKNOWN = 0
+ASSOCIATED = 1
+AUTHORIZED = 2
 LED_ID_RED = 0
 LED_ID_GREEN = 1
 LED_ID_BLUE = 2
@@ -1793,6 +1907,77 @@ _SETIP6CONFIGCMD = _descriptor.Descriptor(
 )
 
 
+_SETSTATICARPCMD = _descriptor.Descriptor(
+  name='SetStaticArpCmd',
+  full_name='emmet.SetStaticArpCmd',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='remove', full_name='emmet.SetStaticArpCmd.remove', index=0,
+      number=1, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='ip_addr', full_name='emmet.SetStaticArpCmd.ip_addr', index=1,
+      number=2, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='mac_addr', full_name='emmet.SetStaticArpCmd.mac_addr', index=2,
+      number=3, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=2024,
+  serialized_end=2092,
+)
+
+
+_SETSTATICARPRSP = _descriptor.Descriptor(
+  name='SetStaticArpRsp',
+  full_name='emmet.SetStaticArpRsp',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=2094,
+  serialized_end=2111,
+)
+
+
 _SETTXQOSTIDCMD = _descriptor.Descriptor(
   name='SetTxQosTidCmd',
   full_name='emmet.SetTxQosTidCmd',
@@ -1820,8 +2005,8 @@ _SETTXQOSTIDCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2024,
-  serialized_end=2057,
+  serialized_start=2113,
+  serialized_end=2146,
 )
 
 
@@ -1845,8 +2030,8 @@ _GETLINKSTATECMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2059,
-  serialized_end=2076,
+  serialized_start=2148,
+  serialized_end=2165,
 )
 
 
@@ -1877,8 +2062,8 @@ _GETLINKSTATERSP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2078,
-  serialized_end=2128,
+  serialized_start=2167,
+  serialized_end=2217,
 )
 
 
@@ -1916,8 +2101,8 @@ _TCPCONNECTCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2130,
-  serialized_end=2178,
+  serialized_start=2219,
+  serialized_end=2267,
 )
 
 
@@ -1948,8 +2133,8 @@ _TCPCONNECTRSP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2180,
-  serialized_end=2214,
+  serialized_start=2269,
+  serialized_end=2303,
 )
 
 
@@ -1987,8 +2172,8 @@ _TCPSENDCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2216,
-  serialized_end=2261,
+  serialized_start=2305,
+  serialized_end=2350,
 )
 
 
@@ -2085,14 +2270,21 @@ _LWIPCMD = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='tcp_connect', full_name='emmet.LwipCmd.tcp_connect', index=12,
+      name='set_static_arp', full_name='emmet.LwipCmd.set_static_arp', index=12,
+      number=13, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='tcp_connect', full_name='emmet.LwipCmd.tcp_connect', index=13,
       number=100, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='tcp_send', full_name='emmet.LwipCmd.tcp_send', index=13,
+      name='tcp_send', full_name='emmet.LwipCmd.tcp_send', index=14,
       number=101, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
@@ -2115,8 +2307,8 @@ _LWIPCMD = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=2264,
-  serialized_end=2958,
+  serialized_start=2353,
+  serialized_end=3097,
 )
 
 
@@ -2178,7 +2370,14 @@ _LWIPRSP = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='tcp_connect', full_name='emmet.LwipRsp.tcp_connect', index=7,
+      name='set_static_arp', full_name='emmet.LwipRsp.set_static_arp', index=7,
+      number=13, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='tcp_connect', full_name='emmet.LwipRsp.tcp_connect', index=8,
       number=100, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
@@ -2201,8 +2400,8 @@ _LWIPRSP = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=2961,
-  serialized_end=3371,
+  serialized_start=3100,
+  serialized_end=3560,
 )
 
 
@@ -2233,8 +2432,8 @@ _SETMCSOVERRIDECMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3373,
-  serialized_end=3405,
+  serialized_start=3562,
+  serialized_end=3594,
 )
 
 
@@ -2265,8 +2464,8 @@ _SETRTSTHRESHOLDCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3407,
-  serialized_end=3446,
+  serialized_start=3596,
+  serialized_end=3635,
 )
 
 
@@ -2297,8 +2496,8 @@ _SETCOUNTRYCODECMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3448,
-  serialized_end=3489,
+  serialized_start=3637,
+  serialized_end=3678,
 )
 
 
@@ -2329,8 +2528,8 @@ _SETTXPOWEROVERRIDECMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3491,
-  serialized_end=3541,
+  serialized_start=3680,
+  serialized_end=3730,
 )
 
 
@@ -2361,8 +2560,8 @@ _SETSGIENABLEDCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3543,
-  serialized_end=3582,
+  serialized_start=3732,
+  serialized_end=3771,
 )
 
 
@@ -2393,8 +2592,8 @@ _SETSUBBANDSENABLEDCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3584,
-  serialized_end=3633,
+  serialized_start=3773,
+  serialized_end=3822,
 )
 
 
@@ -2425,8 +2624,8 @@ _SETPOWERSAVEMODECMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3635,
-  serialized_end=3701,
+  serialized_start=3824,
+  serialized_end=3890,
 )
 
 
@@ -2457,8 +2656,8 @@ _SETAMPDUENABLEDCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3703,
-  serialized_end=3746,
+  serialized_start=3892,
+  serialized_end=3935,
 )
 
 
@@ -2496,8 +2695,8 @@ _SETWNMSLEEPENABLEDCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3748,
-  serialized_end=3831,
+  serialized_start=3937,
+  serialized_end=4020,
 )
 
 
@@ -2528,8 +2727,8 @@ _SETFRAGMENTTHRESHOLDCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3833,
-  serialized_end=3877,
+  serialized_start=4022,
+  serialized_end=4066,
 )
 
 
@@ -2560,8 +2759,8 @@ _SETSTAAUTOCONNECTCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3879,
-  serialized_end=3958,
+  serialized_start=4068,
+  serialized_end=4147,
 )
 
 
@@ -2599,8 +2798,8 @@ _SETSCANCONFIGCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3960,
-  serialized_end=4028,
+  serialized_start=4149,
+  serialized_end=4217,
 )
 
 
@@ -2638,8 +2837,8 @@ _SETHEALTHCHECKINTERVALCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4030,
-  serialized_end=4127,
+  serialized_start=4219,
+  serialized_end=4316,
 )
 
 
@@ -2698,8 +2897,8 @@ _SETDEFAULTQOSQUEUEPARAMSCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4129,
-  serialized_end=4238,
+  serialized_start=4318,
+  serialized_end=4427,
 )
 
 
@@ -2730,8 +2929,8 @@ _SETMCS10MODECMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4240,
-  serialized_end=4289,
+  serialized_start=4429,
+  serialized_end=4478,
 )
 
 
@@ -2762,8 +2961,8 @@ _SETDUTYCYCLEMODECMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4291,
-  serialized_end=4348,
+  serialized_start=4480,
+  serialized_end=4537,
 )
 
 
@@ -2794,8 +2993,104 @@ _SETLISTENINTERVALCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4350,
-  serialized_end=4390,
+  serialized_start=4539,
+  serialized_end=4579,
+)
+
+
+_SETNONTIMMODEENABLEDCMD = _descriptor.Descriptor(
+  name='SetNonTimModeEnabledCmd',
+  full_name='emmet.SetNonTimModeEnabledCmd',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='non_tim_mode_enabled', full_name='emmet.SetNonTimModeEnabledCmd.non_tim_mode_enabled', index=0,
+      number=1, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=4581,
+  serialized_end=4636,
+)
+
+
+_SETCONTROLRESPONSEPREAMBLE1MHZOUTENABLEDCMD = _descriptor.Descriptor(
+  name='SetControlResponsePreamble1mhzOutEnabledCmd',
+  full_name='emmet.SetControlResponsePreamble1mhzOutEnabledCmd',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='enabled', full_name='emmet.SetControlResponsePreamble1mhzOutEnabledCmd.enabled', index=0,
+      number=1, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=4638,
+  serialized_end=4700,
+)
+
+
+_SETDYNAMICPSTIMEOUTCMD = _descriptor.Descriptor(
+  name='SetDynamicPSTimeoutCmd',
+  full_name='emmet.SetDynamicPSTimeoutCmd',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='timeout_ms', full_name='emmet.SetDynamicPSTimeoutCmd.timeout_ms', index=0,
+      number=1, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=4702,
+  serialized_end=4746,
 )
 
 
@@ -2933,6 +3228,13 @@ _STAENABLECMD = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='use_4addr', full_name='emmet.StaEnableCmd.use_4addr', index=18,
+      number=19, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -2945,8 +3247,8 @@ _STAENABLECMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4393,
-  serialized_end=4928,
+  serialized_start=4749,
+  serialized_end=5303,
 )
 
 
@@ -2998,8 +3300,8 @@ _STASCANREQUESTCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4930,
-  serialized_end=5031,
+  serialized_start=5305,
+  serialized_end=5406,
 )
 
 
@@ -3023,8 +3325,8 @@ _STASCANABORTCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5033,
-  serialized_end=5050,
+  serialized_start=5408,
+  serialized_end=5425,
 )
 
 
@@ -3048,8 +3350,8 @@ _STASCANRESULTSCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5052,
-  serialized_end=5071,
+  serialized_start=5427,
+  serialized_end=5446,
 )
 
 
@@ -3103,6 +3405,13 @@ _STASCANRESULT = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='noise_dbm', full_name='emmet.StaScanResult.noise_dbm', index=6,
+      number=7, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -3115,8 +3424,8 @@ _STASCANRESULT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5073,
-  serialized_end=5194,
+  serialized_start=5449,
+  serialized_end=5589,
 )
 
 
@@ -3135,6 +3444,13 @@ _STASCANRESULTSRSP = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='state', full_name='emmet.StaScanResultsRsp.state', index=1,
+      number=2, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -3147,8 +3463,8 @@ _STASCANRESULTSRSP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5196,
-  serialized_end=5259,
+  serialized_start=5591,
+  serialized_end=5690,
 )
 
 
@@ -3172,8 +3488,8 @@ _STADISABLECMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5261,
-  serialized_end=5276,
+  serialized_start=5692,
+  serialized_end=5707,
 )
 
 
@@ -3197,8 +3513,8 @@ _STAGETSTATECMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5278,
-  serialized_end=5294,
+  serialized_start=5709,
+  serialized_end=5725,
 )
 
 
@@ -3229,8 +3545,8 @@ _STAGETSTATERSP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5296,
-  serialized_end=5344,
+  serialized_start=5727,
+  serialized_end=5775,
 )
 
 
@@ -3242,6 +3558,13 @@ _GETMACADDRESSCMD = _descriptor.Descriptor(
   containing_type=None,
   create_key=_descriptor._internal_create_key,
   fields=[
+    _descriptor.FieldDescriptor(
+      name='vif', full_name='emmet.GetMacAddressCmd.vif', index=0,
+      number=1, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -3254,8 +3577,8 @@ _GETMACADDRESSCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5346,
-  serialized_end=5364,
+  serialized_start=5777,
+  serialized_end=5824,
 )
 
 
@@ -3286,8 +3609,8 @@ _GETMACADDRESSRSP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5366,
-  serialized_end=5405,
+  serialized_start=5826,
+  serialized_end=5865,
 )
 
 
@@ -3311,8 +3634,8 @@ _GETBSSIDCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5407,
-  serialized_end=5420,
+  serialized_start=5867,
+  serialized_end=5880,
 )
 
 
@@ -3343,8 +3666,8 @@ _GETBSSIDRSP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5422,
-  serialized_end=5450,
+  serialized_start=5882,
+  serialized_end=5910,
 )
 
 
@@ -3368,8 +3691,8 @@ _GETDUTYCYCLESTATSCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5452,
-  serialized_end=5474,
+  serialized_start=5912,
+  serialized_end=5934,
 )
 
 
@@ -3421,8 +3744,8 @@ _GETDUTYCYCLESTATSRSP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5477,
-  serialized_end=5625,
+  serialized_start=5937,
+  serialized_end=6085,
 )
 
 
@@ -3446,8 +3769,8 @@ _BOOTCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5627,
-  serialized_end=5636,
+  serialized_start=6087,
+  serialized_end=6096,
 )
 
 
@@ -3471,8 +3794,8 @@ _SHUTDOWNCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5638,
-  serialized_end=5651,
+  serialized_start=6098,
+  serialized_end=6111,
 )
 
 
@@ -3496,8 +3819,8 @@ _GETVERSIONCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5653,
-  serialized_end=5668,
+  serialized_start=6113,
+  serialized_end=6128,
 )
 
 
@@ -3549,8 +3872,8 @@ _GETVERSIONRSP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5670,
-  serialized_end=5790,
+  serialized_start=6130,
+  serialized_end=6250,
 )
 
 
@@ -3574,8 +3897,8 @@ _GETBCFMETADATACMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5792,
-  serialized_end=5811,
+  serialized_start=6252,
+  serialized_end=6271,
 )
 
 
@@ -3634,8 +3957,8 @@ _GETBCFMETADATARSP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5814,
-  serialized_end=5945,
+  serialized_start=6274,
+  serialized_end=6405,
 )
 
 
@@ -3659,8 +3982,8 @@ _GETRSSICMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5947,
-  serialized_end=5959,
+  serialized_start=6407,
+  serialized_end=6419,
 )
 
 
@@ -3691,8 +4014,8 @@ _GETRSSIRSP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5961,
-  serialized_end=5987,
+  serialized_start=6421,
+  serialized_end=6447,
 )
 
 
@@ -3716,8 +4039,8 @@ _GETRCSTATSCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5989,
-  serialized_end=6004,
+  serialized_start=6449,
+  serialized_end=6464,
 )
 
 
@@ -3762,8 +4085,8 @@ _GETRCSTATSRSP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6006,
-  serialized_end=6083,
+  serialized_start=6466,
+  serialized_end=6543,
 )
 
 
@@ -3801,8 +4124,8 @@ _GETMORSESTATSCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6085,
-  serialized_end=6136,
+  serialized_start=6545,
+  serialized_end=6596,
 )
 
 
@@ -3833,8 +4156,8 @@ _GETMORSESTATSRSP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6138,
-  serialized_end=6171,
+  serialized_start=6598,
+  serialized_end=6631,
 )
 
 
@@ -3865,8 +4188,8 @@ _TRIGGERCOREASSERTCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6173,
-  serialized_end=6213,
+  serialized_start=6633,
+  serialized_end=6673,
 )
 
 
@@ -3897,8 +4220,8 @@ _EXECUTETESTCOMMANDCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6215,
-  serialized_end=6255,
+  serialized_start=6675,
+  serialized_end=6715,
 )
 
 
@@ -3929,8 +4252,8 @@ _EXECUTETESTCOMMANDRSP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6257,
-  serialized_end=6298,
+  serialized_start=6717,
+  serialized_end=6758,
 )
 
 
@@ -3954,8 +4277,8 @@ _GETKEYSCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6300,
-  serialized_end=6312,
+  serialized_start=6760,
+  serialized_end=6772,
 )
 
 
@@ -4000,8 +4323,8 @@ _KEY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6314,
-  serialized_end=6375,
+  serialized_start=6774,
+  serialized_end=6835,
 )
 
 
@@ -4032,8 +4355,8 @@ _GETKEYSRSP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6377,
-  serialized_end=6415,
+  serialized_start=6837,
+  serialized_end=6875,
 )
 
 
@@ -4057,8 +4380,8 @@ _GETUMACSTATSCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6417,
-  serialized_end=6434,
+  serialized_start=6877,
+  serialized_end=6894,
 )
 
 
@@ -4089,8 +4412,72 @@ _GETUMACSTATSRSP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6436,
-  serialized_end=6468,
+  serialized_start=6896,
+  serialized_end=6928,
+)
+
+
+_GETTXFCSTATSCMD = _descriptor.Descriptor(
+  name='GetTxFCStatsCmd',
+  full_name='emmet.GetTxFCStatsCmd',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=6930,
+  serialized_end=6947,
+)
+
+
+_GETTXFCSTATSRSP = _descriptor.Descriptor(
+  name='GetTxFCStatsRsp',
+  full_name='emmet.GetTxFCStatsRsp',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='paused_cb_count', full_name='emmet.GetTxFCStatsRsp.paused_cb_count', index=0,
+      number=1, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='ready_cb_count', full_name='emmet.GetTxFCStatsRsp.ready_cb_count', index=1,
+      number=2, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=6949,
+  serialized_end=7015,
 )
 
 
@@ -4121,8 +4508,8 @@ _BEACONVENDORIEFILTERADDCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6470,
-  serialized_end=6511,
+  serialized_start=7017,
+  serialized_end=7058,
 )
 
 
@@ -4146,8 +4533,8 @@ _BEACONVENDORIEFILTERCLEARCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6513,
-  serialized_end=6543,
+  serialized_start=7060,
+  serialized_end=7090,
 )
 
 
@@ -4171,8 +4558,8 @@ _BEACONVENDORIEFILTERGETSTATSCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6545,
-  serialized_end=6578,
+  serialized_start=7092,
+  serialized_end=7125,
 )
 
 
@@ -4217,8 +4604,8 @@ _BEACONVENDORIEFILTERSTAT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6580,
-  serialized_end=6652,
+  serialized_start=7127,
+  serialized_end=7199,
 )
 
 
@@ -4249,8 +4636,8 @@ _BEACONVENDORIEFILTERGETSTATSRSP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6654,
-  serialized_end=6735,
+  serialized_start=7201,
+  serialized_end=7282,
 )
 
 
@@ -4281,8 +4668,8 @@ _ENABLEARPRESPONSEOFFLOADCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6737,
-  serialized_end=6784,
+  serialized_start=7284,
+  serialized_end=7331,
 )
 
 
@@ -4327,8 +4714,8 @@ _ENABLEARPREFRESHOFFLOADCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6786,
-  serialized_end=6873,
+  serialized_start=7333,
+  serialized_end=7420,
 )
 
 
@@ -4352,8 +4739,8 @@ _ENABLEDHCPOFFLOADCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6875,
-  serialized_end=6897,
+  serialized_start=7422,
+  serialized_end=7444,
 )
 
 
@@ -4398,8 +4785,8 @@ _ENABLETCPKEEPALIVEOFFLOADCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6899,
-  serialized_end=6994,
+  serialized_start=7446,
+  serialized_end=7541,
 )
 
 
@@ -4423,8 +4810,8 @@ _DISABLETCPKEEPALIVEOFFLOADCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6996,
-  serialized_end=7027,
+  serialized_start=7543,
+  serialized_end=7574,
 )
 
 
@@ -4448,8 +4835,8 @@ _STANDBYENTERCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=7029,
-  serialized_end=7046,
+  serialized_start=7576,
+  serialized_end=7593,
 )
 
 
@@ -4473,8 +4860,8 @@ _STANDBYEXITCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=7048,
-  serialized_end=7064,
+  serialized_start=7595,
+  serialized_end=7611,
 )
 
 
@@ -4554,8 +4941,8 @@ _STANDBYSETCONFIGCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=7067,
-  serialized_end=7278,
+  serialized_start=7614,
+  serialized_end=7825,
 )
 
 
@@ -4593,8 +4980,8 @@ _STANDBYSETWAKEFILTERCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=7280,
-  serialized_end=7342,
+  serialized_start=7827,
+  serialized_end=7889,
 )
 
 
@@ -4625,8 +5012,8 @@ _STANDBYSETSTATUSPAYLOADCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=7344,
-  serialized_end=7389,
+  serialized_start=7891,
+  serialized_end=7936,
 )
 
 
@@ -4650,8 +5037,8 @@ _STANDBYGETEXITREASONCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=7391,
-  serialized_end=7416,
+  serialized_start=7938,
+  serialized_end=7963,
 )
 
 
@@ -4682,8 +5069,8 @@ _STANDBYGETEXITREASONRSP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=7418,
-  serialized_end=7459,
+  serialized_start=7965,
+  serialized_end=8006,
 )
 
 
@@ -4756,8 +5143,8 @@ _SETWHITELISTFILTERCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=7462,
-  serialized_end=7613,
+  serialized_start=8009,
+  serialized_end=8160,
 )
 
 
@@ -4781,8 +5168,220 @@ _CLEARWHITELISTFILTERCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=7615,
-  serialized_end=7640,
+  serialized_start=8162,
+  serialized_end=8187,
+)
+
+
+_APENABLECMD = _descriptor.Descriptor(
+  name='ApEnableCmd',
+  full_name='emmet.ApEnableCmd',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='ssid', full_name='emmet.ApEnableCmd.ssid', index=0,
+      number=1, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='bssid', full_name='emmet.ApEnableCmd.bssid', index=1,
+      number=2, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='security', full_name='emmet.ApEnableCmd.security', index=2,
+      number=3, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='passphrase', full_name='emmet.ApEnableCmd.passphrase', index=3,
+      number=4, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='pmf_mode', full_name='emmet.ApEnableCmd.pmf_mode', index=4,
+      number=5, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='sae_owe_ec_groups', full_name='emmet.ApEnableCmd.sae_owe_ec_groups', index=5,
+      number=6, type=13, cpp_type=3, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='op_class', full_name='emmet.ApEnableCmd.op_class', index=6,
+      number=7, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='s1g_chan_num', full_name='emmet.ApEnableCmd.s1g_chan_num', index=7,
+      number=8, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='beacon_interval_tus', full_name='emmet.ApEnableCmd.beacon_interval_tus', index=8,
+      number=9, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='dtim_period', full_name='emmet.ApEnableCmd.dtim_period', index=9,
+      number=10, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='pri_bw_mhz', full_name='emmet.ApEnableCmd.pri_bw_mhz', index=10,
+      number=11, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='pri_1mhz_chan_idx', full_name='emmet.ApEnableCmd.pri_1mhz_chan_idx', index=11,
+      number=12, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='max_stas', full_name='emmet.ApEnableCmd.max_stas', index=12,
+      number=13, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=8190,
+  serialized_end=8515,
+)
+
+
+_APDISABLECMD = _descriptor.Descriptor(
+  name='ApDisableCmd',
+  full_name='emmet.ApDisableCmd',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=8517,
+  serialized_end=8531,
+)
+
+
+_APGETSTASTATUSCMD = _descriptor.Descriptor(
+  name='ApGetStaStatusCmd',
+  full_name='emmet.ApGetStaStatusCmd',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='sta_addr', full_name='emmet.ApGetStaStatusCmd.sta_addr', index=0,
+      number=1, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=8533,
+  serialized_end=8570,
+)
+
+
+_APGETSTASTATUSRSP = _descriptor.Descriptor(
+  name='ApGetStaStatusRsp',
+  full_name='emmet.ApGetStaStatusRsp',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='state', full_name='emmet.ApGetStaStatusRsp.state', index=0,
+      number=1, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='aid', full_name='emmet.ApGetStaStatusRsp.aid', index=1,
+      number=2, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=8572,
+  serialized_end=8638,
 )
 
 
@@ -4914,253 +5513,302 @@ _WLANCMD = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='sta_enable', full_name='emmet.WlanCmd.sta_enable', index=17,
+      name='set_non_tim_mode_enabled', full_name='emmet.WlanCmd.set_non_tim_mode_enabled', index=17,
+      number=18, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='set_control_response_preamble_1mhz_out_en', full_name='emmet.WlanCmd.set_control_response_preamble_1mhz_out_en', index=18,
+      number=19, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='set_dynamic_ps_timeout', full_name='emmet.WlanCmd.set_dynamic_ps_timeout', index=19,
+      number=20, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='sta_enable', full_name='emmet.WlanCmd.sta_enable', index=20,
       number=50, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='sta_disable', full_name='emmet.WlanCmd.sta_disable', index=18,
+      name='sta_disable', full_name='emmet.WlanCmd.sta_disable', index=21,
       number=51, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='sta_get_state', full_name='emmet.WlanCmd.sta_get_state', index=19,
+      name='sta_get_state', full_name='emmet.WlanCmd.sta_get_state', index=22,
       number=52, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='get_mac_address', full_name='emmet.WlanCmd.get_mac_address', index=20,
+      name='get_mac_address', full_name='emmet.WlanCmd.get_mac_address', index=23,
       number=53, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='get_bssid', full_name='emmet.WlanCmd.get_bssid', index=21,
+      name='get_bssid', full_name='emmet.WlanCmd.get_bssid', index=24,
       number=54, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='boot', full_name='emmet.WlanCmd.boot', index=22,
+      name='boot', full_name='emmet.WlanCmd.boot', index=25,
       number=55, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='shutdown', full_name='emmet.WlanCmd.shutdown', index=23,
+      name='shutdown', full_name='emmet.WlanCmd.shutdown', index=26,
       number=56, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='get_version', full_name='emmet.WlanCmd.get_version', index=24,
+      name='get_version', full_name='emmet.WlanCmd.get_version', index=27,
       number=57, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='get_bcf_metadata', full_name='emmet.WlanCmd.get_bcf_metadata', index=25,
+      name='get_bcf_metadata', full_name='emmet.WlanCmd.get_bcf_metadata', index=28,
       number=58, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='get_duty_cycle_stats', full_name='emmet.WlanCmd.get_duty_cycle_stats', index=26,
+      name='get_duty_cycle_stats', full_name='emmet.WlanCmd.get_duty_cycle_stats', index=29,
       number=59, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='get_rssi', full_name='emmet.WlanCmd.get_rssi', index=27,
+      name='get_rssi', full_name='emmet.WlanCmd.get_rssi', index=30,
       number=60, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='sta_scan_request', full_name='emmet.WlanCmd.sta_scan_request', index=28,
+      name='sta_scan_request', full_name='emmet.WlanCmd.sta_scan_request', index=31,
       number=61, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='sta_scan_abort', full_name='emmet.WlanCmd.sta_scan_abort', index=29,
+      name='sta_scan_abort', full_name='emmet.WlanCmd.sta_scan_abort', index=32,
       number=62, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='sta_scan_results', full_name='emmet.WlanCmd.sta_scan_results', index=30,
+      name='sta_scan_results', full_name='emmet.WlanCmd.sta_scan_results', index=33,
       number=63, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='get_rc_stats', full_name='emmet.WlanCmd.get_rc_stats', index=31,
+      name='get_rc_stats', full_name='emmet.WlanCmd.get_rc_stats', index=34,
       number=70, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='get_morse_stats', full_name='emmet.WlanCmd.get_morse_stats', index=32,
+      name='get_morse_stats', full_name='emmet.WlanCmd.get_morse_stats', index=35,
       number=71, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='trigger_core_assert', full_name='emmet.WlanCmd.trigger_core_assert', index=33,
+      name='trigger_core_assert', full_name='emmet.WlanCmd.trigger_core_assert', index=36,
       number=72, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='execute_test_command', full_name='emmet.WlanCmd.execute_test_command', index=34,
+      name='execute_test_command', full_name='emmet.WlanCmd.execute_test_command', index=37,
       number=73, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='get_keys', full_name='emmet.WlanCmd.get_keys', index=35,
+      name='get_keys', full_name='emmet.WlanCmd.get_keys', index=38,
       number=74, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='get_umac_stats', full_name='emmet.WlanCmd.get_umac_stats', index=36,
+      name='get_umac_stats', full_name='emmet.WlanCmd.get_umac_stats', index=39,
       number=75, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='beacon_vendor_ie_filter_add', full_name='emmet.WlanCmd.beacon_vendor_ie_filter_add', index=37,
+      name='get_tx_fc_stats', full_name='emmet.WlanCmd.get_tx_fc_stats', index=40,
+      number=76, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='beacon_vendor_ie_filter_add', full_name='emmet.WlanCmd.beacon_vendor_ie_filter_add', index=41,
       number=80, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='beacon_vendor_ie_filter_clear', full_name='emmet.WlanCmd.beacon_vendor_ie_filter_clear', index=38,
+      name='beacon_vendor_ie_filter_clear', full_name='emmet.WlanCmd.beacon_vendor_ie_filter_clear', index=42,
       number=81, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='beacon_vendor_ie_filter_get_stats', full_name='emmet.WlanCmd.beacon_vendor_ie_filter_get_stats', index=39,
+      name='beacon_vendor_ie_filter_get_stats', full_name='emmet.WlanCmd.beacon_vendor_ie_filter_get_stats', index=43,
       number=82, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='enable_arp_response_offload', full_name='emmet.WlanCmd.enable_arp_response_offload', index=40,
+      name='enable_arp_response_offload', full_name='emmet.WlanCmd.enable_arp_response_offload', index=44,
       number=90, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='enable_arp_refresh_offload', full_name='emmet.WlanCmd.enable_arp_refresh_offload', index=41,
+      name='enable_arp_refresh_offload', full_name='emmet.WlanCmd.enable_arp_refresh_offload', index=45,
       number=91, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='enable_dhcp_offload', full_name='emmet.WlanCmd.enable_dhcp_offload', index=42,
+      name='enable_dhcp_offload', full_name='emmet.WlanCmd.enable_dhcp_offload', index=46,
       number=92, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='standby_enter', full_name='emmet.WlanCmd.standby_enter', index=43,
+      name='standby_enter', full_name='emmet.WlanCmd.standby_enter', index=47,
       number=93, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='standby_exit', full_name='emmet.WlanCmd.standby_exit', index=44,
+      name='standby_exit', full_name='emmet.WlanCmd.standby_exit', index=48,
       number=94, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='standby_set_config', full_name='emmet.WlanCmd.standby_set_config', index=45,
+      name='standby_set_config', full_name='emmet.WlanCmd.standby_set_config', index=49,
       number=95, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='standby_set_wake_filter', full_name='emmet.WlanCmd.standby_set_wake_filter', index=46,
+      name='standby_set_wake_filter', full_name='emmet.WlanCmd.standby_set_wake_filter', index=50,
       number=96, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='standby_set_status_payload', full_name='emmet.WlanCmd.standby_set_status_payload', index=47,
+      name='standby_set_status_payload', full_name='emmet.WlanCmd.standby_set_status_payload', index=51,
       number=97, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='standby_get_exit_reason', full_name='emmet.WlanCmd.standby_get_exit_reason', index=48,
+      name='standby_get_exit_reason', full_name='emmet.WlanCmd.standby_get_exit_reason', index=52,
       number=98, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='enable_tcp_keepalive_offload', full_name='emmet.WlanCmd.enable_tcp_keepalive_offload', index=49,
+      name='enable_tcp_keepalive_offload', full_name='emmet.WlanCmd.enable_tcp_keepalive_offload', index=53,
       number=99, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='disable_tcp_keepalive_offload', full_name='emmet.WlanCmd.disable_tcp_keepalive_offload', index=50,
+      name='disable_tcp_keepalive_offload', full_name='emmet.WlanCmd.disable_tcp_keepalive_offload', index=54,
       number=100, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='set_whitelist_filter', full_name='emmet.WlanCmd.set_whitelist_filter', index=51,
+      name='set_whitelist_filter', full_name='emmet.WlanCmd.set_whitelist_filter', index=55,
       number=101, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='clear_whitelist_filter', full_name='emmet.WlanCmd.clear_whitelist_filter', index=52,
+      name='clear_whitelist_filter', full_name='emmet.WlanCmd.clear_whitelist_filter', index=56,
       number=102, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='ap_enable', full_name='emmet.WlanCmd.ap_enable', index=57,
+      number=110, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='ap_disable', full_name='emmet.WlanCmd.ap_disable', index=58,
+      number=111, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='ap_get_sta_status', full_name='emmet.WlanCmd.ap_get_sta_status', index=59,
+      number=112, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -5182,8 +5830,8 @@ _WLANCMD = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=7643,
-  serialized_end=10729,
+  serialized_start=8641,
+  serialized_end=12155,
 )
 
 
@@ -5287,15 +5935,29 @@ _WLANRSP = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='beacon_vendor_ie_filter_get_stats', full_name='emmet.WlanRsp.beacon_vendor_ie_filter_get_stats', index=13,
+      name='get_tx_fc_stats', full_name='emmet.WlanRsp.get_tx_fc_stats', index=13,
+      number=76, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='beacon_vendor_ie_filter_get_stats', full_name='emmet.WlanRsp.beacon_vendor_ie_filter_get_stats', index=14,
       number=82, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='standby_get_exit_reason', full_name='emmet.WlanRsp.standby_get_exit_reason', index=14,
+      name='standby_get_exit_reason', full_name='emmet.WlanRsp.standby_get_exit_reason', index=15,
       number=98, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='ap_get_sta_status', full_name='emmet.WlanRsp.ap_get_sta_status', index=16,
+      number=112, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -5317,8 +5979,8 @@ _WLANRSP = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=10732,
-  serialized_end=11543,
+  serialized_start=12158,
+  serialized_end=13075,
 )
 
 
@@ -5342,8 +6004,8 @@ _CAPIDEVICEGETINFOCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=11545,
-  serialized_end=11567,
+  serialized_start=13077,
+  serialized_end=13099,
 )
 
 
@@ -5388,8 +6050,8 @@ _CAPIDEVICEGETINFORSP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=11569,
-  serialized_end=11639,
+  serialized_start=13101,
+  serialized_end=13171,
 )
 
 
@@ -5420,8 +6082,8 @@ _CAPIDEVICELISTINTERFACESCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=11641,
-  serialized_end=11693,
+  serialized_start=13173,
+  serialized_end=13225,
 )
 
 
@@ -5459,8 +6121,8 @@ _CAPIDEVICELISTINTERFACESRSP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=11695,
-  serialized_end=11768,
+  serialized_start=13227,
+  serialized_end=13300,
 )
 
 
@@ -5505,8 +6167,8 @@ _CAPISTARESETDEFAULTCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=11770,
-  serialized_end=11841,
+  serialized_start=13302,
+  serialized_end=13373,
 )
 
 
@@ -5558,8 +6220,8 @@ _CAPISTAPRESETTESTPARAMETERSCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=11843,
-  serialized_end=11944,
+  serialized_start=13375,
+  serialized_end=13476,
 )
 
 
@@ -5590,8 +6252,8 @@ _CAPISTAGETMACADDRESSCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=11946,
-  serialized_end=11990,
+  serialized_start=13478,
+  serialized_end=13522,
 )
 
 
@@ -5622,8 +6284,8 @@ _CAPISTAGETMACADDRESSRSP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=11992,
-  serialized_end=12030,
+  serialized_start=13524,
+  serialized_end=13562,
 )
 
 
@@ -5850,8 +6512,8 @@ _CAPISTASETWIRELESSCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=12033,
-  serialized_end=12686,
+  serialized_start=13565,
+  serialized_end=14218,
 )
 
 
@@ -5938,8 +6600,8 @@ _CAPISTASETSECURITYCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=12689,
-  serialized_end=12867,
+  serialized_start=14221,
+  serialized_end=14399,
 )
 
 
@@ -5998,8 +6660,8 @@ _CAPISTASETIPCONFIGCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=12869,
-  serialized_end=12975,
+  serialized_start=14401,
+  serialized_end=14507,
 )
 
 
@@ -6044,8 +6706,8 @@ _CAPISTAASSOCIATECMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=12977,
-  serialized_end=13046,
+  serialized_start=14509,
+  serialized_end=14578,
 )
 
 
@@ -6076,8 +6738,8 @@ _CAPISTAISCONNECTEDCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=13048,
-  serialized_end=13090,
+  serialized_start=14580,
+  serialized_end=14622,
 )
 
 
@@ -6108,8 +6770,8 @@ _CAPISTAISCONNECTEDRSP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=13092,
-  serialized_end=13134,
+  serialized_start=14624,
+  serialized_end=14666,
 )
 
 
@@ -6140,8 +6802,8 @@ _CAPISTAGETBSSIDCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=13136,
-  serialized_end=13175,
+  serialized_start=14668,
+  serialized_end=14707,
 )
 
 
@@ -6172,8 +6834,8 @@ _CAPISTAGETBSSIDRSP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=13177,
-  serialized_end=13212,
+  serialized_start=14709,
+  serialized_end=14744,
 )
 
 
@@ -6204,8 +6866,8 @@ _CAPISTAGETIPCONFIGCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=13214,
-  serialized_end=13256,
+  serialized_start=14746,
+  serialized_end=14788,
 )
 
 
@@ -6257,8 +6919,8 @@ _CAPISTAGETIPCONFIGRSP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=13258,
-  serialized_end=13342,
+  serialized_start=14790,
+  serialized_end=14874,
 )
 
 
@@ -6296,8 +6958,8 @@ _CAPISTADISCONNECTCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=13344,
-  serialized_end=13411,
+  serialized_start=14876,
+  serialized_end=14943,
 )
 
 
@@ -6342,8 +7004,8 @@ _CAPISTASETPOWERSAVECMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=13413,
-  serialized_end=13492,
+  serialized_start=14945,
+  serialized_end=15024,
 )
 
 
@@ -6402,8 +7064,8 @@ _CAPISTASETRFEATURECMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=13495,
-  serialized_end=13629,
+  serialized_start=15027,
+  serialized_end=15161,
 )
 
 
@@ -6455,8 +7117,8 @@ _CAPISTAEXECACTIONCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=13631,
-  serialized_end=13728,
+  serialized_start=15163,
+  serialized_end=15260,
 )
 
 
@@ -6494,8 +7156,8 @@ _CAPISTAEXECACTIONRSP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=13730,
-  serialized_end=13781,
+  serialized_start=15262,
+  serialized_end=15313,
 )
 
 
@@ -6540,8 +7202,8 @@ _CAPISTASENDADDBACMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=13783,
-  serialized_end=13854,
+  serialized_start=15315,
+  serialized_end=15386,
 )
 
 
@@ -6586,8 +7248,8 @@ _CAPISTAREASSOCCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=13856,
-  serialized_end=13926,
+  serialized_start=15388,
+  serialized_end=15458,
 )
 
 
@@ -6632,8 +7294,8 @@ _CAPISTASCANCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=13928,
-  serialized_end=14005,
+  serialized_start=15460,
+  serialized_end=15537,
 )
 
 
@@ -6657,8 +7319,8 @@ _CAPITRAFFICAGENTRESETCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=14007,
-  serialized_end=14033,
+  serialized_start=15539,
+  serialized_end=15565,
 )
 
 
@@ -6710,8 +7372,8 @@ _CAPITRAFFICSENDPINGCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=14035,
-  serialized_end=14136,
+  serialized_start=15567,
+  serialized_end=15668,
 )
 
 
@@ -6742,8 +7404,8 @@ _CAPITRAFFICSENDPINGRSP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=14138,
-  serialized_end=14180,
+  serialized_start=15670,
+  serialized_end=15712,
 )
 
 
@@ -6774,8 +7436,8 @@ _CAPITRAFFICSTOPPINGCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=14182,
-  serialized_end=14224,
+  serialized_start=15714,
+  serialized_end=15756,
 )
 
 
@@ -6813,8 +7475,8 @@ _CAPITRAFFICSTOPPINGRSP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=14226,
-  serialized_end=14281,
+  serialized_start=15758,
+  serialized_end=15813,
 )
 
 
@@ -6915,8 +7577,8 @@ _CAPITRAFFICAGENTCONFIGCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=14284,
-  serialized_end=14522,
+  serialized_start=15816,
+  serialized_end=16054,
 )
 
 
@@ -6947,8 +7609,8 @@ _CAPITRAFFICAGENTCONFIGRSP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=14524,
-  serialized_end=14569,
+  serialized_start=16056,
+  serialized_end=16101,
 )
 
 
@@ -6979,8 +7641,8 @@ _CAPITRAFFICAGENTSENDCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=14571,
-  serialized_end=14614,
+  serialized_start=16103,
+  serialized_end=16146,
 )
 
 
@@ -7039,8 +7701,8 @@ _CAPITRAFFICAGENTSENDRSP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=14616,
-  serialized_end=14743,
+  serialized_start=16148,
+  serialized_end=16275,
 )
 
 
@@ -7071,8 +7733,8 @@ _CAPITRAFFICAGENTRECEIVESTARTCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=14745,
-  serialized_end=14796,
+  serialized_start=16277,
+  serialized_end=16328,
 )
 
 
@@ -7103,8 +7765,8 @@ _CAPITRAFFICAGENTRECEIVESTOPCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=14798,
-  serialized_end=14848,
+  serialized_start=16330,
+  serialized_end=16380,
 )
 
 
@@ -7170,8 +7832,8 @@ _CAPITRAFFICAGENTRECEIVESTOPRSP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=14851,
-  serialized_end=15014,
+  serialized_start=16383,
+  serialized_end=16546,
 )
 
 
@@ -7365,6 +8027,13 @@ _CAPICMD = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='sta_set_static_arp', full_name='emmet.CapiCmd.sta_set_static_arp', index=26,
+      number=27, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -7382,8 +8051,8 @@ _CAPICMD = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=15017,
-  serialized_end=16599,
+  serialized_start=16549,
+  serialized_end=18191,
 )
 
 
@@ -7496,8 +8165,8 @@ _CAPIRSP = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=16602,
-  serialized_end=17357,
+  serialized_start=18194,
+  serialized_end=18949,
 )
 
 
@@ -7528,8 +8197,8 @@ _CFGREADCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=17359,
-  serialized_end=17384,
+  serialized_start=18951,
+  serialized_end=18976,
 )
 
 
@@ -7567,8 +8236,8 @@ _CFGREADRSP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=17386,
-  serialized_end=17428,
+  serialized_start=18978,
+  serialized_end=19020,
 )
 
 
@@ -7606,8 +8275,8 @@ _CFGWRITECMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=17430,
-  serialized_end=17473,
+  serialized_start=19022,
+  serialized_end=19065,
 )
 
 
@@ -7638,8 +8307,8 @@ _CFGDELCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=17475,
-  serialized_end=17499,
+  serialized_start=19067,
+  serialized_end=19091,
 )
 
 
@@ -7670,8 +8339,8 @@ _CFGERASECMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=17501,
-  serialized_end=17532,
+  serialized_start=19093,
+  serialized_end=19124,
 )
 
 
@@ -7728,8 +8397,8 @@ _CFGCMD = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=17535,
-  serialized_end=17692,
+  serialized_start=19127,
+  serialized_end=19284,
 )
 
 
@@ -7765,8 +8434,8 @@ _CFGRSP = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=17694,
-  serialized_end=17744,
+  serialized_start=19286,
+  serialized_end=19336,
 )
 
 
@@ -7811,8 +8480,8 @@ _FILEREADCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=17746,
-  serialized_end=17802,
+  serialized_start=19338,
+  serialized_end=19394,
 )
 
 
@@ -7850,8 +8519,8 @@ _FILEREADRSP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=17804,
-  serialized_end=17847,
+  serialized_start=19396,
+  serialized_end=19439,
 )
 
 
@@ -7889,8 +8558,8 @@ _FILEWRITECMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=17849,
-  serialized_end=17894,
+  serialized_start=19441,
+  serialized_end=19486,
 )
 
 
@@ -7921,8 +8590,8 @@ _FILEDELCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=17896,
-  serialized_end=17922,
+  serialized_start=19488,
+  serialized_end=19514,
 )
 
 
@@ -7972,8 +8641,8 @@ _FILECMD = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=17924,
-  serialized_end=18048,
+  serialized_start=19516,
+  serialized_end=19640,
 )
 
 
@@ -8009,8 +8678,8 @@ _FILERSP = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=18050,
-  serialized_end=18102,
+  serialized_start=19642,
+  serialized_end=19694,
 )
 
 
@@ -8048,8 +8717,8 @@ _HALSETLEDCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=18104,
-  serialized_end=18180,
+  serialized_start=19696,
+  serialized_end=19772,
 )
 
 
@@ -8080,8 +8749,8 @@ _HALGETBUTTONCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=18182,
-  serialized_end=18238,
+  serialized_start=19774,
+  serialized_end=19830,
 )
 
 
@@ -8112,8 +8781,8 @@ _HALGETBUTTONRSP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=18240,
-  serialized_end=18302,
+  serialized_start=19832,
+  serialized_end=19894,
 )
 
 
@@ -8151,8 +8820,8 @@ _HALSETBUTTONCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=18304,
-  serialized_end=18405,
+  serialized_start=19896,
+  serialized_end=19997,
 )
 
 
@@ -8202,8 +8871,8 @@ _HALCMD = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=18408,
-  serialized_end=18555,
+  serialized_start=20000,
+  serialized_end=20147,
 )
 
 
@@ -8239,8 +8908,8 @@ _HALRSP = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=18557,
-  serialized_end=18618,
+  serialized_start=20149,
+  serialized_end=20210,
 )
 
 
@@ -8318,8 +8987,8 @@ _DUTCMD = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=18621,
-  serialized_end=18860,
+  serialized_start=20213,
+  serialized_end=20452,
 )
 
 
@@ -8404,8 +9073,8 @@ _DUTRSP = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=18863,
-  serialized_end=19136,
+  serialized_start=20455,
+  serialized_end=20728,
 )
 
 _BASICRSP.fields_by_name['code'].enum_type = _STATUSCODE
@@ -8455,6 +9124,7 @@ _LWIPCMD.fields_by_name['get_ip6_config'].message_type = _GETIP6CONFIGCMD
 _LWIPCMD.fields_by_name['set_ip6_config'].message_type = _SETIP6CONFIGCMD
 _LWIPCMD.fields_by_name['set_tx_qos_tid'].message_type = _SETTXQOSTIDCMD
 _LWIPCMD.fields_by_name['get_link_state'].message_type = _GETLINKSTATECMD
+_LWIPCMD.fields_by_name['set_static_arp'].message_type = _SETSTATICARPCMD
 _LWIPCMD.fields_by_name['tcp_connect'].message_type = _TCPCONNECTCMD
 _LWIPCMD.fields_by_name['tcp_send'].message_type = _TCPSENDCMD
 _LWIPCMD.oneofs_by_name['cmd'].fields.append(
@@ -8494,6 +9164,9 @@ _LWIPCMD.oneofs_by_name['cmd'].fields.append(
   _LWIPCMD.fields_by_name['get_link_state'])
 _LWIPCMD.fields_by_name['get_link_state'].containing_oneof = _LWIPCMD.oneofs_by_name['cmd']
 _LWIPCMD.oneofs_by_name['cmd'].fields.append(
+  _LWIPCMD.fields_by_name['set_static_arp'])
+_LWIPCMD.fields_by_name['set_static_arp'].containing_oneof = _LWIPCMD.oneofs_by_name['cmd']
+_LWIPCMD.oneofs_by_name['cmd'].fields.append(
   _LWIPCMD.fields_by_name['tcp_connect'])
 _LWIPCMD.fields_by_name['tcp_connect'].containing_oneof = _LWIPCMD.oneofs_by_name['cmd']
 _LWIPCMD.oneofs_by_name['cmd'].fields.append(
@@ -8506,6 +9179,7 @@ _LWIPRSP.fields_by_name['get_ip_config'].message_type = _GETIPCONFIGRSP
 _LWIPRSP.fields_by_name['set_ip_config'].message_type = _SETIPCONFIGRSP
 _LWIPRSP.fields_by_name['get_ip6_config'].message_type = _GETIP6CONFIGRSP
 _LWIPRSP.fields_by_name['get_link_state'].message_type = _GETLINKSTATERSP
+_LWIPRSP.fields_by_name['set_static_arp'].message_type = _SETSTATICARPRSP
 _LWIPRSP.fields_by_name['tcp_connect'].message_type = _TCPCONNECTRSP
 _LWIPRSP.oneofs_by_name['rsp'].fields.append(
   _LWIPRSP.fields_by_name['iperf_server_start'])
@@ -8529,6 +9203,9 @@ _LWIPRSP.oneofs_by_name['rsp'].fields.append(
   _LWIPRSP.fields_by_name['get_link_state'])
 _LWIPRSP.fields_by_name['get_link_state'].containing_oneof = _LWIPRSP.oneofs_by_name['rsp']
 _LWIPRSP.oneofs_by_name['rsp'].fields.append(
+  _LWIPRSP.fields_by_name['set_static_arp'])
+_LWIPRSP.fields_by_name['set_static_arp'].containing_oneof = _LWIPRSP.oneofs_by_name['rsp']
+_LWIPRSP.oneofs_by_name['rsp'].fields.append(
   _LWIPRSP.fields_by_name['tcp_connect'])
 _LWIPRSP.fields_by_name['tcp_connect'].containing_oneof = _LWIPRSP.oneofs_by_name['rsp']
 _SETPOWERSAVEMODECMD.fields_by_name['power_save_mode'].enum_type = _PWRSAVEMODE
@@ -8539,11 +9216,16 @@ _STAENABLECMD.fields_by_name['security'].enum_type = _WLANSECURITYTYPE
 _STAENABLECMD.fields_by_name['pmf_mode'].enum_type = _WLANPMFMODE
 _STAENABLECMD.fields_by_name['twt_setup_command'].enum_type = _TWTSETUPCOMMAND
 _STASCANRESULTSRSP.fields_by_name['scan_results'].message_type = _STASCANRESULT
+_STASCANRESULTSRSP.fields_by_name['state'].enum_type = _STASCANSTATE
 _STAGETSTATERSP.fields_by_name['state'].enum_type = _STASTATE
+_GETMACADDRESSCMD.fields_by_name['vif'].enum_type = _WLANVIF
 _GETDUTYCYCLESTATSRSP.fields_by_name['mode'].enum_type = _DUTYCYCLEMODE
 _KEY.fields_by_name['type'].enum_type = _KEYTYPE
 _GETKEYSRSP.fields_by_name['keys'].message_type = _KEY
 _BEACONVENDORIEFILTERGETSTATSRSP.fields_by_name['stats'].message_type = _BEACONVENDORIEFILTERSTAT
+_APENABLECMD.fields_by_name['security'].enum_type = _WLANSECURITYTYPE
+_APENABLECMD.fields_by_name['pmf_mode'].enum_type = _WLANPMFMODE
+_APGETSTASTATUSRSP.fields_by_name['state'].enum_type = _APSTASTATE
 _WLANCMD.fields_by_name['set_mcs_override'].message_type = _SETMCSOVERRIDECMD
 _WLANCMD.fields_by_name['set_rts_threshold'].message_type = _SETRTSTHRESHOLDCMD
 _WLANCMD.fields_by_name['set_country_code'].message_type = _SETCOUNTRYCODECMD
@@ -8561,6 +9243,9 @@ _WLANCMD.fields_by_name['set_default_qos_queue_params'].message_type = _SETDEFAU
 _WLANCMD.fields_by_name['set_mcs10_mode'].message_type = _SETMCS10MODECMD
 _WLANCMD.fields_by_name['set_duty_cycle_mode'].message_type = _SETDUTYCYCLEMODECMD
 _WLANCMD.fields_by_name['set_listen_interval'].message_type = _SETLISTENINTERVALCMD
+_WLANCMD.fields_by_name['set_non_tim_mode_enabled'].message_type = _SETNONTIMMODEENABLEDCMD
+_WLANCMD.fields_by_name['set_control_response_preamble_1mhz_out_en'].message_type = _SETCONTROLRESPONSEPREAMBLE1MHZOUTENABLEDCMD
+_WLANCMD.fields_by_name['set_dynamic_ps_timeout'].message_type = _SETDYNAMICPSTIMEOUTCMD
 _WLANCMD.fields_by_name['sta_enable'].message_type = _STAENABLECMD
 _WLANCMD.fields_by_name['sta_disable'].message_type = _STADISABLECMD
 _WLANCMD.fields_by_name['sta_get_state'].message_type = _STAGETSTATECMD
@@ -8581,6 +9266,7 @@ _WLANCMD.fields_by_name['trigger_core_assert'].message_type = _TRIGGERCOREASSERT
 _WLANCMD.fields_by_name['execute_test_command'].message_type = _EXECUTETESTCOMMANDCMD
 _WLANCMD.fields_by_name['get_keys'].message_type = _GETKEYSCMD
 _WLANCMD.fields_by_name['get_umac_stats'].message_type = _GETUMACSTATSCMD
+_WLANCMD.fields_by_name['get_tx_fc_stats'].message_type = _GETTXFCSTATSCMD
 _WLANCMD.fields_by_name['beacon_vendor_ie_filter_add'].message_type = _BEACONVENDORIEFILTERADDCMD
 _WLANCMD.fields_by_name['beacon_vendor_ie_filter_clear'].message_type = _BEACONVENDORIEFILTERCLEARCMD
 _WLANCMD.fields_by_name['beacon_vendor_ie_filter_get_stats'].message_type = _BEACONVENDORIEFILTERGETSTATSCMD
@@ -8597,6 +9283,9 @@ _WLANCMD.fields_by_name['enable_tcp_keepalive_offload'].message_type = _ENABLETC
 _WLANCMD.fields_by_name['disable_tcp_keepalive_offload'].message_type = _DISABLETCPKEEPALIVEOFFLOADCMD
 _WLANCMD.fields_by_name['set_whitelist_filter'].message_type = _SETWHITELISTFILTERCMD
 _WLANCMD.fields_by_name['clear_whitelist_filter'].message_type = _CLEARWHITELISTFILTERCMD
+_WLANCMD.fields_by_name['ap_enable'].message_type = _APENABLECMD
+_WLANCMD.fields_by_name['ap_disable'].message_type = _APDISABLECMD
+_WLANCMD.fields_by_name['ap_get_sta_status'].message_type = _APGETSTASTATUSCMD
 _WLANCMD.oneofs_by_name['cmd'].fields.append(
   _WLANCMD.fields_by_name['set_mcs_override'])
 _WLANCMD.fields_by_name['set_mcs_override'].containing_oneof = _WLANCMD.oneofs_by_name['cmd']
@@ -8648,6 +9337,15 @@ _WLANCMD.fields_by_name['set_duty_cycle_mode'].containing_oneof = _WLANCMD.oneof
 _WLANCMD.oneofs_by_name['cmd'].fields.append(
   _WLANCMD.fields_by_name['set_listen_interval'])
 _WLANCMD.fields_by_name['set_listen_interval'].containing_oneof = _WLANCMD.oneofs_by_name['cmd']
+_WLANCMD.oneofs_by_name['cmd'].fields.append(
+  _WLANCMD.fields_by_name['set_non_tim_mode_enabled'])
+_WLANCMD.fields_by_name['set_non_tim_mode_enabled'].containing_oneof = _WLANCMD.oneofs_by_name['cmd']
+_WLANCMD.oneofs_by_name['cmd'].fields.append(
+  _WLANCMD.fields_by_name['set_control_response_preamble_1mhz_out_en'])
+_WLANCMD.fields_by_name['set_control_response_preamble_1mhz_out_en'].containing_oneof = _WLANCMD.oneofs_by_name['cmd']
+_WLANCMD.oneofs_by_name['cmd'].fields.append(
+  _WLANCMD.fields_by_name['set_dynamic_ps_timeout'])
+_WLANCMD.fields_by_name['set_dynamic_ps_timeout'].containing_oneof = _WLANCMD.oneofs_by_name['cmd']
 _WLANCMD.oneofs_by_name['cmd'].fields.append(
   _WLANCMD.fields_by_name['sta_enable'])
 _WLANCMD.fields_by_name['sta_enable'].containing_oneof = _WLANCMD.oneofs_by_name['cmd']
@@ -8709,6 +9407,9 @@ _WLANCMD.oneofs_by_name['cmd'].fields.append(
   _WLANCMD.fields_by_name['get_umac_stats'])
 _WLANCMD.fields_by_name['get_umac_stats'].containing_oneof = _WLANCMD.oneofs_by_name['cmd']
 _WLANCMD.oneofs_by_name['cmd'].fields.append(
+  _WLANCMD.fields_by_name['get_tx_fc_stats'])
+_WLANCMD.fields_by_name['get_tx_fc_stats'].containing_oneof = _WLANCMD.oneofs_by_name['cmd']
+_WLANCMD.oneofs_by_name['cmd'].fields.append(
   _WLANCMD.fields_by_name['beacon_vendor_ie_filter_add'])
 _WLANCMD.fields_by_name['beacon_vendor_ie_filter_add'].containing_oneof = _WLANCMD.oneofs_by_name['cmd']
 _WLANCMD.oneofs_by_name['cmd'].fields.append(
@@ -8756,6 +9457,15 @@ _WLANCMD.fields_by_name['set_whitelist_filter'].containing_oneof = _WLANCMD.oneo
 _WLANCMD.oneofs_by_name['cmd'].fields.append(
   _WLANCMD.fields_by_name['clear_whitelist_filter'])
 _WLANCMD.fields_by_name['clear_whitelist_filter'].containing_oneof = _WLANCMD.oneofs_by_name['cmd']
+_WLANCMD.oneofs_by_name['cmd'].fields.append(
+  _WLANCMD.fields_by_name['ap_enable'])
+_WLANCMD.fields_by_name['ap_enable'].containing_oneof = _WLANCMD.oneofs_by_name['cmd']
+_WLANCMD.oneofs_by_name['cmd'].fields.append(
+  _WLANCMD.fields_by_name['ap_disable'])
+_WLANCMD.fields_by_name['ap_disable'].containing_oneof = _WLANCMD.oneofs_by_name['cmd']
+_WLANCMD.oneofs_by_name['cmd'].fields.append(
+  _WLANCMD.fields_by_name['ap_get_sta_status'])
+_WLANCMD.fields_by_name['ap_get_sta_status'].containing_oneof = _WLANCMD.oneofs_by_name['cmd']
 _WLANRSP.fields_by_name['sta_get_state'].message_type = _STAGETSTATERSP
 _WLANRSP.fields_by_name['get_mac_address'].message_type = _GETMACADDRESSRSP
 _WLANRSP.fields_by_name['get_bssid'].message_type = _GETBSSIDRSP
@@ -8769,8 +9479,10 @@ _WLANRSP.fields_by_name['get_morse_stats'].message_type = _GETMORSESTATSRSP
 _WLANRSP.fields_by_name['execute_test_command'].message_type = _EXECUTETESTCOMMANDRSP
 _WLANRSP.fields_by_name['get_keys'].message_type = _GETKEYSRSP
 _WLANRSP.fields_by_name['get_umac_stats'].message_type = _GETUMACSTATSRSP
+_WLANRSP.fields_by_name['get_tx_fc_stats'].message_type = _GETTXFCSTATSRSP
 _WLANRSP.fields_by_name['beacon_vendor_ie_filter_get_stats'].message_type = _BEACONVENDORIEFILTERGETSTATSRSP
 _WLANRSP.fields_by_name['standby_get_exit_reason'].message_type = _STANDBYGETEXITREASONRSP
+_WLANRSP.fields_by_name['ap_get_sta_status'].message_type = _APGETSTASTATUSRSP
 _WLANRSP.oneofs_by_name['rsp'].fields.append(
   _WLANRSP.fields_by_name['sta_get_state'])
 _WLANRSP.fields_by_name['sta_get_state'].containing_oneof = _WLANRSP.oneofs_by_name['rsp']
@@ -8811,11 +9523,17 @@ _WLANRSP.oneofs_by_name['rsp'].fields.append(
   _WLANRSP.fields_by_name['get_umac_stats'])
 _WLANRSP.fields_by_name['get_umac_stats'].containing_oneof = _WLANRSP.oneofs_by_name['rsp']
 _WLANRSP.oneofs_by_name['rsp'].fields.append(
+  _WLANRSP.fields_by_name['get_tx_fc_stats'])
+_WLANRSP.fields_by_name['get_tx_fc_stats'].containing_oneof = _WLANRSP.oneofs_by_name['rsp']
+_WLANRSP.oneofs_by_name['rsp'].fields.append(
   _WLANRSP.fields_by_name['beacon_vendor_ie_filter_get_stats'])
 _WLANRSP.fields_by_name['beacon_vendor_ie_filter_get_stats'].containing_oneof = _WLANRSP.oneofs_by_name['rsp']
 _WLANRSP.oneofs_by_name['rsp'].fields.append(
   _WLANRSP.fields_by_name['standby_get_exit_reason'])
 _WLANRSP.fields_by_name['standby_get_exit_reason'].containing_oneof = _WLANRSP.oneofs_by_name['rsp']
+_WLANRSP.oneofs_by_name['rsp'].fields.append(
+  _WLANRSP.fields_by_name['ap_get_sta_status'])
+_WLANRSP.fields_by_name['ap_get_sta_status'].containing_oneof = _WLANRSP.oneofs_by_name['rsp']
 _CAPICMD.fields_by_name['device_get_info'].message_type = _CAPIDEVICEGETINFOCMD
 _CAPICMD.fields_by_name['device_list_interfaces'].message_type = _CAPIDEVICELISTINTERFACESCMD
 _CAPICMD.fields_by_name['sta_reset_default'].message_type = _CAPISTARESETDEFAULTCMD
@@ -8842,6 +9560,7 @@ _CAPICMD.fields_by_name['traffic_agent_config'].message_type = _CAPITRAFFICAGENT
 _CAPICMD.fields_by_name['traffic_agent_send'].message_type = _CAPITRAFFICAGENTSENDCMD
 _CAPICMD.fields_by_name['traffic_agent_receive_start'].message_type = _CAPITRAFFICAGENTRECEIVESTARTCMD
 _CAPICMD.fields_by_name['traffic_agent_receive_stop'].message_type = _CAPITRAFFICAGENTRECEIVESTOPCMD
+_CAPICMD.fields_by_name['sta_set_static_arp'].message_type = _CAPISTASETIPCONFIGCMD
 _CAPICMD.oneofs_by_name['cmd'].fields.append(
   _CAPICMD.fields_by_name['device_get_info'])
 _CAPICMD.fields_by_name['device_get_info'].containing_oneof = _CAPICMD.oneofs_by_name['cmd']
@@ -8920,6 +9639,9 @@ _CAPICMD.fields_by_name['traffic_agent_receive_start'].containing_oneof = _CAPIC
 _CAPICMD.oneofs_by_name['cmd'].fields.append(
   _CAPICMD.fields_by_name['traffic_agent_receive_stop'])
 _CAPICMD.fields_by_name['traffic_agent_receive_stop'].containing_oneof = _CAPICMD.oneofs_by_name['cmd']
+_CAPICMD.oneofs_by_name['cmd'].fields.append(
+  _CAPICMD.fields_by_name['sta_set_static_arp'])
+_CAPICMD.fields_by_name['sta_set_static_arp'].containing_oneof = _CAPICMD.oneofs_by_name['cmd']
 _CAPIRSP.fields_by_name['device_get_info'].message_type = _CAPIDEVICEGETINFORSP
 _CAPIRSP.fields_by_name['device_list_interfaces'].message_type = _CAPIDEVICELISTINTERFACESRSP
 _CAPIRSP.fields_by_name['sta_get_mac_address'].message_type = _CAPISTAGETMACADDRESSRSP
@@ -9111,6 +9833,8 @@ DESCRIPTOR.message_types_by_name['SetIpConfigRsp'] = _SETIPCONFIGRSP
 DESCRIPTOR.message_types_by_name['GetIp6ConfigCmd'] = _GETIP6CONFIGCMD
 DESCRIPTOR.message_types_by_name['GetIp6ConfigRsp'] = _GETIP6CONFIGRSP
 DESCRIPTOR.message_types_by_name['SetIp6ConfigCmd'] = _SETIP6CONFIGCMD
+DESCRIPTOR.message_types_by_name['SetStaticArpCmd'] = _SETSTATICARPCMD
+DESCRIPTOR.message_types_by_name['SetStaticArpRsp'] = _SETSTATICARPRSP
 DESCRIPTOR.message_types_by_name['SetTxQosTidCmd'] = _SETTXQOSTIDCMD
 DESCRIPTOR.message_types_by_name['GetLinkStateCmd'] = _GETLINKSTATECMD
 DESCRIPTOR.message_types_by_name['GetLinkStateRsp'] = _GETLINKSTATERSP
@@ -9136,6 +9860,9 @@ DESCRIPTOR.message_types_by_name['SetDefaultQosQueueParamsCmd'] = _SETDEFAULTQOS
 DESCRIPTOR.message_types_by_name['SetMCS10ModeCmd'] = _SETMCS10MODECMD
 DESCRIPTOR.message_types_by_name['SetDutyCycleModeCmd'] = _SETDUTYCYCLEMODECMD
 DESCRIPTOR.message_types_by_name['SetListenIntervalCmd'] = _SETLISTENINTERVALCMD
+DESCRIPTOR.message_types_by_name['SetNonTimModeEnabledCmd'] = _SETNONTIMMODEENABLEDCMD
+DESCRIPTOR.message_types_by_name['SetControlResponsePreamble1mhzOutEnabledCmd'] = _SETCONTROLRESPONSEPREAMBLE1MHZOUTENABLEDCMD
+DESCRIPTOR.message_types_by_name['SetDynamicPSTimeoutCmd'] = _SETDYNAMICPSTIMEOUTCMD
 DESCRIPTOR.message_types_by_name['StaEnableCmd'] = _STAENABLECMD
 DESCRIPTOR.message_types_by_name['StaScanRequestCmd'] = _STASCANREQUESTCMD
 DESCRIPTOR.message_types_by_name['StaScanAbortCmd'] = _STASCANABORTCMD
@@ -9171,6 +9898,8 @@ DESCRIPTOR.message_types_by_name['Key'] = _KEY
 DESCRIPTOR.message_types_by_name['GetKeysRsp'] = _GETKEYSRSP
 DESCRIPTOR.message_types_by_name['GetUmacStatsCmd'] = _GETUMACSTATSCMD
 DESCRIPTOR.message_types_by_name['GetUmacStatsRsp'] = _GETUMACSTATSRSP
+DESCRIPTOR.message_types_by_name['GetTxFCStatsCmd'] = _GETTXFCSTATSCMD
+DESCRIPTOR.message_types_by_name['GetTxFCStatsRsp'] = _GETTXFCSTATSRSP
 DESCRIPTOR.message_types_by_name['BeaconVendorIeFilterAddCmd'] = _BEACONVENDORIEFILTERADDCMD
 DESCRIPTOR.message_types_by_name['BeaconVendorIeFilterClearCmd'] = _BEACONVENDORIEFILTERCLEARCMD
 DESCRIPTOR.message_types_by_name['BeaconVendorIeFilterGetStatsCmd'] = _BEACONVENDORIEFILTERGETSTATSCMD
@@ -9190,6 +9919,10 @@ DESCRIPTOR.message_types_by_name['StandbyGetExitReasonCmd'] = _STANDBYGETEXITREA
 DESCRIPTOR.message_types_by_name['StandbyGetExitReasonRsp'] = _STANDBYGETEXITREASONRSP
 DESCRIPTOR.message_types_by_name['SetWhitelistFilterCmd'] = _SETWHITELISTFILTERCMD
 DESCRIPTOR.message_types_by_name['ClearWhitelistFilterCmd'] = _CLEARWHITELISTFILTERCMD
+DESCRIPTOR.message_types_by_name['ApEnableCmd'] = _APENABLECMD
+DESCRIPTOR.message_types_by_name['ApDisableCmd'] = _APDISABLECMD
+DESCRIPTOR.message_types_by_name['ApGetStaStatusCmd'] = _APGETSTASTATUSCMD
+DESCRIPTOR.message_types_by_name['ApGetStaStatusRsp'] = _APGETSTASTATUSRSP
 DESCRIPTOR.message_types_by_name['WlanCmd'] = _WLANCMD
 DESCRIPTOR.message_types_by_name['WlanRsp'] = _WLANRSP
 DESCRIPTOR.message_types_by_name['CapiDeviceGetInfoCmd'] = _CAPIDEVICEGETINFOCMD
@@ -9268,7 +10001,10 @@ DESCRIPTOR.enum_types_by_name['TwtSetupCommand'] = _TWTSETUPCOMMAND
 DESCRIPTOR.enum_types_by_name['StaAutoconnectMode'] = _STAAUTOCONNECTMODE
 DESCRIPTOR.enum_types_by_name['MCS10Mode'] = _MCS10MODE
 DESCRIPTOR.enum_types_by_name['DutyCycleMode'] = _DUTYCYCLEMODE
+DESCRIPTOR.enum_types_by_name['WlanVif'] = _WLANVIF
+DESCRIPTOR.enum_types_by_name['StaScanState'] = _STASCANSTATE
 DESCRIPTOR.enum_types_by_name['KeyType'] = _KEYTYPE
+DESCRIPTOR.enum_types_by_name['ApStaState'] = _APSTASTATE
 DESCRIPTOR.enum_types_by_name['LedId'] = _LEDID
 DESCRIPTOR.enum_types_by_name['LedLevel'] = _LEDLEVEL
 DESCRIPTOR.enum_types_by_name['HalButtonId'] = _HALBUTTONID
@@ -9450,6 +10186,20 @@ SetIp6ConfigCmd = _reflection.GeneratedProtocolMessageType('SetIp6ConfigCmd', (_
   })
 _sym_db.RegisterMessage(SetIp6ConfigCmd)
 
+SetStaticArpCmd = _reflection.GeneratedProtocolMessageType('SetStaticArpCmd', (_message.Message,), {
+  'DESCRIPTOR' : _SETSTATICARPCMD,
+  '__module__' : 'emmet_api_pb2'
+  # @@protoc_insertion_point(class_scope:emmet.SetStaticArpCmd)
+  })
+_sym_db.RegisterMessage(SetStaticArpCmd)
+
+SetStaticArpRsp = _reflection.GeneratedProtocolMessageType('SetStaticArpRsp', (_message.Message,), {
+  'DESCRIPTOR' : _SETSTATICARPRSP,
+  '__module__' : 'emmet_api_pb2'
+  # @@protoc_insertion_point(class_scope:emmet.SetStaticArpRsp)
+  })
+_sym_db.RegisterMessage(SetStaticArpRsp)
+
 SetTxQosTidCmd = _reflection.GeneratedProtocolMessageType('SetTxQosTidCmd', (_message.Message,), {
   'DESCRIPTOR' : _SETTXQOSTIDCMD,
   '__module__' : 'emmet_api_pb2'
@@ -9624,6 +10374,27 @@ SetListenIntervalCmd = _reflection.GeneratedProtocolMessageType('SetListenInterv
   # @@protoc_insertion_point(class_scope:emmet.SetListenIntervalCmd)
   })
 _sym_db.RegisterMessage(SetListenIntervalCmd)
+
+SetNonTimModeEnabledCmd = _reflection.GeneratedProtocolMessageType('SetNonTimModeEnabledCmd', (_message.Message,), {
+  'DESCRIPTOR' : _SETNONTIMMODEENABLEDCMD,
+  '__module__' : 'emmet_api_pb2'
+  # @@protoc_insertion_point(class_scope:emmet.SetNonTimModeEnabledCmd)
+  })
+_sym_db.RegisterMessage(SetNonTimModeEnabledCmd)
+
+SetControlResponsePreamble1mhzOutEnabledCmd = _reflection.GeneratedProtocolMessageType('SetControlResponsePreamble1mhzOutEnabledCmd', (_message.Message,), {
+  'DESCRIPTOR' : _SETCONTROLRESPONSEPREAMBLE1MHZOUTENABLEDCMD,
+  '__module__' : 'emmet_api_pb2'
+  # @@protoc_insertion_point(class_scope:emmet.SetControlResponsePreamble1mhzOutEnabledCmd)
+  })
+_sym_db.RegisterMessage(SetControlResponsePreamble1mhzOutEnabledCmd)
+
+SetDynamicPSTimeoutCmd = _reflection.GeneratedProtocolMessageType('SetDynamicPSTimeoutCmd', (_message.Message,), {
+  'DESCRIPTOR' : _SETDYNAMICPSTIMEOUTCMD,
+  '__module__' : 'emmet_api_pb2'
+  # @@protoc_insertion_point(class_scope:emmet.SetDynamicPSTimeoutCmd)
+  })
+_sym_db.RegisterMessage(SetDynamicPSTimeoutCmd)
 
 StaEnableCmd = _reflection.GeneratedProtocolMessageType('StaEnableCmd', (_message.Message,), {
   'DESCRIPTOR' : _STAENABLECMD,
@@ -9870,6 +10641,20 @@ GetUmacStatsRsp = _reflection.GeneratedProtocolMessageType('GetUmacStatsRsp', (_
   })
 _sym_db.RegisterMessage(GetUmacStatsRsp)
 
+GetTxFCStatsCmd = _reflection.GeneratedProtocolMessageType('GetTxFCStatsCmd', (_message.Message,), {
+  'DESCRIPTOR' : _GETTXFCSTATSCMD,
+  '__module__' : 'emmet_api_pb2'
+  # @@protoc_insertion_point(class_scope:emmet.GetTxFCStatsCmd)
+  })
+_sym_db.RegisterMessage(GetTxFCStatsCmd)
+
+GetTxFCStatsRsp = _reflection.GeneratedProtocolMessageType('GetTxFCStatsRsp', (_message.Message,), {
+  'DESCRIPTOR' : _GETTXFCSTATSRSP,
+  '__module__' : 'emmet_api_pb2'
+  # @@protoc_insertion_point(class_scope:emmet.GetTxFCStatsRsp)
+  })
+_sym_db.RegisterMessage(GetTxFCStatsRsp)
+
 BeaconVendorIeFilterAddCmd = _reflection.GeneratedProtocolMessageType('BeaconVendorIeFilterAddCmd', (_message.Message,), {
   'DESCRIPTOR' : _BEACONVENDORIEFILTERADDCMD,
   '__module__' : 'emmet_api_pb2'
@@ -10002,6 +10787,34 @@ ClearWhitelistFilterCmd = _reflection.GeneratedProtocolMessageType('ClearWhiteli
   # @@protoc_insertion_point(class_scope:emmet.ClearWhitelistFilterCmd)
   })
 _sym_db.RegisterMessage(ClearWhitelistFilterCmd)
+
+ApEnableCmd = _reflection.GeneratedProtocolMessageType('ApEnableCmd', (_message.Message,), {
+  'DESCRIPTOR' : _APENABLECMD,
+  '__module__' : 'emmet_api_pb2'
+  # @@protoc_insertion_point(class_scope:emmet.ApEnableCmd)
+  })
+_sym_db.RegisterMessage(ApEnableCmd)
+
+ApDisableCmd = _reflection.GeneratedProtocolMessageType('ApDisableCmd', (_message.Message,), {
+  'DESCRIPTOR' : _APDISABLECMD,
+  '__module__' : 'emmet_api_pb2'
+  # @@protoc_insertion_point(class_scope:emmet.ApDisableCmd)
+  })
+_sym_db.RegisterMessage(ApDisableCmd)
+
+ApGetStaStatusCmd = _reflection.GeneratedProtocolMessageType('ApGetStaStatusCmd', (_message.Message,), {
+  'DESCRIPTOR' : _APGETSTASTATUSCMD,
+  '__module__' : 'emmet_api_pb2'
+  # @@protoc_insertion_point(class_scope:emmet.ApGetStaStatusCmd)
+  })
+_sym_db.RegisterMessage(ApGetStaStatusCmd)
+
+ApGetStaStatusRsp = _reflection.GeneratedProtocolMessageType('ApGetStaStatusRsp', (_message.Message,), {
+  'DESCRIPTOR' : _APGETSTASTATUSRSP,
+  '__module__' : 'emmet_api_pb2'
+  # @@protoc_insertion_point(class_scope:emmet.ApGetStaStatusRsp)
+  })
+_sym_db.RegisterMessage(ApGetStaStatusRsp)
 
 WlanCmd = _reflection.GeneratedProtocolMessageType('WlanCmd', (_message.Message,), {
   'DESCRIPTOR' : _WLANCMD,

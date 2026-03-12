@@ -18,7 +18,7 @@
 
 static void print_ip_status(EmbeddedCli *cli, const struct struct_ip_status *ip_status)
 {
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = { 0 };
     int len = MMAGIC_CLI_PRINT_BUF_LEN - 1;
     size_t ii;
     bool dns_servers_set = false;
@@ -34,23 +34,23 @@ static void print_ip_status(EmbeddedCli *cli, const struct struct_ip_status *ip_
         written += snprintf(&buf[written], (len - written), "\n");
 
         written += snprintf(&buf[written], (len - written), "IP Addr: ");
-        written += mmagic_struct_ip_addr_to_string(&ip_status->ip_addr, &buf[written],
-                                                   (len - written));
+        written +=
+            mmagic_struct_ip_addr_to_string(&ip_status->ip_addr, &buf[written], (len - written));
         written += snprintf(&buf[written], (len - written), "\n");
 
         written += snprintf(&buf[written], (len - written), "Netmask: ");
-        written += mmagic_struct_ip_addr_to_string(&ip_status->netmask, &buf[written],
-                                                   (len - written));
+        written +=
+            mmagic_struct_ip_addr_to_string(&ip_status->netmask, &buf[written], (len - written));
         written += snprintf(&buf[written], (len - written), "\n");
 
         written += snprintf(&buf[written], (len - written), "Gateway: ");
-        written += mmagic_struct_ip_addr_to_string(&ip_status->gateway, &buf[written],
-                                                   (len - written));
+        written +=
+            mmagic_struct_ip_addr_to_string(&ip_status->gateway, &buf[written], (len - written));
         written += snprintf(&buf[written], (len - written), "\n");
 
         written += snprintf(&buf[written], (len - written), "Broadcast: ");
-        written += mmagic_struct_ip_addr_to_string(&ip_status->broadcast, &buf[written],
-                                                   (len - written));
+        written +=
+            mmagic_struct_ip_addr_to_string(&ip_status->broadcast, &buf[written], (len - written));
         written += snprintf(&buf[written], (len - written), "\n");
 
         for (ii = 0; ii < MM_ARRAY_COUNT(ip_status->dns_servers); ii++)
@@ -120,7 +120,10 @@ void mmagic_cli_ip_enable_tcp_keepalive_offload(EmbeddedCli *cli, char *args, vo
     MM_UNUSED(context);
     struct mmagic_cli *ctx = (struct mmagic_cli *)cli->appContext;
 
-    enum { EXPECTED_ARGS = 3 };
+    enum
+    {
+        EXPECTED_ARGS = 3
+    };
 
     uint16_t num_tokens = embeddedCliGetTokenCount(args);
     if (num_tokens != EXPECTED_ARGS)
@@ -146,8 +149,7 @@ void mmagic_cli_ip_enable_tcp_keepalive_offload(EmbeddedCli *cli, char *args, vo
         }
     }
 
-    struct mmagic_core_ip_enable_tcp_keepalive_offload_cmd_args cmd_args =
-    {
+    struct mmagic_core_ip_enable_tcp_keepalive_offload_cmd_args cmd_args = {
         .period_s = (uint16_t)(tokens[0]),
         .retry_count = (uint8_t)(tokens[1]),
         .retry_interval_s = (uint8_t)(tokens[2]),

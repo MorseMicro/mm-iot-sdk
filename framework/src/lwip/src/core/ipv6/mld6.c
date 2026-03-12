@@ -66,6 +66,7 @@
 #include "lwip/netif.h"
 #include "lwip/memp.h"
 #include "lwip/stats.h"
+#include "lwip/timeouts.h"
 
 #include <string.h>
 
@@ -86,6 +87,10 @@ static err_t mld6_remove_group(struct netif *netif, struct mld_group *group);
 static void mld6_delayed_report(struct mld_group *group, u16_t maxresp);
 static void mld6_send(struct netif *netif, struct mld_group *group, u8_t type);
 
+#if ESP_LWIP_MLD6_TIMERS_ONDEMAND
+#include <stdbool.h>
+static bool is_tmr_start = false;
+#endif
 
 /**
  * Stop MLD processing on interface
@@ -485,7 +490,14 @@ mld6_leavegroup_netif(struct netif *netif, const ip6_addr_t *groupaddr)
   return ERR_VAL;
 }
 
+#if ESP_LWIP_MLD6_TIMERS_ONDEMAND
+static void mld6_timeout_cb(void *arg)
+{
+  LWIP_UNUSED_ARG(arg);
 
+  mld6_tmr();
+}
+#endif
 /**
  * Periodic timer for mld processing. Must be called every
  * MLD6_TMR_INTERVAL milliseconds (100).
@@ -496,6 +508,9 @@ void
 mld6_tmr(void)
 {
   struct netif *netif;
+#if ESP_LWIP_MLD6_TIMERS_ONDEMAND
+  bool tmr_restart = false;
+#endif
 
   NETIF_FOREACH(netif) {
     struct mld_group *group = netif_mld6_data(netif);
@@ -511,10 +526,23 @@ mld6_tmr(void)
             group->group_state = MLD6_GROUP_IDLE_MEMBER;
           }
         }
+#if ESP_LWIP_MLD6_TIMERS_ONDEMAND
+        else {
+          tmr_restart = true;
+        }
+#endif
       }
       group = group->next;
     }
   }
+#if ESP_LWIP_MLD6_TIMERS_ONDEMAND
+  if (tmr_restart) {
+    sys_timeout(MLD6_TMR_INTERVAL, mld6_timeout_cb, NULL);
+  } else {
+    sys_untimeout(mld6_timeout_cb, NULL);
+    is_tmr_start = false;
+  }
+#endif
 }
 
 /**
@@ -547,6 +575,12 @@ mld6_delayed_report(struct mld_group *group, u16_t maxresp_in)
       ((group->timer == 0) || (maxresp < group->timer)))) {
     group->timer = maxresp;
     group->group_state = MLD6_GROUP_DELAYING_MEMBER;
+#if ESP_LWIP_MLD6_TIMERS_ONDEMAND
+  if (!is_tmr_start) {
+      sys_timeout(MLD6_TMR_INTERVAL, mld6_timeout_cb, NULL);
+      is_tmr_start = true;
+  }
+#endif
   }
 }
 

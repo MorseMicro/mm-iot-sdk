@@ -32,22 +32,22 @@
 #include <errno.h>
 
 #include "mmosal.h"
-#include "mmhal.h"
+#include "mmhal_flash.h"
 #include "mmutils.h"
 
 #include "lfs.h"
 
 /** The maximum number of files that may be open at any one time */
-#define MAX_FILES       4
+#define MAX_FILES 4
 
 /** The first 3 file descriptors are reserved by libc for @c STDOUT, @c STDIN & @c STDERR */
-#define STDIO_OFFSET    3
+#define STDIO_OFFSET 3
 
 /** A macro to convert from file descriptor to a slot in the file table */
-#define FD_TO_SLOT(fd)  ((fd) - STDIO_OFFSET)
+#define FD_TO_SLOT(fd) ((fd) - STDIO_OFFSET)
 
 /** A macro to convert from a slot number to file descriptor */
-#define SLOT_TO_FD(fd)  ((slot) + STDIO_OFFSET)
+#define SLOT_TO_FD(fd) ((slot) + STDIO_OFFSET)
 
 /** A pointer to the file-system.  This is initialized in @c littlefs_init. */
 static lfs_t *lfs_filesystem = NULL;
@@ -61,16 +61,15 @@ static const lfs_file_t zero_file = { 0 };
 
 /* These pointers are set to the corresponding LFS functions when _open() is first called
  * This prevents these functions being linked if we never call open() in our application. */
-static lfs_ssize_t (*lfs_file_read_ptr)(
-    lfs_t *lfs, lfs_file_t *file, void *buffer, lfs_size_t size) = NULL;
+static lfs_ssize_t (
+    *lfs_file_read_ptr)(lfs_t *lfs, lfs_file_t *file, void *buffer, lfs_size_t size) = NULL;
 #ifndef LFS_READONLY
-static lfs_ssize_t (*lfs_file_write_ptr)(
-    lfs_t *lfs, lfs_file_t *file, const void *buffer, lfs_size_t size) = NULL;
+static lfs_ssize_t (
+    *lfs_file_write_ptr)(lfs_t *lfs, lfs_file_t *file, const void *buffer, lfs_size_t size) = NULL;
 #endif
-static int (*lfs_file_close_ptr)(
-    lfs_t *lfs, lfs_file_t *file) = NULL;
-static lfs_soff_t (*lfs_file_seek_ptr)(
-    lfs_t *lfs, lfs_file_t *file, lfs_soff_t off, int whence) = NULL;
+static int (*lfs_file_close_ptr)(lfs_t *lfs, lfs_file_t *file) = NULL;
+static lfs_soff_t (
+    *lfs_file_seek_ptr)(lfs_t *lfs, lfs_file_t *file, lfs_soff_t off, int whence) = NULL;
 
 /**
  * Initializes the LittleFS subsystem.
@@ -103,7 +102,8 @@ static void littlefs_init(void)
         {
 #ifndef MMOSAL_NO_DEBUGLOG
             printf("Failed to allocate memory for file_table (%u*%u bytes)\n",
-                   MAX_FILES, sizeof(lfs_file_t));
+                   MAX_FILES,
+                   sizeof(lfs_file_t));
 #endif
             return;
         }
@@ -156,8 +156,7 @@ static int find_empty_slot()
 
     for (i = 0; i < MAX_FILES; i++)
     {
-        if (memcmp((const void *)&file_table[i],
-                   (const void *)&zero_file, sizeof(lfs_file_t)) == 0)
+        if (memcmp((const void *)&file_table[i], (const void *)&zero_file, sizeof(lfs_file_t)) == 0)
         {
             return i;
         }
@@ -280,7 +279,8 @@ int _close(int fd)
         return 0;
     }
     else if (memcmp((const void *)&file_table[FD_TO_SLOT(fd)],
-                    (const void *)&zero_file, sizeof(lfs_file_t)) == 0)
+                    (const void *)&zero_file,
+                    sizeof(lfs_file_t)) == 0)
     {
         /* File not open */
         errno = EBADF;
@@ -335,7 +335,8 @@ ssize_t _read(int fd, void *buf, size_t count)
         return -1;
     }
     else if (memcmp((const void *)&file_table[FD_TO_SLOT(fd)],
-                    (const void *)&zero_file, sizeof(lfs_file_t)) == 0)
+                    (const void *)&zero_file,
+                    sizeof(lfs_file_t)) == 0)
     {
         /* File not open */
         errno = EBADF;
@@ -400,7 +401,8 @@ ssize_t _write(int fd, const void *buf, size_t count)
         return -1;
     }
     else if (memcmp((const void *)&file_table[FD_TO_SLOT(fd)],
-                    (const void *)&zero_file, sizeof(lfs_file_t)) == 0)
+                    (const void *)&zero_file,
+                    sizeof(lfs_file_t)) == 0)
     {
         /* File not open */
         errno = EBADF;
@@ -450,7 +452,8 @@ off_t _lseek(int fd, off_t offset, int whence)
         return -1;
     }
     else if (memcmp((const void *)&file_table[FD_TO_SLOT(fd)],
-                    (const void *)&zero_file, sizeof(lfs_file_t)) == 0)
+                    (const void *)&zero_file,
+                    sizeof(lfs_file_t)) == 0)
     {
         /* File not open */
         errno = EBADF;

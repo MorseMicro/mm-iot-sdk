@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.9.7</span>
+   &#160;<span id="projectnumber">2.10.4</span>
    </div>
   </td>
  </tr>
@@ -91,26 +91,46 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p ><a class="anchor" id="md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_res_doc_mainpage"></a></p>
-<p >The Morse Micro IoT SDK provides a framework for developing embedded applications that include connectivity provided by Morse Micro MM610x transceivers.</p>
-<p >This SDK targets the <a class="el" href="MMPLATFORMS.html">Morse Micro IoT Reference Platforms</a>, which is made up of an MCU host development board and a Morse Micro MMECH08 development board, as shown in the diagram below. The two main components are the Morse Micro MM610x Wi-Fi HaLow transceiver and an MCU Host for running application firmware. See <a class="el" href="MMPLATFORMS.html">Morse Micro IoT Reference Platforms</a> for a full list of supported platforms.</p>
+<p >The Morse Micro IoT SDK provides a framework for developing embedded applications that include connectivity provided by Morse Micro transceivers.</p>
+<p >This SDK provides out of the box examples for the <a class="el" href="MMPLATFORMS.html">Morse Micro IoT Reference Platforms</a>. The two main components of these platforms are a Morse Micro Wi-Fi HaLow transceiver and an MCU Host for running application firmware. Note that you can use your own platform but some additional work will be required.</p>
 <div class="image">
 <img src="sdk-hw-overview.png" alt=""/>
 <div class="caption">
 Morse Micro IoT Reference Platform Overview</div></div>
- <p >This SDK package contains the software components to build the application firmware for the STM32 processor. These components include the RTOS (FreeRTOS), network stack (LwIP), Morse Micro host software (Morselib), and the platform-specific board support package (BSP). A block diagram of the SDK software components is shown below.</p>
+ <p >This SDK package contains the software components to build the application firmware for the STM32 processor. These components include:</p>
+<ul>
+<li>Real time operating system (FreeRTOS)</li>
+<li>Network stack (lwIP)</li>
+<li>Morse Micro host software (morselib)</li>
+<li>Platform-specific board support package (BSP)</li>
+<li>Crypto implementation for WPA Supplicant (MbedTLS)<ul>
+<li>This is only required when linking against <code>libmorse_nocrypto.a</code> or <code>libmorse_nosupplicant.a</code> or building morselib from source.</li>
+</ul>
+</li>
+</ul>
+<p >A high-level block diagram of the SDK software components is shown below.</p>
 <div class="image">
 <img src="hl_block_diagram.png" alt=""/>
 <div class="caption">
 High-level block diagram of the SDK software components</div></div>
- <p >The Morse Micro host software included in Morselib provides the driver interface for communicating with the transceiver and the upper layers of the Wireless LAN MAC, as well as additional application-layer network protocols. APIs provided by Morselib include:</p>
+ <h1><a class="anchor" id="autotoc_md54"></a>
+Morselib Overview</h1>
+<p >The Morse Micro host software included in morselib provides the driver interface for communicating with the transceiver and the upper layers of the Wireless LAN MAC, as well as additional application-layer network protocols. APIs provided by morselib include:</p>
 <ul>
-<li>A <a class="el" href="group__MMWLAN__CTRL.html">WLAN Control API</a> that can be used by the application code to manage Wireless LAN operations such as connecting to an Access Point.</li>
-<li><a class="el" href="group__EMMET.html">Morse Micro Embedded Test Engine (Emmet)</a> API for test automation.</li>
-<li>A <a class="el" href="group__MMWLAN__DATA.html">WLAN Datapath API</a>, <a class="el" href="group__MMOSAL.html">Morse Micro Operating System Abstraction Layer (mmosal) API</a>, and <a class="el" href="group__MMHAL.html">Morse Micro Hardware Abstraction Layer (mmhal) API</a>, which provide abstract interfaces to the IP stack, RTOS, and MCU BSP respectively. Shim layers provide the mapping between these Morselib APIs and the corresonding LwIP/FreeRTOS/BSP API.</li>
+<li>Various control APIs that can be used by the application code to manage Wireless LAN operations, including:<ul>
+<li><a class="el" href="group__MMWLAN__SCAN.html">WLAN Control API for Scan</a> &ndash; API for performing WLAN Scan operations.</li>
+<li><a class="el" href="group__MMWLAN__STA.html">WLAN Control API for Station (STA) mode</a> &ndash; API for configuration and control of Station (STA) mode.</li>
+<li><a class="el" href="group__MMWLAN__DPP.html">WLAN Control API for Device Provisioning Protocol (DPP)</a> &ndash; API for executing Device Provisioning Protocol (DPP), also known as Wi-Fi Easy Connect.</li>
+<li><a class="el" href="group__MMWLAN__AP.html">WLAN Control API for Access Point (AP) mode</a> &ndash; API for configuration and control of Access Point (AP) mode.</li>
+<li><a class="el" href="group__MMWLAN__CTRL.html">WLAN General Control API</a> &ndash; API for general control and configuration that is not linked to a specific operational mode.</li>
 </ul>
-<p >In addition to the APIs provided by Morselib, supporting infrastructure includes:</p>
+</li>
+<li><a class="el" href="group__EMMET.html">Morse Micro Embedded Test Engine (Emmet)</a> API for test automation.</li>
+<li>A <a class="el" href="group__MMWLAN__DATA.html">WLAN Datapath API</a>, <a class="el" href="group__MMOSAL.html">Morse Micro Operating System Abstraction Layer (mmosal) API</a>, and <a class="el" href="group__MMHAL.html">Morse Micro Hardware Abstraction Layer (mmhal) API</a>, which provide abstract interfaces to the IP stack, RTOS, and MCU BSP respectively. Shim layers provide the mapping between these morselib APIs and the corresonding lwIP/FreeRTOS/BSP API.</li>
+</ul>
+<p >In addition to the APIs provided by morselib, supporting infrastructure includes:</p>
 <ul>
-<li><a class="el" href="group__MMIPAL.html">Morse Micro IP Stack Abstraction Layer (MMIPAL) API</a>, which provides a layer of abstraction to simplify management of network stacks, with support included for Lightweight IP (LWIP) and FreeRTOS-plus-TCP network stacks.</li>
+<li><a class="el" href="group__MMIPAL.html">Morse Micro IP Stack Abstraction Layer (MMIPAL) API</a>, which provides a layer of abstraction to simplify management of network stacks, with support included for the lwIP network stack.</li>
 <li><a class="el" href="group__MMAPP.html">Application Layer Protocol APIs</a> for Morse Micro implementations of protocols including ping and iperf.</li>
 <li><a class="el" href="group__MMCONFIG.html">Morse Micro Persistent Configuration Store</a> APIs for storing configuration data, etc.</li>
 </ul>
@@ -122,7 +142,7 @@ High-level block diagram of the SDK software components</div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Copyright 2021 Morse Micro </li>
+    <li class="footer">Copyright 2021-2025 Morse Micro </li>
   </ul>
 </div>
 </body>

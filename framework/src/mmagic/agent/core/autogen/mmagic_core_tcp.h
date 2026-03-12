@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Morse Micro
+ * Copyright 2026 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -20,33 +20,35 @@ struct mmagic_tcp_config
 struct mmagic_tcp_data
 {
     struct mmagic_tcp_config config;
+    /** Subsystem private data (to be allocated/managed by the subsystem implementation). */
+    void *priv;
 };
 
 /**
  * Function to initialize the core data structure and register the ops functions.
  *
- * @param core Reference to to global mmagic context struct.
+ * @param core   Reference to to global mmagic context struct.
  */
 void mmagic_core_tcp_init(struct mmagic_data *core);
 
 /**
  * Function to load settings from persistent store for the core tcp subsystem.
  *
- * @param core Reference to to global mmagic context struct.
+ * @param core   Reference to to global mmagic context struct.
  */
 void mmagic_core_tcp_load_all(struct mmagic_data *core);
 
 /**
  * Function to save settings to persistent store for the core tcp subsystem.
  *
- * @param core Reference to to global mmagic context struct.
+ * @param core   Reference to to global mmagic context struct.
  */
 void mmagic_core_tcp_save_all(struct mmagic_data *core);
 
 /**
  * Function to start any of the core processes for the core tcp subsystem.
  *
- * @param core Reference to to global mmagic context struct.
+ * @param core   Reference to to global mmagic context struct.
  */
 void mmagic_core_tcp_start(struct mmagic_data *core);
 
@@ -64,10 +66,9 @@ struct MM_PACKED mmagic_core_tcp_connect_rsp_args
     uint8_t stream_id;
 };
 
-enum mmagic_status mmagic_core_tcp_connect(
-    struct mmagic_data *core,
-    const struct mmagic_core_tcp_connect_cmd_args *cmd_args,
-    struct mmagic_core_tcp_connect_rsp_args *rsp_args);
+enum mmagic_status mmagic_core_tcp_connect(struct mmagic_data *core,
+                                           const struct mmagic_core_tcp_connect_cmd_args *cmd_args,
+                                           struct mmagic_core_tcp_connect_rsp_args *rsp_args);
 
 /** Command arguments structure for tcp_bind */
 struct MM_PACKED mmagic_core_tcp_bind_cmd_args
@@ -81,10 +82,9 @@ struct MM_PACKED mmagic_core_tcp_bind_rsp_args
     uint8_t stream_id;
 };
 
-enum mmagic_status mmagic_core_tcp_bind(
-    struct mmagic_data *core,
-    const struct mmagic_core_tcp_bind_cmd_args *cmd_args,
-    struct mmagic_core_tcp_bind_rsp_args *rsp_args);
+enum mmagic_status mmagic_core_tcp_bind(struct mmagic_data *core,
+                                        const struct mmagic_core_tcp_bind_cmd_args *cmd_args,
+                                        struct mmagic_core_tcp_bind_rsp_args *rsp_args);
 
 /** Command arguments structure for tcp_recv */
 struct MM_PACKED mmagic_core_tcp_recv_cmd_args
@@ -100,10 +100,9 @@ struct MM_PACKED mmagic_core_tcp_recv_rsp_args
     struct raw1536 buffer;
 };
 
-enum mmagic_status mmagic_core_tcp_recv(
-    struct mmagic_data *core,
-    const struct mmagic_core_tcp_recv_cmd_args *cmd_args,
-    struct mmagic_core_tcp_recv_rsp_args *rsp_args);
+enum mmagic_status mmagic_core_tcp_recv(struct mmagic_data *core,
+                                        const struct mmagic_core_tcp_recv_cmd_args *cmd_args,
+                                        struct mmagic_core_tcp_recv_rsp_args *rsp_args);
 
 /** Command arguments structure for tcp_send */
 struct MM_PACKED mmagic_core_tcp_send_cmd_args
@@ -112,9 +111,8 @@ struct MM_PACKED mmagic_core_tcp_send_cmd_args
     struct raw1536 buffer;
 };
 
-enum mmagic_status mmagic_core_tcp_send(
-    struct mmagic_data *core,
-    const struct mmagic_core_tcp_send_cmd_args *cmd_args);
+enum mmagic_status mmagic_core_tcp_send(struct mmagic_data *core,
+                                        const struct mmagic_core_tcp_send_cmd_args *cmd_args);
 
 /** Command arguments structure for tcp_read_poll */
 struct MM_PACKED mmagic_core_tcp_read_poll_cmd_args
@@ -150,10 +148,9 @@ struct MM_PACKED mmagic_core_tcp_accept_rsp_args
     uint8_t stream_id;
 };
 
-enum mmagic_status mmagic_core_tcp_accept(
-    struct mmagic_data *core,
-    const struct mmagic_core_tcp_accept_cmd_args *cmd_args,
-    struct mmagic_core_tcp_accept_rsp_args *rsp_args);
+enum mmagic_status mmagic_core_tcp_accept(struct mmagic_data *core,
+                                          const struct mmagic_core_tcp_accept_cmd_args *cmd_args,
+                                          struct mmagic_core_tcp_accept_rsp_args *rsp_args);
 
 /** Command arguments structure for tcp_close */
 struct MM_PACKED mmagic_core_tcp_close_cmd_args
@@ -161,6 +158,26 @@ struct MM_PACKED mmagic_core_tcp_close_cmd_args
     uint8_t stream_id;
 };
 
-enum mmagic_status mmagic_core_tcp_close(
+enum mmagic_status mmagic_core_tcp_close(struct mmagic_data *core,
+                                         const struct mmagic_core_tcp_close_cmd_args *cmd_args);
+
+/** Command arguments structure for tcp_set_rx_ready_evt_enabled */
+struct MM_PACKED mmagic_core_tcp_set_rx_ready_evt_enabled_cmd_args
+{
+    uint8_t stream_id;
+    bool enabled;
+};
+
+enum mmagic_status mmagic_core_tcp_set_rx_ready_evt_enabled(
     struct mmagic_data *core,
-    const struct mmagic_core_tcp_close_cmd_args *cmd_args);
+    const struct mmagic_core_tcp_set_rx_ready_evt_enabled_cmd_args *cmd_args);
+
+/*
+ * ---------------------------------------------------------------------------------------------
+ * Internal API: to be used by the implementation C file only.
+ * ---------------------------------------------------------------------------------------------
+ */
+
+enum mmagic_status mmagic_core_event_tcp_rx_ready(
+    struct mmagic_data *core,
+    const struct mmagic_core_event_tcp_rx_ready_args *args);

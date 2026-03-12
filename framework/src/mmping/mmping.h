@@ -37,31 +37,32 @@
 #include <stdbool.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 /** Default time interval in milliseconds between ping requests. */
-#define MMPING_DEFAULT_PING_INTERVAL_MS                (1000)
+#define MMPING_DEFAULT_PING_INTERVAL_MS (1000)
 /** Default max count for ping request to run forever. */
-#define MMPING_DEFAULT_PING_COUNT                      (0)
+#define MMPING_DEFAULT_PING_COUNT (0)
 /** Default ping data packet size in bytes, excluding ICMP header. */
-#define MMPING_DEFAULT_DATA_SIZE                       (56)
+#define MMPING_DEFAULT_DATA_SIZE (56)
 /** Minimum data size of ping request packet excluding ICMP header */
-#define MMPING_MIN_DATA_SIZE                           (8)
+#define MMPING_MIN_DATA_SIZE (8)
 /** Maximum data size of ping request packet excluding ICMP header */
-#define MMPING_MAX_DATA_SIZE                           (1500)
+#define MMPING_MAX_DATA_SIZE (1500)
 /** Maximum number of pings before terminating. */
-#define MMPING_MAX_COUNT                               (0xffff)
+#define MMPING_MAX_COUNT (0xffff)
 /** Maximum number of times to retransmit a ping request before giving up and moving on. */
-#define MMPING_MAX_RETRIES                             (2)
+#define MMPING_MAX_RETRIES (2)
 /** Rate at which to retry unacknowledged ping requests when the RTT is not known.`` */
-#define MMPING_INITIAL_RETRY_INTERVAL_MS               (1000)
+#define MMPING_INITIAL_RETRY_INTERVAL_MS (1000)
 
 /** Maximum length of an IP address string including null-terminator. */
-#define MMPING_IPADDR_MAXLEN                           (48)
+#define MMPING_IPADDR_MAXLEN (48)
 
 /** Length of the ICMP echo header in octets. */
-#define MMPING_ICMP_ECHO_HDR_LEN                       (8)
+#define MMPING_ICMP_ECHO_HDR_LEN (8)
 
 /**
  * Ping request arguments data structure.
@@ -92,11 +93,14 @@ struct mmping_args
 };
 
 /** Initializer for @ref mmping_args. */
-#define MMPING_ARGS_DEFAULT                                      \
-        {                                                        \
-            { 0 }, { 0 }, MMPING_DEFAULT_PING_INTERVAL_MS,       \
-            MMPING_DEFAULT_PING_COUNT, MMPING_DEFAULT_DATA_SIZE, \
-        }
+#define MMPING_ARGS_DEFAULT              \
+    {                                    \
+        { 0 },                           \
+        { 0 },                           \
+        MMPING_DEFAULT_PING_INTERVAL_MS, \
+        MMPING_DEFAULT_PING_COUNT,       \
+        MMPING_DEFAULT_DATA_SIZE,        \
+    }
 
 /**
  * Data structure to store ping results.

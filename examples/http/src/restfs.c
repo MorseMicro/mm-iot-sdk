@@ -17,7 +17,8 @@
 /**
  * Opaque object used for writing REST output data.
  */
-struct restfs_file {
+struct restfs_file
+{
     /** lwIP @c httpd custom file object */
     struct fs_file *fs_file;
 };
@@ -25,7 +26,7 @@ struct restfs_file {
 static const struct rest_endpoint *rest_endpoints;
 static uint16_t num_rest_endpoints = 0;
 
-void rest_init_endpoints(const struct rest_endpoint* endpoints, uint16_t num_endpoints)
+void rest_init_endpoints(const struct rest_endpoint *endpoints, uint16_t num_endpoints)
 {
     rest_endpoints = endpoints;
     num_rest_endpoints = num_endpoints;
@@ -74,14 +75,14 @@ int restfs_alloc_buffer(struct restfs_file *rest_file, uint16_t size)
     if (file->pextension != NULL)
     {
         memset(file->pextension, 0, size);
-        file->data = (const char *) file->pextension;
+        file->data = (const char *)file->pextension;
         file->len = size;
         return ERR_OK;
     }
     return ERR_MEM;
 }
 
-void restfs_write_const(struct restfs_file *rest_file, const char* str)
+void restfs_write_const(struct restfs_file *rest_file, const char *str)
 {
     struct fs_file *file = rest_file->fs_file;
 
@@ -91,7 +92,7 @@ void restfs_write_const(struct restfs_file *rest_file, const char* str)
     file->index = strlen(str);
 }
 
-char* restfs_claim_raw_buffer(struct restfs_file *rest_file)
+char *restfs_claim_raw_buffer(struct restfs_file *rest_file)
 {
     struct fs_file *file = rest_file->fs_file;
 
@@ -109,7 +110,7 @@ void restfs_release_raw_buffer(struct restfs_file *rest_file, uint16_t wr_len)
     MMOSAL_ASSERT((file->pextension == NULL) && (file->data != NULL));
 
     file->index += wr_len;
-    file->pextension = (char*) file->data;
+    file->pextension = (char *)file->data;
 }
 
 /**
@@ -121,9 +122,7 @@ int fs_open_custom(struct fs_file *file, const char *name)
     {
         if (!strcmp(name, rest_endpoints[i].uri))
         {
-            struct restfs_file rest_file = {
-                .fs_file = file
-            };
+            struct restfs_file rest_file = { .fs_file = file };
             memset(file, 0, sizeof(*file));
 
             rest_endpoints[i].user_function(&rest_file);
@@ -150,9 +149,9 @@ void fs_close_custom(struct fs_file *file)
 
 int fs_read_custom(struct fs_file *file, char *buffer, int count)
 {
-    (void) (file);
-    (void) (buffer);
-    (void) (count);
+    (void)(file);
+    (void)(buffer);
+    (void)(count);
     /* Empty for now. */
     return FS_READ_EOF;
 }

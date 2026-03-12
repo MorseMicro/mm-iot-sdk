@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Morse Micro
+ * Copyright 2026 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -30,8 +30,7 @@
  * This list must be in alphabetical order as @c mmagic_cli_element_search() is implemented using
  * a binary search which requires an ordered list.
  */
-struct mmagic_cli_config_elem sys_cli_config_vars[] = {
-};
+struct mmagic_cli_config_elem sys_cli_config_vars[] = {};
 
 /********* SYS Configuration Getter/Setter Handlers **********/
 void mmagic_cli_sys_get(struct mmagic_cli *ctx, EmbeddedCli *cli, const char *config_var)
@@ -55,8 +54,8 @@ void mmagic_cli_sys_get(struct mmagic_cli *ctx, EmbeddedCli *cli, const char *co
         return;
     }
 
-    struct mmagic_cli_config_elem *elem = mmagic_cli_element_search(sys_cli_config_vars,
-                                                                    num_elements, config_var);
+    struct mmagic_cli_config_elem *elem =
+        mmagic_cli_element_search(sys_cli_config_vars, num_elements, config_var);
     if (elem == NULL)
     {
         mmagic_cli_printf(cli, "Unable to find config variable 'sys.%s'", config_var);
@@ -75,15 +74,17 @@ void mmagic_cli_sys_get(struct mmagic_cli *ctx, EmbeddedCli *cli, const char *co
     }
 }
 
-void mmagic_cli_sys_set(struct mmagic_cli *ctx, EmbeddedCli *cli, const char *config_var,
+void mmagic_cli_sys_set(struct mmagic_cli *ctx,
+                        EmbeddedCli *cli,
+                        const char *config_var,
                         const char *val)
 {
     struct mmagic_data *core = &ctx->core;
 
     uint32_t num_elements = sizeof(sys_cli_config_vars) / sizeof(sys_cli_config_vars[0]);
 
-    struct mmagic_cli_config_elem *elem = mmagic_cli_element_search(sys_cli_config_vars,
-                                                                    num_elements, config_var);
+    struct mmagic_cli_config_elem *elem =
+        mmagic_cli_element_search(sys_cli_config_vars, num_elements, config_var);
     if (elem == NULL)
     {
         mmagic_cli_printf(cli, "Unable to find config variable 'sys.%s'", config_var);
@@ -124,37 +125,32 @@ void mmagic_cli_sys_load(struct mmagic_cli *ctx, EmbeddedCli *cli)
 /********* CLI Command Handlers **********/
 
 void mmagic_cli_sys_reset(EmbeddedCli *cli, char *args, void *context);
-
 void mmagic_cli_sys_deep_sleep(EmbeddedCli *cli, char *args, void *context);
-
 void mmagic_cli_sys_get_version(EmbeddedCli *cli, char *args, void *context);
 
 /********* Register bindings function definition **********/
 void mmagic_cli_sys_register_bindings(EmbeddedCli *cli, struct mmagic_data *core)
 {
-    embeddedCliAddBinding(cli, (CliCommandBinding) {
-        "sys-reset",
-        "Performs a soft reset.",
-        true,
-        core,
-        mmagic_cli_sys_reset
-    });
+    embeddedCliAddBinding(cli,
+                          (CliCommandBinding){ "sys-reset",
+                                               "Performs a soft reset.",
+                                               true,
+                                               core,
+                                               mmagic_cli_sys_reset });
 
-    embeddedCliAddBinding(cli, (CliCommandBinding) {
-        "sys-deep_sleep",
-        "Enters deep sleep mode.",
-        true,
-        core,
-        mmagic_cli_sys_deep_sleep
-    });
+    embeddedCliAddBinding(cli,
+                          (CliCommandBinding){ "sys-deep_sleep",
+                                               "Enters deep sleep mode.",
+                                               true,
+                                               core,
+                                               mmagic_cli_sys_deep_sleep });
 
-    embeddedCliAddBinding(cli, (CliCommandBinding) {
-        "sys-get_version",
-        "Gets the device firmware and hardware versions.",
-        true,
-        core,
-        mmagic_cli_sys_get_version
-    });
+    embeddedCliAddBinding(cli,
+                          (CliCommandBinding){ "sys-get_version",
+                                               "Gets the device firmware and hardware versions.",
+                                               true,
+                                               core,
+                                               mmagic_cli_sys_get_version });
 }
 
 void mmagic_cli_sys_init(struct mmagic_cli *ctx)

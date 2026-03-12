@@ -37,7 +37,8 @@
  * root@morsemicro:~ $ tcpdump -A -i wlan0 -n "broadcast"
  * tcpdump: verbose output suppressed, use -v[v]... for full protocol decode
  * listening on wlan0, link-type EN10MB (Ethernet), snapshot length 262144 bytes
- * 01:51:49.865347 0c:bf:74:00:01:29 > ff:ff:ff:ff:ff:ff Null Unnumbered, xid, Flags [Response], length 6: 01 00
+ * 01:51:49.865347 0c:bf:74:00:01:29 > ff:ff:ff:ff:ff:ff Null Unnumbered, xid, Flags [Response],
+ * length 6: 01 00
  * ...
  * 01:51:49.902936 ARP, Request who-has 192.168.1.2 tell 192.168.1.2, length 28
  * ..........t..)..............
@@ -146,6 +147,7 @@ PACK_STRUCT_STRUCT struct udp_broadcast_rx_payload
 {
     /** Key used to identify payload.*/
     uint32_t key;
+
     /** Flexible array member used to access color data for each ID. */
     struct
     {
@@ -168,7 +170,7 @@ struct udp_broadcast_rx_metadata
 };
 
 /** Global data structure used in RX mode to record metadata. */
-static struct udp_broadcast_rx_metadata rx_metadata = {0};
+static struct udp_broadcast_rx_metadata rx_metadata = { 0 };
 
 /**
  * Callback function to handle received data from the UDP pcb.
@@ -182,8 +184,11 @@ static struct udp_broadcast_rx_metadata rx_metadata = {0};
  * @param addr  The remote IP address from which the packet was received
  * @param port  The remote port from which the packet was received
  */
-static void udp_raw_recv(void *arg, struct udp_pcb *pcb, struct pbuf *p,
-                         const ip_addr_t *addr, u16_t port)
+static void udp_raw_recv(void *arg,
+                         struct udp_pcb *pcb,
+                         struct pbuf *p,
+                         const ip_addr_t *addr,
+                         u16_t port)
 {
     LWIP_UNUSED_ARG(pcb);
     LWIP_UNUSED_ARG(addr);

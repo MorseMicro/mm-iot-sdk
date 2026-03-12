@@ -21,7 +21,6 @@
 #include "mmconfig.h"
 #include "mm_app_common.h"
 
-
 /**
  * Convert a DPP push button result code to its string representation.
  *
@@ -30,7 +29,7 @@
  * @return          A constant string describing the result. If the input is not a recognized
  *                  enumeration value, the string "Unknown Result" is returned.
  */
-const char* mmwlan_dpp_pb_result_to_string(enum mmwlan_dpp_pb_result result)
+const char *mmwlan_dpp_pb_result_to_string(enum mmwlan_dpp_pb_result result)
 {
     switch (result)
     {
@@ -81,7 +80,6 @@ static void dpp_event_handler(const struct mmwlan_dpp_cb_args *dpp_event, void *
                   dpp_event->args.pb_result.ssid,
                   dpp_event->args.pb_result.passphrase);
 
-
     char ssid[MMWLAN_SSID_MAXLEN];
     memcpy(ssid, dpp_event->args.pb_result.ssid, dpp_event->args.pb_result.ssid_len);
     ssid[dpp_event->args.pb_result.ssid_len] = '\0';
@@ -90,7 +88,6 @@ static void dpp_event_handler(const struct mmwlan_dpp_cb_args *dpp_event, void *
 
     (void)mmosal_semb_give(semb);
 }
-
 
 /**
  * Main entry point to the application. This will be invoked in a thread once operating system
@@ -105,17 +102,17 @@ void app_init(void)
 
     app_wlan_init();
 
-    struct mmwlan_dpp_args dpp_args = {.dpp_event_cb = dpp_event_handler, .dpp_event_cb_arg = semb};
+    struct mmwlan_dpp_args dpp_args = { .dpp_event_cb = dpp_event_handler,
+                                        .dpp_event_cb_arg = semb };
 
     mmosal_printf("DPP Start\n");
     enum mmwlan_status status = mmwlan_dpp_start(&dpp_args);
     MMOSAL_ASSERT(status == MMWLAN_SUCCESS);
 
-    bool ok = mmosal_semb_wait(semb, 200*1000);
+    bool ok = mmosal_semb_wait(semb, 200 * 1000);
     MMOSAL_ASSERT(ok);
 
     mmwlan_dpp_stop();
 
     app_wlan_start();
 }
-

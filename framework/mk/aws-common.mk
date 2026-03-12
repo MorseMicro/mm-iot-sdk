@@ -31,4 +31,3 @@ CFLAGS-$(AWS_COMMON_DIR) += -Wno-c++-compat -Wno-error
 BUILD_DEFINES += otaconfigOTA_FILE_TYPE=FILE
 
 MMIOT_INCLUDES += $(AWS_COMMON_DIR)/include
-MMIOT_INCLUDES += $(AWS_COMMON_DIR)/portable/os

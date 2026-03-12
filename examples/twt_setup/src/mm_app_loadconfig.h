@@ -16,7 +16,8 @@
 #include "mmwlan.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 /**
@@ -24,7 +25,7 @@ extern "C" {
  *
  * @returns A pointer to the channel list to load.
  */
-const struct mmwlan_s1g_channel_list* load_channel_list(void);
+const struct mmwlan_s1g_channel_list *load_channel_list(void);
 
 /**
  * Loads the provided structure with initialization parameters
@@ -60,7 +61,7 @@ void load_mmwlan_settings(void);
  * @param code  Country code to check
  * @return True if country code found in regulatory database
  */
-bool country_code_in_regulatory_domain(const char * code);
+bool country_code_in_regulatory_domain(const char *code);
 
 #ifdef __cplusplus
 }

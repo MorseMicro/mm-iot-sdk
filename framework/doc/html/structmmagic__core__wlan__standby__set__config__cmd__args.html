@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.9.7</span>
+   &#160;<span id="projectnumber">2.10.4</span>
    </div>
   </td>
  </tr>
@@ -95,7 +95,7 @@ $(document).ready(function(){initNavTree('structmmagic__core__wlan__standby__set
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Command arguments structure for wlan_standby_set_config. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03176">3176</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03798">3798</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 </div>
 <p><code>#include &lt;<a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>&gt;</code></p>
 <table class="memberdecls">
@@ -142,7 +142,7 @@ Data Fields</h2></td></tr>
 <p>Deprecated. </p>
 <p >This parameter is no longer used and will be removed in a future release. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03188">3188</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03810">3810</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -160,7 +160,7 @@ Data Fields</h2></td></tr>
 
 <p>Destination IP address for the standby status packets (Default 0.0.0.0). </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03183">3183</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03805">3805</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -178,7 +178,7 @@ Data Fields</h2></td></tr>
 
 <p>Destination UDP Port for the standby status packets, also used the source port for outgoing UDP port for outgoing UDP packets (Default 22000). </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03186">3186</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03808">3808</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -196,7 +196,7 @@ Data Fields</h2></td></tr>
 
 <p>Interval in seconds for transmitting Standby status packets (Default 15s). </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03179">3179</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03801">3801</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -215,7 +215,7 @@ Data Fields</h2></td></tr>
 <p>The amount in seconds to increase successive snooze intervals. </p>
 <p >This saves power by snoozing for longer before checking for beacons again if no beacons are found. (Default 0s). </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03195">3195</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03817">3817</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -233,7 +233,7 @@ Data Fields</h2></td></tr>
 
 <p>The maximum time in seconds to snooze for after increments (Default unlimited). </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03197">3197</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03819">3819</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -252,7 +252,7 @@ Data Fields</h2></td></tr>
 <p>The interval in seconds to wake periodically from snooze mode and check for beacons. </p>
 <p >If no beacons are found then the Morse chip will re-enter snooze mode. If beacons are found then the Morse chip will exit standby mode so the host can reassociate (Default 60s). </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03192">3192</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03814">3814</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -270,7 +270,7 @@ Data Fields</h2></td></tr>
 
 <p>Source IP address to use for the standby status packets (Default 0.0.0.0). </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03181">3181</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03803">3803</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -284,7 +284,7 @@ Data Fields</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="structmmagic__core__wlan__standby__set__config__cmd__args.html">mmagic_core_wlan_standby_set_config_cmd_args</a></li>
-    <li class="footer">Copyright 2021 Morse Micro </li>
+    <li class="footer">Copyright 2021-2025 Morse Micro </li>
   </ul>
 </div>
 </body>

@@ -10,7 +10,7 @@
 #include "main.h"
 
 #include "mmutils.h"
-#include "mmhal.h"
+#include "mmhal_core.h"
 #include "mmosal.h"
 #include "mmagic_datalink_agent.h"
 

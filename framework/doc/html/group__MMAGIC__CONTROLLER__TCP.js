@@ -43,6 +43,15 @@ var group__MMAGIC__CONTROLLER__TCP =
     [ "mmagic_core_tcp_close_cmd_args", "structmmagic__core__tcp__close__cmd__args.html", [
       [ "stream_id", "structmmagic__core__tcp__close__cmd__args.html#a3f68c7e83623a1a7a53e1f44ac0b6d34", null ]
     ] ],
+    [ "mmagic_core_tcp_set_rx_ready_evt_enabled_cmd_args", "structmmagic__core__tcp__set__rx__ready__evt__enabled__cmd__args.html", [
+      [ "enabled", "structmmagic__core__tcp__set__rx__ready__evt__enabled__cmd__args.html#a1ccff8313aa418b090e8214afe930e06", null ],
+      [ "stream_id", "structmmagic__core__tcp__set__rx__ready__evt__enabled__cmd__args.html#a597dc214bb3616c601601c4dec3ec5f8", null ]
+    ] ],
+    [ "mmagic_tcp_rx_ready_event_args", "structmmagic__tcp__rx__ready__event__args.html", [
+      [ "stream_id", "structmmagic__tcp__rx__ready__event__args.html#a7933f4e24c7e0fdd7f72438568912a06", null ]
+    ] ],
+    [ "mmagic_tcp_rx_ready_event_handler_t", "group__MMAGIC__CONTROLLER__TCP.html#ga71bbcea9671862ecc5cf84dd75a161c8", null ],
+    [ "mmagic_controller_register_tcp_rx_ready_handler", "group__MMAGIC__CONTROLLER__TCP.html#ga4c15384afde95dd48370a522e512f282", null ],
     [ "mmagic_controller_tcp_accept", "group__MMAGIC__CONTROLLER__TCP.html#ga0d5363251d7a7d63d5e06c020be217a1", null ],
     [ "mmagic_controller_tcp_bind", "group__MMAGIC__CONTROLLER__TCP.html#ga74f5d65873939e7f95e9bc6e0e6bb220", null ],
     [ "mmagic_controller_tcp_close", "group__MMAGIC__CONTROLLER__TCP.html#gae6e7329df734163f5b0f99f0a2f272ae", null ],
@@ -50,5 +59,6 @@ var group__MMAGIC__CONTROLLER__TCP =
     [ "mmagic_controller_tcp_read_poll", "group__MMAGIC__CONTROLLER__TCP.html#ga6203b78ab673a22055f737fdbdb8da88", null ],
     [ "mmagic_controller_tcp_recv", "group__MMAGIC__CONTROLLER__TCP.html#ga4535056b97f9f1a3fa0df70000d120da", null ],
     [ "mmagic_controller_tcp_send", "group__MMAGIC__CONTROLLER__TCP.html#gae59d7b13f383d5f4f4e5513ee5a03275", null ],
+    [ "mmagic_controller_tcp_set_rx_ready_evt_enabled", "group__MMAGIC__CONTROLLER__TCP.html#gaa3943c917259513cf6b5115424b0597f", null ],
     [ "mmagic_controller_tcp_write_poll", "group__MMAGIC__CONTROLLER__TCP.html#ga5b62c4c5b56745295b47ae05c1c88755", null ]
 ];

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.4"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Morse Micro IoT SDK: WLAN Standby features</title>
+<title>Morse Micro IoT SDK: [Deprecated] WLAN Standby features</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.9.7</span>
+   &#160;<span id="projectnumber">2.10.4</span>
    </div>
   </td>
  </tr>
@@ -89,10 +89,11 @@ $(document).ready(function(){initNavTree('group__MMWLAN__STANDBY.html',''); init
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Data Structures</a> &#124;
+<a href="#define-members">Macros</a> &#124;
 <a href="#typedef-members">Typedefs</a> &#124;
 <a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
-  <div class="headertitle"><div class="title">WLAN Standby features<div class="ingroups"><a class="el" href="group__MMWLAN.html">Morse Micro Wireless LAN (mmwlan) API</a> &#124; <a class="el" href="group__MMWLAN.html">Morse Micro Wireless LAN (mmwlan) API</a> &raquo; <a class="el" href="group__MMWLAN__OFFLOAD.html">WLAN offload features</a></div></div></div>
+  <div class="headertitle"><div class="title">[Deprecated] WLAN Standby features<div class="ingroups"><a class="el" href="group__MMWLAN.html">Morse Micro Wireless LAN (mmwlan) API</a> &raquo; <a class="el" href="group__MMWLAN__STA.html">WLAN Control API for Station (STA) mode</a> &#124; <a class="el" href="group__MMWLAN.html">Morse Micro Wireless LAN (mmwlan) API</a> &raquo; <a class="el" href="group__MMWLAN__STA.html">WLAN Control API for Station (STA) mode</a> &raquo; <a class="el" href="group__MMWLAN__OFFLOAD.html">[Deprecated] WLAN offload features</a></div></div></div>
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -112,24 +113,31 @@ $(document).ready(function(){initNavTree('group__MMWLAN__STANDBY.html',''); init
 <li>A TCP connection maintained by the TCP keep-alive offload feature was lost.</li>
 </ul>
 <p >The host will be powered on by toggling a GPIO pin, the BUSY pin is also toggled to interrupt the host. By offloading features like ARP response, ARP refresh, TCP keep-alive, and DHCP lease updates while in standby mode allows the host processor to sleep for longer resulting in better power savings.</p>
-<dl class="section warning"><dt>Warning</dt><dd>BETA NOTICE: This is beta API that is under development; breaking changes may be introduced in future releases. </dd></dl>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000020">Deprecated:</a></b></dt><dd>It is not recommended to use the WLAN Offload features API. It is deprecated and will be removed in a future release. </dd></dl>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Data Structures</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__standby__enter__args.html">mmwlan_standby_enter_args</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Arguments for <a class="el" href="group__MMWLAN__STANDBY.html#gacf3e87544fee10ac452e54da876da9fc">mmwlan_standby_enter</a> <br  />
-  <a href="structmmwlan__standby__enter__args.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Arguments for <a class="el" href="group__MMWLAN__STANDBY.html#gacf3e87544fee10ac452e54da876da9fc">mmwlan_standby_enter</a>.  <a href="structmmwlan__standby__enter__args.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__standby__set__status__payload__args.html">mmwlan_standby_set_status_payload_args</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Arguments for <a class="el" href="group__MMWLAN__STANDBY.html#ga07515bb15ac04e997e33bfdf6f6c7833">mmwlan_standby_set_status_payload</a>.  <a href="structmmwlan__standby__set__status__payload__args.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__standby__set__wake__filter__args.html">mmwlan_standby_set_wake_filter_args</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Arguments for <a class="el" href="group__MMWLAN__STANDBY.html#ga6814b0721a36cb55fa40e8cf9ae8b215">mmwlan_standby_set_wake_filter</a> <br  />
-  <a href="structmmwlan__standby__set__wake__filter__args.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Arguments for <a class="el" href="group__MMWLAN__STANDBY.html#ga6814b0721a36cb55fa40e8cf9ae8b215">mmwlan_standby_set_wake_filter</a>.  <a href="structmmwlan__standby__set__wake__filter__args.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__standby__config.html">mmwlan_standby_config</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Standby mode configuration parameters.  <a href="structmmwlan__standby__config.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:ga84f1a76137b3e5d01dd0942e2c4ee564"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__STANDBY.html#ga84f1a76137b3e5d01dd0942e2c4ee564">MMWLAN_STANDBY_STATUS_FRAME_USER_PAYLOAD_MAXLEN</a>&#160;&#160;&#160;(64)</td></tr>
+<tr class="memdesc:ga84f1a76137b3e5d01dd0942e2c4ee564"><td class="mdescLeft">&#160;</td><td class="mdescRight">The maximum length of a user-specified payload (bytes) for Standby status frames.  <a href="group__MMWLAN__STANDBY.html#ga84f1a76137b3e5d01dd0942e2c4ee564">More...</a><br /></td></tr>
+<tr class="separator:ga84f1a76137b3e5d01dd0942e2c4ee564"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gae65281a566a88f746c21c004a7971341"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__STANDBY.html#gae65281a566a88f746c21c004a7971341">MMWLAN_STANDBY_WAKE_FRAME_USER_FILTER_MAXLEN</a>&#160;&#160;&#160;(64)</td></tr>
+<tr class="memdesc:gae65281a566a88f746c21c004a7971341"><td class="mdescLeft">&#160;</td><td class="mdescRight">The maximum allowed length of a user filter to apply to wake frames.  <a href="group__MMWLAN__STANDBY.html#gae65281a566a88f746c21c004a7971341">More...</a><br /></td></tr>
+<tr class="separator:gae65281a566a88f746c21c004a7971341"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
@@ -172,6 +180,43 @@ Functions</h2></td></tr>
 <tr class="memdesc:ga4257935124aaf2cbea29296256a04f81"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the configuration for standby mode.  <a href="group__MMWLAN__STANDBY.html#ga4257935124aaf2cbea29296256a04f81">More...</a><br /></td></tr>
 <tr class="separator:ga4257935124aaf2cbea29296256a04f81"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="ga84f1a76137b3e5d01dd0942e2c4ee564" name="ga84f1a76137b3e5d01dd0942e2c4ee564"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga84f1a76137b3e5d01dd0942e2c4ee564">&#9670;&nbsp;</a></span>MMWLAN_STANDBY_STATUS_FRAME_USER_PAYLOAD_MAXLEN</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define MMWLAN_STANDBY_STATUS_FRAME_USER_PAYLOAD_MAXLEN&#160;&#160;&#160;(64)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The maximum length of a user-specified payload (bytes) for Standby status frames. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01768">1768</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+
+</div>
+</div>
+<a id="gae65281a566a88f746c21c004a7971341" name="gae65281a566a88f746c21c004a7971341"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gae65281a566a88f746c21c004a7971341">&#9670;&nbsp;</a></span>MMWLAN_STANDBY_WAKE_FRAME_USER_FILTER_MAXLEN</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define MMWLAN_STANDBY_WAKE_FRAME_USER_FILTER_MAXLEN&#160;&#160;&#160;(64)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The maximum allowed length of a user filter to apply to wake frames. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01771">1771</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+
+</div>
+</div>
 <h2 class="groupheader">Typedef Documentation</h2>
 <a id="gaebeeb1a17a43cb3981ba60c42fc5f71b" name="gaebeeb1a17a43cb3981ba60c42fc5f71b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#gaebeeb1a17a43cb3981ba60c42fc5f71b">&#9670;&nbsp;</a></span>mmwlan_standby_exit_cb_t</h2>
@@ -193,9 +238,9 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section warning"><dt>Warning</dt><dd>BETA NOTICE: This is beta API that is under development; breaking changes may be introduced in future releases. </dd></dl>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000022">Deprecated:</a></b></dt><dd>It is not recommended to use the WLAN Offload features API. It is deprecated and will be removed in a future release. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01822">1822</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01808">1808</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -213,6 +258,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Reasons we can exit standby mode. </p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000021">Deprecated:</a></b></dt><dd>It is not recommended to use the WLAN Offload features API. It is deprecated and will be removed in a future release. </dd></dl>
 <table class="fieldtable">
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="gga7be2c8d7da01c0a12e0d4cb171ef7764af1d814b5327bae1804dd31ee2ef77943" name="gga7be2c8d7da01c0a12e0d4cb171ef7764af1d814b5327bae1804dd31ee2ef77943"></a>MMWLAN_STANDBY_EXIT_REASON_NONE&#160;</td><td class="fielddoc"><p >No specific reason for exiting standby mode. </p>
 </td></tr>
@@ -232,7 +278,7 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01793">1793</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01779">1779</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -262,7 +308,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> on success or <a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086ac9e2689a222cc3b398fc89b68a1f0006">MMWLAN_ERROR</a> on failure.</dd></dl>
-<dl class="section warning"><dt>Warning</dt><dd>BETA NOTICE: This is beta API that is under development; breaking changes may be introduced in future releases. </dd></dl>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000024">Deprecated:</a></b></dt><dd>It is not recommended to use the WLAN Offload features API. It is deprecated and will be removed in a future release. </dd></dl>
 
 </div>
 </div>
@@ -286,7 +332,7 @@ Functions</h2></td></tr>
 <p >here may be certain instances such as a timer expiry, which cause the host chip to wake up independent of the Morse chip. In such situations, the host calls this function to instruct the Morse chip to exit standby mode and return to normal operating mode.</p>
 <p >Triggers <a class="el" href="group__MMWLAN__STANDBY.html#gaebeeb1a17a43cb3981ba60c42fc5f71b">mmwlan_standby_exit_cb_t</a> with reason <code>MMWLAN_STANDBY_EXIT_REASON_NONE</code>.</p>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> on success or <a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086ac9e2689a222cc3b398fc89b68a1f0006">MMWLAN_ERROR</a> on failure.</dd></dl>
-<dl class="section warning"><dt>Warning</dt><dd>BETA NOTICE: This is beta API that is under development; breaking changes may be introduced in future releases. </dd></dl>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000025">Deprecated:</a></b></dt><dd>It is not recommended to use the WLAN Offload features API. It is deprecated and will be removed in a future release. </dd></dl>
 
 </div>
 </div>
@@ -314,7 +360,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> on success or <a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086ac9e2689a222cc3b398fc89b68a1f0006">MMWLAN_ERROR</a> on failure.</dd></dl>
-<dl class="section warning"><dt>Warning</dt><dd>BETA NOTICE: This is beta API that is under development; breaking changes may be introduced in future releases. </dd></dl>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000030">Deprecated:</a></b></dt><dd>It is not recommended to use the WLAN Offload features API. It is deprecated and will be removed in a future release. </dd></dl>
 
 </div>
 </div>
@@ -347,7 +393,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> on success or <a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086ac9e2689a222cc3b398fc89b68a1f0006">MMWLAN_ERROR</a> on failure.</dd></dl>
-<dl class="section warning"><dt>Warning</dt><dd>BETA NOTICE: This is beta API that is under development; breaking changes may be introduced in future releases. </dd></dl>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000027">Deprecated:</a></b></dt><dd>It is not recommended to use the WLAN Offload features API. It is deprecated and will be removed in a future release. </dd></dl>
 
 </div>
 </div>
@@ -380,7 +426,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> on success or <a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086ac9e2689a222cc3b398fc89b68a1f0006">MMWLAN_ERROR</a> on failure.</dd></dl>
-<dl class="section warning"><dt>Warning</dt><dd>BETA NOTICE: This is beta API that is under development; breaking changes may be introduced in future releases. </dd></dl>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000029">Deprecated:</a></b></dt><dd>It is not recommended to use the WLAN Offload features API. It is deprecated and will be removed in a future release. </dd></dl>
 
 </div>
 </div>
@@ -390,7 +436,7 @@ Functions</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Copyright 2021 Morse Micro </li>
+    <li class="footer">Copyright 2021-2025 Morse Micro </li>
   </ul>
 </div>
 </body>

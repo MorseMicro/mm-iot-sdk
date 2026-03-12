@@ -61,6 +61,8 @@
 #include "lwip/sys.h"
 #include "lwip/pbuf.h"
 
+#include "morse/on_demand_timers.h"
+
 #if LWIP_DEBUG_TIMERNAMES
 #define HANDLER(x) x, #x
 #else /* LWIP_DEBUG_TIMERNAMES */
@@ -81,32 +83,34 @@ const struct lwip_cyclic_timer lwip_cyclic_timers[] = {
   {TCP_TMR_INTERVAL, HANDLER(tcp_tmr)},
 #endif /* LWIP_TCP */
 #if LWIP_IPV4
-#if IP_REASSEMBLY
+#if IP_REASSEMBLY && !ESP_LWIP_IP4_REASSEMBLY_TIMERS_ONDEMAND
   {IP_TMR_INTERVAL, HANDLER(ip_reass_tmr)},
 #endif /* IP_REASSEMBLY */
-#if LWIP_ARP
+#if LWIP_ARP && !MORSE_LWIP_TIMERS_ON_DEMAND
   {ARP_TMR_INTERVAL, HANDLER(etharp_tmr)},
 #endif /* LWIP_ARP */
 #if LWIP_DHCP
   {DHCP_COARSE_TIMER_MSECS, HANDLER(dhcp_coarse_tmr)},
-  {DHCP_FINE_TIMER_MSECS, HANDLER(dhcp_fine_tmr)},
 #endif /* LWIP_DHCP */
+#if LWIP_DHCP && !ESP_LWIP_DHCP_FINE_TIMERS_ONDEMAND
+  {DHCP_FINE_TIMER_MSECS, HANDLER(dhcp_fine_tmr)},
+#endif /*  LWIP_DHCP && !ESP_LWIP_DHCP_FINE_TIMERS_ONDEMAND */
 #if LWIP_ACD
   {ACD_TMR_INTERVAL, HANDLER(acd_tmr)},
 #endif /* LWIP_ACD */
-#if LWIP_IGMP
+#if LWIP_IGMP && !ESP_LWIP_IGMP_TIMERS_ONDEMAND
   {IGMP_TMR_INTERVAL, HANDLER(igmp_tmr)},
 #endif /* LWIP_IGMP */
 #endif /* LWIP_IPV4 */
-#if LWIP_DNS
+#if LWIP_DNS && !ESP_LWIP_DNS_TIMERS_ONDEMAND
   {DNS_TMR_INTERVAL, HANDLER(dns_tmr)},
 #endif /* LWIP_DNS */
 #if LWIP_IPV6
   {ND6_TMR_INTERVAL, HANDLER(nd6_tmr)},
-#if LWIP_IPV6_REASS
+#if LWIP_IPV6_REASS && !ESP_LWIP_IP6_REASSEMBLY_TIMERS_ONDEMAND
   {IP6_REASS_TMR_INTERVAL, HANDLER(ip6_reass_tmr)},
 #endif /* LWIP_IPV6_REASS */
-#if LWIP_IPV6_MLD
+#if LWIP_IPV6_MLD && !ESP_LWIP_MLD6_TIMERS_ONDEMAND
   {MLD6_TMR_INTERVAL, HANDLER(mld6_tmr)},
 #endif /* LWIP_IPV6_MLD */
 #if LWIP_IPV6_DHCP6
@@ -117,6 +121,67 @@ const struct lwip_cyclic_timer lwip_cyclic_timers[] = {
 const int lwip_num_cyclic_timers = LWIP_ARRAYSIZE(lwip_cyclic_timers);
 
 #if LWIP_TIMERS && !LWIP_TIMERS_CUSTOM
+
+#if MORSE_LWIP_TIMERS_ON_DEMAND
+
+/* When x_timer_needed is called, the evaluation is not done right away.
+ * It is delayed by this amount of ms. This has two benefits:
+ * - Prevents performance hits in high traffic scenarios where x_timer_needed would be
+ * called very often. This delay makes the first call schedule a timeout, then subsequent
+ * calls do virtually nothing, and the bulk of the work happens only once per timers_eval_delay_ms
+ * - Since x_timer_needed is called at the end of x_timer, having no delay would
+ * cause multiple executions of the timer in a row when there is immediate work. */
+#define MORSE_LWIP_TIMERS_EVAL_DELAY_MS 1
+#if MORSE_LWIP_TIMERS_EVAL_DELAY_MS < 1
+#error MORSE_LWIP_TIMERS_EVAL_DELAY_MS must be at least 1
+#endif
+
+extern sys_mbox_t tcpip_mbox;
+bool on_demand_timer_eval_scheduled = false;
+
+struct morse_on_demand_timer
+{
+  sys_timeout_handler handler;
+#if LWIP_DEBUG_TIMERNAMES
+  const char* name;
+#endif
+  void (*update_tick)(void);
+  u32_t (*sleep_ticks)(void);
+  u32_t interval;
+  bool needs_update;
+};
+
+#if LWIP_DEBUG_TIMERNAMES
+#define MORSE_ON_DEMAND_TIMER(x) x, #x
+#else
+#define MORSE_ON_DEMAND_TIMER(x) x
+#endif
+
+struct morse_on_demand_timer morse_on_demand_timers[MORSE_ON_DEMAND_TIMER_NUM] = {
+  [MORSE_ON_DEMAND_TIMER_ARP] = {
+    MORSE_ON_DEMAND_TIMER(etharp_timer),
+    etharp_update_tick,
+    etharp_sleep_ticks,
+    ARP_TMR_INTERVAL,
+    false
+  },
+  [MORSE_ON_DEMAND_TIMER_TCP_FAST] = {
+    MORSE_ON_DEMAND_TIMER(tcpip_tcp_fast_timer),
+    tcp_update_tick,
+    tcp_fast_sleep_ticks,
+    TCP_FAST_INTERVAL,
+    false
+  },
+  [MORSE_ON_DEMAND_TIMER_TCP_SLOW] = {
+    MORSE_ON_DEMAND_TIMER(tcpip_tcp_slow_timer),
+    tcp_update_tick,
+    tcp_slow_sleep_ticks,
+    TCP_SLOW_INTERVAL,
+    false
+  },
+};
+
+#endif /* MORSE_LWIP_TIMERS_ON_DEMAND */
 
 /** The one and only timeout list */
 static struct sys_timeo *next_timeout;
@@ -132,6 +197,27 @@ sys_timeouts_get_next_timeout(void)
 #endif
 
 #if LWIP_TCP
+
+#if MORSE_LWIP_TIMERS_ON_DEMAND
+
+void tcpip_tcp_fast_timer(void *arg)
+{
+  LWIP_UNUSED_ARG(arg);
+  tcp_update_tick();
+  tcp_fasttmr();
+  tcp_timer_needed();
+}
+
+void tcpip_tcp_slow_timer(void *arg)
+{
+  LWIP_UNUSED_ARG(arg);
+  tcp_update_tick();
+  tcp_slowtmr();
+  tcp_timer_needed();
+}
+
+#else /* MORSE_LWIP_TIMERS_ON_DEMAND */
+
 /** global variable that shows if the tcp timer is currently scheduled or not */
 static int tcpip_tcp_timer_active;
 
@@ -157,6 +243,8 @@ tcpip_tcp_timer(void *arg)
   }
 }
 
+#endif /* MORSE_LWIP_TIMERS_ON_DEMAND */
+
 /**
  * Called from TCP_REG when registering a new PCB:
  * the reason is to have the TCP timer only running when
@@ -165,6 +253,13 @@ tcpip_tcp_timer(void *arg)
 void
 tcp_timer_needed(void)
 {
+#if MORSE_LWIP_TIMERS_ON_DEMAND
+
+  on_demand_timer_eval_schedule(MORSE_ON_DEMAND_TIMER_TCP_FAST);
+  on_demand_timer_eval_schedule(MORSE_ON_DEMAND_TIMER_TCP_SLOW);
+
+#else /* MORSE_LWIP_TIMERS_ON_DEMAND */
+
   LWIP_ASSERT_CORE_LOCKED();
 
   /* timer is off but needed again? */
@@ -173,6 +268,8 @@ tcp_timer_needed(void)
     tcpip_tcp_timer_active = 1;
     sys_timeout(TCP_TMR_INTERVAL, tcpip_tcp_timer, NULL);
   }
+
+#endif /* MORSE_LWIP_TIMERS_ON_DEMAND */
 }
 #endif /* LWIP_TCP */
 
@@ -219,6 +316,116 @@ sys_timeout_abs(u32_t abs_time, sys_timeout_handler handler, void *arg)
     }
   }
 }
+
+#if MORSE_LWIP_TIMERS_ON_DEMAND
+
+#define ROUND_DOWN_TO_TMR_INTERVAL(x, interval) (((x)/(interval))*(interval))
+
+static inline u32_t on_demand_timer_get_next_exec_abs(u32_t interval, u32_t sleep_ticks)
+{
+  u32_t now = sys_now();
+  u32_t sleep_ms = interval * sleep_ticks;
+
+  u32_t wake_time = ROUND_DOWN_TO_TMR_INTERVAL(now + sleep_ms, interval);
+  if(wake_time < now)
+  {
+    wake_time += interval;
+  }
+
+  return wake_time;
+}
+
+static void on_demand_timer_schedule(void* arg)
+{
+  LWIP_UNUSED_ARG(arg);
+
+  on_demand_timer_eval_scheduled = false;
+
+  for(size_t i = 0; i < MORSE_ON_DEMAND_TIMER_NUM; i++)
+  {
+    struct morse_on_demand_timer* timer = &morse_on_demand_timers[i];
+    if(!timer->needs_update)
+    {
+      continue;
+    }
+    timer->needs_update = false;
+
+    /* Finds the next execution time of the timer */
+    u32_t next_exec = LWIP_UINT32_MAX;
+    for(struct sys_timeo* t = next_timeout; t != NULL; t = t->next)
+    {
+      if(t->h == timer->handler)
+      {
+        next_exec = t->time;
+        break;
+      }
+    }
+
+    timer->update_tick();
+    u32_t sleep_ticks = timer->sleep_ticks();
+
+    /* No deadline, don't schedule the timer */
+    if(sleep_ticks == LWIP_UINT32_MAX)
+    {
+      if(next_exec != LWIP_UINT32_MAX)
+      {
+        sys_untimeout(timer->handler, NULL);
+      }
+      continue;
+    }
+
+    u32_t wake_time = on_demand_timer_get_next_exec_abs(timer->interval, sleep_ticks);
+
+    /* If the timer should be executing now, execute it and ignore the new calculation */
+    if(sys_now() > next_exec)
+    {
+      continue;
+    }
+
+    /* We have a deadline, schedule the timer if not already scheduled at the same time */
+    if(next_exec != LWIP_UINT32_MAX)
+    {
+      if(next_exec == wake_time)
+      {
+        continue;
+      }
+      else
+      {
+        sys_untimeout(timer->handler, NULL);
+      }
+    }
+
+#if LWIP_DEBUG_TIMERNAMES
+    sys_timeout_abs(wake_time, timer->handler, NULL, timer->name);
+#else
+    sys_timeout_abs(wake_time, timer->handler, NULL);
+#endif
+  }
+
+  /* No need to kick the tcpip loop again as this function runs in an LwIP timeout */
+}
+
+void on_demand_timer_eval_schedule(enum morse_timer_index index)
+{
+  morse_on_demand_timers[index].needs_update = true;
+
+  if(on_demand_timer_eval_scheduled)
+  {
+    return;
+  }
+
+  LWIP_ASSERT_CORE_LOCKED();
+  on_demand_timer_eval_scheduled = true;
+  sys_timeout(MORSE_LWIP_TIMERS_EVAL_DELAY_MS, on_demand_timer_schedule, NULL);
+
+  /* We post a NULL msg to the mbox to kick the tcpip_thread in the event that it is not already
+   * running (i.e. we this from a non-tcpip thread). This function is likely to only fail in the
+   * event that the mbox is already full, in which case the tcpip_thread will wake anyway to drain
+   * the existing messages and already registered time (sys_timeout()) will be evaluated. */
+  (void)sys_mbox_trypost(&tcpip_mbox, NULL);
+}
+
+#endif /* MORSE_LWIP_TIMERS_ON_DEMAND */
 
 /**
  * Timer callback function that calls cyclic->handler() and reschedules itself.

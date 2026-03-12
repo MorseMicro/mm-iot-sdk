@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.9.7</span>
+   &#160;<span id="projectnumber">2.10.4</span>
    </div>
   </td>
  </tr>
@@ -104,7 +104,7 @@ Macros</h2></td></tr>
 <tr class="memitem:ga99be698a87927aeac2d05797f23abd6d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__DATALINK__CONTROLLER__SPI.html#ga99be698a87927aeac2d05797f23abd6d">MMAGIC_DATALINK_PAYLOAD_LEN_SIZE</a>&#160;&#160;&#160;(2)</td></tr>
 <tr class="memdesc:ga99be698a87927aeac2d05797f23abd6d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Size of the payload length field.  <a href="group__MMAGIC__DATALINK__CONTROLLER__SPI.html#ga99be698a87927aeac2d05797f23abd6d">More...</a><br /></td></tr>
 <tr class="separator:ga99be698a87927aeac2d05797f23abd6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gae1854eea3ed8abbaead7df67aa1f302f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__DATALINK__CONTROLLER__SPI.html#gae1854eea3ed8abbaead7df67aa1f302f">MMAGIC_DATALINK_PAYLOAD_HEADER_SIZE</a></td></tr>
+<tr class="memitem:gae1854eea3ed8abbaead7df67aa1f302f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__DATALINK__CONTROLLER__SPI.html#gae1854eea3ed8abbaead7df67aa1f302f">MMAGIC_DATALINK_PAYLOAD_HEADER_SIZE</a>&#160;&#160;&#160;    (<a class="el" href="group__MMAGIC__DATALINK__CONTROLLER__SPI.html#gacdffc3555ede08e92cec2a5abf0bee6b">MMAGIC_DATALINK_PAYLOAD_TYPE_SIZE</a> + <a class="el" href="group__MMAGIC__DATALINK__CONTROLLER__SPI.html#ga99be698a87927aeac2d05797f23abd6d">MMAGIC_DATALINK_PAYLOAD_LEN_SIZE</a>)</td></tr>
 <tr class="memdesc:gae1854eea3ed8abbaead7df67aa1f302f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Total size of the transfer header.  <a href="group__MMAGIC__DATALINK__CONTROLLER__SPI.html#gae1854eea3ed8abbaead7df67aa1f302f">More...</a><br /></td></tr>
 <tr class="separator:gae1854eea3ed8abbaead7df67aa1f302f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -130,17 +130,14 @@ Enumerations</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define MMAGIC_DATALINK_PAYLOAD_HEADER_SIZE</td>
+          <td class="memname">#define MMAGIC_DATALINK_PAYLOAD_HEADER_SIZE&#160;&#160;&#160;    (<a class="el" href="group__MMAGIC__DATALINK__CONTROLLER__SPI.html#gacdffc3555ede08e92cec2a5abf0bee6b">MMAGIC_DATALINK_PAYLOAD_TYPE_SIZE</a> + <a class="el" href="group__MMAGIC__DATALINK__CONTROLLER__SPI.html#ga99be698a87927aeac2d05797f23abd6d">MMAGIC_DATALINK_PAYLOAD_LEN_SIZE</a>)</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">                                             (<a class="code hl_define" href="group__MMAGIC__DATALINK__CONTROLLER__SPI.html#gacdffc3555ede08e92cec2a5abf0bee6b">MMAGIC_DATALINK_PAYLOAD_TYPE_SIZE</a> + \</div>
-<div class="line">                                             MMAGIC_DATALINK_PAYLOAD_LEN_SIZE)</div>
-<div class="ttc" id="agroup__MMAGIC__DATALINK__CONTROLLER__SPI_html_gacdffc3555ede08e92cec2a5abf0bee6b"><div class="ttname"><a href="group__MMAGIC__DATALINK__CONTROLLER__SPI.html#gacdffc3555ede08e92cec2a5abf0bee6b">MMAGIC_DATALINK_PAYLOAD_TYPE_SIZE</a></div><div class="ttdeci">#define MMAGIC_DATALINK_PAYLOAD_TYPE_SIZE</div><div class="ttdoc">Size of the payload type field.</div><div class="ttdef"><b>Definition:</b> <a href="mmagic__datalink__controller_8h_source.html#l00038">mmagic_datalink_controller.h:38</a></div></div>
-</div><!-- fragment -->
+
 <p>Total size of the transfer header. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__datalink__controller_8h_source.html#l00042">42</a> of file <a class="el" href="mmagic__datalink__controller_8h_source.html">mmagic_datalink_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__datalink__controller_8h_source.html#l00043">43</a> of file <a class="el" href="mmagic__datalink__controller_8h_source.html">mmagic_datalink_controller.h</a>.</p>
 
 </div>
 </div>
@@ -158,7 +155,7 @@ Enumerations</h2></td></tr>
 
 <p>Size of the payload length field. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__datalink__controller_8h_source.html#l00040">40</a> of file <a class="el" href="mmagic__datalink__controller_8h_source.html">mmagic_datalink_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__datalink__controller_8h_source.html#l00041">41</a> of file <a class="el" href="mmagic__datalink__controller_8h_source.html">mmagic_datalink_controller.h</a>.</p>
 
 </div>
 </div>
@@ -176,7 +173,7 @@ Enumerations</h2></td></tr>
 
 <p>Size of the payload type field. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__datalink__controller_8h_source.html#l00038">38</a> of file <a class="el" href="mmagic__datalink__controller_8h_source.html">mmagic_datalink_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__datalink__controller_8h_source.html#l00039">39</a> of file <a class="el" href="mmagic__datalink__controller_8h_source.html">mmagic_datalink_controller.h</a>.</p>
 
 </div>
 </div>
@@ -195,7 +192,7 @@ Enumerations</h2></td></tr>
 
 <p>Enumeration of data link payload types. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__datalink__controller_8h_source.html#l00046">46</a> of file <a class="el" href="mmagic__datalink__controller_8h_source.html">mmagic_datalink_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__datalink__controller_8h_source.html#l00047">47</a> of file <a class="el" href="mmagic__datalink__controller_8h_source.html">mmagic_datalink_controller.h</a>.</p>
 
 </div>
 </div>
@@ -205,7 +202,7 @@ Enumerations</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Copyright 2021 Morse Micro </li>
+    <li class="footer">Copyright 2021-2025 Morse Micro </li>
   </ul>
 </div>
 </body>

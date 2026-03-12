@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.4"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Morse Micro IoT SDK: WLAN offload features</title>
+<title>Morse Micro IoT SDK: [Deprecated] WLAN offload features</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.9.7</span>
+   &#160;<span id="projectnumber">2.10.4</span>
    </div>
   </td>
  </tr>
@@ -94,16 +94,17 @@ $(document).ready(function(){initNavTree('group__MMWLAN__OFFLOAD.html',''); init
 <a href="#typedef-members">Typedefs</a> &#124;
 <a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
-  <div class="headertitle"><div class="title">WLAN offload features<div class="ingroups"><a class="el" href="group__MMWLAN.html">Morse Micro Wireless LAN (mmwlan) API</a></div></div></div>
+  <div class="headertitle"><div class="title">[Deprecated] WLAN offload features<div class="ingroups"><a class="el" href="group__MMWLAN.html">Morse Micro Wireless LAN (mmwlan) API</a> &raquo; <a class="el" href="group__MMWLAN__STA.html">WLAN Control API for Station (STA) mode</a></div></div></div>
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p >WLAN offload features enable offloading some high level networking features to the WLAN chip. </p>
-<p >Features like ARP response, ARP refresh and DHCP lease updates can be offloaded to the chip allowing the host processor to sleep for longer resulting in better power savings. </p>
+<p >Features like ARP response, ARP refresh and DHCP lease updates can be offloaded to the chip allowing the host processor to sleep for longer resulting in better power savings.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000008">Deprecated:</a></b></dt><dd>It is not recommended to use the WLAN Offload API. It is deprecated and will be removed in a future release. </dd></dl>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="groups" name="groups"></a>
 Modules</h2></td></tr>
-<tr class="memitem:group__MMWLAN__STANDBY"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__STANDBY.html">WLAN Standby features</a></td></tr>
+<tr class="memitem:group__MMWLAN__STANDBY"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__STANDBY.html">[Deprecated] WLAN Standby features</a></td></tr>
 <tr class="memdesc:group__MMWLAN__STANDBY"><td class="mdescLeft">&#160;</td><td class="mdescRight">The standby mode allows the system to power off or put the host processor in a deep sleep mode while the Morse chip takes over certain functionality to keep the connection alive with the provision to wake up the host processor when certain conditions are met. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -188,9 +189,10 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Initializer for <a class="el" href="structmmwlan__tcp__keepalive__offload__args.html">mmwlan_tcp_keepalive_offload_args</a>. </p>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="structmmwlan__tcp__keepalive__offload__args.html" title="Arguments data structure for TCP keep-alive arguments.">mmwlan_tcp_keepalive_offload_args</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="structmmwlan__tcp__keepalive__offload__args.html" title="Arguments data structure for TCP keep-alive arguments.">mmwlan_tcp_keepalive_offload_args</a></dd></dl>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000016">Deprecated:</a></b></dt><dd>It is not recommended to use the WLAN Offload features API. It is deprecated and will be removed in a future release. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01666">1666</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01631">1631</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -208,7 +210,7 @@ Functions</h2></td></tr>
 
 <p>If this bit is set in the flags parameter of <a class="el" href="structmmwlan__config__whitelist.html">mmwlan_config_whitelist</a> then any active whitelist filters are cleared,. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01700">1700</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01668">1668</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -226,8 +228,9 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>DHCP Lease update callback function prototype - this is called whenever a lease is updated. </p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000012">Deprecated:</a></b></dt><dd>It is not recommended to use the WLAN Offload features API. It is deprecated and will be removed in a future release. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01562">1562</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01515">1515</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -245,6 +248,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Keep-alive offload configuration options for <a class="el" href="structmmwlan__tcp__keepalive__offload__args.html#a7763e7d82fe23de43cb163d856a8d00a">mmwlan_tcp_keepalive_offload_args::set_cfgs</a> bitmap. </p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000014">Deprecated:</a></b></dt><dd>It is not recommended to use the WLAN Offload features API. It is deprecated and will be removed in a future release. </dd></dl>
 <table class="fieldtable">
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ggad27f62c9d00ac436c81f550929efbd35afafa3bc6154e6fad16353e4915e246a3" name="ggad27f62c9d00ac436c81f550929efbd35afafa3bc6154e6fad16353e4915e246a3"></a>MMWLAN_TCP_KEEPALIVE_SET_CFG_PERIOD&#160;</td><td class="fielddoc"><p >Bitmap for TCP keep alive period parameter. </p>
 </td></tr>
@@ -266,7 +270,7 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01590">1590</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01549">1549</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -289,7 +293,8 @@ Functions</h2></td></tr>
 
 <p>Disables the TCP keep-alive offload feature. </p>
 <p >Has no effect if TCP keep-alive offload is not enabled.</p>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> on success or <a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086ac9e2689a222cc3b398fc89b68a1f0006">MMWLAN_ERROR</a> on failure. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> on success or <a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086ac9e2689a222cc3b398fc89b68a1f0006">MMWLAN_ERROR</a> on failure.</dd></dl>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000017">Deprecated:</a></b></dt><dd>It is not recommended to use the WLAN Offload features API. It is deprecated and will be removed in a future release. </dd></dl>
 
 </div>
 </div>
@@ -336,7 +341,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> on success or <a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086ac9e2689a222cc3b398fc89b68a1f0006">MMWLAN_ERROR</a> on failure. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> on success or <a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086ac9e2689a222cc3b398fc89b68a1f0006">MMWLAN_ERROR</a> on failure.</dd></dl>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000010">Deprecated:</a></b></dt><dd>It is not recommended to use the WLAN Offload API. It is deprecated and will be removed in a future release. </dd></dl>
 
 </div>
 </div>
@@ -367,7 +373,8 @@ ARP offload is not supported for IPv6 addresses.</dd></dl>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> on success, <a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086af8311c13f95546d0b338ea2b86384a00">MMWLAN_UNAVAILABLE</a> if the chip does not have a valid connection, or <a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086ac9e2689a222cc3b398fc89b68a1f0006">MMWLAN_ERROR</a> on failure. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> on success, <a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086af8311c13f95546d0b338ea2b86384a00">MMWLAN_UNAVAILABLE</a> if the chip does not have a valid connection, or <a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086ac9e2689a222cc3b398fc89b68a1f0006">MMWLAN_ERROR</a> on failure.</dd></dl>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000009">Deprecated:</a></b></dt><dd>It is not recommended to use the WLAN Offload API. It is deprecated and will be removed in a future release. </dd></dl>
 
 </div>
 </div>
@@ -411,7 +418,8 @@ Once enabled this feature can only be disabled by a complete system reset or by 
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> on success or <a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086ac9e2689a222cc3b398fc89b68a1f0006">MMWLAN_ERROR</a> on failure. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> on success or <a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086ac9e2689a222cc3b398fc89b68a1f0006">MMWLAN_ERROR</a> on failure.</dd></dl>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000013">Deprecated:</a></b></dt><dd>It is not recommended to use the WLAN Offload features API. It is deprecated and will be removed in a future release. </dd></dl>
 
 </div>
 </div>
@@ -472,7 +480,8 @@ TCP keep-alive offload is not supported for IPv6 addresses.</dd></dl>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> on success or <a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086ac9e2689a222cc3b398fc89b68a1f0006">MMWLAN_ERROR</a> on failure. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> on success or <a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086ac9e2689a222cc3b398fc89b68a1f0006">MMWLAN_ERROR</a> on failure.</dd></dl>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000019">Deprecated:</a></b></dt><dd>It is not recommended to use the WLAN Offload features API. It is deprecated and will be removed in a future release. </dd></dl>
 
 </div>
 </div>
@@ -482,7 +491,7 @@ TCP keep-alive offload is not supported for IPv6 addresses.</dd></dl>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Copyright 2021 Morse Micro </li>
+    <li class="footer">Copyright 2021-2025 Morse Micro </li>
   </ul>
 </div>
 </body>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Morse Micro
+ * Copyright 2026 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -21,38 +21,39 @@ struct mmagic_ntp_config
 struct mmagic_ntp_data
 {
     struct mmagic_ntp_config config;
+    /** Subsystem private data (to be allocated/managed by the subsystem implementation). */
+    void *priv;
 };
 
 /**
  * Function to initialize the core data structure and register the ops functions.
  *
- * @param core Reference to to global mmagic context struct.
+ * @param core   Reference to to global mmagic context struct.
  */
 void mmagic_core_ntp_init(struct mmagic_data *core);
 
 /**
  * Function to load settings from persistent store for the core ntp subsystem.
  *
- * @param core Reference to to global mmagic context struct.
+ * @param core   Reference to to global mmagic context struct.
  */
 void mmagic_core_ntp_load_all(struct mmagic_data *core);
 
 /**
  * Function to save settings to persistent store for the core ntp subsystem.
  *
- * @param core Reference to to global mmagic context struct.
+ * @param core   Reference to to global mmagic context struct.
  */
 void mmagic_core_ntp_save_all(struct mmagic_data *core);
 
 /**
  * Function to start any of the core processes for the core ntp subsystem.
  *
- * @param core Reference to to global mmagic context struct.
+ * @param core   Reference to to global mmagic context struct.
  */
 void mmagic_core_ntp_start(struct mmagic_data *core);
 
-enum mmagic_status mmagic_core_ntp_sync(
-    struct mmagic_data *core);
+enum mmagic_status mmagic_core_ntp_sync(struct mmagic_data *core);
 
 /** Response arguments structure for ntp_get_time */
 struct MM_PACKED mmagic_core_ntp_get_time_rsp_args
@@ -60,6 +61,5 @@ struct MM_PACKED mmagic_core_ntp_get_time_rsp_args
     uint64_t timestamp;
 };
 
-enum mmagic_status mmagic_core_ntp_get_time(
-    struct mmagic_data *core,
-    struct mmagic_core_ntp_get_time_rsp_args *rsp_args);
+enum mmagic_status mmagic_core_ntp_get_time(struct mmagic_data *core,
+                                            struct mmagic_core_ntp_get_time_rsp_args *rsp_args);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Morse Micro
+ * Copyright 2026 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -46,12 +46,6 @@ struct mmagic_wlan_config
     uint32_t fragment_threshold;
     /** Whether Centralized Authentication Controlled is enabled on the STA. */
     bool cac_enabled;
-    /** If true, enables ARP response offload which allows the Morse chip to directly
-     * respond to ARP requests without waking up the host processor. */
-    bool offload_arp_response;
-    /** If non zero, enables ARP refresh offload with the specified interval in seconds.
-     * Note: ARP response offload needs to be enabled for this feature to work. */
-    uint32_t offload_arp_refresh_s;
     /** The minimum interval to wait after the last health check before triggering
      * another. If this parameter is 0 then health checks will always happen at the
      * max_interval_ms value. min_interval_ms must always be less than or equal to
@@ -121,33 +115,35 @@ struct mmagic_wlan_config
 struct mmagic_wlan_data
 {
     struct mmagic_wlan_config config;
+    /** Subsystem private data (to be allocated/managed by the subsystem implementation). */
+    void *priv;
 };
 
 /**
  * Function to initialize the core data structure and register the ops functions.
  *
- * @param core Reference to to global mmagic context struct.
+ * @param core   Reference to to global mmagic context struct.
  */
 void mmagic_core_wlan_init(struct mmagic_data *core);
 
 /**
  * Function to load settings from persistent store for the core wlan subsystem.
  *
- * @param core Reference to to global mmagic context struct.
+ * @param core   Reference to to global mmagic context struct.
  */
 void mmagic_core_wlan_load_all(struct mmagic_data *core);
 
 /**
  * Function to save settings to persistent store for the core wlan subsystem.
  *
- * @param core Reference to to global mmagic context struct.
+ * @param core   Reference to to global mmagic context struct.
  */
 void mmagic_core_wlan_save_all(struct mmagic_data *core);
 
 /**
  * Function to start any of the core processes for the core wlan subsystem.
  *
- * @param core Reference to to global mmagic context struct.
+ * @param core   Reference to to global mmagic context struct.
  */
 void mmagic_core_wlan_start(struct mmagic_data *core);
 
@@ -161,8 +157,7 @@ enum mmagic_status mmagic_core_wlan_connect(
     struct mmagic_data *core,
     const struct mmagic_core_wlan_connect_cmd_args *cmd_args);
 
-enum mmagic_status mmagic_core_wlan_disconnect(
-    struct mmagic_data *core);
+enum mmagic_status mmagic_core_wlan_disconnect(struct mmagic_data *core);
 
 /** Command arguments structure for wlan_scan */
 struct MM_PACKED mmagic_core_wlan_scan_cmd_args
@@ -177,10 +172,9 @@ struct MM_PACKED mmagic_core_wlan_scan_rsp_args
     struct struct_scan_status results;
 };
 
-enum mmagic_status mmagic_core_wlan_scan(
-    struct mmagic_data *core,
-    const struct mmagic_core_wlan_scan_cmd_args *cmd_args,
-    struct mmagic_core_wlan_scan_rsp_args *rsp_args);
+enum mmagic_status mmagic_core_wlan_scan(struct mmagic_data *core,
+                                         const struct mmagic_core_wlan_scan_cmd_args *cmd_args,
+                                         struct mmagic_core_wlan_scan_rsp_args *rsp_args);
 
 /** Response arguments structure for wlan_get_rssi */
 struct MM_PACKED mmagic_core_wlan_get_rssi_rsp_args
@@ -188,9 +182,8 @@ struct MM_PACKED mmagic_core_wlan_get_rssi_rsp_args
     int32_t rssi;
 };
 
-enum mmagic_status mmagic_core_wlan_get_rssi(
-    struct mmagic_data *core,
-    struct mmagic_core_wlan_get_rssi_rsp_args *rsp_args);
+enum mmagic_status mmagic_core_wlan_get_rssi(struct mmagic_data *core,
+                                             struct mmagic_core_wlan_get_rssi_rsp_args *rsp_args);
 
 /** Response arguments structure for wlan_get_mac_addr */
 struct MM_PACKED mmagic_core_wlan_get_mac_addr_rsp_args
@@ -222,14 +215,11 @@ enum mmagic_status mmagic_core_wlan_beacon_monitor_enable(
     struct mmagic_data *core,
     const struct mmagic_core_wlan_beacon_monitor_enable_cmd_args *cmd_args);
 
-enum mmagic_status mmagic_core_wlan_beacon_monitor_disable(
-    struct mmagic_data *core);
+enum mmagic_status mmagic_core_wlan_beacon_monitor_disable(struct mmagic_data *core);
 
-enum mmagic_status mmagic_core_wlan_standby_enter(
-    struct mmagic_data *core);
+enum mmagic_status mmagic_core_wlan_standby_enter(struct mmagic_data *core);
 
-enum mmagic_status mmagic_core_wlan_standby_exit(
-    struct mmagic_data *core);
+enum mmagic_status mmagic_core_wlan_standby_exit(struct mmagic_data *core);
 
 /** Command arguments structure for wlan_standby_set_status_payload */
 struct MM_PACKED mmagic_core_wlan_standby_set_status_payload_cmd_args

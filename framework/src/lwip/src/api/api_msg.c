@@ -37,6 +37,7 @@
  */
 
 #include "lwip/opt.h"
+#include "morse/on_demand_timers.h"
 
 #if LWIP_NETCONN /* don't build if not configured for use in lwipopts.h */
 
@@ -356,7 +357,13 @@ recv_tcp(void *arg, struct tcp_pcb *pcb, struct pbuf *p, err_t err)
  *
  * @see tcp.h (struct tcp_pcb.poll) for parameters and return value
  */
+#if MORSE_LWIP_TIMERS_ON_DEMAND
+/* We need to know the address of this function in tcp_slow_sleep_ticks because
+ * it is treated as a special case in the TCP poll deadline calculation logic */
+err_t
+#else
 static err_t
+#endif
 poll_tcp(void *arg, struct tcp_pcb *pcb)
 {
   struct netconn *conn = (struct netconn *)arg;
@@ -390,6 +397,34 @@ poll_tcp(void *arg, struct tcp_pcb *pcb)
   return ERR_OK;
 }
 
+#if MORSE_LWIP_TIMERS_ON_DEMAND
+u32_t netconn_sleep_ticks(struct netconn *conn)
+{
+  if (conn->state == NETCONN_WRITE)
+  {
+    DEBUG_SLEEP_TICKS_GENERIC(0, "NETC");
+    return 0;
+  }
+
+  if (conn->state == NETCONN_CLOSE)
+  {
+    DEBUG_SLEEP_TICKS_GENERIC(0, "NETC");
+    return 0;
+  }
+
+  if ((conn->flags & NETCONN_FLAG_CHECK_WRITESPACE)
+      && (conn->pcb.tcp != NULL)
+      && (tcp_sndbuf(conn->pcb.tcp) > TCP_SNDLOWAT)
+      && (tcp_sndqueuelen(conn->pcb.tcp) < TCP_SNDQUEUELOWAT))
+  {
+    DEBUG_SLEEP_TICKS_GENERIC(0, "NETC");
+    return 0;
+  }
+
+  return LWIP_UINT32_MAX;
+}
+#endif
+
 /**
  * Sent callback function for TCP netconns.
  * Signals the conn->sem and calls API_EVENT.
@@ -418,6 +453,7 @@ sent_tcp(void *arg, struct tcp_pcb *pcb, u16_t len)
         (tcp_sndqueuelen(conn->pcb.tcp) < TCP_SNDQUEUELOWAT)) {
       netconn_clear_flags(conn, NETCONN_FLAG_CHECK_WRITESPACE);
       API_EVENT(conn, NETCONN_EVT_SENDPLUS, len);
+      TCP_TIMER_NEEDED();
     }
   }
 
@@ -505,6 +541,8 @@ err_tcp(void *arg, err_t err)
   } else {
     LWIP_ASSERT("conn->current_msg == NULL", conn->current_msg == NULL);
   }
+
+  TCP_TIMER_NEEDED();
 }
 
 /**
@@ -598,6 +636,8 @@ accept_function(void *arg, struct tcp_pcb *newpcb, err_t err)
     API_EVENT(conn, NETCONN_EVT_RCVPLUS, 0);
   }
 
+  TCP_TIMER_NEEDED();
+
   return ERR_OK;
 }
 #endif /* LWIP_TCP */
@@ -661,6 +701,7 @@ pcb_new(struct api_msg *msg)
       if (msg->conn->pcb.tcp != NULL) {
         setup_tcp(msg->conn);
       }
+      TCP_TIMER_NEEDED();
       break;
 #endif /* LWIP_TCP */
     default:
@@ -880,6 +921,7 @@ netconn_drain(struct netconn *conn)
           if (newconn->pcb.tcp != NULL) {
             tcp_abort(newconn->pcb.tcp);
             newconn->pcb.tcp = NULL;
+            TCP_TIMER_NEEDED();
           }
           netconn_free(newconn);
         }
@@ -1085,6 +1127,7 @@ lwip_netconn_do_close_internal(struct netconn *conn  WRITE_DELAYED_PARAM)
       /* wake up the application task */
       sys_sem_signal(op_completed_sem);
     }
+    TCP_TIMER_NEEDED();
     return ERR_OK;
   }
   if (!close_finished) {
@@ -1100,6 +1143,7 @@ lwip_netconn_do_close_internal(struct netconn *conn  WRITE_DELAYED_PARAM)
     tcp_arg(tpcb, conn);
     /* don't restore recv callback: we don't want to receive any more data */
   }
+  TCP_TIMER_NEEDED();
   /* If closing didn't succeed, we get called again either
      from poll_tcp or from sent_tcp */
   LWIP_ASSERT("err != ERR_OK", err != ERR_OK);
@@ -1207,6 +1251,7 @@ lwip_netconn_do_delconn(void *m)
   if (sys_sem_valid(LWIP_API_MSG_SEM(msg))) {
     TCPIP_APIMSG_ACK(msg);
   }
+  TCP_TIMER_NEEDED();
 }
 
 /**
@@ -1339,6 +1384,7 @@ lwip_netconn_do_connected(void *arg, struct tcp_pcb *pcb, err_t err)
   if (was_blocking) {
     sys_sem_signal(op_completed_sem);
   }
+  TCP_TIMER_NEEDED();
   return ERR_OK;
 }
 #endif /* LWIP_TCP */
@@ -1399,6 +1445,7 @@ lwip_netconn_do_connect(void *m)
               LOCK_TCPIP_CORE();
               LWIP_ASSERT("state!", msg->conn->state != NETCONN_CONNECT);
 #endif /* LWIP_TCPIP_CORE_LOCKING */
+              TCP_TIMER_NEEDED();
               return;
             }
           }
@@ -1416,6 +1463,7 @@ lwip_netconn_do_connect(void *m)
   /* For all other protocols, netconn_connect() calls netconn_apimsg(),
      so use TCPIP_APIMSG_ACK() here. */
   TCPIP_APIMSG_ACK(msg);
+  TCP_TIMER_NEEDED();
 }
 
 /**
@@ -1523,6 +1571,7 @@ lwip_netconn_do_listen(void *m)
   }
   msg->err = err;
   TCPIP_APIMSG_ACK(msg);
+  TCP_TIMER_NEEDED();
 }
 #endif /* LWIP_TCP */
 
@@ -1800,9 +1849,11 @@ err_mem:
   }
 #if LWIP_TCPIP_CORE_LOCKING
   else {
+    TCP_TIMER_NEEDED();
     return ERR_MEM;
   }
 #endif
+  TCP_TIMER_NEEDED();
   return ERR_OK;
 }
 #endif /* LWIP_TCP */
@@ -2005,6 +2056,7 @@ lwip_netconn_do_close(void *m)
     msg->err = ERR_CONN;
   }
   TCPIP_APIMSG_ACK(msg);
+  TCP_TIMER_NEEDED();
 }
 
 #if LWIP_IGMP || (LWIP_IPV6 && LWIP_IPV6_MLD)

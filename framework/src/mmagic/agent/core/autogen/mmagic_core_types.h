@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Morse Micro
+ * Copyright 2026 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -15,58 +15,59 @@
 
 enum mmagic_subsystems
 {
-    mmagic_wlan  = 1,
-    mmagic_ip    = 2,
-    mmagic_ping  = 3,
+    mmagic_subsystem_reserved = 0,
+    mmagic_wlan = 1,
+    mmagic_ip = 2,
+    mmagic_ping = 3,
     mmagic_iperf = 4,
-    mmagic_sys   = 5,
-    mmagic_tcp   = 6,
-    mmagic_tls   = 7,
-    mmagic_ntp   = 8,
-    mmagic_mqtt  = 9,
+    mmagic_sys = 5,
+    mmagic_tcp = 6,
+    mmagic_tls = 7,
+    mmagic_ntp = 8,
+    mmagic_mqtt = 9,
 };
 
 enum mmagic_wlan_cmds
 {
-    mmagic_wlan_cmd_get                        = 0,
-    mmagic_wlan_cmd_set                        = 1,
-    mmagic_wlan_cmd_load                       = 2,
-    mmagic_wlan_cmd_commit                     = 3,
-    mmagic_wlan_cmd_connect                    = 8,
-    mmagic_wlan_cmd_disconnect                 = 9,
-    mmagic_wlan_cmd_scan                       = 10,
-    mmagic_wlan_cmd_get_rssi                   = 11,
-    mmagic_wlan_cmd_get_mac_addr               = 12,
-    mmagic_wlan_cmd_wnm_sleep                  = 13,
-    mmagic_wlan_cmd_beacon_monitor_enable      = 14,
-    mmagic_wlan_cmd_beacon_monitor_disable     = 15,
-    mmagic_wlan_cmd_standby_enter              = 16,
-    mmagic_wlan_cmd_standby_exit               = 17,
+    mmagic_wlan_cmd_get = 0,
+    mmagic_wlan_cmd_set = 1,
+    mmagic_wlan_cmd_load = 2,
+    mmagic_wlan_cmd_commit = 3,
+    mmagic_wlan_cmd_connect = 8,
+    mmagic_wlan_cmd_disconnect = 9,
+    mmagic_wlan_cmd_scan = 10,
+    mmagic_wlan_cmd_get_rssi = 11,
+    mmagic_wlan_cmd_get_mac_addr = 12,
+    mmagic_wlan_cmd_wnm_sleep = 13,
+    mmagic_wlan_cmd_beacon_monitor_enable = 14,
+    mmagic_wlan_cmd_beacon_monitor_disable = 15,
+    mmagic_wlan_cmd_standby_enter = 16,
+    mmagic_wlan_cmd_standby_exit = 17,
     mmagic_wlan_cmd_standby_set_status_payload = 18,
-    mmagic_wlan_cmd_standby_set_wake_filter    = 19,
-    mmagic_wlan_cmd_standby_set_config         = 20,
-    mmagic_wlan_cmd_get_sta_status             = 21,
+    mmagic_wlan_cmd_standby_set_wake_filter = 19,
+    mmagic_wlan_cmd_standby_set_config = 20,
+    mmagic_wlan_cmd_get_sta_status = 21,
 };
 
 enum mmagic_wlan_events
 {
-    mmagic_wlan_event_beacon_rx    = 1,
+    mmagic_wlan_event_beacon_rx = 1,
     mmagic_wlan_event_standby_exit = 2,
-    mmagic_wlan_event_sta_event    = 3,
+    mmagic_wlan_event_sta_event = 3,
 };
 
 enum mmagic_ip_cmds
 {
-    mmagic_ip_cmd_get                           = 0,
-    mmagic_ip_cmd_set                           = 1,
-    mmagic_ip_cmd_load                          = 2,
-    mmagic_ip_cmd_commit                        = 3,
-    mmagic_ip_cmd_status                        = 8,
-    mmagic_ip_cmd_reload                        = 9,
-    mmagic_ip_cmd_enable_tcp_keepalive_offload  = 10,
+    mmagic_ip_cmd_get = 0,
+    mmagic_ip_cmd_set = 1,
+    mmagic_ip_cmd_load = 2,
+    mmagic_ip_cmd_commit = 3,
+    mmagic_ip_cmd_status = 8,
+    mmagic_ip_cmd_reload = 9,
+    mmagic_ip_cmd_enable_tcp_keepalive_offload = 10,
     mmagic_ip_cmd_disable_tcp_keepalive_offload = 11,
-    mmagic_ip_cmd_set_whitelist_filter          = 12,
-    mmagic_ip_cmd_clear_whitelist_filter        = 13,
+    mmagic_ip_cmd_set_whitelist_filter = 12,
+    mmagic_ip_cmd_clear_whitelist_filter = 13,
 };
 
 enum mmagic_ip_events
@@ -76,82 +77,88 @@ enum mmagic_ip_events
 
 enum mmagic_ping_cmds
 {
-    mmagic_ping_cmd_get    = 0,
-    mmagic_ping_cmd_set    = 1,
-    mmagic_ping_cmd_load   = 2,
+    mmagic_ping_cmd_get = 0,
+    mmagic_ping_cmd_set = 1,
+    mmagic_ping_cmd_load = 2,
     mmagic_ping_cmd_commit = 3,
-    mmagic_ping_cmd_run    = 8,
+    mmagic_ping_cmd_run = 8,
 };
 
 enum mmagic_iperf_cmds
 {
-    mmagic_iperf_cmd_get    = 0,
-    mmagic_iperf_cmd_set    = 1,
-    mmagic_iperf_cmd_load   = 2,
+    mmagic_iperf_cmd_get = 0,
+    mmagic_iperf_cmd_set = 1,
+    mmagic_iperf_cmd_load = 2,
     mmagic_iperf_cmd_commit = 3,
-    mmagic_iperf_cmd_run    = 8,
+    mmagic_iperf_cmd_run = 8,
 };
 
 enum mmagic_sys_cmds
 {
-    mmagic_sys_cmd_get         = 0,
-    mmagic_sys_cmd_set         = 1,
-    mmagic_sys_cmd_load        = 2,
-    mmagic_sys_cmd_commit      = 3,
-    mmagic_sys_cmd_reset       = 8,
-    mmagic_sys_cmd_deep_sleep  = 9,
+    mmagic_sys_cmd_get = 0,
+    mmagic_sys_cmd_set = 1,
+    mmagic_sys_cmd_load = 2,
+    mmagic_sys_cmd_commit = 3,
+    mmagic_sys_cmd_reset = 8,
+    mmagic_sys_cmd_deep_sleep = 9,
     mmagic_sys_cmd_get_version = 10,
 };
 
 enum mmagic_tcp_cmds
 {
-    mmagic_tcp_cmd_get        = 0,
-    mmagic_tcp_cmd_set        = 1,
-    mmagic_tcp_cmd_load       = 2,
-    mmagic_tcp_cmd_commit     = 3,
-    mmagic_tcp_cmd_connect    = 8,
-    mmagic_tcp_cmd_bind       = 9,
-    mmagic_tcp_cmd_recv       = 10,
-    mmagic_tcp_cmd_send       = 11,
-    mmagic_tcp_cmd_read_poll  = 12,
+    mmagic_tcp_cmd_get = 0,
+    mmagic_tcp_cmd_set = 1,
+    mmagic_tcp_cmd_load = 2,
+    mmagic_tcp_cmd_commit = 3,
+    mmagic_tcp_cmd_connect = 8,
+    mmagic_tcp_cmd_bind = 9,
+    mmagic_tcp_cmd_recv = 10,
+    mmagic_tcp_cmd_send = 11,
+    mmagic_tcp_cmd_read_poll = 12,
     mmagic_tcp_cmd_write_poll = 13,
-    mmagic_tcp_cmd_accept     = 14,
-    mmagic_tcp_cmd_close      = 15,
+    mmagic_tcp_cmd_accept = 14,
+    mmagic_tcp_cmd_close = 15,
+    mmagic_tcp_cmd_set_rx_ready_evt_enabled = 16,
+};
+
+enum mmagic_tcp_events
+{
+    mmagic_tcp_event_rx_ready = 1,
 };
 
 enum mmagic_tls_cmds
 {
-    mmagic_tls_cmd_get    = 0,
-    mmagic_tls_cmd_set    = 1,
-    mmagic_tls_cmd_load   = 2,
+    mmagic_tls_cmd_get = 0,
+    mmagic_tls_cmd_set = 1,
+    mmagic_tls_cmd_load = 2,
     mmagic_tls_cmd_commit = 3,
 };
 
 enum mmagic_ntp_cmds
 {
-    mmagic_ntp_cmd_get      = 0,
-    mmagic_ntp_cmd_set      = 1,
-    mmagic_ntp_cmd_load     = 2,
-    mmagic_ntp_cmd_commit   = 3,
-    mmagic_ntp_cmd_sync     = 8,
+    mmagic_ntp_cmd_get = 0,
+    mmagic_ntp_cmd_set = 1,
+    mmagic_ntp_cmd_load = 2,
+    mmagic_ntp_cmd_commit = 3,
+    mmagic_ntp_cmd_sync = 8,
     mmagic_ntp_cmd_get_time = 9,
 };
 
 enum mmagic_mqtt_cmds
 {
-    mmagic_mqtt_cmd_get         = 0,
-    mmagic_mqtt_cmd_set         = 1,
-    mmagic_mqtt_cmd_load        = 2,
-    mmagic_mqtt_cmd_commit      = 3,
+    mmagic_mqtt_cmd_get = 0,
+    mmagic_mqtt_cmd_set = 1,
+    mmagic_mqtt_cmd_load = 2,
+    mmagic_mqtt_cmd_commit = 3,
     mmagic_mqtt_cmd_start_agent = 8,
-    mmagic_mqtt_cmd_publish     = 9,
-    mmagic_mqtt_cmd_subscribe   = 10,
-    mmagic_mqtt_cmd_stop_agent  = 11,
+    mmagic_mqtt_cmd_publish = 9,
+    mmagic_mqtt_cmd_subscribe = 10,
+    mmagic_mqtt_cmd_stop_agent = 11,
 };
 
 enum mmagic_mqtt_events
 {
-    mmagic_mqtt_event_message_received  = 5,
+    mmagic_mqtt_event_message_received = 5,
     mmagic_mqtt_event_broker_connection = 6,
 };
 
@@ -159,9 +166,9 @@ enum mmagic_mqtt_events
 enum mmagic_security_type
 {
     /** Simultaneous Authentication of Equals (password-based authentication). */
-    MMAGIC_SECURITY_TYPE_SAE  = 0,
+    MMAGIC_SECURITY_TYPE_SAE = 0,
     /** Opportunistic Wireless Encryption (encrypted, passwordless). */
-    MMAGIC_SECURITY_TYPE_OWE  = 1,
+    MMAGIC_SECURITY_TYPE_OWE = 1,
     /** No security enabled at all. */
     MMAGIC_SECURITY_TYPE_OPEN = 2,
 };
@@ -181,7 +188,7 @@ enum mmagic_power_save_mode
     /** Power save disabled. */
     MMAGIC_POWER_SAVE_MODE_DISABLED = 0,
     /** Power save enabled. */
-    MMAGIC_POWER_SAVE_MODE_ENABLED  = 1,
+    MMAGIC_POWER_SAVE_MODE_ENABLED = 1,
 };
 
 /** Enumeration of MCS10 modes. */
@@ -190,9 +197,9 @@ enum mmagic_mcs10_mode
     /** MCS10 is not used. */
     MMAGIC_MCS10_MODE_DISABLED = 0,
     /** MCS10 is always used instead of MCS0 when the bandwidth is 1 MHz. */
-    MMAGIC_MCS10_MODE_FORCED   = 1,
+    MMAGIC_MCS10_MODE_FORCED = 1,
     /** MCS10 is used on retries instead of MCS0 when the bandwidth is 1 MHz. */
-    MMAGIC_MCS10_MODE_AUTO     = 2,
+    MMAGIC_MCS10_MODE_AUTO = 2,
 };
 
 /** Enumeration of duty cycle modes. */
@@ -201,14 +208,14 @@ enum mmagic_duty_cycle_mode
     /** Duty cycle air time is evenly spread. */
     MMAGIC_DUTY_CYCLE_MODE_SPREAD = 0,
     /** Duty cycle air time available in burst. */
-    MMAGIC_DUTY_CYCLE_MODE_BURST  = 1,
+    MMAGIC_DUTY_CYCLE_MODE_BURST = 1,
 };
 
 /** Enumeration of S1G non-AP STA types. */
 enum mmagic_station_type
 {
     /** Sensor type. */
-    MMAGIC_STATION_TYPE_SENSOR     = 0,
+    MMAGIC_STATION_TYPE_SENSOR = 0,
     /** Non-Sensor type. */
     MMAGIC_STATION_TYPE_NON_SENSOR = 1,
 };
@@ -217,72 +224,74 @@ enum mmagic_station_type
 enum mmagic_status
 {
     /** Operation was successful. */
-    MMAGIC_STATUS_OK                       = 0,
+    MMAGIC_STATUS_OK = 0,
     /** The operation failed with an unspecified error. */
-    MMAGIC_STATUS_ERROR                    = 1,
+    MMAGIC_STATUS_ERROR = 1,
     /** The operation failed due to an invalid argument. */
-    MMAGIC_STATUS_INVALID_ARG              = 2,
+    MMAGIC_STATUS_INVALID_ARG = 2,
     /** Functionality is temporarily unavailable. */
-    MMAGIC_STATUS_UNAVAILABLE              = 3,
+    MMAGIC_STATUS_UNAVAILABLE = 3,
     /** The operation timed out. */
-    MMAGIC_STATUS_TIMEOUT                  = 4,
+    MMAGIC_STATUS_TIMEOUT = 4,
     /** An invalid stream was specified. */
-    MMAGIC_STATUS_INVALID_STREAM           = 5,
+    MMAGIC_STATUS_INVALID_STREAM = 5,
     /** Specified operation was not found. */
-    MMAGIC_STATUS_NOT_FOUND                = 6,
+    MMAGIC_STATUS_NOT_FOUND = 6,
     /** Specified operation is not supported. */
-    MMAGIC_STATUS_NOT_SUPPORTED            = 7,
+    MMAGIC_STATUS_NOT_SUPPORTED = 7,
     /** An error occured during transmission. */
-    MMAGIC_STATUS_TX_ERROR                 = 8,
+    MMAGIC_STATUS_TX_ERROR = 8,
     /** Failed due to memory allocation failure. */
-    MMAGIC_STATUS_NO_MEM                   = 9,
+    MMAGIC_STATUS_NO_MEM = 9,
     /** Failed due to stream being closed from the other side. */
-    MMAGIC_STATUS_CLOSED                   = 10,
+    MMAGIC_STATUS_CLOSED = 10,
     /** WLAN operation failed because the channel list has not been set. */
-    MMAGIC_STATUS_CHANNEL_LIST_NOT_SET     = 11,
+    MMAGIC_STATUS_CHANNEL_LIST_NOT_SET = 11,
     /** WLAN shutdown failed. */
-    MMAGIC_STATUS_SHUTDOWN_BLOCKED         = 12,
+    MMAGIC_STATUS_SHUTDOWN_BLOCKED = 12,
     /** Attempted to tune to a channel that was not available. */
-    MMAGIC_STATUS_CHANNEL_INVALID          = 13,
+    MMAGIC_STATUS_CHANNEL_INVALID = 13,
     /** Operation failed because the WLAN device was not booted. */
-    MMAGIC_STATUS_NOT_RUNNING              = 14,
+    MMAGIC_STATUS_NOT_RUNNING = 14,
     /** Operation failed because the link was not up. */
-    MMAGIC_STATUS_NO_LINK                  = 15,
+    MMAGIC_STATUS_NO_LINK = 15,
     /** Failed to get an IP address for the given hostname. */
-    MMAGIC_STATUS_UNKNOWN_HOST             = 16,
+    MMAGIC_STATUS_UNKNOWN_HOST = 16,
     /** Failed to open the socket. */
-    MMAGIC_STATUS_SOCKET_FAILED            = 17,
+    MMAGIC_STATUS_SOCKET_FAILED = 17,
     /** Socket connection failed. */
-    MMAGIC_STATUS_SOCKET_CONNECT_FAILED    = 18,
+    MMAGIC_STATUS_SOCKET_CONNECT_FAILED = 18,
     /** Socket bind failed. */
-    MMAGIC_STATUS_SOCKET_BIND_FAILED       = 19,
+    MMAGIC_STATUS_SOCKET_BIND_FAILED = 19,
     /** Socket listen failed. */
-    MMAGIC_STATUS_SOCKET_LISTEN_FAILED     = 20,
+    MMAGIC_STATUS_SOCKET_LISTEN_FAILED = 20,
     /** NTP server returned Kiss-o'-Death. */
-    MMAGIC_STATUS_NTP_KOD_RECEIVED         = 21,
+    MMAGIC_STATUS_NTP_KOD_RECEIVED = 21,
     /** NTP server returned Kiss-o'-Death with rate code. Client should backoff then retry. */
     MMAGIC_STATUS_NTP_KOD_BACKOFF_RECEIVED = 22,
     /** Socket send failed. */
-    MMAGIC_STATUS_SOCKET_SEND_FAILED       = 23,
+    MMAGIC_STATUS_SOCKET_SEND_FAILED = 23,
     /** Credentials provided were invalid. Possible cause: missing null terminator on a PEM
      * key/certificate. */
-    MMAGIC_STATUS_INVALID_CREDENTIALS      = 24,
+    MMAGIC_STATUS_INVALID_CREDENTIALS = 24,
     /** Error during TLS handshake. */
-    MMAGIC_STATUS_HANDSHAKE_FAILED         = 25,
+    MMAGIC_STATUS_HANDSHAKE_FAILED = 25,
     /** Credentials provided by the server were not valid. */
-    MMAGIC_STATUS_AUTHENTICATION_FAILED    = 26,
+    MMAGIC_STATUS_AUTHENTICATION_FAILED = 26,
     /** Missing certificate or key to open TLS connection. Provided through the TLS module
      * configuration. */
-    MMAGIC_STATUS_MISSING_CREDENTIALS      = 27,
+    MMAGIC_STATUS_MISSING_CREDENTIALS = 27,
     /** Internal time has not been synchronized. This is required for certificate verification for
      * TLS. Use the NTP module to synchronize internal time. */
-    MMAGIC_STATUS_TIME_NOT_SYNCHRONIZED    = 28,
+    MMAGIC_STATUS_TIME_NOT_SYNCHRONIZED = 28,
     /** The server refused a CONNECT or SUBSCRIBE. */
-    MMAGIC_STATUS_MQTT_REFUSED             = 29,
+    MMAGIC_STATUS_MQTT_REFUSED = 29,
     /** Timed out while waiting for PINGRESP. Connection to the broker has been lost. */
-    MMAGIC_STATUS_MQTT_KEEPALIVE_TIMEOUT   = 30,
+    MMAGIC_STATUS_MQTT_KEEPALIVE_TIMEOUT = 30,
+    /** Operation failed because the MMWLAN subsystem was not initialized. */
+    MMAGIC_STATUS_NOT_INITIALIZED = 31,
     /** Operation failed due to a version mismatch. */
-    MMAGIC_STATUS_BAD_VERSION              = 32,
+    MMAGIC_STATUS_BAD_VERSION = 32,
 };
 
 /** Mode to use when running the iperf. */
@@ -304,11 +313,11 @@ enum mmagic_iperf_state
     /** Iperf session not started. */
     MMAGIC_IPERF_STATE_NOT_STARTED = 0,
     /** Iperf session is in progress. */
-    MMAGIC_IPERF_STATE_RUNNING     = 1,
+    MMAGIC_IPERF_STATE_RUNNING = 1,
     /** Iperf session has completed. */
-    MMAGIC_IPERF_STATE_FINISHED    = 2,
+    MMAGIC_IPERF_STATE_FINISHED = 2,
     /** Iperf session has been aborted. */
-    MMAGIC_IPERF_STATE_ABORTED     = 3,
+    MMAGIC_IPERF_STATE_ABORTED = 3,
 };
 
 /** Status of the IP link. */
@@ -317,7 +326,7 @@ enum mmagic_ip_link_state
     /** Link is down because the interface is down or DHCP has not yet completed. */
     MMAGIC_IP_LINK_STATE_DOWN = 0,
     /** Link is up. This implies that the interface is up and DHCP has completed. */
-    MMAGIC_IP_LINK_STATE_UP   = 1,
+    MMAGIC_IP_LINK_STATE_UP = 1,
 };
 
 /** Deep sleep modes for the agent MCU. */
@@ -335,19 +344,19 @@ enum mmagic_deep_sleep_mode
 enum mmagic_standby_mode_exit_reason
 {
     /** Standby mode was exited manually through a call to standby_exit. */
-    MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_NONE                    = 0,
+    MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_NONE = 0,
     /** We were woken up by a wakeup frame. */
-    MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_WAKEUP_FRAME            = 1,
+    MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_WAKEUP_FRAME = 1,
     /** We just reassociated with the AP. */
-    MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_ASSOCIATE               = 2,
+    MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_ASSOCIATE = 2,
     /** We were woken up by an external input trigger. */
-    MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_EXT_INPUT               = 3,
+    MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_EXT_INPUT = 3,
     /** We received a packet from a whitelist source. */
-    MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_WHITELIST_PKT           = 4,
+    MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_WHITELIST_PKT = 4,
     /** An open TCP connection was lost. */
-    MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_TCP_CONNECTION_LOST     = 5,
+    MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_TCP_CONNECTION_LOST = 5,
     /** Hardware scan was not enabled. */
-    MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_HW_SCAN_NOT_ENABLED     = 6,
+    MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_HW_SCAN_NOT_ENABLED = 6,
     /** Hardware scan failed to start. */
     MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_HW_SCAN_FAILED_TO_START = 7,
 };
@@ -358,28 +367,28 @@ enum mmagic_sta_state
     /** Disconnected from the AP. */
     MMAGIC_STA_STATE_DISCONNECTED = 1,
     /** Connecting to the AP. */
-    MMAGIC_STA_STATE_CONNECTING   = 2,
+    MMAGIC_STA_STATE_CONNECTING = 2,
     /** Connected to the AP. */
-    MMAGIC_STA_STATE_CONNECTED    = 3,
+    MMAGIC_STA_STATE_CONNECTED = 3,
 };
 
 /** Station connection events. */
 enum mmagic_sta_event
 {
     /** The STA is starting a scan. */
-    MMAGIC_STA_EVENT_SCAN_REQUEST     = 0,
+    MMAGIC_STA_EVENT_SCAN_REQUEST = 0,
     /** The STA has finished a scan. */
-    MMAGIC_STA_EVENT_SCAN_COMPLETE    = 1,
+    MMAGIC_STA_EVENT_SCAN_COMPLETE = 1,
     /** The STA has aborted a scan early. */
-    MMAGIC_STA_EVENT_SCAN_ABORT       = 2,
+    MMAGIC_STA_EVENT_SCAN_ABORT = 2,
     /** The STA is sending an authentication request to the AP. */
-    MMAGIC_STA_EVENT_AUTH_REQUEST     = 3,
+    MMAGIC_STA_EVENT_AUTH_REQUEST = 3,
     /** The STA is sending an association request to the AP. */
-    MMAGIC_STA_EVENT_ASSOC_REQUEST    = 4,
+    MMAGIC_STA_EVENT_ASSOC_REQUEST = 4,
     /** The STA is sending an de-authorization request to the AP. */
-    MMAGIC_STA_EVENT_DEAUTH_TX        = 5,
+    MMAGIC_STA_EVENT_DEAUTH_TX = 5,
     /** The Supplicant IEEE 802.1X Controlled Port is now open. */
-    MMAGIC_STA_EVENT_CTRL_PORT_OPEN   = 6,
+    MMAGIC_STA_EVENT_CTRL_PORT_OPEN = 6,
     /** The Supplicant IEEE 802.1X Controlled Port is now closed. */
     MMAGIC_STA_EVENT_CTRL_PORT_CLOSED = 7,
 };
@@ -489,6 +498,9 @@ struct MM_PACKED struct_scan_result
     uint8_t bw_mhz;
     /** Operating bandwidth, in MHz, of the access point. */
     uint8_t op_bw_mhz;
+    /** Background noise measured by the chip on the channel at the time the probe response was
+     * received. */
+    int16_t noise_dbm;
     /** TSF timestamp in the Probe Response frame. */
     uint64_t tsf;
 };
@@ -596,12 +608,11 @@ struct MM_PACKED struct_buffer64
 /**
  * Convert from @c uint8_t to a string.
  *
- * @param  value Reference to the @c uint8_t.
- * @param  buf   Reference to the buffer where string is to be placed.
- * @param  len   Length of the buffer provided in bytes.
+ * @param value Reference to the @c uint8_t.
+ * @param buf   Reference to the buffer where string is to be placed.
+ * @param len   Length of the buffer provided in bytes.
  *
- * @return       On success the number of bytes characters written (excluding the null byte). A
- *               return
+ * @return On success the number of bytes characters written (excluding the null byte). A return
  *         value of @c len or more means that the output was truncated. On error a negative value is
  *         returned.
  *
@@ -615,22 +626,21 @@ int mmagic_uint8_t_to_string(uint8_t value, char *buf, size_t len);
 /**
  * Convert from a string to @c uint8_t.
  *
- * @param  value Reference to the @c uint8_t to place the parsed data.
- * @param  buf   Reference to a null terminated string to parse.
+ * @param value Reference to the @c uint8_t to place the parsed data.
+ * @param buf   Reference to a null terminated string to parse.
  *
- * @return       On success 0. On error a negative value is returned.
+ * @return On success 0. On error a negative value is returned.
  */
 int mmagic_string_to_uint8_t(uint8_t *value, const char *buf);
 
 /**
  * Convert from @c uint16_t to a string.
  *
- * @param  value Reference to the @c uint16_t.
- * @param  buf   Reference to the buffer where string is to be placed.
- * @param  len   Length of the buffer provided in bytes.
+ * @param value Reference to the @c uint16_t.
+ * @param buf   Reference to the buffer where string is to be placed.
+ * @param len   Length of the buffer provided in bytes.
  *
- * @return       On success the number of bytes characters written (excluding the null byte). A
- *               return
+ * @return On success the number of bytes characters written (excluding the null byte). A return
  *         value of @c len or more means that the output was truncated. On error a negative value is
  *         returned.
  *
@@ -644,22 +654,21 @@ int mmagic_uint16_t_to_string(uint16_t value, char *buf, size_t len);
 /**
  * Convert from a string to @c uint16_t.
  *
- * @param  value Reference to the @c uint16_t to place the parsed data.
- * @param  buf   Reference to a null terminated string to parse.
+ * @param value Reference to the @c uint16_t to place the parsed data.
+ * @param buf   Reference to a null terminated string to parse.
  *
- * @return       On success 0. On error a negative value is returned.
+ * @return On success 0. On error a negative value is returned.
  */
 int mmagic_string_to_uint16_t(uint16_t *value, const char *buf);
 
 /**
  * Convert from @c uint32_t to a string.
  *
- * @param  value Reference to the @c uint32_t.
- * @param  buf   Reference to the buffer where string is to be placed.
- * @param  len   Length of the buffer provided in bytes.
+ * @param value Reference to the @c uint32_t.
+ * @param buf   Reference to the buffer where string is to be placed.
+ * @param len   Length of the buffer provided in bytes.
  *
- * @return       On success the number of bytes characters written (excluding the null byte). A
- *               return
+ * @return On success the number of bytes characters written (excluding the null byte). A return
  *         value of @c len or more means that the output was truncated. On error a negative value is
  *         returned.
  *
@@ -673,22 +682,21 @@ int mmagic_uint32_t_to_string(uint32_t value, char *buf, size_t len);
 /**
  * Convert from a string to @c uint32_t.
  *
- * @param  value Reference to the @c uint32_t to place the parsed data.
- * @param  buf   Reference to a null terminated string to parse.
+ * @param value Reference to the @c uint32_t to place the parsed data.
+ * @param buf   Reference to a null terminated string to parse.
  *
- * @return       On success 0. On error a negative value is returned.
+ * @return On success 0. On error a negative value is returned.
  */
 int mmagic_string_to_uint32_t(uint32_t *value, const char *buf);
 
 /**
  * Convert from @c uint64_t to a string.
  *
- * @param  value Reference to the @c uint64_t.
- * @param  buf   Reference to the buffer where string is to be placed.
- * @param  len   Length of the buffer provided in bytes.
+ * @param value Reference to the @c uint64_t.
+ * @param buf   Reference to the buffer where string is to be placed.
+ * @param len   Length of the buffer provided in bytes.
  *
- * @return       On success the number of bytes characters written (excluding the null byte). A
- *               return
+ * @return On success the number of bytes characters written (excluding the null byte). A return
  *         value of @c len or more means that the output was truncated. On error a negative value is
  *         returned.
  *
@@ -702,22 +710,21 @@ int mmagic_uint64_t_to_string(uint64_t value, char *buf, size_t len);
 /**
  * Convert from a string to @c uint64_t.
  *
- * @param  value Reference to the @c uint64_t to place the parsed data.
- * @param  buf   Reference to a null terminated string to parse.
+ * @param value Reference to the @c uint64_t to place the parsed data.
+ * @param buf   Reference to a null terminated string to parse.
  *
- * @return       On success 0. On error a negative value is returned.
+ * @return On success 0. On error a negative value is returned.
  */
 int mmagic_string_to_uint64_t(uint64_t *value, const char *buf);
 
 /**
  * Convert from @c int16_t to a string.
  *
- * @param  value Reference to the @c int16_t.
- * @param  buf   Reference to the buffer where string is to be placed.
- * @param  len   Length of the buffer provided in bytes.
+ * @param value Reference to the @c int16_t.
+ * @param buf   Reference to the buffer where string is to be placed.
+ * @param len   Length of the buffer provided in bytes.
  *
- * @return       On success the number of bytes characters written (excluding the null byte). A
- *               return
+ * @return On success the number of bytes characters written (excluding the null byte). A return
  *         value of @c len or more means that the output was truncated. On error a negative value is
  *         returned.
  *
@@ -731,22 +738,21 @@ int mmagic_int16_t_to_string(int16_t value, char *buf, size_t len);
 /**
  * Convert from a string to @c int16_t.
  *
- * @param  value Reference to the @c int16_t to place the parsed data.
- * @param  buf   Reference to a null terminated string to parse.
+ * @param value Reference to the @c int16_t to place the parsed data.
+ * @param buf   Reference to a null terminated string to parse.
  *
- * @return       On success 0. On error a negative value is returned.
+ * @return On success 0. On error a negative value is returned.
  */
 int mmagic_string_to_int16_t(int16_t *value, const char *buf);
 
 /**
  * Convert from @c bool to a string.
  *
- * @param  value Reference to the @c bool.
- * @param  buf   Reference to the buffer where string is to be placed.
- * @param  len   Length of the buffer provided in bytes.
+ * @param value Reference to the @c bool.
+ * @param buf   Reference to the buffer where string is to be placed.
+ * @param len   Length of the buffer provided in bytes.
  *
- * @return       On success the number of bytes characters written (excluding the null byte). A
- *               return
+ * @return On success the number of bytes characters written (excluding the null byte). A return
  *         value of @c len or more means that the output was truncated. On error a negative value is
  *         returned.
  *
@@ -760,22 +766,21 @@ int mmagic_bool_to_string(bool value, char *buf, size_t len);
 /**
  * Convert from a string to @c bool.
  *
- * @param  value Reference to the @c bool to place the parsed data.
- * @param  buf   Reference to a null terminated string to parse.
+ * @param value Reference to the @c bool to place the parsed data.
+ * @param buf   Reference to a null terminated string to parse.
  *
- * @return       On success 0. On error a negative value is returned.
+ * @return On success 0. On error a negative value is returned.
  */
 int mmagic_string_to_bool(bool *value, const char *buf);
 
 /**
  * Convert from @c char to a string.
  *
- * @param  value Reference to the @c char.
- * @param  buf   Reference to the buffer where string is to be placed.
- * @param  len   Length of the buffer provided in bytes.
+ * @param value Reference to the @c char.
+ * @param buf   Reference to the buffer where string is to be placed.
+ * @param len   Length of the buffer provided in bytes.
  *
- * @return       On success the number of bytes characters written (excluding the null byte). A
- *               return
+ * @return On success the number of bytes characters written (excluding the null byte). A return
  *         value of @c len or more means that the output was truncated. On error a negative value is
  *         returned.
  *
@@ -789,22 +794,21 @@ int mmagic_char_to_string(char value, char *buf, size_t len);
 /**
  * Convert from a string to @c char.
  *
- * @param  value Reference to the @c char to place the parsed data.
- * @param  buf   Reference to a null terminated string to parse.
+ * @param value Reference to the @c char to place the parsed data.
+ * @param buf   Reference to a null terminated string to parse.
  *
- * @return       On success 0. On error a negative value is returned.
+ * @return On success 0. On error a negative value is returned.
  */
 int mmagic_string_to_char(char *value, const char *buf);
 
 /**
  * Convert from @c int32_t to a string.
  *
- * @param  value Reference to the @c int32_t.
- * @param  buf   Reference to the buffer where string is to be placed.
- * @param  len   Length of the buffer provided in bytes.
+ * @param value Reference to the @c int32_t.
+ * @param buf   Reference to the buffer where string is to be placed.
+ * @param len   Length of the buffer provided in bytes.
  *
- * @return       On success the number of bytes characters written (excluding the null byte). A
- *               return
+ * @return On success the number of bytes characters written (excluding the null byte). A return
  *         value of @c len or more means that the output was truncated. On error a negative value is
  *         returned.
  *
@@ -818,10 +822,10 @@ int mmagic_int32_t_to_string(int32_t value, char *buf, size_t len);
 /**
  * Convert from a string to @c int32_t.
  *
- * @param  value Reference to the @c int32_t to place the parsed data.
- * @param  buf   Reference to a null terminated string to parse.
+ * @param value Reference to the @c int32_t to place the parsed data.
+ * @param buf   Reference to a null terminated string to parse.
  *
- * @return       On success 0. On error a negative value is returned.
+ * @return On success 0. On error a negative value is returned.
  */
 int mmagic_string_to_int32_t(int32_t *value, const char *buf);
 
@@ -841,16 +845,17 @@ int mmagic_string_to_int32_t(int32_t *value, const char *buf);
  *       the return value is the number of characters (excluding the terminating null byte) which
  *       would have been written to the final string if enough space had been available.
  */
-int mmagic_struct_country_code_to_string(const struct struct_country_code *value, char *buf,
+int mmagic_struct_country_code_to_string(const struct struct_country_code *value,
+                                         char *buf,
                                          size_t len);
 
 /**
  * Convert from a string to @c struct_country_code.
  *
- * @param  value Reference to the @c struct_country_code to place the parsed data.
- * @param  buf   Reference to a null terminated string to parse.
+ * @param value Reference to the @c struct_country_code to place the parsed data.
+ * @param buf   Reference to a null terminated string to parse.
  *
- * @return       On success 0. On error a negative value is returned.
+ * @return On success 0. On error a negative value is returned.
  */
 int mmagic_string_to_struct_country_code(struct struct_country_code *value, const char *buf);
 
@@ -875,10 +880,10 @@ int mmagic_struct_ip_addr_to_string(const struct struct_ip_addr *value, char *bu
 /**
  * Convert from a string to @c struct_ip_addr.
  *
- * @param  value Reference to the @c struct_ip_addr to place the parsed data.
- * @param  buf   Reference to a null terminated string to parse.
+ * @param value Reference to the @c struct_ip_addr to place the parsed data.
+ * @param buf   Reference to a null terminated string to parse.
  *
- * @return       On success 0. On error a negative value is returned.
+ * @return On success 0. On error a negative value is returned.
  */
 int mmagic_string_to_struct_ip_addr(struct struct_ip_addr *value, const char *buf);
 
@@ -903,10 +908,10 @@ int mmagic_struct_mac_addr_to_string(const struct struct_mac_addr *value, char *
 /**
  * Convert from a string to @c struct_mac_addr.
  *
- * @param  value Reference to the @c struct_mac_addr to place the parsed data.
- * @param  buf   Reference to a null terminated string to parse.
+ * @param value Reference to the @c struct_mac_addr to place the parsed data.
+ * @param buf   Reference to a null terminated string to parse.
  *
- * @return       On success 0. On error a negative value is returned.
+ * @return On success 0. On error a negative value is returned.
  */
 int mmagic_string_to_struct_mac_addr(struct struct_mac_addr *value, const char *buf);
 
@@ -931,10 +936,10 @@ int mmagic_string32_to_string(const struct string32 *value, char *buf, size_t le
 /**
  * Convert from a string to @c string32.
  *
- * @param  value Reference to the @c string32 to place the parsed data.
- * @param  buf   Reference to a null terminated string to parse. Must be <= 32 characters.
+ * @param value Reference to the @c string32 to place the parsed data.
+ * @param buf   Reference to a null terminated string to parse. Must be <= 32 characters.
  *
- * @return       On success 0. On error a negative value is returned.
+ * @return On success 0. On error a negative value is returned.
  */
 int mmagic_string_to_string32(struct string32 *value, const char *buf);
 
@@ -959,10 +964,10 @@ int mmagic_string100_to_string(const struct string100 *value, char *buf, size_t 
 /**
  * Convert from a string to @c string100.
  *
- * @param  value Reference to the @c string100 to place the parsed data.
- * @param  buf   Reference to a null terminated string to parse. Must be <= 100 characters.
+ * @param value Reference to the @c string100 to place the parsed data.
+ * @param buf   Reference to a null terminated string to parse. Must be <= 100 characters.
  *
- * @return       On success 0. On error a negative value is returned.
+ * @return On success 0. On error a negative value is returned.
  */
 int mmagic_string_to_string100(struct string100 *value, const char *buf);
 
@@ -987,10 +992,10 @@ int mmagic_string254_to_string(const struct string254 *value, char *buf, size_t 
 /**
  * Convert from a string to @c string254.
  *
- * @param  value Reference to the @c string254 to place the parsed data.
- * @param  buf   Reference to a null terminated string to parse. Must be <= 254 characters.
+ * @param value Reference to the @c string254 to place the parsed data.
+ * @param buf   Reference to a null terminated string to parse. Must be <= 254 characters.
  *
- * @return       On success 0. On error a negative value is returned.
+ * @return On success 0. On error a negative value is returned.
  */
 int mmagic_string_to_string254(struct string254 *value, const char *buf);
 
@@ -1015,11 +1020,11 @@ int mmagic_enum_security_type_to_string(enum mmagic_security_type value, char *b
 /**
  * Convert from a string to @c enum_security_type.
  *
- * @param  value Reference to the @c enum mmagic_security_type that will be set to the parsed value
- *               on success.
- * @param  buf   Reference to a null terminated string to parse
+ * @param value Reference to the @c enum mmagic_security_type that will be set to the parsed value
+ * on success.
+ * @param buf   Reference to a null terminated string to parse
  *
- * @return       On success 0. On error a negative value is returned.
+ * @return On success 0. On error a negative value is returned.
  */
 int mmagic_string_to_enum_security_type(enum mmagic_security_type *value, const char *buf);
 
@@ -1044,11 +1049,11 @@ int mmagic_enum_pmf_mode_to_string(enum mmagic_pmf_mode value, char *buf, size_t
 /**
  * Convert from a string to @c enum_pmf_mode.
  *
- * @param  value Reference to the @c enum mmagic_pmf_mode that will be set to the parsed value on
- *               success.
- * @param  buf   Reference to a null terminated string to parse
+ * @param value Reference to the @c enum mmagic_pmf_mode that will be set to the parsed value on
+ * success.
+ * @param buf   Reference to a null terminated string to parse
  *
- * @return       On success 0. On error a negative value is returned.
+ * @return On success 0. On error a negative value is returned.
  */
 int mmagic_string_to_enum_pmf_mode(enum mmagic_pmf_mode *value, const char *buf);
 
@@ -1073,11 +1078,11 @@ int mmagic_enum_power_save_mode_to_string(enum mmagic_power_save_mode value, cha
 /**
  * Convert from a string to @c enum_power_save_mode.
  *
- * @param  value Reference to the @c enum mmagic_power_save_mode that will be set to the parsed
- *               value on success.
- * @param  buf   Reference to a null terminated string to parse
+ * @param value Reference to the @c enum mmagic_power_save_mode that will be set to the parsed value
+ * on success.
+ * @param buf   Reference to a null terminated string to parse
  *
- * @return       On success 0. On error a negative value is returned.
+ * @return On success 0. On error a negative value is returned.
  */
 int mmagic_string_to_enum_power_save_mode(enum mmagic_power_save_mode *value, const char *buf);
 
@@ -1102,11 +1107,11 @@ int mmagic_enum_mcs10_mode_to_string(enum mmagic_mcs10_mode value, char *buf, si
 /**
  * Convert from a string to @c enum_mcs10_mode.
  *
- * @param  value Reference to the @c enum mmagic_mcs10_mode that will be set to the parsed value on
- *               success.
- * @param  buf   Reference to a null terminated string to parse
+ * @param value Reference to the @c enum mmagic_mcs10_mode that will be set to the parsed value on
+ * success.
+ * @param buf   Reference to a null terminated string to parse
  *
- * @return       On success 0. On error a negative value is returned.
+ * @return On success 0. On error a negative value is returned.
  */
 int mmagic_string_to_enum_mcs10_mode(enum mmagic_mcs10_mode *value, const char *buf);
 
@@ -1131,11 +1136,11 @@ int mmagic_enum_duty_cycle_mode_to_string(enum mmagic_duty_cycle_mode value, cha
 /**
  * Convert from a string to @c enum_duty_cycle_mode.
  *
- * @param  value Reference to the @c enum mmagic_duty_cycle_mode that will be set to the parsed
- *               value on success.
- * @param  buf   Reference to a null terminated string to parse
+ * @param value Reference to the @c enum mmagic_duty_cycle_mode that will be set to the parsed value
+ * on success.
+ * @param buf   Reference to a null terminated string to parse
  *
- * @return       On success 0. On error a negative value is returned.
+ * @return On success 0. On error a negative value is returned.
  */
 int mmagic_string_to_enum_duty_cycle_mode(enum mmagic_duty_cycle_mode *value, const char *buf);
 
@@ -1160,11 +1165,11 @@ int mmagic_enum_station_type_to_string(enum mmagic_station_type value, char *buf
 /**
  * Convert from a string to @c enum_station_type.
  *
- * @param  value Reference to the @c enum mmagic_station_type that will be set to the parsed value
- *               on success.
- * @param  buf   Reference to a null terminated string to parse
+ * @param value Reference to the @c enum mmagic_station_type that will be set to the parsed value on
+ * success.
+ * @param buf   Reference to a null terminated string to parse
  *
- * @return       On success 0. On error a negative value is returned.
+ * @return On success 0. On error a negative value is returned.
  */
 int mmagic_string_to_enum_station_type(enum mmagic_station_type *value, const char *buf);
 
@@ -1189,11 +1194,11 @@ int mmagic_enum_status_to_string(enum mmagic_status value, char *buf, size_t len
 /**
  * Convert from a string to @c enum_status.
  *
- * @param  value Reference to the @c enum mmagic_status that will be set to the parsed value on
- *               success.
- * @param  buf   Reference to a null terminated string to parse
+ * @param value Reference to the @c enum mmagic_status that will be set to the parsed value on
+ * success.
+ * @param buf   Reference to a null terminated string to parse
  *
- * @return       On success 0. On error a negative value is returned.
+ * @return On success 0. On error a negative value is returned.
  */
 int mmagic_string_to_enum_status(enum mmagic_status *value, const char *buf);
 
@@ -1218,11 +1223,11 @@ int mmagic_enum_iperf_mode_to_string(enum mmagic_iperf_mode value, char *buf, si
 /**
  * Convert from a string to @c enum_iperf_mode.
  *
- * @param  value Reference to the @c enum mmagic_iperf_mode that will be set to the parsed value on
- *               success.
- * @param  buf   Reference to a null terminated string to parse
+ * @param value Reference to the @c enum mmagic_iperf_mode that will be set to the parsed value on
+ * success.
+ * @param buf   Reference to a null terminated string to parse
  *
- * @return       On success 0. On error a negative value is returned.
+ * @return On success 0. On error a negative value is returned.
  */
 int mmagic_string_to_enum_iperf_mode(enum mmagic_iperf_mode *value, const char *buf);
 
@@ -1247,11 +1252,11 @@ int mmagic_enum_iperf_state_to_string(enum mmagic_iperf_state value, char *buf, 
 /**
  * Convert from a string to @c enum_iperf_state.
  *
- * @param  value Reference to the @c enum mmagic_iperf_state that will be set to the parsed value on
- *               success.
- * @param  buf   Reference to a null terminated string to parse
+ * @param value Reference to the @c enum mmagic_iperf_state that will be set to the parsed value on
+ * success.
+ * @param buf   Reference to a null terminated string to parse
  *
- * @return       On success 0. On error a negative value is returned.
+ * @return On success 0. On error a negative value is returned.
  */
 int mmagic_string_to_enum_iperf_state(enum mmagic_iperf_state *value, const char *buf);
 
@@ -1276,11 +1281,11 @@ int mmagic_enum_ip_link_state_to_string(enum mmagic_ip_link_state value, char *b
 /**
  * Convert from a string to @c enum_ip_link_state.
  *
- * @param  value Reference to the @c enum mmagic_ip_link_state that will be set to the parsed value
- *               on success.
- * @param  buf   Reference to a null terminated string to parse
+ * @param value Reference to the @c enum mmagic_ip_link_state that will be set to the parsed value
+ * on success.
+ * @param buf   Reference to a null terminated string to parse
  *
- * @return       On success 0. On error a negative value is returned.
+ * @return On success 0. On error a negative value is returned.
  */
 int mmagic_string_to_enum_ip_link_state(enum mmagic_ip_link_state *value, const char *buf);
 
@@ -1305,11 +1310,11 @@ int mmagic_enum_deep_sleep_mode_to_string(enum mmagic_deep_sleep_mode value, cha
 /**
  * Convert from a string to @c enum_deep_sleep_mode.
  *
- * @param  value Reference to the @c enum mmagic_deep_sleep_mode that will be set to the parsed
- *               value on success.
- * @param  buf   Reference to a null terminated string to parse
+ * @param value Reference to the @c enum mmagic_deep_sleep_mode that will be set to the parsed value
+ * on success.
+ * @param buf   Reference to a null terminated string to parse
  *
- * @return       On success 0. On error a negative value is returned.
+ * @return On success 0. On error a negative value is returned.
  */
 int mmagic_string_to_enum_deep_sleep_mode(enum mmagic_deep_sleep_mode *value, const char *buf);
 
@@ -1330,16 +1335,17 @@ int mmagic_string_to_enum_deep_sleep_mode(enum mmagic_deep_sleep_mode *value, co
  *       would have been written to the final string if enough space had been available.
  */
 int mmagic_enum_standby_mode_exit_reason_to_string(enum mmagic_standby_mode_exit_reason value,
-                                                   char *buf, size_t len);
+                                                   char *buf,
+                                                   size_t len);
 
 /**
  * Convert from a string to @c enum_standby_mode_exit_reason.
  *
- * @param  value Reference to the @c enum mmagic_standby_mode_exit_reason that will be set to the
- *               parsed value on success.
- * @param  buf   Reference to a null terminated string to parse
+ * @param value Reference to the @c enum mmagic_standby_mode_exit_reason that will be set to the
+ * parsed value on success.
+ * @param buf   Reference to a null terminated string to parse
  *
- * @return       On success 0. On error a negative value is returned.
+ * @return On success 0. On error a negative value is returned.
  */
 int mmagic_string_to_enum_standby_mode_exit_reason(enum mmagic_standby_mode_exit_reason *value,
                                                    const char *buf);
@@ -1365,11 +1371,11 @@ int mmagic_enum_sta_state_to_string(enum mmagic_sta_state value, char *buf, size
 /**
  * Convert from a string to @c enum_sta_state.
  *
- * @param  value Reference to the @c enum mmagic_sta_state that will be set to the parsed value on
- *               success.
- * @param  buf   Reference to a null terminated string to parse
+ * @param value Reference to the @c enum mmagic_sta_state that will be set to the parsed value on
+ * success.
+ * @param buf   Reference to a null terminated string to parse
  *
- * @return       On success 0. On error a negative value is returned.
+ * @return On success 0. On error a negative value is returned.
  */
 int mmagic_string_to_enum_sta_state(enum mmagic_sta_state *value, const char *buf);
 
@@ -1394,11 +1400,11 @@ int mmagic_enum_sta_event_to_string(enum mmagic_sta_event value, char *buf, size
 /**
  * Convert from a string to @c enum_sta_event.
  *
- * @param  value Reference to the @c enum mmagic_sta_event that will be set to the parsed value on
- *               success.
- * @param  buf   Reference to a null terminated string to parse
+ * @param value Reference to the @c enum mmagic_sta_event that will be set to the parsed value on
+ * success.
+ * @param buf   Reference to a null terminated string to parse
  *
- * @return       On success 0. On error a negative value is returned.
+ * @return On success 0. On error a negative value is returned.
  */
 int mmagic_string_to_enum_sta_event(enum mmagic_sta_event *value, const char *buf);
 
@@ -1406,12 +1412,12 @@ int mmagic_string_to_enum_sta_event(enum mmagic_sta_event *value, const char *bu
 struct MM_PACKED mmagic_core_event_wlan_beacon_rx_args
 {
     struct raw1536 vendor_ies;
-};/** Event arguments structure for wlan_standby_exit */
+}; /** Event arguments structure for wlan_standby_exit */
 
 struct MM_PACKED mmagic_core_event_wlan_standby_exit_args
 {
     enum mmagic_standby_mode_exit_reason reason;
-};/** Event arguments structure for wlan_sta_event */
+}; /** Event arguments structure for wlan_sta_event */
 
 struct MM_PACKED mmagic_core_event_wlan_sta_event_args
 {
@@ -1424,13 +1430,19 @@ struct MM_PACKED mmagic_core_event_ip_link_status_args
     struct struct_ip_status ip_link_status;
 };
 
+/** Event arguments structure for tcp_rx_ready */
+struct MM_PACKED mmagic_core_event_tcp_rx_ready_args
+{
+    uint8_t stream_id;
+};
+
 /** Event arguments structure for mqtt_message_received */
 struct MM_PACKED mmagic_core_event_mqtt_message_received_args
 {
     uint8_t stream_id;
     struct string254 topic;
     struct raw1536 payload;
-};/** Event arguments structure for mqtt_broker_connection */
+}; /** Event arguments structure for mqtt_broker_connection */
 
 struct MM_PACKED mmagic_core_event_mqtt_broker_connection_args
 {

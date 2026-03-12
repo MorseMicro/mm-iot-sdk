@@ -75,6 +75,13 @@ extern "C" {
 #define LOG_USART               (USART1)
 #define LOG_USART_IRQ           (USART1_IRQn)
 #define LOG_USART_IRQ_HANDLER   USART1_IRQHandler
+
+/* LOG_USART_RX GPIO is used as deep sleep one-shot interrupt */
+#define LOG_USART_RX_IRQn           (EXTI10_IRQn)
+#define LOG_USART_RX_IRQ_LINE       (LL_EXTI_LINE_10)
+#define LOG_USART_RX_IRQ_HANDLER    EXTI10_IRQHandler
+#define LOG_USART_RX_EXTI_Port      (LL_EXTI_EXTI_PORTA)
+#define LOG_USART_RX_EXTI_Line      (LL_EXTI_EXTI_LINE10)
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/

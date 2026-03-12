@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.9.7</span>
+   &#160;<span id="projectnumber">2.10.4</span>
    </div>
   </td>
  </tr>
@@ -152,14 +152,16 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">        <span class="keywordflow">do</span> {                                                                                \</div>
-<div class="line">            if (!(expr)) {                                                                  \</div>
-<div class="line">                MMOSAL_LOG_FAILURE_INFO(0);                                                 \</div>
-<div class="line">                mmosal_impl_assert();                                                       \</div>
-<div class="line">                while (1)                                                                   \</div>
-<div class="line">                {}                                                                          \</div>
-<div class="line">            }                                                                               \</div>
-<div class="line">        } <span class="keywordflow">while</span> (0)</div>
+<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordflow">do</span> {                                \</div>
+<div class="line">        if (!(expr))                    \</div>
+<div class="line">        {                               \</div>
+<div class="line">            MMOSAL_LOG_FAILURE_INFO(0); \</div>
+<div class="line">            mmosal_impl_assert();       \</div>
+<div class="line">            while (1)                   \</div>
+<div class="line">            {                           \</div>
+<div class="line">            }                           \</div>
+<div class="line">        }                               \</div>
+<div class="line">    } <span class="keywordflow">while</span> (0)</div>
 </div><!-- fragment -->
 <p>Assert that the given expression evaluates to true and abort execution if not. </p>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -169,7 +171,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="mmosal_8h_source.html#l00927">927</a> of file <a class="el" href="mmosal_8h_source.html">mmosal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmosal_8h_source.html#l00934">934</a> of file <a class="el" href="mmosal_8h_source.html">mmosal.h</a>.</p>
 
 </div>
 </div>
@@ -198,14 +200,16 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">        <span class="keywordflow">do</span> {                                                                                \</div>
-<div class="line">            if (!(expr)) {                                                                  \</div>
-<div class="line">                MMOSAL_LOG_FAILURE_INFO(__VA_ARGS__);                                       \</div>
-<div class="line">                mmosal_impl_assert();                                                       \</div>
-<div class="line">                while (1)                                                                   \</div>
-<div class="line">                {}                                                                          \</div>
-<div class="line">            }                                                                               \</div>
-<div class="line">        } <span class="keywordflow">while</span> (0)</div>
+<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordflow">do</span> {                                          \</div>
+<div class="line">        if (!(expr))                              \</div>
+<div class="line">        {                                         \</div>
+<div class="line">            MMOSAL_LOG_FAILURE_INFO(__VA_ARGS__); \</div>
+<div class="line">            mmosal_impl_assert();                 \</div>
+<div class="line">            while (1)                             \</div>
+<div class="line">            {                                     \</div>
+<div class="line">            }                                     \</div>
+<div class="line">        }                                         \</div>
+<div class="line">    } <span class="keywordflow">while</span> (0)</div>
 </div><!-- fragment -->
 <p>Assert that the given expression evaluates to true and abort execution if not. </p>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -216,7 +220,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="mmosal_8h_source.html#l00946">946</a> of file <a class="el" href="mmosal_8h_source.html">mmosal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmosal_8h_source.html#l00955">955</a> of file <a class="el" href="mmosal_8h_source.html">mmosal.h</a>.</p>
 
 </div>
 </div>
@@ -238,7 +242,7 @@ Functions</h2></td></tr>
 
 <p>Assertions that are only enabled for debug builds. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmosal_8h_source.html#l00971">971</a> of file <a class="el" href="mmosal_8h_source.html">mmosal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmosal_8h_source.html#l00982">982</a> of file <a class="el" href="mmosal_8h_source.html">mmosal.h</a>.</p>
 
 </div>
 </div>
@@ -270,7 +274,7 @@ Functions</h2></td></tr>
 
 <p>Assertions that are only enabled for debug builds (with support for up to 4 <code>uint32_t's</code> to be logged). </p>
 
-<p class="definition">Definition at line <a class="el" href="mmosal_8h_source.html#l00974">974</a> of file <a class="el" href="mmosal_8h_source.html">mmosal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmosal_8h_source.html#l00985">985</a> of file <a class="el" href="mmosal_8h_source.html">mmosal.h</a>.</p>
 
 </div>
 </div>
@@ -288,7 +292,7 @@ Functions</h2></td></tr>
 
 <p>File identifier: if not provided by compiler then define to zero. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmosal_8h_source.html#l00856">856</a> of file <a class="el" href="mmosal_8h_source.html">mmosal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmosal_8h_source.html#l00862">862</a> of file <a class="el" href="mmosal_8h_source.html">mmosal.h</a>.</p>
 
 </div>
 </div>
@@ -307,25 +311,25 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordflow">do</span> {                                                                            \</div>
-<div class="line">        void *pc;                                                                   \</div>
-<div class="line">        struct <a class="code hl_struct" href="structmmosal__failure__info.html">mmosal_failure_info</a> info = {                                         \</div>
-<div class="line">            .<a class="code hl_variable" href="structmmosal__failure__info.html#a530aa0570e831d7bbc8c498732f8e85e">lr</a> = (uint32_t)MMPORT_GET_LR(),                                        \</div>
-<div class="line">            .fileid = <a class="code hl_define" href="group__MMOSAL__ASSERT.html#gae9a238e70e8ae1b8da15fe9ca36f802e">MMOSAL_FILEID</a>,                                                \</div>
-<div class="line">            .line = __LINE__,                                                       \</div>
-<div class="line">            .platform_info = { __VA_ARGS__ },                                       \</div>
-<div class="line">        };                                                                          \</div>
-<div class="line">        MMPORT_GET_PC(pc);                                                          \</div>
-<div class="line">        info.pc = (uint32_t)pc;                                                     \</div>
-<div class="line">        mmosal_log_failure_info(&amp;info);                                             \</div>
+<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordflow">do</span> {                                      \</div>
+<div class="line">        void *pc;                             \</div>
+<div class="line">        struct <a class="code hl_struct" href="structmmosal__failure__info.html">mmosal_failure_info</a> info = {   \</div>
+<div class="line">            .<a class="code hl_variable" href="structmmosal__failure__info.html#a530aa0570e831d7bbc8c498732f8e85e">lr</a> = (uint32_t)MMPORT_GET_LR(),  \</div>
+<div class="line">            .fileid = <a class="code hl_define" href="group__MMOSAL__ASSERT.html#gae9a238e70e8ae1b8da15fe9ca36f802e">MMOSAL_FILEID</a>,          \</div>
+<div class="line">            .line = __LINE__,                 \</div>
+<div class="line">            .platform_info = { __VA_ARGS__ }, \</div>
+<div class="line">        };                                    \</div>
+<div class="line">        MMPORT_GET_PC(pc);                    \</div>
+<div class="line">        info.pc = (uint32_t)pc;               \</div>
+<div class="line">        mmosal_log_failure_info(&amp;info);       \</div>
 <div class="line">    } <span class="keywordflow">while</span> (0)</div>
-<div class="ttc" id="agroup__MMOSAL__ASSERT_html_gae9a238e70e8ae1b8da15fe9ca36f802e"><div class="ttname"><a href="group__MMOSAL__ASSERT.html#gae9a238e70e8ae1b8da15fe9ca36f802e">MMOSAL_FILEID</a></div><div class="ttdeci">#define MMOSAL_FILEID</div><div class="ttdoc">File identifier: if not provided by compiler then define to zero.</div><div class="ttdef"><b>Definition:</b> <a href="mmosal_8h_source.html#l00856">mmosal.h:856</a></div></div>
-<div class="ttc" id="astructmmosal__failure__info_html"><div class="ttname"><a href="structmmosal__failure__info.html">mmosal_failure_info</a></div><div class="ttdoc">Data structure used to store information about a failure that can be preserved across reset.</div><div class="ttdef"><b>Definition:</b> <a href="mmosal_8h_source.html#l00868">mmosal.h:869</a></div></div>
-<div class="ttc" id="astructmmosal__failure__info_html_a530aa0570e831d7bbc8c498732f8e85e"><div class="ttname"><a href="structmmosal__failure__info.html#a530aa0570e831d7bbc8c498732f8e85e">mmosal_failure_info::lr</a></div><div class="ttdeci">uint32_t lr</div><div class="ttdoc">Content of the LR register at assertion.</div><div class="ttdef"><b>Definition:</b> <a href="mmosal_8h_source.html#l00873">mmosal.h:873</a></div></div>
+<div class="ttc" id="agroup__MMOSAL__ASSERT_html_gae9a238e70e8ae1b8da15fe9ca36f802e"><div class="ttname"><a href="group__MMOSAL__ASSERT.html#gae9a238e70e8ae1b8da15fe9ca36f802e">MMOSAL_FILEID</a></div><div class="ttdeci">#define MMOSAL_FILEID</div><div class="ttdoc">File identifier: if not provided by compiler then define to zero.</div><div class="ttdef"><b>Definition:</b> <a href="mmosal_8h_source.html#l00862">mmosal.h:862</a></div></div>
+<div class="ttc" id="astructmmosal__failure__info_html"><div class="ttname"><a href="structmmosal__failure__info.html">mmosal_failure_info</a></div><div class="ttdoc">Data structure used to store information about a failure that can be preserved across reset.</div><div class="ttdef"><b>Definition:</b> <a href="mmosal_8h_source.html#l00874">mmosal.h:875</a></div></div>
+<div class="ttc" id="astructmmosal__failure__info_html_a530aa0570e831d7bbc8c498732f8e85e"><div class="ttname"><a href="structmmosal__failure__info.html#a530aa0570e831d7bbc8c498732f8e85e">mmosal_failure_info::lr</a></div><div class="ttdeci">uint32_t lr</div><div class="ttdoc">Content of the LR register at assertion.</div><div class="ttdef"><b>Definition:</b> <a href="mmosal_8h_source.html#l00879">mmosal.h:879</a></div></div>
 </div><!-- fragment -->
 <p>Initialize a <a class="el" href="structmmosal__failure__info.html" title="Data structure used to store information about a failure that can be preserved across reset.">mmosal_failure_info</a> struct based on current state and invoke <a class="el" href="group__MMOSAL__ASSERT.html#ga351ea740e61f98a4e92442ace45ab24e" title="Log failure information in a way that it is preserved across reboots so that it can be available for ...">mmosal_log_failure_info()</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmosal_8h_source.html#l00897">897</a> of file <a class="el" href="mmosal_8h_source.html">mmosal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmosal_8h_source.html#l00903">903</a> of file <a class="el" href="mmosal_8h_source.html">mmosal.h</a>.</p>
 
 </div>
 </div>
@@ -344,7 +348,7 @@ Functions</h2></td></tr>
 <p>Maximum number of failure records to buffer (must be a power of 2). </p>
 <p >Defaults to 4 if no platform-specific definition exists. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmosal_8h_source.html#l00864">864</a> of file <a class="el" href="mmosal_8h_source.html">mmosal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmosal_8h_source.html#l00870">870</a> of file <a class="el" href="mmosal_8h_source.html">mmosal.h</a>.</p>
 
 </div>
 </div>
@@ -396,7 +400,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="mmosal__shim__bootloader_8c_source.html#l00114">114</a> of file <a class="el" href="mmosal__shim__bootloader_8c_source.html">mmosal_shim_bootloader.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmosal__shim__bootloader_8c_source.html#l00115">115</a> of file <a class="el" href="mmosal__shim__bootloader_8c_source.html">mmosal_shim_bootloader.c</a>.</p>
 
 </div>
 </div>
@@ -406,7 +410,7 @@ Functions</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Copyright 2021 Morse Micro </li>
+    <li class="footer">Copyright 2021-2025 Morse Micro </li>
   </ul>
 </div>
 </body>

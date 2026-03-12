@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.9.7</span>
+   &#160;<span id="projectnumber">2.10.4</span>
    </div>
   </td>
  </tr>
@@ -102,11 +102,12 @@ $(document).ready(function(){initNavTree('ping_8c.html',''); initResizable(); })
 
 <p class="definition">Definition in file <a class="el" href="ping_8c_source.html">ping.c</a>.</p>
 </div><div class="textblock"><code>#include &lt;string.h&gt;</code><br />
-<code>#include &quot;mmhal.h&quot;</code><br />
+<code>#include &quot;mmhal_app.h&quot;</code><br />
 <code>#include &quot;mmosal.h&quot;</code><br />
 <code>#include &quot;mmwlan.h&quot;</code><br />
 <code>#include &quot;mmconfig.h&quot;</code><br />
 <code>#include &quot;mmping.h&quot;</code><br />
+<code>#include &quot;mmutils.h&quot;</code><br />
 <code>#include &quot;mmipal.h&quot;</code><br />
 <code>#include &quot;mm_app_common.h&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
@@ -114,26 +115,25 @@ Include dependency graph for ping.c:</div>
 <div class="dyncontent">
 <div class="center"><img src="ping_8c__incl.png" border="0" usemap="#aping_8c" alt=""/></div>
 <map name="aping_8c" id="aping_8c">
-<area shape="rect" title="Simple ping demonstration." alt="" coords="585,5,646,32"/>
-<area shape="rect" title=" " alt="" coords="5,453,76,480"/>
-<area shape="rect" href="mmhal_8h_source.html" title=" " alt="" coords="873,80,953,107"/>
-<area shape="rect" href="mmosal_8h_source.html" title=" " alt="" coords="173,379,260,405"/>
-<area shape="rect" href="mmwlan_8h_source.html" title=" " alt="" coords="258,229,349,256"/>
-<area shape="rect" href="mmconfig_8h_source.html" title=" " alt="" coords="1113,304,1211,331"/>
-<area shape="rect" href="mmping_8h_source.html" title=" " alt="" coords="735,379,823,405"/>
-<area shape="rect" href="mmipal_8h_source.html" title=" " alt="" coords="576,379,660,405"/>
-<area shape="rect" title=" " alt="" coords="1121,80,1275,107"/>
-<area shape="rect" title=" " alt="" coords="497,453,579,480"/>
-<area shape="rect" title=" " alt="" coords="898,379,973,405"/>
-<area shape="rect" title=" " alt="" coords="744,453,815,480"/>
-<area shape="rect" title=" " alt="" coords="881,229,945,256"/>
-<area shape="rect" href="mmhal__flash_8h_source.html" title=" " alt="" coords="969,304,1088,331"/>
-<area shape="rect" href="mmhal__wlan_8h_source.html" title=" " alt="" coords="733,155,852,181"/>
-<area shape="rect" href="mmpkt_8h_source.html" title=" " alt="" coords="475,304,556,331"/>
-<area shape="rect" title=" " alt="" coords="306,453,373,480"/>
-<area shape="rect" title=" " alt="" coords="100,453,171,480"/>
-<area shape="rect" title=" " alt="" coords="195,453,281,480"/>
-<area shape="rect" title=" " alt="" coords="274,304,349,331"/>
+<area shape="rect" title="Simple ping demonstration." alt="" coords="498,5,559,32"/>
+<area shape="rect" title=" " alt="" coords="717,155,788,181"/>
+<area shape="rect" href="mmhal__app_8h_source.html" title=" " alt="" coords="5,80,116,107"/>
+<area shape="rect" href="mmosal_8h_source.html" title=" " alt="" coords="485,80,572,107"/>
+<area shape="rect" href="mmwlan_8h_source.html" title=" " alt="" coords="709,80,799,107"/>
+<area shape="rect" href="mmconfig_8h_source.html" title=" " alt="" coords="141,80,239,107"/>
+<area shape="rect" href="mmping_8h_source.html" title=" " alt="" coords="373,80,461,107"/>
+<area shape="rect" href="mmutils_8h_source.html" title=" " alt="" coords="597,80,685,107"/>
+<area shape="rect" href="mmipal_8h_source.html" title=" " alt="" coords="264,80,348,107"/>
+<area shape="rect" title=" " alt="" coords="874,80,1029,107"/>
+<area shape="rect" title=" " alt="" coords="218,155,301,181"/>
+<area shape="rect" title=" " alt="" coords="118,155,193,181"/>
+<area shape="rect" title=" " alt="" coords="325,155,396,181"/>
+<area shape="rect" title=" " alt="" coords="29,155,93,181"/>
+<area shape="rect" title=" " alt="" coords="421,155,487,181"/>
+<area shape="rect" title=" " alt="" coords="623,155,693,181"/>
+<area shape="rect" title=" " alt="" coords="512,155,599,181"/>
+<area shape="rect" title=" " alt="" coords="813,155,887,181"/>
+<area shape="rect" title=" " alt="" coords="912,155,993,181"/>
 </map>
 </div>
 </div>
@@ -156,6 +156,12 @@ Macros</h2></td></tr>
 <tr class="memitem:ad4602c729fef5a16a7f3dcf974eeee14"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ping_8c.html#ad4602c729fef5a16a7f3dcf974eeee14">UPDATE_INTERVAL_MS</a>&#160;&#160;&#160;(5000)</td></tr>
 <tr class="memdesc:ad4602c729fef5a16a7f3dcf974eeee14"><td class="mdescLeft">&#160;</td><td class="mdescRight">Interval (in milliseconds) at which to provide updates when the receive count has not changed.  <a href="ping_8c.html#ad4602c729fef5a16a7f3dcf974eeee14">More...</a><br /></td></tr>
 <tr class="separator:ad4602c729fef5a16a7f3dcf974eeee14"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9eee8fea5a3d57694eb81599e056e177"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ping_8c.html#a9eee8fea5a3d57694eb81599e056e177">PWR_MEAS_DELAY_MS</a>(<a class="el" href="bootloader_8c.html#ad7adf72f0188214738b18073dbf9a0df">delay_ms</a>)&#160;&#160;&#160;<a class="el" href="group__MMUTILS.html#ga0157597bdd038d83fbb0f2f488e6e4ee">MM_UNUSED</a>(<a class="el" href="bootloader_8c.html#ad7adf72f0188214738b18073dbf9a0df">delay_ms</a>)</td></tr>
+<tr class="memdesc:a9eee8fea5a3d57694eb81599e056e177"><td class="mdescLeft">&#160;</td><td class="mdescRight">Disable delays which are only useful for power consumption accuracy.  <a href="ping_8c.html#a9eee8fea5a3d57694eb81599e056e177">More...</a><br /></td></tr>
+<tr class="separator:a9eee8fea5a3d57694eb81599e056e177"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0ccfca4a41cf735693919b5bbf815dc5"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ping_8c.html#a0ccfca4a41cf735693919b5bbf815dc5">SET_DEBUG_STATE</a>(state)&#160;&#160;&#160;<a class="el" href="group__MMUTILS.html#ga0157597bdd038d83fbb0f2f488e6e4ee">MM_UNUSED</a>(state)</td></tr>
+<tr class="memdesc:a0ccfca4a41cf735693919b5bbf815dc5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Disable GPIO writing if not measuring power consumption.  <a href="ping_8c.html#a0ccfca4a41cf735693919b5bbf815dc5">More...</a><br /></td></tr>
+<tr class="separator:a0ccfca4a41cf735693919b5bbf815dc5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -195,9 +201,6 @@ Enumerations</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a8a7d25ccf1d8c01f542f342c48dee069"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ping_8c.html#a8a7d25ccf1d8c01f542f342c48dee069">set_debug_state</a> (enum <a class="el" href="ping_8c.html#af6267920b504273777e2451780e565af">debug_state</a> state)</td></tr>
-<tr class="memdesc:a8a7d25ccf1d8c01f542f342c48dee069"><td class="mdescLeft">&#160;</td><td class="mdescRight">Perform necessary operation (i.e., setting GPIO pins) upon entering the given debug state.  <a href="ping_8c.html#a8a7d25ccf1d8c01f542f342c48dee069">More...</a><br /></td></tr>
-<tr class="separator:a8a7d25ccf1d8c01f542f342c48dee069"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:add3190cf715f513666f4be42874d91e2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ping_8c.html#add3190cf715f513666f4be42874d91e2">app_init</a> (void)</td></tr>
 <tr class="memdesc:add3190cf715f513666f4be42874d91e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Main entry point to the application.  <a href="ping_8c.html#add3190cf715f513666f4be42874d91e2">More...</a><br /></td></tr>
 <tr class="separator:add3190cf715f513666f4be42874d91e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -218,7 +221,7 @@ Functions</h2></td></tr>
 <p>Number of ping requests to send. </p>
 <p >Set to 0 to continue indefinitely. </p>
 
-<p class="definition">Definition at line <a class="el" href="ping_8c_source.html#l00035">35</a> of file <a class="el" href="ping_8c_source.html">ping.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ping_8c_source.html#l00036">36</a> of file <a class="el" href="ping_8c_source.html">ping.c</a>.</p>
 
 </div>
 </div>
@@ -236,7 +239,7 @@ Functions</h2></td></tr>
 
 <p>Size of the ping request data, excluding 8-byte ICMP header. </p>
 
-<p class="definition">Definition at line <a class="el" href="ping_8c_source.html#l00039">39</a> of file <a class="el" href="ping_8c_source.html">ping.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ping_8c_source.html#l00040">40</a> of file <a class="el" href="ping_8c_source.html">ping.c</a>.</p>
 
 </div>
 </div>
@@ -254,7 +257,7 @@ Functions</h2></td></tr>
 
 <p>Interval between successive ping requests. </p>
 
-<p class="definition">Definition at line <a class="el" href="ping_8c_source.html#l00043">43</a> of file <a class="el" href="ping_8c_source.html">ping.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ping_8c_source.html#l00044">44</a> of file <a class="el" href="ping_8c_source.html">ping.c</a>.</p>
 
 </div>
 </div>
@@ -272,7 +275,51 @@ Functions</h2></td></tr>
 
 <p>Delay in ms to wait before terminating connection on completion of ping. </p>
 
-<p class="definition">Definition at line <a class="el" href="ping_8c_source.html#l00047">47</a> of file <a class="el" href="ping_8c_source.html">ping.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ping_8c_source.html#l00048">48</a> of file <a class="el" href="ping_8c_source.html">ping.c</a>.</p>
+
+</div>
+</div>
+<a id="a9eee8fea5a3d57694eb81599e056e177" name="a9eee8fea5a3d57694eb81599e056e177"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9eee8fea5a3d57694eb81599e056e177">&#9670;&nbsp;</a></span>PWR_MEAS_DELAY_MS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define PWR_MEAS_DELAY_MS</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><a class="el" href="bootloader_8c.html#ad7adf72f0188214738b18073dbf9a0df">delay_ms</a></td><td>)</td>
+          <td>&#160;&#160;&#160;<a class="el" href="group__MMUTILS.html#ga0157597bdd038d83fbb0f2f488e6e4ee">MM_UNUSED</a>(<a class="el" href="bootloader_8c.html#ad7adf72f0188214738b18073dbf9a0df">delay_ms</a>)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Disable delays which are only useful for power consumption accuracy. </p>
+
+<p class="definition">Definition at line <a class="el" href="ping_8c_source.html#l00063">63</a> of file <a class="el" href="ping_8c_source.html">ping.c</a>.</p>
+
+</div>
+</div>
+<a id="a0ccfca4a41cf735693919b5bbf815dc5" name="a0ccfca4a41cf735693919b5bbf815dc5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0ccfca4a41cf735693919b5bbf815dc5">&#9670;&nbsp;</a></span>SET_DEBUG_STATE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define SET_DEBUG_STATE</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">state</td><td>)</td>
+          <td>&#160;&#160;&#160;<a class="el" href="group__MMUTILS.html#ga0157597bdd038d83fbb0f2f488e6e4ee">MM_UNUSED</a>(state)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Disable GPIO writing if not measuring power consumption. </p>
+
+<p class="definition">Definition at line <a class="el" href="ping_8c_source.html#l00065">65</a> of file <a class="el" href="ping_8c_source.html">ping.c</a>.</p>
 
 </div>
 </div>
@@ -290,7 +337,7 @@ Functions</h2></td></tr>
 
 <p>Interval (in milliseconds) at which to provide updates when the receive count has not changed. </p>
 
-<p class="definition">Definition at line <a class="el" href="ping_8c_source.html#l00052">52</a> of file <a class="el" href="ping_8c_source.html">ping.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ping_8c_source.html#l00053">53</a> of file <a class="el" href="ping_8c_source.html">ping.c</a>.</p>
 
 </div>
 </div>
@@ -358,7 +405,7 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="ping_8c_source.html#l00061">61</a> of file <a class="el" href="ping_8c_source.html">ping.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ping_8c_source.html#l00074">74</a> of file <a class="el" href="ping_8c_source.html">ping.c</a>.</p>
 
 </div>
 </div>
@@ -383,43 +430,7 @@ Functions</h2></td></tr>
 <p >This will be invoked in a thread once operating system and hardware initialization has completed. It may return, but it does not have to. </p>
 <p >Executes the ping.</p>
 
-<p class="definition">Definition at line <a class="el" href="ping_8c_source.html#l00098">98</a> of file <a class="el" href="ping_8c_source.html">ping.c</a>.</p>
-
-</div>
-</div>
-<a id="a8a7d25ccf1d8c01f542f342c48dee069" name="a8a7d25ccf1d8c01f542f342c48dee069"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8a7d25ccf1d8c01f542f342c48dee069">&#9670;&nbsp;</a></span>set_debug_state()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static void set_debug_state </td>
-          <td>(</td>
-          <td class="paramtype">enum <a class="el" href="ping_8c.html#af6267920b504273777e2451780e565af">debug_state</a>&#160;</td>
-          <td class="paramname"><em>state</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Perform necessary operation (i.e., setting GPIO pins) upon entering the given debug state. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">state</td><td>The debug state to enter. See <a class="el" href="wnm__sleep_8c.html#af6267920b504273777e2451780e565af">debug_state</a>. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p class="definition">Definition at line <a class="el" href="ping_8c_source.html#l00089">89</a> of file <a class="el" href="ping_8c_source.html">ping.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ping_8c_source.html#l00101">101</a> of file <a class="el" href="ping_8c_source.html">ping.c</a>.</p>
 
 </div>
 </div>
@@ -429,8 +440,8 @@ Functions</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_91b8f418cff946e8d8b598a9068417a8.html">examples</a></li><li class="navelem"><a class="el" href="dir_5df5ab63536b30da6fda8986bc658055.html">ping</a></li><li class="navelem"><a class="el" href="dir_cc6dc717dc3348df1b12dc28a051aa79.html">src</a></li><li class="navelem"><a class="el" href="ping_8c.html">ping.c</a></li>
-    <li class="footer">Copyright 2021 Morse Micro </li>
+    <li class="navelem"><a class="el" href="dir_c5388b8f7c63864c1129967aadb7f145.html">examples</a></li><li class="navelem"><a class="el" href="dir_6a248252aea7cd78bfce7d55e3202b9a.html">ping</a></li><li class="navelem"><a class="el" href="dir_f78a021aa20f6f9293acbe6b459146f1.html">src</a></li><li class="navelem"><a class="el" href="ping_8c.html">ping.c</a></li>
+    <li class="footer">Copyright 2021-2025 Morse Micro </li>
   </ul>
 </div>
 </body>

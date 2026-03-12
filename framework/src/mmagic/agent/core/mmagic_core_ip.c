@@ -17,16 +17,20 @@
 
 /** Maximum number of DNS servers to attempt to retrieve from config store. */
 #ifndef DNS_MAX_SERVERS
-#define DNS_MAX_SERVERS                 2
+#define DNS_MAX_SERVERS 2
 #endif
 
-static struct mmagic_ip_config default_config =
-{
+static struct mmagic_ip_config default_config = {
+    .ip_addr = { .addr = "192.168.1.2" },
+    .netmask = { .addr = "255.255.255.0" },
+    .gateway = { .addr = "192.168.1.1" },
+    .dns_server0 = { .addr = "" },
+    .dns_server1 = { .addr = "" },
     .dhcp_enabled = true,
-    .ip_addr = {.addr = "192.168.1.2"},
-    .gateway = {.addr = "192.168.1.1"},
-    .netmask = {.addr = "255.255.255.0"},
+    .dhcp_offload = false,
     .link_status_evt_en = true,
+    .offload_arp_response = false,
+    .offload_arp_refresh_s = 0,
 };
 
 static enum mmipal_link_state current_link_state = MMIPAL_LINK_DOWN;
@@ -102,15 +106,18 @@ static void mmagic_core_ip_init_interface(struct mmagic_data *data)
     struct mmipal_init_args init_args = MMIPAL_INIT_ARGS_DEFAULT;
     struct mmagic_ip_data *ip_data = mmagic_data_get_ip(data);
 
-    mmosal_safer_strcpy(init_args.ip_addr, ip_data->config.ip_addr.addr,
-                        sizeof(init_args.ip_addr));
-    mmosal_safer_strcpy(init_args.netmask, ip_data->config.netmask.addr,
-                        sizeof(init_args.netmask));
-    mmosal_safer_strcpy(init_args.gateway_addr, ip_data->config.gateway.addr,
+    mmosal_safer_strcpy(init_args.ip_addr, ip_data->config.ip_addr.addr, sizeof(init_args.ip_addr));
+    mmosal_safer_strcpy(init_args.netmask, ip_data->config.netmask.addr, sizeof(init_args.netmask));
+    mmosal_safer_strcpy(init_args.gateway_addr,
+                        ip_data->config.gateway.addr,
                         sizeof(init_args.gateway_addr));
 
-    init_args.mode = ip_data->config.dhcp_enabled ? ip_data->config.dhcp_offload ?
-        MMIPAL_DHCP_OFFLOAD : MMIPAL_DHCP : MMIPAL_STATIC;
+    init_args.mode = ip_data->config.dhcp_enabled ?
+                         ip_data->config.dhcp_offload ? MMIPAL_DHCP_OFFLOAD : MMIPAL_DHCP :
+                         MMIPAL_STATIC;
+
+    init_args.offload_arp_response = ip_data->config.offload_arp_response;
+    init_args.offload_arp_refresh_s = ip_data->config.offload_arp_refresh_s;
 
     /* Initialize IP stack. */
     if (mmipal_init(&init_args) != MMIPAL_SUCCESS)
@@ -153,18 +160,21 @@ enum mmagic_status mmagic_core_ip_status(struct mmagic_data *core,
         return mmagic_mmipal_status_to_mmagic_status(status);
     }
 
-    rsp_args->status.link_state =
-        current_link_state == MMIPAL_LINK_UP ? MMAGIC_IP_LINK_STATE_UP : MMAGIC_IP_LINK_STATE_DOWN;
+    rsp_args->status.link_state = current_link_state == MMIPAL_LINK_UP ? MMAGIC_IP_LINK_STATE_UP :
+                                                                         MMAGIC_IP_LINK_STATE_DOWN;
 
     rsp_args->status.dhcp_enabled = ip_config.mode == MMIPAL_DHCP;
 
-    mmosal_safer_strcpy(rsp_args->status.ip_addr.addr, ip_config.ip_addr,
+    mmosal_safer_strcpy(rsp_args->status.ip_addr.addr,
+                        ip_config.ip_addr,
                         sizeof(rsp_args->status.ip_addr.addr));
 
-    mmosal_safer_strcpy(rsp_args->status.netmask.addr, ip_config.netmask,
+    mmosal_safer_strcpy(rsp_args->status.netmask.addr,
+                        ip_config.netmask,
                         sizeof(rsp_args->status.netmask.addr));
 
-    mmosal_safer_strcpy(rsp_args->status.gateway.addr, ip_config.gateway_addr,
+    mmosal_safer_strcpy(rsp_args->status.gateway.addr,
+                        ip_config.gateway_addr,
                         sizeof(rsp_args->status.gateway.addr));
 
     status = mmipal_get_ip_broadcast_addr(broadcast_addr);
@@ -172,7 +182,8 @@ enum mmagic_status mmagic_core_ip_status(struct mmagic_data *core,
     {
         return mmagic_mmipal_status_to_mmagic_status(status);
     }
-    mmosal_safer_strcpy(rsp_args->status.broadcast.addr, broadcast_addr,
+    mmosal_safer_strcpy(rsp_args->status.broadcast.addr,
+                        broadcast_addr,
                         sizeof(rsp_args->status.broadcast.addr));
 
     MM_STATIC_ASSERT(sizeof(rsp_args->status.dns_servers[0].addr) >= MMIPAL_IPADDR_STR_MAXLEN,
@@ -190,14 +201,14 @@ enum mmagic_status mmagic_core_ip_reload(struct mmagic_data *core)
     struct mmagic_ip_data *data = mmagic_data_get_ip(core);
     struct mmipal_ip_config config;
 
-    mmosal_safer_strcpy(config.ip_addr, data->config.ip_addr.addr,
-                        sizeof(config.ip_addr));
-    mmosal_safer_strcpy(config.netmask, data->config.netmask.addr,
-                        sizeof(config.netmask));
-    mmosal_safer_strcpy(config.gateway_addr, data->config.gateway.addr,
+    mmosal_safer_strcpy(config.ip_addr, data->config.ip_addr.addr, sizeof(config.ip_addr));
+    mmosal_safer_strcpy(config.netmask, data->config.netmask.addr, sizeof(config.netmask));
+    mmosal_safer_strcpy(config.gateway_addr,
+                        data->config.gateway.addr,
                         sizeof(config.gateway_addr));
-    config.mode = data->config.dhcp_enabled ? data->config.dhcp_offload ?
-        MMIPAL_DHCP_OFFLOAD : MMIPAL_DHCP : MMIPAL_STATIC;
+    config.mode = data->config.dhcp_enabled ?
+                      data->config.dhcp_offload ? MMIPAL_DHCP_OFFLOAD : MMIPAL_DHCP :
+                      MMIPAL_STATIC;
 
     mmipal_set_ip_config(&config);
 
@@ -228,10 +239,9 @@ enum mmagic_status mmagic_core_ip_disable_tcp_keepalive_offload(struct mmagic_da
     return mmagic_mmwlan_status_to_mmagic_status(status);
 }
 
-enum mmagic_status mmagic_core_ip_set_whitelist_filter(struct mmagic_data *core,
-                                                       const struct
-                                                       mmagic_core_ip_set_whitelist_filter_cmd_args
-                                                       *cmd_args)
+enum mmagic_status mmagic_core_ip_set_whitelist_filter(
+    struct mmagic_data *core,
+    const struct mmagic_core_ip_set_whitelist_filter_cmd_args *cmd_args)
 {
     uint32_t ip1, ip2, ip3, ip4;
     struct mmwlan_config_whitelist whitelist = { 0 };

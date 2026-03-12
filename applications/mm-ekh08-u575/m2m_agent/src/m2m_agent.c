@@ -18,7 +18,7 @@
 #include "mmosal.h"
 #include "mmutils.h"
 #include "mmagic.h"
-#include "mm_app_regdb.h"
+#include "mmregdb.h"
 
 #if !defined(MBEDTLS_CONFIG_FILE)
 #include "mbedtls/mbedtls_config.h"

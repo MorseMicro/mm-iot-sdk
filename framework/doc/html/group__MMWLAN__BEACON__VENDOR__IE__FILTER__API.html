@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.4"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Morse Micro IoT SDK: Beacon Vendor Specific IE Filter API</title>
+<title>Morse Micro IoT SDK: WLAN Beacon Vendor Specific IE Filter API</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.9.7</span>
+   &#160;<span id="projectnumber">2.10.4</span>
    </div>
   </td>
  </tr>
@@ -92,11 +92,11 @@ $(document).ready(function(){initNavTree('group__MMWLAN__BEACON__VENDOR__IE__FIL
 <a href="#define-members">Macros</a> &#124;
 <a href="#typedef-members">Typedefs</a> &#124;
 <a href="#func-members">Functions</a>  </div>
-  <div class="headertitle"><div class="title">Beacon Vendor Specific IE Filter API<div class="ingroups"><a class="el" href="group__MMWLAN.html">Morse Micro Wireless LAN (mmwlan) API</a></div></div></div>
+  <div class="headertitle"><div class="title">WLAN Beacon Vendor Specific IE Filter API<div class="ingroups"><a class="el" href="group__MMWLAN.html">Morse Micro Wireless LAN (mmwlan) API</a></div></div></div>
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<p >This API enables access to Vendor Specific information elements (IEs) in beacons. </p>
+<p >API for accessing Vendor Specific information elements (IEs) in beacons. </p>
 <p >The application can register a callback to be executed if Vendor Specific IEs containing one of the specified Organizational Unique Identifiers (OUIs). Up to <a class="el" href="group__MMWLAN__BEACON__VENDOR__IE__FILTER__API.html#ga2feaab1ca4f2b73ec5ed9c14e2ce9c0e">MMWLAN_BEACON_VENDOR_IE_MAX_OUI_FILTERS</a> can be specified. </p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
@@ -113,9 +113,9 @@ Macros</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
-<tr class="memitem:ga7e32ebcfdeea56f71e1c75b1351b5846"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__BEACON__VENDOR__IE__FILTER__API.html#ga7e32ebcfdeea56f71e1c75b1351b5846">mmwlan_beacon_vendor_ie_filter_cb_t</a>) (const uint8_t *ies, uint32_t ies_len, void *arg)</td></tr>
-<tr class="memdesc:ga7e32ebcfdeea56f71e1c75b1351b5846"><td class="mdescLeft">&#160;</td><td class="mdescRight">Beacon vendor ie filter callback function prototype.  <a href="group__MMWLAN__BEACON__VENDOR__IE__FILTER__API.html#ga7e32ebcfdeea56f71e1c75b1351b5846">More...</a><br /></td></tr>
-<tr class="separator:ga7e32ebcfdeea56f71e1c75b1351b5846"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga97166a4382dab565b373f50cd452a52a"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__BEACON__VENDOR__IE__FILTER__API.html#ga97166a4382dab565b373f50cd452a52a">mmwlan_beacon_vendor_ie_filter_cb_t</a>) (const uint8_t *ies, uint32_t ies_len, void *arg)</td></tr>
+<tr class="memdesc:ga97166a4382dab565b373f50cd452a52a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Beacon vendor ie filter callback function prototype.  <a href="group__MMWLAN__BEACON__VENDOR__IE__FILTER__API.html#ga97166a4382dab565b373f50cd452a52a">More...</a><br /></td></tr>
+<tr class="separator:ga97166a4382dab565b373f50cd452a52a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gad3266535d8af2d6eba7cfa17388cfeb9"><td class="memItemLeft" align="right" valign="top">typedef uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__BEACON__VENDOR__IE__FILTER__API.html#gad3266535d8af2d6eba7cfa17388cfeb9">mmwlan_oui_t</a>[<a class="el" href="group__MMWLAN.html#gaa9382290cddb08f42b62119a898c77de">MMWLAN_OUI_SIZE</a>]</td></tr>
 <tr class="memdesc:gad3266535d8af2d6eba7cfa17388cfeb9"><td class="mdescLeft">&#160;</td><td class="mdescRight">24-bit OUI type.  <a href="group__MMWLAN__BEACON__VENDOR__IE__FILTER__API.html#gad3266535d8af2d6eba7cfa17388cfeb9">More...</a><br /></td></tr>
 <tr class="separator:gad3266535d8af2d6eba7cfa17388cfeb9"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -141,19 +141,19 @@ Functions</h2></td></tr>
 
 <p>Max number of OUIs supported in vendor IE OUI filter, <a class="el" href="structmmwlan__beacon__vendor__ie__filter.html">mmwlan_beacon_vendor_ie_filter</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02142">2142</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02487">2487</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Typedef Documentation</h2>
-<a id="ga7e32ebcfdeea56f71e1c75b1351b5846" name="ga7e32ebcfdeea56f71e1c75b1351b5846"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga7e32ebcfdeea56f71e1c75b1351b5846">&#9670;&nbsp;</a></span>mmwlan_beacon_vendor_ie_filter_cb_t</h2>
+<a id="ga97166a4382dab565b373f50cd452a52a" name="ga97166a4382dab565b373f50cd452a52a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga97166a4382dab565b373f50cd452a52a">&#9670;&nbsp;</a></span>mmwlan_beacon_vendor_ie_filter_cb_t</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">typedef void(* mmwlan_beacon_vendor_ie_filter_cb_t) (const uint8_t *ies, uint32_t ies_len, void *arg)</td>
+          <td class="memname">typedef void( * mmwlan_beacon_vendor_ie_filter_cb_t) (const uint8_t *ies, uint32_t ies_len, void *arg)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -168,7 +168,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02152">2152</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02497">2497</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -186,7 +186,7 @@ Functions</h2></td></tr>
 
 <p>24-bit OUI type. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02156">2156</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02501">2501</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -225,7 +225,7 @@ Functions</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Copyright 2021 Morse Micro </li>
+    <li class="footer">Copyright 2021-2025 Morse Micro </li>
   </ul>
 </div>
 </body>

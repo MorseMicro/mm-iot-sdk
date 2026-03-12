@@ -1,19 +1,19 @@
 <map id="m2m_agent.c" name="m2m_agent.c">
-<area shape="rect" id="node1" title="M2M Agent example application." alt="" coords="471,5,582,32"/>
-<area shape="rect" id="node2" href="$mmosal_8h_source.html" title=" " alt="" coords="341,319,427,345"/>
-<area shape="rect" id="node9" href="$mmutils_8h_source.html" title=" " alt="" coords="177,319,265,345"/>
-<area shape="rect" id="node11" href="$mmagic_8h_source.html" title=" " alt="" coords="483,80,570,107"/>
-<area shape="rect" id="node16" title=" " alt="" coords="594,80,729,107"/>
-<area shape="rect" id="node17" title=" " alt="" coords="753,80,943,107"/>
-<area shape="rect" id="node3" title=" " alt="" coords="497,393,580,420"/>
-<area shape="rect" id="node4" title=" " alt="" coords="605,393,675,420"/>
-<area shape="rect" id="node5" title=" " alt="" coords="295,393,361,420"/>
-<area shape="rect" id="node6" title=" " alt="" coords="105,393,175,420"/>
-<area shape="rect" id="node7" title=" " alt="" coords="199,393,270,420"/>
-<area shape="rect" id="node8" title=" " alt="" coords="386,393,473,420"/>
-<area shape="rect" id="node10" title=" " alt="" coords="5,393,80,420"/>
-<area shape="rect" id="node12" title=" " alt="" coords="604,319,679,345"/>
-<area shape="rect" id="node13" title=" " alt="" coords="565,155,729,196"/>
-<area shape="rect" id="node14" href="$mmwlan_8h_source.html" title=" " alt="" coords="399,162,489,189"/>
-<area shape="rect" id="node15" href="$mmpkt_8h_source.html" title=" " alt="" coords="503,244,585,271"/>
+<area shape="rect" id="node1" title="M2M Agent example application." alt="" coords="393,5,504,32"/>
+<area shape="rect" id="node2" href="$mmosal_8h_source.html" title=" " alt="" coords="669,162,756,189"/>
+<area shape="rect" id="node9" href="$mmutils_8h_source.html" title=" " alt="" coords="218,162,306,189"/>
+<area shape="rect" id="node11" href="$mmagic_8h_source.html" title=" " alt="" coords="324,80,411,107"/>
+<area shape="rect" id="node16" title=" " alt="" coords="487,80,584,107"/>
+<area shape="rect" id="node17" title=" " alt="" coords="608,80,799,107"/>
+<area shape="rect" id="node3" title=" " alt="" coords="210,244,293,271"/>
+<area shape="rect" id="node4" title=" " alt="" coords="545,244,616,271"/>
+<area shape="rect" id="node5" title=" " alt="" coords="659,244,726,271"/>
+<area shape="rect" id="node6" title=" " alt="" coords="412,244,483,271"/>
+<area shape="rect" id="node7" title=" " alt="" coords="317,244,388,271"/>
+<area shape="rect" id="node8" title=" " alt="" coords="751,244,837,271"/>
+<area shape="rect" id="node10" title=" " alt="" coords="111,244,186,271"/>
+<area shape="rect" id="node12" title=" " alt="" coords="330,162,405,189"/>
+<area shape="rect" id="node13" title=" " alt="" coords="429,155,593,196"/>
+<area shape="rect" id="node14" href="$mmwlan_8h_source.html" title=" " alt="" coords="103,162,194,189"/>
+<area shape="rect" id="node15" title=" " alt="" coords="5,244,87,271"/>
 </map>

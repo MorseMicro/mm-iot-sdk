@@ -23,7 +23,7 @@
 #include "stm32wbxx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "mmhal.h"
+#include "mmhal_os.h"
 #include "mmosal.h"
 /* USER CODE END Includes */
 

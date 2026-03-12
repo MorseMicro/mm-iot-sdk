@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.9.7</span>
+   &#160;<span id="projectnumber">2.10.4</span>
    </div>
   </td>
  </tr>
@@ -139,16 +139,16 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordflow">do</span> { \</div>
+<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordflow">do</span> {                                                    \</div>
 <div class="line">        bool ok__ = <a class="code hl_function" href="group__MMOSAL__MUTEX.html#gaf1e67ef07598c0821222541b395159e3">mmosal_mutex_get</a>((_mutex), UINT32_MAX); \</div>
-<div class="line">        MMOSAL_ASSERT(ok__); \</div>
+<div class="line">        MMOSAL_ASSERT(ok__);                                \</div>
 <div class="line">    } <span class="keywordflow">while</span> (0)</div>
 <div class="ttc" id="agroup__MMOSAL__MUTEX_html_gaf1e67ef07598c0821222541b395159e3"><div class="ttname"><a href="group__MMOSAL__MUTEX.html#gaf1e67ef07598c0821222541b395159e3">mmosal_mutex_get</a></div><div class="ttdeci">bool mmosal_mutex_get(struct mmosal_mutex *mutex, uint32_t timeout_ms)</div><div class="ttdoc">Acquire a mutex.</div><div class="ttdef"><b>Definition:</b> <a href="mmosal__shim__bootloader_8c_source.html#l00061">mmosal_shim_bootloader.c:61</a></div></div>
 </div><!-- fragment -->
 <p>Attempt to get a mutex, waiting infinitely long for it. </p>
 <p >Panics on failure. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmosal_8h_source.html#l00354">354</a> of file <a class="el" href="mmosal_8h_source.html">mmosal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmosal_8h_source.html#l00357">357</a> of file <a class="el" href="mmosal_8h_source.html">mmosal.h</a>.</p>
 
 </div>
 </div>
@@ -167,15 +167,15 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordflow">do</span> { \</div>
+<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordflow">do</span> {                                          \</div>
 <div class="line">        bool ok__ = <a class="code hl_function" href="group__MMOSAL__MUTEX.html#gadf9da47930d58b6f893abb3c32b8f899">mmosal_mutex_release</a>(_mutex); \</div>
-<div class="line">        MMOSAL_ASSERT(ok__); \</div>
+<div class="line">        MMOSAL_ASSERT(ok__);                      \</div>
 <div class="line">    } <span class="keywordflow">while</span> (0)</div>
 <div class="ttc" id="agroup__MMOSAL__MUTEX_html_gadf9da47930d58b6f893abb3c32b8f899"><div class="ttname"><a href="group__MMOSAL__MUTEX.html#gadf9da47930d58b6f893abb3c32b8f899">mmosal_mutex_release</a></div><div class="ttdeci">bool mmosal_mutex_release(struct mmosal_mutex *mutex)</div><div class="ttdoc">Release a mutex.</div><div class="ttdef"><b>Definition:</b> <a href="mmosal__shim__bootloader_8c_source.html#l00068">mmosal_shim_bootloader.c:68</a></div></div>
 </div><!-- fragment -->
 <p>Same as <a class="el" href="group__MMOSAL__MUTEX.html#gadf9da47930d58b6f893abb3c32b8f899">mmosal_mutex_release()</a> except it panics on failure. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmosal_8h_source.html#l00363">363</a> of file <a class="el" href="mmosal_8h_source.html">mmosal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmosal_8h_source.html#l00366">366</a> of file <a class="el" href="mmosal_8h_source.html">mmosal.h</a>.</p>
 
 </div>
 </div>
@@ -339,7 +339,7 @@ Functions</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Copyright 2021 Morse Micro </li>
+    <li class="footer">Copyright 2021-2025 Morse Micro </li>
   </ul>
 </div>
 </body>

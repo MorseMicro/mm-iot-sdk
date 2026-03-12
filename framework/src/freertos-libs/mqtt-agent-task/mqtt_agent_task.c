@@ -62,7 +62,7 @@
 #include "transport_interface.h"
 
 /* Morse Includes */
-#include "mmhal.h"
+#include "mmhal_core.h"
 #include "mmosal.h"
 #include "mmutils.h"
 
@@ -91,10 +91,10 @@
  */
 #define RETRY_BACKOFF_MULTIPLIER    (100U)
 
-static_assert(RETRY_BACKOFF_BASE < UINT16_MAX);
-static_assert(RETRY_MAX_BACKOFF_DELAY < UINT16_MAX);
+static_assert(RETRY_BACKOFF_BASE < UINT16_MAX, "");
+static_assert(RETRY_MAX_BACKOFF_DELAY < UINT16_MAX, "");
 static_assert(((uint64_t)RETRY_BACKOFF_MULTIPLIER * \
-               (uint64_t)RETRY_MAX_BACKOFF_DELAY) < UINT32_MAX);
+               (uint64_t)RETRY_MAX_BACKOFF_DELAY) < UINT32_MAX, "");
 
 /**
  * Socket send and receive timeouts to use.
@@ -776,7 +776,7 @@ void vMQTTAgentTask(void *pvParameters)
     TransportStatus_t xTransportStatus = TRANSPORT_CONNECT_FAILURE;
     MQTTAgentTaskCtx_t *pxCtx = NULL;
     uint8_t *pucNetworkBuffer = NULL;
-    NetworkContext_t xNetworkContext = { 0 };
+    NetworkContext_t *pxNetworkContext = NULL;
     NetworkCredentials_t xCredentials = { 0 };
     uint16_t usNextRetryBackOff = 0U;
 
@@ -807,7 +807,15 @@ void vMQTTAgentTask(void *pvParameters)
         goto clean_network_buffer;
     }
 
-    xMQTTStatus = prvConfigureAgentTaskCtx(pxCtx, &xNetworkContext, pucNetworkBuffer, MQTT_AGENT_NETWORK_BUFFER_SIZE);
+    pxNetworkContext = (NetworkContext_t*)mmosal_malloc(sizeof(NetworkContext_t));
+    if (pxNetworkContext == NULL)
+    {
+        mmosal_printf("ERR:Failed to allocate %d bytes for NetworkContext_t.\n", sizeof(NetworkContext_t));
+        xMQTTStatus = MQTTNoMemory;
+        goto clean_network_context;
+    }
+
+    xMQTTStatus = prvConfigureAgentTaskCtx(pxCtx, pxNetworkContext, pucNetworkBuffer, MQTT_AGENT_NETWORK_BUFFER_SIZE);
     if (xMQTTStatus != MQTTSuccess)
     {
         goto clean_agent_task_ctx;
@@ -871,7 +879,7 @@ void vMQTTAgentTask(void *pvParameters)
                     (unsigned int)pxCtx->xBrokerEndpoint.ulMqttPort);
 
             NetworkCredentials_t* creds = pxCtx->xBrokerEndpoint.secure ? &xCredentials : NULL;
-            xTransportStatus = transport_connect(&xNetworkContext,
+            xTransportStatus = transport_connect(pxNetworkContext,
                                                     pxCtx->xBrokerEndpoint.pcMqttEndpoint,
                                                     (uint16_t)pxCtx->xBrokerEndpoint.ulMqttPort,
                                                     creds);
@@ -940,10 +948,25 @@ void vMQTTAgentTask(void *pvParameters)
                 xMQTTStatus = MQTTAgent_ResumeSession(&(pxCtx->xAgentContext), bSessionPresent);
 
                 /* Re-subscribe to all the previously subscribed topics */
-                if ((xMQTTStatus == MQTTSuccess) && !bSessionPresent)
+                if ((xMQTTStatus == MQTTSuccess))
                 {
-                    xMQTTStatus = prvHandleResubscribe(&(pxCtx->xAgentContext),
-                                                        &(pxCtx->xSubMgrCtx));
+                    if (!bSessionPresent)
+                    {
+                        xMQTTStatus = prvHandleResubscribe(&(pxCtx->xAgentContext),
+                                                           &(pxCtx->xSubMgrCtx));
+                    }
+                    else
+                    {
+                        /* No need to resubscribe as a session is present and the broker is aware of
+                         * the previous subscriptions. */
+                        if( MUTEX_IS_OWNED( pxCtx->xSubMgrCtx.xMutex ) )
+                        {
+                            /* Give the mutex as there is no subscribe command pending. */
+                            ( void ) bUnlockSubCtx( &( pxCtx->xSubMgrCtx ) );
+                        }
+
+                        mmosal_printf("INF: Session already present (no re-subscription)." );
+                    }
                 }
             }
             else if (xMQTTStatus == MQTTSuccess)
@@ -1001,7 +1024,7 @@ void vMQTTAgentTask(void *pvParameters)
 
         (void)MQTTAgent_CancelAll(&(pxCtx->xAgentContext));
 
-        transport_disconnect(&xNetworkContext);
+        transport_disconnect(pxNetworkContext);
 
         /* Change state to indicate attempt to reconnect */
         task_state = MQTT_AGENT_TASK_CONNECTING;
@@ -1043,7 +1066,7 @@ void vMQTTAgentTask(void *pvParameters)
     }
 
     /* Close transport including any TLS context */
-    transport_disconnect(&xNetworkContext);
+    transport_disconnect(pxNetworkContext);
 
     /* If we reach this line it means init was a success
      * Set xMQTTStatus to MQTTSuccess so mqtt_init_error_code gets MQTTSuccess */
@@ -1058,6 +1081,9 @@ clean_connect_info:
 clean_agent_task_ctx:
     prvFreeAgentTaskCtx(pxCtx);
     mmosal_free((void *)pxCtx);
+
+clean_network_context:
+    mmosal_free(pxNetworkContext);
 
 clean_network_buffer:
     mmosal_free(pucNetworkBuffer);
@@ -1577,7 +1603,7 @@ void start_mqtt_agent_task(void)
     mqtt_init_error_code = MQTTSuccess;
     task_state = MQTT_AGENT_TASK_INIT;
 
-    struct mmosal_task *task = mmosal_task_create(vMQTTAgentTask, NULL, MMOSAL_TASK_PRI_LOW, 1280, "MQTTAgent");
+    struct mmosal_task *task = mmosal_task_create(vMQTTAgentTask, NULL, MMOSAL_TASK_PRI_LOW, MQTT_AGENT_TASK_STACK_SIZE_U32, "MQTTAgent");
     if (task == NULL)
     {
         mqtt_init_error_code = MQTTNoMemory;

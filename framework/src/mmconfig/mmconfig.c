@@ -18,35 +18,35 @@
 #endif
 
 /** @c MMCS (Morse Micro Config Store) in little endian notation */
-#define MMCONFIG_SIGNATURE  0x53434D4D
+#define MMCONFIG_SIGNATURE 0x53434D4D
 
 /** Starting seed value for the Xorshift PRNG, arbitrarily chosen */
-#define XORHASH_SEED        0xdfb7f3e1
+#define XORHASH_SEED 0xdfb7f3e1
 
 /* This value marks the end of a Key Value List */
-#define LIST_TERMINATOR     MMHAL_FLASH_ERASE_VALUE
+#define LIST_TERMINATOR MMHAL_FLASH_ERASE_VALUE
 
 /** Mutex to protect MMCONFIG API */
 static struct mmosal_mutex *mmconfig_mutex = NULL;
 
 struct PACKED mmconfig_partition_header
 {
-    uint32_t signature;     /**< Contains signature @ref MMCONFIG_SIGNATURE */
-    uint32_t version;       /**< Version number increments on every update */
-    uint32_t checksum;      /**< Checksum of all data in partition up to the end marker */
-    uint8_t data[];         /**< Partition data */
+    uint32_t signature; /**< Contains signature @ref MMCONFIG_SIGNATURE */
+    uint32_t version; /**< Version number increments on every update */
+    uint32_t checksum; /**< Checksum of all data in partition up to the end marker */
+    uint8_t data[]; /**< Partition data */
 };
 
 struct PACKED mmconfig_key_header
 {
-    uint8_t key_len;        /**< Length of the key in bytes */
-    char key[];             /**< Key name, not NULL terminated */
+    uint8_t key_len; /**< Length of the key in bytes */
+    char key[]; /**< Key name, not NULL terminated */
 };
 
 struct PACKED mmconfig_data_header
 {
-    uint16_t data_len;      /**< Length of the data in bytes */
-    uint8_t data[];         /**< Data blob */
+    uint16_t data_len; /**< Length of the data in bytes */
+    uint8_t data[]; /**< Data blob */
 };
 
 /** Pointer to primary MMCONFIG partition */
@@ -124,8 +124,7 @@ static char *mmconfig_uint_to_str(char *buf, size_t bufsize, uint32_t val)
     *tmp-- = 0;
 
     /* Then create the string from the end */
-    do
-    {
+    do {
         char digit = (char)('0' + (val % 10));
         *tmp-- = digit;
         val = val / 10;
@@ -155,7 +154,10 @@ static char *mmconfig_int_to_str(char *buf, size_t bufsize, int32_t val)
         if (bufsize > 2)
         {
             *buf = '-';
-            if (mmconfig_uint_to_str(&buf[1], bufsize - 1, (uint32_t)-val) == NULL)
+            /* Note that we need to cast to uint32_t before negating since -INT32_MIN is greater
+             * than INT32_MAX. */
+            uint32_t uval = (uint32_t)(-(uint32_t)val);
+            if (mmconfig_uint_to_str(buf + 1, bufsize - 1, uval) == NULL)
             {
                 /* We got an error */
                 return NULL;
@@ -299,8 +301,10 @@ static void mmconfig_update_checksum(uint32_t *checksum, const uint8_t *data, si
  * @param  found_key_len     The length of the key found in flash.
  * @return                   True if keys match.
  */
-static bool mmconfig_key_match(const char *requested_key, size_t requested_key_len,
-                               const char *found_key, size_t found_key_len)
+static bool mmconfig_key_match(const char *requested_key,
+                               size_t requested_key_len,
+                               const char *found_key,
+                               size_t found_key_len)
 {
     uint32_t i;
 
@@ -408,8 +412,7 @@ static int mmconfig_validate_partition(struct mmconfig_partition_header *partiti
     }
 
     /* Find the first keyheader which is at the end of mmconfig_partition_header */
-    struct mmconfig_key_header *keyheader_ptr =
-        (struct mmconfig_key_header *)(partition->data);
+    struct mmconfig_key_header *keyheader_ptr = (struct mmconfig_key_header *)(partition->data);
 
     /* Loop till we find a terminator marked by key_len of @c LIST_TERMINATOR or 0 */
     while ((keyheader_ptr->key_len != LIST_TERMINATOR) &&
@@ -433,14 +436,16 @@ static int mmconfig_validate_partition(struct mmconfig_partition_header *partiti
         }
 
         /* Compute number of bytes in key & data */
-        size_t bytecount = sizeof(struct mmconfig_key_header) + keyheader_ptr->key_len +
-            sizeof(struct mmconfig_data_header) + dataheader_ptr->data_len;
+        size_t bytecount = sizeof(struct mmconfig_key_header) +
+                           keyheader_ptr->key_len +
+                           sizeof(struct mmconfig_data_header) +
+                           dataheader_ptr->data_len;
 
         mmconfig_update_checksum(&checksum, (uint8_t *)keyheader_ptr, bytecount);
 
         /* Move to next record */
-        keyheader_ptr = (struct mmconfig_key_header *)
-            (dataheader_ptr->data + dataheader_ptr->data_len);
+        keyheader_ptr =
+            (struct mmconfig_key_header *)(dataheader_ptr->data + dataheader_ptr->data_len);
     }
 
     /* Verify checksum matches */
@@ -505,11 +510,13 @@ static void mmconfig_buffered_write(const uint8_t *data, size_t size)
     while (size >= sizeof(mmconfig_staging_buffer) - mmconfig_buffer_index)
     {
         /* We have enough data to flush the staging buffer to flash */
-        memcpy(&mmconfig_staging_buffer[mmconfig_buffer_index], data,
+        memcpy(&mmconfig_staging_buffer[mmconfig_buffer_index],
+               data,
                sizeof(mmconfig_staging_buffer) - mmconfig_buffer_index);
 
         mmhal_flash_write((uint32_t)mmconfig_flashing_address,
-                          mmconfig_staging_buffer, sizeof(mmconfig_staging_buffer));
+                          mmconfig_staging_buffer,
+                          sizeof(mmconfig_staging_buffer));
         data += sizeof(mmconfig_staging_buffer) - mmconfig_buffer_index;
         size -= sizeof(mmconfig_staging_buffer) - mmconfig_buffer_index;
         mmconfig_flashing_address += sizeof(mmconfig_staging_buffer);
@@ -551,7 +558,8 @@ static void mmconfig_buffered_write_wrapper(uint32_t *checksum, const uint8_t *d
  * @param checksum  The pre-computed checksum.
  */
 static void mmconfig_start_flashing(struct mmconfig_partition_header *partition,
-                                    uint32_t version, uint32_t checksum)
+                                    uint32_t version,
+                                    uint32_t checksum)
 {
     /* Initialise Flashing buffer with erase values */
     memset(mmconfig_staging_buffer, MMHAL_FLASH_ERASE_VALUE, sizeof(mmconfig_staging_buffer));
@@ -560,9 +568,9 @@ static void mmconfig_start_flashing(struct mmconfig_partition_header *partition,
 
     /* Write partition header */
     struct mmconfig_partition_header partition_header = {
-        .signature = MMCONFIG_SIGNATURE,            /* MMCS in little endian */
-        .checksum = checksum,                       /* The computed checksum */
-        .version = version,                         /* The version number */
+        .signature = MMCONFIG_SIGNATURE, /* MMCS in little endian */
+        .checksum = checksum, /* The computed checksum */
+        .version = version, /* The version number */
     };
     mmconfig_buffered_write((uint8_t *)&partition_header, sizeof(partition_header));
 }
@@ -574,7 +582,8 @@ static void mmconfig_end_flashing(void)
 {
     /* Write any unwritten data */
     mmhal_flash_write((uint32_t)mmconfig_flashing_address,
-                      mmconfig_staging_buffer, mmconfig_buffer_index);
+                      mmconfig_staging_buffer,
+                      mmconfig_buffer_index);
 }
 
 /**
@@ -616,13 +625,12 @@ static void mmconfig_end_flashing(void)
  * @param skipped_key_space_out The number of bytes skipped over because the key was found in the
  *                              update list.
  */
-static void mmconfig_process_existing_storage(void (*retain_entry_fn)(uint32_t *checksum,
-                                                                      const uint8_t *data,
-                                                                      size_t size),
-                                              const struct mmconfig_update_node *node_list,
-                                              struct mmconfig_key_header **keyheader_ptr_out,
-                                              uint32_t *checksum_out,
-                                              uint32_t *skipped_key_space_out)
+static void mmconfig_process_existing_storage(
+    void (*retain_entry_fn)(uint32_t *checksum, const uint8_t *data, size_t size),
+    const struct mmconfig_update_node *node_list,
+    struct mmconfig_key_header **keyheader_ptr_out,
+    uint32_t *checksum_out,
+    uint32_t *skipped_key_space_out)
 {
     uint32_t skipped_key_space = 0;
 
@@ -633,8 +641,8 @@ static void mmconfig_process_existing_storage(void (*retain_entry_fn)(uint32_t *
     struct mmconfig_partition_header *mmconfig_current_image = mmconfig_primary_image;
 
     /* Find the first keyheader which is at the end of mmconfig_partition_header */
-    struct mmconfig_key_header *keyheader_ptr = (struct mmconfig_key_header *)
-        (mmconfig_current_image->data);
+    struct mmconfig_key_header *keyheader_ptr =
+        (struct mmconfig_key_header *)(mmconfig_current_image->data);
 
     /* Loop till we find a terminator marked by key_len of @c LIST_TERMINATOR or 0 */
     while ((keyheader_ptr->key_len != LIST_TERMINATOR) &&
@@ -642,8 +650,8 @@ static void mmconfig_process_existing_storage(void (*retain_entry_fn)(uint32_t *
            ((uint32_t)keyheader_ptr < (uint32_t)mmconfig_current_image + mmconfig_partition_size))
     {
         /* Find data header and data */
-        struct mmconfig_data_header *dataheader_ptr = (struct mmconfig_data_header *)
-            (keyheader_ptr->key + keyheader_ptr->key_len);
+        struct mmconfig_data_header *dataheader_ptr =
+            (struct mmconfig_data_header *)(keyheader_ptr->key + keyheader_ptr->key_len);
         uint8_t *data_ptr = dataheader_ptr->data;
 
         const struct mmconfig_update_node *node = node_list;
@@ -651,11 +659,15 @@ static void mmconfig_process_existing_storage(void (*retain_entry_fn)(uint32_t *
         while (node != NULL)
         {
             /* If the key in the flash matches any node in the update list, exclude it */
-            if (mmconfig_key_match(node->key, strlen(node->key),
-                                   keyheader_ptr->key, keyheader_ptr->key_len))
+            if (mmconfig_key_match(node->key,
+                                   strlen(node->key),
+                                   keyheader_ptr->key,
+                                   keyheader_ptr->key_len))
             {
-                skipped_key_space += sizeof(struct mmconfig_key_header) + keyheader_ptr->key_len +
-                    sizeof(struct mmconfig_data_header) + dataheader_ptr->data_len;
+                skipped_key_space += sizeof(struct mmconfig_key_header) +
+                                     keyheader_ptr->key_len +
+                                     sizeof(struct mmconfig_data_header) +
+                                     dataheader_ptr->data_len;
                 break;
             }
             node = node->next;
@@ -664,8 +676,10 @@ static void mmconfig_process_existing_storage(void (*retain_entry_fn)(uint32_t *
         if (node == NULL)
         {
             /* Key in flash does not match any update node, so compute number of bytes to retain */
-            size_t bytecount = sizeof(struct mmconfig_key_header) + keyheader_ptr->key_len +
-                sizeof(struct mmconfig_data_header) + dataheader_ptr->data_len;
+            size_t bytecount = sizeof(struct mmconfig_key_header) +
+                               keyheader_ptr->key_len +
+                               sizeof(struct mmconfig_data_header) +
+                               dataheader_ptr->data_len;
 
             /* Retain key header, key name, data header and data */
             retain_entry_fn(&checksum, (uint8_t *)keyheader_ptr, bytecount);
@@ -693,11 +707,11 @@ static void mmconfig_process_existing_storage(void (*retain_entry_fn)(uint32_t *
  */
 static uint32_t mmconfig_compute_new_checksum(const struct mmconfig_update_node *node_list,
                                               uint32_t *checksum,
-                                              uint32_t *bytes_used, int32_t *bytes_remaining)
+                                              uint32_t *bytes_used,
+                                              int32_t *bytes_remaining)
 {
     /* Check if we have the space allocated for config store */
-    const struct mmhal_flash_partition_config *mmconfig_partition =
-        mmhal_get_mmconfig_partition();
+    const struct mmhal_flash_partition_config *mmconfig_partition = mmhal_get_mmconfig_partition();
 
     if ((mmconfig_partition == NULL) || (mmconfig_partition->partition_size == 0))
     {
@@ -711,7 +725,10 @@ static uint32_t mmconfig_compute_new_checksum(const struct mmconfig_update_node 
      * for items that will be deleted or replaced.
      */
     mmconfig_process_existing_storage(mmconfig_update_checksum,
-                                      node_list, &keyheader_ptr, checksum, &skipped_key_space);
+                                      node_list,
+                                      &keyheader_ptr,
+                                      checksum,
+                                      &skipped_key_space);
 
     /* Checksum new and updated data items and check there is sufficient space to store them all */
     const struct mmconfig_update_node *node = node_list;
@@ -734,8 +751,8 @@ static uint32_t mmconfig_compute_new_checksum(const struct mmconfig_update_node 
                 .data_len = node->size,
             };
 
-            required_space += sizeof(keyheader) + keyheader.key_len +
-                sizeof(dataheader) + dataheader.data_len;
+            required_space +=
+                sizeof(keyheader) + keyheader.key_len + sizeof(dataheader) + dataheader.data_len;
 
             /* Checksum new keyheader and key */
             mmconfig_update_checksum(checksum, (uint8_t *)&keyheader, sizeof(keyheader));
@@ -750,7 +767,7 @@ static uint32_t mmconfig_compute_new_checksum(const struct mmconfig_update_node 
 
     /* Check that we won't exceed available space in partition */
     uint32_t space_required = ((uint32_t)keyheader_ptr - (uint32_t)mmconfig_primary_image) +
-        (required_space - skipped_key_space);
+                              (required_space - skipped_key_space);
     uint32_t space_available = mmconfig_partition_size;
 
     if (bytes_remaining != NULL)
@@ -810,7 +827,10 @@ static int mmconfig_update_secondary_image(const struct mmconfig_update_node *no
 
     /* Process existing storage to copy unchanged items to the secondary partition */
     mmconfig_process_existing_storage(mmconfig_buffered_write_wrapper,
-                                      node_list, &keyheader_ptr, &rechecksum, &skipped_key_space);
+                                      node_list,
+                                      &keyheader_ptr,
+                                      &rechecksum,
+                                      &skipped_key_space);
 
     /* We have copied primary partition to secondary excluding deleted or updated keys.
      * Now add the new key data effectively replacing the old key data. Don't do anything
@@ -882,8 +902,7 @@ static int mmconfig_init(void)
         return retval;
     }
 
-    const struct mmhal_flash_partition_config *mmconfig_partition =
-        mmhal_get_mmconfig_partition();
+    const struct mmhal_flash_partition_config *mmconfig_partition = mmhal_get_mmconfig_partition();
 
     /* Check if we have the space allocated for config store */
     if ((mmconfig_partition == NULL) || (mmconfig_partition->partition_size == 0))
@@ -893,8 +912,9 @@ static int mmconfig_init(void)
 
     /* Ensure we have valid flash at the address range passed */
     MMOSAL_ASSERT(mmhal_flash_getblocksize(mmconfig_partition->partition_start) != 0);
-    MMOSAL_ASSERT(mmhal_flash_getblocksize(mmconfig_partition->partition_start +
-                                           mmconfig_partition->partition_size - 1) != 0);
+    MMOSAL_ASSERT(
+        mmhal_flash_getblocksize(
+            mmconfig_partition->partition_start + mmconfig_partition->partition_size - 1) != 0);
 
     /* We only support memory mapped flash for now */
     MMOSAL_ASSERT(mmconfig_partition->not_memory_mapped == false);
@@ -974,9 +994,11 @@ int mmconfig_eraseall(void)
 
     /* Write to both partitions */
     mmhal_flash_write((uint32_t)mmconfig_primary_image,
-                      (uint8_t *)&partition_header, sizeof(partition_header));
+                      (uint8_t *)&partition_header,
+                      sizeof(partition_header));
     mmhal_flash_write((uint32_t)mmconfig_secondary_image,
-                      (uint8_t *)&partition_header, sizeof(partition_header));
+                      (uint8_t *)&partition_header,
+                      sizeof(partition_header));
 
     /* All done, release mutex */
     mmosal_mutex_release(mmconfig_mutex);
@@ -1107,31 +1129,31 @@ int mmconfig_write_data(const char *key, const void *data, size_t size)
 
     switch (result)
     {
-    case MMCONFIG_OK:
-        /* Skip write if key already exists and has the same data */
-        mmosal_mutex_get(mmconfig_mutex, UINT32_MAX);
-        result = mmconfig_read_data(key, &currvalue);
-        mmosal_mutex_release(mmconfig_mutex);
+        case MMCONFIG_OK:
+            /* Skip write if key already exists and has the same data */
+            mmosal_mutex_get(mmconfig_mutex, UINT32_MAX);
+            result = mmconfig_read_data(key, &currvalue);
+            mmosal_mutex_release(mmconfig_mutex);
 
-        if ((result >= 0) && ((size_t)result == size))
-        {
-            if ((size == 0) || (memcmp(currvalue, data, size) == 0))
+            if ((result >= 0) && ((size_t)result == size))
             {
-                return MMCONFIG_OK;
+                if ((size == 0) || (memcmp(currvalue, data, size) == 0))
+                {
+                    return MMCONFIG_OK;
+                }
             }
-        }
-        break;
-
-    case MMCONFIG_ERR_WILDCARD_KEY:
-        if (data == NULL)
-        {
-            /* WILDCARD_KEY is acceptable only for deletions */
             break;
-        }
-        return MMCONFIG_ERR_INVALID_KEY;
 
-    default:
-        return MMCONFIG_ERR_INVALID_KEY;
+        case MMCONFIG_ERR_WILDCARD_KEY:
+            if (data == NULL)
+            {
+                /* WILDCARD_KEY is acceptable only for deletions */
+                break;
+            }
+            return MMCONFIG_ERR_INVALID_KEY;
+
+        default:
+            return MMCONFIG_ERR_INVALID_KEY;
     }
 
     /* Create a temporary node for this single write operation */
@@ -1491,7 +1513,8 @@ mmconfig_read_bool_cleanup:
 }
 
 int mmconfig_check_usage(const struct mmconfig_update_node *node_list,
-                         uint32_t *bytes_used, int32_t *bytes_remaining)
+                         uint32_t *bytes_used,
+                         int32_t *bytes_remaining)
 {
     uint32_t checksum;
     int result;

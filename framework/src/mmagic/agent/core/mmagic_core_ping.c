@@ -15,12 +15,9 @@
 #include "mmagic.h"
 #include "mmagic_core_utils.h"
 
-static struct mmagic_ping_config default_config =
-{
-    .target = {.addr = "192.168.1.1"},
-    .interval = 1000,
-    .count = 10
-};
+static struct mmagic_ping_config default_config = { .target = { .addr = "192.168.1.1" },
+                                                    .interval = 1000,
+                                                    .count = 10 };
 
 void mmagic_core_ping_init(struct mmagic_data *core)
 {
@@ -46,9 +43,10 @@ enum mmagic_status mmagic_core_ping_run(struct mmagic_data *core,
     {
         ping_args.ping_count = data->config.count;
         ping_args.ping_interval_ms = data->config.interval;
-        (void)mmosal_safer_strcpy(ping_args.ping_target, data->config.target.addr,
-                                  (sizeof(data->config.target.addr) /
-                                   sizeof(data->config.target.addr[1])));
+        (void)mmosal_safer_strcpy(
+            ping_args.ping_target,
+            data->config.target.addr,
+            (sizeof(data->config.target.addr) / sizeof(data->config.target.addr[1])));
 
         status = mmipal_get_local_addr(ping_args.ping_src, ping_args.ping_target);
         if (status != MMIPAL_SUCCESS)
@@ -69,7 +67,8 @@ enum mmagic_status mmagic_core_ping_run(struct mmagic_data *core,
 
     mmping_stats(&stats);
 
-    (void)mmosal_safer_strcpy(rsp_args->status.receiver_addr.addr, stats.ping_receiver,
+    (void)mmosal_safer_strcpy(rsp_args->status.receiver_addr.addr,
+                              stats.ping_receiver,
                               (sizeof(rsp_args->status.receiver_addr.addr) /
                                sizeof(rsp_args->status.receiver_addr.addr[1])));
     rsp_args->status.total_count = stats.ping_total_count;

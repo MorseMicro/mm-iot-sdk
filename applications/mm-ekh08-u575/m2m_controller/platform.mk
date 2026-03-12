@@ -6,6 +6,8 @@
 
 CORE := arm-cortex-m33f
 
+FW_MBIN ?= mm6108.mbin
+
 # Platform specific files
 BSP_DIR = $(APP_DIR)/bsp
 

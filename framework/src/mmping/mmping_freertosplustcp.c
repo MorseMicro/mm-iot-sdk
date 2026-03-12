@@ -5,7 +5,7 @@
  */
 
 #include "mmping.h"
-#include "mmhal.h"
+#include "mmhal_core.h"
 #include "mmosal.h"
 #include "mmipal.h"
 #include "mmutils.h"
@@ -16,10 +16,10 @@
 #include "FreeRTOS_ARP.h"
 
 /** If ping interval is >= this threshold then per-packet log messages will be displayed. */
-#define PING_DISPLAY_THRESHOLD_MS   (1000)
+#define PING_DISPLAY_THRESHOLD_MS (1000)
 
 /** Time to wait on failing to send a ping request. */
-#define PING_ERROR_RETRY_INTERVAL_MS    (1000)
+#define PING_ERROR_RETRY_INTERVAL_MS (1000)
 
 enum ping_state
 {
@@ -137,8 +137,7 @@ static void process_ping_response(uint16_t ping_id)
     }
 }
 
-void vApplicationPingReplyHook(ePingReplyStatus_t eStatus,
-                               uint16_t usIdentifier)
+void vApplicationPingReplyHook(ePingReplyStatus_t eStatus, uint16_t usIdentifier)
 {
     if (eStatus == eSuccess)
     {
@@ -147,8 +146,8 @@ void vApplicationPingReplyHook(ePingReplyStatus_t eStatus,
     }
     else
     {
-        FreeRTOS_debug_printf(("Ping reply (%u) received with eStatus = %d\n",
-                               usIdentifier, eStatus));
+        FreeRTOS_debug_printf(
+            ("Ping reply (%u) received with eStatus = %d\n", usIdentifier, eStatus));
     }
 }
 
@@ -316,10 +315,11 @@ void ping_task(void *arg)
 
     FreeRTOS_debug_printf(("Ping summary: %lu sent/%lu received "
                            "(%lu%% loss) %lu/%lu/%lu min/avg/max RTT ms\n",
-                           session->stats.ping_total_count, session->stats.ping_recv_count,
-                           (session->stats.ping_total_count - session->stats.ping_recv_count) *
-                           100 /
                            session->stats.ping_total_count,
+                           session->stats.ping_recv_count,
+                           (session->stats.ping_total_count - session->stats.ping_recv_count) *
+                               100 /
+                               session->stats.ping_total_count,
                            session->stats.ping_min_time_ms,
                            session->rtt_sum_ms / session->stats.ping_recv_count,
                            session->stats.ping_max_time_ms));
@@ -383,7 +383,9 @@ uint16_t mmping_start(const struct mmping_args *args)
     if (args->ping_size < MMPING_MIN_DATA_SIZE || args->ping_size > MMPING_MAX_DATA_SIZE)
     {
         FreeRTOS_debug_printf(("Invalid ping size %lu (valid range %d-%d)\n",
-                               args->ping_size, MMPING_MIN_DATA_SIZE, MMPING_MAX_DATA_SIZE));
+                               args->ping_size,
+                               MMPING_MIN_DATA_SIZE,
+                               MMPING_MAX_DATA_SIZE));
         return 0;
     }
 
@@ -412,9 +414,11 @@ uint16_t mmping_start(const struct mmping_args *args)
         ping_next_session_id = 1;
     }
 
-    FreeRTOS_debug_printf(
-        ("Starting ping session. Target=%s Interval=%lums Count=%lu Size=%lu\n",
-         args->ping_target, args->ping_interval_ms, args->ping_count, args->ping_size));
+    FreeRTOS_debug_printf(("Starting ping session. Target=%s Interval=%lums Count=%lu Size=%lu\n",
+                           args->ping_target,
+                           args->ping_interval_ms,
+                           args->ping_count,
+                           args->ping_size));
 
     mmosal_safer_strcpy(session->args.ping_src, args->ping_src, MMIPAL_IPADDR_STR_MAXLEN);
     mmosal_safer_strcpy(session->args.ping_target, args->ping_target, MMIPAL_IPADDR_STR_MAXLEN);
@@ -447,8 +451,8 @@ uint16_t mmping_start(const struct mmping_args *args)
         return 0;
     }
 
-    session->task_handle = mmosal_task_create(ping_task, NULL, MMOSAL_TASK_PRI_LOW,
-                                              512, "ping_request");
+    session->task_handle =
+        mmosal_task_create(ping_task, NULL, MMOSAL_TASK_PRI_LOW, 512, "ping_request");
     if (session->task_handle == NULL)
     {
         mmosal_semb_delete(session->semb);

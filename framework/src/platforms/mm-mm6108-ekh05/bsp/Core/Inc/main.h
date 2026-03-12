@@ -76,12 +76,12 @@ extern "C" {
 #define LOG_USART_IRQ           (LPUART1_IRQn)
 #define LOG_USART_IRQ_HANDLER   LPUART1_IRQHandler
 
-/* ONE_SHOT is USART RX GPIO */
-#define ONE_SHOT_IRQn           (EXTI0_IRQn)
-#define ONE_SHOT_IRQ_LINE       (LL_EXTI_LINE_0)
-#define ONE_SHOT_IRQ_HANDLER    EXTI0_IRQHandler
-#define ONE_SHOT_EXTI_Port      (LL_EXTI_EXTI_PORTC)
-#define ONE_SHOT_EXTI_Line      (LL_EXTI_EXTI_LINE0)
+/* LOG_USART_RX GPIO is used as deep sleep one-shot interrupt */
+#define LOG_USART_RX_IRQn           (EXTI0_IRQn)
+#define LOG_USART_RX_IRQ_LINE       (LL_EXTI_LINE_0)
+#define LOG_USART_RX_IRQ_HANDLER    EXTI0_IRQHandler
+#define LOG_USART_RX_EXTI_Port      (LL_EXTI_EXTI_PORTC)
+#define LOG_USART_RX_EXTI_Line      (LL_EXTI_EXTI_LINE0)
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/

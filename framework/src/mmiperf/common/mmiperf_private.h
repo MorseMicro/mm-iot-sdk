@@ -40,7 +40,7 @@
 /* File internal memory allocation (struct iperf_*): this defaults to
  *  the heap */
 #ifndef IPERF_ALLOC
-#define IPERF_ALLOC(type) mmosal_malloc_(sizeof(type))
+#define IPERF_ALLOC(type)      mmosal_malloc_(sizeof(type))
 #define IPERF_FREE(type, item) mmosal_free(item)
 #endif
 
@@ -54,50 +54,50 @@
 
 /** Time after which we consider a server session to have timed out. */
 #ifndef IPERF_UDP_SERVER_SESSION_TIMEOUT_MS
-#define IPERF_UDP_SERVER_SESSION_TIMEOUT_MS       (60000)
+#define IPERF_UDP_SERVER_SESSION_TIMEOUT_MS (60000)
 #endif
 
 /** Max number of times for UDP client to transmit final packet if it does not receive a report. */
 #ifndef IPERF_UDP_CLIENT_REPORT_RETRIES
-#define IPERF_UDP_CLIENT_REPORT_RETRIES           (3)
+#define IPERF_UDP_CLIENT_REPORT_RETRIES (3)
 #endif
 
 /** Interval between retransmits of UDP client's final packet if it does not receive a report. */
 #ifndef IPERF_UDP_CLIENT_REPORT_TIMEOUT_MS
-#define IPERF_UDP_CLIENT_REPORT_TIMEOUT_MS        (1000)
+#define IPERF_UDP_CLIENT_REPORT_TIMEOUT_MS (1000)
 #endif
 
 /** The maximum number of conecutive transmit failurse we tolerate before giving up. */
 #ifndef IPERF_UDP_CLIENT_MAX_CONSEC_FAILURES
-#define IPERF_UDP_CLIENT_MAX_CONSEC_FAILURES      (60)
+#define IPERF_UDP_CLIENT_MAX_CONSEC_FAILURES (60)
 #endif
 
 /** The wait time in milliseconds between retries before giving up. */
 #ifndef IPERF_UDP_CLIENT_RETRY_WAIT_TIME_MS
-#define IPERF_UDP_CLIENT_RETRY_WAIT_TIME_MS       (1000)
+#define IPERF_UDP_CLIENT_RETRY_WAIT_TIME_MS (1000)
 #endif
 
 /** Beginning of the local port range for the UDP client to use. */
 #ifndef IPERF_UDP_CLIENT_LOCAL_PORT_RANGE_BASE
-#define IPERF_UDP_CLIENT_LOCAL_PORT_RANGE_BASE    (5010)
+#define IPERF_UDP_CLIENT_LOCAL_PORT_RANGE_BASE (5010)
 #endif
 
 /** Size of the local port range for the UDP client to use (MUST be a power of 2). */
 #ifndef IPERF_UDP_CLIENT_LOCAL_PORT_RANGE_SIZE
-#define IPERF_UDP_CLIENT_LOCAL_PORT_RANGE_SIZE    (16)
+#define IPERF_UDP_CLIENT_LOCAL_PORT_RANGE_SIZE (16)
 #endif
 
 /** This is the Iperf settings struct sent from the client */
 struct iperf_settings
 {
 #define IPERF_FLAGS_ANSWER_TEST 0x80000000
-#define IPERF_FLAGS_ANSWER_NOW 0x00000001
+#define IPERF_FLAGS_ANSWER_NOW  0x00000001
     uint32_t flags;
     uint32_t num_threads; /* unused for now */
     uint32_t remote_port;
     uint32_t buffer_len; /* unused for now */
-    uint32_t win_band;   /* TCP window / UDP rate: unused for now */
-    uint32_t amount;     /* pos. value: bytes?; neg. values: time (unit is 10ms: 1/100 second) */
+    uint32_t win_band; /* TCP window / UDP rate: unused for now */
+    uint32_t amount; /* pos. value: bytes?; neg. values: time (unit is 10ms: 1/100 second) */
 };
 
 #define IPERF_HEADER_VERSION1 0x80000000
@@ -167,7 +167,8 @@ void iperf_list_add(struct mmiperf_state *item);
 void iperf_list_remove(struct mmiperf_state *item);
 
 /** Update the report data for the given iperf session based on the given time. */
-void iperf_finalize_report_and_invoke_callback(struct mmiperf_state *state, uint32_t duration_ms,
+void iperf_finalize_report_and_invoke_callback(struct mmiperf_state *state,
+                                               uint32_t duration_ms,
                                                enum mmiperf_report_type report_type);
 
 /**

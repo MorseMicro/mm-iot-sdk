@@ -28,9 +28,7 @@
 #include "mmwlan.h"
 #include "mmconfig.h"
 
-
 #include "mm_app_common.h"
-
 
 /**
  * Add a TWT configuration requesting a periodic service period with the given arguments.

@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Morse Micro
+ * Copyright 2026 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -20,38 +20,39 @@ struct mmagic_sys_config
 struct mmagic_sys_data
 {
     struct mmagic_sys_config config;
+    /** Subsystem private data (to be allocated/managed by the subsystem implementation). */
+    void *priv;
 };
 
 /**
  * Function to initialize the core data structure and register the ops functions.
  *
- * @param core Reference to to global mmagic context struct.
+ * @param core   Reference to to global mmagic context struct.
  */
 void mmagic_core_sys_init(struct mmagic_data *core);
 
 /**
  * Function to load settings from persistent store for the core sys subsystem.
  *
- * @param core Reference to to global mmagic context struct.
+ * @param core   Reference to to global mmagic context struct.
  */
 void mmagic_core_sys_load_all(struct mmagic_data *core);
 
 /**
  * Function to save settings to persistent store for the core sys subsystem.
  *
- * @param core Reference to to global mmagic context struct.
+ * @param core   Reference to to global mmagic context struct.
  */
 void mmagic_core_sys_save_all(struct mmagic_data *core);
 
 /**
  * Function to start any of the core processes for the core sys subsystem.
  *
- * @param core Reference to to global mmagic context struct.
+ * @param core   Reference to to global mmagic context struct.
  */
 void mmagic_core_sys_start(struct mmagic_data *core);
 
-enum mmagic_status mmagic_core_sys_reset(
-    struct mmagic_data *core);
+enum mmagic_status mmagic_core_sys_reset(struct mmagic_data *core);
 
 /** Command arguments structure for sys_deep_sleep */
 struct MM_PACKED mmagic_core_sys_deep_sleep_cmd_args

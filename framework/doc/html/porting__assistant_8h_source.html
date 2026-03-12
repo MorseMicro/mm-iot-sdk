@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.9.7</span>
+   &#160;<span id="projectnumber">2.10.4</span>
    </div>
   </td>
  </tr>
@@ -125,19 +125,20 @@ $(document).ready(function(){initNavTree('porting__assistant_8h_source.html','')
 <div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    <span class="keyword">enum</span> test_result (*<a class="code hl_variable" href="structtest__step.html#acb667d4fea15f625b5946f707ecf875f">exec</a>)(<span class="keywordtype">char</span> *log_buf, <span class="keywordtype">size_t</span> log_buf_len);</div>
 <div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>};</div>
 <div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span> </div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span><span class="preprocessor">#define TEST_STEP(name, description) \</span></div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span><span class="preprocessor">#define TEST_STEP(name, description)                                        \</span></div>
 <div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span><span class="preprocessor">    static enum test_result name##_exec(char *log_buf, size_t log_buf_len); \</span></div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span><span class="preprocessor">    const struct test_step name = { description, name##_exec }; \</span></div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span><span class="preprocessor">    const struct test_step name = { description, name##_exec };             \</span></div>
 <div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span><span class="preprocessor">    static enum test_result name##_exec(char *log_buf, size_t log_buf_len)</span></div>
 <div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span> </div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span><span class="preprocessor">#define TEST_LOG_APPEND(fstr, ...) \</span></div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span><span class="preprocessor">    do { \</span></div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span><span class="preprocessor">        int len = snprintf(log_buf, log_buf_len, fstr, ##__VA_ARGS__);  \</span></div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span><span class="preprocessor">        if (len &gt; 0 &amp;&amp; (int)log_buf_len &gt;= len) { \</span></div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span><span class="preprocessor">            log_buf += len; \</span></div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span><span class="preprocessor">            log_buf_len -= len; \</span></div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span><span class="preprocessor">        } \</span></div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span><span class="preprocessor">    } while (0)</span></div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span><span class="preprocessor">#define TEST_LOG_APPEND(fstr, ...)                                     \</span></div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span><span class="preprocessor">    do {                                                               \</span></div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span><span class="preprocessor">        int len = snprintf(log_buf, log_buf_len, fstr, ##__VA_ARGS__); \</span></div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span><span class="preprocessor">        if (len &gt; 0 &amp;&amp; (int)log_buf_len &gt;= len)                        \</span></div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span><span class="preprocessor">        {                                                              \</span></div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span><span class="preprocessor">            log_buf += len;                                            \</span></div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span><span class="preprocessor">            log_buf_len -= len;                                        \</span></div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span><span class="preprocessor">        }                                                              \</span></div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span><span class="preprocessor">    } while (0)</span></div>
 <div class="ttc" id="astructtest__step_html"><div class="ttname"><a href="structtest__step.html">test_step</a></div><div class="ttdoc">Test step descriptor.</div><div class="ttdef"><b>Definition:</b> <a href="porting__assistant_8h_source.html#l00031">porting_assistant.h:32</a></div></div>
 <div class="ttc" id="astructtest__step_html_a21d3302d4f486af17e853c850bfda6b1"><div class="ttname"><a href="structtest__step.html#a21d3302d4f486af17e853c850bfda6b1">test_step::description</a></div><div class="ttdeci">const char * description</div><div class="ttdoc">Short, user friendly description of the test step.</div><div class="ttdef"><b>Definition:</b> <a href="porting__assistant_8h_source.html#l00034">porting_assistant.h:34</a></div></div>
 <div class="ttc" id="astructtest__step_html_acb667d4fea15f625b5946f707ecf875f"><div class="ttname"><a href="structtest__step.html#acb667d4fea15f625b5946f707ecf875f">test_step::exec</a></div><div class="ttdeci">enum test_result(* exec)(char *log_buf, size_t log_buf_len)</div><div class="ttdoc">Test step execution function.</div><div class="ttdef"><b>Definition:</b> <a href="porting__assistant_8h_source.html#l00034">porting_assistant.h:36</a></div></div>
@@ -147,8 +148,8 @@ $(document).ready(function(){initNavTree('porting__assistant_8h_source.html','')
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_91b8f418cff946e8d8b598a9068417a8.html">examples</a></li><li class="navelem"><a class="el" href="dir_7de8b8c8b2ab5cd087fb005fc8243698.html">porting_assistant</a></li><li class="navelem"><a class="el" href="dir_79a7522752d9b58767ff1718f87ed209.html">src</a></li><li class="navelem"><b>porting_assistant.h</b></li>
-    <li class="footer">Copyright 2021 Morse Micro </li>
+    <li class="navelem"><a class="el" href="dir_c5388b8f7c63864c1129967aadb7f145.html">examples</a></li><li class="navelem"><a class="el" href="dir_5e468357e77f084276a7e24e7b567dca.html">porting_assistant</a></li><li class="navelem"><a class="el" href="dir_912954fbdfccd3bccf2652d86d3192e7.html">src</a></li><li class="navelem"><b>porting_assistant.h</b></li>
+    <li class="footer">Copyright 2021-2025 Morse Micro </li>
   </ul>
 </div>
 </body>

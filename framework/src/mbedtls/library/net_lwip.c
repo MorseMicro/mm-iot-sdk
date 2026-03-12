@@ -70,33 +70,42 @@ void mbedtls_net_init(mbedtls_net_context *ctx)
 /*
  * Initiate a TCP connection with host:port and the given protocol
  */
-int mbedtls_net_connect(mbedtls_net_context *ctx, const char *host,
-                        const char *port, int proto)
+int mbedtls_net_connect(mbedtls_net_context *ctx, const char *host, const char *port, int proto)
 {
     int ret = MBEDTLS_ERR_ERROR_CORRUPTION_DETECTED;
     struct addrinfo hints, *addr_list, *cur;
 
     /* Do name resolution with both IPv6 and IPv4 */
-    memset(&hints, 0, sizeof(hints) );
+    memset(&hints, 0, sizeof(hints));
     hints.ai_family = AF_UNSPEC;
     hints.ai_socktype = proto == MBEDTLS_NET_PROTO_UDP ? SOCK_DGRAM : SOCK_STREAM;
     hints.ai_protocol = proto == MBEDTLS_NET_PROTO_UDP ? IPPROTO_UDP : IPPROTO_TCP;
 
     if (lwip_getaddrinfo(host, port, &hints, &addr_list) != 0)
     {
-        return(MBEDTLS_ERR_NET_UNKNOWN_HOST);
+        return (MBEDTLS_ERR_NET_UNKNOWN_HOST);
     }
 
     /* Try the sockaddrs until a connection succeeds */
     ret = MBEDTLS_ERR_NET_UNKNOWN_HOST;
     for (cur = addr_list; cur != NULL; cur = cur->ai_next)
     {
-        ctx->fd = (int)lwip_socket(cur->ai_family, cur->ai_socktype,
-                                   cur->ai_protocol);
+        ctx->fd = (int)lwip_socket(cur->ai_family, cur->ai_socktype, cur->ai_protocol);
         if (ctx->fd < 0)
         {
             ret = MBEDTLS_ERR_NET_SOCKET_FAILED;
             continue;
+        }
+
+        struct timeval opt;
+        opt.tv_sec = MBEDTLS_NET_CLIENT_SOCK_RECV_TIMEOUT_MS / 1000;
+        opt.tv_usec = (MBEDTLS_NET_CLIENT_SOCK_RECV_TIMEOUT_MS % 1000) * 1000;
+
+        if (lwip_setsockopt(ctx->fd, SOL_SOCKET, SO_RCVTIMEO, &opt, sizeof(opt)) != 0)
+        {
+            lwip_close(ctx->fd);
+            ctx->fd = -1;
+            ret = MBEDTLS_ERR_NET_SOCKET_FAILED;
         }
 
         if (lwip_connect(ctx->fd, cur->ai_addr, cur->ai_addrlen) == 0)
@@ -112,7 +121,7 @@ int mbedtls_net_connect(mbedtls_net_context *ctx, const char *host,
 
     lwip_freeaddrinfo(addr_list);
 
-    return(ret);
+    return (ret);
 }
 
 /*
@@ -125,7 +134,7 @@ int mbedtls_net_bind(mbedtls_net_context *ctx, const char *bind_ip, const char *
     struct addrinfo hints, *addr_list, *cur;
 
     /* Bind to IPv6 and/or IPv4, but only in the desired protocol */
-    memset(&hints, 0, sizeof(hints) );
+    memset(&hints, 0, sizeof(hints));
     hints.ai_family = AF_UNSPEC;
     hints.ai_socktype = proto == MBEDTLS_NET_PROTO_UDP ? SOCK_DGRAM : SOCK_STREAM;
     hints.ai_protocol = proto == MBEDTLS_NET_PROTO_UDP ? IPPROTO_UDP : IPPROTO_TCP;
@@ -136,15 +145,14 @@ int mbedtls_net_bind(mbedtls_net_context *ctx, const char *bind_ip, const char *
 
     if (lwip_getaddrinfo(bind_ip, port, &hints, &addr_list) != 0)
     {
-        return(MBEDTLS_ERR_NET_UNKNOWN_HOST);
+        return (MBEDTLS_ERR_NET_UNKNOWN_HOST);
     }
 
     /* Try the sockaddrs until a binding succeeds */
     ret = MBEDTLS_ERR_NET_UNKNOWN_HOST;
     for (cur = addr_list; cur != NULL; cur = cur->ai_next)
     {
-        ctx->fd = (int)lwip_socket(cur->ai_family, cur->ai_socktype,
-                                   cur->ai_protocol);
+        ctx->fd = (int)lwip_socket(cur->ai_family, cur->ai_socktype, cur->ai_protocol);
         if (ctx->fd < 0)
         {
             ret = MBEDTLS_ERR_NET_SOCKET_FAILED;
@@ -152,8 +160,7 @@ int mbedtls_net_bind(mbedtls_net_context *ctx, const char *bind_ip, const char *
         }
 
         n = 1;
-        if (lwip_setsockopt(ctx->fd, SOL_SOCKET, SO_REUSEADDR,
-                            (const char *)&n, sizeof(n) ) != 0)
+        if (lwip_setsockopt(ctx->fd, SOL_SOCKET, SO_REUSEADDR, (const char *)&n, sizeof(n)) != 0)
         {
             close(ctx->fd);
             ret = MBEDTLS_ERR_NET_SOCKET_FAILED;
@@ -163,8 +170,7 @@ int mbedtls_net_bind(mbedtls_net_context *ctx, const char *bind_ip, const char *
         /* Set receive timeout to a high value, by default this is 0 */
         t.tv_sec = __INT32_MAX__ / 1000;
         t.tv_usec = 0;
-        if (lwip_setsockopt(ctx->fd, SOL_SOCKET, SO_RCVTIMEO,
-                            (const char *)&t, sizeof(t) ) != 0)
+        if (lwip_setsockopt(ctx->fd, SOL_SOCKET, SO_RCVTIMEO, (const char *)&t, sizeof(t)) != 0)
         {
             close(ctx->fd);
             ret = MBEDTLS_ERR_NET_SOCKET_FAILED;
@@ -196,7 +202,7 @@ int mbedtls_net_bind(mbedtls_net_context *ctx, const char *bind_ip, const char *
 
     lwip_freeaddrinfo(addr_list);
 
-    return(ret);
+    return (ret);
 }
 
 /*
@@ -220,8 +226,8 @@ static int net_would_block(const mbedtls_net_context *ctx)
 
     switch (errno = err)
     {
-    case EAGAIN:
-        return 1;
+        case EAGAIN:
+            return 1;
     }
     return 0;
 }
@@ -231,7 +237,9 @@ static int net_would_block(const mbedtls_net_context *ctx)
  */
 int mbedtls_net_accept(mbedtls_net_context *bind_ctx,
                        mbedtls_net_context *client_ctx,
-                       void *client_ip, size_t buf_size, size_t *ip_len)
+                       void *client_ip,
+                       size_t buf_size,
+                       size_t *ip_len)
 {
     int ret = MBEDTLS_ERR_ERROR_CORRUPTION_DETECTED;
     int type;
@@ -242,8 +250,8 @@ int mbedtls_net_accept(mbedtls_net_context *bind_ctx,
     int type_len = (int)sizeof(type);
 
     /* Is this a TCP or UDP socket? */
-    if (lwip_getsockopt(bind_ctx->fd, SOL_SOCKET, SO_TYPE,
-                        (void *)&type, (socklen_t *)&type_len) != 0 ||
+    if (lwip_getsockopt(bind_ctx->fd, SOL_SOCKET, SO_TYPE, (void *)&type, (socklen_t *)&type_len) !=
+            0 ||
         (type != SOCK_STREAM && type != SOCK_DGRAM))
     {
         return MBEDTLS_ERR_NET_ACCEPT_FAILED;
@@ -252,16 +260,20 @@ int mbedtls_net_accept(mbedtls_net_context *bind_ctx,
     if (type == SOCK_STREAM)
     {
         /* TCP: actual accept() */
-        ret = client_ctx->fd = (int)lwip_accept(bind_ctx->fd,
-                                                (struct sockaddr *)&client_addr, (socklen_t *)&n);
+        ret = client_ctx->fd =
+            (int)lwip_accept(bind_ctx->fd, (struct sockaddr *)&client_addr, (socklen_t *)&n);
     }
     else
     {
         /* UDP: wait for a message, but keep it in the queue */
         char buf[1] = { 0 };
 
-        ret = (int)lwip_recvfrom(bind_ctx->fd, buf, sizeof(buf), MSG_PEEK,
-                                 (struct sockaddr *)&client_addr, (socklen_t *)&n);
+        ret = (int)lwip_recvfrom(bind_ctx->fd,
+                                 buf,
+                                 sizeof(buf),
+                                 MSG_PEEK,
+                                 (struct sockaddr *)&client_addr,
+                                 (socklen_t *)&n);
     }
 
     if (ret < 0)
@@ -287,15 +299,17 @@ int mbedtls_net_accept(mbedtls_net_context *bind_ctx,
         }
 
         client_ctx->fd = bind_ctx->fd;
-        bind_ctx->fd = -1;   /* In case we exit early */
+        bind_ctx->fd = -1; /* In case we exit early */
 
         n = sizeof(struct sockaddr_storage);
-        if (lwip_getsockname(client_ctx->fd,
-                             (struct sockaddr *)&local_addr, (socklen_t *)&n) != 0 ||
-            (bind_ctx->fd = (int)socket(local_addr.ss_family,
-                                        SOCK_DGRAM, IPPROTO_UDP)) < 0 ||
-            lwip_setsockopt(bind_ctx->fd, SOL_SOCKET, SO_REUSEADDR,
-                            (const char *)&one, sizeof(one)) != 0)
+        if (lwip_getsockname(client_ctx->fd, (struct sockaddr *)&local_addr, (socklen_t *)&n) !=
+                0 ||
+            (bind_ctx->fd = (int)socket(local_addr.ss_family, SOCK_DGRAM, IPPROTO_UDP)) < 0 ||
+            lwip_setsockopt(bind_ctx->fd,
+                            SOL_SOCKET,
+                            SO_REUSEADDR,
+                            (const char *)&one,
+                            sizeof(one)) != 0)
         {
             return MBEDTLS_ERR_NET_SOCKET_FAILED;
         }
@@ -396,10 +410,9 @@ int mbedtls_net_poll(mbedtls_net_context *ctx, uint32_t rw, uint32_t timeout)
     tv.tv_sec = timeout / 1000;
     tv.tv_usec = (timeout % 1000) * 1000;
 
-    do
-    {
-        ret = lwip_select(fd + 1, &read_fds, &write_fds, NULL,
-                          timeout == (uint32_t)-1 ? NULL : &tv);
+    do {
+        ret =
+            lwip_select(fd + 1, &read_fds, &write_fds, NULL, timeout == (uint32_t)-1 ? NULL : &tv);
     } while (IS_EINTR(ret));
 
     if (ret < 0)
@@ -442,6 +455,9 @@ int mbedtls_net_recv(void *ctx, unsigned char *buf, size_t len)
         return ret;
     }
 
+    /* Clear RX ready prior to reading from the socket. */
+    atomic_store(&((mbedtls_net_context *)ctx)->rx_data_ready, 0);
+
     ret = (int)lwip_read(fd, buf, len);
 
     if (ret < 0)
@@ -470,8 +486,7 @@ int mbedtls_net_recv(void *ctx, unsigned char *buf, size_t len)
 /*
  * Read at most 'len' characters, blocking for at most 'timeout' ms
  */
-int mbedtls_net_recv_timeout(void *ctx, unsigned char *buf,
-                             size_t len, uint32_t timeout)
+int mbedtls_net_recv_timeout(void *ctx, unsigned char *buf, size_t len, uint32_t timeout)
 {
     int ret = MBEDTLS_ERR_ERROR_CORRUPTION_DETECTED;
     struct timeval tv;
@@ -560,7 +575,7 @@ void mbedtls_net_close(mbedtls_net_context *ctx)
     {
         return;
     }
-
+    lwip_register_rx_callback(ctx->fd, NULL, NULL);
     lwip_close(ctx->fd);
 
     ctx->fd = -1;
@@ -576,10 +591,43 @@ void mbedtls_net_free(mbedtls_net_context *ctx)
         return;
     }
 
+    lwip_register_rx_callback(ctx->fd, NULL, NULL);
     lwip_shutdown(ctx->fd, 2);
     lwip_close(ctx->fd);
 
     ctx->fd = -1;
+}
+
+static void mbedtls_net_rx_cb(void *arg)
+{
+    struct mbedtls_net_context *ctx = (struct mbedtls_net_context *)arg;
+    atomic_store(&ctx->rx_data_ready, 1);
+    if (ctx->rx_callback != NULL)
+    {
+        ctx->rx_callback(ctx, ctx->rx_callback_arg);
+    }
+}
+
+int mbedtls_net_register_rx_callback(struct mbedtls_net_context *ctx,
+                                     mbedtls_net_rx_callback_t cb,
+                                     void *arg)
+{
+    if (ctx->fd == -1)
+    {
+        return -1;
+    }
+
+    ctx->rx_callback = cb;
+    ctx->rx_callback_arg = arg;
+    lwip_rx_callback_t lwip_cb = (cb != NULL) ? mbedtls_net_rx_cb : NULL;
+
+    return lwip_register_rx_callback(ctx->fd, lwip_cb, ctx);
+}
+
+int mbedtls_net_check_and_clear_rx_ready(mbedtls_net_context *ctx)
+{
+    bool ready = atomic_exchange(&(ctx->rx_data_ready), 0);
+    return ready;
 }
 
 #endif /* MBEDTLS_NET_LWIP_C */

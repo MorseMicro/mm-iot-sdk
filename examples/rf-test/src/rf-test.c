@@ -20,7 +20,7 @@
 #include <string.h>
 #include "mmbuf.h"
 #include "mmcrc.h"
-#include "mmhal.h"
+#include "mmhal_core.h"
 #include "mmhal_uart.h"
 #include "mmosal.h"
 #include "mmutils.h"
@@ -29,13 +29,13 @@
 #include "slip.h"
 
 /** Length of the sequence number field appended to command/response packets. */
-#define SEQ_NUM_LEN         (4)
+#define SEQ_NUM_LEN (4)
 /** Maximum possible length of a command that we may wish to receive. */
-#define COMMAND_MAX_LEN     (252)
+#define COMMAND_MAX_LEN (252)
 /** Maximum possible length of a response that we may wish to send. */
-#define RESPONSE_MAX_LEN    (2048)
+#define RESPONSE_MAX_LEN (2048)
 /** Length of a response header (excluding status field). */
-#define RESPONSE_HDR_LEN    (12)
+#define RESPONSE_HDR_LEN (12)
 
 /**
  * TX callback handler for SLIP. This is invoked by SLIP to trigger transmission of a character.
@@ -56,7 +56,7 @@ static int slip_tx_handler(uint8_t c, void *arg)
  * Callback to handle reception of a command packet from the data-link HAL.
  *
  * @param cmd_buf       The received command.
-*/
+ */
 static void rf_test_handle_command(struct mmbuf *cmd_buf)
 {
     uint8_t *seq_num;
@@ -83,9 +83,10 @@ static void rf_test_handle_command(struct mmbuf *cmd_buf)
     response_len = RESPONSE_MAX_LEN;
 
     printf("Executing command...\n");
-    status = mmwlan_ate_execute_command(
-        mmbuf_get_data_start(cmd_buf), mmbuf_get_data_length(cmd_buf),
-        mmbuf_append(rsp_buf, 0), &response_len);
+    status = mmwlan_ate_execute_command(mmbuf_get_data_start(cmd_buf),
+                                        mmbuf_get_data_length(cmd_buf),
+                                        mmbuf_append(rsp_buf, 0),
+                                        &response_len);
 
     if (status == MMWLAN_SUCCESS)
     {
@@ -101,25 +102,25 @@ static void rf_test_handle_command(struct mmbuf *cmd_buf)
 
         switch (status)
         {
-        case MMWLAN_NO_MEM:
-            result_code[0] = MM_ENOMEM;
-            break;
+            case MMWLAN_NO_MEM:
+                result_code[0] = MM_ENOMEM;
+                break;
 
-        case MMWLAN_UNAVAILABLE:
-            result_code[0] = MM_ENODEV;
-            break;
+            case MMWLAN_UNAVAILABLE:
+                result_code[0] = MM_ENODEV;
+                break;
 
-        case MMWLAN_INVALID_ARGUMENT:
-            result_code[0] = MM_EINVAL;
-            break;
+            case MMWLAN_INVALID_ARGUMENT:
+                result_code[0] = MM_EINVAL;
+                break;
 
-        case MMWLAN_TIMED_OUT:
-            result_code[0] = MM_ETIMEDOUT;
-            break;
+            case MMWLAN_TIMED_OUT:
+                result_code[0] = MM_ETIMEDOUT;
+                break;
 
-        default:
-            result_code[0] = MM_EFAULT;
-            break;
+            default:
+                result_code[0] = MM_EFAULT;
+                break;
         }
 
         /* Craft a response with an errno based error code in the response buffer. */
@@ -129,12 +130,14 @@ static void rf_test_handle_command(struct mmbuf *cmd_buf)
     }
 
     mmbuf_append_data(rsp_buf, seq_num, SEQ_NUM_LEN);
-    crc = htole16(mmcrc_16_xmodem(0, mmbuf_get_data_start(rsp_buf),
-                                  mmbuf_get_data_length(rsp_buf)));
-    mmbuf_append_data(rsp_buf, (uint8_t*)&crc, sizeof(crc));
+    crc =
+        htole16(mmcrc_16_xmodem(0, mmbuf_get_data_start(rsp_buf), mmbuf_get_data_length(rsp_buf)));
+    mmbuf_append_data(rsp_buf, (uint8_t *)&crc, sizeof(crc));
 
-    ret = slip_tx(slip_tx_handler, NULL,
-                  mmbuf_get_data_start(rsp_buf), mmbuf_get_data_length(rsp_buf));
+    ret = slip_tx(slip_tx_handler,
+                  NULL,
+                  mmbuf_get_data_start(rsp_buf),
+                  mmbuf_get_data_length(rsp_buf));
     if (ret != 0)
     {
         printf("Failed to send response (%d)\n", ret);
@@ -179,7 +182,7 @@ static void uart_rx_handler(const uint8_t *data, size_t length, void *arg)
                 (slip_state->buffer[slip_state->length - 1] == (crc >> 8)))
             {
                 /* CRC matches, so allocate an mmbuf and pass to command handler function. */
-                struct mmbuf* mmbuffer = mmbuf_alloc_on_heap(0, slip_state->length);
+                struct mmbuf *mmbuffer = mmbuf_alloc_on_heap(0, slip_state->length);
                 if (mmbuffer == NULL)
                 {
                     /* Insufficient memory to receive packet */
@@ -187,8 +190,7 @@ static void uart_rx_handler(const uint8_t *data, size_t length, void *arg)
                     printf("Error: memory allocation failure\n");
                     continue;
                 }
-                mmbuf_append_data(mmbuffer, slip_state->buffer,
-                                  slip_state->length);
+                mmbuf_append_data(mmbuffer, slip_state->buffer, slip_state->length);
                 mmbuf_remove_from_end(mmbuffer, sizeof(uint16_t));
                 rf_test_handle_command(mmbuffer);
             }
@@ -200,7 +202,6 @@ static void uart_rx_handler(const uint8_t *data, size_t length, void *arg)
         }
     }
 }
-
 
 /** Buffer for SLIP processing on receive path. */
 static uint8_t slip_rx_buffer[SLIP_RX_BUFFER_SIZE];
@@ -218,7 +219,8 @@ void app_init(void)
      * veto and never release it so that we do not enter deep sleep. */
     mmhal_set_deep_sleep_veto(MMHAL_VETO_ID_APP_MIN);
 
-    printf("\n\nRF Test Application (Built "__DATE__ " " __TIME__ ")\n\n");
+    printf("\n\nRF Test Application (Built "__DATE__
+           " " __TIME__ ")\n\n");
 
     app_wlan_init();
 

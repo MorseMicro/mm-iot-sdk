@@ -67,8 +67,10 @@ extern "C" {
 
 #define SPI_IRQn        (EXTI1_IRQn)
 #define SPI_IRQ_LINE    (LL_EXTI_LINE_1)
+#define SPI_IRQ_HANDLER     EXTI1_IRQHandler
 #define BUSY_IRQn       (EXTI3_IRQn)
 #define BUSY_IRQ_LINE   (LL_EXTI_LINE_3)
+#define BUSY_IRQ_HANDLER    EXTI3_IRQHandler
 
 #define LOG_USART               (USART1)
 #define LOG_USART_IRQ           (USART1_IRQn)

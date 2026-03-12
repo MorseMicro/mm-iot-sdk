@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.9.7</span>
+   &#160;<span id="projectnumber">2.10.4</span>
    </div>
   </td>
  </tr>
@@ -89,7 +89,7 @@ $(document).ready(function(){initNavTree('structmmhal__robuf.html',''); initResi
 <div class="header">
   <div class="summary">
 <a href="#pub-attribs">Data Fields</a>  </div>
-  <div class="headertitle"><div class="title">mmhal_robuf Struct Reference<div class="ingroups"><a class="el" href="group__MMHAL.html">Morse Micro Hardware Abstraction Layer (mmhal) API</a> &raquo; <a class="el" href="group__MMHAL__WLAN.html">WLAN HAL</a></div></div></div>
+  <div class="headertitle"><div class="title">mmhal_robuf Struct Reference<div class="ingroups"><a class="el" href="group__MMHAL.html">Morse Micro Hardware Abstraction Layer (mmhal) API</a> &raquo; <a class="el" href="group__MMHAL__WLAN.html">Morse Micro WLAN Hardware Abstraction Layer (mmhal_wlan) API</a></div></div></div>
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -104,10 +104,10 @@ $(document).ready(function(){initNavTree('structmmhal__robuf.html',''); initResi
 <div class="line">    robuf-&gt;<a class="code hl_variable" href="structmmhal__robuf.html#a66ce9fbb066da8f39a6559c66f7e36a1">len</a> = <span class="keyword">sizeof</span>(some_data);</div>
 <div class="line">    robuf-&gt;<a class="code hl_variable" href="structmmhal__robuf.html#ae7c0e29e8274e3b1e0405cf6c2f15846">free_cb</a> = NULL;</div>
 <div class="line">}</div>
-<div class="ttc" id="astructmmhal__robuf_html"><div class="ttname"><a href="structmmhal__robuf.html">mmhal_robuf</a></div><div class="ttdoc">Read-only buffer data structure.</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00161">mmhal_wlan.h:162</a></div></div>
-<div class="ttc" id="astructmmhal__robuf_html_a0c0f446e47dc79dd2668b24da2433ae9"><div class="ttname"><a href="structmmhal__robuf.html#a0c0f446e47dc79dd2668b24da2433ae9">mmhal_robuf::buf</a></div><div class="ttdeci">const uint8_t * buf</div><div class="ttdoc">Pointer to the start of the read-only buffer.</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00164">mmhal_wlan.h:164</a></div></div>
-<div class="ttc" id="astructmmhal__robuf_html_a66ce9fbb066da8f39a6559c66f7e36a1"><div class="ttname"><a href="structmmhal__robuf.html#a66ce9fbb066da8f39a6559c66f7e36a1">mmhal_robuf::len</a></div><div class="ttdeci">uint32_t len</div><div class="ttdoc">Length of the buffer contents.</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00166">mmhal_wlan.h:166</a></div></div>
-<div class="ttc" id="astructmmhal__robuf_html_ae7c0e29e8274e3b1e0405cf6c2f15846"><div class="ttname"><a href="structmmhal__robuf.html#ae7c0e29e8274e3b1e0405cf6c2f15846">mmhal_robuf::free_cb</a></div><div class="ttdeci">void(* free_cb)(void *arg)</div><div class="ttdoc">Optional callback to be invoked by the consumer to release the buffer when it is no longer required.</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00175">mmhal_wlan.h:175</a></div></div>
+<div class="ttc" id="astructmmhal__robuf_html"><div class="ttname"><a href="structmmhal__robuf.html">mmhal_robuf</a></div><div class="ttdoc">Read-only buffer data structure.</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00178">mmhal_wlan.h:179</a></div></div>
+<div class="ttc" id="astructmmhal__robuf_html_a0c0f446e47dc79dd2668b24da2433ae9"><div class="ttname"><a href="structmmhal__robuf.html#a0c0f446e47dc79dd2668b24da2433ae9">mmhal_robuf::buf</a></div><div class="ttdeci">const uint8_t * buf</div><div class="ttdoc">Pointer to the start of the read-only buffer.</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00181">mmhal_wlan.h:181</a></div></div>
+<div class="ttc" id="astructmmhal__robuf_html_a66ce9fbb066da8f39a6559c66f7e36a1"><div class="ttname"><a href="structmmhal__robuf.html#a66ce9fbb066da8f39a6559c66f7e36a1">mmhal_robuf::len</a></div><div class="ttdeci">uint32_t len</div><div class="ttdoc">Length of the buffer contents.</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00183">mmhal_wlan.h:183</a></div></div>
+<div class="ttc" id="astructmmhal__robuf_html_ae7c0e29e8274e3b1e0405cf6c2f15846"><div class="ttname"><a href="structmmhal__robuf.html#ae7c0e29e8274e3b1e0405cf6c2f15846">mmhal_robuf::free_cb</a></div><div class="ttdeci">void(* free_cb)(void *arg)</div><div class="ttdoc">Optional callback to be invoked by the consumer to release the buffer when it is no longer required.</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00192">mmhal_wlan.h:192</a></div></div>
 </div><!-- fragment --><p >For dynamically allocated memory, the field <code>free_cb</code> is set to the appropriate function to free the buffer and <code>free_arg</code> is an opaque argument to the free function. This approach might be used, for example, when reading into a temporary buffer from storage that is not memory mapped. For example:</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#define SOME_DATA_MAXLEN (64)</span></div>
 <div class="line"> </div>
@@ -123,9 +123,9 @@ $(document).ready(function(){initNavTree('structmmhal__robuf.html',''); initResi
 <div class="line">    robuf-&gt;<a class="code hl_variable" href="structmmhal__robuf.html#ae7c0e29e8274e3b1e0405cf6c2f15846">free_cb</a> = free;</div>
 <div class="line">    robuf-&gt;<a class="code hl_variable" href="structmmhal__robuf.html#a9c02d45ff49ce154092b947e3c5994f1">free_arg</a> = <a class="code hl_variable" href="structmmhal__robuf.html#a0c0f446e47dc79dd2668b24da2433ae9">buf</a>;</div>
 <div class="line">}</div>
-<div class="ttc" id="astructmmhal__robuf_html_a9c02d45ff49ce154092b947e3c5994f1"><div class="ttname"><a href="structmmhal__robuf.html#a9c02d45ff49ce154092b947e3c5994f1">mmhal_robuf::free_arg</a></div><div class="ttdeci">void * free_arg</div><div class="ttdoc">Optional argument to free_cb.</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00177">mmhal_wlan.h:177</a></div></div>
+<div class="ttc" id="astructmmhal__robuf_html_a9c02d45ff49ce154092b947e3c5994f1"><div class="ttname"><a href="structmmhal__robuf.html#a9c02d45ff49ce154092b947e3c5994f1">mmhal_robuf::free_arg</a></div><div class="ttdeci">void * free_arg</div><div class="ttdoc">Optional argument to free_cb.</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00194">mmhal_wlan.h:194</a></div></div>
 </div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="mmhal__wlan_8h_source.html#l00161">161</a> of file <a class="el" href="mmhal__wlan_8h_source.html">mmhal_wlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmhal__wlan_8h_source.html#l00178">178</a> of file <a class="el" href="mmhal__wlan_8h_source.html">mmhal_wlan.h</a>.</p>
 </div>
 <p><code>#include &lt;<a class="el" href="mmhal__wlan_8h_source.html">mmhal_wlan.h</a>&gt;</code></p>
 <table class="memberdecls">
@@ -160,7 +160,7 @@ Data Fields</h2></td></tr>
 <p>Pointer to the start of the read-only buffer. </p>
 <p >May be NULL only if <code>len</code> is zero. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmhal__wlan_8h_source.html#l00164">164</a> of file <a class="el" href="mmhal__wlan_8h_source.html">mmhal_wlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmhal__wlan_8h_source.html#l00181">181</a> of file <a class="el" href="mmhal__wlan_8h_source.html">mmhal_wlan.h</a>.</p>
 
 </div>
 </div>
@@ -179,7 +179,7 @@ Data Fields</h2></td></tr>
 <p>Optional argument to <code>free_cb</code>. </p>
 <p >Ignored if <code>free_cb</code> is <code>NULL</code>. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmhal__wlan_8h_source.html#l00177">177</a> of file <a class="el" href="mmhal__wlan_8h_source.html">mmhal_wlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmhal__wlan_8h_source.html#l00194">194</a> of file <a class="el" href="mmhal__wlan_8h_source.html">mmhal_wlan.h</a>.</p>
 
 </div>
 </div>
@@ -199,7 +199,7 @@ Data Fields</h2></td></tr>
 <p >If not required, set to <code>NULL</code>.</p>
 <dl class="section note"><dt>Note</dt><dd>The values of <code>buf</code> and <code>len</code> in this structure may be modified before <code><a class="el" href="structmmhal__robuf.html#ae7c0e29e8274e3b1e0405cf6c2f15846" title="Optional callback to be invoked by the consumer to release the buffer when it is no longer required.">free_cb()</a></code> is invoked. However, the value of <code>free_arg</code> will be passed to <code><a class="el" href="structmmhal__robuf.html#ae7c0e29e8274e3b1e0405cf6c2f15846" title="Optional callback to be invoked by the consumer to release the buffer when it is no longer required.">free_cb()</a></code>. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmhal__wlan_8h_source.html#l00175">175</a> of file <a class="el" href="mmhal__wlan_8h_source.html">mmhal_wlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmhal__wlan_8h_source.html#l00192">192</a> of file <a class="el" href="mmhal__wlan_8h_source.html">mmhal_wlan.h</a>.</p>
 
 </div>
 </div>
@@ -217,7 +217,7 @@ Data Fields</h2></td></tr>
 
 <p>Length of the buffer contents. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmhal__wlan_8h_source.html#l00166">166</a> of file <a class="el" href="mmhal__wlan_8h_source.html">mmhal_wlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmhal__wlan_8h_source.html#l00183">183</a> of file <a class="el" href="mmhal__wlan_8h_source.html">mmhal_wlan.h</a>.</p>
 
 </div>
 </div>
@@ -231,7 +231,7 @@ Data Fields</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="structmmhal__robuf.html">mmhal_robuf</a></li>
-    <li class="footer">Copyright 2021 Morse Micro </li>
+    <li class="footer">Copyright 2021-2025 Morse Micro </li>
   </ul>
 </div>
 </body>

@@ -7,7 +7,7 @@ var group__MMWLAN__BEACON__VENDOR__IE__FILTER__API =
       [ "ouis", "structmmwlan__beacon__vendor__ie__filter.html#a94a431832e58ae2dca83f0b90f5e589c", null ]
     ] ],
     [ "MMWLAN_BEACON_VENDOR_IE_MAX_OUI_FILTERS", "group__MMWLAN__BEACON__VENDOR__IE__FILTER__API.html#ga2feaab1ca4f2b73ec5ed9c14e2ce9c0e", null ],
-    [ "mmwlan_beacon_vendor_ie_filter_cb_t", "group__MMWLAN__BEACON__VENDOR__IE__FILTER__API.html#ga7e32ebcfdeea56f71e1c75b1351b5846", null ],
+    [ "mmwlan_beacon_vendor_ie_filter_cb_t", "group__MMWLAN__BEACON__VENDOR__IE__FILTER__API.html#ga97166a4382dab565b373f50cd452a52a", null ],
     [ "mmwlan_oui_t", "group__MMWLAN__BEACON__VENDOR__IE__FILTER__API.html#gad3266535d8af2d6eba7cfa17388cfeb9", null ],
     [ "mmwlan_update_beacon_vendor_ie_filter", "group__MMWLAN__BEACON__VENDOR__IE__FILTER__API.html#ga1d496036182d882846e2ff48cbac5890", null ]
 ];

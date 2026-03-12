@@ -3325,6 +3325,9 @@ wpas_dpp_rx_pkex_exchange_req(struct wpa_supplicant *wpa_s, const u8 *src,
 {
 	struct wpabuf *msg;
 	unsigned int wait_time;
+	bool generate_new_pkex;
+	const u8 *attr_key;
+	u16 attr_key_len = 0;
 
 	wpa_printf(MSG_DEBUG, "DPP: PKEX Exchange Request from " MACSTR,
 		   MAC2STR(src));
@@ -3364,16 +3367,32 @@ wpas_dpp_rx_pkex_exchange_req(struct wpa_supplicant *wpa_s, const u8 *src,
 		return;
 	}
 
-	wpa_s->dpp_pkex = dpp_pkex_rx_exchange_req(wpa_s, wpa_s->dpp_pkex_bi,
-						   wpa_s->own_addr, src,
-						   wpa_s->dpp_pkex_identifier,
-						   wpa_s->dpp_pkex_code,
-						   wpa_s->dpp_pkex_code_len,
-						   buf, len, v2);
-	if (!wpa_s->dpp_pkex) {
+	generate_new_pkex = true;
+	if (wpa_s->dpp_pkex) {
+		attr_key_len = 0;
+		attr_key = dpp_get_attr(buf, len, DPP_ATTR_ENCRYPTED_KEY, &attr_key_len);
+		if (attr_key &&
+		    !dpp_pkex_invalid_key_attr_len(attr_key_len) &&
+		    !os_memcmp(wpa_s->dpp_pkex->Mx, attr_key, attr_key_len / 2))
+			generate_new_pkex = false;
+	}
+
+	if (generate_new_pkex) {
+		wpa_s->dpp_pkex = dpp_pkex_rx_exchange_req(wpa_s, wpa_s->dpp_pkex_bi,
+					wpa_s->own_addr, src,
+					wpa_s->dpp_pkex_identifier,
+					wpa_s->dpp_pkex_code,
+					wpa_s->dpp_pkex_code_len,
+					buf, len, v2);
+
+		if (!wpa_s->dpp_pkex) {
+			wpa_printf(MSG_DEBUG,
+				   "DPP: Failed to process the request - ignore it");
+			return;
+		}
+	} else {
 		wpa_printf(MSG_DEBUG,
-			   "DPP: Failed to process the request - ignore it");
-		return;
+			   "DPP: Using previously generated PKEX Exchange Response");
 	}
 
 #ifdef CONFIG_DPP3

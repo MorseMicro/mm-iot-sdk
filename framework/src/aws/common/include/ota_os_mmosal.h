@@ -79,7 +79,7 @@ OtaOsStatus_t OtaDeinitEvent_MMOSAL(OtaEventContext_t *pEventCtx);
  * @return @c OtaOsSuccess if success , other error code on failure.
  */
 OtaOsStatus_t OtaStartTimer_MMOSAL(OtaTimerId_t otaTimerId,
-                                   const char * const pTimerName,
+                                   const char *const pTimerName,
                                    const uint32_t timeout,
                                    OtaTimerCallback_t callback);
 

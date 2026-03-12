@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.4"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Morse Micro IoT SDK: WLAN HAL</title>
+<title>Morse Micro IoT SDK: Morse Micro WLAN Hardware Abstraction Layer (mmhal_wlan) API</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.9.7</span>
+   &#160;<span id="projectnumber">2.10.4</span>
    </div>
   </td>
  </tr>
@@ -92,8 +92,9 @@ $(document).ready(function(){initNavTree('group__MMHAL__WLAN.html',''); initResi
 <a href="#nested-classes">Data Structures</a> &#124;
 <a href="#define-members">Macros</a> &#124;
 <a href="#typedef-members">Typedefs</a> &#124;
-<a href="#func-members">Functions</a>  </div>
-  <div class="headertitle"><div class="title">WLAN HAL<div class="ingroups"><a class="el" href="group__MMHAL.html">Morse Micro Hardware Abstraction Layer (mmhal) API</a></div></div></div>
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
+  <div class="headertitle"><div class="title">Morse Micro WLAN Hardware Abstraction Layer (mmhal_wlan) API<div class="ingroups"><a class="el" href="group__MMHAL.html">Morse Micro Hardware Abstraction Layer (mmhal) API</a></div></div></div>
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -128,10 +129,10 @@ Macros</h2></td></tr>
 <tr class="memitem:ga3452be561de74ab1ca3c53759189a6e9"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMHAL__WLAN.html#ga3452be561de74ab1ca3c53759189a6e9">MMHAL_WLAN_FW_BCF_MIN_READ_LENGTH</a>&#160;&#160;&#160;(4)</td></tr>
 <tr class="memdesc:ga3452be561de74ab1ca3c53759189a6e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Minimum length of data to be returned by <a class="el" href="group__MMHAL__WLAN.html#ga84287c44a19ef1261ac7831030bf5e41">mmhal_wlan_read_bcf_file()</a> and <a class="el" href="group__MMHAL__WLAN.html#gafa56d2b3ac5b37c4e1184f1b542b2f0c">mmhal_wlan_read_fw_file()</a>.  <a href="group__MMHAL__WLAN.html#ga3452be561de74ab1ca3c53759189a6e9">More...</a><br /></td></tr>
 <tr class="separator:ga3452be561de74ab1ca3c53759189a6e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gae29bfe8e4f0ffb0584b66d29fffe572c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMHAL__WLAN.html#gae29bfe8e4f0ffb0584b66d29fffe572c">MMHAL_WLAN_MMPKT_TX_MAX_SIZE</a>&#160;&#160;&#160;(1664)</td></tr>
+<tr class="memitem:gae29bfe8e4f0ffb0584b66d29fffe572c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMHAL__WLAN.html#gae29bfe8e4f0ffb0584b66d29fffe572c">MMHAL_WLAN_MMPKT_TX_MAX_SIZE</a>&#160;&#160;&#160;(1668)</td></tr>
 <tr class="memdesc:gae29bfe8e4f0ffb0584b66d29fffe572c"><td class="mdescLeft">&#160;</td><td class="mdescRight">This value represents the maximum size of a TX packet that can be allocated within the TX pool.  <a href="group__MMHAL__WLAN.html#gae29bfe8e4f0ffb0584b66d29fffe572c">More...</a><br /></td></tr>
 <tr class="separator:gae29bfe8e4f0ffb0584b66d29fffe572c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaef90c75c78b18e507e1be247c716b94a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMHAL__WLAN.html#gaef90c75c78b18e507e1be247c716b94a">MMHAL_WLAN_MMPKT_RX_MAX_SIZE</a>&#160;&#160;&#160;(1668)</td></tr>
+<tr class="memitem:gaef90c75c78b18e507e1be247c716b94a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMHAL__WLAN.html#gaef90c75c78b18e507e1be247c716b94a">MMHAL_WLAN_MMPKT_RX_MAX_SIZE</a>&#160;&#160;&#160;(1672)</td></tr>
 <tr class="memdesc:gaef90c75c78b18e507e1be247c716b94a"><td class="mdescLeft">&#160;</td><td class="mdescRight">This value represents the maximum size of a RX packet that can be allocated within the RX pool.  <a href="group__MMHAL__WLAN.html#gaef90c75c78b18e507e1be247c716b94a">More...</a><br /></td></tr>
 <tr class="separator:gaef90c75c78b18e507e1be247c716b94a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaf018baf42f8adbfe1b697527450876ee"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMHAL__WLAN.html#gaf018baf42f8adbfe1b697527450876ee">MMPKTMEM_TX_POOL_N_BLOCKS</a>&#160;&#160;&#160;(20)</td></tr>
@@ -155,6 +156,9 @@ Functions</h2></td></tr>
 <tr class="memitem:gab83474466d5aaf4b529e67651d72b5c6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMHAL__WLAN.html#gab83474466d5aaf4b529e67651d72b5c6">mmhal_wlan_deinit</a> (void)</td></tr>
 <tr class="memdesc:gab83474466d5aaf4b529e67651d72b5c6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deinitialize the WLAN HAL.  <a href="group__MMHAL__WLAN.html#gab83474466d5aaf4b529e67651d72b5c6">More...</a><br /></td></tr>
 <tr class="separator:gab83474466d5aaf4b529e67651d72b5c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga5f6387a7362c470feeaf4afe277dcb34"><td class="memItemLeft" align="right" valign="top">const struct mmhal_chip *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMHAL__WLAN.html#ga5f6387a7362c470feeaf4afe277dcb34">mmhal_get_chip</a> (void)</td></tr>
+<tr class="memdesc:ga5f6387a7362c470feeaf4afe277dcb34"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the type of Morse chip that is in use.  <a href="group__MMHAL__WLAN.html#ga5f6387a7362c470feeaf4afe277dcb34">More...</a><br /></td></tr>
+<tr class="separator:ga5f6387a7362c470feeaf4afe277dcb34"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gacc9ed9533fb4a8005a9d054932f0f48e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMHAL__WLAN.html#gacc9ed9533fb4a8005a9d054932f0f48e">mmhal_read_mac_addr</a> (uint8_t *mac_addr)</td></tr>
 <tr class="memdesc:gacc9ed9533fb4a8005a9d054932f0f48e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get MAC address override.  <a href="group__MMHAL__WLAN.html#gacc9ed9533fb4a8005a9d054932f0f48e">More...</a><br /></td></tr>
 <tr class="separator:gacc9ed9533fb4a8005a9d054932f0f48e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -181,6 +185,17 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>mmhal_wlan_wake_deass
 <tr class="memitem:gafa56d2b3ac5b37c4e1184f1b542b2f0c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMHAL__WLAN.html#gafa56d2b3ac5b37c4e1184f1b542b2f0c">mmhal_wlan_read_fw_file</a> (uint32_t offset, uint32_t requested_len, struct <a class="el" href="structmmhal__robuf.html">mmhal_robuf</a> *robuf)</td></tr>
 <tr class="memdesc:gafa56d2b3ac5b37c4e1184f1b542b2f0c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the content of the Morse Micro Chip Firmware and places it into the given buffer.  <a href="group__MMHAL__WLAN.html#gafa56d2b3ac5b37c4e1184f1b542b2f0c">More...</a><br /></td></tr>
 <tr class="separator:gafa56d2b3ac5b37c4e1184f1b542b2f0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:ga4bb0121fc47ef56ce9eaaedd4420c980"><td class="memItemLeft" align="right" valign="top"><a id="ga4bb0121fc47ef56ce9eaaedd4420c980" name="ga4bb0121fc47ef56ce9eaaedd4420c980"></a>
+const struct mmhal_chip&#160;</td><td class="memItemRight" valign="bottom"><b>mmhal_mm6108</b></td></tr>
+<tr class="memdesc:ga4bb0121fc47ef56ce9eaaedd4420c980"><td class="mdescLeft">&#160;</td><td class="mdescRight">Morse chip type: MM6108. <br /></td></tr>
+<tr class="separator:ga4bb0121fc47ef56ce9eaaedd4420c980"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga4ec1a7cb3907599172544b61548aa6c1"><td class="memItemLeft" align="right" valign="top"><a id="ga4ec1a7cb3907599172544b61548aa6c1" name="ga4ec1a7cb3907599172544b61548aa6c1"></a>
+const struct mmhal_chip&#160;</td><td class="memItemRight" valign="bottom"><b>mmhal_mm8108</b></td></tr>
+<tr class="memdesc:ga4ec1a7cb3907599172544b61548aa6c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Morse chip type: MM8108. <br /></td></tr>
+<tr class="separator:ga4ec1a7cb3907599172544b61548aa6c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="ga3452be561de74ab1ca3c53759189a6e9" name="ga3452be561de74ab1ca3c53759189a6e9"></a>
@@ -197,7 +212,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>mmhal_wlan_wake_deass
 
 <p>Minimum length of data to be returned by <a class="el" href="group__MMHAL__WLAN.html#ga84287c44a19ef1261ac7831030bf5e41">mmhal_wlan_read_bcf_file()</a> and <a class="el" href="group__MMHAL__WLAN.html#gafa56d2b3ac5b37c4e1184f1b542b2f0c">mmhal_wlan_read_fw_file()</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmhal__wlan_8h_source.html#l00182">182</a> of file <a class="el" href="mmhal__wlan_8h_source.html">mmhal_wlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmhal__wlan_8h_source.html#l00199">199</a> of file <a class="el" href="mmhal__wlan_8h_source.html">mmhal_wlan.h</a>.</p>
 
 </div>
 </div>
@@ -208,7 +223,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>mmhal_wlan_wake_deass
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define MMHAL_WLAN_MMPKT_RX_MAX_SIZE&#160;&#160;&#160;(1668)</td>
+          <td class="memname">#define MMHAL_WLAN_MMPKT_RX_MAX_SIZE&#160;&#160;&#160;(1672)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -216,7 +231,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>mmhal_wlan_wake_deass
 <p>This value represents the maximum size of a RX packet that can be allocated within the RX pool. </p>
 <p >It includes the packet size and the RX metadata </p>
 
-<p class="definition">Definition at line <a class="el" href="mmhal__wlan_8h_source.html#l00456">456</a> of file <a class="el" href="mmhal__wlan_8h_source.html">mmhal_wlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmhal__wlan_8h_source.html#l00476">476</a> of file <a class="el" href="mmhal__wlan_8h_source.html">mmhal_wlan.h</a>.</p>
 
 </div>
 </div>
@@ -227,7 +242,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>mmhal_wlan_wake_deass
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define MMHAL_WLAN_MMPKT_TX_MAX_SIZE&#160;&#160;&#160;(1664)</td>
+          <td class="memname">#define MMHAL_WLAN_MMPKT_TX_MAX_SIZE&#160;&#160;&#160;(1668)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -235,7 +250,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>mmhal_wlan_wake_deass
 <p>This value represents the maximum size of a TX packet that can be allocated within the TX pool. </p>
 <p >It includes the packet size and the TX metadata. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmhal__wlan_8h_source.html#l00450">450</a> of file <a class="el" href="mmhal__wlan_8h_source.html">mmhal_wlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmhal__wlan_8h_source.html#l00468">468</a> of file <a class="el" href="mmhal__wlan_8h_source.html">mmhal_wlan.h</a>.</p>
 
 </div>
 </div>
@@ -254,7 +269,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>mmhal_wlan_wake_deass
 <p>Size of the RX pool in blocks. </p>
 <dl class="section note"><dt>Note</dt><dd>Values less than 23 may result in instability. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmhal__wlan_8h_source.html#l00471">471</a> of file <a class="el" href="mmhal__wlan_8h_source.html">mmhal_wlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmhal__wlan_8h_source.html#l00492">492</a> of file <a class="el" href="mmhal__wlan_8h_source.html">mmhal_wlan.h</a>.</p>
 
 </div>
 </div>
@@ -272,7 +287,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>mmhal_wlan_wake_deass
 
 <p>Size of the TX pool in blocks. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmhal__wlan_8h_source.html#l00462">462</a> of file <a class="el" href="mmhal__wlan_8h_source.html">mmhal_wlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmhal__wlan_8h_source.html#l00483">483</a> of file <a class="el" href="mmhal__wlan_8h_source.html">mmhal_wlan.h</a>.</p>
 
 </div>
 </div>
@@ -291,11 +306,37 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>mmhal_wlan_wake_deass
 
 <p>Function prototype for interrupt handler callbacks. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmhal__wlan_8h_source.html#l00042">42</a> of file <a class="el" href="mmhal__wlan_8h_source.html">mmhal_wlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmhal__wlan_8h_source.html#l00041">41</a> of file <a class="el" href="mmhal__wlan_8h_source.html">mmhal_wlan.h</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="ga5f6387a7362c470feeaf4afe277dcb34" name="ga5f6387a7362c470feeaf4afe277dcb34"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga5f6387a7362c470feeaf4afe277dcb34">&#9670;&nbsp;</a></span>mmhal_get_chip()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const struct mmhal_chip * mmhal_get_chip </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get the type of Morse chip that is in use. </p>
+<p >This will determine how the driver attempts to communicate with the chip.</p>
+<p >Must return a return a reference to one of the following:</p><ul>
+<li><code>mmhal_mm6108</code> </li>
+<li><code>mmhal_mm8108</code> </li>
+</ul>
+<dl class="section return"><dt>Returns</dt><dd>Reference to the chip type to use. </dd></dl>
+
+</div>
+</div>
 <a id="gacc9ed9533fb4a8005a9d054932f0f48e" name="gacc9ed9533fb4a8005a9d054932f0f48e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#gacc9ed9533fb4a8005a9d054932f0f48e">&#9670;&nbsp;</a></span>mmhal_read_mac_addr()</h2>
 
@@ -555,7 +596,7 @@ The firmware must be in mbin format.</dd></dl>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Copyright 2021 Morse Micro </li>
+    <li class="footer">Copyright 2021-2025 Morse Micro </li>
   </ul>
 </div>
 </body>

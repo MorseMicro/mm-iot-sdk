@@ -1,20 +1,9 @@
 var searchData=
 [
-  ['wlan_20configuration_20variables_0',['wlan configuration variables',['../group__MMAGIC__CONTROLLER__WLAN__CONFIG.html',1,'']]],
-  ['wlan_20control_20api_1',['WLAN Control API',['../group__MMWLAN__CTRL.html',1,'']]],
-  ['wlan_20datapath_20api_2',['WLAN Datapath API',['../group__MMWLAN__DATA.html',1,'']]],
-  ['wlan_20hal_3',['WLAN HAL',['../group__MMHAL__WLAN.html',1,'']]],
-  ['wlan_20hal_20api_20for_20packet_20memory_20allocation_4',['WLAN HAL API for packet memory allocation',['../group__MMHAL__WLAN__PKT.html',1,'']]],
-  ['wlan_20hal_20api_20for_20sdio_20interface_5',['WLAN HAL API for SDIO interface',['../group__MMHAL__WLAN__SDIO.html',1,'']]],
-  ['wlan_20hal_20api_20for_20spi_20interface_6',['WLAN HAL API for SPI interface',['../group__MMHAL__WLAN__SPI.html',1,'']]],
-  ['wlan_20health_20check_20api_7',['WLAN Health check API',['../group__MMWLAN__HEALTH.html',1,'']]],
-  ['wlan_20initialization_2fdeinitialization_20api_8',['WLAN Initialization/Deinitialization API',['../group__MMWLAN__INIT.html',1,'']]],
-  ['wlan_20offload_20features_9',['WLAN offload features',['../group__MMWLAN__OFFLOAD.html',1,'']]],
-  ['wlan_20regulatory_20database_20api_10',['WLAN Regulatory Database API',['../group__MMWLAN__REGDB.html',1,'']]],
-  ['wlan_20standby_20features_11',['WLAN Standby features',['../group__MMWLAN__STANDBY.html',1,'']]],
-  ['wlan_20utilities_12',['WLAN Utilities',['../group__MMUTILS__WLAN.html',1,'']]],
-  ['wlan_5fconnect_13',['wlan_connect',['../m2m__controller_8c.html#a1b18cdee34a9f27753292fc69f5df1c8',1,'m2m_controller.c']]],
-  ['wnm_20sleep_20management_14',['WNM Sleep management',['../group__MMWLAN__WNM.html',1,'']]],
-  ['wnm_5fsleep_2ec_15',['wnm_sleep.c',['../wnm__sleep_8c.html',1,'']]],
-  ['wnm_5fsleep_5fenabled_16',['wnm_sleep_enabled',['../structmmagic__core__wlan__wnm__sleep__cmd__args.html#a1f7485c432d5e2c4c13162527e6f3657',1,'mmagic_core_wlan_wnm_sleep_cmd_args::wnm_sleep_enabled()'],['../structmmwlan__set__wnm__sleep__enabled__args.html#a5605ee17b705eb75c1f8f7c272c71390',1,'mmwlan_set_wnm_sleep_enabled_args::wnm_sleep_enabled()']]]
+  ['valid_5fchip_5fids_0',['valid_chip_ids',['../structchip__cfg.html#a0d5735d4eee454b11781751319dd7dc0',1,'chip_cfg']]],
+  ['vendor_5fies_1',['vendor_ies',['../structmmagic__wlan__beacon__rx__event__args.html#a0a4f69ade03f3b5f9cccfa5009bdea0a',1,'mmagic_wlan_beacon_rx_event_args']]],
+  ['verify_5fsignature_2',['verify_signature',['../bootloader_8c.html#a7cf929399abd068757e3d916ca9e034e',1,'bootloader.c']]],
+  ['version_3',['version',['../structmmwlan__bcf__metadata.html#adf230bcb317ee6f9fce43d306c9c7cbf',1,'mmwlan_bcf_metadata::version()'],['../structmmiperf__client__args.html#ae9b8e5d920fc9293340dde959d96ddde',1,'mmiperf_client_args::version()'],['../structmmiperf__server__args.html#a3998db290e0cc7247b7bdd90f3362a8c',1,'mmiperf_server_args::version()'],['../structmm__rsn__information.html#a48470713afc679e6de9c08043fbdc373',1,'mm_rsn_information::version()']]],
+  ['version_2eh_4',['version.h',['../version_8h.html',1,'']]],
+  ['vif_5',['vif',['../structmmwlan__vif__state.html#a69f2b9c849b5f34b07d52e65687839d9',1,'mmwlan_vif_state::vif()'],['../structmmwlan__rx__metadata.html#a3e836278512fa42385fc0e95e6acb081',1,'mmwlan_rx_metadata::vif()'],['../structmmwlan__tx__metadata.html#a4aee3531d3e5f58f39f60a7f17e08bbb',1,'mmwlan_tx_metadata::vif()']]]
 ];

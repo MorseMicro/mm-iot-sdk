@@ -16,7 +16,6 @@
 #include <string.h>
 #include "mmosal.h"
 
-
 /**
  * Main entry point to the application. This will be invoked in a thread once operating system
  * and hardware initialization has completed. It may return, but it does not have to.

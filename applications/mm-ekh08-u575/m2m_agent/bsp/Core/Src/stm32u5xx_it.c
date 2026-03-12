@@ -22,7 +22,7 @@
 #include "stm32u5xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "mmhal.h"
+#include "mmhal_os.h"
 #include "mmosal.h"
 /* USER CODE END Includes */
 

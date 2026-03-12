@@ -3,7 +3,6 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  *
- *
  * Warning: this file is auto-generated. Do not modify by hand.
  */
 

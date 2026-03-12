@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.9.7</span>
+   &#160;<span id="projectnumber">2.10.4</span>
    </div>
   </td>
  </tr>
@@ -91,7 +91,7 @@ $(document).ready(function(){initNavTree('group__MMWLAN__WNM.html',''); initResi
 <a href="#nested-classes">Data Structures</a> &#124;
 <a href="#define-members">Macros</a> &#124;
 <a href="#func-members">Functions</a>  </div>
-  <div class="headertitle"><div class="title">WNM Sleep management<div class="ingroups"><a class="el" href="group__MMWLAN.html">Morse Micro Wireless LAN (mmwlan) API</a></div></div></div>
+  <div class="headertitle"><div class="title">WNM Sleep management<div class="ingroups"><a class="el" href="group__MMWLAN.html">Morse Micro Wireless LAN (mmwlan) API</a> &raquo; <a class="el" href="group__MMWLAN__STA.html">WLAN Control API for Station (STA) mode</a></div></div></div>
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -99,7 +99,7 @@ $(document).ready(function(){initNavTree('group__MMWLAN__WNM.html',''); initResi
 <p>WNM sleep is an extended power save mode in which the STA need not listen for every DTIM beacon and need not perform rekey, allowing the STA to remain associated and reduce power consumption when it has no traffic to send or receive from the AP. While a STA is in WNM sleep it will be unable to communicate with the AP, and thus any traffic for the STA may be buffered or dropped at the discretion of the AP while the STA is in WNM sleep.</p>
 <dl class="section note"><dt>Note</dt><dd>WNM sleep can only be entered after the STA is associated to the AP. The AP must also support WNM sleep.</dd></dl>
 <p>When entry to WNM sleep is enabled via this API, the STA sends a request to the AP and after successful negotiation, the chip is either put into a lower power mode or powered down completely, depending on arguments given when WNM sleep mode was enabled. The datapath is paused during this time. If the STA does not successfully negotiate with the AP to enter WNM Sleep, it will return an error code and the chip will not enter a low power mode.</p>
-<p >When WNM sleep is disabled, the chip returns to normal operation and sends a request to the AP to exit WNM sleep. Note that the chip will exit low power mode regardless of whether or not the exit request was successful. WNM sleep will be exited if <a class="el" href="group__MMWLAN__CTRL.html#ga83480307a380060f5a1e03eaaf634081">mmwlan_shutdown</a> or <a class="el" href="group__MMWLAN__CTRL.html#gaea4e82b03668e794165ef372931bbe0d">mmwlan_sta_disable</a> is invoked.</p>
+<p >When WNM sleep is disabled, the chip returns to normal operation and sends a request to the AP to exit WNM sleep. Note that the chip will exit low power mode regardless of whether or not the exit request was successful. WNM sleep will be exited if <a class="el" href="group__MMWLAN__CTRL.html#ga83480307a380060f5a1e03eaaf634081">mmwlan_shutdown</a> or <a class="el" href="group__MMWLAN__STA.html#gaea4e82b03668e794165ef372931bbe0d">mmwlan_sta_disable</a> is invoked.</p>
 <p >If the AP takes down the link, then the station will be unaware until it sends the WNM Sleep exit request. At that point the AP will send a de-authentication frame with reason code "non-associated station". After validating this is actually the AP the station was connected to, the station will bring down the connection and return <a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086ac9e2689a222cc3b398fc89b68a1f0006">MMWLAN_ERROR</a>. The station will attempt to re-associate but will not re-enter WNM sleep. The application needs to enable WNM sleep again via this API if required.</p>
 <p >A high level overview of enabling and disabling WNM sleep is shown below.</p>
 <p ><div class="plantumlgraph">
@@ -144,10 +144,10 @@ Functions</h2></td></tr>
 <p>Initializer for <a class="el" href="structmmwlan__set__wnm__sleep__enabled__args.html">mmwlan_set_wnm_sleep_enabled_args</a>. </p>
 <p >For example:</p>
 <div class="fragment"><div class="line"><span class="keyword">struct </span><a class="code hl_struct" href="structmmwlan__set__wnm__sleep__enabled__args.html">mmwlan_set_wnm_sleep_enabled_args</a> wnm_sleep_args = <a class="code hl_define" href="group__MMWLAN__WNM.html#gae4c20750960f4199eb754b7b3e10569b">MMWLAN_SET_WNM_SLEEP_ENABLED_ARGS_INIT</a>;</div>
-<div class="ttc" id="agroup__MMWLAN__WNM_html_gae4c20750960f4199eb754b7b3e10569b"><div class="ttname"><a href="group__MMWLAN__WNM.html#gae4c20750960f4199eb754b7b3e10569b">MMWLAN_SET_WNM_SLEEP_ENABLED_ARGS_INIT</a></div><div class="ttdeci">#define MMWLAN_SET_WNM_SLEEP_ENABLED_ARGS_INIT</div><div class="ttdoc">Initializer for mmwlan_set_wnm_sleep_enabled_args.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l02062">mmwlan.h:2062</a></div></div>
-<div class="ttc" id="astructmmwlan__set__wnm__sleep__enabled__args_html"><div class="ttname"><a href="structmmwlan__set__wnm__sleep__enabled__args.html">mmwlan_set_wnm_sleep_enabled_args</a></div><div class="ttdoc">Structure for storing WNM sleep extended arguments.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l02045">mmwlan.h:2046</a></div></div>
+<div class="ttc" id="agroup__MMWLAN__WNM_html_gae4c20750960f4199eb754b7b3e10569b"><div class="ttname"><a href="group__MMWLAN__WNM.html#gae4c20750960f4199eb754b7b3e10569b">MMWLAN_SET_WNM_SLEEP_ENABLED_ARGS_INIT</a></div><div class="ttdeci">#define MMWLAN_SET_WNM_SLEEP_ENABLED_ARGS_INIT</div><div class="ttdoc">Initializer for mmwlan_set_wnm_sleep_enabled_args.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l02058">mmwlan.h:2058</a></div></div>
+<div class="ttc" id="astructmmwlan__set__wnm__sleep__enabled__args_html"><div class="ttname"><a href="structmmwlan__set__wnm__sleep__enabled__args.html">mmwlan_set_wnm_sleep_enabled_args</a></div><div class="ttdoc">Structure for storing WNM sleep extended arguments.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l02041">mmwlan.h:2042</a></div></div>
 </div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02062">2062</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02058">2058</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -180,7 +180,7 @@ Functions</h2></td></tr>
 <p >If WNM sleep mode is enabled then the transceiver will sleep across multiple DTIM periods until WNM sleep mode is disabled. This allows the transceiver to use less power with the caveat that it will not wake up for group- or individually-addressed traffic. If a group rekey occurs while the device is in WNM sleep it will be applied when the device exits WNM sleep.</p>
 <dl class="section note"><dt>Note</dt><dd>Data should not be queued for transmission (using, e.g., <a class="el" href="group__MMWLAN__DATA.html#gac6b6e52154bfe307d15cae475df33df3">mmwlan_tx()</a>) during WNM sleep. </dd>
 <dd>
-802.11 power save must be enabled for any benefit to be obtained (see <a class="el" href="group__MMWLAN__CTRL.html#ga8771bfc0223d560f1d27d61e69b88d64">mmwlan_set_power_save_mode()</a>). </dd>
+802.11 power save must be enabled for any benefit to be obtained (see <a class="el" href="group__MMWLAN__STA.html#ga8771bfc0223d560f1d27d61e69b88d64">mmwlan_set_power_save_mode()</a>). </dd>
 <dd>
 Negotiation with the AP is required to enter WNM sleep. As such the transceiver will only be placed into low power mode when a connection has been establish and the AP has accepted the request to enter WNM sleep. This will automatically be handled within mmwlan once WNM sleep mode is enabled.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -191,7 +191,7 @@ Negotiation with the AP is required to enter WNM sleep. As such the transceiver 
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> on success, MMWLAN_UNAVAILABLE if already requested or if not currently connected, else an appropriate error code. <a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a44ca87b719a15e19375cbcddd81bc152">MMWLAN_TIMED_OUT</a> if the maximum retry request reached. For WNM sleep exit request, this means that the device exited WNM sleep but failed to inform the AP. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02118">2118</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02114">2114</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -215,7 +215,7 @@ Negotiation with the AP is required to enter WNM sleep. As such the transceiver 
 <p >Provides an extended interface for setting WNM sleep. See <a class="el" href="structmmwlan__set__wnm__sleep__enabled__args.html">mmwlan_set_wnm_sleep_enabled_args</a> for parameter details. If WNM sleep mode is enabled then the transceiver will sleep across multiple DTIM periods until WNM sleep mode is disabled. This allows the transceiver to use less power with the caveat that it will not wake up for group- or individually-addressed traffic. If a group rekey occurs while the device is in WNM sleep it will be applied when the device exits WNM sleep.</p>
 <dl class="section note"><dt>Note</dt><dd>Data should not be queued for transmission (using, e.g., <a class="el" href="group__MMWLAN__DATA.html#gac6b6e52154bfe307d15cae475df33df3">mmwlan_tx()</a>) during WNM sleep. </dd>
 <dd>
-802.11 power save must be enabled for any benefit to be obtained (see <a class="el" href="group__MMWLAN__CTRL.html#ga8771bfc0223d560f1d27d61e69b88d64">mmwlan_set_power_save_mode()</a>). </dd>
+802.11 power save must be enabled for any benefit to be obtained (see <a class="el" href="group__MMWLAN__STA.html#ga8771bfc0223d560f1d27d61e69b88d64">mmwlan_set_power_save_mode()</a>). </dd>
 <dd>
 Negotiation with the AP is required to enter WNM sleep. As such the transceiver will only be placed into low power mode when a connection has been establish and the AP has accepted the request to enter WNM sleep. This will automatically be handled within mmwlan once WNM sleep mode is enabled.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -234,7 +234,7 @@ Negotiation with the AP is required to enter WNM sleep. As such the transceiver 
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Copyright 2021 Morse Micro </li>
+    <li class="footer">Copyright 2021-2025 Morse Micro </li>
   </ul>
 </div>
 </body>

@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+#include <stdio.h>
 #include <string.h>
 
 #if !defined(MBEDTLS_CONFIG_FILE)
@@ -19,12 +20,13 @@
 #include "mmwlan.h"
 #include "mmipal.h"
 #include "mmconfig.h"
+#include "mmhal_app.h"
 #include "mm_app_loadconfig.h"
 #include "mm_app_common.h"
 
 /** Maximum number of DNS servers to attempt to retrieve from config store. */
 #ifndef DNS_MAX_SERVERS
-#define DNS_MAX_SERVERS                 2
+#define DNS_MAX_SERVERS 2
 #endif
 
 /** Binary semaphore used to start user_main() once the link comes up. */
@@ -39,20 +41,19 @@ static void sta_status_callback(enum mmwlan_sta_state sta_state)
 {
     switch (sta_state)
     {
-    case MMWLAN_STA_DISABLED:
-        printf("WLAN STA disabled\n");
-        break;
+        case MMWLAN_STA_DISABLED:
+            printf("WLAN STA disabled\n");
+            break;
 
-    case MMWLAN_STA_CONNECTING:
-        printf("WLAN STA connecting\n");
-        break;
+        case MMWLAN_STA_CONNECTING:
+            printf("WLAN STA connecting\n");
+            break;
 
-    case MMWLAN_STA_CONNECTED:
-        printf("WLAN STA connected\n");
-        break;
+        case MMWLAN_STA_CONNECTED:
+            printf("WLAN STA connected\n");
+            break;
     }
 }
-
 
 /**
  * Load DNS server IP addresses from mmconfig and update the mmipal configuration accordingly.
@@ -75,8 +76,7 @@ static bool set_dns_servers(const char *config_key_format)
     for (ii = 0; ii < DNS_MAX_SERVERS; ii++)
     {
         snprintf(key, sizeof(key), config_key_format, ii);
-        if (((mmconfig_read_string(key, addr_str, sizeof(addr_str))) > 0) &&
-            addr_str[0] != '\0')
+        if (((mmconfig_read_string(key, addr_str, sizeof(addr_str))) > 0) && addr_str[0] != '\0')
         {
             (void)mmipal_set_dns_server(ii, addr_str);
         }
@@ -142,16 +142,26 @@ static void link_status_callback(const struct mmipal_link_status *link_status)
 void app_print_version_info(void)
 {
     enum mmwlan_status status;
-    struct mmwlan_version version = {0};
-    struct mmwlan_bcf_metadata bcf_metadata = {0};
+    struct mmwlan_version version = { 0 };
+    struct mmwlan_bcf_metadata bcf_metadata = { 0 };
+    char hw_version_string[32] = { 0 };
+
+    bool ok = mmhal_get_hardware_version(hw_version_string, sizeof(hw_version_string));
+    if (!ok)
+    {
+        snprintf(hw_version_string, sizeof(hw_version_string), "%s", "Unknown");
+    }
 
     printf("-----------------------------------\n");
 
+    printf("  HW Version:              %s\n", hw_version_string);
     status = mmwlan_get_bcf_metadata(&bcf_metadata);
     if (status == MMWLAN_SUCCESS)
     {
         printf("  BCF API version:         %u.%u.%u\n",
-               bcf_metadata.version.major, bcf_metadata.version.minor, bcf_metadata.version.patch);
+               bcf_metadata.version.major,
+               bcf_metadata.version.minor,
+               bcf_metadata.version.patch);
         if (bcf_metadata.build_version[0] != '\0')
         {
             printf("  BCF build version:       %s\n", bcf_metadata.build_version);
@@ -200,7 +210,6 @@ void app_wlan_init(void)
     (void)mmwlan_boot(&boot_args);
     app_print_version_info();
 
-
     /* Load IP stack settings from config store, or use defaults if no entry found in
      * config store. */
     struct mmipal_init_args mmipal_init_args = MMIPAL_INIT_ARGS_DEFAULT;
@@ -237,8 +246,8 @@ void app_wlan_start(void)
     MMOSAL_ASSERT(status == MMWLAN_SUCCESS);
 
     /* Wait for link status callback.
-    * Use a binary semaphore to block us until Link is up.
-    */
+     * Use a binary semaphore to block us until Link is up.
+     */
     mmosal_semb_wait(link_established, UINT32_MAX);
 
     /* Wi-Fi link is now established, return to caller */

@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.9.7</span>
+   &#160;<span id="projectnumber">2.10.4</span>
    </div>
   </td>
  </tr>
@@ -175,16 +175,17 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>mmping_stop</b> (void
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">        {                                                        \</div>
-<div class="line">            { 0 }, { 0 }, <a class="code hl_define" href="group__MMPING.html#gac0256714b83af7c59367940364370134">MMPING_DEFAULT_PING_INTERVAL_MS</a>,       \</div>
-<div class="line">            MMPING_DEFAULT_PING_COUNT, <a class="code hl_define" href="group__MMPING.html#ga2d4fb9b757737a3f553ec636aa53a43b">MMPING_DEFAULT_DATA_SIZE</a>, \</div>
-<div class="line">        }</div>
-<div class="ttc" id="agroup__MMPING_html_ga2d4fb9b757737a3f553ec636aa53a43b"><div class="ttname"><a href="group__MMPING.html#ga2d4fb9b757737a3f553ec636aa53a43b">MMPING_DEFAULT_DATA_SIZE</a></div><div class="ttdeci">#define MMPING_DEFAULT_DATA_SIZE</div><div class="ttdoc">Default ping data packet size in bytes, excluding ICMP header.</div><div class="ttdef"><b>Definition:</b> <a href="mmping_8h_source.html#l00048">mmping.h:48</a></div></div>
-<div class="ttc" id="agroup__MMPING_html_gac0256714b83af7c59367940364370134"><div class="ttname"><a href="group__MMPING.html#gac0256714b83af7c59367940364370134">MMPING_DEFAULT_PING_INTERVAL_MS</a></div><div class="ttdeci">#define MMPING_DEFAULT_PING_INTERVAL_MS</div><div class="ttdoc">Default time interval in milliseconds between ping requests.</div><div class="ttdef"><b>Definition:</b> <a href="mmping_8h_source.html#l00044">mmping.h:44</a></div></div>
+<b>Value:</b><div class="fragment"><div class="line">    {                                    \</div>
+<div class="line">        { 0 },                           \</div>
+<div class="line">        { 0 },                           \</div>
+<div class="line">        MMPING_DEFAULT_PING_INTERVAL_MS, \</div>
+<div class="line">        MMPING_DEFAULT_PING_COUNT,       \</div>
+<div class="line">        MMPING_DEFAULT_DATA_SIZE,        \</div>
+<div class="line">    }</div>
 </div><!-- fragment -->
 <p>Initializer for <a class="el" href="structmmping__args.html">mmping_args</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmping_8h_source.html#l00095">95</a> of file <a class="el" href="mmping_8h_source.html">mmping.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmping_8h_source.html#l00096">96</a> of file <a class="el" href="mmping_8h_source.html">mmping.h</a>.</p>
 
 </div>
 </div>
@@ -202,7 +203,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>mmping_stop</b> (void
 
 <p>Default ping data packet size in bytes, excluding ICMP header. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmping_8h_source.html#l00048">48</a> of file <a class="el" href="mmping_8h_source.html">mmping.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmping_8h_source.html#l00049">49</a> of file <a class="el" href="mmping_8h_source.html">mmping.h</a>.</p>
 
 </div>
 </div>
@@ -220,7 +221,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>mmping_stop</b> (void
 
 <p>Default max count for ping request to run forever. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmping_8h_source.html#l00046">46</a> of file <a class="el" href="mmping_8h_source.html">mmping.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmping_8h_source.html#l00047">47</a> of file <a class="el" href="mmping_8h_source.html">mmping.h</a>.</p>
 
 </div>
 </div>
@@ -238,7 +239,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>mmping_stop</b> (void
 
 <p>Default time interval in milliseconds between ping requests. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmping_8h_source.html#l00044">44</a> of file <a class="el" href="mmping_8h_source.html">mmping.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmping_8h_source.html#l00045">45</a> of file <a class="el" href="mmping_8h_source.html">mmping.h</a>.</p>
 
 </div>
 </div>
@@ -256,7 +257,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>mmping_stop</b> (void
 
 <p>Length of the ICMP echo header in octets. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmping_8h_source.html#l00064">64</a> of file <a class="el" href="mmping_8h_source.html">mmping.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmping_8h_source.html#l00065">65</a> of file <a class="el" href="mmping_8h_source.html">mmping.h</a>.</p>
 
 </div>
 </div>
@@ -275,7 +276,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>mmping_stop</b> (void
 <p>Rate at which to retry unacknowledged ping requests when the RTT is not known. </p>
 <p >`` </p>
 
-<p class="definition">Definition at line <a class="el" href="mmping_8h_source.html#l00058">58</a> of file <a class="el" href="mmping_8h_source.html">mmping.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmping_8h_source.html#l00059">59</a> of file <a class="el" href="mmping_8h_source.html">mmping.h</a>.</p>
 
 </div>
 </div>
@@ -293,7 +294,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>mmping_stop</b> (void
 
 <p>Maximum length of an IP address string including null-terminator. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmping_8h_source.html#l00061">61</a> of file <a class="el" href="mmping_8h_source.html">mmping.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmping_8h_source.html#l00062">62</a> of file <a class="el" href="mmping_8h_source.html">mmping.h</a>.</p>
 
 </div>
 </div>
@@ -311,7 +312,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>mmping_stop</b> (void
 
 <p>Maximum number of pings before terminating. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmping_8h_source.html#l00054">54</a> of file <a class="el" href="mmping_8h_source.html">mmping.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmping_8h_source.html#l00055">55</a> of file <a class="el" href="mmping_8h_source.html">mmping.h</a>.</p>
 
 </div>
 </div>
@@ -329,7 +330,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>mmping_stop</b> (void
 
 <p>Maximum data size of ping request packet excluding ICMP header. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmping_8h_source.html#l00052">52</a> of file <a class="el" href="mmping_8h_source.html">mmping.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmping_8h_source.html#l00053">53</a> of file <a class="el" href="mmping_8h_source.html">mmping.h</a>.</p>
 
 </div>
 </div>
@@ -347,7 +348,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>mmping_stop</b> (void
 
 <p>Maximum number of times to retransmit a ping request before giving up and moving on. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmping_8h_source.html#l00056">56</a> of file <a class="el" href="mmping_8h_source.html">mmping.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmping_8h_source.html#l00057">57</a> of file <a class="el" href="mmping_8h_source.html">mmping.h</a>.</p>
 
 </div>
 </div>
@@ -365,7 +366,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>mmping_stop</b> (void
 
 <p>Minimum data size of ping request packet excluding ICMP header. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmping_8h_source.html#l00050">50</a> of file <a class="el" href="mmping_8h_source.html">mmping.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmping_8h_source.html#l00051">51</a> of file <a class="el" href="mmping_8h_source.html">mmping.h</a>.</p>
 
 </div>
 </div>
@@ -430,7 +431,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>mmping_stop</b> (void
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Copyright 2021 Morse Micro </li>
+    <li class="footer">Copyright 2021-2025 Morse Micro </li>
   </ul>
 </div>
 </body>

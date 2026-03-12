@@ -36,18 +36,18 @@
  *
  * 11 bits yields a data block size of 2KB.
  */
-#define otaconfigLOG2_FILE_BLOCK_SIZE           11UL
+#define otaconfigLOG2_FILE_BLOCK_SIZE 11UL
 
 /**
  * @brief Size of the file data block message (excluding the header).
  *
  */
-#define otaconfigFILE_BLOCK_SIZE                (1UL << otaconfigLOG2_FILE_BLOCK_SIZE)
+#define otaconfigFILE_BLOCK_SIZE (1UL << otaconfigLOG2_FILE_BLOCK_SIZE)
 
 /**
  * @brief Milliseconds to wait for the self test phase to succeed before we force reset.
  */
-#define otaconfigSELF_TEST_RESPONSE_WAIT_MS     60000U
+#define otaconfigSELF_TEST_RESPONSE_WAIT_MS 60000U
 
 /**
  * @brief Milliseconds to wait before requesting data blocks from the OTA service while idle.
@@ -55,7 +55,7 @@
  * The wait timer is reset whenever a data block is received from the OTA service so we will
  * only send the request message after being idle for this amount of time.
  */
-#define otaconfigFILE_REQUEST_WAIT_MS           10000U
+#define otaconfigFILE_REQUEST_WAIT_MS 10000U
 
 /**
  * @brief The maximum allowed length of the thing name used by the OTA agent.
@@ -65,7 +65,7 @@
  * initializing the OTA agent. The agent uses this size to allocate static storage for the
  * Thing name used in all OTA base topics. Namely @c $aws/things/thingName
  */
-#define otaconfigMAX_THINGNAME_LEN              128U
+#define otaconfigMAX_THINGNAME_LEN 128U
 
 /**
  * @brief The maximum number of data blocks requested from OTA streaming service.
@@ -84,7 +84,7 @@
  *          defaults to 20. To increase beyond that limit, you must first increase @c MAX_MESSAGES
  *          to your desired value.
  */
-#define otaconfigMAX_NUM_BLOCKS_REQUEST         16U
+#define otaconfigMAX_NUM_BLOCKS_REQUEST 16U
 
 /**
  * @brief The maximum number of requests allowed to send without a response before we abort.
@@ -93,7 +93,7 @@
  * the selected communication channel before aborting and returning error.
  *
  */
-#define otaconfigMAX_NUM_REQUEST_MOMENTUM       32U
+#define otaconfigMAX_NUM_REQUEST_MOMENTUM 32U
 
 /**
  * @brief The number of data buffers reserved by the OTA agent.
@@ -101,7 +101,7 @@
  * This configurations parameter sets the maximum number of static data buffers used by
  * the OTA agent for job and file data blocks received.
  */
-#define otaconfigMAX_NUM_OTA_DATA_BUFFERS       (otaconfigMAX_NUM_BLOCKS_REQUEST + 1)
+#define otaconfigMAX_NUM_OTA_DATA_BUFFERS (otaconfigMAX_NUM_BLOCKS_REQUEST + 1)
 
 /**
  * @brief How frequently the device will report its OTA progress to the cloud.
@@ -110,7 +110,7 @@
  * number of blocks it receives. For example, 25 means device will update job status every 25
  * blocks it receives.
  */
-#define otaconfigOTA_UPDATE_STATUS_FREQUENCY    100U
+#define otaconfigOTA_UPDATE_STATUS_FREQUENCY 100U
 
 /**
  * @brief Allow update to same or lower version.
@@ -121,9 +121,9 @@
  * configuration disabled.
  */
 #ifdef TFM_PSA_API
-#define otaconfigAllowDowngrade    1U
+#define otaconfigAllowDowngrade 1U
 #else
-#define otaconfigAllowDowngrade    0U
+#define otaconfigAllowDowngrade 0U
 #endif
 
 /**
@@ -134,7 +134,7 @@
  *
  * Note - Only MQTT is supported at this time for control operations.
  */
-#define configENABLED_CONTROL_PROTOCOL    (OTA_CONTROL_OVER_MQTT)
+#define configENABLED_CONTROL_PROTOCOL (OTA_CONTROL_OVER_MQTT)
 
 /**
  * @brief The protocol selected for OTA data operations.
@@ -148,7 +148,7 @@
  * Enable data over HTTP - (OTA_DATA_OVER_HTTP)
  * Enable data over both MQTT & HTTP (OTA_DATA_OVER_MQTT | OTA_DATA_OVER_HTTP)
  */
-#define configENABLED_DATA_PROTOCOLS      (OTA_DATA_OVER_MQTT)
+#define configENABLED_DATA_PROTOCOLS (OTA_DATA_OVER_MQTT)
 
 /**
  * @brief The preferred protocol selected for OTA data operations.
@@ -160,6 +160,6 @@
  * Note - use OTA_DATA_OVER_HTTP for HTTP as primary data protocol.
  */
 
-#define configOTA_PRIMARY_DATA_PROTOCOL    OTA_DATA_OVER_MQTT
+#define configOTA_PRIMARY_DATA_PROTOCOL OTA_DATA_OVER_MQTT
 
 #endif /* OTA_CONFIG_H_ */

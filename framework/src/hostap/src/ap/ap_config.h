@@ -1178,7 +1178,8 @@ struct hostapd_config {
 	int ieee80211ah;
 	u8 s1g_prim_chwidth;
 	u8 s1g_op_class;
-	u8 s1g_prim_1mhz_chan_index;
+	u8 s1g_prim_channel;
+	u8 s1g_prim_1mhz_chan_loc;
 
 	/* Use driver-generated interface addresses when adding multiple BSSs */
 	u8 use_driver_iface_addr;

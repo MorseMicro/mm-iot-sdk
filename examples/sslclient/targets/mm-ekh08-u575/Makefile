@@ -1,5 +1,5 @@
 #
-# Copyright 2023-2025 Morse Micro
+# Copyright 2023-2026 Morse Micro
 #
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -42,21 +42,30 @@ ifeq ($(VERBOSE),)
 QUIET = @
 endif
 
-# Set BUILD_SUPPLICANT_FROM_SOURCE to build the WPA Supplicant from source and link
-# against libmorse_nosupplicant.a. If this is set, the crypto will also be built from source
-# using mbedTLS.
+# Set BUILD_SUPPLICANT_FROM_SOURCE to a non-empty string to build the WPA Supplicant from source
+# and link against libmorse_nosupplicant.a. If this is set, the crypto will also be built from
+# source using mbedTLS.
 # Note that this will take precedence over BUILD_SUPPLICANT_CRYPTO_FROM_SOURCE if both are set.
 #BUILD_SUPPLICANT_FROM_SOURCE=y
 
-# Set BUILD_SUPPLICANT_CRYPTO_FROM_SOURCE to build the WPA Supplicant crypto from source
-# using mbedTLS.
-# against libmorse_nosupplicant.a. If not set then the WPA Supplicant will be linked
-# as part of libmorse.a
-#BUILD_SUPPLICANT_CRYPTO_FROM_SOURCE=y
+# Set BUILD_SUPPLICANT_CRYPTO_FROM_SOURCE to a non-empty string to build the WPA Supplicant crypto
+# from source using mbedTLS.
+# Note that BUILD_SUPPLICANT_CRYPTO_FROM_SOURCE is enabled by default, but can be set to an empty
+# string to disable it.
+BUILD_SUPPLICANT_CRYPTO_FROM_SOURCE?=y
 
-# Set BUILD_SUPPLICANT_WITH_SOFTAP to enable building WPA Supplicant with Soft AP support.
-# Note that this also requires BUILD_SUPPLICANT_FROM_SOURCE (see above).
-#BUILD_SUPPLICANT_WITH_SOFTAP=y
+
+# Set BUILD_WITH_MBEDTLS_ECC_HW_CRYPTO to a non-empty string to enable hardware acceleration of
+# mbedTLS ECC operations where supported by the platform. BUILD_WITH_MBEDTLS_ECC_HW_CRYPTO will be
+# ignored for platforms that do not have hardware crypto support.
+# Note that BUILD_WITH_MBEDTLS_ECC_HW_CRYPTO is enabled by default, but can be set to an empty
+# string to disable it.
+BUILD_WITH_MBEDTLS_ECC_HW_CRYPTO?=y
+
+# Set ENABLE_AP_MODE to a non-empty string to enable additional build time configuration to support
+# AP mode. This will increase heap allocations and compile the WPA supplicant with AP mode support.
+# Additional memory increase is indicative only.
+#ENABLE_AP_MODE=y
 
 # Example source files
 APP_DIR = ../..
@@ -74,8 +83,13 @@ INCLUDES += $(APP_DIR)/src
 CFLAGS += -Werror -Wall -Wextra
 CONLYFLAGS += -Wc++-compat
 
+# Explicitly specify the C standard version that has been assumed. Your mileage may vary if other
+# versions are used.
+CONLYFLAGS += -std=gnu11
 
-# This determines the network stack that will be built.
+
+# This determines the network stack that will be built. Note that freertosplustcp
+# support is deprecated and will be removed in a future release.
 # Options:
 # - lwip
 # - freertosplustcp
@@ -91,10 +105,31 @@ MMIPAL_IPV4_ENABLED ?= 1
 # Options:
 # - 0
 # - 1
-MMIPAL_IPV6_ENABLED ?= 1
+MMIPAL_IPV6_ENABLED ?= 0
 
 
-ifneq ($(BUILD_SUPPLICANT_WITH_SOFTAP)$(BUILD_SUPPLICANT_WITH_DPP),)
+ifneq ($(ENABLE_AP_MODE),)
+BUILD_SUPPLICANT_WITH_AP=y
+# Maximum number of STAs connected to the AP. Used to programatically configure the additional
+# memory requirements. Can be overridden as appropriate.
+MAX_STAS ?= 4
+
+ifneq ($(shell echo $(MAX_STAS) | grep "[^0-9]"),)
+$(error MAX_STAS='$(MAX_STAS)' is not an integer)
+endif
+
+# Additional heap of 5k * max connected STAs. This excludes additional memory for mmpkts
+BUILD_DEFINES += AP_MODE_HEAP=$(shell echo $$(($(MAX_STAS) * 5000)))
+
+# Additional memory for tracking allocations in debug mode
+DEBUG_BUILD_DEFINES += MAX_ALLOCATIONS=$(shell echo $$((250 + ($(MAX_STAS) * 40))))
+
+# Increase packet memory to accomodate additional stations traffic. This is indicative only.
+MMPKTMEM_TX_POOL_N_BLOCKS = $(shell echo $$((32 + ($(MAX_STAS) * 2))))
+MMPKTMEM_RX_POOL_N_BLOCKS = $(shell echo $$((32 + ($(MAX_STAS) * 2))))
+endif
+
+ifneq ($(BUILD_SUPPLICANT_WITH_AP)$(BUILD_SUPPLICANT_WITH_DPP)$(BUILD_MORSELIB_FROM_SOURCE),)
 BUILD_SUPPLICANT_FROM_SOURCE=y
 endif
 
@@ -121,7 +156,10 @@ include $(MMIOT_ROOT)/mk/mbedtls.mk
 include $(MMIOT_ROOT)/mk/mmipal.mk
 include $(MMIOT_ROOT)/mk/mmpktmem.mk
 include $(MMIOT_ROOT)/mk/$(IP_STACK).mk
+include $(MMIOT_ROOT)/mk/mmregdb.mk
 
+
+MMIOT_INCLUDES += src
 
 SRCS_H += $(addprefix $(MMIOT_ROOT)/,$(MMIOT_SRCS_H))
 # A quick sanity check to see if we're missing any files that the Make targets depend on.
@@ -157,6 +195,8 @@ DEBUG_CFLAGS +=-gdwarf-5
 DEBUG_CFLAGS +=-fvar-tracking-assignments
 
 DEBUG_BUILD_DEFINES += MMOSAL_TRACK_ALLOCATIONS
+
+DEBUG_BUILD_DEFINES += ENABLE_MMOSAL_DEV_ASSERT
 
 # Enable print, breakpoint, and, failing that, infinite loop in assertion handler
 DEBUG_BUILD_DEFINES += HALT_ON_ASSERT

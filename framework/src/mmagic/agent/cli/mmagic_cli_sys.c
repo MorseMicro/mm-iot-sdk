@@ -68,7 +68,7 @@ void mmagic_cli_sys_get_version(EmbeddedCli *cli, char *args, void *context)
     MM_UNUSED(args);
     MM_UNUSED(context);
     struct mmagic_cli *ctx = (struct mmagic_cli *)cli->appContext;
-    struct mmagic_core_sys_get_version_rsp_args rsp = { };
+    struct mmagic_core_sys_get_version_rsp_args rsp = {};
     char str32[33];
 
     enum mmagic_status status = mmagic_core_sys_get_version(&ctx->core, &rsp);

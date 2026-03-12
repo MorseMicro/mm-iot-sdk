@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.9.7</span>
+   &#160;<span id="projectnumber">2.10.4</span>
    </div>
   </td>
  </tr>
@@ -118,7 +118,8 @@ Transmit Mode</h2>
 <div class="fragment"><div class="line">root@morsemicro:~ $ tcpdump -A -i wlan0 -n <span class="stringliteral">&quot;broadcast&quot;</span></div>
 <div class="line">tcpdump: verbose output suppressed, use -v[v]... <span class="keywordflow">for</span> full protocol decode</div>
 <div class="line">listening on wlan0, link-type EN10MB (Ethernet), snapshot length 262144 bytes</div>
-<div class="line">01:51:49.865347 0c:bf:74:00:01:29 &gt; ff:ff:ff:ff:ff:ff Null Unnumbered, xid, Flags [Response], length 6: 01 00</div>
+<div class="line">01:51:49.865347 0c:bf:74:00:01:29 &gt; ff:ff:ff:ff:ff:ff Null Unnumbered, xid, Flags [Response],</div>
+<div class="line">length 6: 01 00</div>
 <div class="line">...</div>
 <div class="line">01:51:49.902936 ARP, Request who-has 192.168.1.2 tell 192.168.1.2, length 28</div>
 <div class="line">..........t..)..............</div>
@@ -174,25 +175,25 @@ Include dependency graph for udp_broadcast.c:</div>
 <div class="dyncontent">
 <div class="center"><img src="udp__broadcast_8c__incl.png" border="0" usemap="#audp__broadcast_8c" alt=""/></div>
 <map name="audp__broadcast_8c" id="audp__broadcast_8c">
-<area shape="rect" title="Example app utilizing the LWIP &quot;raw&quot; API to handle UDP broadcast packets." alt="" coords="557,5,685,32"/>
-<area shape="rect" title=" " alt="" coords="5,304,76,331"/>
-<area shape="rect" title=" " alt="" coords="85,80,164,107"/>
-<area shape="rect" href="mmosal_8h_source.html" title=" " alt="" coords="159,229,245,256"/>
-<area shape="rect" href="mmwlan_8h_source.html" title=" " alt="" coords="357,80,447,107"/>
-<area shape="rect" href="mmconfig_8h_source.html" title=" " alt="" coords="546,155,645,181"/>
-<area shape="rect" href="mmipal_8h_source.html" title=" " alt="" coords="719,229,803,256"/>
-<area shape="rect" title=" " alt="" coords="684,80,781,107"/>
-<area shape="rect" title=" " alt="" coords="805,80,903,107"/>
-<area shape="rect" title=" " alt="" coords="927,80,1016,107"/>
-<area shape="rect" title=" " alt="" coords="1041,80,1195,107"/>
-<area shape="rect" title=" " alt="" coords="639,304,722,331"/>
-<area shape="rect" title=" " alt="" coords="397,304,468,331"/>
-<area shape="rect" title=" " alt="" coords="101,304,167,331"/>
-<area shape="rect" title=" " alt="" coords="303,304,373,331"/>
-<area shape="rect" title=" " alt="" coords="192,304,279,331"/>
-<area shape="rect" title=" " alt="" coords="290,155,365,181"/>
-<area shape="rect" href="mmpkt_8h_source.html" title=" " alt="" coords="440,155,521,181"/>
-<area shape="rect" title=" " alt="" coords="518,229,593,256"/>
+<area shape="rect" title="Example app utilizing the LWIP &quot;raw&quot; API to handle UDP broadcast packets." alt="" coords="601,5,729,32"/>
+<area shape="rect" title=" " alt="" coords="5,155,76,181"/>
+<area shape="rect" title=" " alt="" coords="207,80,285,107"/>
+<area shape="rect" href="mmosal_8h_source.html" title=" " alt="" coords="309,80,396,107"/>
+<area shape="rect" href="mmwlan_8h_source.html" title=" " alt="" coords="450,80,541,107"/>
+<area shape="rect" href="mmconfig_8h_source.html" title=" " alt="" coords="674,80,773,107"/>
+<area shape="rect" href="mmipal_8h_source.html" title=" " alt="" coords="565,80,649,107"/>
+<area shape="rect" title=" " alt="" coords="797,80,895,107"/>
+<area shape="rect" title=" " alt="" coords="919,80,1016,107"/>
+<area shape="rect" title=" " alt="" coords="1040,80,1129,107"/>
+<area shape="rect" title=" " alt="" coords="1154,80,1309,107"/>
+<area shape="rect" title=" " alt="" coords="698,155,781,181"/>
+<area shape="rect" title=" " alt="" coords="603,155,673,181"/>
+<area shape="rect" title=" " alt="" coords="101,155,167,181"/>
+<area shape="rect" title=" " alt="" coords="303,155,373,181"/>
+<area shape="rect" title=" " alt="" coords="192,155,279,181"/>
+<area shape="rect" title=" " alt="" coords="503,155,578,181"/>
+<area shape="rect" title=" " alt="" coords="397,155,479,181"/>
+<area shape="rect" title=" " alt="" coords="805,155,879,181"/>
 </map>
 </div>
 </div>
@@ -265,7 +266,7 @@ Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:aeb28bb47e0aad14ea55044d12ef006d6"><td class="memItemLeft" align="right" valign="top">static struct <a class="el" href="structudp__broadcast__rx__metadata.html">udp_broadcast_rx_metadata</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="udp__broadcast_8c.html#aeb28bb47e0aad14ea55044d12ef006d6">rx_metadata</a> = {0}</td></tr>
+<tr class="memitem:aeb28bb47e0aad14ea55044d12ef006d6"><td class="memItemLeft" align="right" valign="top">static struct <a class="el" href="structudp__broadcast__rx__metadata.html">udp_broadcast_rx_metadata</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="udp__broadcast_8c.html#aeb28bb47e0aad14ea55044d12ef006d6">rx_metadata</a> = { 0 }</td></tr>
 <tr class="memdesc:aeb28bb47e0aad14ea55044d12ef006d6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Global data structure used in RX mode to record metadata.  <a href="udp__broadcast_8c.html#aeb28bb47e0aad14ea55044d12ef006d6">More...</a><br /></td></tr>
 <tr class="separator:aeb28bb47e0aad14ea55044d12ef006d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -284,7 +285,7 @@ Variables</h2></td></tr>
 
 <p>Maximum length of broadcast tx packet payload. </p>
 
-<p class="definition">Definition at line <a class="el" href="udp__broadcast_8c_source.html#l00123">123</a> of file <a class="el" href="udp__broadcast_8c_source.html">udp_broadcast.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="udp__broadcast_8c_source.html#l00124">124</a> of file <a class="el" href="udp__broadcast_8c_source.html">udp_broadcast.c</a>.</p>
 
 </div>
 </div>
@@ -302,7 +303,7 @@ Variables</h2></td></tr>
 
 <p>Format string to use for the tx packet payload. </p>
 
-<p class="definition">Definition at line <a class="el" href="udp__broadcast_8c_source.html#l00125">125</a> of file <a class="el" href="udp__broadcast_8c_source.html">udp_broadcast.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="udp__broadcast_8c_source.html#l00126">126</a> of file <a class="el" href="udp__broadcast_8c_source.html">udp_broadcast.c</a>.</p>
 
 </div>
 </div>
@@ -320,7 +321,7 @@ Variables</h2></td></tr>
 
 <p>Number of broadcast packet to transmit. </p>
 
-<p class="definition">Definition at line <a class="el" href="udp__broadcast_8c_source.html#l00117">117</a> of file <a class="el" href="udp__broadcast_8c_source.html">udp_broadcast.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="udp__broadcast_8c_source.html#l00118">118</a> of file <a class="el" href="udp__broadcast_8c_source.html">udp_broadcast.c</a>.</p>
 
 </div>
 </div>
@@ -338,7 +339,7 @@ Variables</h2></td></tr>
 
 <p>Interval between successive packet transmission. </p>
 
-<p class="definition">Definition at line <a class="el" href="udp__broadcast_8c_source.html#l00121">121</a> of file <a class="el" href="udp__broadcast_8c_source.html">udp_broadcast.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="udp__broadcast_8c_source.html#l00122">122</a> of file <a class="el" href="udp__broadcast_8c_source.html">udp_broadcast.c</a>.</p>
 
 </div>
 </div>
@@ -356,7 +357,7 @@ Variables</h2></td></tr>
 
 <p>Default ID used in the rx metadata. </p>
 
-<p class="definition">Definition at line <a class="el" href="udp__broadcast_8c_source.html#l00129">129</a> of file <a class="el" href="udp__broadcast_8c_source.html">udp_broadcast.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="udp__broadcast_8c_source.html#l00130">130</a> of file <a class="el" href="udp__broadcast_8c_source.html">udp_broadcast.c</a>.</p>
 
 </div>
 </div>
@@ -374,7 +375,7 @@ Variables</h2></td></tr>
 
 <p>Default mode for the application. </p>
 
-<p class="definition">Definition at line <a class="el" href="udp__broadcast_8c_source.html#l00127">127</a> of file <a class="el" href="udp__broadcast_8c_source.html">udp_broadcast.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="udp__broadcast_8c_source.html#l00128">128</a> of file <a class="el" href="udp__broadcast_8c_source.html">udp_broadcast.c</a>.</p>
 
 </div>
 </div>
@@ -392,7 +393,7 @@ Variables</h2></td></tr>
 
 <p>UDP port to bind too. </p>
 
-<p class="definition">Definition at line <a class="el" href="udp__broadcast_8c_source.html#l00119">119</a> of file <a class="el" href="udp__broadcast_8c_source.html">udp_broadcast.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="udp__broadcast_8c_source.html#l00120">120</a> of file <a class="el" href="udp__broadcast_8c_source.html">udp_broadcast.c</a>.</p>
 
 </div>
 </div>
@@ -410,7 +411,7 @@ Variables</h2></td></tr>
 
 <p>Key used to identify received broadcast packets. </p>
 
-<p class="definition">Definition at line <a class="el" href="udp__broadcast_8c_source.html#l00132">132</a> of file <a class="el" href="udp__broadcast_8c_source.html">udp_broadcast.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="udp__broadcast_8c_source.html#l00133">133</a> of file <a class="el" href="udp__broadcast_8c_source.html">udp_broadcast.c</a>.</p>
 
 </div>
 </div>
@@ -437,7 +438,7 @@ Variables</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="udp__broadcast_8c_source.html#l00135">135</a> of file <a class="el" href="udp__broadcast_8c_source.html">udp_broadcast.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="udp__broadcast_8c_source.html#l00136">136</a> of file <a class="el" href="udp__broadcast_8c_source.html">udp_broadcast.c</a>.</p>
 
 </div>
 </div>
@@ -461,7 +462,7 @@ Variables</h2></td></tr>
 <p>Main entry point to the application. </p>
 <p >This will be invoked in a thread once operating system and hardware initialization has completed. It may return, but it does not have to. </p>
 
-<p class="definition">Definition at line <a class="el" href="udp__broadcast_8c_source.html#l00373">373</a> of file <a class="el" href="udp__broadcast_8c_source.html">udp_broadcast.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="udp__broadcast_8c_source.html#l00378">378</a> of file <a class="el" href="udp__broadcast_8c_source.html">udp_broadcast.c</a>.</p>
 
 </div>
 </div>
@@ -492,7 +493,7 @@ Variables</h2></td></tr>
 <p>Get the mode from config store. </p>
 <dl class="section return"><dt>Returns</dt><dd>translates the value of <code>udp_broadcast.mode</code> into a <a class="el" href="udp__broadcast_8c.html#aa90ed4014a2f933e5220ad4860b0bdeb">udp_broadcast_mode</a>, if no valid mode is set <a class="el" href="udp__broadcast_8c.html#adc21cfd980f3c66af30222ca59c9f929">DEFAULT_UDP_BROADCAST_MODE</a> is returned. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="udp__broadcast_8c_source.html#l00346">346</a> of file <a class="el" href="udp__broadcast_8c_source.html">udp_broadcast.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="udp__broadcast_8c_source.html#l00351">351</a> of file <a class="el" href="udp__broadcast_8c_source.html">udp_broadcast.c</a>.</p>
 
 </div>
 </div>
@@ -525,7 +526,7 @@ Variables</h2></td></tr>
 <dl class="section note"><dt>Note</dt><dd>If the parameters are set in the config store they will be used.</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>Reference to the pcb is successfully initialized else NULL </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="udp__broadcast_8c_source.html#l00304">304</a> of file <a class="el" href="udp__broadcast_8c_source.html">udp_broadcast.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="udp__broadcast_8c_source.html#l00309">309</a> of file <a class="el" href="udp__broadcast_8c_source.html">udp_broadcast.c</a>.</p>
 
 </div>
 </div>
@@ -562,7 +563,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="udp__broadcast_8c_source.html#l00241">241</a> of file <a class="el" href="udp__broadcast_8c_source.html">udp_broadcast.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="udp__broadcast_8c_source.html#l00246">246</a> of file <a class="el" href="udp__broadcast_8c_source.html">udp_broadcast.c</a>.</p>
 
 </div>
 </div>
@@ -599,7 +600,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="udp__broadcast_8c_source.html#l00258">258</a> of file <a class="el" href="udp__broadcast_8c_source.html">udp_broadcast.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="udp__broadcast_8c_source.html#l00263">263</a> of file <a class="el" href="udp__broadcast_8c_source.html">udp_broadcast.c</a>.</p>
 
 </div>
 </div>
@@ -668,7 +669,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="udp__broadcast_8c_source.html#l00185">185</a> of file <a class="el" href="udp__broadcast_8c_source.html">udp_broadcast.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="udp__broadcast_8c_source.html#l00187">187</a> of file <a class="el" href="udp__broadcast_8c_source.html">udp_broadcast.c</a>.</p>
 
 </div>
 </div>
@@ -683,7 +684,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">struct <a class="el" href="structudp__broadcast__rx__metadata.html">udp_broadcast_rx_metadata</a> rx_metadata = {0}</td>
+          <td class="memname">struct <a class="el" href="structudp__broadcast__rx__metadata.html">udp_broadcast_rx_metadata</a> rx_metadata = { 0 }</td>
         </tr>
       </table>
   </td>
@@ -695,7 +696,7 @@ Variables</h2></td></tr>
 
 <p>Global data structure used in RX mode to record metadata. </p>
 
-<p class="definition">Definition at line <a class="el" href="udp__broadcast_8c_source.html#l00171">171</a> of file <a class="el" href="udp__broadcast_8c_source.html">udp_broadcast.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="udp__broadcast_8c_source.html#l00173">173</a> of file <a class="el" href="udp__broadcast_8c_source.html">udp_broadcast.c</a>.</p>
 
 </div>
 </div>
@@ -705,8 +706,8 @@ Variables</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_91b8f418cff946e8d8b598a9068417a8.html">examples</a></li><li class="navelem"><a class="el" href="dir_20766cd149790864ce8a100ac2533169.html">udp_broadcast</a></li><li class="navelem"><a class="el" href="dir_0161ac31a84b0d6ad5eba7f7a442de3e.html">src</a></li><li class="navelem"><a class="el" href="udp__broadcast_8c.html">udp_broadcast.c</a></li>
-    <li class="footer">Copyright 2021 Morse Micro </li>
+    <li class="navelem"><a class="el" href="dir_c5388b8f7c63864c1129967aadb7f145.html">examples</a></li><li class="navelem"><a class="el" href="dir_e287f66a75c9f245ae903a5c99504e18.html">udp_broadcast</a></li><li class="navelem"><a class="el" href="dir_90635d9108dba69543b72e7b32f9f007.html">src</a></li><li class="navelem"><a class="el" href="udp__broadcast_8c.html">udp_broadcast.c</a></li>
+    <li class="footer">Copyright 2021-2025 Morse Micro </li>
   </ul>
 </div>
 </body>

@@ -19,11 +19,12 @@
  */
 
 #include <string.h>
-#include "mmhal.h"
+#include "mmhal_app.h"
 #include "mmosal.h"
 #include "mmwlan.h"
 #include "mmconfig.h"
 #include "mmping.h"
+#include "mmutils.h"
 
 #include "mmipal.h"
 
@@ -32,24 +33,36 @@
 /* Ping configurations. */
 #ifndef PING_COUNT
 /** Number of ping requests to send. Set to 0 to continue indefinitely. */
-#define PING_COUNT                      10
+#define PING_COUNT 10
 #endif
 #ifndef PING_DATA_SIZE
 /** Size of the ping request data, excluding 8-byte ICMP header. */
-#define PING_DATA_SIZE                  56
+#define PING_DATA_SIZE 56
 #endif
 #ifndef PING_INTERVAL_MS
 /** Interval between successive ping requests. */
-#define PING_INTERVAL_MS                1000
+#define PING_INTERVAL_MS 1000
 #endif
 #ifndef POST_PING_DELAY_MS
 /** Delay in ms to wait before terminating connection on completion of ping. */
-#define POST_PING_DELAY_MS                10000
+#define POST_PING_DELAY_MS 10000
 #endif
 #ifndef UPDATE_INTERVAL_MS
 /** Interval (in milliseconds) at which to provide updates when the receive count has not
  *  changed. */
-#define UPDATE_INTERVAL_MS  (5000)
+#define UPDATE_INTERVAL_MS (5000)
+#endif
+
+#if defined(ENABLE_PWR_MEAS) && ENABLE_PWR_MEAS
+/** Enable delays between states for accurate power consumption measurements. */
+#define PWR_MEAS_DELAY_MS(delay_ms) mmosal_task_sleep(delay_ms)
+/** Set GPIO debug pins on state change to track states. */
+#define SET_DEBUG_STATE(state) mmhal_set_debug_pins(MMHAL_ALL_DEBUG_PINS, state);
+#else
+/** Disable delays which are only useful for power consumption accuracy. */
+#define PWR_MEAS_DELAY_MS(delay_ms) MM_UNUSED(delay_ms)
+/** Disable GPIO writing if not measuring power consumption. */
+#define SET_DEBUG_STATE(state)      MM_UNUSED(state)
 #endif
 
 /**
@@ -61,35 +74,25 @@
 enum debug_state
 {
     /** Initial state at startup. */
-    DEBUG_STATE_INIT           = 0x00,
+    DEBUG_STATE_INIT = 0x00,
     /** Indicates that we are booting the MM chip (note that this will also include the
      *  host MCU startup time. */
-    DEBUG_STATE_BOOTING_CHIP   = 0x01,
+    DEBUG_STATE_BOOTING_CHIP = 0x01,
     /** Indicates we are connecting to the AP. */
-    DEBUG_STATE_CONNECTING     = 0x03,
+    DEBUG_STATE_CONNECTING = 0x03,
     /** Indicates we are connected to the AP. */
-    DEBUG_STATE_CONNECTED      = 0x02,
+    DEBUG_STATE_CONNECTED = 0x02,
     /** Indicates that we have connected to the AP, but have not started the ping yet. */
     DEBUG_STATE_CONNECTED_IDLE = 0x00,
     /** Indicates that the ping is in progress. */
-    DEBUG_STATE_PINGING        = 0x02,
+    DEBUG_STATE_PINGING = 0x02,
     /** Indicates that the ping has completed. */
-    DEBUG_STATE_PING_DONE      = 0x03,
+    DEBUG_STATE_PING_DONE = 0x03,
     /** Indicates that we are idling with WLAN still on. */
-    DEBUG_STATE_IDLE           = 0x01,
+    DEBUG_STATE_IDLE = 0x01,
     /** Indicates that we are disconnecting from the AP. */
-    DEBUG_STATE_TERMINATING    = 0x00,
+    DEBUG_STATE_TERMINATING = 0x00,
 };
-
-/**
- * Perform necessary operation (i.e., setting GPIO pins) upon entering the given debug state.
- *
- * @param state     The debug state to enter. See @ref debug_state.
- */
-static void set_debug_state(enum debug_state state)
-{
-    mmhal_set_debug_pins(MMHAL_ALL_DEBUG_PINS, state);
-}
 
 /**
  * Main entry point to the application. This will be invoked in a thread once operating system
@@ -100,27 +103,29 @@ void app_init(void)
     /** Executes the ping. */
     struct mmping_args args = MMPING_ARGS_DEFAULT;
 
-    set_debug_state(DEBUG_STATE_BOOTING_CHIP);
+    SET_DEBUG_STATE(DEBUG_STATE_BOOTING_CHIP);
 
     printf("\n\nMorse Ping Demo (Built " __DATE__ " " __TIME__ ")\n\n");
 
     /* Initialize and connect to Wi-Fi, blocks till connected */
     app_wlan_init();
 
-    set_debug_state(DEBUG_STATE_CONNECTING);
+    SET_DEBUG_STATE(DEBUG_STATE_CONNECTING);
 
     app_wlan_start();
 
-    set_debug_state(DEBUG_STATE_CONNECTED);
+    PWR_MEAS_DELAY_MS(150);
+
+    SET_DEBUG_STATE(DEBUG_STATE_CONNECTED);
 
     /* Delay to allow communications to settle so we measure only idle current */
-    mmosal_task_sleep(150);
+    PWR_MEAS_DELAY_MS(600);
 
-    set_debug_state(DEBUG_STATE_CONNECTED_IDLE);
+    SET_DEBUG_STATE(DEBUG_STATE_CONNECTED_IDLE);
 
-    mmosal_task_sleep(1000);
+    PWR_MEAS_DELAY_MS(1000);
 
-    set_debug_state(DEBUG_STATE_PINGING);
+    SET_DEBUG_STATE(DEBUG_STATE_PINGING);
 
     /* Get the target IP */
     struct mmipal_ip_config ip_config = MMIPAL_IP_CONFIG_DEFAULT;
@@ -152,8 +157,10 @@ void app_init(void)
     mmconfig_read_uint32("ping.interval", &args.ping_interval_ms);
 
     mmping_start(&args);
-    printf("\nPing %s %lu(%lu) bytes of data.\n", args.ping_target, args.ping_size,
-            (MMPING_ICMP_ECHO_HDR_LEN + args.ping_size));
+    printf("\nPing %s %lu(%lu) bytes of data.\n",
+           args.ping_target,
+           args.ping_size,
+           (MMPING_ICMP_ECHO_HDR_LEN + args.ping_size));
 
     struct mmping_stats stats;
     uint32_t next_update_time_ms = mmosal_get_time_ms() + UPDATE_INTERVAL_MS;
@@ -168,14 +175,18 @@ void app_init(void)
         {
             printf("(%s) packets transmitted/received = %lu/%lu, "
                    "round-trip min/avg/max = %lu/%lu/%lu ms\n",
-                   stats.ping_receiver, stats.ping_total_count, stats.ping_recv_count,
-                   stats.ping_min_time_ms, stats.ping_avg_time_ms, stats.ping_max_time_ms);
+                   stats.ping_receiver,
+                   stats.ping_total_count,
+                   stats.ping_recv_count,
+                   stats.ping_min_time_ms,
+                   stats.ping_avg_time_ms,
+                   stats.ping_max_time_ms);
             last_ping_recv_count = stats.ping_recv_count;
             next_update_time_ms = mmosal_get_time_ms() + UPDATE_INTERVAL_MS;
         }
     }
 
-    set_debug_state(DEBUG_STATE_PING_DONE);
+    SET_DEBUG_STATE(DEBUG_STATE_PING_DONE);
 
     uint32_t loss = 0;
     if (stats.ping_total_count == 0)
@@ -184,25 +195,32 @@ void app_init(void)
     }
     else
     {
-        loss = (1000 * (stats.ping_total_count - stats.ping_recv_count) * 100 /
+        loss = (1000 *
+                (stats.ping_total_count - stats.ping_recv_count) *
+                100 /
                 stats.ping_total_count);
     }
     printf("\n--- %s ping statistics ---\n%lu packets transmitted, %lu packets received, ",
-            stats.ping_receiver, stats.ping_total_count, stats.ping_recv_count);
+           stats.ping_receiver,
+           stats.ping_total_count,
+           stats.ping_recv_count);
     printf("%lu.%03lu%% packet loss\nround-trip min/avg/max = %lu/%lu/%lu ms\n",
-            loss/1000, loss%1000, stats.ping_min_time_ms, stats.ping_avg_time_ms,
-            stats.ping_max_time_ms);
+           loss / 1000,
+           loss % 1000,
+           stats.ping_min_time_ms,
+           stats.ping_avg_time_ms,
+           stats.ping_max_time_ms);
 
     /* Delay to allow communications to settle so we measure only idle current */
-    mmosal_task_sleep(150);
+    PWR_MEAS_DELAY_MS(150);
 
-    set_debug_state(DEBUG_STATE_IDLE);
+    SET_DEBUG_STATE(DEBUG_STATE_IDLE);
 
     uint32_t post_ping_delay_ms = POST_PING_DELAY_MS;
     mmconfig_read_uint32("ping.post_ping_delay_ms", &post_ping_delay_ms);
     mmosal_task_sleep(post_ping_delay_ms);
 
-    set_debug_state(DEBUG_STATE_TERMINATING);
+    SET_DEBUG_STATE(DEBUG_STATE_TERMINATING);
 
     /* Disconnect from Wi-Fi */
     app_wlan_stop();

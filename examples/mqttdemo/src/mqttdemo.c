@@ -78,8 +78,7 @@
  * Check if your device has access to the internet via your HaLow AP.
  *
  * Another possible cause is a tcp socket timeout, which can occur due to issues on
- * the broker side. If this occurs when using FreeRTOS+TCP as your
- * IP stack, try increasing the @c ipconfigSOCK_DEFAULT_RECEIVE_BLOCK_TIME to allow
+ * the broker side. Try increasing @c MBEDTLS_NET_CLIENT_SOCK_RECV_TIMEOUT_MS to give
  * the socket more time to receive a response.
  *
  * If this error keeps occurring, try setting up a local MQTT broker
@@ -88,10 +87,10 @@
  * ## Creating MQTT connection with broker failed with code 7
  *
  * The main cause of this issue is issues with the Mosquitto test server, which can sometimes
- * fail to respond before @ref CONNACK_RECV_TIMEOUT_MS. Try increasing the timeout, or if
+ * fail to respond before @ref MQTT_CONNACK_RECV_TIMEOUT_MS. Try increasing the timeout, or if
  * the problem persists, try setting up a local MQTT broker and changing @ref MQTT_BROKER_ENDPOINT
  * to your computer's IP address.
-*/
+ */
 
 #include <string.h>
 #include "mmosal.h"
@@ -113,61 +112,52 @@
  * must be unique to ensure no two clients connecting to the same broker use the
  * same client identifier.
  */
-#define CLIENT_ID_PREFIX                "MM_Client_%s"
+#define CLIENT_ID_PREFIX "MM_Client_%s"
 
 /** @brief Broker address to connect to.  This is a public test server and is not
  * guaranteed to be always available.  For production applications or extensive
  * testing you should setup your own server.  Mosquitto is one such free MQTT
  * server that you can use.
  */
-#define MQTT_BROKER_ENDPOINT            "test.mosquitto.org"
+#define MQTT_BROKER_ENDPOINT "test.mosquitto.org"
 
 /** @brief Broker port.  Usually 1883 is used for communications in the clear
  * and 8883 is used for TLS encrypted communications.
  */
-#define MQTT_BROKER_PORT                1883
-
+#define MQTT_BROKER_PORT 1883
 
 /** @brief Keep alive Delay */
-#define KEEP_ALIVE_TIMEOUT_SECONDS      60
+#define KEEP_ALIVE_TIMEOUT_SECONDS 60
 /** @brief Receive timeout */
-#define CONNACK_RECV_TIMEOUT_MS         10000
-
-/** @brief Override the default FreeRTOS + TCP receive socket timeouts,
- *  as the test server can be slow to respond.
- */
-#ifdef ipconfigSOCK_DEFAULT_RECEIVE_BLOCK_TIME
-    #define ipconfigSOCK_DEFAULT_RECEIVE_BLOCK_TIME    (10000)
-#endif
+#define MQTT_CONNACK_RECV_TIMEOUT_MS 10000
 
 /**
  * @brief Delay in ms between publishes
  * @note This is a single threaded demo, so increasing this delay will cause the
  *       application to sleep for extended periods of time and not respond to other messages.
  */
-#define DELAY_BETWEEN_PUBLISHES         1000
+#define DELAY_BETWEEN_PUBLISHES 1000
 
 /** @brief Number of topics we subscribe to */
-#define TOPIC_COUNT                     1
+#define TOPIC_COUNT 1
 
 /** @brief Topic to publish/subscribe, we include the client ID to keep it unique. */
-#define TOPIC_FORMAT                    "/MorseMicro/%s/topic"
+#define TOPIC_FORMAT "/MorseMicro/%s/topic"
 
 /** @brief Message to publish/subscribe */
-#define EXAMPLE_MESSAGE                 "G'day World!"
+#define EXAMPLE_MESSAGE "G'day World!"
 /** Length of MAC address string (i.e., "XX:XX:XX:XX:XX:XX") including terminator. */
-#define MAC_ADDR_STR_LEN    (18)
+#define MAC_ADDR_STR_LEN (18)
 
 /** Statically allocated buffer for MQTT */
 static unsigned char buf[1024];
-
 
 /**
  * @brief This callback gets called when a published message matches
  *        one of our subscribed topics.
  * @param pxPublishInfo The received message
  */
-static void MQTTProcessIncomingPublish(MQTTPublishInfo_t * pxPublishInfo)
+static void MQTTProcessIncomingPublish(MQTTPublishInfo_t *pxPublishInfo)
 {
     /* Strings are not zero terminated, so we need to explicitly copy and terminate them */
     static char tmptopic[80];
@@ -188,7 +178,7 @@ static void MQTTProcessIncomingPublish(MQTTPublishInfo_t * pxPublishInfo)
     {
         payload_length = sizeof(tmppayload) - 1;
     }
-    strncpy(tmppayload, (char*)pxPublishInfo->pPayload, payload_length);
+    strncpy(tmppayload, (char *)pxPublishInfo->pPayload, payload_length);
     tmppayload[payload_length] = '\0';
 
     printf("Incoming Topic: %s\n"
@@ -202,49 +192,46 @@ static void MQTTProcessIncomingPublish(MQTTPublishInfo_t * pxPublishInfo)
  * @param pxIncomingPacket The incoming packet
  * @param usPacketId The packet ID
  */
-static void MQTTProcessResponse(MQTTPacketInfo_t * pxIncomingPacket,
-                                uint16_t usPacketId)
+static void MQTTProcessResponse(MQTTPacketInfo_t *pxIncomingPacket, uint16_t usPacketId)
 {
     MQTTStatus_t xResult = MQTTSuccess;
-    uint8_t * pucPayload = NULL;
+    uint8_t *pucPayload = NULL;
     size_t ulSize = 0;
 
-    (void) usPacketId;
+    (void)usPacketId;
 
     switch (pxIncomingPacket->type)
     {
-    case MQTT_PACKET_TYPE_SUBACK:
-        /* A SUBACK from the broker, containing the server response to our
-         * subscription request, has been received.  It contains the status
-         * code indicating server approval/rejection for the subscription to
-         * the single topic requested. The SUBACK will be parsed to obtain
-         * the status code, and this status code will be stored in
-         * #xTopicFilterContext. */
-        xResult = MQTT_GetSubAckStatusCodes(pxIncomingPacket,
-                                            &pucPayload,
-                                            &ulSize);
+        case MQTT_PACKET_TYPE_SUBACK:
+            /* A SUBACK from the broker, containing the server response to our
+             * subscription request, has been received.  It contains the status
+             * code indicating server approval/rejection for the subscription to
+             * the single topic requested. The SUBACK will be parsed to obtain
+             * the status code, and this status code will be stored in
+             * #xTopicFilterContext. */
+            xResult = MQTT_GetSubAckStatusCodes(pxIncomingPacket, &pucPayload, &ulSize);
 
-        /* MQTT_GetSubAckStatusCodes always returns success if called with
-         * packet info from the event callback and non-NULL parameters. */
-        MMOSAL_ASSERT(xResult == MQTTSuccess);
-        break;
+            /* MQTT_GetSubAckStatusCodes always returns success if called with
+             * packet info from the event callback and non-NULL parameters. */
+            MMOSAL_ASSERT(xResult == MQTTSuccess);
+            break;
 
-    case MQTT_PACKET_TYPE_UNSUBACK:
-        /* We should check which topic was unsubscribed to by looking at the packetid */
-        printf("Unsubscribed from requested topic\n");
-        break;
+        case MQTT_PACKET_TYPE_UNSUBACK:
+            /* We should check which topic was unsubscribed to by looking at the packetid */
+            printf("Unsubscribed from requested topic\n");
+            break;
 
-    case MQTT_PACKET_TYPE_PINGRESP:
-        /* Nothing to be done from application as library handles
-         * PINGRESP with the use of MQTT_ProcessLoop API function. */
-        printf("WARNING: PINGRESP should not be handled by the application "
-                "callback when using MQTT_ProcessLoop.\n");
-        break;
+        case MQTT_PACKET_TYPE_PINGRESP:
+            /* Nothing to be done from application as library handles
+             * PINGRESP with the use of MQTT_ProcessLoop API function. */
+            printf("WARNING: PINGRESP should not be handled by the application "
+                   "callback when using MQTT_ProcessLoop.\n");
+            break;
 
-    /* Any other packet type is invalid. */
-    default:
-        printf("MQTTProcessResponse() called with unknown packet type:(%02X).\n",
-                pxIncomingPacket->type);
+        /* Any other packet type is invalid. */
+        default:
+            printf("MQTTProcessResponse() called with unknown packet type:(%02X).\n",
+                   pxIncomingPacket->type);
     }
 }
 
@@ -254,12 +241,12 @@ static void MQTTProcessResponse(MQTTPacketInfo_t * pxIncomingPacket,
  * @param pxPacketInfo The packet info
  * @param pxDeserializedInfo The de-serialized packet info
  */
-static void EventCallback(MQTTContext_t * pxMQTTContext,
-                          MQTTPacketInfo_t * pxPacketInfo,
-                          MQTTDeserializedInfo_t * pxDeserializedInfo)
+static void EventCallback(MQTTContext_t *pxMQTTContext,
+                          MQTTPacketInfo_t *pxPacketInfo,
+                          MQTTDeserializedInfo_t *pxDeserializedInfo)
 {
     /* The MQTT context is not used for this demo. */
-    (void) pxMQTTContext;
+    (void)pxMQTTContext;
 
     if ((pxPacketInfo->type & 0xF0U) == MQTT_PACKET_TYPE_PUBLISH)
     {
@@ -278,9 +265,9 @@ static void EventCallback(MQTTContext_t * pxMQTTContext,
  * @param clientID Our unique Client ID string
  * @return Returns @c MQTTSuccess on success, else returns error code
  */
-MQTTStatus_t CreateMQTTConnectionToBroker(MQTTContext_t * pxMQTTContext,
-                                            NetworkContext_t * pxNetworkContext,
-                                            char * clientID)
+MQTTStatus_t CreateMQTTConnectionToBroker(MQTTContext_t *pxMQTTContext,
+                                          NetworkContext_t *pxNetworkContext,
+                                          char *clientID)
 {
     MQTTStatus_t xResult;
     MQTTConnectInfo_t xConnectInfo;
@@ -298,18 +285,14 @@ MQTTStatus_t CreateMQTTConnectionToBroker(MQTTContext_t * pxMQTTContext,
     xTransport.recv = transport_recv;
 
     /* Initialize MQTT library. */
-    xResult = MQTT_Init(pxMQTTContext,
-                        &xTransport,
-                        mmosal_get_time_ms,
-                        EventCallback,
-                        &xBuffer);
+    xResult = MQTT_Init(pxMQTTContext, &xTransport, mmosal_get_time_ms, EventCallback, &xBuffer);
     if (xResult != MQTTSuccess)
     {
         return xResult;
     }
 
     /* Many fields not used in this demo so start with everything at 0. */
-    (void) memset((void *) &xConnectInfo, 0x00, sizeof(xConnectInfo));
+    (void)memset((void *)&xConnectInfo, 0x00, sizeof(xConnectInfo));
 
     /* Start with a clean session i.e. direct the MQTT broker to discard any
      * previous session data. Also, establishing a connection with clean
@@ -321,7 +304,7 @@ MQTTStatus_t CreateMQTTConnectionToBroker(MQTTContext_t * pxMQTTContext,
      * the MQTT broker. In a production device the identifier can be something
      * unique, such as a device serial number. */
     xConnectInfo.pClientIdentifier = clientID;
-    xConnectInfo.clientIdentifierLength = (uint16_t) strlen(clientID);
+    xConnectInfo.clientIdentifierLength = (uint16_t)strlen(clientID);
 
     /* Set MQTT keep-alive period. It is the responsibility of the application
      * to ensure that the interval between Control Packets being sent does not
@@ -334,7 +317,7 @@ MQTTStatus_t CreateMQTTConnectionToBroker(MQTTContext_t * pxMQTTContext,
     xResult = MQTT_Connect(pxMQTTContext,
                            &xConnectInfo,
                            NULL,
-                           CONNACK_RECV_TIMEOUT_MS,
+                           MQTT_CONNACK_RECV_TIMEOUT_MS,
                            &xSessionPresent);
     return xResult;
 }
@@ -345,24 +328,23 @@ MQTTStatus_t CreateMQTTConnectionToBroker(MQTTContext_t * pxMQTTContext,
  * @param topic The topic to subscribe to
  * @return Returns @c MQTTSuccess on success, else returns error code
  */
-MQTTStatus_t MQTTSubscribe(MQTTContext_t * pxMQTTContext,
-                           const char * topic)
+MQTTStatus_t MQTTSubscribe(MQTTContext_t *pxMQTTContext, const char *topic)
 {
     MQTTStatus_t xResult = MQTTSuccess;
-    MQTTSubscribeInfo_t xMQTTSubscription[ TOPIC_COUNT ];
+    MQTTSubscribeInfo_t xMQTTSubscription[TOPIC_COUNT];
     uint16_t usSubscribePacketIdentifier;
 
     /* Some fields not used by this demo so start with everything at 0. */
-    (void) memset((void *) &xMQTTSubscription, 0x00, sizeof(xMQTTSubscription));
+    (void)memset((void *)&xMQTTSubscription, 0x00, sizeof(xMQTTSubscription));
 
     /* Each packet requires a unique ID. */
     usSubscribePacketIdentifier = MQTT_GetPacketId(pxMQTTContext);
 
     /* Subscribe to the pcExampleTopic topic filter. This example subscribes
      * to only one topic and uses QoS0. */
-    xMQTTSubscription[ 0 ].qos = MQTTQoS0;
-    xMQTTSubscription[ 0 ].pTopicFilter = topic;
-    xMQTTSubscription[ 0 ].topicFilterLength = strlen(topic);
+    xMQTTSubscription[0].qos = MQTTQoS0;
+    xMQTTSubscription[0].pTopicFilter = topic;
+    xMQTTSubscription[0].topicFilterLength = strlen(topic);
 
     /* The client is already connected to the broker. Subscribe to the topic
      * as specified in pcExampleTopic by sending a subscribe packet then
@@ -396,22 +378,20 @@ MQTTStatus_t MQTTSubscribe(MQTTContext_t * pxMQTTContext,
  * @param topic The topic to unsubscribe from
  * @return Returns @c MQTTSuccess on success, else returns error code
  */
-MQTTStatus_t MQTTUnsubscribeFromTopic(MQTTContext_t * pxMQTTContext,
-                                      const char * topic)
+MQTTStatus_t MQTTUnsubscribeFromTopic(MQTTContext_t *pxMQTTContext, const char *topic)
 {
     MQTTStatus_t xResult;
-    MQTTSubscribeInfo_t xMQTTSubscription[ TOPIC_COUNT ];
+    MQTTSubscribeInfo_t xMQTTSubscription[TOPIC_COUNT];
     uint16_t usUnsubscribePacketIdentifier;
 
     /* Some fields not used by this demo so start with everything at 0. */
-    (void) memset((void *) &xMQTTSubscription, 0x00, sizeof(xMQTTSubscription));
+    (void)memset((void *)&xMQTTSubscription, 0x00, sizeof(xMQTTSubscription));
 
     /* Subscribe to the pcExampleTopic topic filter. This example subscribes
      * to only one topic and uses QoS0. */
-    xMQTTSubscription[ 0 ].qos = MQTTQoS0;
-    xMQTTSubscription[ 0 ].pTopicFilter = topic;
-    xMQTTSubscription[ 0 ].topicFilterLength = (uint16_t) strlen(
-                                                    topic);
+    xMQTTSubscription[0].qos = MQTTQoS0;
+    xMQTTSubscription[0].pTopicFilter = topic;
+    xMQTTSubscription[0].topicFilterLength = (uint16_t)strlen(topic);
 
     /* Each packet requires a unique ID. */
     usUnsubscribePacketIdentifier = MQTT_GetPacketId(pxMQTTContext);
@@ -419,8 +399,7 @@ MQTTStatus_t MQTTUnsubscribeFromTopic(MQTTContext_t * pxMQTTContext,
     /* Send UNSUBSCRIBE packet. */
     xResult = MQTT_Unsubscribe(pxMQTTContext,
                                xMQTTSubscription,
-                               sizeof(xMQTTSubscription) / sizeof(
-                               MQTTSubscribeInfo_t),
+                               sizeof(xMQTTSubscription) / sizeof(MQTTSubscribeInfo_t),
                                usUnsubscribePacketIdentifier);
 
     return xResult;
@@ -434,21 +413,22 @@ MQTTStatus_t MQTTUnsubscribeFromTopic(MQTTContext_t * pxMQTTContext,
  * @param payloadLength The length of the data to publish
  * @return Returns @c MQTTSuccess on success, else returns error code
  */
-MQTTStatus_t MQTTPublishToTopic(MQTTContext_t * pxMQTTContext,
-                                const char * topic,
-                                void * payload, size_t payloadLength)
+MQTTStatus_t MQTTPublishToTopic(MQTTContext_t *pxMQTTContext,
+                                const char *topic,
+                                void *payload,
+                                size_t payloadLength)
 {
     MQTTStatus_t xResult;
     MQTTPublishInfo_t xMQTTPublishInfo;
 
     /* Some fields are not used by this demo so start with everything at 0. */
-    (void) memset((void *) &xMQTTPublishInfo, 0x00, sizeof(xMQTTPublishInfo));
+    (void)memset((void *)&xMQTTPublishInfo, 0x00, sizeof(xMQTTPublishInfo));
 
     /* This demo uses QoS0. */
     xMQTTPublishInfo.qos = MQTTQoS0;
     xMQTTPublishInfo.retain = false;
     xMQTTPublishInfo.pTopicName = topic;
-    xMQTTPublishInfo.topicNameLength = (uint16_t) strlen(topic);
+    xMQTTPublishInfo.topicNameLength = (uint16_t)strlen(topic);
     xMQTTPublishInfo.pPayload = payload;
     xMQTTPublishInfo.payloadLength = payloadLength;
 
@@ -493,8 +473,15 @@ void app_init(void)
         printf("Failed to read MAC address (status code %d)\n", status);
         return;
     }
-    snprintf(mac_address_str, sizeof(mac_address_str), "%02x:%02x:%02x:%02x:%02x:%02x",
-             mac_addr[0], mac_addr[1], mac_addr[2], mac_addr[3], mac_addr[4], mac_addr[5]);
+    snprintf(mac_address_str,
+             sizeof(mac_address_str),
+             "%02x:%02x:%02x:%02x:%02x:%02x",
+             mac_addr[0],
+             mac_addr[1],
+             mac_addr[2],
+             mac_addr[3],
+             mac_addr[4],
+             mac_addr[5]);
     snprintf(client_id, sizeof(client_id), CLIENT_ID_PREFIX, mac_address_str);
     snprintf(topic, sizeof(topic), TOPIC_FORMAT, client_id);
 
@@ -516,7 +503,7 @@ void app_init(void)
      * the network context structure. We set NetworkCredentials to NULL to connect in the clear.
      * Set this parameter if you wish to connect with TLS */
     printf("Connecting to server socket on %s:%ld...", server, port);
-    xNetworkStatus = transport_connect(&xNetworkContext, server, (uint16_t) port, NULL);
+    xNetworkStatus = transport_connect(&xNetworkContext, server, (uint16_t)port, NULL);
     if (xNetworkStatus != TRANSPORT_SUCCESS)
     {
         printf("failed with code %d\n", xNetworkStatus);
@@ -553,8 +540,7 @@ void app_init(void)
     for (ulPublishCount = 0; ulPublishCount < ulMaxPublishCount; ulPublishCount++)
     {
         printf("Publishing to topic %s...", topic);
-        xMQTTStatus = MQTTPublishToTopic(&xMQTTContext, topic,
-                                        message, strlen(message));
+        xMQTTStatus = MQTTPublishToTopic(&xMQTTContext, topic, message, strlen(message));
         if (xMQTTStatus != MQTTSuccess)
         {
             printf("failed with code %d\n", xMQTTStatus);

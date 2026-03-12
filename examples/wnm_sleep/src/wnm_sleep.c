@@ -25,11 +25,12 @@
  */
 
 #include <string.h>
-#include "mmhal.h"
+#include "mmhal_app.h"
 #include "mmosal.h"
 #include "mmwlan.h"
 #include "mmping.h"
 #include "mmconfig.h"
+#include "mmutils.h"
 
 #include "mmipal.h"
 
@@ -39,28 +40,45 @@
  * the configstore*/
 #ifndef DEFAULT_PING_COUNT
 /** Number of ping requests to send. Set to 0 to continue indefinitely. */
-#define DEFAULT_PING_COUNT                      10
+#define DEFAULT_PING_COUNT 10
 #endif
 #ifndef DEFAULT_PING_DATA_SIZE
 /** Size of the ping request data, excluding 8-byte ICMP header. */
-#define DEFAULT_PING_DATA_SIZE                  56
+#define DEFAULT_PING_DATA_SIZE 56
 #endif
 #ifndef DEFAULT_PING_INTERVAL_MS
 /** Interval between successive ping requests. */
-#define DEFAULT_PING_INTERVAL_MS                1000
+#define DEFAULT_PING_INTERVAL_MS 1000
 #endif
 #ifndef DEFAULT_WNM_SLEEP_DURATION_MS
 /** Duration to remain in wnm sleep between transmissions. */
-#define DEFAULT_WNM_SLEEP_DURATION_MS           20000
+#define DEFAULT_WNM_SLEEP_DURATION_MS 20000
 #endif
 #ifndef POST_PING_DELAY_MS
 /** Delay in ms to wait before terminating connection on completion of ping. */
-#define POST_PING_DELAY_MS                10000
+#define POST_PING_DELAY_MS 10000
 #endif
 #ifndef UPDATE_INTERVAL_MS
 /** Interval (in milliseconds) at which to provide updates when the receive count has not
  *  changed. */
-#define UPDATE_INTERVAL_MS  (5000)
+#define UPDATE_INTERVAL_MS (5000)
+#endif
+
+/** Minimum duration for WNM_SLEEP_EXIT state. This improves power measurements
+ *  by ensuring the WNM_SLEEP_EXIT captures all the transient behaviour that occurs
+ *  post-wake. */
+#define MIN_WNM_SLEEP_EXIT_STATE_DURATION_MS 20
+
+#if defined(ENABLE_PWR_MEAS) && ENABLE_PWR_MEAS
+/** Enable delays between states for accurate power consumption measurements. */
+#define PWR_MEAS_DELAY_MS(delay_ms) mmosal_task_sleep(delay_ms)
+/** Set GPIO debug pins on state change to track states. */
+#define SET_DEBUG_STATE(state) mmhal_set_debug_pins(MMHAL_ALL_DEBUG_PINS, state);
+#else
+/** Disable delays which are only useful for power consumption accuracy. */
+#define PWR_MEAS_DELAY_MS(delay_ms) MM_UNUSED(delay_ms)
+/** Disable GPIO writing if not measuring power consumption. */
+#define SET_DEBUG_STATE(state)      MM_UNUSED(state)
 #endif
 
 /**
@@ -72,44 +90,34 @@
 enum debug_state
 {
     /** Initial state at startup. */
-    DEBUG_STATE_INIT                         = 0x00,
+    DEBUG_STATE_INIT = 0x00,
     /** Indicates we are connecting to the AP. */
-    DEBUG_STATE_CONNECTING                   = 0x01,
+    DEBUG_STATE_CONNECTING = 0x01,
     /** Indicates we are connected to the AP. */
-    DEBUG_STATE_CONNECTED                    = 0x03,
+    DEBUG_STATE_CONNECTED = 0x03,
     /** Indicates that the ping is in progress. */
-    DEBUG_STATE_PINGING_0                    = 0x02,
+    DEBUG_STATE_PINGING_0 = 0x02,
     /** Indicates that the ping has completed. */
-    DEBUG_STATE_PING_0_DONE                  = 0x00,
+    DEBUG_STATE_PING_0_DONE = 0x00,
     /** Indicates that WNM sleep is in progress. */
-    DEBUG_STATE_WNM_SLEEP                    = 0x01,
+    DEBUG_STATE_WNM_SLEEP = 0x01,
     /** Indicates that we are exiting WNM sleep. */
-    DEBUG_STATE_EXITING_WNM_SLEEP            = 0x03,
+    DEBUG_STATE_EXITING_WNM_SLEEP = 0x03,
     /** Indicates that WNM sleep has completed. */
-    DEBUG_STATE_WNM_SLEEP_DONE               = 0x02,
+    DEBUG_STATE_WNM_SLEEP_DONE = 0x02,
     /** Indicates that the ping is in progress. */
-    DEBUG_STATE_PINGING_1                    = 0x00,
+    DEBUG_STATE_PINGING_1 = 0x00,
     /** Indicates that the ping has completed. */
-    DEBUG_STATE_PING_1_DONE                  = 0x01,
+    DEBUG_STATE_PING_1_DONE = 0x01,
     /** Indicates that WNM sleep is in progress with chip powered down. */
-    DEBUG_STATE_WNM_SLEEP_POWER_DOWN         = 0x03,
+    DEBUG_STATE_WNM_SLEEP_POWER_DOWN = 0x03,
     /** Indicates that we are exiting WNM sleep with chip powered down. */
     DEBUG_STATE_EXITING_WNM_SLEEP_POWER_DOWN = 0x02,
     /** Indicates that WNM sleep with chip powered down has completed. */
-    DEBUG_STATE_WNM_SLEEP_POWER_DOWN_DONE    = 0x00,
+    DEBUG_STATE_WNM_SLEEP_POWER_DOWN_DONE = 0x00,
     /** Indicates that we are disconnecting from the AP. */
-    DEBUG_STATE_TERMINATING                  = 0x01,
+    DEBUG_STATE_TERMINATING = 0x01,
 };
-
-/**
- * Perform necessary operation (i.e., setting GPIO pins) upon entering the given debug state.
- *
- * @param state     The debug state to enter. See @ref debug_state.
- */
-static void set_debug_state(enum debug_state state)
-{
-    mmhal_set_debug_pins(MMHAL_ALL_DEBUG_PINS, state);
-}
 
 /**
  * Function to execute ping request. This function will block until the ping operation has
@@ -122,7 +130,7 @@ static void execute_ping_request(int iteration)
 {
     struct mmping_args args = MMPING_ARGS_DEFAULT;
 
-    set_debug_state(iteration == 0 ? DEBUG_STATE_PINGING_0 : DEBUG_STATE_PINGING_1);
+    SET_DEBUG_STATE(iteration == 0 ? DEBUG_STATE_PINGING_0 : DEBUG_STATE_PINGING_1);
 
     /* Get the target IP */
     struct mmipal_ip_config ip_config = MMIPAL_IP_CONFIG_DEFAULT;
@@ -154,7 +162,9 @@ static void execute_ping_request(int iteration)
     mmconfig_read_uint32("ping.interval", &args.ping_interval_ms);
 
     mmping_start(&args);
-    printf("\nPing %s %lu(%lu) bytes of data.\n", args.ping_target, args.ping_size,
+    printf("\nPing %s %lu(%lu) bytes of data.\n",
+           args.ping_target,
+           args.ping_size,
            MMPING_ICMP_ECHO_HDR_LEN + args.ping_size);
 
     struct mmping_stats stats;
@@ -170,8 +180,12 @@ static void execute_ping_request(int iteration)
         {
             printf("(%s) packets transmitted/received = %lu/%lu, "
                    "round-trip min/avg/max = %lu/%lu/%lu ms\n",
-                   stats.ping_receiver, stats.ping_total_count, stats.ping_recv_count,
-                   stats.ping_min_time_ms, stats.ping_avg_time_ms, stats.ping_max_time_ms);
+                   stats.ping_receiver,
+                   stats.ping_total_count,
+                   stats.ping_recv_count,
+                   stats.ping_min_time_ms,
+                   stats.ping_avg_time_ms,
+                   stats.ping_max_time_ms);
             last_ping_recv_count = stats.ping_recv_count;
             next_update_time_ms = mmosal_get_time_ms() + UPDATE_INTERVAL_MS;
         }
@@ -183,17 +197,24 @@ static void execute_ping_request(int iteration)
     }
     else
     {
-        loss = (1000 * (stats.ping_total_count - stats.ping_recv_count) * 100 /
+        loss = (1000 *
+                (stats.ping_total_count - stats.ping_recv_count) *
+                100 /
                 stats.ping_total_count);
     }
 
-    set_debug_state(iteration == 0 ? DEBUG_STATE_PING_0_DONE : DEBUG_STATE_PING_1_DONE);
+    SET_DEBUG_STATE(iteration == 0 ? DEBUG_STATE_PING_0_DONE : DEBUG_STATE_PING_1_DONE);
 
     printf("\n--- %s ping statistics ---\n%lu packets transmitted, %lu packets received, ",
-            stats.ping_receiver, stats.ping_total_count, stats.ping_recv_count);
+           stats.ping_receiver,
+           stats.ping_total_count,
+           stats.ping_recv_count);
     printf("%lu.%03lu%% packet loss\nround-trip min/avg/max = %lu/%lu/%lu ms\n",
-            loss/1000, loss%1000, stats.ping_min_time_ms, stats.ping_avg_time_ms,
-            stats.ping_max_time_ms);
+           loss / 1000,
+           loss % 1000,
+           stats.ping_min_time_ms,
+           stats.ping_avg_time_ms,
+           stats.ping_max_time_ms);
 }
 
 /**
@@ -208,9 +229,9 @@ static void execute_wnm_sleep(uint32_t wnm_sleep_duration_ms)
     printf("\nEntering WNM sleep with chip power down disabled\n");
     printf("Expected sleep time %lums.\n", wnm_sleep_duration_ms);
     /* Delay to allow printf's to settle so we measure only idle current */
-    mmosal_task_sleep(100);
+    PWR_MEAS_DELAY_MS(100);
 
-    set_debug_state(DEBUG_STATE_WNM_SLEEP);
+    SET_DEBUG_STATE(DEBUG_STATE_WNM_SLEEP);
 
     uint32_t timestamp = mmosal_get_time_ms();
     status = mmwlan_set_wnm_sleep_enabled(true);
@@ -225,14 +246,21 @@ static void execute_wnm_sleep(uint32_t wnm_sleep_duration_ms)
 
     timestamp = mmosal_get_time_ms();
 
-    set_debug_state(DEBUG_STATE_EXITING_WNM_SLEEP);
+    SET_DEBUG_STATE(DEBUG_STATE_EXITING_WNM_SLEEP);
     status = mmwlan_set_wnm_sleep_enabled(false);
-    set_debug_state(DEBUG_STATE_WNM_SLEEP_DONE);
+
+    uint32_t sleep_exit_duration = mmosal_get_time_ms() - timestamp;
+    int32_t exit_duration_delta = MIN_WNM_SLEEP_EXIT_STATE_DURATION_MS - sleep_exit_duration;
+    if (exit_duration_delta > 0)
+    {
+        PWR_MEAS_DELAY_MS(exit_duration_delta);
+    }
+    SET_DEBUG_STATE(DEBUG_STATE_WNM_SLEEP_DONE);
 
     if (status == MMWLAN_SUCCESS)
     {
         printf("\nEnter WNM sleep took %lu ms.\n", wnm_sleep_enable_duration_ms);
-        printf("\nExit WNM sleep took %lu ms.\n", (mmosal_get_time_ms() - timestamp));
+        printf("\nExit WNM sleep took %lu ms.\n", sleep_exit_duration);
     }
     else
     {
@@ -256,9 +284,8 @@ static void execute_wnm_sleep_ext(uint32_t wnm_sleep_duration_ms)
     printf("\nEntering WNM sleep with chip power down enabled.\n");
     printf("Expected sleep time %lums.\n", wnm_sleep_duration_ms);
     /* Delay to allow printf's to settle so we measure only idle current */
-    mmosal_task_sleep(100);
-
-    set_debug_state(DEBUG_STATE_WNM_SLEEP_POWER_DOWN);
+    PWR_MEAS_DELAY_MS(100);
+    SET_DEBUG_STATE(DEBUG_STATE_WNM_SLEEP_POWER_DOWN);
 
     uint32_t timestamp = mmosal_get_time_ms();
     wnm_sleep_args.wnm_sleep_enabled = true;
@@ -276,14 +303,22 @@ static void execute_wnm_sleep_ext(uint32_t wnm_sleep_duration_ms)
     timestamp = mmosal_get_time_ms();
     wnm_sleep_args.wnm_sleep_enabled = false;
 
-    set_debug_state(DEBUG_STATE_EXITING_WNM_SLEEP_POWER_DOWN);
+    SET_DEBUG_STATE(DEBUG_STATE_EXITING_WNM_SLEEP_POWER_DOWN);
     status = mmwlan_set_wnm_sleep_enabled_ext(&wnm_sleep_args);
-    set_debug_state(DEBUG_STATE_WNM_SLEEP_POWER_DOWN_DONE);
+
+    uint32_t sleep_exit_duration = mmosal_get_time_ms() - timestamp;
+    int32_t exit_duration_delta = MIN_WNM_SLEEP_EXIT_STATE_DURATION_MS - sleep_exit_duration;
+    if (exit_duration_delta > 0)
+    {
+        PWR_MEAS_DELAY_MS(exit_duration_delta);
+    }
+
+    SET_DEBUG_STATE(DEBUG_STATE_WNM_SLEEP_POWER_DOWN_DONE);
 
     if (status == MMWLAN_SUCCESS)
     {
         printf("\nEnter WNM sleep took %lu ms.\n", wnm_sleep_enable_duration_ms);
-        printf("\nExit WNM sleep took %lu ms.\n", (mmosal_get_time_ms() - timestamp));
+        printf("\nExit WNM sleep took %lu ms.\n", sleep_exit_duration);
     }
     else
     {
@@ -302,14 +337,16 @@ void app_init(void)
     /* Initialize and connect to Wi-Fi, blocks till connected */
     app_wlan_init();
 
-    set_debug_state(DEBUG_STATE_CONNECTING);
+    SET_DEBUG_STATE(DEBUG_STATE_CONNECTING);
 
     app_wlan_start();
 
-    set_debug_state(DEBUG_STATE_CONNECTED);
+    PWR_MEAS_DELAY_MS(150);
+
+    SET_DEBUG_STATE(DEBUG_STATE_CONNECTED);
 
     /* Delay to allow communications to settle so we measure only idle current */
-    mmosal_task_sleep(150);
+    PWR_MEAS_DELAY_MS(600);
 
     uint32_t wnm_sleep_duration_ms = DEFAULT_WNM_SLEEP_DURATION_MS;
     mmconfig_read_uint32("wlan.wnm_sleep_duration_ms", &wnm_sleep_duration_ms);
@@ -317,19 +354,19 @@ void app_init(void)
     execute_ping_request(0);
 
     /* The following demonstrates basic WNM Sleep functionality. The MM chip remains powered,
-        * but does not wake up to receive beacons. */
+     * but does not wake up to receive beacons. */
     execute_wnm_sleep(wnm_sleep_duration_ms);
 
     execute_ping_request(1);
 
     /* The following demonstrates extended WNM Sleep API that allows the chip to be shutdown
-        * while in WNM Sleep. */
+     * while in WNM Sleep. */
     execute_wnm_sleep_ext(wnm_sleep_duration_ms);
 
     /* Delay to allow communications to settle so we measure only idle current */
-    mmosal_task_sleep(150);
+    PWR_MEAS_DELAY_MS(150);
 
-    set_debug_state(DEBUG_STATE_TERMINATING);
+    SET_DEBUG_STATE(DEBUG_STATE_TERMINATING);
 
     /* Disconnect from Wi-Fi */
     app_wlan_stop();

@@ -7,7 +7,7 @@
 #pragma once
 
 #include "mmosal.h"
-#include "mmhal.h"
+#include "mmhal_core.h"
 #include "mmipal.h"
 #include "arch/sys_arch.h"
 
@@ -25,7 +25,7 @@
  * ATTENTION: this does not work when tcpip_input() is called from
  * interrupt context!
  */
-#define LWIP_TCPIP_CORE_LOCKING_INPUT   (0)
+#define LWIP_TCPIP_CORE_LOCKING_INPUT (0)
 
 /**
  * Macro/function to check whether lwIP's threading/locking
@@ -58,7 +58,7 @@
  * already use it.
  */
 #ifndef MEM_LIBC_MALLOC
-#define MEM_LIBC_MALLOC                 (1)
+#define MEM_LIBC_MALLOC (1)
 #endif
 
 /**
@@ -67,7 +67,7 @@
  * default values in pcbs struct are well initialized in all conditions.
  */
 #ifndef MEMP_MEM_INIT
-#define MEMP_MEM_INIT                   (1)
+#define MEMP_MEM_INIT (1)
 #endif
 
 /**
@@ -76,7 +76,7 @@
  *    2 byte alignment -> \#define MEM_ALIGNMENT 2
  */
 #ifndef MEM_ALIGNMENT
-#define MEM_ALIGNMENT                   (4)
+#define MEM_ALIGNMENT (4)
 #endif
 
 /**
@@ -84,7 +84,7 @@
  * a lot of data that needs to be copied, this should be set high.
  */
 #ifndef MEM_SIZE
-#define MEM_SIZE                        (4096)
+#define MEM_SIZE (4096)
 #endif
 
 /*
@@ -99,7 +99,7 @@
  * (requires the LWIP_UDP option)
  */
 #ifndef MEMP_NUM_UDP_PCB
-#define MEMP_NUM_UDP_PCB                (5)
+#define MEMP_NUM_UDP_PCB (5)
 #endif
 
 /**
@@ -108,7 +108,7 @@
  * (only needed if you use tcpip.c)
  */
 #ifndef MEMP_NUM_TCPIP_MSG_INPKT
-#define MEMP_NUM_TCPIP_MSG_INPKT        16
+#define MEMP_NUM_TCPIP_MSG_INPKT 16
 #endif
 
 /**
@@ -117,14 +117,14 @@
  * Note: we can have up to 20 packets queued for transmit at a time.
  */
 #ifndef PBUF_POOL_SIZE
-#define PBUF_POOL_SIZE                  20
+#define PBUF_POOL_SIZE 20
 #endif
 
 /**
  * MEMP_NUM_SYS_TIMEOUT: the number of simultaneously active timeouts.
  */
 #ifndef MEMP_NUM_SYS_TIMEOUT
-#define MEMP_NUM_SYS_TIMEOUT            (LWIP_NUM_SYS_TIMEOUT_INTERNAL + 2)
+#define MEMP_NUM_SYS_TIMEOUT (LWIP_NUM_SYS_TIMEOUT_INTERNAL + 2)
 #endif
 
 /*
@@ -132,6 +132,17 @@
  *  ---------- ARP options ----------
  *  ---------------------------------
  */
+
+/**
+ * ETHARP_SUPPORT_STATIC_ENTRIES: When enabled, static ARP entries can be added
+ * with etharp_add_static_entry() and removed with etharp_remove_static_entry().
+ * The interface must be up to add a static ARP entry. Static entries are
+ * stored in the ARP cache with state ETHARP_STATE_STATIC and are never aged
+ * out.
+ */
+#ifndef ETHARP_SUPPORT_STATIC_ENTRIES
+#define ETHARP_SUPPORT_STATIC_ENTRIES 1
+#endif
 
 /*
  *  --------------------------------
@@ -145,7 +156,7 @@
  * @warning IPv4 must be *ENABLED* if using mmiperf, mmping, or emmet.
  */
 #ifndef LWIP_IPV4
-#define LWIP_IPV4                       (1)
+#define LWIP_IPV4 (1)
 #endif
 
 /*
@@ -160,7 +171,7 @@
  *  ---------------------------------
  */
 #ifndef LWIP_RAW
-#define LWIP_RAW                        (1)
+#define LWIP_RAW (1)
 #endif
 
 /*
@@ -173,7 +184,7 @@
  * LWIP_DHCP==1: Enable DHCP module.
  */
 #ifndef LWIP_DHCP
-#define LWIP_DHCP                       (1)
+#define LWIP_DHCP (1)
 #endif
 
 /**
@@ -183,7 +194,7 @@
  * configuration in LWIP is to set this to @c LWIP_DHCP.
  */
 #if !defined LWIP_DHCP_DOES_ACD_CHECK
-#define LWIP_DHCP_DOES_ACD_CHECK        (0)
+#define LWIP_DHCP_DOES_ACD_CHECK (0)
 #endif
 
 /*
@@ -210,7 +221,7 @@
  *  ----------------------------------
  */
 #ifndef LWIP_IGMP
-#define LWIP_IGMP                       (1)
+#define LWIP_IGMP (1)
 #endif
 
 /*
@@ -224,7 +235,7 @@
  * transport.
  */
 #ifndef LWIP_DNS
-#define LWIP_DNS                        (1)
+#define LWIP_DNS (1)
 #endif
 
 /*
@@ -247,7 +258,7 @@
  * will be TCP_WND >> TCP_RCV_SCALE
  */
 #ifndef TCP_WND
-#define TCP_WND                         (10 * TCP_MSS)
+#define TCP_WND (10 * TCP_MSS)
 #endif
 
 /**
@@ -258,7 +269,7 @@
  * an upper limit on the MSS advertised by the remote host.
  */
 #ifndef TCP_MSS
-#define TCP_MSS                         (1460)
+#define TCP_MSS (1460)
 #endif
 
 /**
@@ -266,7 +277,7 @@
  * To achieve good performance, this should be at least 2 * TCP_MSS.
  */
 #ifndef TCP_SND_BUF
-#define TCP_SND_BUF                     (6 * TCP_MSS)
+#define TCP_SND_BUF (6 * TCP_MSS)
 #endif
 
 /**
@@ -274,7 +285,7 @@
  * as much as (2 * TCP_SND_BUF/TCP_MSS) for things to work.
  */
 #ifndef TCP_SND_QUEUELEN
-#define TCP_SND_QUEUELEN                (12)
+#define TCP_SND_QUEUELEN (12)
 #endif
 
 /*
@@ -294,7 +305,7 @@
  * small real-life targets. Some code like routing etc. can be left out.
  */
 #ifndef LWIP_SINGLE_NETIF
-#define LWIP_SINGLE_NETIF               (0)
+#define LWIP_SINGLE_NETIF (0)
 #endif
 
 /**
@@ -302,7 +313,7 @@
  * changes its up/down status (i.e., due to DHCP IP acquisition)
  */
 #ifndef LWIP_NETIF_STATUS_CALLBACK
-#define LWIP_NETIF_STATUS_CALLBACK      (1)
+#define LWIP_NETIF_STATUS_CALLBACK (1)
 #endif
 
 /**
@@ -310,7 +321,7 @@
  * whenever the link changes (i.e., link down)
  */
 #ifndef LWIP_NETIF_LINK_CALLBACK
-#define LWIP_NETIF_LINK_CALLBACK        (1)
+#define LWIP_NETIF_LINK_CALLBACK (1)
 #endif
 
 /**
@@ -319,7 +330,7 @@
  */
 #ifndef LWIP_NUM_NETIF_CLIENT_DATA
 #if defined(LWIP_MDNS_RESPONDER) && LWIP_MDNS_RESPONDER != 0
-#define LWIP_NUM_NETIF_CLIENT_DATA      (1)
+#define LWIP_NUM_NETIF_CLIENT_DATA (1)
 #endif
 #endif
 
@@ -341,7 +352,7 @@
  * sys_thread_new() when the thread is created.
  */
 #ifndef TCPIP_THREAD_STACKSIZE
-#define TCPIP_THREAD_STACKSIZE          (4096)
+#define TCPIP_THREAD_STACKSIZE (4096)
 #endif
 
 /**
@@ -350,7 +361,7 @@
  * sys_thread_new() when the thread is created.
  */
 #ifndef TCPIP_THREAD_PRIO
-#define TCPIP_THREAD_PRIO               (MMOSAL_TASK_PRI_NORM)
+#define TCPIP_THREAD_PRIO (MMOSAL_TASK_PRI_NORM)
 #endif
 
 /**
@@ -359,7 +370,7 @@
  * sys_mbox_new() when tcpip_init is called.
  */
 #ifndef TCPIP_MBOX_SIZE
-#define TCPIP_MBOX_SIZE                 (10)
+#define TCPIP_MBOX_SIZE (10)
 #endif
 
 /**
@@ -368,7 +379,7 @@
  * sys_thread_new() when the thread is created.
  */
 #ifndef DEFAULT_THREAD_STACKSIZE
-#define DEFAULT_THREAD_STACKSIZE        (1024)
+#define DEFAULT_THREAD_STACKSIZE (1024)
 #endif
 
 /**
@@ -377,7 +388,7 @@
  * sys_thread_new() when the thread is created.
  */
 #ifndef DEFAULT_THREAD_PRIO
-#define DEFAULT_THREAD_PRIO             (MMOSAL_TASK_PRI_NORM)
+#define DEFAULT_THREAD_PRIO (MMOSAL_TASK_PRI_NORM)
 #endif
 
 /**
@@ -386,7 +397,7 @@
  * to sys_mbox_new() when the recvmbox is created.
  */
 #ifndef DEFAULT_RAW_RECVMBOX_SIZE
-#define DEFAULT_RAW_RECVMBOX_SIZE       (10)
+#define DEFAULT_RAW_RECVMBOX_SIZE (10)
 #endif
 
 /**
@@ -395,7 +406,7 @@
  * to sys_mbox_new() when the recvmbox is created.
  */
 #ifndef DEFAULT_UDP_RECVMBOX_SIZE
-#define DEFAULT_UDP_RECVMBOX_SIZE       (10)
+#define DEFAULT_UDP_RECVMBOX_SIZE (10)
 #endif
 
 /**
@@ -404,7 +415,7 @@
  * to sys_mbox_new() when the recvmbox is created.
  */
 #ifndef DEFAULT_TCP_RECVMBOX_SIZE
-#define DEFAULT_TCP_RECVMBOX_SIZE       (10)
+#define DEFAULT_TCP_RECVMBOX_SIZE (10)
 #endif
 
 /**
@@ -413,7 +424,7 @@
  * sys_mbox_new() when the acceptmbox is created.
  */
 #ifndef DEFAULT_ACCEPTMBOX_SIZE
-#define DEFAULT_ACCEPTMBOX_SIZE         (10)
+#define DEFAULT_ACCEPTMBOX_SIZE (10)
 #endif
 
 /*
@@ -434,7 +445,7 @@
  * in seconds. (does not require sockets.c, and will affect tcp.c)
  */
 #ifndef LWIP_TCP_KEEPALIVE
-#define LWIP_TCP_KEEPALIVE              (1)
+#define LWIP_TCP_KEEPALIVE (1)
 #endif
 
 /**
@@ -442,7 +453,7 @@
  * SO_RCVTIMEO processing.
  */
 #ifndef LWIP_SO_RCVTIMEO
-#define LWIP_SO_RCVTIMEO                (1)
+#define LWIP_SO_RCVTIMEO (1)
 #endif
 
 /*
@@ -453,7 +464,7 @@
 
 /* Disable stats by default to save space. */
 #ifndef LWIP_STATS
-#define LWIP_STATS                      (0)
+#define LWIP_STATS (0)
 #endif
 
 /*
@@ -470,8 +481,6 @@
 
 /**
  * LWIP_IPV6==1: Enable IPv6
- *
- * @warning IPv6 must be *ENABLED* if using mmiperf, mmping, or emmet.
  */
 #ifndef LWIP_IPV6
 #define LWIP_IPV6 (1)
@@ -491,14 +500,14 @@
  * LWIP_IPV6_DHCP6==1: enable DHCPv6 stateful/stateless address autoconfiguration.
  */
 #ifndef LWIP_IPV6_DHCP6
-#define LWIP_IPV6_DHCP6                 (LWIP_IPV6)
+#define LWIP_IPV6_DHCP6 (LWIP_IPV6)
 #endif
 
 /**
  * LWIP_IPV6_NUM_ADDRESSES: Number of IPv6 addresses per netif.
  */
 #ifndef LWIP_IPV6_NUM_ADDRESSES
-#define LWIP_IPV6_NUM_ADDRESSES         (MMIPAL_MAX_IPV6_ADDRESSES)
+#define LWIP_IPV6_NUM_ADDRESSES (MMIPAL_MAX_IPV6_ADDRESSES)
 #endif
 
 /*
@@ -517,34 +526,34 @@
 
 #ifndef LWIP_DBG_MIN_LEVEL
 /* Default to warning level, since "all" is a bit too verbose. */
-#define LWIP_DBG_MIN_LEVEL  (LWIP_DBG_LEVEL_WARNING)
+#define LWIP_DBG_MIN_LEVEL (LWIP_DBG_LEVEL_WARNING)
 #endif
 
-#define LWIP_DBG_TYPES_ON   (LWIP_DBG_ON)
-#define SYS_DEBUG           (LWIP_DBG_ON)
-#define MEM_DEBUG           (LWIP_DBG_ON)
-#define MEMP_DEBUG          (LWIP_DBG_ON)
-#define ETHARP_DEBUG        (LWIP_DBG_ON)
-#define NETIF_DEBUG         (LWIP_DBG_ON)
-#define PBUF_DEBUG          (LWIP_DBG_ON)
-#define SOCKETS_DEBUG       (LWIP_DBG_ON)
-#define API_MSG_DEBUG       (LWIP_DBG_ON)
-#define API_LIB_DEBUG       (LWIP_DBG_ON)
-#define INET_DEBUG          (LWIP_DBG_ON)
-#define RAW_DEBUG           (LWIP_DBG_ON)
-#define IP_DEBUG            (LWIP_DBG_ON)
-#define TCP_DEBUG           (LWIP_DBG_ON)
-#define TCP_INPUT_DEBUG     (LWIP_DBG_ON)
-#define TCP_OUTPUT_DEBUG    (LWIP_DBG_ON)
-#define TCP_QLEN_DEBUG      (LWIP_DBG_ON)
-#define TCP_CWND_DEBUG      (LWIP_DBG_ON)
-#define UDP_DEBUG           (LWIP_DBG_ON)
-#define TCPIP_DEBUG         (LWIP_DBG_ON)
-#define LWIPERF_DEBUG       (LWIP_DBG_ON)
+#define LWIP_DBG_TYPES_ON (LWIP_DBG_ON)
+#define SYS_DEBUG         (LWIP_DBG_ON)
+#define MEM_DEBUG         (LWIP_DBG_ON)
+#define MEMP_DEBUG        (LWIP_DBG_ON)
+#define ETHARP_DEBUG      (LWIP_DBG_ON)
+#define NETIF_DEBUG       (LWIP_DBG_ON)
+#define PBUF_DEBUG        (LWIP_DBG_ON)
+#define SOCKETS_DEBUG     (LWIP_DBG_ON)
+#define API_MSG_DEBUG     (LWIP_DBG_ON)
+#define API_LIB_DEBUG     (LWIP_DBG_ON)
+#define INET_DEBUG        (LWIP_DBG_ON)
+#define RAW_DEBUG         (LWIP_DBG_ON)
+#define IP_DEBUG          (LWIP_DBG_ON)
+#define TCP_DEBUG         (LWIP_DBG_ON)
+#define TCP_INPUT_DEBUG   (LWIP_DBG_ON)
+#define TCP_OUTPUT_DEBUG  (LWIP_DBG_ON)
+#define TCP_QLEN_DEBUG    (LWIP_DBG_ON)
+#define TCP_CWND_DEBUG    (LWIP_DBG_ON)
+#define UDP_DEBUG         (LWIP_DBG_ON)
+#define TCPIP_DEBUG       (LWIP_DBG_ON)
+#define LWIPERF_DEBUG     (LWIP_DBG_ON)
 #endif
 
 #ifndef LWIP_DBG_TYPES_ON
-#define LWIP_DBG_TYPES_ON               (LWIP_DBG_OFF)
+#define LWIP_DBG_TYPES_ON (LWIP_DBG_OFF)
 #endif
 
 /*
@@ -560,17 +569,51 @@
  */
 
 #ifndef LWIP_PROVIDE_ERRNO
-#define LWIP_PROVIDE_ERRNO              (1)
+#define LWIP_PROVIDE_ERRNO (1)
 #endif
 
 #ifndef LWIP_RAND
-#define LWIP_RAND()                     (mmhal_random_u32(0, UINT32_MAX))
+#define LWIP_RAND() (mmhal_random_u32(0, UINT32_MAX))
 #endif
 
 #ifndef LWIP_PLATFORM_ASSERT
-#define LWIP_PLATFORM_ASSERT(x)         MMOSAL_ASSERT(false)
+#define LWIP_PLATFORM_ASSERT(x) MMOSAL_ASSERT(false)
 #endif
 
 #ifndef SO_REUSE
-#define SO_REUSE              (1)
+#define SO_REUSE (1)
+#endif
+
+/* The following options are patched on top of LwIP 2.2.0 to enable on-demand timers to reduce power
+ * consumption. */
+#if !defined(MORSE_LWIP_TIMERS_ON_DEMAND)
+#define MORSE_LWIP_TIMERS_ON_DEMAND (0)
+#endif
+#if MORSE_LWIP_TIMERS_ON_DEMAND && (!LWIP_IPV4 || LWIP_IPV6)
+#error On demand timers have not been tested with IPv6 and should be used with IPv4 only.
+#endif
+
+#ifndef ESP_LWIP_IGMP_TIMERS_ONDEMAND
+#define ESP_LWIP_IGMP_TIMERS_ONDEMAND MORSE_LWIP_TIMERS_ON_DEMAND
+#endif
+#ifndef ESP_LWIP_DHCP_FINE_TIMERS_ONDEMAND
+#define ESP_LWIP_DHCP_FINE_TIMERS_ONDEMAND MORSE_LWIP_TIMERS_ON_DEMAND
+#endif
+#ifndef ESP_LWIP_DNS_TIMERS_ONDEMAND
+#define ESP_LWIP_DNS_TIMERS_ONDEMAND MORSE_LWIP_TIMERS_ON_DEMAND
+#endif
+#ifndef ESP_LWIP_MLD6_TIMERS_ONDEMAND
+#define ESP_LWIP_MLD6_TIMERS_ONDEMAND MORSE_LWIP_TIMERS_ON_DEMAND
+#endif
+#ifndef ESP_LWIP_IP4_REASSEMBLY_TIMERS_ONDEMAND
+#define ESP_LWIP_IP4_REASSEMBLY_TIMERS_ONDEMAND MORSE_LWIP_TIMERS_ON_DEMAND
+#endif
+#ifndef ESP_LWIP_IP6_REASSEMBLY_TIMERS_ONDEMAND
+#define ESP_LWIP_IP6_REASSEMBLY_TIMERS_ONDEMAND MORSE_LWIP_TIMERS_ON_DEMAND
+#endif
+
+/* Overwrites the default value set in tcp_priv.h
+ * Affects the time a TCP PCB is kept for after the connection is closed. */
+#ifndef TCP_MSL
+#define TCP_MSL (5000)
 #endif

@@ -523,7 +523,7 @@ void wpas_clear_disabled_interface(void *eloop_ctx, void *timeout_ctx)
 		wpa_supplicant_mesh_iface_deinit(wpa_s, wpa_s->ifmsh, true);
 		wpa_s->ifmsh = NULL;
 	}
-#endif /* CONFIG_MESH */	
+#endif /* CONFIG_MESH */
 }
 
 
@@ -2741,7 +2741,7 @@ void wpa_supplicant_associate(struct wpa_supplicant *wpa_s,
 	if (ssid->mode == WPAS_MODE_AP || ssid->mode == WPAS_MODE_P2P_GO ||
 	    ssid->mode == WPAS_MODE_P2P_GROUP_FORMATION) {
 #ifdef CONFIG_AP
-		if (!wpa_s->conf->op_class) {
+		if (!wpa_s->conf->op_class && !wpa_s->conf->s1g_op_class) {
 			wpa_printf(MSG_INFO, "op_class not set. Need op_class to start as AP");
 			return;
 		}
@@ -2916,7 +2916,7 @@ void morse_ibss_mesh_setup_freq(struct wpa_supplicant *wpa_s,
 	const struct ah_class *op_chan_class;
 
 	/* Just in case! */
-	if (!conf) 
+	if (!conf)
 		return;
 
 	/* Initialize fequency param's with default frequency */
@@ -2942,7 +2942,7 @@ void morse_ibss_mesh_setup_freq(struct wpa_supplicant *wpa_s,
 		conf->s1g_capab &= ~S1G_CAP0_SGI_ALL;
 
 	/* Derive local operating class */
-	op_class = morse_s1g_verify_op_class_country_channel(ssid->op_class, ssid->country, 
+	op_class = morse_s1g_verify_op_class_country_channel(ssid->op_class, ssid->country,
 						     ssid->channel, ssid->s1g_prim_1mhz_chan_index);
 	wpa_printf(MSG_DEBUG, "s1g oper class: %d, validated: %d, s1g channel: %u",
 			      ssid->op_class, op_class, ssid->channel);
@@ -2963,7 +2963,7 @@ void morse_ibss_mesh_setup_freq(struct wpa_supplicant *wpa_s,
 
 	wpa_printf(MSG_INFO, "S1G mapped HT channel %d", channel);
 
-	/* Validate ht center channel with supported channel 
+	/* Validate ht center channel with supported channel
 	 * index and derive corresponding ht channel
 	 */
 	ht_channel = morse_validate_ht_channel_with_idx(op_class, channel, &oper_chwidth,
@@ -3016,7 +3016,7 @@ void morse_ibss_mesh_setup_freq(struct wpa_supplicant *wpa_s,
 				      conf->s1g_op_class, channel);
 	else
 		wpa_printf(MSG_DEBUG, "S1G freq %d kHz for class %d ht chan %d",
-				      oper_freq, conf->s1g_op_class, channel);
+				      oper_freq, conf->s1g_op_class, ssid->channel);
 
 	if (conf->s1g_prim_chwidth != ssid->s1g_prim_chwidth)
 		conf->s1g_prim_chwidth = ssid->s1g_prim_chwidth;
@@ -3052,7 +3052,7 @@ void morse_ibss_mesh_setup_freq(struct wpa_supplicant *wpa_s,
 		}
 
 		if (conf->s1g_prim_1mhz_chan_index < oper_chwidth) {
-			if ((morse_set_channel(wpa_s->ifname, oper_freq, oper_chwidth , 
+			if ((morse_set_channel(wpa_s->ifname, oper_freq, oper_chwidth ,
 					prim_chwidth, conf->s1g_prim_1mhz_chan_index)) < 0)
 				return;
 		} else {
@@ -3441,8 +3441,7 @@ skip_80mhz:
 				    freq->sec_channel_offset,
 				    chwidth, seg0, seg1, vht_caps,
 				    &mode->he_capab[ieee80211_mode],
-				    &mode->eht_capab[ieee80211_mode], 0,
-				    freq->prim_bandwidth, freq->prim_ch_index) != 0)
+				    &mode->eht_capab[ieee80211_mode], 0) != 0)
 		return false;
 
 	*freq = vht_freq;
@@ -4676,7 +4675,7 @@ static void wpas_start_assoc_cb(struct wpa_radio_work *work, int deinit)
 		params.bssid = ssid->bssid;
 		params.fixed_bssid = 1;
 	}
-	
+
 	/* Initial frequency for IBSS/mesh */
 	if ((ssid->mode == WPAS_MODE_IBSS || ssid->mode == WPAS_MODE_MESH) &&
 	    ssid->frequency > 0 && params.freq.freq == 0) {

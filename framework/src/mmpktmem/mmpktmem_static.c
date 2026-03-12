@@ -6,7 +6,7 @@
 
 #include <stdint.h>
 
-#include "mmhal.h"
+#include "mmhal_wlan.h"
 #include "mmosal.h"
 #include "mmpkt.h"
 #include "mmpkt_list.h"
@@ -24,13 +24,13 @@
 #define MMPKTMEM_TX_DATA_POOL_UNPAUSE_THRESHOLD (2)
 #define MMPKTMEM_TX_DATA_POOL_PAUSE_THRESHOLD   (1)
 
-#define MMPKTMEM_TX_COMMAND_POOL_BLOCK_SIZE  (256)
-#define MMPKTMEM_TX_COMMAND_POOL_N_BLOCKS    (2)
-#define MMPKTMEM_RX_COMMAND_POOL_BLOCK_SIZE  (MMHAL_WLAN_MMPKT_RX_MAX_SIZE)
-#define MMPKTMEM_RX_COMMAND_POOL_N_BLOCKS    (2)
+#define MMPKTMEM_TX_COMMAND_POOL_BLOCK_SIZE     (256)
+#define MMPKTMEM_TX_COMMAND_POOL_N_BLOCKS       (2)
+#define MMPKTMEM_RX_COMMAND_POOL_BLOCK_SIZE     (MMHAL_WLAN_MMPKT_RX_MAX_SIZE)
+#define MMPKTMEM_RX_COMMAND_POOL_N_BLOCKS       (2)
 
-#define MMPKTMEM_TX_POOL_BLOCK_SIZE     (MMHAL_WLAN_MMPKT_TX_MAX_SIZE)
-#define MMPKTMEM_RX_POOL_BLOCK_SIZE     (MMHAL_WLAN_MMPKT_RX_MAX_SIZE)
+#define MMPKTMEM_TX_POOL_BLOCK_SIZE             (MMHAL_WLAN_MMPKT_TX_MAX_SIZE)
+#define MMPKTMEM_RX_POOL_BLOCK_SIZE             (MMHAL_WLAN_MMPKT_RX_MAX_SIZE)
 
 #ifndef MMPKT_LOG
 #define MMPKT_LOG(...) printf(__VA_ARGS__)
@@ -44,8 +44,8 @@ struct pktmem_data
     /** TX command pool free (unallocated) packet list. */
     struct mmpkt_list tx_command_pool_free_list;
     /** Statically allocated memory for the TX command pool. */
-    uint8_t tx_command_pool[MMPKTMEM_TX_COMMAND_POOL_BLOCK_SIZE *
-                            MMPKTMEM_TX_COMMAND_POOL_N_BLOCKS];
+    uint8_t
+        tx_command_pool[MMPKTMEM_TX_COMMAND_POOL_BLOCK_SIZE * MMPKTMEM_TX_COMMAND_POOL_N_BLOCKS];
 
     /** TX data pool free (unallocated) packet list. */
     struct mmpkt_list tx_data_pool_free_list;
@@ -136,7 +136,8 @@ void mmhal_wlan_pktmem_deinit(void)
     if (pktmem.tx_data_pool_free_list.len != MMPKTMEM_TX_POOL_N_BLOCKS)
     {
         MMPKT_LOG("Potential memory leak: %d %s pool allocations at deinit\n",
-                  MMPKTMEM_TX_POOL_N_BLOCKS - (int)pktmem.tx_data_pool_free_list.len, "tx data");
+                  MMPKTMEM_TX_POOL_N_BLOCKS - (int)pktmem.tx_data_pool_free_list.len,
+                  "tx data");
     }
 
     if (pktmem.rx_command_pool_free_list.len != MMPKTMEM_RX_COMMAND_POOL_N_BLOCKS)
@@ -149,7 +150,8 @@ void mmhal_wlan_pktmem_deinit(void)
     if (pktmem.rx_data_pool_free_list.len != MMPKTMEM_RX_POOL_N_BLOCKS)
     {
         MMPKT_LOG("Potential memory leak: %d %s pool allocations at deinit\n",
-                  MMPKTMEM_RX_POOL_N_BLOCKS - (int)pktmem.rx_data_pool_free_list.len, "rx");
+                  MMPKTMEM_RX_POOL_N_BLOCKS - (int)pktmem.rx_data_pool_free_list.len,
+                  "rx");
     }
 }
 
@@ -204,9 +206,11 @@ static const struct mmpkt_ops tx_data_pool_ops = {
     .free_mmpkt = tx_data_free,
 };
 
-static struct mmpkt *alloc_pkt_from_list(struct mmpkt_list *list, uint32_t pktbufsize,
+static struct mmpkt *alloc_pkt_from_list(struct mmpkt_list *list,
+                                         uint32_t pktbufsize,
                                          const struct mmpkt_ops *ops,
-                                         uint32_t space_at_start, uint32_t space_at_end,
+                                         uint32_t space_at_start,
+                                         uint32_t space_at_end,
                                          uint32_t metadata_length)
 {
     struct mmpkt *mmpkt_buf;
@@ -221,8 +225,12 @@ static struct mmpkt *alloc_pkt_from_list(struct mmpkt_list *list, uint32_t pktbu
         return NULL;
     }
 
-    mmpkt = mmpkt_init_buf((uint8_t *)mmpkt_buf, pktbufsize, space_at_start, space_at_end,
-                           metadata_length, ops);
+    mmpkt = mmpkt_init_buf((uint8_t *)mmpkt_buf,
+                           pktbufsize,
+                           space_at_start,
+                           space_at_end,
+                           metadata_length,
+                           ops);
     if (mmpkt == NULL)
     {
         mmpkt_list_append(list, mmpkt_buf);
@@ -231,20 +239,28 @@ static struct mmpkt *alloc_pkt_from_list(struct mmpkt_list *list, uint32_t pktbu
     return mmpkt;
 }
 
-static struct mmpkt *tx_command_pool_alloc(uint32_t space_at_start, uint32_t space_at_end,
+static struct mmpkt *tx_command_pool_alloc(uint32_t space_at_start,
+                                           uint32_t space_at_end,
                                            uint32_t metadata_length)
 {
-    return alloc_pkt_from_list(
-        &pktmem.tx_command_pool_free_list, MMPKTMEM_TX_COMMAND_POOL_BLOCK_SIZE,
-        &tx_command_pool_ops, space_at_start, space_at_end, metadata_length);
+    return alloc_pkt_from_list(&pktmem.tx_command_pool_free_list,
+                               MMPKTMEM_TX_COMMAND_POOL_BLOCK_SIZE,
+                               &tx_command_pool_ops,
+                               space_at_start,
+                               space_at_end,
+                               metadata_length);
 }
 
-static struct mmpkt *tx_data_pool_alloc(uint32_t space_at_start, uint32_t space_at_end,
+static struct mmpkt *tx_data_pool_alloc(uint32_t space_at_start,
+                                        uint32_t space_at_end,
                                         uint32_t metadata_length)
 {
-    return alloc_pkt_from_list(
-        &pktmem.tx_data_pool_free_list, MMPKTMEM_TX_POOL_BLOCK_SIZE, &tx_data_pool_ops,
-        space_at_start, space_at_end, metadata_length);
+    return alloc_pkt_from_list(&pktmem.tx_data_pool_free_list,
+                               MMPKTMEM_TX_POOL_BLOCK_SIZE,
+                               &tx_data_pool_ops,
+                               space_at_start,
+                               space_at_end,
+                               metadata_length);
 }
 
 static bool update_tx_flow_control_state(void)
@@ -262,7 +278,8 @@ static bool update_tx_flow_control_state(void)
 }
 
 struct mmpkt *mmhal_wlan_alloc_mmpkt_for_tx(uint8_t pkt_class,
-                                            uint32_t space_at_start, uint32_t space_at_end,
+                                            uint32_t space_at_start,
+                                            uint32_t space_at_end,
                                             uint32_t metadata_length)
 {
     bool invoke_fc_callback;
@@ -322,24 +339,33 @@ static const struct mmpkt_ops rx_data_pool_ops = {
     .free_mmpkt = rx_data_free,
 };
 
-static struct mmpkt *rx_command_pool_alloc(uint32_t space_at_start, uint32_t space_at_end,
+static struct mmpkt *rx_command_pool_alloc(uint32_t space_at_start,
+                                           uint32_t space_at_end,
                                            uint32_t metadata_length)
 {
-    return alloc_pkt_from_list(
-        &pktmem.rx_command_pool_free_list, MMPKTMEM_RX_COMMAND_POOL_BLOCK_SIZE,
-        &rx_command_pool_ops, space_at_start, space_at_end, metadata_length);
+    return alloc_pkt_from_list(&pktmem.rx_command_pool_free_list,
+                               MMPKTMEM_RX_COMMAND_POOL_BLOCK_SIZE,
+                               &rx_command_pool_ops,
+                               space_at_start,
+                               space_at_end,
+                               metadata_length);
 }
 
-static struct mmpkt *rx_data_pool_alloc(uint32_t space_at_start, uint32_t space_at_end,
+static struct mmpkt *rx_data_pool_alloc(uint32_t space_at_start,
+                                        uint32_t space_at_end,
                                         uint32_t metadata_length)
 {
-    return alloc_pkt_from_list(
-        &pktmem.rx_data_pool_free_list, MMPKTMEM_RX_POOL_BLOCK_SIZE, &rx_data_pool_ops,
-        space_at_start, space_at_end, metadata_length);
+    return alloc_pkt_from_list(&pktmem.rx_data_pool_free_list,
+                               MMPKTMEM_RX_POOL_BLOCK_SIZE,
+                               &rx_data_pool_ops,
+                               space_at_start,
+                               space_at_end,
+                               metadata_length);
 }
 
 struct mmpkt *mmhal_wlan_alloc_mmpkt_for_rx(uint8_t pkt_class,
-                                            uint32_t capacity, uint32_t metadata_length)
+                                            uint32_t capacity,
+                                            uint32_t metadata_length)
 {
     /* For command packets, try allocating from the command pool first. If that fails then
      * we proceed to allocate from the data pool. */

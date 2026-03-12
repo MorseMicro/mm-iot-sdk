@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Morse Micro
+ * Copyright 2026 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -28,32 +28,34 @@ struct mmagic_tls_config
 struct mmagic_tls_data
 {
     struct mmagic_tls_config config;
+    /** Subsystem private data (to be allocated/managed by the subsystem implementation). */
+    void *priv;
 };
 
 /**
  * Function to initialize the core data structure and register the ops functions.
  *
- * @param core Reference to to global mmagic context struct.
+ * @param core   Reference to to global mmagic context struct.
  */
 void mmagic_core_tls_init(struct mmagic_data *core);
 
 /**
  * Function to load settings from persistent store for the core tls subsystem.
  *
- * @param core Reference to to global mmagic context struct.
+ * @param core   Reference to to global mmagic context struct.
  */
 void mmagic_core_tls_load_all(struct mmagic_data *core);
 
 /**
  * Function to save settings to persistent store for the core tls subsystem.
  *
- * @param core Reference to to global mmagic context struct.
+ * @param core   Reference to to global mmagic context struct.
  */
 void mmagic_core_tls_save_all(struct mmagic_data *core);
 
 /**
  * Function to start any of the core processes for the core tls subsystem.
  *
- * @param core Reference to to global mmagic context struct.
+ * @param core   Reference to to global mmagic context struct.
  */
 void mmagic_core_tls_start(struct mmagic_data *core);

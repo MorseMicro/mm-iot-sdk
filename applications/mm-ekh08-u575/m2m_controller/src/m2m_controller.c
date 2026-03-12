@@ -161,7 +161,8 @@
  *
  */
 
-#include "mmhal.h"
+#include "mmhal_app.h"
+#include "mmhal_core.h"
 #include "mmosal.h"
 #include "mmutils.h"
 #include "mmagic_controller.h"
@@ -446,9 +447,11 @@ static void beacon_monitor_example_start(struct mmagic_controller *controller)
  * connection. It is currently hitting a http web-page so we just expect a very basic response from
  * the http server.
  *
- * @param controller Reference to the controller structure to use.
+ * @param controller    Reference to the controller structure to use.
+ * @param rx_ready_semb Binary semaphore that will be given by the receive ready event handler.
  */
-static void tcp_client_example(struct mmagic_controller *controller)
+static void tcp_client_example(struct mmagic_controller *controller,
+                               struct mmosal_semb *rx_ready_semb)
 {
     printf("\n\n#### Example TCP Client using MMAGIC Controller ####\n\n");
     enum mmagic_status status;
@@ -467,9 +470,28 @@ static void tcp_client_example(struct mmagic_controller *controller)
     uint8_t tcp_stream_id = tcp_rsp_args.stream_id;
     printf("Opened TCP socket on stream_id %u\n", tcp_stream_id);
 
+    struct mmagic_core_tcp_set_rx_ready_evt_enabled_cmd_args args = {
+        .stream_id = tcp_stream_id,
+        .enabled = true,
+    };
+    status = mmagic_controller_tcp_set_rx_ready_evt_enabled(controller, &args);
+    bool rx_ready_event_enabled = false;
+    if (status == MMAGIC_STATUS_OK)
+    {
+        rx_ready_event_enabled = true;
+    }
+    else if (status == MMAGIC_STATUS_NOT_SUPPORTED)
+    {
+        printf("RX ready event not supported.\n");
+    }
+    else
+    {
+        printf("Error %d enabling rx ready event\n", status);
+    }
+
     struct mmagic_core_tcp_send_cmd_args tcp_send_cmd_args = {
         .stream_id = tcp_stream_id,
-        .buffer = {.data = "GET /\n", .len = strlen("GET /\n")}
+        .buffer = {.data = "GET /\n\n", .len = strlen("GET /\n\n")}
     };
     status = mmagic_controller_tcp_send(controller, &tcp_send_cmd_args);
     if (status != MMAGIC_STATUS_OK)
@@ -478,6 +500,12 @@ static void tcp_client_example(struct mmagic_controller *controller)
         MMOSAL_ASSERT(false);
     }
     printf("Successfully sent GET request\n");
+
+    if (rx_ready_event_enabled)
+    {
+        printf("Waiting for RX ready event...\n");
+        mmosal_semb_wait(rx_ready_semb, UINT32_MAX);
+    }
 
     struct mmagic_core_tcp_recv_cmd_args tcp_recv_cmd_args = {
         .stream_id = tcp_stream_id,
@@ -653,6 +681,22 @@ static enum mmagic_status tcp_echo_server_start(struct mmagic_controller *contro
 }
 
 /**
+ * Handler for TCP receive ready event callback.
+ *
+ * @param event_args    Event arguments.
+ * @param arg           Opaque argument that was passed in when the callback was registered.
+ */
+static void tcp_rx_ready_event_handler(
+    const struct mmagic_tcp_rx_ready_event_args *event_args,
+    void *arg)
+{
+    MM_UNUSED(event_args);
+    printf("TCP RX ready event\n");
+    struct mmosal_semb *rx_ready_semb = (struct mmosal_semb *)arg;
+    mmosal_semb_give(rx_ready_semb);
+}
+
+/**
  * Runs the examples.
  *
  * @param args Not used.
@@ -696,13 +740,13 @@ static void run_examples_task(void *args)
     }
 
     printf("Sync failed with status %d, attempting LLC agent reset.\n", status);
-    mmagic_controller_request_agent_reset(controller);
+    status = mmagic_controller_request_agent_reset(controller);
     if (mmosal_semb_wait(agent_started_semb, AGENT_ACTION_TIMEOUT_MS))
     {
         goto agent_started;
     }
 
-    printf("LLC reset failed. Please hard reset the agent.\n");
+    printf("LLC reset failed with status %d. Please hard reset the agent.\n", status);
     mmosal_semb_wait(agent_started_semb, UINT32_MAX);
 
 agent_started:
@@ -716,7 +760,11 @@ agent_started:
 agent_connected:
     beacon_monitor_example_start(controller);
 
-    tcp_client_example(controller);
+    struct mmosal_semb *rx_ready_semb = mmosal_semb_create("rxready");
+    MMOSAL_ASSERT(rx_ready_semb != NULL);
+    mmagic_controller_register_tcp_rx_ready_handler(controller, tcp_rx_ready_event_handler, rx_ready_semb);
+
+    tcp_client_example(controller, rx_ready_semb);
 
     status = tcp_echo_server_start(controller, TCP_ECHCO_SERVER_PORT);
     if ((status == MMAGIC_STATUS_SOCKET_LISTEN_FAILED) && agent_already_running)

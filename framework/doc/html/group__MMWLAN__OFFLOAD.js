@@ -1,6 +1,6 @@
 var group__MMWLAN__OFFLOAD =
 [
-    [ "WLAN Standby features", "group__MMWLAN__STANDBY.html", "group__MMWLAN__STANDBY" ],
+    [ "[Deprecated] WLAN Standby features", "group__MMWLAN__STANDBY.html", "group__MMWLAN__STANDBY" ],
     [ "mmwlan_dhcp_lease_info", "structmmwlan__dhcp__lease__info.html", [
       [ "dns4_addr", "structmmwlan__dhcp__lease__info.html#a87f52408bfe9304b37f7232e6f33560f", null ],
       [ "gw4_addr", "structmmwlan__dhcp__lease__info.html#abb28a5cf41b73de52ea002021ec2a12c", null ],

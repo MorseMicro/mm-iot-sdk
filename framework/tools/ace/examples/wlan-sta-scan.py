@@ -23,12 +23,11 @@ from acelib import DutIf, mac_addr_bytes_to_str  # noqa: E402
 
 DEFAULT_GDB_PORT = 3333
 DEFAULT_TCL_PORT = 6666
-DEFAULT_DWELL_TIME_MS = 105
 DEFAULT_POLL_TIMEOUT_SEC = 30
 
 
 def _print_results(rsp, extended=False):
-    headings = ["No#", "RSSI", "BSSID", "SSID", "Beacon Interval", "Capabilities"]
+    headings = ["No#", "RSSI dBm", "BSSID", "SSID", "Beacon Interval", "Capabilities", "Noise dBm"]
     if extended:
         headings.append("Information Elements")
 
@@ -43,6 +42,7 @@ def _print_results(rsp, extended=False):
         result.append(f'{entry.ssid.decode("utf-8")}')
         result.append(f"{entry.beacon_interval}")
         result.append("".join([f"0x{entry.capability_info:04x}"]))
+        result.append(f"{entry.noise_dbm}")
 
         if extended:
             result.append("0x" + "".join([f"{octet:02x}" for octet in entry.ies]))
@@ -75,9 +75,10 @@ def _main():
     parser.add_argument("-x", "--extended-results", action="store_true",
                         help="Print extended probe response results")
 
-    parser.add_argument("-d", "--dwell-time-ms", default=DEFAULT_DWELL_TIME_MS, type=int,
+    parser.add_argument("-d", "--dwell-time-ms", default=0, type=int,
                         help="""
         Time in milliseconds to dwell on a channel waiting for probe responses/beacons.
+        0 will use the default MMWLAN value.
     """)
     parser.add_argument("-e", "--extra-ies",
                         help="""

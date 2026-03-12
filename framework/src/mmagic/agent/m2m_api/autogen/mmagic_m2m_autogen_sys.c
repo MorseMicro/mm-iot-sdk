@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Morse Micro
+ * Copyright 2026 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -18,24 +18,30 @@
 #include "m2m_api/mmagic_m2m_agent.h"
 
 /* Maximum allowed length of any value string, needs to accomodate IP and MAC address strings */
-#define MAX_VAL_LEN     32
+#define MAX_VAL_LEN 32
 
 /********* M2M Command Handlers **********/
 
 static struct mmbuf *mmagic_m2m_sys_reset(struct mmagic_m2m_agent *agent,
-                                          uint8_t sid, uint8_t subcommand,
+                                          uint8_t sid,
+                                          uint8_t subcommand,
                                           struct mmbuf *commandbuffer)
 {
     enum mmagic_status status;
     MM_UNUSED(commandbuffer);
     MM_UNUSED(sid);
     status = mmagic_core_sys_reset(&agent->core);
-    return mmagic_m2m_create_response(mmagic_sys, mmagic_sys_cmd_reset,
-                                      subcommand, status, NULL, 0);
+    return mmagic_m2m_create_response(mmagic_sys,
+                                      mmagic_sys_cmd_reset,
+                                      subcommand,
+                                      status,
+                                      NULL,
+                                      0);
 }
 
 static struct mmbuf *mmagic_m2m_sys_deep_sleep(struct mmagic_m2m_agent *agent,
-                                               uint8_t sid, uint8_t subcommand,
+                                               uint8_t sid,
+                                               uint8_t subcommand,
                                                struct mmbuf *commandbuffer)
 {
     enum mmagic_status status;
@@ -43,24 +49,34 @@ static struct mmbuf *mmagic_m2m_sys_deep_sleep(struct mmagic_m2m_agent *agent,
         (struct mmagic_core_sys_deep_sleep_cmd_args *)mmbuf_get_data_start(commandbuffer);
     MM_UNUSED(sid);
     status = mmagic_core_sys_deep_sleep(&agent->core, cmd_args);
-    return mmagic_m2m_create_response(mmagic_sys, mmagic_sys_cmd_deep_sleep,
-                                      subcommand, status, NULL, 0);
+    return mmagic_m2m_create_response(mmagic_sys,
+                                      mmagic_sys_cmd_deep_sleep,
+                                      subcommand,
+                                      status,
+                                      NULL,
+                                      0);
 }
 
 static struct mmbuf *mmagic_m2m_sys_get_version(struct mmagic_m2m_agent *agent,
-                                                uint8_t sid, uint8_t subcommand,
+                                                uint8_t sid,
+                                                uint8_t subcommand,
                                                 struct mmbuf *commandbuffer)
 {
     enum mmagic_status status;
     MM_UNUSED(commandbuffer);
     MM_UNUSED(sid);
-    struct mmagic_core_sys_get_version_rsp_args rsp_args = { };
+    struct mmagic_core_sys_get_version_rsp_args rsp_args = {};
     status = mmagic_core_sys_get_version(&agent->core, &rsp_args);
-    return mmagic_m2m_create_response(mmagic_sys, mmagic_sys_cmd_get_version,
-                                      subcommand, status, &rsp_args, sizeof(rsp_args));
+    return mmagic_m2m_create_response(mmagic_sys,
+                                      mmagic_sys_cmd_get_version,
+                                      subcommand,
+                                      status,
+                                      &rsp_args,
+                                      sizeof(rsp_args));
 }
 
-struct mmbuf *mmagic_m2m_sys_process(struct mmagic_m2m_agent *agent, uint8_t sid,
+struct mmbuf *mmagic_m2m_sys_process(struct mmagic_m2m_agent *agent,
+                                     uint8_t sid,
                                      struct mmagic_m2m_command_header *header,
                                      struct mmbuf *cmd_buf)
 {
@@ -68,22 +84,25 @@ struct mmbuf *mmagic_m2m_sys_process(struct mmagic_m2m_agent *agent, uint8_t sid
     {
         switch (header->command)
         {
-        case mmagic_sys_cmd_reset:
-            return mmagic_m2m_sys_reset(agent, sid, header->subcommand, cmd_buf);
-            break;
+            case mmagic_sys_cmd_reset:
+                return mmagic_m2m_sys_reset(agent, sid, header->subcommand, cmd_buf);
+                break;
 
-        case mmagic_sys_cmd_deep_sleep:
-            return mmagic_m2m_sys_deep_sleep(agent, sid, header->subcommand, cmd_buf);
-            break;
+            case mmagic_sys_cmd_deep_sleep:
+                return mmagic_m2m_sys_deep_sleep(agent, sid, header->subcommand, cmd_buf);
+                break;
 
-        case mmagic_sys_cmd_get_version:
-            return mmagic_m2m_sys_get_version(agent, sid, header->subcommand, cmd_buf);
-            break;
+            case mmagic_sys_cmd_get_version:
+                return mmagic_m2m_sys_get_version(agent, sid, header->subcommand, cmd_buf);
+                break;
 
-        default:
-            return mmagic_m2m_create_response(header->subsystem, header->command,
-                                              header->subcommand, MMAGIC_STATUS_NOT_SUPPORTED, NULL,
-                                              0);
+            default:
+                return mmagic_m2m_create_response(header->subsystem,
+                                                  header->command,
+                                                  header->subcommand,
+                                                  MMAGIC_STATUS_NOT_SUPPORTED,
+                                                  NULL,
+                                                  0);
         }
     }
     else

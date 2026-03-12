@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.9.7</span>
+   &#160;<span id="projectnumber">2.10.4</span>
    </div>
   </td>
  </tr>
@@ -89,14 +89,14 @@ $(document).ready(function(){initNavTree('structmmwlan__scan__args.html',''); in
 <div class="header">
   <div class="summary">
 <a href="#pub-attribs">Data Fields</a>  </div>
-  <div class="headertitle"><div class="title">mmwlan_scan_args Struct Reference<div class="ingroups"><a class="el" href="group__MMWLAN.html">Morse Micro Wireless LAN (mmwlan) API</a> &raquo; <a class="el" href="group__MMWLAN__CTRL.html">WLAN Control API</a></div></div></div>
+  <div class="headertitle"><div class="title">mmwlan_scan_args Struct Reference<div class="ingroups"><a class="el" href="group__MMWLAN.html">Morse Micro Wireless LAN (mmwlan) API</a> &raquo; <a class="el" href="group__MMWLAN__SCAN.html">WLAN Control API for Scan</a></div></div></div>
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Structure to hold scan arguments. </p>
-<p >This structure should be initialized using <a class="el" href="group__MMWLAN__CTRL.html#ga185c90a221a8b25584fa41b8f33c2783">MMWLAN_SCAN_ARGS_INIT</a> for forward compatibility. </p>
+<p >This structure should be initialized using <a class="el" href="group__MMWLAN__SCAN.html#ga185c90a221a8b25584fa41b8f33c2783">MMWLAN_SCAN_ARGS_INIT</a> for forward compatibility. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01184">1184</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00818">818</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 </div>
 <p><code>#include &lt;<a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>&gt;</code></p>
 <table class="memberdecls">
@@ -137,7 +137,7 @@ Data Fields</h2></td></tr>
 <p>Time to dwell on home channel in between channels during a scan, to allow traffic to still pass. </p>
 <p >This will only perform while connected to an AP and is ignored otherwise. If set to 0, the device will not return to the home channel during the scan. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01212">1212</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00846">846</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -156,7 +156,7 @@ Data Fields</h2></td></tr>
 <p>Minimum time to dwell on a channel waiting for probe responses/beacons. </p>
 <dl class="section note"><dt>Note</dt><dd>There is some additional delay applied on top of this to allow for tuning to each channel and sending a probe request. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01192">1192</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00826">826</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -175,7 +175,7 @@ Data Fields</h2></td></tr>
 <p>Extra Information Elements to include in Probe Request frames. </p>
 <p >May be <code>NULL</code> if <code>extra_ies_len</code> is zero. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01197">1197</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00831">831</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -193,7 +193,7 @@ Data Fields</h2></td></tr>
 
 <p>Length of <code>extra_ies</code>. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01199">1199</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00833">833</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -212,7 +212,7 @@ Data Fields</h2></td></tr>
 <p>SSID used for scan. </p>
 <p >May be <code>NULL</code>, with <code>ssid_len</code> set to zero for an undirected scan. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01204">1204</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00838">838</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -230,7 +230,7 @@ Data Fields</h2></td></tr>
 
 <p>Length of the SSID. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01206">1206</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00840">840</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -244,7 +244,7 @@ Data Fields</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="structmmwlan__scan__args.html">mmwlan_scan_args</a></li>
-    <li class="footer">Copyright 2021 Morse Micro </li>
+    <li class="footer">Copyright 2021-2025 Morse Micro </li>
   </ul>
 </div>
 </body>

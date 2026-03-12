@@ -66,13 +66,16 @@ struct mmagic_m2m_agent
 /**
  * Allocates the next available stream.
  *
- * @param  core        The MMAGIC context.
- * @param  stream_type The type of the stream, this is used for validating stream access later.
- * @param  sid         Returns the stream ID in this parameter.
+ * @param  core         The MMAGIC context.
+ * @param  stream_type  The type of the stream, this is used for validating stream access later.
+ * @param  subsystem_id ID of the subsystem allocating the stream.
+ * @param  sid          Returns the stream ID in this parameter.
  *
  * @return             @c MMAGIC_STATUS_OK on succes, error code on failure.
  */
-enum mmagic_status mmagic_m2m_agent_open_stream(struct mmagic_data *core, void *stream_context,
+enum mmagic_status mmagic_m2m_agent_open_stream(struct mmagic_data *core,
+                                                void *stream_context,
+                                                uint8_t subsystem_id,
                                                 uint8_t *sid);
 
 /**
@@ -88,14 +91,28 @@ enum mmagic_status mmagic_m2m_agent_open_stream(struct mmagic_data *core, void *
 void *mmagic_m2m_agent_get_stream_context(struct mmagic_data *core, uint8_t stream_id);
 
 /**
+ * Returns the subsystem ID for the stream with the given stream_id. See @ref mmagic_subsystems.
+ *
+ * @param  core        The MMAGIC context.
+ * @param  stream_id   The requested stream ID.
+ *
+ * @return The subsystem ID if a valid stream was found matching the given stream_id, else 0.
+ */
+uint8_t mmagic_m2m_agent_get_stream_subsystem_id(struct mmagic_data *core, uint8_t stream_id);
+
+/**
  * Release the allocated stream.
  *
  * @param core        The MMAGIC context.
  * @param stream_id   The stream ID to release.
- * @param stream_type The type of the stream, this is checked before freeing the stream.
+ *
+ * @return MMAGIC_STATUS_OK on success, MMAGIC_STATUS_INVALID_ARG if the stream_id is not valid.
  */
-void mmagic_m2m_agent_close_stream(struct mmagic_data *core, uint8_t stream_id);
+enum mmagic_status mmagic_m2m_agent_close_stream(struct mmagic_data *core, uint8_t stream_id);
 
-struct mmbuf *mmagic_m2m_create_response(uint8_t subsystem, uint8_t command, uint8_t subcommand,
+struct mmbuf *mmagic_m2m_create_response(uint8_t subsystem,
+                                         uint8_t command,
+                                         uint8_t subcommand,
                                          enum mmagic_status result,
-                                         const void *data, size_t size);
+                                         const void *data,
+                                         size_t size);

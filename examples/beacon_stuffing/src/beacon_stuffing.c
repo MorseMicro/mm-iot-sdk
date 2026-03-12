@@ -77,7 +77,7 @@
 
 #include <string.h>
 #include <endian.h>
-#include "mmhal.h"
+#include "mmhal_app.h"
 #include "mmosal.h"
 #include "mmwlan.h"
 #include "mmconfig.h"
@@ -92,13 +92,12 @@
  * @note This is a made up OUI for the purposes of this application. Your final application will
  * likely need an OUI specific to your company.
  */
-#define DEFAULT_OUI {0x4D, 0x4D, 0x42};
+#define DEFAULT_OUI { 0x4D, 0x4D, 0x42 };
 /** Length of the data to print when logging the stat struct. If the data is longer than this it
  * will be truncated. */
 #define DEFAULT_LOG_LEN_BYTES 30
 /** How often the contents for the stat struct is logged. */
 #define DEFAULT_STATS_UPDATE_PERIOD_MS 1000
-
 
 /** Filter index to install the OUI. */
 #define FILTER_INDEX 0
@@ -214,7 +213,7 @@ static void beacon_vendor_ie_stat_log(struct beacon_vendor_ie_stat *stat, uint32
 void app_init(void)
 {
     enum mmwlan_status status;
-    struct beacon_vendor_ie_stat stat = {0};
+    struct beacon_vendor_ie_stat stat = { 0 };
     uint8_t mmconfig_oui[MMWLAN_OUI_SIZE];
 
     uint8_t oui[MMWLAN_OUI_SIZE] = DEFAULT_OUI;
@@ -226,8 +225,8 @@ void app_init(void)
     mmconfig_read_uint32("beacon_stuffing.log_len_bytes", &log_length_bytes);
     mmconfig_read_uint32("beacon_stuffing.log_period_ms", &update_period_ms);
 
-    int mmconfig_oui_len = mmconfig_read_bytes("beacon_stuffing.oui", &mmconfig_oui,
-                                               MMWLAN_OUI_SIZE, 0);
+    int mmconfig_oui_len =
+        mmconfig_read_bytes("beacon_stuffing.oui", &mmconfig_oui, MMWLAN_OUI_SIZE, 0);
     if (mmconfig_oui_len >= MMWLAN_OUI_SIZE)
     {
         memcpy(&oui, &mmconfig_oui, MMWLAN_OUI_SIZE);

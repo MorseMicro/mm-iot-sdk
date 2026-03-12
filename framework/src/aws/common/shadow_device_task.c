@@ -70,7 +70,6 @@
 
 /* Morse includes. */
 #include "mmosal.h"
-#include "mmhal.h"
 #include "mmconfig.h"
 
 /**
@@ -78,12 +77,12 @@
  * to be posted to the MQTT agent should the MQTT agent's command queue be full.
  * Tasks wait in the Blocked state, so don't use any CPU time.
  */
-#define MAX_COMMAND_SEND_BLOCK_TIME_MS  (60 * 1000)
+#define MAX_COMMAND_SEND_BLOCK_TIME_MS (60 * 1000)
 
 /**
  * Maximum length allocated for the MQTT topic
  */
-#define MAX_TOPIC_LEN                   128
+#define MAX_TOPIC_LEN 128
 
 /**
  * Mutex to serialise calls to @c aws_publish_shadow().
@@ -127,12 +126,8 @@ static bool prvSubscribeToTopic(const char *pcShadowName,
                                          &TopicLen);
     if (xStatus == MQTTSuccess)
     {
-        xStatus = MqttAgent_SubscribeSync(xAgentHandle,
-                                          TopicBuffer,
-                                          TopicLen,
-                                          MQTTQoS1,
-                                          callback,
-                                          ctx);
+        xStatus =
+            MqttAgent_SubscribeSync(xAgentHandle, TopicBuffer, TopicLen, MQTTQoS1, callback, ctx);
     }
 
     if (xStatus != MQTTSuccess)
@@ -177,11 +172,7 @@ static bool prvUnSubscribeToTopic(const char *pcShadowName,
 
     if (xStatus == MQTTSuccess)
     {
-        xStatus = MqttAgent_UnSubscribeSync(xAgentHandle,
-                                            TopicBuffer,
-                                            TopicLen,
-                                            callback,
-                                            ctx);
+        xStatus = MqttAgent_UnSubscribeSync(xAgentHandle, TopicBuffer, TopicLen, callback, ctx);
     }
 
     if (xStatus != MQTTSuccess)
@@ -200,8 +191,7 @@ static bool prvUnSubscribeToTopic(const char *pcShadowName,
  * @param pvCtx         The context passed when subscribing to this topic.
  * @param pxPublishInfo The published data structure
  */
-static void prvIncomingPublishUpdateDeltaCallback(void *pvCtx,
-                                                  MQTTPublishInfo_t *pxPublishInfo)
+static void prvIncomingPublishUpdateDeltaCallback(void *pvCtx, MQTTPublishInfo_t *pxPublishInfo)
 {
     MMOSAL_ASSERT(pvCtx != NULL);
     MMOSAL_ASSERT(pxPublishInfo != NULL);
@@ -218,8 +208,7 @@ static void prvIncomingPublishUpdateDeltaCallback(void *pvCtx,
  * @param pvCtx         The context passed when subscribing to this topic.
  * @param pxPublishInfo The published data structure
  */
-static void prvIncomingPublishUpdateAcceptedCallback(void *pvCtx,
-                                                     MQTTPublishInfo_t *pxPublishInfo)
+static void prvIncomingPublishUpdateAcceptedCallback(void *pvCtx, MQTTPublishInfo_t *pxPublishInfo)
 {
     MMOSAL_ASSERT(pvCtx != NULL);
     MMOSAL_ASSERT(pxPublishInfo != NULL);
@@ -236,8 +225,7 @@ static void prvIncomingPublishUpdateAcceptedCallback(void *pvCtx,
  * @param pvCtx         The context passed when subscribing to this topic.
  * @param pxPublishInfo The published data structure
  */
-static void prvIncomingPublishUpdateRejectedCallback(void *pvCtx,
-                                                     MQTTPublishInfo_t *pxPublishInfo)
+static void prvIncomingPublishUpdateRejectedCallback(void *pvCtx, MQTTPublishInfo_t *pxPublishInfo)
 {
     MMOSAL_ASSERT(pvCtx != NULL);
     MMOSAL_ASSERT(pxPublishInfo != NULL);
@@ -324,9 +312,7 @@ bool aws_publish_shadow(char *pcShadowName, char *json)
         xCommandParams.cmdCompleteCallback = NULL;
         xCommandParams.pCmdCompleteCallbackContext = NULL;
 
-        xStatus = MQTTAgent_Publish(xAgentHandle,
-                                    &xPublishInfo,
-                                    &xCommandParams);
+        xStatus = MQTTAgent_Publish(xAgentHandle, &xPublishInfo, &xCommandParams);
         if (xStatus == MQTTSuccess)
         {
             ret = true;
@@ -372,13 +358,16 @@ bool aws_create_shadow(char *pcShadowName, shadow_update_cb_fn_t pfnUpdateCallba
     }
 
     /* Subscribe to Shadow topics. */
-    bStatus &= prvSubscribeToTopic(pcShadowName, ShadowTopicStringTypeUpdateDelta,
+    bStatus &= prvSubscribeToTopic(pcShadowName,
+                                   ShadowTopicStringTypeUpdateDelta,
                                    prvIncomingPublishUpdateDeltaCallback,
                                    (void *)pfnUpdateCallback);
-    bStatus &= prvSubscribeToTopic(pcShadowName, ShadowTopicStringTypeUpdateAccepted,
+    bStatus &= prvSubscribeToTopic(pcShadowName,
+                                   ShadowTopicStringTypeUpdateAccepted,
                                    prvIncomingPublishUpdateAcceptedCallback,
                                    (void *)pfnUpdateCallback);
-    bStatus &= prvSubscribeToTopic(pcShadowName, ShadowTopicStringTypeUpdateRejected,
+    bStatus &= prvSubscribeToTopic(pcShadowName,
+                                   ShadowTopicStringTypeUpdateRejected,
                                    prvIncomingPublishUpdateRejectedCallback,
                                    (void *)pfnUpdateCallback);
 
@@ -395,10 +384,16 @@ bool aws_create_shadow(char *pcShadowName, shadow_update_cb_fn_t pfnUpdateCallba
 void aws_close_shadow(char *pcShadowName, shadow_update_cb_fn_t pfnUpdateCallback)
 {
     /* Unsubscribe to Shadow topics. */
-    prvUnSubscribeToTopic(pcShadowName, ShadowTopicStringTypeUpdateDelta,
-                          prvIncomingPublishUpdateDeltaCallback, (void *)pfnUpdateCallback);
-    prvUnSubscribeToTopic(pcShadowName, ShadowTopicStringTypeUpdateAccepted,
-                          prvIncomingPublishUpdateAcceptedCallback, (void *)pfnUpdateCallback);
-    prvUnSubscribeToTopic(pcShadowName, ShadowTopicStringTypeUpdateRejected,
-                          prvIncomingPublishUpdateRejectedCallback, (void *)pfnUpdateCallback);
+    prvUnSubscribeToTopic(pcShadowName,
+                          ShadowTopicStringTypeUpdateDelta,
+                          prvIncomingPublishUpdateDeltaCallback,
+                          (void *)pfnUpdateCallback);
+    prvUnSubscribeToTopic(pcShadowName,
+                          ShadowTopicStringTypeUpdateAccepted,
+                          prvIncomingPublishUpdateAcceptedCallback,
+                          (void *)pfnUpdateCallback);
+    prvUnSubscribeToTopic(pcShadowName,
+                          ShadowTopicStringTypeUpdateRejected,
+                          prvIncomingPublishUpdateRejectedCallback,
+                          (void *)pfnUpdateCallback);
 }

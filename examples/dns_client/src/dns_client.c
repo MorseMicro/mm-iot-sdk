@@ -39,20 +39,19 @@
 #include "mm_app_common.h"
 
 /** This is the default hostname to lookup if none are specified in config store */
-#define DEFAULT_LOOKUP  "www.morsemicro.com"
+#define DEFAULT_LOOKUP "www.morsemicro.com"
 
 #ifndef DNS_MAX_NAME_LENGTH
 /** Maximum supported length of hostname for DNS lookup. */
 #define DNS_MAX_NAME_LENGTH (256)
 #endif
 
-
 /**
  * Perform a DNS lookup for the given hostname and print the results.
  *
  * @param hostname      Hostname to look up.
  * @param ai_family     Address family (@c AF_INET or @c AF_INET6) to request.
-*/
+ */
 static void dns_lookup(const char *hostname, int ai_family)
 {
     /*
@@ -81,8 +80,8 @@ static void dns_lookup(const char *hostname, int ai_family)
              * In a typical use case, you can directly use the first element in addr_list
              * to open a socket and connect as shown below:
              *
-             * int fd = socket(addr_list->ai_family, addr_list->ai_socktype, addr_list->ai_protocol);
-             * connect(fd, addr_list->ai_addr, addr_list->ai_addrlen);
+             * int fd = socket(addr_list->ai_family, addr_list->ai_socktype,
+             * addr_list->ai_protocol); connect(fd, addr_list->ai_addr, addr_list->ai_addrlen);
              *
              * However in this example we want to print the list of IP addeesses found
              * so we enumerate the addr_list, and do some conversions to convert and print the
@@ -96,16 +95,15 @@ static void dns_lookup(const char *hostname, int ai_family)
             {
 #if MMIPAL_IPV4_ENABLED
                 const struct sockaddr_in *sockaddr = (const struct sockaddr_in *)cur->ai_addr;
-                result = inet_ntop(cur->ai_family, &sockaddr->sin_addr,
-                                   addr_str, sizeof(addr_str));
+                result = inet_ntop(cur->ai_family, &sockaddr->sin_addr, addr_str, sizeof(addr_str));
 #endif
             }
 #if MMIPAL_IPV6_ENABLED
             else if (cur->ai_family == AF_INET6)
             {
                 const struct sockaddr_in6 *sockaddr = (const struct sockaddr_in6 *)cur->ai_addr;
-                result = inet_ntop(cur->ai_family, &sockaddr->sin6_addr,
-                                   addr_str, sizeof(addr_str));
+                result =
+                    inet_ntop(cur->ai_family, &sockaddr->sin6_addr, addr_str, sizeof(addr_str));
             }
 #endif
 
@@ -125,24 +123,25 @@ static void dns_lookup(const char *hostname, int ai_family)
         const char *family_str;
         switch (ai_family)
         {
-        case AF_INET:
-            family_str = "IPv4";
-            break;
+            case AF_INET:
+                family_str = "IPv4";
+                break;
 
-        case AF_INET6:
-            family_str = "IPv6";
-            break;
+            case AF_INET6:
+                family_str = "IPv6";
+                break;
 
-        default:
-            family_str = "??";
-            break;
+            default:
+                family_str = "??";
+                break;
         }
 
         printf("Could not resolve %s address for hostname %s! (Error code %d)\n",
-               family_str, hostname, ret);
+               family_str,
+               hostname,
+               ret);
     }
 }
-
 
 /**
  * Main entry point to the application. This will be invoked in a thread once operating system

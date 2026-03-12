@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.9.7</span>
+   &#160;<span id="projectnumber">2.10.4</span>
    </div>
   </td>
  </tr>
@@ -101,32 +101,60 @@ $(document).ready(function(){initNavTree('emmet_8h_source.html',''); initResizab
 <div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span><span class="preprocessor">#include &quot;mmwlan.h&quot;</span></div>
 <div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span> </div>
 <div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span><span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span><span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span> </div>
-<div class="line"><a id="l00079" name="l00079"></a><span class="lineno"><a class="line" href="group__EMMET.html#gac1ce8a05fdfec7a0d2ffde6cd6d93d6b">   79</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="group__EMMET.html#gac1ce8a05fdfec7a0d2ffde6cd6d93d6b">emmet_init</a>(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span> </div>
-<div class="line"><a id="l00087" name="l00087"></a><span class="lineno"><a class="line" href="group__EMMET.html#ga24d1640c6cb9337d9ca9b070f90f92dd">   87</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="group__EMMET.html#ga24d1640c6cb9337d9ca9b070f90f92dd">emmet_start</a>(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span> </div>
-<div class="line"><a id="l00096" name="l00096"></a><span class="lineno"><a class="line" href="group__EMMET.html#ga4cd61571bf11a6fc262a0586a88d2092">   96</a></span><span class="keyword">enum</span> <a class="code hl_enumeration" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a> <a class="code hl_function" href="group__EMMET.html#ga4cd61571bf11a6fc262a0586a88d2092">emmet_set_reg_db</a>(<span class="keyword">const</span> <span class="keyword">struct</span> <a class="code hl_struct" href="structmmwlan__regulatory__db.html">mmwlan_regulatory_db</a> *reg_db);</div>
-<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span> </div>
-<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span><span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>}</div>
-<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span> </div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span><span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span></div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>{</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span> </div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno"><a class="line" href="group__EMMET.html#gac1ce8a05fdfec7a0d2ffde6cd6d93d6b">   80</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="group__EMMET.html#gac1ce8a05fdfec7a0d2ffde6cd6d93d6b">emmet_init</a>(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span> </div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno"><a class="line" href="group__EMMET.html#ga24d1640c6cb9337d9ca9b070f90f92dd">   88</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="group__EMMET.html#ga24d1640c6cb9337d9ca9b070f90f92dd">emmet_start</a>(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span> </div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno"><a class="line" href="group__EMMET.html#ga4cd61571bf11a6fc262a0586a88d2092">   97</a></span><span class="keyword">enum</span> <a class="code hl_enumeration" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a> <a class="code hl_function" href="group__EMMET.html#ga4cd61571bf11a6fc262a0586a88d2092">emmet_set_reg_db</a>(<span class="keyword">const</span> <span class="keyword">struct</span> <a class="code hl_struct" href="structmmwlan__regulatory__db.html">mmwlan_regulatory_db</a> *reg_db);</div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span> </div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno"><a class="line" href="group__EMMET.html#gaea95f2cf06569ccee16a790f38a2f9cc">  100</a></span><span class="keyword">enum</span> <a class="code hl_enumeration" href="group__EMMET.html#gaea95f2cf06569ccee16a790f38a2f9cc">emmet_button_state</a></div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>{</div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno"><a class="line" href="group__EMMET.html#ggaea95f2cf06569ccee16a790f38a2f9ccaa519e73441eb181898411096f9e32afc">  103</a></span>    <a class="code hl_enumvalue" href="group__EMMET.html#ggaea95f2cf06569ccee16a790f38a2f9ccaa519e73441eb181898411096f9e32afc">EMMET_BUTTON_RELEASED</a>,</div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno"><a class="line" href="group__EMMET.html#ggaea95f2cf06569ccee16a790f38a2f9cca107bec8e65fe18b5c0f38147cb126063">  105</a></span>    <a class="code hl_enumvalue" href="group__EMMET.html#ggaea95f2cf06569ccee16a790f38a2f9cca107bec8e65fe18b5c0f38147cb126063">EMMET_BUTTON_PRESSED</a>,</div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>};</div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span> </div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno"><a class="line" href="group__EMMET.html#gade3597d100f86bc851e46cd4adf44780">  109</a></span><span class="keyword">enum</span> <a class="code hl_enumeration" href="group__EMMET.html#gade3597d100f86bc851e46cd4adf44780">emmet_led_id</a></div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>{</div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>    EMMET_LED_RED,</div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>    EMMET_LED_GREEN,</div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>    EMMET_LED_BLUE,</div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>    EMMET_LED_WHITE</div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>};</div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span> </div>
+<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span><span class="keywordtype">void</span> <a class="code hl_function" href="group__EMMET__HAL.html#ga17f54c3e81d7205185c831a1d63c8177">emmet_hal_set_led</a>(uint8_t led_id, uint8_t level);</div>
+<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span> </div>
+<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span><span class="keyword">enum</span> <a class="code hl_enumeration" href="group__EMMET.html#gaea95f2cf06569ccee16a790f38a2f9cc">emmet_button_state</a> <a class="code hl_function" href="group__EMMET__HAL.html#ga613756a3a12fac34c0ce20f268f093bb">emmet_hal_get_button_state</a>(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span> </div>
+<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span><span class="keywordtype">void</span> <a class="code hl_function" href="group__EMMET__HAL.html#ga0c8ed6b1e06e5a9a2b8d197ad45c31d0">emmet_hal_trigger_button_event</a>(<span class="keyword">enum</span> <a class="code hl_enumeration" href="group__EMMET.html#gaea95f2cf06569ccee16a790f38a2f9cc">emmet_button_state</a> state);</div>
+<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span> </div>
+<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span><span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span>}</div>
+<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span> </div>
+<div class="ttc" id="agroup__EMMET__HAL_html_ga0c8ed6b1e06e5a9a2b8d197ad45c31d0"><div class="ttname"><a href="group__EMMET__HAL.html#ga0c8ed6b1e06e5a9a2b8d197ad45c31d0">emmet_hal_trigger_button_event</a></div><div class="ttdeci">void emmet_hal_trigger_button_event(enum emmet_button_state state)</div><div class="ttdoc">Trigger a button event to the application as if a user had pushed or released the button.</div><div class="ttdef"><b>Definition:</b> <a href="emmet_8c_source.html#l00123">emmet.c:123</a></div></div>
+<div class="ttc" id="agroup__EMMET__HAL_html_ga17f54c3e81d7205185c831a1d63c8177"><div class="ttname"><a href="group__EMMET__HAL.html#ga17f54c3e81d7205185c831a1d63c8177">emmet_hal_set_led</a></div><div class="ttdeci">void emmet_hal_set_led(uint8_t led_id, uint8_t level)</div><div class="ttdoc">Set LED state.</div><div class="ttdef"><b>Definition:</b> <a href="emmet_8c_source.html#l00105">emmet.c:105</a></div></div>
+<div class="ttc" id="agroup__EMMET__HAL_html_ga613756a3a12fac34c0ce20f268f093bb"><div class="ttname"><a href="group__EMMET__HAL.html#ga613756a3a12fac34c0ce20f268f093bb">emmet_hal_get_button_state</a></div><div class="ttdeci">enum emmet_button_state emmet_hal_get_button_state(void)</div><div class="ttdoc">Get the current button state.</div><div class="ttdef"><b>Definition:</b> <a href="emmet_8c_source.html#l00110">emmet.c:110</a></div></div>
 <div class="ttc" id="agroup__EMMET_html_ga24d1640c6cb9337d9ca9b070f90f92dd"><div class="ttname"><a href="group__EMMET.html#ga24d1640c6cb9337d9ca9b070f90f92dd">emmet_start</a></div><div class="ttdeci">void emmet_start(void)</div><div class="ttdoc">Start Emmet.</div></div>
 <div class="ttc" id="agroup__EMMET_html_ga4cd61571bf11a6fc262a0586a88d2092"><div class="ttname"><a href="group__EMMET.html#ga4cd61571bf11a6fc262a0586a88d2092">emmet_set_reg_db</a></div><div class="ttdeci">enum mmwlan_status emmet_set_reg_db(const struct mmwlan_regulatory_db *reg_db)</div><div class="ttdoc">Set the regulatory database for Emmet to use.</div></div>
 <div class="ttc" id="agroup__EMMET_html_gac1ce8a05fdfec7a0d2ffde6cd6d93d6b"><div class="ttname"><a href="group__EMMET.html#gac1ce8a05fdfec7a0d2ffde6cd6d93d6b">emmet_init</a></div><div class="ttdeci">void emmet_init(void)</div><div class="ttdoc">Initialize Emmet.</div></div>
-<div class="ttc" id="agroup__MMWLAN_html_ga0039072000d47e5c3712686bf1e43086"><div class="ttname"><a href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a></div><div class="ttdeci">mmwlan_status</div><div class="ttdoc">Enumeration of status return codes.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00049">mmwlan.h:50</a></div></div>
-<div class="ttc" id="astructmmwlan__regulatory__db_html"><div class="ttname"><a href="structmmwlan__regulatory__db.html">mmwlan_regulatory_db</a></div><div class="ttdoc">Regulatory database data structure.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00287">mmwlan.h:288</a></div></div>
+<div class="ttc" id="agroup__EMMET_html_gade3597d100f86bc851e46cd4adf44780"><div class="ttname"><a href="group__EMMET.html#gade3597d100f86bc851e46cd4adf44780">emmet_led_id</a></div><div class="ttdeci">emmet_led_id</div><div class="ttdoc">Enumeration for different LEDs on the board used by the Emmet HAL.</div><div class="ttdef"><b>Definition:</b> <a href="emmet_8h_source.html#l00109">emmet.h:110</a></div></div>
+<div class="ttc" id="agroup__EMMET_html_gaea95f2cf06569ccee16a790f38a2f9cc"><div class="ttname"><a href="group__EMMET.html#gaea95f2cf06569ccee16a790f38a2f9cc">emmet_button_state</a></div><div class="ttdeci">emmet_button_state</div><div class="ttdoc">Enumeration of button states used by the Emmet HAL.</div><div class="ttdef"><b>Definition:</b> <a href="emmet_8h_source.html#l00100">emmet.h:101</a></div></div>
+<div class="ttc" id="agroup__EMMET_html_ggaea95f2cf06569ccee16a790f38a2f9cca107bec8e65fe18b5c0f38147cb126063"><div class="ttname"><a href="group__EMMET.html#ggaea95f2cf06569ccee16a790f38a2f9cca107bec8e65fe18b5c0f38147cb126063">EMMET_BUTTON_PRESSED</a></div><div class="ttdeci">@ EMMET_BUTTON_PRESSED</div><div class="ttdoc">Button pressed state.</div><div class="ttdef"><b>Definition:</b> <a href="emmet_8h_source.html#l00105">emmet.h:105</a></div></div>
+<div class="ttc" id="agroup__EMMET_html_ggaea95f2cf06569ccee16a790f38a2f9ccaa519e73441eb181898411096f9e32afc"><div class="ttname"><a href="group__EMMET.html#ggaea95f2cf06569ccee16a790f38a2f9ccaa519e73441eb181898411096f9e32afc">EMMET_BUTTON_RELEASED</a></div><div class="ttdeci">@ EMMET_BUTTON_RELEASED</div><div class="ttdoc">Button released state.</div><div class="ttdef"><b>Definition:</b> <a href="emmet_8h_source.html#l00103">emmet.h:103</a></div></div>
+<div class="ttc" id="agroup__MMWLAN_html_ga0039072000d47e5c3712686bf1e43086"><div class="ttname"><a href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a></div><div class="ttdeci">mmwlan_status</div><div class="ttdoc">Enumeration of status return codes.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00050">mmwlan.h:51</a></div></div>
+<div class="ttc" id="astructmmwlan__regulatory__db_html"><div class="ttname"><a href="structmmwlan__regulatory__db.html">mmwlan_regulatory_db</a></div><div class="ttdoc">Regulatory database data structure.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00192">mmwlan.h:193</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.17-->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_2b316fbf51ac995e875dc7b728ebb0de.html">framework</a></li><li class="navelem"><a class="el" href="dir_81ef0fb1c5d83934621da892b9e3f6f6.html">morselib</a></li><li class="navelem"><a class="el" href="dir_bd756646489e9e9d67d91307eca56693.html">include</a></li><li class="navelem"><b>emmet.h</b></li>
-    <li class="footer">Copyright 2021 Morse Micro </li>
+    <li class="navelem"><a class="el" href="dir_4fef7b40ebc01bf0de6074c9d47349d1.html">framework</a></li><li class="navelem"><a class="el" href="dir_feb638b3106c938d2c0f4ef9d234bbf6.html">morselib</a></li><li class="navelem"><a class="el" href="dir_d19ef69c4e17e22198248d7621cc2ab3.html">include</a></li><li class="navelem"><b>emmet.h</b></li>
+    <li class="footer">Copyright 2021-2025 Morse Micro </li>
   </ul>
 </div>
 </body>

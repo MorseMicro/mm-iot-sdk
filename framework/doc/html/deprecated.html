@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.9.7</span>
+   &#160;<span id="projectnumber">2.10.4</span>
    </div>
   </td>
  </tr>
@@ -91,18 +91,70 @@ $(document).ready(function(){initNavTree('deprecated.html',''); initResizable();
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><dl class="reflist">
+<dt>File <a class="el" href="bootloader_8c.html">bootloader.c</a>  </dt>
+<dd><a class="anchor" id="_deprecated000001"></a>This example application is deprecated and will be removed in a future release. Alternative options include third-party projects, such as MCU Boot, or a platform specific bootloader, such as <code>stm32-mw-mcuboot</code>. </dd>
 <dt>Global <a class="el" href="group__MMHAL__WLAN__SPI.html#ga8f248d785042a9fb4585dd75d286ceac">mmhal_wlan_clear_spi_irq</a>  (void)</dt>
-<dd><a class="anchor" id="_deprecated000001"></a>Do not invoke this function because it is deprecated and will be removed from the mmhal API in a future release. This function need not be implemented as a weak stub is used in morselib.  </dd>
+<dd><a class="anchor" id="_deprecated000002"></a>Do not invoke this function because it is deprecated and will be removed from the mmhal API in a future release. This function need not be implemented as a weak stub is used in morselib.  </dd>
 <dt>Global <a class="el" href="group__MMOSAL__DEPRECATED.html#gaae85012294eac142c84cee6889a61d11">mmosal_task_notify</a>  (struct mmosal_task *task)</dt>
-<dd><a class="anchor" id="_deprecated000003"></a>Do not invoke this function because it is deprecated and will be removed from the mmosal API in a future release.  </dd>
-<dt>Global <a class="el" href="group__MMOSAL__DEPRECATED.html#ga10a70bf367b5d46a7cd46a726e744766">mmosal_task_notify_from_isr</a>  (struct mmosal_task *task)</dt>
 <dd><a class="anchor" id="_deprecated000004"></a>Do not invoke this function because it is deprecated and will be removed from the mmosal API in a future release.  </dd>
+<dt>Global <a class="el" href="group__MMOSAL__DEPRECATED.html#ga10a70bf367b5d46a7cd46a726e744766">mmosal_task_notify_from_isr</a>  (struct mmosal_task *task)</dt>
+<dd><a class="anchor" id="_deprecated000005"></a>Do not invoke this function because it is deprecated and will be removed from the mmosal API in a future release.  </dd>
 <dt>Global <a class="el" href="group__MMOSAL__DEPRECATED.html#gab10e895f652b30de6087629437ce3c2a">mmosal_task_wait_for_notification</a>  (uint32_t timeout_ms)</dt>
-<dd><a class="anchor" id="_deprecated000002"></a>Do not invoke this function because it is deprecated and will be removed from the mmosal API in a future release.  </dd>
-<dt>Global <a class="el" href="group__MMWLAN__CTRL.html#ga9cdcf82a952afa692f82430f1d6b93a0">mmwlan_sta_enable</a>  (const struct <a class="el" href="structmmwlan__sta__args.html" title="Arguments data structure for mmwlan_sta_enable().">mmwlan_sta_args</a> *args, mmwlan_sta_status_cb_t sta_status_cb)</dt>
-<dd><a class="anchor" id="_deprecated000005"></a>The <code>sta_status_cb</code> parameter should not be used. Please use <code>mmwlan_sta_args.ext_sta_status_cb</code> as the preferred callback method. </dd>
+<dd><a class="anchor" id="_deprecated000003"></a>Do not invoke this function because it is deprecated and will be removed from the mmosal API in a future release.  </dd>
+<dt>Class <a class="el" href="structmmwlan__config__whitelist.html">mmwlan_config_whitelist</a>  </dt>
+<dd><a class="anchor" id="_deprecated000018"></a>It is not recommended to use the WLAN Offload features API. It is deprecated and will be removed in a future release.  </dd>
+<dt>Class <a class="el" href="structmmwlan__dhcp__lease__info.html">mmwlan_dhcp_lease_info</a>  </dt>
+<dd><a class="anchor" id="_deprecated000011"></a>It is not recommended to use the WLAN Offload features API. It is deprecated and will be removed in a future release.  </dd>
+<dt>Global <a class="el" href="group__MMWLAN__OFFLOAD.html#ga7f25789fbb9b9626c75c228b2d9d9f77">mmwlan_dhcp_lease_update_cb_t</a>  )(const struct <a class="el" href="structmmwlan__dhcp__lease__info.html" title="DHCP lease info structure.">mmwlan_dhcp_lease_info</a> *lease_info, void *arg)</dt>
+<dd><a class="anchor" id="_deprecated000012"></a>It is not recommended to use the WLAN Offload features API. It is deprecated and will be removed in a future release.  </dd>
+<dt>Global <a class="el" href="group__MMWLAN__OFFLOAD.html#ga0cc912416bcf2e922fabdeb77cfa3a0d">mmwlan_disable_tcp_keepalive_offload</a>  (void)</dt>
+<dd><a class="anchor" id="_deprecated000017"></a>It is not recommended to use the WLAN Offload features API. It is deprecated and will be removed in a future release.  </dd>
+<dt>Global <a class="el" href="group__MMWLAN__OFFLOAD.html#ga1ed93a41d0f58d300afdf3290410c806">mmwlan_enable_arp_refresh_offload</a>  (uint32_t interval_s, uint32_t dest_ip, bool send_as_garp)</dt>
+<dd><a class="anchor" id="_deprecated000010"></a>It is not recommended to use the WLAN Offload API. It is deprecated and will be removed in a future release.  </dd>
+<dt>Global <a class="el" href="group__MMWLAN__OFFLOAD.html#gae2d1f3f094898458870b1c1bd6651a8d">mmwlan_enable_arp_response_offload</a>  (uint32_t arp_addr)</dt>
+<dd><a class="anchor" id="_deprecated000009"></a>It is not recommended to use the WLAN Offload API. It is deprecated and will be removed in a future release.  </dd>
+<dt>Global <a class="el" href="group__MMWLAN__OFFLOAD.html#ga518ed46de8c94e3946e0f558f46cdf8b">mmwlan_enable_dhcp_offload</a>  (mmwlan_dhcp_lease_update_cb_t dhcp_lease_update_cb, void *arg)</dt>
+<dd><a class="anchor" id="_deprecated000013"></a>It is not recommended to use the WLAN Offload features API. It is deprecated and will be removed in a future release.  </dd>
+<dt>Global <a class="el" href="group__MMWLAN__CTRL.html#ga173e223d50d73ffd7fafa04651e8fbff">mmwlan_get_mac_addr</a>  (uint8_t *mac_addr)</dt>
+<dd><a class="anchor" id="_deprecated000006"></a>This function is deprecated and provided for backwards compatibility. <a class="el" href="group__MMWLAN__CTRL.html#ga257e655205d5eb0cb31dc9f9d6b0b45b">mmwlan_get_vif_mac_addr</a> should be used for new developments. </dd>
+<dt>Module <a class="el" href="group__MMWLAN__OFFLOAD.html">MMWLAN_OFFLOAD</a>  </dt>
+<dd><a class="anchor" id="_deprecated000008"></a>It is not recommended to use the WLAN Offload API. It is deprecated and will be removed in a future release.  </dd>
+<dt>Global <a class="el" href="group__MMWLAN__DATA.html#ga8bdba37cf15c47965007f27c97eff5f0">mmwlan_register_link_state_cb</a>  (mmwlan_link_state_cb_t callback, void *arg)</dt>
+<dd><a class="anchor" id="_deprecated000031"></a>This function is deprecated and provided for backwards compatibility. <a class="el" href="group__MMWLAN__DATA.html#gab14d61b5947592e7703ba16106deeaa7">mmwlan_register_vif_state_cb</a> should be used for new developments. </dd>
+<dt>Global <a class="el" href="group__MMWLAN__OFFLOAD.html#gaf44021d577e56564998820a88e15a444">mmwlan_set_whitelist_filter</a>  (const struct <a class="el" href="structmmwlan__config__whitelist.html" title="Whitelist filter configuration.">mmwlan_config_whitelist</a> *whitelist)</dt>
+<dd><a class="anchor" id="_deprecated000019"></a>It is not recommended to use the WLAN Offload features API. It is deprecated and will be removed in a future release.  </dd>
+<dt>Global <a class="el" href="group__MMWLAN__STA.html#ga9cdcf82a952afa692f82430f1d6b93a0">mmwlan_sta_enable</a>  (const struct <a class="el" href="structmmwlan__sta__args.html" title="Arguments data structure for mmwlan_sta_enable().">mmwlan_sta_args</a> *args, mmwlan_sta_status_cb_t sta_status_cb)</dt>
+<dd><a class="anchor" id="_deprecated000007"></a>The <code>sta_status_cb</code> parameter should not be used. Please use <code>mmwlan_sta_args.ext_sta_status_cb</code> as the preferred callback method. </dd>
+<dt>Module <a class="el" href="group__MMWLAN__STANDBY.html">MMWLAN_STANDBY</a>  </dt>
+<dd><a class="anchor" id="_deprecated000020"></a>It is not recommended to use the WLAN Offload features API. It is deprecated and will be removed in a future release.  </dd>
 <dt>Global <a class="el" href="structmmwlan__standby__config.html#a7b3e29994039d5c636288479ba316c14">mmwlan_standby_config::bss_inactivity_before_snooze_s</a>  </dt>
-<dd><a class="anchor" id="_deprecated000006"></a>This parameter is no longer used and will be removed in a future release. </dd>
+<dd><a class="anchor" id="_deprecated000032"></a>This parameter is no longer used and will be removed in a future release.  </dd>
+<dt>Global <a class="el" href="group__MMWLAN__STANDBY.html#gacf3e87544fee10ac452e54da876da9fc">mmwlan_standby_enter</a>  (const struct <a class="el" href="structmmwlan__standby__enter__args.html" title="Arguments for mmwlan_standby_enter.">mmwlan_standby_enter_args</a> *args)</dt>
+<dd><a class="anchor" id="_deprecated000024"></a>It is not recommended to use the WLAN Offload features API. It is deprecated and will be removed in a future release.  </dd>
+<dt>Class <a class="el" href="structmmwlan__standby__enter__args.html">mmwlan_standby_enter_args</a>  </dt>
+<dd><a class="anchor" id="_deprecated000023"></a>It is not recommended to use the WLAN Offload features API. It is deprecated and will be removed in a future release.  </dd>
+<dt>Global <a class="el" href="group__MMWLAN__STANDBY.html#ga383744d01dea3f96db0bc5a4ac878c34">mmwlan_standby_exit</a>  (void)</dt>
+<dd><a class="anchor" id="_deprecated000025"></a>It is not recommended to use the WLAN Offload features API. It is deprecated and will be removed in a future release.  </dd>
+<dt>Global <a class="el" href="group__MMWLAN__STANDBY.html#gaebeeb1a17a43cb3981ba60c42fc5f71b">mmwlan_standby_exit_cb_t</a>  )(uint8_t reason, void *arg)</dt>
+<dd><a class="anchor" id="_deprecated000022"></a>It is not recommended to use the WLAN Offload features API. It is deprecated and will be removed in a future release.  </dd>
+<dt>Global <a class="el" href="group__MMWLAN__STANDBY.html#ga7be2c8d7da01c0a12e0d4cb171ef7764">mmwlan_standby_exit_reason</a>  </dt>
+<dd><a class="anchor" id="_deprecated000021"></a>It is not recommended to use the WLAN Offload features API. It is deprecated and will be removed in a future release.  </dd>
+<dt>Global <a class="el" href="group__MMWLAN__STANDBY.html#ga4257935124aaf2cbea29296256a04f81">mmwlan_standby_set_config</a>  (const struct <a class="el" href="structmmwlan__standby__config.html" title="Standby mode configuration parameters.">mmwlan_standby_config</a> *config)</dt>
+<dd><a class="anchor" id="_deprecated000030"></a>It is not recommended to use the WLAN Offload features API. It is deprecated and will be removed in a future release.  </dd>
+<dt>Global <a class="el" href="group__MMWLAN__STANDBY.html#ga07515bb15ac04e997e33bfdf6f6c7833">mmwlan_standby_set_status_payload</a>  (const struct <a class="el" href="structmmwlan__standby__set__status__payload__args.html" title="Arguments for mmwlan_standby_set_status_payload.">mmwlan_standby_set_status_payload_args</a> *args)</dt>
+<dd><a class="anchor" id="_deprecated000027"></a>It is not recommended to use the WLAN Offload features API. It is deprecated and will be removed in a future release.  </dd>
+<dt>Class <a class="el" href="structmmwlan__standby__set__status__payload__args.html">mmwlan_standby_set_status_payload_args</a>  </dt>
+<dd><a class="anchor" id="_deprecated000026"></a>It is not recommended to use the WLAN Offload features API. It is deprecated and will be removed in a future release.  </dd>
+<dt>Global <a class="el" href="group__MMWLAN__STANDBY.html#ga6814b0721a36cb55fa40e8cf9ae8b215">mmwlan_standby_set_wake_filter</a>  (const struct <a class="el" href="structmmwlan__standby__set__wake__filter__args.html" title="Arguments for mmwlan_standby_set_wake_filter.">mmwlan_standby_set_wake_filter_args</a> *args)</dt>
+<dd><a class="anchor" id="_deprecated000029"></a>It is not recommended to use the WLAN Offload features API. It is deprecated and will be removed in a future release.  </dd>
+<dt>Class <a class="el" href="structmmwlan__standby__set__wake__filter__args.html">mmwlan_standby_set_wake_filter_args</a>  </dt>
+<dd><a class="anchor" id="_deprecated000028"></a>It is not recommended to use the WLAN Offload features API. It is deprecated and will be removed in a future release.  </dd>
+<dt>Class <a class="el" href="structmmwlan__tcp__keepalive__offload__args.html">mmwlan_tcp_keepalive_offload_args</a>  </dt>
+<dd><a class="anchor" id="_deprecated000015"></a>It is not recommended to use the WLAN Offload features API. It is deprecated and will be removed in a future release.  </dd>
+<dt>Global <a class="el" href="group__MMWLAN__OFFLOAD.html#gadd2422bc3041b06e8fb89c79b51af27a">MMWLAN_TCP_KEEPALIVE_OFFLOAD_ARGS_INIT</a>  </dt>
+<dd><a class="anchor" id="_deprecated000016"></a>It is not recommended to use the WLAN Offload features API. It is deprecated and will be removed in a future release.  </dd>
+<dt>Global <a class="el" href="group__MMWLAN__OFFLOAD.html#gad27f62c9d00ac436c81f550929efbd35">mmwlan_tcp_keepalive_offload_cfg</a>  </dt>
+<dd><a class="anchor" id="_deprecated000014"></a>It is not recommended to use the WLAN Offload features API. It is deprecated and will be removed in a future release. </dd>
 </dl>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->
@@ -111,7 +163,7 @@ $(document).ready(function(){initNavTree('deprecated.html',''); initResizable();
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Copyright 2021 Morse Micro </li>
+    <li class="footer">Copyright 2021-2025 Morse Micro </li>
   </ul>
 </div>
 </body>

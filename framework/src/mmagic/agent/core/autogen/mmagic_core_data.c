@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Morse Micro
+ * Copyright 2026 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -48,4 +48,4 @@ void mmagic_core_init_modules(struct mmagic_data *core)
     mmagic_core_tls_start(core);
     mmagic_core_ntp_start(core);
     mmagic_core_mqtt_start(core);
-}
+};

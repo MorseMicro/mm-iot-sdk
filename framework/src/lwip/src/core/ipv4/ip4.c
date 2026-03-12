@@ -740,7 +740,9 @@ ip4_input(struct pbuf *p, struct netif *inp)
 #if LWIP_TCP
       case IP_PROTO_TCP:
         MIB2_STATS_INC(mib2.ipindelivers);
+        TCP_UPDATE_TICK();
         tcp_input(p, inp);
+        TCP_TIMER_NEEDED();
         break;
 #endif /* LWIP_TCP */
 #if LWIP_ICMP

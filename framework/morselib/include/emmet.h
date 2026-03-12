@@ -67,7 +67,8 @@
 #include "mmwlan.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 /**
@@ -94,6 +95,56 @@ void emmet_start(void);
  * @returns @c MMWLAN_SUCCESS on success, or another relevant error code.
  */
 enum mmwlan_status emmet_set_reg_db(const struct mmwlan_regulatory_db *reg_db);
+
+/** Enumeration of button states used by the Emmet HAL. */
+enum emmet_button_state
+{
+    /** Button released state. */
+    EMMET_BUTTON_RELEASED,
+    /** Button pressed state. */
+    EMMET_BUTTON_PRESSED,
+};
+
+/** Enumeration for different LEDs on the board used by the Emmet HAL. */
+enum emmet_led_id
+{
+    EMMET_LED_RED,
+    EMMET_LED_GREEN,
+    EMMET_LED_BLUE,
+    EMMET_LED_WHITE
+};
+
+/**
+ * @defgroup EMMET_HAL Hardware Abstraction Layer (HAL) for Morse Micro Embedded Test Engine (Emmet)
+ *
+ * This API must be implemented by applications that use Emmet.
+ * @{
+ */
+
+/**
+ * Set LED state.
+ *
+ * @param led_id    The ID of the LED to set.
+ * @param level     Level 0-255, where 0 if off and 255 is full on.
+ */
+void emmet_hal_set_led(uint8_t led_id, uint8_t level);
+
+/**
+ * Get the current button state.
+ *
+ * @returns the current button state.
+ */
+enum emmet_button_state emmet_hal_get_button_state(void);
+
+/**
+ * Trigger a button event to the application as if a user had pushed or
+ * released the button.
+ *
+ * @param state The type of event to trigger (press or release).
+ */
+void emmet_hal_trigger_button_event(enum emmet_button_state state);
+
+/** @} */
 
 #ifdef __cplusplus
 }

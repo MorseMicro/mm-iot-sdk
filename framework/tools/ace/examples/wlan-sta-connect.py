@@ -83,6 +83,8 @@ def _main():
                         help="Minimum TWT wake duration in micro seconds.")
     parser.add_argument("-u", "--twt-setup-command", choices=["REQUEST", "SUGGEST", "DEMAND"],
                         help="TWT setup command. Only REQUEST and SUGGEST is supported).")
+    parser.add_argument("-4", "--use-4addr", action="store_true",
+                        help="Enable use of 4 address frames")
 
     args = parser.parse_args()
 
@@ -125,7 +127,8 @@ def _main():
                scan_interval_limit_s=args.scan_interval_limit_s,
                twt_enabled=args.twt_enabled, twt_wake_interval_us=args.twt_wake_interval_us,
                twt_min_wake_duration_us=args.twt_min_wake_duration_us,
-               twt_setup_command=TWT_setup_command)
+               twt_setup_command=TWT_setup_command,
+               use_4addr=args.use_4addr)
 
     print("Waiting for connection...")
 

@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.9.7</span>
+   &#160;<span id="projectnumber">2.10.4</span>
    </div>
   </td>
  </tr>
@@ -254,7 +254,7 @@ OTA Updates</h1>
 <p>To perform an OTA update, first ensure there is a version of this application running on the device with the right credentials and certificates to connect to the service. In addition to certificates and keys described in step 3 of the Getting Started section above, we will also need a code signing certificate to be installed on the device. This certificate can be generated using a tool like openssl as described below:</p>
 <dl class="section note"><dt>Note</dt><dd>OTA update feature is supported only on <code>mm-ekh08-u575</code> and <code>mm-mm6108-ekh05</code> platforms - you will get an error on all other platforms if you attempt an OTA update. To add OTA support to your platform, you will need to:<ul>
 <li>Build and install the bootloader for your platform. (See <a class="el" href="bootloader_8c.html">bootloader.c</a>) If you are loading the application using <code>openocd</code>, then <em>first</em> load the application and then load the bootloader. Do this every time you load the application using openocd as the application contains a stub bootloader that will overwrite the real bootloader.</li>
-<li>Ensure you have enabled flash file-system support for your platform. To add flash file-system support for your platform, you will need to add a <code></code>.filesystem section to your linker definition file that is big enough to accommodate the OTA download image plus any other data you may store in the file-system. Also ensure you have a valid implementation of <a class="el" href="group__MMHAL.html#ga9cf859409f0916684a34f5d4726cb2e3">mmhal_get_littlefs_config()</a> that returns your file-system configuration.</li>
+<li>Ensure you have enabled flash file-system support for your platform. To add flash file-system support for your platform, you will need to add a <code></code>.filesystem section to your linker definition file that is big enough to accommodate the OTA download image plus any other data you may store in the file-system. Also ensure you have a valid implementation of <a class="el" href="group__MMHAL__FLASH.html#ga9cf859409f0916684a34f5d4726cb2e3">mmhal_get_littlefs_config()</a> that returns your file-system configuration.</li>
 </ul>
 </dd></dl>
 <h2><a class="anchor" id="autotoc_md6"></a>
@@ -502,7 +502,7 @@ Setting up the device</h2>
 
 <p class="definition">Definition in file <a class="el" href="aws__iot_8c_source.html">aws_iot.c</a>.</p>
 </div><div class="textblock"><code>#include &lt;string.h&gt;</code><br />
-<code>#include &quot;mmhal.h&quot;</code><br />
+<code>#include &quot;mmhal_app.h&quot;</code><br />
 <code>#include &quot;mmosal.h&quot;</code><br />
 <code>#include &quot;mmconfig.h&quot;</code><br />
 <code>#include &quot;mm_app_loadconfig.h&quot;</code><br />
@@ -517,30 +517,25 @@ Include dependency graph for aws_iot.c:</div>
 <div class="dyncontent">
 <div class="center"><img src="aws__iot_8c__incl.png" border="0" usemap="#aaws__iot_8c" alt=""/></div>
 <map name="aaws__iot_8c" id="aaws__iot_8c">
-<area shape="rect" title="AWS IoT example to demonstrate connecting to AWS Shadow service and demonstrate a simple light bulb e..." alt="" coords="1019,5,1102,32"/>
-<area shape="rect" title=" " alt="" coords="1007,453,1077,480"/>
-<area shape="rect" href="mmhal_8h_source.html" title=" " alt="" coords="253,80,333,107"/>
-<area shape="rect" href="mmosal_8h_source.html" title=" " alt="" coords="885,379,972,405"/>
-<area shape="rect" href="mmconfig_8h_source.html" title=" " alt="" coords="58,304,157,331"/>
-<area shape="rect" title=" " alt="" coords="858,80,1023,107"/>
-<area shape="rect" href="mmipal_8h_source.html" title=" " alt="" coords="59,379,143,405"/>
-<area shape="rect" title=" " alt="" coords="1098,80,1242,107"/>
-<area shape="rect" title=" " alt="" coords="1267,80,1372,107"/>
-<area shape="rect" title=" " alt="" coords="1397,80,1493,107"/>
-<area shape="rect" title=" " alt="" coords="1517,80,1671,107"/>
-<area shape="rect" href="aws__iot__config_8h.html" title="Contains the configuration parameters for the AWS IoT application." alt="" coords="1370,155,1501,181"/>
-<area shape="rect" title=" " alt="" coords="517,453,599,480"/>
-<area shape="rect" title=" " alt="" coords="319,379,394,405"/>
-<area shape="rect" title=" " alt="" coords="105,453,176,480"/>
-<area shape="rect" title=" " alt="" coords="261,229,325,256"/>
-<area shape="rect" href="mmhal__flash_8h_source.html" title=" " alt="" coords="181,304,300,331"/>
-<area shape="rect" href="mmhal__wlan_8h_source.html" title=" " alt="" coords="404,155,523,181"/>
-<area shape="rect" href="mmpkt_8h_source.html" title=" " alt="" coords="579,304,660,331"/>
-<area shape="rect" href="mmwlan_8h_source.html" title=" " alt="" coords="677,229,767,256"/>
-<area shape="rect" title=" " alt="" coords="1257,453,1323,480"/>
-<area shape="rect" title=" " alt="" coords="801,453,872,480"/>
-<area shape="rect" title=" " alt="" coords="896,453,983,480"/>
-<area shape="rect" title=" " alt="" coords="685,304,759,331"/>
+<area shape="rect" title="AWS IoT example to demonstrate connecting to AWS Shadow service and demonstrate a simple light bulb e..." alt="" coords="603,5,685,32"/>
+<area shape="rect" title=" " alt="" coords="394,155,465,181"/>
+<area shape="rect" href="mmhal__app_8h_source.html" title=" " alt="" coords="49,80,159,107"/>
+<area shape="rect" href="mmosal_8h_source.html" title=" " alt="" coords="467,80,554,107"/>
+<area shape="rect" href="mmconfig_8h_source.html" title=" " alt="" coords="184,80,283,107"/>
+<area shape="rect" title=" " alt="" coords="733,80,899,107"/>
+<area shape="rect" href="mmipal_8h_source.html" title=" " alt="" coords="307,80,391,107"/>
+<area shape="rect" title=" " alt="" coords="923,80,1067,107"/>
+<area shape="rect" title=" " alt="" coords="1091,80,1197,107"/>
+<area shape="rect" title=" " alt="" coords="1221,80,1317,107"/>
+<area shape="rect" title=" " alt="" coords="1341,80,1496,107"/>
+<area shape="rect" href="aws__iot__config_8h.html" title="Contains the configuration parameters for the AWS IoT application." alt="" coords="579,80,709,107"/>
+<area shape="rect" title=" " alt="" coords="192,155,275,181"/>
+<area shape="rect" title=" " alt="" coords="93,155,168,181"/>
+<area shape="rect" title=" " alt="" coords="299,155,370,181"/>
+<area shape="rect" title=" " alt="" coords="5,155,69,181"/>
+<area shape="rect" title=" " alt="" coords="695,155,761,181"/>
+<area shape="rect" title=" " alt="" coords="489,155,559,181"/>
+<area shape="rect" title=" " alt="" coords="583,155,670,181"/>
 </map>
 </div>
 </div>
@@ -585,7 +580,7 @@ Functions</h2></td></tr>
 
 <p>Maximum back-off jitter per attempt. </p>
 
-<p class="definition">Definition at line <a class="el" href="aws__iot_8c_source.html#l00532">532</a> of file <a class="el" href="aws__iot_8c_source.html">aws_iot.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="aws__iot_8c_source.html#l00534">534</a> of file <a class="el" href="aws__iot_8c_source.html">aws_iot.c</a>.</p>
 
 </div>
 </div>
@@ -603,7 +598,7 @@ Functions</h2></td></tr>
 
 <p>We need to back-off at least 60 seconds or most NTP Servers will tell us to go away. </p>
 
-<p class="definition">Definition at line <a class="el" href="aws__iot_8c_source.html#l00528">528</a> of file <a class="el" href="aws__iot_8c_source.html">aws_iot.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="aws__iot_8c_source.html#l00530">530</a> of file <a class="el" href="aws__iot_8c_source.html">aws_iot.c</a>.</p>
 
 </div>
 </div>
@@ -621,7 +616,7 @@ Functions</h2></td></tr>
 
 <p>Minimum back-off jitter per attempt. </p>
 
-<p class="definition">Definition at line <a class="el" href="aws__iot_8c_source.html#l00530">530</a> of file <a class="el" href="aws__iot_8c_source.html">aws_iot.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="aws__iot_8c_source.html#l00532">532</a> of file <a class="el" href="aws__iot_8c_source.html">aws_iot.c</a>.</p>
 
 </div>
 </div>
@@ -639,7 +634,7 @@ Functions</h2></td></tr>
 
 <p>Minimum NTP timeout per attempt. </p>
 
-<p class="definition">Definition at line <a class="el" href="aws__iot_8c_source.html#l00526">526</a> of file <a class="el" href="aws__iot_8c_source.html">aws_iot.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="aws__iot_8c_source.html#l00528">528</a> of file <a class="el" href="aws__iot_8c_source.html">aws_iot.c</a>.</p>
 
 </div>
 </div>
@@ -654,13 +649,13 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">    <span class="stringliteral">&quot;{&quot;</span>                                   \</div>
-<div class="line">        <span class="stringliteral">&quot;\&quot;state\&quot;:{&quot;</span>                     \</div>
-<div class="line">            <span class="stringliteral">&quot;\&quot;reported\&quot;:{&quot;</span>              \</div>
-<div class="line">                <span class="stringliteral">&quot;\&quot;powerOn\&quot;:%lu&quot;</span>         \</div>
-<div class="line">            <span class="stringliteral">&quot;}&quot;</span>                           \</div>
-<div class="line">        <span class="stringliteral">&quot;},&quot;</span>                              \</div>
-<div class="line">        <span class="stringliteral">&quot;\&quot;clientToken\&quot;:\&quot;%06lu\&quot;&quot;</span>       \</div>
+<b>Value:</b><div class="fragment"><div class="line">    <span class="stringliteral">&quot;{&quot;</span>                         \</div>
+<div class="line">    <span class="stringliteral">&quot;\&quot;state\&quot;:{&quot;</span>               \</div>
+<div class="line">    <span class="stringliteral">&quot;\&quot;reported\&quot;:{&quot;</span>            \</div>
+<div class="line">    <span class="stringliteral">&quot;\&quot;powerOn\&quot;:%lu&quot;</span>           \</div>
+<div class="line">    <span class="stringliteral">&quot;}&quot;</span>                         \</div>
+<div class="line">    <span class="stringliteral">&quot;},&quot;</span>                        \</div>
+<div class="line">    <span class="stringliteral">&quot;\&quot;clientToken\&quot;:\&quot;%06lu\&quot;&quot;</span> \</div>
 <div class="line">    <span class="stringliteral">&quot;}&quot;</span></div>
 </div><!-- fragment -->
 <p>Format string representing a Shadow document with a "reported" state. </p>
@@ -674,7 +669,7 @@ Functions</h2></td></tr>
 <div class="line">}</div>
 </div><!-- fragment --><p> Note the client token, which is optional. The token is used to identify the response to an update. The client token must be unique at any given time, but may be reused once the update is completed. For this demo, a timestamp is used for a client token. </p>
 
-<p class="definition">Definition at line <a class="el" href="aws__iot_8c_source.html#l00553">553</a> of file <a class="el" href="aws__iot_8c_source.html">aws_iot.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="aws__iot_8c_source.html#l00555">555</a> of file <a class="el" href="aws__iot_8c_source.html">aws_iot.c</a>.</p>
 
 </div>
 </div>
@@ -698,7 +693,7 @@ Functions</h2></td></tr>
 <p>Main entry point to the application. </p>
 <p >This will be invoked in a thread once operating system and hardware initialization has completed. It may return, but it does not have to. </p>
 
-<p class="definition">Definition at line <a class="el" href="aws__iot_8c_source.html#l00837">837</a> of file <a class="el" href="aws__iot_8c_source.html">aws_iot.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="aws__iot_8c_source.html#l00845">845</a> of file <a class="el" href="aws__iot_8c_source.html">aws_iot.c</a>.</p>
 
 </div>
 </div>
@@ -708,8 +703,8 @@ Functions</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_91b8f418cff946e8d8b598a9068417a8.html">examples</a></li><li class="navelem"><a class="el" href="dir_b387fc6dc7da55db73b12a856472d5c8.html">aws_iot</a></li><li class="navelem"><a class="el" href="dir_a6b77cb14fc0f161a2077e6f0b75d7d1.html">src</a></li><li class="navelem"><a class="el" href="aws__iot_8c.html">aws_iot.c</a></li>
-    <li class="footer">Copyright 2021 Morse Micro </li>
+    <li class="navelem"><a class="el" href="dir_c5388b8f7c63864c1129967aadb7f145.html">examples</a></li><li class="navelem"><a class="el" href="dir_cda28d5a0716c0e2a44f9676bbf5f637.html">aws_iot</a></li><li class="navelem"><a class="el" href="dir_3a1893574609c91bef1035d4fc906e7a.html">src</a></li><li class="navelem"><a class="el" href="aws__iot_8c.html">aws_iot.c</a></li>
+    <li class="footer">Copyright 2021-2025 Morse Micro </li>
   </ul>
 </div>
 </body>

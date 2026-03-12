@@ -98,7 +98,7 @@ err_t sys_mbox_new(sys_mbox_t *mbox, int size)
 
 void sys_mbox_post(sys_mbox_t *mbox, void *msg)
 {
-    bool ok = mmosal_queue_push(*mbox, msg, UINT32_MAX);
+    bool ok = mmosal_queue_push(*mbox, &msg, UINT32_MAX);
     LWIP_ASSERT("post failed", ok);
 }
 
@@ -124,8 +124,18 @@ err_t sys_mbox_trypost_fromisr(sys_mbox_t *mbox, void *msg)
 
 u32_t sys_arch_mbox_fetch(sys_mbox_t *mbox, void **msg, u32_t timeout)
 {
+    if (timeout == 0)
+    {
+        timeout = UINT32_MAX;
+    }
     bool ok = mmosal_queue_pop(*mbox, msg, timeout);
     return ok ? 0 : SYS_ARCH_TIMEOUT;
+}
+
+u32_t sys_arch_mbox_tryfetch(sys_mbox_t *mbox, void **msg)
+{
+    bool ok = mmosal_queue_pop(*mbox, msg, 0);
+    return ok ? 0 : SYS_MBOX_EMPTY;
 }
 
 void sys_mbox_free(sys_mbox_t *mbox)
@@ -135,11 +145,13 @@ void sys_mbox_free(sys_mbox_t *mbox)
     SYS_STATS_DEC(mbox.used);
 }
 
-sys_thread_t sys_thread_new(const char *name, lwip_thread_fn thread,
-                            void *arg, int stacksize, int prio)
+sys_thread_t sys_thread_new(const char *name,
+                            lwip_thread_fn thread,
+                            void *arg,
+                            int stacksize,
+                            int prio)
 {
-    LWIP_ASSERT("Invalid prio",
-                prio >= MMOSAL_TASK_PRI_MIN && prio <= MMOSAL_TASK_PRI_HIGH);
+    LWIP_ASSERT("Invalid prio", prio >= MMOSAL_TASK_PRI_MIN && prio <= MMOSAL_TASK_PRI_HIGH);
     enum mmosal_task_priority prio_ = (enum mmosal_task_priority)prio;
     return mmosal_task_create(thread, arg, prio_, stacksize / 4, name);
 }

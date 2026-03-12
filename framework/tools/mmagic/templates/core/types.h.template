@@ -15,6 +15,7 @@
 
 enum mmagic_subsystems
 {
+    mmagic_subsystem_reserved = 0,
     {%- for module in config.modules %}
     mmagic_{{module.name}} = {{module.id}},
     {%- endfor %}

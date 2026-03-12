@@ -3,6 +3,9 @@ url = "https://pypi.python.org/simple"
 verify_ssl = true
 name = "pypi"
 
+[requires]
+python_version = "3.10"
+
 [packages]
 protobuf = "~=3.20.3"
 coloredlogs = "*"
@@ -19,7 +22,7 @@ pandas = "~=2.0.3"
 enlighten = "*"
 gitpython = "*"
 jinja2 = "*"
-jira = "3.8.0"
+jira = "3.10.5"
 numpy = "~=1.24.4"
 requests = "*"
 prettytable = "*"
@@ -36,6 +39,7 @@ pyserial = "*"
 crc = "*"
 jsonschema = "*"
 compiledb = "*"
+textual = "*"
 
 [power-measurement]
 joulescope-ui = "*"

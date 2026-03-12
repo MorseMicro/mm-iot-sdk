@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Morse Micro
+ * Copyright 2026 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -14,13 +14,13 @@
  * Maximum allowed length of any value string. Needs to accomodate WLAN password, IP and MAC address
  * strings.
  */
-#define MAX_VAL_LEN     101
+#define MAX_VAL_LEN 101
 
 void mmagic_core_iperf_load_all(struct mmagic_data *core)
 {
     struct mmagic_iperf_data *data = &core->iperf_data;
     {
-        char val[MAX_VAL_LEN] = {0};
+        char val[MAX_VAL_LEN] = { 0 };
         if (mmconfig_read_string("iperf.mode", val, sizeof(val)) > 0)
         {
             (void)mmagic_string_to_enum_iperf_mode(&data->config.mode, val);
@@ -28,7 +28,7 @@ void mmagic_core_iperf_load_all(struct mmagic_data *core)
     }
 
     {
-        char val[MAX_VAL_LEN] = {0};
+        char val[MAX_VAL_LEN] = { 0 };
         if (mmconfig_read_string("iperf.server", val, sizeof(val)) > 0)
         {
             (void)mmagic_string_to_struct_ip_addr(&data->config.server, val);
@@ -36,7 +36,7 @@ void mmagic_core_iperf_load_all(struct mmagic_data *core)
     }
 
     {
-        char val[MAX_VAL_LEN] = {0};
+        char val[MAX_VAL_LEN] = { 0 };
         if (mmconfig_read_string("iperf.port", val, sizeof(val)) > 0)
         {
             (void)mmagic_string_to_uint16_t(&data->config.port, val);
@@ -44,7 +44,7 @@ void mmagic_core_iperf_load_all(struct mmagic_data *core)
     }
 
     {
-        char val[MAX_VAL_LEN] = {0};
+        char val[MAX_VAL_LEN] = { 0 };
         if (mmconfig_read_string("iperf.amount", val, sizeof(val)) > 0)
         {
             (void)mmagic_string_to_int32_t(&data->config.amount, val);

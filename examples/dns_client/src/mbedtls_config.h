@@ -39,17 +39,16 @@
 /* System support */
 #define MBEDTLS_HAVE_TIME
 #define MBEDTLS_HAVE_TIME_DATE
-#define MBEDTLS_PLATFORM_TIME_MACRO(x)          mmhal_get_time()
+#define MBEDTLS_PLATFORM_TIME_MACRO(x) mmhal_get_time()
 #define MBEDTLS_NO_PLATFORM_ENTROPY
 #define MBEDTLS_ENTROPY_HARDWARE_ALT
 #define MBEDTLS_PLATFORM_NO_STD_FUNCTIONS
-#define MBEDTLS_PLATFORM_SNPRINTF_MACRO         snprintf
+#define MBEDTLS_PLATFORM_SNPRINTF_MACRO snprintf
 #define MBEDTLS_PLATFORM_C
 #define MBEDTLS_PLATFORM_MEMORY
 #define MBEDTLS_PLATFORM_MS_TIME_ALT
-#define MBEDTLS_PLATFORM_CALLOC_MACRO           mmosal_calloc
-#define MBEDTLS_PLATFORM_FREE_MACRO             mmosal_free
-
+#define MBEDTLS_PLATFORM_CALLOC_MACRO mmosal_calloc
+#define MBEDTLS_PLATFORM_FREE_MACRO   mmosal_free
 
 /* Ensure that mbedTLS features that are required for morselib are enabled. */
 #include "mm_mbedtls_config.h"

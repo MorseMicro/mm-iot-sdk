@@ -8,6 +8,6 @@
  * @file version.h Contains the software version used for OTA update.
  */
 
-#define APP_VERSION_MAJOR    0      /**< Major version number. */
-#define APP_VERSION_MINOR    9      /**< Minor version number. */
-#define APP_VERSION_BUILD    0      /**< Build number. */
+#define APP_VERSION_MAJOR 0 /**< Major version number. */
+#define APP_VERSION_MINOR 9 /**< Minor version number. */
+#define APP_VERSION_BUILD 0 /**< Build number. */

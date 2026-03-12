@@ -65,7 +65,7 @@ extern ota_preupdate_cb_fn_t ota_pal_preupdate_callback;
  *   @c OtaPalSuccess: Aborting access to the open file was successful.
  *   @c OtaPalFileAbort: Aborting access to the open file context was unsuccessful.
  */
-OtaPalStatus_t otaPal_Abort(OtaFileContext_t * const pFileContext);
+OtaPalStatus_t otaPal_Abort(OtaFileContext_t *const pFileContext);
 
 /**
  * @brief Create a new receive file.
@@ -99,7 +99,7 @@ OtaPalStatus_t otaPal_Abort(OtaFileContext_t * const pFileContext);
  *                             non-volatile memory. If this error is returned, then the sub error
  *                             should be set to the appropriate platform specific value.
  */
-OtaPalStatus_t otaPal_CreateFileForRx(OtaFileContext_t * const pFileContext);
+OtaPalStatus_t otaPal_CreateFileForRx(OtaFileContext_t *const pFileContext);
 
 /**
  * @brief Authenticate and close the underlying receive file in the specified OTA context.
@@ -128,7 +128,7 @@ OtaPalStatus_t otaPal_CreateFileForRx(OtaFileContext_t * const pFileContext);
  *   @c OtaPalBadSignerCert: The signer certificate was not readable or zero length.
  *   @c OtaPalFileClose: Error in low level file close.
  */
-OtaPalStatus_t otaPal_CloseFile(OtaFileContext_t * const pFileContext);
+OtaPalStatus_t otaPal_CloseFile(OtaFileContext_t *const pFileContext);
 
 /**
  * @brief Write a block of data to the specified file at the given offset.
@@ -150,9 +150,9 @@ OtaPalStatus_t otaPal_CloseFile(OtaFileContext_t * const pFileContext);
  *                         the platform
  * abstraction layer.
  */
-int16_t otaPal_WriteBlock(OtaFileContext_t * const pFileContext,
+int16_t otaPal_WriteBlock(OtaFileContext_t *const pFileContext,
                           uint32_t ulOffset,
-                          uint8_t * const pData,
+                          uint8_t *const pData,
                           uint32_t ulBlockSize);
 
 /**
@@ -177,7 +177,7 @@ int16_t otaPal_WriteBlock(OtaFileContext_t * const pFileContext,
  *   @c OtaPalSuccess on success.
  *   @c OtaPalActivateFailed: The activation of the new OTA image failed.
  */
-OtaPalStatus_t otaPal_ActivateNewImage(OtaFileContext_t * const pFileContext);
+OtaPalStatus_t otaPal_ActivateNewImage(OtaFileContext_t *const pFileContext);
 
 /**
  * @brief Attempt to set the state of the OTA update image.
@@ -205,7 +205,7 @@ OtaPalStatus_t otaPal_ActivateNewImage(OtaFileContext_t * const pFileContext);
  *   @c OtaPalCommitFailed: failed to make update image permanent as requested by @c
  * OtaImageStateAccepted.
  */
-OtaPalStatus_t otaPal_SetPlatformImageState(OtaFileContext_t * const pFileContext,
+OtaPalStatus_t otaPal_SetPlatformImageState(OtaFileContext_t *const pFileContext,
                                             OtaImageState_t eState);
 
 /**
@@ -231,7 +231,7 @@ OtaPalStatus_t otaPal_SetPlatformImageState(OtaFileContext_t * const pFileContex
  *
  *   NOTE: @c OtaPalImageStateUnknown should NEVER be returned and indicates implementation error.
  */
-OtaPalImageState_t otaPal_GetPlatformImageState(OtaFileContext_t * const pFileContext);
+OtaPalImageState_t otaPal_GetPlatformImageState(OtaFileContext_t *const pFileContext);
 
 /**
  * @brief Reset the device.
@@ -249,4 +249,4 @@ OtaPalImageState_t otaPal_GetPlatformImageState(OtaFileContext_t * const pFileCo
  * OtaPalMainStatus_t
  *         error codes and your specific PAL implementation for the sub error code.
  */
-OtaPalStatus_t otaPal_ResetDevice(OtaFileContext_t * const pFileContext);
+OtaPalStatus_t otaPal_ResetDevice(OtaFileContext_t *const pFileContext);

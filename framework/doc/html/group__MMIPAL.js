@@ -10,6 +10,10 @@ var group__MMIPAL =
       [ "ip6_addr", "structmmipal__ip6__config.html#a6bc34988ecbafe8babf6633ce8d932c4", null ],
       [ "ip6_mode", "structmmipal__ip6__config.html#a4ec9b0c94bc6ec49af59ad5f9f158f35", null ]
     ] ],
+    [ "mmipal_arp_config", "structmmipal__arp__config.html", [
+      [ "ip_addr", "structmmipal__arp__config.html#a32b19f960f6d25cbf6d2d4ee4b273584", null ],
+      [ "mac_addr", "structmmipal__arp__config.html#a7beb6e79eba363e586a0cb801f07bef7", null ]
+    ] ],
     [ "mmipal_init_args", "structmmipal__init__args.html", [
       [ "gateway_addr", "structmmipal__init__args.html#a9c47221066842695ba9aa83beab4c6b4", null ],
       [ "ip6_addr", "structmmipal__init__args.html#a1eea15de7ad7c2c4bdbc13cc50e37b60", null ],
@@ -30,10 +34,12 @@ var group__MMIPAL =
     [ "MMIPAL_IP6_CONFIG_DEFAULT", "group__MMIPAL.html#ga322ce65396a4e2670eebb1dc13364289", null ],
     [ "MMIPAL_IP_CONFIG_DEFAULT", "group__MMIPAL.html#gaaf26c0dd7e02e68ef7a49ae726e8d9d2", null ],
     [ "MMIPAL_IPADDR_STR_MAXLEN", "group__MMIPAL.html#gaf28996cd2e5ac90dcb98020e151efd63", null ],
+    [ "MMIPAL_MACADDR_LEN", "group__MMIPAL.html#ga371b75f8432fbcf88819dabc1fb20761", null ],
     [ "MMIPAL_MAX_IPV6_ADDRESSES", "group__MMIPAL.html#gada2034f3e1d476104295ab45698b1979", null ],
     [ "mmipal_ext_link_status_cb_fn_t", "group__MMIPAL.html#ga0dd07bfc1c1f2502b61054466f9bf8a2", null ],
     [ "mmipal_ip_addr_t", "group__MMIPAL.html#gad7cd05b2ca37d79ebbda48b5f2a59498", null ],
     [ "mmipal_link_status_cb_fn_t", "group__MMIPAL.html#ga48394dbda3d6be89eb5db6608c743108", null ],
+    [ "mmipal_mac_addr_t", "group__MMIPAL.html#ga54988a55fb4739f3d1c64607147981c4", null ],
     [ "mmipal_addr_mode", "group__MMIPAL.html#gafc9d0260b07ca329e4fc2393a769c3cd", [
       [ "MMIPAL_DISABLED", "group__MMIPAL.html#ggafc9d0260b07ca329e4fc2393a769c3cda1daa5bbd662049fcc18526b4ae2f96b5", null ],
       [ "MMIPAL_STATIC", "group__MMIPAL.html#ggafc9d0260b07ca329e4fc2393a769c3cda94fc853f6c5c0d4e4bbc722c9e77e9dc", null ],
@@ -58,6 +64,7 @@ var group__MMIPAL =
       [ "MMIPAL_NO_MEM", "group__MMIPAL.html#ggabeb2ec55b5c51b0614c5a7e334ad31d4ad4efc2c9932d31960d964e61bd31008d", null ],
       [ "MMIPAL_NOT_SUPPORTED", "group__MMIPAL.html#ggabeb2ec55b5c51b0614c5a7e334ad31d4a977feeeb0da86599cc9025d318302a09", null ]
     ] ],
+    [ "mmipal_add_static_arp_entry", "group__MMIPAL.html#ga5ddab5a92aff8cdad7399c3ad909d5c2", null ],
     [ "mmipal_get_dns_server", "group__MMIPAL.html#ga298e7be92dcdf49b2e5d1b6c77d54b80", null ],
     [ "mmipal_get_ip6_config", "group__MMIPAL.html#gaae5891328d8580126d84223e7b25af17", null ],
     [ "mmipal_get_ip_broadcast_addr", "group__MMIPAL.html#ga036e473da746b35eba61dec290c0115a", null ],
@@ -66,6 +73,7 @@ var group__MMIPAL =
     [ "mmipal_get_link_state", "group__MMIPAL.html#ga6fc09ab39c86d81350ebb043f9d6b491", null ],
     [ "mmipal_get_local_addr", "group__MMIPAL.html#gafce9c2da395f691934c4c569136c45e8", null ],
     [ "mmipal_init", "group__MMIPAL.html#ga036b21005847998a5a99a6118d94c2c3", null ],
+    [ "mmipal_remove_static_arp_entry", "group__MMIPAL.html#ga9336d02aa7be7d51cc2b3691fb54dc71", null ],
     [ "mmipal_set_dns_server", "group__MMIPAL.html#ga3ee1d1b6c5f878694b8884bfce78db96", null ],
     [ "mmipal_set_ext_link_status_callback", "group__MMIPAL.html#ga99888e2aff33b2afddb0ca3b9e8a8d1d", null ],
     [ "mmipal_set_ip6_config", "group__MMIPAL.html#gae440845377bec95b95986abdf02287f6", null ],

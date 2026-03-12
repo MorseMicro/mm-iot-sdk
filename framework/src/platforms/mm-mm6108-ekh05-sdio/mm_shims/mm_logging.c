@@ -10,11 +10,12 @@
 
 #include "mmlog.h"
 #include "mmosal.h"
-#include "mmhal.h"
+#include "mmhal_os.h"
+#include "mmhal_app.h"
 #include "mmutils.h"
 
 /** Timeout when  acquiring log mutex (in milliseconds). */
-#define LOG_TIMEOUT_MS  (5000)
+#define LOG_TIMEOUT_MS (5000)
 
 /** Mutex to ensure only one thread at a time writes to the log. */
 static struct mmosal_mutex *log_mutex = NULL;
@@ -140,12 +141,16 @@ int setvbuf(FILE *stream, char *buffer, int mode, size_t size)
 }
 
 /** Maximum length of buffer to dump inline before going to multi-line mode */
-#define DUMP_INLINE_MAXLEN      (8)
-#define DUMP_OCTETS_PER_GROUP   (8)
-#define DUMP_OCTETS_PER_LINE    (16)
+#define DUMP_INLINE_MAXLEN    (8)
+#define DUMP_OCTETS_PER_GROUP (8)
+#define DUMP_OCTETS_PER_LINE  (16)
 
-void mm_hexdump(char level, const char *function, unsigned line_number,
-                const char *title, const uint8_t *buf, size_t len)
+void mm_hexdump(char level,
+                const char *function,
+                unsigned line_number,
+                const char *title,
+                const uint8_t *buf,
+                size_t len)
 {
     /* If it takes too long to get the mutex then we give up on this log message. */
     bool ok = morse_debug_mutex_take();

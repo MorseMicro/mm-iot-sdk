@@ -84,8 +84,8 @@ This directory contains all the logic for running the BLE application.
 
 ### mm_shims
 
-The files in the `mm_shims` directory (`mmhal.c`, `mmport.h`, `wlan_hal.c`) are where the board
-specific API functions used by morselib are implemented.
+The files in the `mm_shims` directory (e.g., `mmhal_core.c`, `mmport.h`, `mmhal_wlan.c`) are where the
+board specific API functions used by morselib are implemented.
 
 ## Getting the BLE Stack running
 This is a very basic overview on how to get the BLE stack running. It is highly recommend to review

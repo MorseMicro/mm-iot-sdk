@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Morse Micro
+ * Copyright 2026 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -18,11 +18,12 @@
 #include "m2m_api/mmagic_m2m_agent.h"
 
 /* Maximum allowed length of any value string, needs to accomodate IP and MAC address strings */
-#define MAX_VAL_LEN     32
+#define MAX_VAL_LEN 32
 
 /********* M2M Command Handlers **********/
 static struct mmbuf *mmagic_m2m_ping_get(struct mmagic_m2m_agent *agent,
-                                         uint8_t sid, uint8_t subcommand,
+                                         uint8_t sid,
+                                         uint8_t subcommand,
                                          struct mmbuf *commandbuffer)
 {
     MM_UNUSED(sid);
@@ -31,29 +32,43 @@ static struct mmbuf *mmagic_m2m_ping_get(struct mmagic_m2m_agent *agent,
     struct mmagic_ping_data *data = mmagic_data_get_ping(&agent->core);
     switch (subcommand)
     {
-    case mmagic_ping_var_target:
-        return mmagic_m2m_create_response(mmagic_ping, mmagic_ping_cmd_get, subcommand,
-                                          MMAGIC_STATUS_OK, &data->config.target,
-                                          sizeof(data->config.target));
+        case mmagic_ping_var_target:
+            return mmagic_m2m_create_response(mmagic_ping,
+                                              mmagic_ping_cmd_get,
+                                              subcommand,
+                                              MMAGIC_STATUS_OK,
+                                              &data->config.target,
+                                              sizeof(data->config.target));
 
-    case mmagic_ping_var_interval:
-        return mmagic_m2m_create_response(mmagic_ping, mmagic_ping_cmd_get, subcommand,
-                                          MMAGIC_STATUS_OK, &data->config.interval,
-                                          sizeof(data->config.interval));
+        case mmagic_ping_var_interval:
+            return mmagic_m2m_create_response(mmagic_ping,
+                                              mmagic_ping_cmd_get,
+                                              subcommand,
+                                              MMAGIC_STATUS_OK,
+                                              &data->config.interval,
+                                              sizeof(data->config.interval));
 
-    case mmagic_ping_var_count:
-        return mmagic_m2m_create_response(mmagic_ping, mmagic_ping_cmd_get, subcommand,
-                                          MMAGIC_STATUS_OK, &data->config.count,
-                                          sizeof(data->config.count));
+        case mmagic_ping_var_count:
+            return mmagic_m2m_create_response(mmagic_ping,
+                                              mmagic_ping_cmd_get,
+                                              subcommand,
+                                              MMAGIC_STATUS_OK,
+                                              &data->config.count,
+                                              sizeof(data->config.count));
 
-    default:
-        return mmagic_m2m_create_response(mmagic_ping, mmagic_ping_cmd_get, subcommand,
-                                          MMAGIC_STATUS_NOT_FOUND, NULL, 0);
+        default:
+            return mmagic_m2m_create_response(mmagic_ping,
+                                              mmagic_ping_cmd_get,
+                                              subcommand,
+                                              MMAGIC_STATUS_NOT_FOUND,
+                                              NULL,
+                                              0);
     }
 }
 
 static struct mmbuf *mmagic_m2m_ping_set(struct mmagic_m2m_agent *agent,
-                                         uint8_t sid, uint8_t subcommand,
+                                         uint8_t sid,
+                                         uint8_t subcommand,
                                          struct mmbuf *commandbuffer)
 {
     MM_UNUSED(sid);
@@ -61,32 +76,49 @@ static struct mmbuf *mmagic_m2m_ping_set(struct mmagic_m2m_agent *agent,
     void *args = (void *)mmbuf_get_data_start(commandbuffer);
     switch (subcommand)
     {
-    case mmagic_ping_var_target:
-        memcpy(&data->config.target, args, sizeof(data->config.target));
-        return mmagic_m2m_create_response(mmagic_ping, mmagic_ping_cmd_set,
-                                          subcommand, MMAGIC_STATUS_OK, NULL, 0);
-        break;
+        case mmagic_ping_var_target:
+            memcpy(&data->config.target, args, sizeof(data->config.target));
+            return mmagic_m2m_create_response(mmagic_ping,
+                                              mmagic_ping_cmd_set,
+                                              subcommand,
+                                              MMAGIC_STATUS_OK,
+                                              NULL,
+                                              0);
+            break;
 
-    case mmagic_ping_var_interval:
-        memcpy(&data->config.interval, args, sizeof(data->config.interval));
-        return mmagic_m2m_create_response(mmagic_ping, mmagic_ping_cmd_set,
-                                          subcommand, MMAGIC_STATUS_OK, NULL, 0);
-        break;
+        case mmagic_ping_var_interval:
+            memcpy(&data->config.interval, args, sizeof(data->config.interval));
+            return mmagic_m2m_create_response(mmagic_ping,
+                                              mmagic_ping_cmd_set,
+                                              subcommand,
+                                              MMAGIC_STATUS_OK,
+                                              NULL,
+                                              0);
+            break;
 
-    case mmagic_ping_var_count:
-        memcpy(&data->config.count, args, sizeof(data->config.count));
-        return mmagic_m2m_create_response(mmagic_ping, mmagic_ping_cmd_set,
-                                          subcommand, MMAGIC_STATUS_OK, NULL, 0);
-        break;
+        case mmagic_ping_var_count:
+            memcpy(&data->config.count, args, sizeof(data->config.count));
+            return mmagic_m2m_create_response(mmagic_ping,
+                                              mmagic_ping_cmd_set,
+                                              subcommand,
+                                              MMAGIC_STATUS_OK,
+                                              NULL,
+                                              0);
+            break;
 
-    default:
-        return mmagic_m2m_create_response(mmagic_ping, mmagic_ping_cmd_set,
-                                          subcommand, MMAGIC_STATUS_NOT_FOUND, NULL, 0);
+        default:
+            return mmagic_m2m_create_response(mmagic_ping,
+                                              mmagic_ping_cmd_set,
+                                              subcommand,
+                                              MMAGIC_STATUS_NOT_FOUND,
+                                              NULL,
+                                              0);
     }
 }
 
 static struct mmbuf *mmagic_m2m_ping_load(struct mmagic_m2m_agent *agent,
-                                          uint8_t sid, uint8_t subcommand,
+                                          uint8_t sid,
+                                          uint8_t subcommand,
                                           struct mmbuf *commandbuffer)
 {
     MM_UNUSED(sid);
@@ -94,12 +126,17 @@ static struct mmbuf *mmagic_m2m_ping_load(struct mmagic_m2m_agent *agent,
 
     mmagic_core_ping_load_all(&agent->core);
 
-    return mmagic_m2m_create_response(mmagic_ping, mmagic_ping_cmd_load,
-                                      subcommand, MMAGIC_STATUS_OK, NULL, 0);
+    return mmagic_m2m_create_response(mmagic_ping,
+                                      mmagic_ping_cmd_load,
+                                      subcommand,
+                                      MMAGIC_STATUS_OK,
+                                      NULL,
+                                      0);
 }
 
 static struct mmbuf *mmagic_m2m_ping_commit(struct mmagic_m2m_agent *agent,
-                                            uint8_t sid, uint8_t subcommand,
+                                            uint8_t sid,
+                                            uint8_t subcommand,
                                             struct mmbuf *commandbuffer)
 {
     MM_UNUSED(sid);
@@ -107,24 +144,34 @@ static struct mmbuf *mmagic_m2m_ping_commit(struct mmagic_m2m_agent *agent,
 
     mmagic_core_ping_save_all(&agent->core);
 
-    return mmagic_m2m_create_response(mmagic_ping, mmagic_ping_cmd_commit,
-                                      subcommand, MMAGIC_STATUS_OK, NULL, 0);
+    return mmagic_m2m_create_response(mmagic_ping,
+                                      mmagic_ping_cmd_commit,
+                                      subcommand,
+                                      MMAGIC_STATUS_OK,
+                                      NULL,
+                                      0);
 }
 
 static struct mmbuf *mmagic_m2m_ping_run(struct mmagic_m2m_agent *agent,
-                                         uint8_t sid, uint8_t subcommand,
+                                         uint8_t sid,
+                                         uint8_t subcommand,
                                          struct mmbuf *commandbuffer)
 {
     enum mmagic_status status;
     MM_UNUSED(commandbuffer);
     MM_UNUSED(sid);
-    struct mmagic_core_ping_run_rsp_args rsp_args = { };
+    struct mmagic_core_ping_run_rsp_args rsp_args = {};
     status = mmagic_core_ping_run(&agent->core, &rsp_args);
-    return mmagic_m2m_create_response(mmagic_ping, mmagic_ping_cmd_run,
-                                      subcommand, status, &rsp_args, sizeof(rsp_args));
+    return mmagic_m2m_create_response(mmagic_ping,
+                                      mmagic_ping_cmd_run,
+                                      subcommand,
+                                      status,
+                                      &rsp_args,
+                                      sizeof(rsp_args));
 }
 
-struct mmbuf *mmagic_m2m_ping_process(struct mmagic_m2m_agent *agent, uint8_t sid,
+struct mmbuf *mmagic_m2m_ping_process(struct mmagic_m2m_agent *agent,
+                                      uint8_t sid,
                                       struct mmagic_m2m_command_header *header,
                                       struct mmbuf *cmd_buf)
 {
@@ -132,30 +179,33 @@ struct mmbuf *mmagic_m2m_ping_process(struct mmagic_m2m_agent *agent, uint8_t si
     {
         switch (header->command)
         {
-        case mmagic_ping_cmd_get:
-            return mmagic_m2m_ping_get(agent, sid, header->subcommand, cmd_buf);
-            break;
+            case mmagic_ping_cmd_get:
+                return mmagic_m2m_ping_get(agent, sid, header->subcommand, cmd_buf);
+                break;
 
-        case mmagic_ping_cmd_set:
-            return mmagic_m2m_ping_set(agent, sid, header->subcommand, cmd_buf);
-            break;
+            case mmagic_ping_cmd_set:
+                return mmagic_m2m_ping_set(agent, sid, header->subcommand, cmd_buf);
+                break;
 
-        case mmagic_ping_cmd_load:
-            return mmagic_m2m_ping_load(agent, sid, header->subcommand, cmd_buf);
-            break;
+            case mmagic_ping_cmd_load:
+                return mmagic_m2m_ping_load(agent, sid, header->subcommand, cmd_buf);
+                break;
 
-        case mmagic_ping_cmd_commit:
-            return mmagic_m2m_ping_commit(agent, sid, header->subcommand, cmd_buf);
-            break;
+            case mmagic_ping_cmd_commit:
+                return mmagic_m2m_ping_commit(agent, sid, header->subcommand, cmd_buf);
+                break;
 
-        case mmagic_ping_cmd_run:
-            return mmagic_m2m_ping_run(agent, sid, header->subcommand, cmd_buf);
-            break;
+            case mmagic_ping_cmd_run:
+                return mmagic_m2m_ping_run(agent, sid, header->subcommand, cmd_buf);
+                break;
 
-        default:
-            return mmagic_m2m_create_response(header->subsystem, header->command,
-                                              header->subcommand, MMAGIC_STATUS_NOT_SUPPORTED, NULL,
-                                              0);
+            default:
+                return mmagic_m2m_create_response(header->subsystem,
+                                                  header->command,
+                                                  header->subcommand,
+                                                  MMAGIC_STATUS_NOT_SUPPORTED,
+                                                  NULL,
+                                                  0);
         }
     }
     else

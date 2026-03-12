@@ -627,6 +627,9 @@ int lwip_fcntl(int s, int cmd, int val);
 const char *lwip_inet_ntop(int af, const void *src, char *dst, socklen_t size);
 int lwip_inet_pton(int af, const char *src, void *dst);
 
+typedef void (*lwip_rx_callback_t)(void *arg);
+int lwip_register_rx_callback(int s, lwip_rx_callback_t cb, void *arg);
+
 #if LWIP_COMPAT_SOCKETS
 #if LWIP_COMPAT_SOCKETS != 2
 /** @ingroup socket */

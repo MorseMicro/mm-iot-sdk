@@ -23,7 +23,8 @@
 #include "mmbuf.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 /**
@@ -39,8 +40,8 @@ extern "C" {
 /** Size of the payload length field. */
 #define MMAGIC_DATALINK_PAYLOAD_LEN_SIZE (2)
 /** Total size of the transfer header. */
-#define MMAGIC_DATALINK_PAYLOAD_HEADER_SIZE (MMAGIC_DATALINK_PAYLOAD_TYPE_SIZE + \
-                                             MMAGIC_DATALINK_PAYLOAD_LEN_SIZE)
+#define MMAGIC_DATALINK_PAYLOAD_HEADER_SIZE \
+    (MMAGIC_DATALINK_PAYLOAD_TYPE_SIZE + MMAGIC_DATALINK_PAYLOAD_LEN_SIZE)
 
 /** Enumeration of data link payload types. */
 enum mmagic_datalink_payload_type
@@ -73,7 +74,8 @@ struct mmagic_datalink_controller;
  */
 typedef void (*mmagic_datalink_controller_rx_buffer_cb_t)(
     struct mmagic_datalink_controller *controller_dl,
-    void *arg, struct mmbuf *buf);
+    void *arg,
+    struct mmbuf *buf);
 
 /**
  * Initialization structure for mmagic_datalink_controller.

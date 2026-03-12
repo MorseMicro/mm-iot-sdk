@@ -1389,15 +1389,17 @@ struct wpa_ssid {
 	int s1g_prim_chwidth;
 
 	/**
-	 * s1g_prim_1mhz_chan_index - Primary channel index
-	 *
-	 * Used to derive the center channel based on operating and primary channel widths
-	 * - 0-7 for 8MHz operating BW
-	 * - 0-3 for 4MHz operating BW
-	 * - 0-1 for 2MHz operating BW
-	 * - 0   for 1MHz operating BW
+	 * s1g_prim_channel - S1G primary channel number
 	 */
-	int s1g_prim_1mhz_chan_index;
+	int s1g_prim_channel;
+
+	/**
+	 * Location of 1 MHz primary channel within the 2 MHz primary channel.
+	 *
+	 * - 0: lower side of 2 MHz primary channel.
+	 * - 1: upper side of 2 MHz primary channel.
+	 */
+	int primary_1mhz_channel_loc;
 
 	/**
 	 * Morse mesh proprietary extension for beaconless mode

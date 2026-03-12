@@ -17,10 +17,17 @@ int morse_raw_global_enable(const char *ifname, bool enable)
     }
 }
 
-int morse_raw_priority_enable(const char *ifname, bool enable, u8 prio, u32 start_time_us,
-                              u32 duration_us, u8 num_slots, bool cross_slot, u16 max_bcn_spread,
+int morse_raw_priority_enable(const char *ifname,
+                              bool enable,
+                              u8 prio,
+                              u32 start_time_us,
+                              u32 duration_us,
+                              u8 num_slots,
+                              bool cross_slot,
+                              u16 max_bcn_spread,
                               u16 nom_stas_per_bcn,
-                              u8 praw_period, u8 praw_start_offset)
+                              u8 praw_period,
+                              u8 praw_start_offset)
 {
     (void)(ifname);
     (void)(prio);

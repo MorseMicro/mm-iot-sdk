@@ -1,13 +1,13 @@
 var mqttdemo_8c =
 [
     [ "CLIENT_ID_PREFIX", "mqttdemo_8c.html#a9678aeec976e433841fe96834f83ab99", null ],
-    [ "CONNACK_RECV_TIMEOUT_MS", "mqttdemo_8c.html#acbc052b56b092d68cfe96267e79936ef", null ],
     [ "DELAY_BETWEEN_PUBLISHES", "mqttdemo_8c.html#a5fc89d18fbf89325385af2bb339deb9a", null ],
     [ "EXAMPLE_MESSAGE", "mqttdemo_8c.html#a2862417570313cea3cad7ffd82d290b2", null ],
     [ "KEEP_ALIVE_TIMEOUT_SECONDS", "mqttdemo_8c.html#a7cd6f2b1e2766a15f38e58d5d32adce9", null ],
     [ "MAC_ADDR_STR_LEN", "mqttdemo_8c.html#a1f6489cce566173b82ac72b1218621e3", null ],
     [ "MQTT_BROKER_ENDPOINT", "mqttdemo_8c.html#aba50a3461ccecccfb352105d84563a2d", null ],
     [ "MQTT_BROKER_PORT", "mqttdemo_8c.html#a8da4bdd90d82e2a8498f3fb429fed744", null ],
+    [ "MQTT_CONNACK_RECV_TIMEOUT_MS", "mqttdemo_8c.html#a583f81bd7a62df1b0d57e93fe8a1d39c", null ],
     [ "TOPIC_COUNT", "mqttdemo_8c.html#a6c3aa778b25387dabaabf18f3cd4c5b0", null ],
     [ "TOPIC_FORMAT", "mqttdemo_8c.html#aa609a7469e5afd021b9378cd092df244", null ],
     [ "app_init", "mqttdemo_8c.html#add3190cf715f513666f4be42874d91e2", null ],

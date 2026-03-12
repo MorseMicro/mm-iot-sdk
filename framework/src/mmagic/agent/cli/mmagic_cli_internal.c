@@ -11,7 +11,8 @@
 #include "cli/autogen/mmagic_cli_internal.h"
 
 struct mmagic_cli_config_elem *mmagic_cli_element_search(struct mmagic_cli_config_elem *elements,
-                                                         size_t num, const char *name)
+                                                         size_t num,
+                                                         const char *name)
 {
     size_t low = 0;
     size_t high = num;

@@ -53,8 +53,10 @@
 #include "lwip/dhcp.h"
 #include "lwip/autoip.h"
 #include "lwip/acd.h"
+#include "lwip/sys.h"
 #include "lwip/prot/iana.h"
 #include "netif/ethernet.h"
+#include "morse/on_demand_timers.h"
 
 #include <string.h>
 
@@ -124,6 +126,14 @@ static netif_addr_idx_t etharp_cached_entry;
 #define ETHARP_SET_ADDRHINT(netif, addrhint)  (etharp_cached_entry = (addrhint))
 #endif /* LWIP_NETIF_HWADDRHINT */
 
+#if MORSE_LWIP_TIMERS_ON_DEMAND
+
+#define DEBUG_SLEEP_TICKS(x) DEBUG_SLEEP_TICKS_GENERIC(x, "ARP")
+
+static u32_t last_tick = 0;
+static u32_t last_tick_update_ms = 0;
+
+#endif /* MORSE_LWIP_TIMERS_ON_DEMAND */
 
 /* Check for maximum ARP_TABLE_SIZE */
 #if (ARP_TABLE_SIZE > NETIF_ADDR_IDX_MAX)
@@ -186,6 +196,8 @@ etharp_free_entry(int i)
   ip4_addr_set_zero(&arp_table[i].ipaddr);
   arp_table[i].ethaddr = ethzero;
 #endif /* LWIP_DEBUG */
+
+  ETHARP_TIMER_NEEDED();
 }
 
 /**
@@ -208,7 +220,9 @@ etharp_tmr(void)
         && (state != ETHARP_STATE_STATIC)
 #endif /* ETHARP_SUPPORT_STATIC_ENTRIES */
        ) {
+#if !MORSE_LWIP_TIMERS_ON_DEMAND
       arp_table[i].ctime++;
+#endif
       if ((arp_table[i].ctime >= ARP_MAXAGE) ||
           ((arp_table[i].state == ETHARP_STATE_PENDING)  &&
            (arp_table[i].ctime >= ARP_MAXPENDING))) {
@@ -265,6 +279,7 @@ etharp_find_entry(const ip4_addr_t *ipaddr, u8_t flags, struct netif *netif)
   u16_t age_queue = 0, age_pending = 0, age_stable = 0;
 
   LWIP_UNUSED_ARG(netif);
+  ETHARP_UPDATE_TICK();
 
   /**
    * a) do a search through the cache, remember candidates
@@ -395,6 +410,7 @@ etharp_find_entry(const ip4_addr_t *ipaddr, u8_t flags, struct netif *netif)
     ip4_addr_copy(arp_table[i].ipaddr, *ipaddr);
   }
   arp_table[i].ctime = 0;
+  ETHARP_TIMER_NEEDED();
 #if ETHARP_TABLE_MATCH_NETIF
   arp_table[i].netif = netif;
 #endif /* ETHARP_TABLE_MATCH_NETIF */
@@ -488,6 +504,7 @@ etharp_update_arp_entry(struct netif *netif, const ip4_addr_t *ipaddr, struct et
     /* free the queued IP packet */
     pbuf_free(p);
   }
+  ETHARP_TIMER_NEEDED();
   return ERR_OK;
 }
 
@@ -748,6 +765,8 @@ etharp_input(struct pbuf *p, struct netif *netif)
 static err_t
 etharp_output_to_arp_index(struct netif *netif, struct pbuf *q, netif_addr_idx_t arp_idx)
 {
+  ETHARP_UPDATE_TICK();
+
   LWIP_ASSERT("arp_table[arp_idx].state >= ETHARP_STATE_STABLE",
               arp_table[arp_idx].state >= ETHARP_STATE_STABLE);
   /* if arp table entry is about to expire: re-request it,
@@ -766,6 +785,8 @@ etharp_output_to_arp_index(struct netif *netif, struct pbuf *q, netif_addr_idx_t
       }
     }
   }
+
+  ETHARP_TIMER_NEEDED();
 
   return ethernet_output(netif, q, (struct eth_addr *)(netif->hwaddr), &arp_table[arp_idx].ethaddr, ETHTYPE_IP);
 }
@@ -966,6 +987,7 @@ etharp_query(struct netif *netif, const ip4_addr_t *ipaddr, struct pbuf *q)
   if (arp_table[i].state == ETHARP_STATE_EMPTY) {
     is_new_entry = 1;
     arp_table[i].state = ETHARP_STATE_PENDING;
+    ETHARP_TIMER_NEEDED();
     /* record network interface for re-sending arp request in etharp_tmr */
     arp_table[i].netif = netif;
   }
@@ -991,6 +1013,7 @@ etharp_query(struct netif *netif, const ip4_addr_t *ipaddr, struct pbuf *q)
            not let it expire too fast. */
         LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("etharp_query: reset ctime for entry %"S16_F"\n", (s16_t)i));
         arp_table[i].ctime = 0;
+        ETHARP_TIMER_NEEDED();
       }
     }
     if (q == NULL) {
@@ -1247,5 +1270,85 @@ etharp_acd_announce(struct netif *netif, const ip4_addr_t *ipaddr)
                     ipaddr, ARP_REQUEST);
 }
 #endif /* LWIP_ACD */
+
+#if MORSE_LWIP_TIMERS_ON_DEMAND
+
+void etharp_update_tick(void)
+{
+  u32_t now = sys_now();
+  if(last_tick_update_ms == now)
+  {
+    return;
+  }
+  last_tick_update_ms = now;
+
+  u32_t tick_now = now / ARP_TMR_INTERVAL;
+  u32_t missed_ticks = tick_now - last_tick;
+  last_tick = tick_now;
+
+  for (int i = 0; i < ARP_TABLE_SIZE; ++i)
+  {
+    u8_t state = arp_table[i].state;
+    if (state != ETHARP_STATE_EMPTY
+#if ETHARP_SUPPORT_STATIC_ENTRIES
+        && (state != ETHARP_STATE_STATIC)
+#endif /* ETHARP_SUPPORT_STATIC_ENTRIES */
+      )
+    {
+      arp_table[i].ctime += missed_ticks;
+    }
+  }
+}
+
+u32_t etharp_sleep_ticks(void)
+{
+  u32_t closest_deadline = LWIP_UINT32_MAX;
+
+  for (int i = 0; i < ARP_TABLE_SIZE; ++i)
+  {
+    u8_t state = arp_table[i].state;
+    if (state == ETHARP_STATE_EMPTY
+#if ETHARP_SUPPORT_STATIC_ENTRIES
+        || (state == ETHARP_STATE_STATIC)
+#endif /* ETHARP_SUPPORT_STATIC_ENTRIES */
+       )
+    {
+        continue;
+    }
+
+    if (state == ETHARP_STATE_STABLE_REREQUESTING_1
+        || state == ETHARP_STATE_STABLE_REREQUESTING_2
+        || state == ETHARP_STATE_PENDING)
+    {
+      DEBUG_SLEEP_TICKS(0);
+      return 0;
+    }
+
+    u32_t deadline = ARP_MAXAGE - arp_table[i].ctime;
+    DEBUG_SLEEP_TICKS(deadline);
+    closest_deadline = LWIP_MIN(deadline, closest_deadline);
+  }
+
+#if DEBUG_SLEEP_TICKS_ENABLE
+  LWIP_PLATFORM_DIAG(("ARP ST: Returned %"PRIu32"\n", closest_deadline));
+#endif /* DEBUG_SLEEP_TICKS_ENABLE */
+
+  return closest_deadline;
+}
+
+void etharp_timer_needed(void)
+{
+  on_demand_timer_eval_schedule(MORSE_ON_DEMAND_TIMER_ARP);
+}
+
+void etharp_timer(void *arg)
+{
+  LWIP_UNUSED_ARG(arg);
+  etharp_update_tick();
+  etharp_tmr();
+  etharp_timer_needed();
+}
+
+#endif /* MORSE_LWIP_TIMERS_ON_DEMAND */
 
 #endif /* LWIP_IPV4 && LWIP_ARP */

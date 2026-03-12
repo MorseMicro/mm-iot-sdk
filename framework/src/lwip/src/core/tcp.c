@@ -108,6 +108,7 @@
 #include "lwip/priv/tcp_priv.h"
 #include "lwip/debug.h"
 #include "lwip/stats.h"
+#include "lwip/sys.h"
 #include "lwip/ip6.h"
 #include "lwip/ip6_addr.h"
 #include "lwip/nd6.h"
@@ -189,6 +190,21 @@ static u8_t tcp_timer;
 static u8_t tcp_timer_ctr;
 static u16_t tcp_new_port(void);
 
+#if MORSE_LWIP_TIMERS_ON_DEMAND
+
+#define DEBUG_FAST_SLEEP_TICKS(x) DEBUG_SLEEP_TICKS_GENERIC(x, "TCP_F")
+#define DEBUG_SLOW_SLEEP_TICKS(x) DEBUG_SLEEP_TICKS_GENERIC(x, "TCP_S")
+
+static u32_t last_fast_tick = 0;
+static u32_t last_tick_update_ms = 0;
+
+/* This function is the one that is called periodically by the TCP timer on
+ * connections managed by netconn. It has a patch and is treated as a special
+ * case in the poll deadline check logic */
+err_t poll_tcp(void *arg, struct tcp_pcb *pcb);
+
+#endif /* MORSE_LWIP_TIMERS_ON_DEMAND */
+
 static err_t tcp_close_shutdown_fin(struct tcp_pcb *pcb);
 #if LWIP_TCP_PCB_NUM_EXT_ARGS
 static void tcp_ext_arg_invoke_callbacks_destroyed(struct tcp_pcb_ext_args *ext_args);
@@ -233,6 +249,10 @@ tcp_free_listen(struct tcp_pcb *pcb)
 void
 tcp_tmr(void)
 {
+#if MORSE_LWIP_TIMERS_ON_DEMAND
+  LWIP_ASSERT("Morse on demand timers enabled, this should never run", 0);
+#endif
+
   /* Call tcp_fasttmr() every 250 ms */
   tcp_fasttmr();
 
@@ -495,7 +515,9 @@ tcp_close(struct tcp_pcb *pcb)
     tcp_set_flags(pcb, TF_RXCLOSED);
   }
   /* ... and close */
-  return tcp_close_shutdown(pcb, 1);
+  err_t err = tcp_close_shutdown(pcb, 1);
+  TCP_TIMER_NEEDED();
+  return err;
 }
 
 /**
@@ -526,7 +548,9 @@ tcp_shutdown(struct tcp_pcb *pcb, int shut_rx, int shut_tx)
     tcp_set_flags(pcb, TF_RXCLOSED);
     if (shut_tx) {
       /* shutting down the tx AND rx side is the same as closing for the raw API */
-      return tcp_close_shutdown(pcb, 1);
+      err_t err = tcp_close_shutdown(pcb, 1);
+      TCP_TIMER_NEEDED();
+      return err;
     }
     /* ... and free buffered data */
     if (pcb->refused_data != NULL) {
@@ -534,6 +558,7 @@ tcp_shutdown(struct tcp_pcb *pcb, int shut_rx, int shut_tx)
       pcb->refused_data = NULL;
     }
   }
+  err_t err = ERR_OK;
   if (shut_tx) {
     /* This can't happen twice since if it succeeds, the pcb's state is changed.
        Only close in these states as the others directly deallocate the PCB */
@@ -541,14 +566,17 @@ tcp_shutdown(struct tcp_pcb *pcb, int shut_rx, int shut_tx)
       case SYN_RCVD:
       case ESTABLISHED:
       case CLOSE_WAIT:
-        return tcp_close_shutdown(pcb, (u8_t)shut_rx);
+        err = tcp_close_shutdown(pcb, (u8_t)shut_rx);
+        break;
       default:
         /* Not (yet?) connected, cannot shutdown the TX side as that would bring us
           into CLOSED state, where the PCB is deallocated. */
-        return ERR_CONN;
+        err = ERR_CONN;
+        break;
     }
   }
-  return ERR_OK;
+  TCP_TIMER_NEEDED();
+  return err;
 }
 
 /**
@@ -621,6 +649,7 @@ tcp_abandon(struct tcp_pcb *pcb, int reset)
     tcp_free(pcb);
     TCP_EVENT_ERR(last_state, errf, errf_arg, ERR_ABRT);
   }
+  TCP_TIMER_NEEDED();
 }
 
 /**
@@ -1203,7 +1232,9 @@ tcp_slowtmr(void)
 
   err = ERR_OK;
 
+#if !MORSE_LWIP_TIMERS_ON_DEMAND
   ++tcp_ticks;
+#endif
   ++tcp_timer_ctr;
 
 tcp_slowtmr_start:
@@ -1244,7 +1275,9 @@ tcp_slowtmr_start:
         } else {
           u8_t backoff_cnt = tcp_persist_backoff[pcb->persist_backoff - 1];
           if (pcb->persist_cnt < backoff_cnt) {
+#if !MORSE_LWIP_TIMERS_ON_DEMAND
             pcb->persist_cnt++;
+#endif
           }
           if (pcb->persist_cnt >= backoff_cnt) {
             int next_slot = 1; /* increment timer to next slot */
@@ -1273,7 +1306,9 @@ tcp_slowtmr_start:
       } else {
         /* Increase the retransmission timer if it is running */
         if ((pcb->rtime >= 0) && (pcb->rtime < 0x7FFF)) {
+#if !MORSE_LWIP_TIMERS_ON_DEMAND
           ++pcb->rtime;
+#endif
         }
 
         if (pcb->rtime >= pcb->rto) {
@@ -1420,7 +1455,9 @@ tcp_slowtmr_start:
       pcb = pcb->next;
 
       /* We check if we should poll the connection. */
+#if !MORSE_LWIP_TIMERS_ON_DEMAND
       ++prev->polltmr;
+#endif
       if (prev->polltmr >= prev->pollinterval) {
         prev->polltmr = 0;
         LWIP_DEBUGF(TCP_DEBUG, ("tcp_slowtmr: polling application\n"));
@@ -1841,6 +1878,8 @@ tcp_alloc(u8_t prio)
 
   LWIP_ASSERT_CORE_LOCKED();
 
+  TCP_UPDATE_TICK();
+
   pcb = (struct tcp_pcb *)memp_malloc(MEMP_TCP_PCB);
   if (pcb == NULL) {
     /* Try to send FIN for all pcbs stuck in TF_CLOSEPEND first */
@@ -1931,6 +1970,9 @@ tcp_alloc(u8_t prio)
 #endif /* LWIP_TCP_KEEPALIVE */
     pcb_tci_init(pcb);
   }
+
+  TCP_TIMER_NEEDED();
+
   return pcb;
 }
 
@@ -2125,6 +2167,8 @@ tcp_poll(struct tcp_pcb *pcb, tcp_poll_fn poll, u8_t interval)
   LWIP_UNUSED_ARG(poll);
 #endif /* LWIP_CALLBACK_API */
   pcb->pollinterval = interval;
+
+  TCP_TIMER_NEEDED();
 }
 
 /**
@@ -2174,6 +2218,8 @@ tcp_pcb_purge(struct tcp_pcb *pcb)
 #if TCP_OVERSIZE
     pcb->unsent_oversize = 0;
 #endif /* TCP_OVERSIZE */
+
+    TCP_TIMER_NEEDED();
   }
 }
 
@@ -2232,6 +2278,8 @@ tcp_next_iss(struct tcp_pcb *pcb)
 
   LWIP_ASSERT("tcp_next_iss: invalid pcb", pcb != NULL);
   LWIP_UNUSED_ARG(pcb);
+
+  TCP_UPDATE_TICK();
 
   iss += tcp_ticks;       /* XXX */
   return iss;
@@ -2692,5 +2740,276 @@ tcp_ext_arg_invoke_callbacks_passive_open(struct tcp_pcb_listen *lpcb, struct tc
   return ERR_OK;
 }
 #endif /* LWIP_TCP_PCB_NUM_EXT_ARGS */
+
+#if MORSE_LWIP_TIMERS_ON_DEMAND
+
+void tcp_update_tick(void)
+{
+  u32_t now = sys_now();
+  if (last_tick_update_ms == now)
+  {
+    return;
+  }
+  last_tick_update_ms = now;
+
+  u32_t fast_tick_now = now / TCP_FAST_INTERVAL;
+  u32_t missed_fast_ticks = fast_tick_now - last_fast_tick;
+
+  if (missed_fast_ticks == 0)
+  {
+    return;
+  }
+
+  bool last_was_slow = last_fast_tick % 2 == 0;
+  last_fast_tick = fast_tick_now;
+
+  u32_t missed_slow_ticks = (last_was_slow ? (missed_fast_ticks) : (missed_fast_ticks + 1)) / 2;
+  if (missed_slow_ticks == 0)
+  {
+    return;
+  }
+
+  for (struct tcp_pcb *p = tcp_active_pcbs; p; p = p->next)
+  {
+    if (p->persist_backoff > 0)
+    {
+      u8_t backoff_cnt = tcp_persist_backoff[p->persist_backoff - 1];
+      p->persist_cnt = LWIP_MIN((u32_t)(p->persist_cnt) + missed_slow_ticks, backoff_cnt);
+    }
+    else if (p->rtime >= 0)
+    {
+      p->rtime = LWIP_MIN((u32_t)(p->rtime) + missed_slow_ticks, INT16_MAX);
+    }
+
+    p->polltmr = LWIP_MIN((u32_t)(p->polltmr) + missed_slow_ticks, p->pollinterval);
+  }
+
+  tcp_ticks += missed_slow_ticks;
+}
+
+static u32_t active_pcb_slow_sleep_ticks(const struct tcp_pcb *pcb)
+{
+  u32_t closest_deadline = LWIP_UINT32_MAX;
+  const u32_t elapsed_slow_ticks = tcp_ticks - pcb->tmr;
+
+  /* Max retries reached */
+  if (pcb->state == SYN_SENT && pcb->nrtx >= TCP_SYNMAXRTX)
+  {
+    DEBUG_SLOW_SLEEP_TICKS(0);
+    return 0;
+  }
+  if (pcb->nrtx >= TCP_MAXRTX)
+  {
+    DEBUG_SLOW_SLEEP_TICKS(0);
+    return 0;
+  }
+
+  /* Retransmission backoff when send window is 0 */
+  if (pcb->persist_backoff > 0)
+  {
+    if (pcb->persist_probe >= TCP_MAXRTX)
+    {
+      DEBUG_SLOW_SLEEP_TICKS(0);
+      return 0;
+    }
+    u32_t deadline = tcp_persist_backoff[pcb->persist_backoff - 1] - pcb->persist_cnt;
+    DEBUG_SLOW_SLEEP_TICKS(deadline);
+    closest_deadline = LWIP_MIN(deadline, closest_deadline);
+  }
+  /* Retransmission backoff for unacked packets */
+  else if (pcb->rtime >= 0)
+  {
+    if (pcb->rtime >= pcb->rto)
+    {
+      DEBUG_SLOW_SLEEP_TICKS(0);
+      return 0;
+    }
+    u32_t deadline = pcb->rto - pcb->rtime;
+    DEBUG_SLOW_SLEEP_TICKS(deadline);
+    closest_deadline = LWIP_MIN(deadline, closest_deadline);
+  }
+
+  /* PCB has sent FIN, ACKed, now waiting for peers FIN */
+  if (pcb->state == FIN_WAIT_2 && pcb->flags & TF_RXCLOSED)
+  {
+    u32_t max_ticks = TCP_FIN_WAIT_TIMEOUT / TCP_SLOW_INTERVAL + 1;
+    if (elapsed_slow_ticks >= max_ticks)
+    {
+      DEBUG_SLOW_SLEEP_TICKS(0);
+      return 0;
+    }
+    u32_t deadline = max_ticks - elapsed_slow_ticks;
+    DEBUG_SLOW_SLEEP_TICKS(deadline);
+    closest_deadline = LWIP_MIN(deadline, closest_deadline);
+  }
+
+  /* PCB has keep alive option */
+  if (ip_get_option(pcb, SOF_KEEPALIVE) &&
+    ((pcb->state == ESTABLISHED) || (pcb->state == CLOSE_WAIT)))
+  {
+    u32_t max_ticks_idle = (pcb->keep_idle + TCP_KEEP_DUR(pcb)) / TCP_SLOW_INTERVAL + 1;
+    if (elapsed_slow_ticks >= max_ticks_idle)
+    {
+      DEBUG_SLOW_SLEEP_TICKS(0);
+      return 0;
+    }
+    u32_t deadline = max_ticks_idle - elapsed_slow_ticks;
+    DEBUG_SLOW_SLEEP_TICKS(deadline);
+    closest_deadline = LWIP_MIN(deadline, closest_deadline);
+
+    u32_t max_ticks_intvl =
+      (pcb->keep_idle + pcb->keep_cnt_sent * TCP_KEEP_INTVL(pcb)) / TCP_SLOW_INTERVAL + 1;
+    if (elapsed_slow_ticks >= max_ticks_intvl)
+    {
+      DEBUG_SLOW_SLEEP_TICKS(0);
+      return 0;
+    }
+    deadline = max_ticks_intvl - elapsed_slow_ticks;
+    DEBUG_SLOW_SLEEP_TICKS(deadline);
+    closest_deadline = LWIP_MIN(deadline, closest_deadline);
+  }
+
+  /* PCB has out of sequence data */
+  if (pcb->ooseq)
+  {
+    u32_t max_ticks = (u32_t)pcb->rto * TCP_OOSEQ_TIMEOUT;
+    if (elapsed_slow_ticks >= max_ticks)
+    {
+      DEBUG_SLOW_SLEEP_TICKS(0);
+      return 0;
+    }
+    u32_t deadline = max_ticks - elapsed_slow_ticks;
+    DEBUG_SLOW_SLEEP_TICKS(deadline);
+    closest_deadline = LWIP_MIN(deadline, closest_deadline);
+  }
+
+  /* PCB waiting for clients ACK after sending SYNACK */
+  if (pcb->state == SYN_RCVD)
+  {
+    u32_t max_ticks = TCP_SYN_RCVD_TIMEOUT / TCP_SLOW_INTERVAL + 1;
+    if (elapsed_slow_ticks >= max_ticks)
+    {
+      DEBUG_SLOW_SLEEP_TICKS(0);
+      return 0;
+    }
+    u32_t deadline = max_ticks - elapsed_slow_ticks;
+    DEBUG_SLOW_SLEEP_TICKS(deadline);
+    closest_deadline = LWIP_MIN(deadline, closest_deadline);
+  }
+
+  /* PCB waiting for last ack after passively closing connection */
+  if (pcb->state == LAST_ACK)
+  {
+    u32_t max_ticks = 2 * TCP_MSL / TCP_SLOW_INTERVAL + 1;
+    if (elapsed_slow_ticks >= max_ticks)
+    {
+      DEBUG_SLOW_SLEEP_TICKS(0);
+      return 0;
+    }
+    u32_t deadline = max_ticks - elapsed_slow_ticks;
+    DEBUG_SLOW_SLEEP_TICKS(deadline);
+    closest_deadline = LWIP_MIN(deadline, closest_deadline);
+  }
+
+  /* PCB polling enabled */
+  if (pcb->poll != NULL)
+  {
+    /* If the poll callback is the netconn one, special case.
+     * We ignore it if there is nothing to do.
+     * Any other poll callback is scheduled normally. */
+    if (pcb->poll != poll_tcp || netconn_sleep_ticks((struct netconn *)pcb->callback_arg) == 0)
+    {
+      if (pcb->polltmr >= pcb->pollinterval)
+      {
+        DEBUG_SLOW_SLEEP_TICKS(0);
+        return 0;
+      }
+      u32_t deadline = pcb->pollinterval - pcb->polltmr;
+      DEBUG_SLOW_SLEEP_TICKS(deadline);
+      closest_deadline = LWIP_MIN(deadline, closest_deadline);
+    }
+  }
+
+  return closest_deadline;
+}
+
+static u32_t active_pcb_fast_sleep_ticks(const struct tcp_pcb *pcb)
+{
+  /* Fast timer */
+  if (pcb->flags & TF_ACK_DELAY)
+  {
+    DEBUG_FAST_SLEEP_TICKS(0);
+    return 0;
+  }
+  if (pcb->flags & TF_CLOSEPEND)
+  {
+    DEBUG_FAST_SLEEP_TICKS(0);
+    return 0;
+  }
+  if (pcb->refused_data != NULL)
+  {
+    DEBUG_FAST_SLEEP_TICKS(0);
+    return 0;
+  }
+
+  return LWIP_UINT32_MAX;
+}
+
+static u32_t timewait_pcb_sleep_ticks(const struct tcp_pcb *pcb)
+{
+  /* PCB actively closed the connection, stays open in case FIN needs to be reACKed */
+  const u32_t elapsed_ticks = tcp_ticks - pcb->tmr;
+  u32_t max_ticks = 2 * TCP_MSL / TCP_SLOW_INTERVAL + 1;
+  if (elapsed_ticks >= max_ticks)
+  {
+    DEBUG_SLOW_SLEEP_TICKS(0);
+    return 0;
+  }
+  u32_t deadline = max_ticks - elapsed_ticks;
+  DEBUG_SLOW_SLEEP_TICKS(deadline);
+  return deadline;
+}
+
+u32_t tcp_fast_sleep_ticks(void)
+{
+  u32_t closest_deadline = LWIP_UINT32_MAX;
+
+  for (struct tcp_pcb *p = tcp_active_pcbs; p; p = p->next)
+  {
+    u32_t deadline = active_pcb_fast_sleep_ticks(p);
+    closest_deadline = LWIP_MIN(deadline, closest_deadline);
+  }
+
+#if DEBUG_SLEEP_TICKS_ENABLE
+  LWIP_PLATFORM_DIAG(("TCP_F ST: Returned %" PRIu32 "\n", closest_deadline));
+#endif /* DEBUG_SLEEP_TICKS_ENABLE */
+
+  return closest_deadline;
+}
+
+u32_t tcp_slow_sleep_ticks(void)
+{
+  u32_t closest_deadline = LWIP_UINT32_MAX;
+
+  for (struct tcp_pcb *p = tcp_active_pcbs; p; p = p->next)
+  {
+    u32_t deadline = active_pcb_slow_sleep_ticks(p);
+    closest_deadline = LWIP_MIN(deadline, closest_deadline);
+  }
+
+  for (struct tcp_pcb *p = tcp_tw_pcbs; p; p = p->next)
+  {
+    u32_t deadline = timewait_pcb_sleep_ticks(p);
+    closest_deadline = LWIP_MIN(deadline, closest_deadline);
+  }
+
+#if DEBUG_SLEEP_TICKS_ENABLE
+  LWIP_PLATFORM_DIAG(("TCP_S ST: Returned %" PRIu32 "\n", closest_deadline));
+#endif /* DEBUG_SLEEP_TICKS_ENABLE */
+
+  return closest_deadline;
+}
+
+#endif /* MORSE_LWIP_TIMERS_ON_DEMAND */
 
 #endif /* LWIP_TCP */

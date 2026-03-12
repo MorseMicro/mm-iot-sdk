@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Morse Micro
+ * Copyright 2026 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -30,7 +30,7 @@ int mmagic_cli_iperf_get_mode(struct mmagic_data *core, EmbeddedCli *cli)
     MM_STATIC_ASSERT((sizeof("iperf.mode") - 1) < KEY_NAME_PADDING,
                      "Key must be shorter than padding");
 
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = { 0 };
     /* -1 to allow for a NULL terminator at the end */
     const size_t max_str_len = sizeof(buf) - 1;
     size_t cursor = 0;
@@ -42,8 +42,8 @@ int mmagic_cli_iperf_get_mode(struct mmagic_data *core, EmbeddedCli *cli)
         return -1;
     }
     cursor += written;
-    written = mmagic_enum_iperf_mode_to_string(data->config.mode,
-                                               &buf[cursor], max_str_len - cursor);
+    written =
+        mmagic_enum_iperf_mode_to_string(data->config.mode, &buf[cursor], max_str_len - cursor);
     if (written == 0)
     {
         /*
@@ -72,7 +72,7 @@ int mmagic_cli_iperf_get_server(struct mmagic_data *core, EmbeddedCli *cli)
     MM_STATIC_ASSERT((sizeof("iperf.server") - 1) < KEY_NAME_PADDING,
                      "Key must be shorter than padding");
 
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = { 0 };
     /* -1 to allow for a NULL terminator at the end */
     const size_t max_str_len = sizeof(buf) - 1;
     size_t cursor = 0;
@@ -84,8 +84,8 @@ int mmagic_cli_iperf_get_server(struct mmagic_data *core, EmbeddedCli *cli)
         return -1;
     }
     cursor += written;
-    written = mmagic_struct_ip_addr_to_string(&data->config.server,
-                                              &buf[cursor], max_str_len - cursor);
+    written =
+        mmagic_struct_ip_addr_to_string(&data->config.server, &buf[cursor], max_str_len - cursor);
     if (written == 0)
     {
         /*
@@ -114,7 +114,7 @@ int mmagic_cli_iperf_get_port(struct mmagic_data *core, EmbeddedCli *cli)
     MM_STATIC_ASSERT((sizeof("iperf.port") - 1) < KEY_NAME_PADDING,
                      "Key must be shorter than padding");
 
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = { 0 };
     /* -1 to allow for a NULL terminator at the end */
     const size_t max_str_len = sizeof(buf) - 1;
     size_t cursor = 0;
@@ -126,8 +126,7 @@ int mmagic_cli_iperf_get_port(struct mmagic_data *core, EmbeddedCli *cli)
         return -1;
     }
     cursor += written;
-    written = mmagic_uint16_t_to_string(data->config.port,
-                                        &buf[cursor], max_str_len - cursor);
+    written = mmagic_uint16_t_to_string(data->config.port, &buf[cursor], max_str_len - cursor);
     if (written == 0)
     {
         /*
@@ -156,7 +155,7 @@ int mmagic_cli_iperf_get_amount(struct mmagic_data *core, EmbeddedCli *cli)
     MM_STATIC_ASSERT((sizeof("iperf.amount") - 1) < KEY_NAME_PADDING,
                      "Key must be shorter than padding");
 
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = { 0 };
     /* -1 to allow for a NULL terminator at the end */
     const size_t max_str_len = sizeof(buf) - 1;
     size_t cursor = 0;
@@ -168,8 +167,7 @@ int mmagic_cli_iperf_get_amount(struct mmagic_data *core, EmbeddedCli *cli)
         return -1;
     }
     cursor += written;
-    written = mmagic_int32_t_to_string(data->config.amount,
-                                       &buf[cursor], max_str_len - cursor);
+    written = mmagic_int32_t_to_string(data->config.amount, &buf[cursor], max_str_len - cursor);
     if (written == 0)
     {
         /*
@@ -255,10 +253,10 @@ int mmagic_cli_iperf_set_amount(struct mmagic_data *core, EmbeddedCli *cli, cons
  * a binary search which requires an ordered list.
  */
 struct mmagic_cli_config_elem iperf_cli_config_vars[] = {
-    {"amount", mmagic_cli_iperf_get_amount, mmagic_cli_iperf_set_amount},
-    {"mode", mmagic_cli_iperf_get_mode, mmagic_cli_iperf_set_mode},
-    {"port", mmagic_cli_iperf_get_port, mmagic_cli_iperf_set_port},
-    {"server", mmagic_cli_iperf_get_server, mmagic_cli_iperf_set_server},
+    { "amount", mmagic_cli_iperf_get_amount, mmagic_cli_iperf_set_amount },
+    { "mode", mmagic_cli_iperf_get_mode, mmagic_cli_iperf_set_mode },
+    { "port", mmagic_cli_iperf_get_port, mmagic_cli_iperf_set_port },
+    { "server", mmagic_cli_iperf_get_server, mmagic_cli_iperf_set_server },
 };
 
 /********* IPERF Configuration Getter/Setter Handlers **********/
@@ -283,8 +281,8 @@ void mmagic_cli_iperf_get(struct mmagic_cli *ctx, EmbeddedCli *cli, const char *
         return;
     }
 
-    struct mmagic_cli_config_elem *elem = mmagic_cli_element_search(iperf_cli_config_vars,
-                                                                    num_elements, config_var);
+    struct mmagic_cli_config_elem *elem =
+        mmagic_cli_element_search(iperf_cli_config_vars, num_elements, config_var);
     if (elem == NULL)
     {
         mmagic_cli_printf(cli, "Unable to find config variable 'iperf.%s'", config_var);
@@ -303,15 +301,17 @@ void mmagic_cli_iperf_get(struct mmagic_cli *ctx, EmbeddedCli *cli, const char *
     }
 }
 
-void mmagic_cli_iperf_set(struct mmagic_cli *ctx, EmbeddedCli *cli, const char *config_var,
+void mmagic_cli_iperf_set(struct mmagic_cli *ctx,
+                          EmbeddedCli *cli,
+                          const char *config_var,
                           const char *val)
 {
     struct mmagic_data *core = &ctx->core;
 
     uint32_t num_elements = sizeof(iperf_cli_config_vars) / sizeof(iperf_cli_config_vars[0]);
 
-    struct mmagic_cli_config_elem *elem = mmagic_cli_element_search(iperf_cli_config_vars,
-                                                                    num_elements, config_var);
+    struct mmagic_cli_config_elem *elem =
+        mmagic_cli_element_search(iperf_cli_config_vars, num_elements, config_var);
     if (elem == NULL)
     {
         mmagic_cli_printf(cli, "Unable to find config variable 'iperf.%s'", config_var);
@@ -356,13 +356,14 @@ void mmagic_cli_iperf_run(EmbeddedCli *cli, char *args, void *context);
 /********* Register bindings function definition **********/
 void mmagic_cli_iperf_register_bindings(EmbeddedCli *cli, struct mmagic_data *core)
 {
-    embeddedCliAddBinding(cli, (CliCommandBinding) {
-        "iperf-run",
-        "Starts an iperf session using the current values in the the subsystem config.",
-        true,
-        core,
-        mmagic_cli_iperf_run
-    });
+    embeddedCliAddBinding(
+        cli,
+        (CliCommandBinding){
+            "iperf-run",
+            "Starts an iperf session using the current values in the the subsystem config.",
+            true,
+            core,
+            mmagic_cli_iperf_run });
 }
 
 void mmagic_cli_iperf_init(struct mmagic_cli *ctx)

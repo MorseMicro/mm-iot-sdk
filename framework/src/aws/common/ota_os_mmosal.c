@@ -21,11 +21,11 @@
 
 #ifndef MAX_MESSAGES
 /** OTA Event queue depth */
-#define MAX_MESSAGES    20
+#define MAX_MESSAGES 20
 #endif
 
 /** OTA Event queue size */
-#define MAX_MSG_SIZE    sizeof(OtaEventMsg_t)
+#define MAX_MSG_SIZE sizeof(OtaEventMsg_t)
 
 /** The queue control handle */
 static struct mmosal_queue *otaEventQueue;
@@ -42,11 +42,8 @@ static void requestTimerCallback(struct mmosal_timer *);
 static void selfTestTimerCallback(struct mmosal_timer *);
 
 /** Template for timer callback */
-void (*timerCallback[OtaNumOfTimers])(struct mmosal_timer *) =
-{
-    requestTimerCallback,
-    selfTestTimerCallback
-};
+void (*timerCallback[OtaNumOfTimers])(struct mmosal_timer *) = { requestTimerCallback,
+                                                                 selfTestTimerCallback };
 
 OtaOsStatus_t OtaInitEvent_MMOSAL(OtaEventContext_t *pEventCtx)
 {
@@ -142,7 +139,7 @@ static void requestTimerCallback(struct mmosal_timer *T)
 }
 
 OtaOsStatus_t OtaStartTimer_MMOSAL(OtaTimerId_t otaTimerId,
-                                   const char * const pTimerName,
+                                   const char *const pTimerName,
                                    const uint32_t timeout,
                                    OtaTimerCallback_t callback)
 {
@@ -158,8 +155,8 @@ OtaOsStatus_t OtaStartTimer_MMOSAL(OtaTimerId_t otaTimerId,
     if (otaTimer[otaTimerId] == NULL)
     {
         /* Create the timer. */
-        otaTimer[otaTimerId] = mmosal_timer_create(pTimerName, timeout, false, "OTA_TMR",
-                                                   timerCallback[otaTimerId]);
+        otaTimer[otaTimerId] =
+            mmosal_timer_create(pTimerName, timeout, false, "OTA_TMR", timerCallback[otaTimerId]);
 
         if (otaTimer[otaTimerId] == NULL)
         {
@@ -190,7 +187,7 @@ OtaOsStatus_t OtaStopTimer_MMOSAL(OtaTimerId_t otaTimerId)
 {
     OtaOsStatus_t otaOsStatus = OtaOsSuccess;
 
-    if ((otaTimerId < OtaNumOfTimers) && (otaTimer[ otaTimerId ] != NULL))
+    if ((otaTimerId < OtaNumOfTimers) && (otaTimer[otaTimerId] != NULL))
     {
         /* Stop the timer. */
         if (!mmosal_timer_stop(otaTimer[otaTimerId]))
@@ -210,7 +207,7 @@ OtaOsStatus_t OtaDeleteTimer_MMOSAL(OtaTimerId_t otaTimerId)
 {
     OtaOsStatus_t otaOsStatus = OtaOsSuccess;
 
-    if ((otaTimerId < OtaNumOfTimers) && (otaTimer[ otaTimerId ] != NULL))
+    if ((otaTimerId < OtaNumOfTimers) && (otaTimer[otaTimerId] != NULL))
     {
         /* Delete the timer. */
         mmosal_timer_delete(otaTimer[otaTimerId]);

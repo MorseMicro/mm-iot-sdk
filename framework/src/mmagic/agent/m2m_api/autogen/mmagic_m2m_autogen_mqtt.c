@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Morse Micro
+ * Copyright 2026 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -18,26 +18,32 @@
 #include "m2m_api/mmagic_m2m_agent.h"
 
 /* Maximum allowed length of any value string, needs to accomodate IP and MAC address strings */
-#define MAX_VAL_LEN     32
+#define MAX_VAL_LEN 32
 
 /********* M2M Command Handlers **********/
 
 static struct mmbuf *mmagic_m2m_mqtt_start_agent(struct mmagic_m2m_agent *agent,
-                                                 uint8_t sid, uint8_t subcommand,
+                                                 uint8_t sid,
+                                                 uint8_t subcommand,
                                                  struct mmbuf *commandbuffer)
 {
     enum mmagic_status status;
     struct mmagic_core_mqtt_start_agent_cmd_args *cmd_args =
         (struct mmagic_core_mqtt_start_agent_cmd_args *)mmbuf_get_data_start(commandbuffer);
     MM_UNUSED(sid);
-    struct mmagic_core_mqtt_start_agent_rsp_args rsp_args = { };
+    struct mmagic_core_mqtt_start_agent_rsp_args rsp_args = {};
     status = mmagic_core_mqtt_start_agent(&agent->core, cmd_args, &rsp_args);
-    return mmagic_m2m_create_response(mmagic_mqtt, mmagic_mqtt_cmd_start_agent,
-                                      subcommand, status, &rsp_args, sizeof(rsp_args));
+    return mmagic_m2m_create_response(mmagic_mqtt,
+                                      mmagic_mqtt_cmd_start_agent,
+                                      subcommand,
+                                      status,
+                                      &rsp_args,
+                                      sizeof(rsp_args));
 }
 
 static struct mmbuf *mmagic_m2m_mqtt_publish(struct mmagic_m2m_agent *agent,
-                                             uint8_t sid, uint8_t subcommand,
+                                             uint8_t sid,
+                                             uint8_t subcommand,
                                              struct mmbuf *commandbuffer)
 {
     enum mmagic_status status;
@@ -45,12 +51,17 @@ static struct mmbuf *mmagic_m2m_mqtt_publish(struct mmagic_m2m_agent *agent,
         (struct mmagic_core_mqtt_publish_cmd_args *)mmbuf_get_data_start(commandbuffer);
     MM_UNUSED(sid);
     status = mmagic_core_mqtt_publish(&agent->core, cmd_args);
-    return mmagic_m2m_create_response(mmagic_mqtt, mmagic_mqtt_cmd_publish,
-                                      subcommand, status, NULL, 0);
+    return mmagic_m2m_create_response(mmagic_mqtt,
+                                      mmagic_mqtt_cmd_publish,
+                                      subcommand,
+                                      status,
+                                      NULL,
+                                      0);
 }
 
 static struct mmbuf *mmagic_m2m_mqtt_subscribe(struct mmagic_m2m_agent *agent,
-                                               uint8_t sid, uint8_t subcommand,
+                                               uint8_t sid,
+                                               uint8_t subcommand,
                                                struct mmbuf *commandbuffer)
 {
     enum mmagic_status status;
@@ -58,12 +69,17 @@ static struct mmbuf *mmagic_m2m_mqtt_subscribe(struct mmagic_m2m_agent *agent,
         (struct mmagic_core_mqtt_subscribe_cmd_args *)mmbuf_get_data_start(commandbuffer);
     MM_UNUSED(sid);
     status = mmagic_core_mqtt_subscribe(&agent->core, cmd_args);
-    return mmagic_m2m_create_response(mmagic_mqtt, mmagic_mqtt_cmd_subscribe,
-                                      subcommand, status, NULL, 0);
+    return mmagic_m2m_create_response(mmagic_mqtt,
+                                      mmagic_mqtt_cmd_subscribe,
+                                      subcommand,
+                                      status,
+                                      NULL,
+                                      0);
 }
 
 static struct mmbuf *mmagic_m2m_mqtt_stop_agent(struct mmagic_m2m_agent *agent,
-                                                uint8_t sid, uint8_t subcommand,
+                                                uint8_t sid,
+                                                uint8_t subcommand,
                                                 struct mmbuf *commandbuffer)
 {
     enum mmagic_status status;
@@ -71,11 +87,16 @@ static struct mmbuf *mmagic_m2m_mqtt_stop_agent(struct mmagic_m2m_agent *agent,
         (struct mmagic_core_mqtt_stop_agent_cmd_args *)mmbuf_get_data_start(commandbuffer);
     MM_UNUSED(sid);
     status = mmagic_core_mqtt_stop_agent(&agent->core, cmd_args);
-    return mmagic_m2m_create_response(mmagic_mqtt, mmagic_mqtt_cmd_stop_agent,
-                                      subcommand, status, NULL, 0);
+    return mmagic_m2m_create_response(mmagic_mqtt,
+                                      mmagic_mqtt_cmd_stop_agent,
+                                      subcommand,
+                                      status,
+                                      NULL,
+                                      0);
 }
 
-struct mmbuf *mmagic_m2m_mqtt_process(struct mmagic_m2m_agent *agent, uint8_t sid,
+struct mmbuf *mmagic_m2m_mqtt_process(struct mmagic_m2m_agent *agent,
+                                      uint8_t sid,
                                       struct mmagic_m2m_command_header *header,
                                       struct mmbuf *cmd_buf)
 {
@@ -83,26 +104,29 @@ struct mmbuf *mmagic_m2m_mqtt_process(struct mmagic_m2m_agent *agent, uint8_t si
     {
         switch (header->command)
         {
-        case mmagic_mqtt_cmd_start_agent:
-            return mmagic_m2m_mqtt_start_agent(agent, sid, header->subcommand, cmd_buf);
-            break;
+            case mmagic_mqtt_cmd_start_agent:
+                return mmagic_m2m_mqtt_start_agent(agent, sid, header->subcommand, cmd_buf);
+                break;
 
-        case mmagic_mqtt_cmd_publish:
-            return mmagic_m2m_mqtt_publish(agent, sid, header->subcommand, cmd_buf);
-            break;
+            case mmagic_mqtt_cmd_publish:
+                return mmagic_m2m_mqtt_publish(agent, sid, header->subcommand, cmd_buf);
+                break;
 
-        case mmagic_mqtt_cmd_subscribe:
-            return mmagic_m2m_mqtt_subscribe(agent, sid, header->subcommand, cmd_buf);
-            break;
+            case mmagic_mqtt_cmd_subscribe:
+                return mmagic_m2m_mqtt_subscribe(agent, sid, header->subcommand, cmd_buf);
+                break;
 
-        case mmagic_mqtt_cmd_stop_agent:
-            return mmagic_m2m_mqtt_stop_agent(agent, sid, header->subcommand, cmd_buf);
-            break;
+            case mmagic_mqtt_cmd_stop_agent:
+                return mmagic_m2m_mqtt_stop_agent(agent, sid, header->subcommand, cmd_buf);
+                break;
 
-        default:
-            return mmagic_m2m_create_response(header->subsystem, header->command,
-                                              header->subcommand, MMAGIC_STATUS_NOT_SUPPORTED, NULL,
-                                              0);
+            default:
+                return mmagic_m2m_create_response(header->subsystem,
+                                                  header->command,
+                                                  header->subcommand,
+                                                  MMAGIC_STATUS_NOT_SUPPORTED,
+                                                  NULL,
+                                                  0);
         }
     }
     else

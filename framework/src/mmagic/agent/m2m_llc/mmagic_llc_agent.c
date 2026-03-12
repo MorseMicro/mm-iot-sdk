@@ -5,7 +5,7 @@
  */
 
 #include "stdatomic.h"
-#include "mmhal.h"
+#include "mmhal_os.h"
 #include "mmosal.h"
 #include "mmagic_datalink_agent.h"
 #include "mmbuf.h"
@@ -44,8 +44,7 @@ static struct mmagic_llc_agent *mmagic_llc_agent_get(void)
 struct mmbuf *mmagic_llc_agent_alloc_buffer_for_tx(uint8_t *payload, size_t payload_size)
 {
     struct mmbuf *mmbuffer =
-        mmagic_datalink_agent_alloc_buffer_for_tx(sizeof(struct mmagic_llc_header),
-                                                  payload_size);
+        mmagic_datalink_agent_alloc_buffer_for_tx(sizeof(struct mmagic_llc_header), payload_size);
     if (mmbuffer && payload)
     {
         mmbuf_append_data(mmbuffer, payload, payload_size);
@@ -54,7 +53,8 @@ struct mmbuf *mmagic_llc_agent_alloc_buffer_for_tx(uint8_t *payload, size_t payl
     return mmbuffer;
 }
 
-static enum mmagic_status mmagic_llc_respond_error(struct mmagic_llc_agent *agent_llc, uint8_t sid,
+static enum mmagic_status mmagic_llc_respond_error(struct mmagic_llc_agent *agent_llc,
+                                                   uint8_t sid,
                                                    enum mmagic_llc_packet_type ptype)
 {
     struct mmbuf *tx_buffer = mmagic_llc_agent_alloc_buffer_for_tx(NULL, 0);
@@ -65,14 +65,13 @@ static enum mmagic_status mmagic_llc_respond_error(struct mmagic_llc_agent *agen
     return mmagic_llc_agent_tx(agent_llc, ptype, sid, tx_buffer);
 }
 
-static enum mmagic_status mmagic_llc_sync_resp(struct mmagic_llc_agent *agent_llc, uint8_t sid,
+static enum mmagic_status mmagic_llc_sync_resp(struct mmagic_llc_agent *agent_llc,
+                                               uint8_t sid,
                                                struct mmagic_llc_sync_req *req)
 {
     MMOSAL_DEV_ASSERT(req);
-    struct mmagic_llc_sync_rsp rsp = {
-        .last_seen_seq = agent_llc->last_seen_seq,
-        .protocol_version = MMAGIC_LLC_PROTOCOL_VERSION
-    };
+    struct mmagic_llc_sync_rsp rsp = { .last_seen_seq = agent_llc->last_seen_seq,
+                                       .protocol_version = MMAGIC_LLC_PROTOCOL_VERSION };
     memcpy(rsp.token, req->token, sizeof(rsp.token));
 
     struct mmbuf *tx_buffer = mmagic_llc_agent_alloc_buffer_for_tx((uint8_t *)&rsp, sizeof(rsp));
@@ -84,7 +83,8 @@ static enum mmagic_status mmagic_llc_sync_resp(struct mmagic_llc_agent *agent_ll
     return mmagic_llc_agent_tx(agent_llc, MMAGIC_LLC_PTYPE_SYNC_RESP, sid, tx_buffer);
 }
 
-static void mmagic_llc_agent_rx_buffer_callback(struct mmagic_datalink_agent *agent_dl, void *arg,
+static void mmagic_llc_agent_rx_buffer_callback(struct mmagic_datalink_agent *agent_dl,
+                                                void *arg,
                                                 struct mmbuf *rx_buffer)
 {
     MM_UNUSED(agent_dl);
@@ -129,78 +129,86 @@ static void mmagic_llc_agent_rx_buffer_callback(struct mmagic_datalink_agent *ag
     if (mmbuf_get_data_length(rx_buffer) < length)
     {
         mmosal_printf("MMAGIC_LLC: Buffer smaller than length specified (%u < %u)!\n",
-                      mmbuf_get_data_length(rx_buffer), length);
+                      mmbuf_get_data_length(rx_buffer),
+                      length);
         tx_status = mmagic_llc_respond_error(agent_llc, sid, MMAGIC_LLC_PTYPE_ERROR);
         goto exit;
     }
 
     /* Ignore if packet is a retransmission of a packet we have already seen, unless it is a
      * recovery packet. */
-    if ((seq == agent_llc->last_seen_seq) && (ptype != MMAGIC_LLC_PTYPE_AGENT_RESET) &&
+    if ((seq == agent_llc->last_seen_seq) &&
+        (ptype != MMAGIC_LLC_PTYPE_AGENT_RESET) &&
         (ptype != MMAGIC_LLC_PTYPE_SYNC_REQ))
     {
-        mmosal_printf("MMAGIC_LLC: Repeated packet dropped!\n");
+        mmosal_printf("MMAGIC_LLC: Repeated packet dropped! (ptype %u, seq %u, sid %u, len %u)\n",
+                      ptype,
+                      seq,
+                      sid,
+                      length);
         goto exit;
     }
 
     switch (ptype)
     {
-    case MMAGIC_LLC_PTYPE_COMMAND:
-        /* WriteStream command, pass to rx_callback */
-        tx_status = agent_llc->rx_callback(agent_llc, agent_llc->rx_arg, sid,
-                                           rx_buffer);
-        if (tx_status == MMAGIC_STATUS_OK)
-        {
-            /* Do not release rx_buffer - this will be done by application */
-            rx_buffer = NULL;
+        case MMAGIC_LLC_PTYPE_COMMAND:
+            /* WriteStream command, pass to rx_callback */
+            tx_status = agent_llc->rx_callback(agent_llc, agent_llc->rx_arg, sid, rx_buffer);
+            if (tx_status == MMAGIC_STATUS_OK)
+            {
+                /* Do not release rx_buffer - this will be done by application */
+                rx_buffer = NULL;
+                break;
+            }
+            /* Upper layer could not process the packet or invalid stream ID */
+            tx_status = mmagic_llc_respond_error(agent_llc,
+                                                 sid,
+                                                 (tx_status == MMAGIC_STATUS_INVALID_STREAM) ?
+                                                     MMAGIC_LLC_PTYPE_INVALID_STREAM :
+                                                     MMAGIC_LLC_PTYPE_ERROR);
             break;
-        }
-        /* Upper layer could not process the packet or invalid stream ID */
-        tx_status = mmagic_llc_respond_error(agent_llc, sid,
-                                             (tx_status == MMAGIC_STATUS_INVALID_STREAM) ?
-                                             MMAGIC_LLC_PTYPE_INVALID_STREAM :
-                                             MMAGIC_LLC_PTYPE_ERROR);
-        break;
 
-    case MMAGIC_LLC_PTYPE_ERROR:
-        /* Log error and continue for now - we have to handle this explicitly or else we
-         * could end up in an 'error loop' with both sides bouncing the error back and
-         * forth. */
-        mmosal_printf("MMAGIC_LLC: Received error notification from controller!\n");
-        break;
-
-    case MMAGIC_LLC_PTYPE_AGENT_RESET:
-        mmosal_printf("MMAGIC_LLC: Received AGENT_RESET packet, restarting!\n");
-        mmhal_reset();
-        break;
-
-    case MMAGIC_LLC_PTYPE_SYNC_REQ:
-        mmosal_printf("MMAGIC_LLC: Sync request with seq: %u (last seen: %u, last sent: %u)\n",
-                      seq, agent_llc->last_seen_seq, agent_llc->last_sent_seq);
-
-        struct mmagic_llc_sync_req *req;
-        if (length != sizeof(*req))
-        {
-            mmosal_printf("MMAGIC_LLC: Sync bad data length!\n");
-            mmagic_llc_respond_error(agent_llc, sid, MMAGIC_LLC_PTYPE_ERROR);
+        case MMAGIC_LLC_PTYPE_ERROR:
+            /* Log error and continue for now - we have to handle this explicitly or else we
+             * could end up in an 'error loop' with both sides bouncing the error back and
+             * forth. */
+            mmosal_printf("MMAGIC_LLC: Received error notification from controller!\n");
             break;
-        }
 
-        req = (struct mmagic_llc_sync_req *)mmbuf_get_data_start(rx_buffer);
-        tx_status = mmagic_llc_sync_resp(agent_llc, sid, req);
-        break;
+        case MMAGIC_LLC_PTYPE_AGENT_RESET:
+            mmosal_printf("MMAGIC_LLC: Received AGENT_RESET packet, restarting!\n");
+            mmhal_reset();
+            break;
 
-    case MMAGIC_LLC_PTYPE_RESPONSE:
-    case MMAGIC_LLC_PTYPE_EVENT:
-    case MMAGIC_LLC_PTYPE_AGENT_START_NOTIFICATION:
-    case MMAGIC_LLC_PTYPE_INVALID_STREAM:
-    case MMAGIC_LLC_PTYPE_PACKET_LOSS_DETECTED:
-    case MMAGIC_LLC_PTYPE_SYNC_RESP:
-    default:
-        /* We have encountered an unexpected command or error. */
-        mmosal_printf("MMAGIC_LLC: Received invalid packet of ptype: %u\n", ptype);
-        tx_status = mmagic_llc_respond_error(agent_llc, sid, MMAGIC_LLC_PTYPE_ERROR);
-        break;
+        case MMAGIC_LLC_PTYPE_SYNC_REQ:
+            mmosal_printf("MMAGIC_LLC: Sync request with seq: %u (last seen: %u, last sent: %u)\n",
+                          seq,
+                          agent_llc->last_seen_seq,
+                          agent_llc->last_sent_seq);
+
+            struct mmagic_llc_sync_req *req;
+            if (length != sizeof(*req))
+            {
+                mmosal_printf("MMAGIC_LLC: Sync bad data length!\n");
+                tx_status = mmagic_llc_respond_error(agent_llc, sid, MMAGIC_LLC_PTYPE_ERROR);
+                break;
+            }
+
+            req = (struct mmagic_llc_sync_req *)mmbuf_get_data_start(rx_buffer);
+            tx_status = mmagic_llc_sync_resp(agent_llc, sid, req);
+            break;
+
+        case MMAGIC_LLC_PTYPE_RESPONSE:
+        case MMAGIC_LLC_PTYPE_EVENT:
+        case MMAGIC_LLC_PTYPE_AGENT_START_NOTIFICATION:
+        case MMAGIC_LLC_PTYPE_INVALID_STREAM:
+        case MMAGIC_LLC_PTYPE_PACKET_LOSS_DETECTED:
+        case MMAGIC_LLC_PTYPE_SYNC_RESP:
+        default:
+            /* We have encountered an unexpected command or error. */
+            mmosal_printf("MMAGIC_LLC: Received invalid packet of ptype: %u\n", ptype);
+            tx_status = mmagic_llc_respond_error(agent_llc, sid, MMAGIC_LLC_PTYPE_ERROR);
+            break;
     }
 
     /* Check if we missed a packet. Ignore if sync request */
@@ -210,9 +218,9 @@ static void mmagic_llc_agent_rx_buffer_callback(struct mmagic_datalink_agent *ag
     {
         /* We have encountered an out of order sequence */
         mmosal_printf("MMAGIC_LLC: Observed packet loss - seq num observed: %u expected: %u\n",
-                      seq, MMAGIC_LLC_GET_NEXT_SEQ(agent_llc->last_seen_seq));
-        tx_status = mmagic_llc_respond_error(agent_llc, sid,
-                                             MMAGIC_LLC_PTYPE_PACKET_LOSS_DETECTED);
+                      seq,
+                      MMAGIC_LLC_GET_NEXT_SEQ(agent_llc->last_seen_seq));
+        tx_status = mmagic_llc_respond_error(agent_llc, sid, MMAGIC_LLC_PTYPE_PACKET_LOSS_DETECTED);
     }
 
 exit:
@@ -285,13 +293,16 @@ enum mmagic_status mmagic_llc_send_start_notification(struct mmagic_llc_agent *a
     }
 
     /* Notify controller that the agent has started */
-    return mmagic_llc_agent_tx(agent_llc, MMAGIC_LLC_PTYPE_AGENT_START_NOTIFICATION,
-                               CONTROL_STREAM, tx_buffer);
+    return mmagic_llc_agent_tx(agent_llc,
+                               MMAGIC_LLC_PTYPE_AGENT_START_NOTIFICATION,
+                               CONTROL_STREAM,
+                               tx_buffer);
 }
 
 enum mmagic_status mmagic_llc_agent_tx(struct mmagic_llc_agent *agent_llc,
                                        enum mmagic_llc_packet_type ptype,
-                                       uint8_t sid, struct mmbuf *tx_buffer)
+                                       uint8_t sid,
+                                       struct mmbuf *tx_buffer)
 {
     struct mmagic_llc_header *txheader;
     if (tx_buffer == NULL)
@@ -340,20 +351,20 @@ bool mmagic_llc_agent_set_deep_sleep_mode(struct mmagic_llc_agent *agent_llc,
 
     switch (mode)
     {
-    case MMAGIC_DEEP_SLEEP_MODE_DISABLED:
-        datalink_mode = MMAGIC_DATALINK_AGENT_DEEP_SLEEP_DISABLED;
-        break;
+        case MMAGIC_DEEP_SLEEP_MODE_DISABLED:
+            datalink_mode = MMAGIC_DATALINK_AGENT_DEEP_SLEEP_DISABLED;
+            break;
 
-    case MMAGIC_DEEP_SLEEP_MODE_ONE_SHOT:
-        datalink_mode = MMAGIC_DATALINK_AGENT_DEEP_SLEEP_ONE_SHOT;
-        break;
+        case MMAGIC_DEEP_SLEEP_MODE_ONE_SHOT:
+            datalink_mode = MMAGIC_DATALINK_AGENT_DEEP_SLEEP_ONE_SHOT;
+            break;
 
-    case MMAGIC_DEEP_SLEEP_MODE_HARDWARE:
-        datalink_mode = MMAGIC_DATALINK_AGENT_DEEP_SLEEP_HARDWARE;
-        break;
+        case MMAGIC_DEEP_SLEEP_MODE_HARDWARE:
+            datalink_mode = MMAGIC_DATALINK_AGENT_DEEP_SLEEP_HARDWARE;
+            break;
 
-    default:
-        return false;
+        default:
+            return false;
     }
 
     return mmagic_datalink_agent_set_deep_sleep_mode(agent_llc->agent_dl, datalink_mode);

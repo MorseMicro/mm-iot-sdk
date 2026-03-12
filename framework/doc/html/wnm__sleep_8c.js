@@ -4,7 +4,10 @@ var wnm__sleep_8c =
     [ "DEFAULT_PING_DATA_SIZE", "wnm__sleep_8c.html#a65c1f4f55abfd44ea1b3c43df8396349", null ],
     [ "DEFAULT_PING_INTERVAL_MS", "wnm__sleep_8c.html#a9c53f19b1618b391a4682f10815834b2", null ],
     [ "DEFAULT_WNM_SLEEP_DURATION_MS", "wnm__sleep_8c.html#ac24997810835e75377c3eb4feca862af", null ],
+    [ "MIN_WNM_SLEEP_EXIT_STATE_DURATION_MS", "wnm__sleep_8c.html#a5a49d781631ddfd9bf9550ea8d4061bc", null ],
     [ "POST_PING_DELAY_MS", "wnm__sleep_8c.html#aa74a8e27191a3077ea4cf00ea7507962", null ],
+    [ "PWR_MEAS_DELAY_MS", "wnm__sleep_8c.html#a9eee8fea5a3d57694eb81599e056e177", null ],
+    [ "SET_DEBUG_STATE", "wnm__sleep_8c.html#a0ccfca4a41cf735693919b5bbf815dc5", null ],
     [ "UPDATE_INTERVAL_MS", "wnm__sleep_8c.html#ad4602c729fef5a16a7f3dcf974eeee14", null ],
     [ "debug_state", "wnm__sleep_8c.html#af6267920b504273777e2451780e565af", [
       [ "DEBUG_STATE_INIT", "ping_8c.html#af6267920b504273777e2451780e565afa17e21038455993a59d0355198b35a29c", null ],
@@ -34,6 +37,5 @@ var wnm__sleep_8c =
     [ "app_init", "wnm__sleep_8c.html#add3190cf715f513666f4be42874d91e2", null ],
     [ "execute_ping_request", "wnm__sleep_8c.html#ad03cac90311fc133c5080ab975c20b43", null ],
     [ "execute_wnm_sleep", "wnm__sleep_8c.html#a15b1b8548e00c199c2b1812a682237f2", null ],
-    [ "execute_wnm_sleep_ext", "wnm__sleep_8c.html#aece9eb4f6d65b3a94abc5f9304743c7e", null ],
-    [ "set_debug_state", "wnm__sleep_8c.html#a8a7d25ccf1d8c01f542f342c48dee069", null ]
+    [ "execute_wnm_sleep_ext", "wnm__sleep_8c.html#aece9eb4f6d65b3a94abc5f9304743c7e", null ]
 ];

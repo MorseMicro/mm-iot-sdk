@@ -8,6 +8,8 @@ var group__MMAGIC__CONTROLLER__IP__CONFIG =
     [ "mmagic_controller_get_ip_ip_addr", "group__MMAGIC__CONTROLLER__IP__CONFIG.html#ga0d32c556aaa40b53f1414ee320c3d7de", null ],
     [ "mmagic_controller_get_ip_link_status_evt_en", "group__MMAGIC__CONTROLLER__IP__CONFIG.html#ga997d23bf5d5d3194ef96fa01f5318f00", null ],
     [ "mmagic_controller_get_ip_netmask", "group__MMAGIC__CONTROLLER__IP__CONFIG.html#ga5ee9b84a0e95e46308d0fdbb4bb712ef", null ],
+    [ "mmagic_controller_get_ip_offload_arp_refresh_s", "group__MMAGIC__CONTROLLER__IP__CONFIG.html#gada3be723d63f013f1eec283ed64ae1f0", null ],
+    [ "mmagic_controller_get_ip_offload_arp_response", "group__MMAGIC__CONTROLLER__IP__CONFIG.html#ga579413c2c228846f14630b0e686778ec", null ],
     [ "mmagic_controller_ip_commit_all", "group__MMAGIC__CONTROLLER__IP__CONFIG.html#ga8dae33179f9a62c1e81e293af63b978f", null ],
     [ "mmagic_controller_set_ip_dhcp_enabled", "group__MMAGIC__CONTROLLER__IP__CONFIG.html#gad14ee1cc61953d424c4a6a5c0121be16", null ],
     [ "mmagic_controller_set_ip_dhcp_offload", "group__MMAGIC__CONTROLLER__IP__CONFIG.html#ga401c71ead44ee909408ac0606e4fe359", null ],
@@ -16,5 +18,7 @@ var group__MMAGIC__CONTROLLER__IP__CONFIG =
     [ "mmagic_controller_set_ip_gateway", "group__MMAGIC__CONTROLLER__IP__CONFIG.html#gaf4fa95a29c8a9366ae72eb4d3b3745e2", null ],
     [ "mmagic_controller_set_ip_ip_addr", "group__MMAGIC__CONTROLLER__IP__CONFIG.html#gaf458dec4764c3d88bf31d92e7a584941", null ],
     [ "mmagic_controller_set_ip_link_status_evt_en", "group__MMAGIC__CONTROLLER__IP__CONFIG.html#ga775b4ccbeee20cb556a22fefbcfee428", null ],
-    [ "mmagic_controller_set_ip_netmask", "group__MMAGIC__CONTROLLER__IP__CONFIG.html#gab27dba151db64d18ab3e0f169eea1196", null ]
+    [ "mmagic_controller_set_ip_netmask", "group__MMAGIC__CONTROLLER__IP__CONFIG.html#gab27dba151db64d18ab3e0f169eea1196", null ],
+    [ "mmagic_controller_set_ip_offload_arp_refresh_s", "group__MMAGIC__CONTROLLER__IP__CONFIG.html#ga81625692fb347e6ac4ac64718981280e", null ],
+    [ "mmagic_controller_set_ip_offload_arp_response", "group__MMAGIC__CONTROLLER__IP__CONFIG.html#gaf189af0d6edc88c8d0796df188eecefb", null ]
 ];

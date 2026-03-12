@@ -322,9 +322,11 @@ int ieee802_11_ext_capab(const u8 *ie, unsigned int capab);
 bool ieee802_11_rsnx_capab_len(const u8 *rsnxe, size_t rsnxe_len,
 			       unsigned int capab);
 bool ieee802_11_rsnx_capab(const u8 *rsnxe, unsigned int capab);
+int s1g_op_class_to_start_freq(u8 s1g_op_class);
 int op_class_to_bandwidth(u8 op_class);
 enum oper_chan_width op_class_to_ch_width(u8 op_class);
 int chwidth_freq2_to_ch_width(int chwidth, int freq2);
+int ieee80211_freq_khz_to_s1g_chan(int freq_khz, u8 op_class);
 
 /* element iteration helpers */
 #define for_each_element(_elem, _data, _datalen)			\

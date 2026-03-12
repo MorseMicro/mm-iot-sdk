@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Morse Micro
+ * Copyright 2026 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -27,33 +27,35 @@ struct mmagic_ping_config
 struct mmagic_ping_data
 {
     struct mmagic_ping_config config;
+    /** Subsystem private data (to be allocated/managed by the subsystem implementation). */
+    void *priv;
 };
 
 /**
  * Function to initialize the core data structure and register the ops functions.
  *
- * @param core Reference to to global mmagic context struct.
+ * @param core   Reference to to global mmagic context struct.
  */
 void mmagic_core_ping_init(struct mmagic_data *core);
 
 /**
  * Function to load settings from persistent store for the core ping subsystem.
  *
- * @param core Reference to to global mmagic context struct.
+ * @param core   Reference to to global mmagic context struct.
  */
 void mmagic_core_ping_load_all(struct mmagic_data *core);
 
 /**
  * Function to save settings to persistent store for the core ping subsystem.
  *
- * @param core Reference to to global mmagic context struct.
+ * @param core   Reference to to global mmagic context struct.
  */
 void mmagic_core_ping_save_all(struct mmagic_data *core);
 
 /**
  * Function to start any of the core processes for the core ping subsystem.
  *
- * @param core Reference to to global mmagic context struct.
+ * @param core   Reference to to global mmagic context struct.
  */
 void mmagic_core_ping_start(struct mmagic_data *core);
 
@@ -63,6 +65,5 @@ struct MM_PACKED mmagic_core_ping_run_rsp_args
     struct struct_ping_status status;
 };
 
-enum mmagic_status mmagic_core_ping_run(
-    struct mmagic_data *core,
-    struct mmagic_core_ping_run_rsp_args *rsp_args);
+enum mmagic_status mmagic_core_ping_run(struct mmagic_data *core,
+                                        struct mmagic_core_ping_run_rsp_args *rsp_args);

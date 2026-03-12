@@ -13,7 +13,7 @@
 #include "mmutils.h"
 
 /** Approximate number of loops we can execute per ms in the bootloader - used for rough timing */
-#define LOOPS_PER_MS            1000
+#define LOOPS_PER_MS 1000
 
 /* See mmosal.h for declarations */
 
@@ -108,7 +108,8 @@ bool mmosal_semb_wait(struct mmosal_semb *semb, uint32_t timeout_ms)
 void mmosal_impl_assert(void)
 {
     while (1)
-    {}
+    {
+    }
 }
 
 void mmosal_log_failure_info(const struct mmosal_failure_info *info)
@@ -142,7 +143,7 @@ uint32_t mmosal_get_time_ticks(void)
  */
 void _exit(int status)
 {
-    (void) status;
+    (void)status;
     while (1)
     {
     }

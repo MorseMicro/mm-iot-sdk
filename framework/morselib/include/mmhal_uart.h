@@ -4,30 +4,29 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
- /**
-  * @ingroup MMHAL
-  * @defgroup MMHAL_UART Morse Micro Abstraction Layer API for UART
-  *
-  * This provides an abstraction layer for a UART. This is used by MM-IoT-SDK example
-  * applications.
-  *
-  * This is a very simple API and leaves UART configuration to the HAL.
-  *
-  * @{
-  */
+/**
+ * @ingroup MMHAL
+ * @defgroup MMHAL_UART Morse Micro UART Hardware Abstraction Layer (mmhal_uart) API
+ *
+ * This provides an abstraction layer for a UART interface. This is used by MM-IoT-SDK example
+ * applications.
+ *
+ * This is a very simple API and leaves UART configuration to the HAL.
+ *
+ * @{
+ */
 
 #pragma once
 
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
-#include "mmhal.h"
 #include "mmosal.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
-
 
 /**
  * Function type for UART RX callback.
@@ -66,7 +65,6 @@ void mmhal_uart_deinit(void);
  */
 void mmhal_uart_tx(const uint8_t *data, size_t length);
 
-
 /** Enumeration of deep sleep modes for the UART HAL. */
 enum mmhal_uart_deep_sleep_mode
 {
@@ -85,7 +83,6 @@ enum mmhal_uart_deep_sleep_mode
  * @returns true if the mode was set successfully; false on failure (e.g., unsupported mode).
  */
 bool mmhal_uart_set_deep_sleep_mode(enum mmhal_uart_deep_sleep_mode mode);
-
 
 #ifdef __cplusplus
 }

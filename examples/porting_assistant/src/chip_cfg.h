@@ -10,7 +10,6 @@
 #include <stddef.h>
 #include <stdint.h>
 
-
 /** Chip configuration data structure. */
 struct chip_cfg
 {

@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.9.7</span>
+   &#160;<span id="projectnumber">2.10.4</span>
    </div>
   </td>
  </tr>
@@ -181,6 +181,15 @@ Functions</h2></td></tr>
 <tr class="memitem:ga25e73fe74043c7fe69afde82cd51eee0"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMUTILS__WLAN.html#ga25e73fe74043c7fe69afde82cd51eee0">mm_mac_addr_is_zero</a> (const uint8_t *mac_addr)</td></tr>
 <tr class="memdesc:ga25e73fe74043c7fe69afde82cd51eee0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines if a given MAC address is all zeros.  <a href="group__MMUTILS__WLAN.html#ga25e73fe74043c7fe69afde82cd51eee0">More...</a><br /></td></tr>
 <tr class="separator:ga25e73fe74043c7fe69afde82cd51eee0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga845987d45e8078e61641c16f942286af"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMUTILS__WLAN.html#ga845987d45e8078e61641c16f942286af">mm_mac_addr_is_multicast</a> (const uint8_t *mac_addr)</td></tr>
+<tr class="memdesc:ga845987d45e8078e61641c16f942286af"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines if a given MAC address is a multicast/broadcast address.  <a href="group__MMUTILS__WLAN.html#ga845987d45e8078e61641c16f942286af">More...</a><br /></td></tr>
+<tr class="separator:ga845987d45e8078e61641c16f942286af"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaaa69a9c0d44b25858aa58514c12dbbb9"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMUTILS__WLAN.html#gaaa69a9c0d44b25858aa58514c12dbbb9">mm_mac_addr_is_broadcast</a> (const uint8_t *mac_addr)</td></tr>
+<tr class="memdesc:gaaa69a9c0d44b25858aa58514c12dbbb9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines if a given MAC address is the broadcast address (i.e., <code>ff:ff:ff:ff:ff:ff</code> ).  <a href="group__MMUTILS__WLAN.html#gaaa69a9c0d44b25858aa58514c12dbbb9">More...</a><br /></td></tr>
+<tr class="separator:gaaa69a9c0d44b25858aa58514c12dbbb9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga8bf8e749b51a63f830695647a3a8c820"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMUTILS__WLAN.html#ga8bf8e749b51a63f830695647a3a8c820">mm_mac_addr_is_equal</a> (const uint8_t *mac_addr1, const uint8_t *mac_addr2)</td></tr>
+<tr class="memdesc:ga8bf8e749b51a63f830695647a3a8c820"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compares two MAC addresses and determines if they are equal.  <a href="group__MMUTILS__WLAN.html#ga8bf8e749b51a63f830695647a3a8c820">More...</a><br /></td></tr>
+<tr class="separator:ga8bf8e749b51a63f830695647a3a8c820"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="gae2fbd328d6e13febd3049da4b58bd587" name="gae2fbd328d6e13febd3049da4b58bd587"></a>
@@ -197,7 +206,7 @@ Functions</h2></td></tr>
 
 <p>Tag number of the RSN information element, in which we can find security details of the AP. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00190">190</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00191">191</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
 
 </div>
 </div>
@@ -215,7 +224,7 @@ Functions</h2></td></tr>
 
 <p>Maximum number of AKM suites our parser will process. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00186">186</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00187">187</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
 
 </div>
 </div>
@@ -233,7 +242,7 @@ Functions</h2></td></tr>
 
 <p>Maximum number of pairwise cipher suites our parser will process. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00181">181</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00182">182</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
 
 </div>
 </div>
@@ -251,7 +260,7 @@ Functions</h2></td></tr>
 
 <p>Tag number of the S1G Operation information element. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00194">194</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00195">195</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
 
 </div>
 </div>
@@ -269,7 +278,7 @@ Functions</h2></td></tr>
 
 <p>Tag number of the Vendor Specific information element. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00192">192</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00193">193</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
 
 </div>
 </div>
@@ -300,7 +309,7 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00156">156</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00157">157</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
 
 </div>
 </div>
@@ -324,7 +333,7 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00171">171</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00172">172</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
 
 </div>
 </div>
@@ -343,7 +352,7 @@ Functions</h2></td></tr>
 <p>Explicitly defined errno values to obviate the need to include errno.h. </p>
 <p >MM prefix to avoid namespace collision in case errno.h gets included. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00198">198</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00199">199</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
 
 </div>
 </div>
@@ -426,7 +435,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>If the information element is found, the offset of the start of the IE within <code>ies</code>; if no match is found then -1; if the IE is found but is malformed then -2. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00270">270</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00273">273</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
 
 </div>
 </div>
@@ -541,7 +550,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>If the information element is found, the offset of the start of the IE within <code>ies</code>; if no match is found then -1; if the IE is found but is malformed then -2. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00309">309</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00314">314</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
 
 </div>
 </div>
@@ -605,6 +614,128 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="gaaa69a9c0d44b25858aa58514c12dbbb9" name="gaaa69a9c0d44b25858aa58514c12dbbb9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaaa69a9c0d44b25858aa58514c12dbbb9">&#9670;&nbsp;</a></span>mm_mac_addr_is_broadcast()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool mm_mac_addr_is_broadcast </td>
+          <td>(</td>
+          <td class="paramtype">const uint8_t *&#160;</td>
+          <td class="paramname"><em>mac_addr</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Determines if a given MAC address is the broadcast address (i.e., <code>ff:ff:ff:ff:ff:ff</code> ). </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">mac_addr</td><td>Array of length <a class="el" href="group__MMWLAN.html#gad1f02bb330d9d2f4c831a1cf9d44ff1a">MMWLAN_MAC_ADDR_LEN</a> containing a MAC address.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><code>true</code> if the given MAC address is the broadcast address, else <code>false</code> </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00397">397</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
+
+</div>
+</div>
+<a id="ga8bf8e749b51a63f830695647a3a8c820" name="ga8bf8e749b51a63f830695647a3a8c820"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga8bf8e749b51a63f830695647a3a8c820">&#9670;&nbsp;</a></span>mm_mac_addr_is_equal()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool mm_mac_addr_is_equal </td>
+          <td>(</td>
+          <td class="paramtype">const uint8_t *&#160;</td>
+          <td class="paramname"><em>mac_addr1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const uint8_t *&#160;</td>
+          <td class="paramname"><em>mac_addr2</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Compares two MAC addresses and determines if they are equal. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">mac_addr1</td><td>Array of length <a class="el" href="group__MMWLAN.html#gad1f02bb330d9d2f4c831a1cf9d44ff1a">MMWLAN_MAC_ADDR_LEN</a> containing a MAC address. </td></tr>
+    <tr><td class="paramname">mac_addr2</td><td>Array of length <a class="el" href="group__MMWLAN.html#gad1f02bb330d9d2f4c831a1cf9d44ff1a">MMWLAN_MAC_ADDR_LEN</a> containing a MAC address.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><code>true</code> if the two MAC addresses match, else <code>false</code> </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00411">411</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
+
+</div>
+</div>
+<a id="ga845987d45e8078e61641c16f942286af" name="ga845987d45e8078e61641c16f942286af"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga845987d45e8078e61641c16f942286af">&#9670;&nbsp;</a></span>mm_mac_addr_is_multicast()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool mm_mac_addr_is_multicast </td>
+          <td>(</td>
+          <td class="paramtype">const uint8_t *&#160;</td>
+          <td class="paramname"><em>mac_addr</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Determines if a given MAC address is a multicast/broadcast address. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">mac_addr</td><td>Array of length <a class="el" href="group__MMWLAN.html#gad1f02bb330d9d2f4c831a1cf9d44ff1a">MMWLAN_MAC_ADDR_LEN</a> containing a MAC address.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><code>true</code> if given MAC address is a multicast address, else <code>false</code> </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00385">385</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
+
+</div>
+</div>
 <a id="ga25e73fe74043c7fe69afde82cd51eee0" name="ga25e73fe74043c7fe69afde82cd51eee0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga25e73fe74043c7fe69afde82cd51eee0">&#9670;&nbsp;</a></span>mm_mac_addr_is_zero()</h2>
 
@@ -638,7 +769,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><code>true</code> if all bytes in the given MAC address are zero, else <code>false</code> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00365">365</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00372">372</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
 
 </div>
 </div>
@@ -738,7 +869,7 @@ Functions</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Copyright 2021 Morse Micro </li>
+    <li class="footer">Copyright 2021-2025 Morse Micro </li>
   </ul>
 </div>
 </body>

@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.9.7</span>
+   &#160;<span id="projectnumber">2.10.4</span>
    </div>
   </td>
  </tr>
@@ -89,19 +89,19 @@ $(document).ready(function(){initNavTree('structmmwlan__beacon__vendor__ie__filt
 <div class="header">
   <div class="summary">
 <a href="#pub-attribs">Data Fields</a>  </div>
-  <div class="headertitle"><div class="title">mmwlan_beacon_vendor_ie_filter Struct Reference<div class="ingroups"><a class="el" href="group__MMWLAN.html">Morse Micro Wireless LAN (mmwlan) API</a> &raquo; <a class="el" href="group__MMWLAN__BEACON__VENDOR__IE__FILTER__API.html">Beacon Vendor Specific IE Filter API</a></div></div></div>
+  <div class="headertitle"><div class="title">mmwlan_beacon_vendor_ie_filter Struct Reference<div class="ingroups"><a class="el" href="group__MMWLAN.html">Morse Micro Wireless LAN (mmwlan) API</a> &raquo; <a class="el" href="group__MMWLAN__BEACON__VENDOR__IE__FILTER__API.html">WLAN Beacon Vendor Specific IE Filter API</a></div></div></div>
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Structure for storing beacon vendor ie filter parameter. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02159">2159</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02504">2504</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 </div>
 <p><code>#include &lt;<a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Data Fields</h2></td></tr>
-<tr class="memitem:a1901cb6cd157f11160b7a5150b7b865c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__MMWLAN__BEACON__VENDOR__IE__FILTER__API.html#ga7e32ebcfdeea56f71e1c75b1351b5846">mmwlan_beacon_vendor_ie_filter_cb_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__beacon__vendor__ie__filter.html#a1901cb6cd157f11160b7a5150b7b865c">cb</a></td></tr>
+<tr class="memitem:a1901cb6cd157f11160b7a5150b7b865c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__MMWLAN__BEACON__VENDOR__IE__FILTER__API.html#ga97166a4382dab565b373f50cd452a52a">mmwlan_beacon_vendor_ie_filter_cb_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__beacon__vendor__ie__filter.html#a1901cb6cd157f11160b7a5150b7b865c">cb</a></td></tr>
 <tr class="memdesc:a1901cb6cd157f11160b7a5150b7b865c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Callback that will be executed upon reception of a beacon containing a Vendor Specific information element that has an OUI that matches this filter.  <a href="structmmwlan__beacon__vendor__ie__filter.html#a1901cb6cd157f11160b7a5150b7b865c">More...</a><br /></td></tr>
 <tr class="separator:a1901cb6cd157f11160b7a5150b7b865c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a132a28f5731f445fb7ae43369952aa5a"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__beacon__vendor__ie__filter.html#a132a28f5731f445fb7ae43369952aa5a">cb_arg</a></td></tr>
@@ -122,7 +122,7 @@ Data Fields</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="group__MMWLAN__BEACON__VENDOR__IE__FILTER__API.html#ga7e32ebcfdeea56f71e1c75b1351b5846">mmwlan_beacon_vendor_ie_filter_cb_t</a> mmwlan_beacon_vendor_ie_filter::cb</td>
+          <td class="memname"><a class="el" href="group__MMWLAN__BEACON__VENDOR__IE__FILTER__API.html#ga97166a4382dab565b373f50cd452a52a">mmwlan_beacon_vendor_ie_filter_cb_t</a> mmwlan_beacon_vendor_ie_filter::cb</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -131,7 +131,7 @@ Data Fields</h2></td></tr>
 <p >Must not be <code>NULL</code>.</p>
 <dl class="section note"><dt>Note</dt><dd>This is executed in the MMWLAN main processing loop. As such, processing within the callback itself should be kept as short as possible. If extensive processing is done within the callback this could have an impact on throughput and/or connection stability. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02169">2169</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02514">2514</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -149,7 +149,7 @@ Data Fields</h2></td></tr>
 
 <p>Opaque argument to be passed to the callbacks. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02171">2171</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02516">2516</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -168,7 +168,7 @@ Data Fields</h2></td></tr>
 <p>Number of OUIs contained within <a class="el" href="structmmwlan__beacon__vendor__ie__filter.html#a94a431832e58ae2dca83f0b90f5e589c">ouis</a>. </p>
 <p >This can be <a class="el" href="group__MMWLAN__BEACON__VENDOR__IE__FILTER__API.html#ga2feaab1ca4f2b73ec5ed9c14e2ce9c0e">MMWLAN_BEACON_VENDOR_IE_MAX_OUI_FILTERS</a> max. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02174">2174</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02519">2519</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -186,7 +186,7 @@ Data Fields</h2></td></tr>
 
 <p>List of OUIs to filter on. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02176">2176</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02521">2521</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -200,7 +200,7 @@ Data Fields</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="structmmwlan__beacon__vendor__ie__filter.html">mmwlan_beacon_vendor_ie_filter</a></li>
-    <li class="footer">Copyright 2021 Morse Micro </li>
+    <li class="footer">Copyright 2021-2025 Morse Micro </li>
   </ul>
 </div>
 </body>

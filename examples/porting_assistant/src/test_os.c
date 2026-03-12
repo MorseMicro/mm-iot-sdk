@@ -12,7 +12,7 @@ TEST_STEP(test_step_os_malloc, "Memory allocation")
     if (buf == NULL)
     {
         TEST_LOG_APPEND(
-                 "Failed to allocate 1560 bytes. Check that your heap is configured correctly\n\n");
+            "Failed to allocate 1560 bytes. Check that your heap is configured correctly\n\n");
         return TEST_FAILED;
     }
     mmosal_free(buf);
@@ -24,15 +24,15 @@ TEST_STEP(test_step_os_realloc, "Memory reallocation")
     enum constants
     {
         FIRST_ALLOCATION_SIZE = 100,
-        REALLOCATION_SIZE     = 200,
+        REALLOCATION_SIZE = 200,
     };
 
     uint8_t *buf = (uint8_t *)mmosal_malloc(FIRST_ALLOCATION_SIZE);
     if (buf == NULL)
     {
         TEST_LOG_APPEND(
-                 "Failed to allocate %d bytes. Check that your heap is configured correctly\n\n",
-                 FIRST_ALLOCATION_SIZE);
+            "Failed to allocate %d bytes. Check that your heap is configured correctly\n\n",
+            FIRST_ALLOCATION_SIZE);
         return TEST_FAILED_NON_CRITICAL;
     }
     memset(buf, 0xc0, FIRST_ALLOCATION_SIZE);
@@ -40,9 +40,8 @@ TEST_STEP(test_step_os_realloc, "Memory reallocation")
     uint8_t *buf1 = (uint8_t *)mmosal_realloc(buf, REALLOCATION_SIZE);
     if (buf1 == NULL)
     {
-        TEST_LOG_APPEND(
-                 "Failed to reallocate %d bytes. Check that your heap supports realloc\n\n",
-                 REALLOCATION_SIZE);
+        TEST_LOG_APPEND("Failed to reallocate %d bytes. Check that your heap supports realloc\n\n",
+                        REALLOCATION_SIZE);
         return TEST_FAILED_NON_CRITICAL;
     }
 
@@ -52,8 +51,7 @@ TEST_STEP(test_step_os_realloc, "Memory reallocation")
     {
         if (buf1[ii] != 0xc0)
         {
-            TEST_LOG_APPEND(
-                     "Reallocated block contents mismatch at offset %u\n\n", ii);
+            TEST_LOG_APPEND("Reallocated block contents mismatch at offset %u\n\n", ii);
             return TEST_FAILED_NON_CRITICAL;
         }
     }
@@ -71,8 +69,7 @@ TEST_STEP(test_step_os_time, "Passage of time")
     int32_t delta = (int32_t)(end_time - start_time);
     if (delta < 49 || delta > 51)
     {
-        TEST_LOG_APPEND(
-                 "Time delta (%ld ms) did not match sleep time (50 ms)\n\n", delta);
+        TEST_LOG_APPEND("Time delta (%ld ms) did not match sleep time (50 ms)\n\n", delta);
         return TEST_FAILED;
     }
 
@@ -92,7 +89,7 @@ enum task_state
 /** Current state of the task that is created during the task creation/preemption test. */
 static volatile enum task_state task_state = TASK_NOT_STARTED;
 /** Handle of the task that is created during the task creation/preemption test. */
-static struct mmosal_task * volatile task_handle;
+static struct mmosal_task *volatile task_handle;
 
 /** Main function of the task that is created during the task creation/preemption test. */
 static void new_task_main(void *arg)
@@ -119,12 +116,10 @@ static void new_task_main(void *arg)
 
 TEST_STEP(test_step_os_task_creation, "Task creation and preemption")
 {
-    task_handle = mmosal_task_create(
-        new_task_main, NULL, MMOSAL_TASK_PRI_HIGH, 512, "Test Task");
+    task_handle = mmosal_task_create(new_task_main, NULL, MMOSAL_TASK_PRI_HIGH, 512, "Test Task");
     if (task_handle == NULL)
     {
-        TEST_LOG_APPEND(
-                 "mmosal_task_create() returned NULL; expected a task handle.\n\n");
+        TEST_LOG_APPEND("mmosal_task_create() returned NULL; expected a task handle.\n\n");
         return TEST_FAILED_NON_CRITICAL;
     }
 
@@ -134,8 +129,7 @@ TEST_STEP(test_step_os_task_creation, "Task creation and preemption")
      */
     if (task_state != TASK_STARTED)
     {
-        TEST_LOG_APPEND(
-                 "The task created with mmosal_task_create() did not run.\n\n");
+        TEST_LOG_APPEND("The task created with mmosal_task_create() did not run.\n\n");
         return TEST_FAILED_NON_CRITICAL;
     }
 
@@ -144,18 +138,16 @@ TEST_STEP(test_step_os_task_creation, "Task creation and preemption")
 
     switch (task_state)
     {
-    case TASK_TERMINATING:
-        break;
+        case TASK_TERMINATING:
+            break;
 
-    case TASK_ERROR_GET_ACTIVE_INVALID:
-        TEST_LOG_APPEND(
-                 "mmosal_task_get_active() did not return the correct task handle.\n\n");
-        return TEST_FAILED_NON_CRITICAL;
+        case TASK_ERROR_GET_ACTIVE_INVALID:
+            TEST_LOG_APPEND("mmosal_task_get_active() did not return the correct task handle.\n\n");
+            return TEST_FAILED_NON_CRITICAL;
 
-    default:
-        TEST_LOG_APPEND(
-                 "Task in unexpected state %d.\n\n", task_state);
-        return TEST_FAILED_NON_CRITICAL;
+        default:
+            TEST_LOG_APPEND("Task in unexpected state %d.\n\n", task_state);
+            return TEST_FAILED_NON_CRITICAL;
     }
 
     return TEST_PASSED;

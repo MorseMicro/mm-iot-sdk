@@ -1,29 +1,5 @@
 var searchData=
 [
-  ['last_5frx_5ftime_5fms_0',['last_rx_time_ms',['../structudp__broadcast__rx__metadata.html#abca486d3addcb031aeaae47b22085e00',1,'udp_broadcast_rx_metadata']]],
-  ['last_5ftx_5ftime_1',['last_tx_time',['../structmmwlan__stats__umac__data.html#aeca592208aa02c61b3aca10dfca95e71',1,'mmwlan_stats_umac_data']]],
-  ['led_5foff_2',['LED_OFF',['../group__MMHAL.html#ga80700bb63bd56ebabbb4728aa433fd29',1,'mmhal.h']]],
-  ['led_5fon_3',['LED_ON',['../group__MMHAL.html#gaf2e697ac60e05813d45ea2c9c9e79c25',1,'mmhal.h']]],
-  ['len_4',['len',['../structmmhal__robuf.html#a66ce9fbb066da8f39a6559c66f7e36a1',1,'mmhal_robuf::len()'],['../structmmagic__core__tcp__recv__cmd__args.html#af727e7b477605fca2b8c3018c6d5e850',1,'mmagic_core_tcp_recv_cmd_args::len()'],['../structstruct__buffer64.html#ac5a7332fb259722cbed4a84c1e793f42',1,'struct_buffer64::len()'],['../structraw1536.html#a85aba205c60155023104a7b946b466b1',1,'raw1536::len()'],['../structraw255.html#a6ce2bcadf4a43cd590d5377e95ece458',1,'raw255::len()'],['../structstring254.html#a4b7746a7af329fc08d02b7d9e97e8c84',1,'string254::len()'],['../structstring100.html#a714fa120f1393d69284694e7a97777b9',1,'string100::len()'],['../structstring32.html#a41c58a4f0259f454a9f9310c71514ba3',1,'string32::len()'],['../structmmbuf__list.html#a11103a0dc29e8259039f07fcb584fb47',1,'mmbuf_list::len()'],['../structmmwlan__morse__stats.html#ab2a55231ddd7e1735a96daeea7404d9e',1,'mmwlan_morse_stats::len()'],['../structmmpkt__list.html#a66fe65e5d91b0e8f19c711df86d8e8d2',1,'mmpkt_list::len()'],['../structmbin__tlv__hdr.html#a13d4a6d1b4399e51a353d62cdb46e309',1,'mbin_tlv_hdr::len()'],['../structtlv__header.html#a38a88565ef6a7b2c038fe4d61609f2bb',1,'tlv_header::len()']]],
-  ['length_5',['length',['../structslip__rx__state.html#acfc7fe628e6f74370414e179b39b7b19',1,'slip_rx_state']]],
-  ['line_6',['line',['../structmmosal__failure__info.html#a9968c525b86d430bf2252bce25bd5163',1,'mmosal_failure_info']]],
-  ['link_5fstate_7',['link_state',['../structmmipal__link__status.html#ac62705a6b6103711229852ca92e436a1',1,'mmipal_link_status::link_state()'],['../structstruct__ip__status.html#a853ba425fefb062a2b944c8f3ea9f34f',1,'struct_ip_status::link_state()']]],
-  ['link_5fstate_5ftimeout_5fms_8',['LINK_STATE_TIMEOUT_MS',['../m2m__controller_8c.html#aa523388767f01a20584004266c7cea12',1,'m2m_controller.c']]],
-  ['link_5fstatus_5fcallback_9',['link_status_callback',['../emmet_8c.html#a7d09c7aec33f5c9962ec3ba923c5bc67',1,'emmet.c']]],
-  ['llc_5fprotocol_10',['llc_protocol',['../structmmagic__core__ip__set__whitelist__filter__cmd__args.html#a56c4746199050c7ec5ff2d04f5fa1d4d',1,'mmagic_core_ip_set_whitelist_filter_cmd_args::llc_protocol()'],['../structmmwlan__config__whitelist.html#ad17f26b989501c6121e51a79072c0f25',1,'mmwlan_config_whitelist::llc_protocol()']]],
-  ['load_5fand_5fflash_5fmbin_11',['load_and_flash_mbin',['../bootloader_8c.html#aa561c09fdf6feb3346f48f9925cc822e',1,'bootloader.c']]],
-  ['load_5fchannel_5flist_12',['load_channel_list',['../mm__app__loadconfig_8h.html#a55abea26b48b587433d302903c979d6b',1,'mm_app_loadconfig.h']]],
-  ['load_5fmmipal_5finit_5fargs_13',['load_mmipal_init_args',['../mm__app__loadconfig_8h.html#aee984954a57c70f85984ff2d0857eb11',1,'mm_app_loadconfig.h']]],
-  ['load_5fmmwlan_5fsettings_14',['load_mmwlan_settings',['../group__MMCONFIG__API.html#ga908514f26d5872bf4b86b8f3dc012411',1,'load_mmwlan_settings(void):&#160;mmconfig.h'],['../mm__app__loadconfig_8h.html#a908514f26d5872bf4b86b8f3dc012411',1,'load_mmwlan_settings(void):&#160;mm_app_loadconfig.h']]],
-  ['load_5fmmwlan_5fsettings_5fsoftap_15',['load_mmwlan_settings_softap',['../softap_8c.html#af599cff3498cc039cb6b26667dcbe2ec',1,'softap.c']]],
-  ['load_5fmmwlan_5fsoftap_5fargs_16',['load_mmwlan_softap_args',['../softap_8c.html#afbb90b1626b5534c31c8de89b2bf7654',1,'softap.c']]],
-  ['load_5fmmwlan_5fsta_5fargs_17',['load_mmwlan_sta_args',['../mm__app__loadconfig_8h.html#ade67533e752666c38c99616a2bee9fd2',1,'mm_app_loadconfig.h']]],
-  ['load_5fsoftap_5fmmipal_5finit_5fargs_18',['load_softap_mmipal_init_args',['../softap_8c.html#a1b331e2931cdc875daad220d78611865',1,'softap.c']]],
-  ['local_5faddr_19',['local_addr',['../structmmiperf__server__args.html#aec391c50ad127c3bc321db7bc060d188',1,'mmiperf_server_args::local_addr()'],['../structstruct__iperf__status.html#ab095760373ac70a58308d421a508fddc',1,'struct_iperf_status::local_addr()'],['../structmmiperf__report.html#a638ff1f0f4c702132167331f9d8427a7',1,'mmiperf_report::local_addr()']]],
-  ['local_5fport_20',['local_port',['../structstruct__iperf__status.html#a0cb16e264a79419032dad122e21177d1',1,'struct_iperf_status::local_port()'],['../structmmiperf__server__args.html#ac5c95e1f7f81078c14f6a440ace4d9c8',1,'mmiperf_server_args::local_port()'],['../structmmiperf__report.html#a665cf9624018e720102eab3570cb9b27',1,'mmiperf_report::local_port()']]],
-  ['logdebug_21',['LogDebug',['../aws__iot__config_8h.html#af60e8ffc327d136e5d0d8441ed98c98d',1,'aws_iot_config.h']]],
-  ['logerror_22',['LogError',['../aws__iot__config_8h.html#a8d9dbaaa88129137a4c68ba0456a18b1',1,'aws_iot_config.h']]],
-  ['loginfo_23',['LogInfo',['../aws__iot__config_8h.html#a00810b1cb9d2f25d25ce2d4d93815fba',1,'aws_iot_config.h']]],
-  ['logwarn_24',['LogWarn',['../aws__iot__config_8h.html#a7da92048aaf0cbfcacde9539c98a0e05',1,'aws_iot_config.h']]],
-  ['lr_25',['lr',['../structmmosal__failure__info.html#a530aa0570e831d7bbc8c498732f8e85e',1,'mmosal_failure_info']]]
+  ['keep_5falive_5ftimeout_5fseconds_0',['KEEP_ALIVE_TIMEOUT_SECONDS',['../mqttdemo_8c.html#a7cd6f2b1e2766a15f38e58d5d32adce9',1,'mqttdemo.c']]],
+  ['key_1',['key',['../structudp__broadcast__rx__payload.html#ab40b8378a5cb79069f05a3d817936d23',1,'udp_broadcast_rx_payload::key()'],['../structmmconfig__update__node.html#ad1cd07f5d463e79dfbe6aa4ef40057d0',1,'mmconfig_update_node::key()']]]
 ];

@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include "mmosal.h"
 #include "mmconfig.h"
+#include "mmhal_os.h"
 #include "ota_config.h"
 #include "ota_pal.h"
 #include "version.h"
@@ -25,18 +26,17 @@
  * This is the maximum size of any placeholder files, we determine the file is a dummy
  * if it is less than this size.
  */
-#define DUMMY_FILE_SIZE                       100
+#define DUMMY_FILE_SIZE 100
 
 /** Firmware version. */
-const AppVersion32_t appFirmwareVersion =
-{
+const AppVersion32_t appFirmwareVersion = {
     .u.x.major = APP_VERSION_MAJOR,
     .u.x.minor = APP_VERSION_MINOR,
     .u.x.build = APP_VERSION_BUILD,
 };
 
 /** Initialize the source key for JSON files. */
-const char OTA_JsonFileSignatureKey[ OTA_FILE_SIG_KEY_STR_MAX_LENGTH ] = "sig-sha256-ecdsa";
+const char OTA_JsonFileSignatureKey[OTA_FILE_SIG_KEY_STR_MAX_LENGTH] = "sig-sha256-ecdsa";
 
 /** The current state of the OTA PAL */
 static OtaPalImageState_t prvImageState = OtaPalImageStateUnknown;
@@ -44,7 +44,7 @@ static OtaPalImageState_t prvImageState = OtaPalImageStateUnknown;
 /** Callback to call prior to starting an update */
 ota_preupdate_cb_fn_t ota_pal_preupdate_callback = NULL;
 
-OtaPalStatus_t otaPal_Abort(OtaFileContext_t * const pFileContext)
+OtaPalStatus_t otaPal_Abort(OtaFileContext_t *const pFileContext)
 {
     (void)pFileContext;
 
@@ -60,7 +60,7 @@ OtaPalStatus_t otaPal_Abort(OtaFileContext_t * const pFileContext)
     return OTA_PAL_COMBINE_ERR(OtaPalSuccess, 0);
 }
 
-OtaPalStatus_t otaPal_CreateFileForRx(OtaFileContext_t * const pFileContext)
+OtaPalStatus_t otaPal_CreateFileForRx(OtaFileContext_t *const pFileContext)
 {
     OtaPalStatus_t ret = OTA_PAL_COMBINE_ERR(OtaPalSuccess, 0);
 
@@ -86,7 +86,7 @@ OtaPalStatus_t otaPal_CreateFileForRx(OtaFileContext_t * const pFileContext)
     return ret;
 }
 
-OtaPalStatus_t otaPal_CloseFile(OtaFileContext_t * const pFileContext)
+OtaPalStatus_t otaPal_CloseFile(OtaFileContext_t *const pFileContext)
 {
     OtaPalStatus_t uxOtaStatus = OTA_PAL_COMBINE_ERR(OtaPalFileClose, 0);
     unsigned char pucHashBuffer[MBEDTLS_MD_MAX_SIZE];
@@ -101,8 +101,7 @@ OtaPalStatus_t otaPal_CloseFile(OtaFileContext_t * const pFileContext)
 
     prvImageState = OtaPalImageStateInvalid;
 
-    do
-    {
+    do {
         /* Perform SHA256 hash on the file */
         size_t n;
         static unsigned char buf[1024];
@@ -138,8 +137,10 @@ OtaPalStatus_t otaPal_CloseFile(OtaFileContext_t * const pFileContext)
             break;
         }
 
-        if (mbedtls_pk_verify(&crt.pk, MBEDTLS_MD_SHA256,
-                              pucHashBuffer, 0,
+        if (mbedtls_pk_verify(&crt.pk,
+                              MBEDTLS_MD_SHA256,
+                              pucHashBuffer,
+                              0,
                               pFileContext->pSignature->data,
                               pFileContext->pSignature->size) != 0)
         {
@@ -164,9 +165,9 @@ OtaPalStatus_t otaPal_CloseFile(OtaFileContext_t * const pFileContext)
     return uxOtaStatus;
 }
 
-int16_t otaPal_WriteBlock(OtaFileContext_t * const pFileContext,
+int16_t otaPal_WriteBlock(OtaFileContext_t *const pFileContext,
                           uint32_t ulOffset,
-                          uint8_t * const pData,
+                          uint8_t *const pData,
                           uint32_t ulBlockSize)
 {
     static uint32_t last_percentage = 0;
@@ -174,8 +175,8 @@ int16_t otaPal_WriteBlock(OtaFileContext_t * const pFileContext,
 
     if (fseek(pFileContext->pFile, ulOffset, SEEK_SET) == 0)
     {
-        uint32_t numBlocks = (pFileContext->fileSize + (OTA_FILE_BLOCK_SIZE - 1U) ) >>
-            otaconfigLOG2_FILE_BLOCK_SIZE;
+        uint32_t numBlocks = (pFileContext->fileSize + (OTA_FILE_BLOCK_SIZE - 1U)) >>
+                             otaconfigLOG2_FILE_BLOCK_SIZE;
 
         uint32_t completion_percentage = 100 - 100 * pFileContext->blocksRemaining / numBlocks;
 
@@ -194,7 +195,7 @@ int16_t otaPal_WriteBlock(OtaFileContext_t * const pFileContext,
     }
 }
 
-OtaPalStatus_t otaPal_ActivateNewImage(OtaFileContext_t * const pFileContext)
+OtaPalStatus_t otaPal_ActivateNewImage(OtaFileContext_t *const pFileContext)
 {
     LogInfo(("Activating..."));
 
@@ -208,7 +209,7 @@ OtaPalStatus_t otaPal_ActivateNewImage(OtaFileContext_t * const pFileContext)
     return OTA_PAL_COMBINE_ERR(OtaPalSuccess, 0);
 }
 
-OtaPalStatus_t otaPal_SetPlatformImageState(OtaFileContext_t * const pFileContext,
+OtaPalStatus_t otaPal_SetPlatformImageState(OtaFileContext_t *const pFileContext,
                                             OtaImageState_t eState)
 {
     (void)pFileContext;
@@ -219,14 +220,14 @@ OtaPalStatus_t otaPal_SetPlatformImageState(OtaFileContext_t * const pFileContex
     return OTA_PAL_COMBINE_ERR(OtaPalSuccess, 0);
 }
 
-OtaPalImageState_t otaPal_GetPlatformImageState(OtaFileContext_t * const pFileContext)
+OtaPalImageState_t otaPal_GetPlatformImageState(OtaFileContext_t *const pFileContext)
 {
     (void)pFileContext;
 
     return prvImageState;
 }
 
-OtaPalStatus_t otaPal_ResetDevice(OtaFileContext_t * const pFileContext)
+OtaPalStatus_t otaPal_ResetDevice(OtaFileContext_t *const pFileContext)
 {
     (void)pFileContext;
 

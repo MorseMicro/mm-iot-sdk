@@ -45,7 +45,7 @@ var group__MMIPERF =
     [ "MMIPERF_SERVER_ARGS_DEFAULT", "group__MMIPERF.html#gad0beef7190209bfc21f9adbc54255686", null ],
     [ "MMIPERF_STACK_SIZE", "group__MMIPERF.html#ga7bde22e4d975d9be260e57be375e3c96", null ],
     [ "mmiperf_handle_t", "group__MMIPERF.html#gad922644134c6319c84f738c60d5c8301", null ],
-    [ "mmiperf_report_fn", "group__MMIPERF.html#ga94a06d5ec557103dd3310e0c0a158583", null ],
+    [ "mmiperf_report_fn", "group__MMIPERF.html#gade733f608efe4f710310ae09ebb3b834", null ],
     [ "iperf_version", "group__MMIPERF.html#gaa1fc3bae5d5847c9e2d5a5a2a264a9da", [
       [ "IPERF_VERSION_2_0_13", "group__MMIPERF.html#ggaa1fc3bae5d5847c9e2d5a5a2a264a9daa611cb8c6d4f1309605b36b5cefc2251e", null ],
       [ "IPERF_VERSION_2_0_9", "group__MMIPERF.html#ggaa1fc3bae5d5847c9e2d5a5a2a264a9daa77187ded8b5f12e29fe9efaadcf56e1f", null ]

@@ -460,6 +460,7 @@ altcp_tcp_keepalive_disable(struct altcp_pcb *conn)
     struct tcp_pcb *pcb = (struct tcp_pcb *)conn->state;
     ALTCP_TCP_ASSERT_CONN(conn);
     ip_reset_option(pcb, SOF_KEEPALIVE);
+    TCP_TIMER_NEEDED();
   }
 }
 
@@ -473,6 +474,7 @@ altcp_tcp_keepalive_enable(struct altcp_pcb *conn, u32_t idle, u32_t intvl, u32_
     pcb->keep_idle = idle ? idle : TCP_KEEPIDLE_DEFAULT;
     pcb->keep_intvl = intvl ? intvl : TCP_KEEPINTVL_DEFAULT;
     pcb->keep_cnt = cnt ? cnt : TCP_KEEPCNT_DEFAULT;
+    TCP_TIMER_NEEDED();
   }
 }
 #endif

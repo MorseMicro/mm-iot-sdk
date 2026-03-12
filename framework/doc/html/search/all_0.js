@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['_5fstringify_0',['_STRINGIFY',['../softap_8c.html#a9466bf92a0218030cd2dd54cca715e87',1,'_STRINGIFY():&#160;softap.c'],['../m2m__controller_8c.html#a9466bf92a0218030cd2dd54cca715e87',1,'_STRINGIFY():&#160;m2m_controller.c']]]
+  ['_5bdeprecated_5d_20wlan_20offload_20features_0',['[Deprecated] WLAN offload features',['../group__MMWLAN__OFFLOAD.html',1,'']]],
+  ['_5bdeprecated_5d_20wlan_20standby_20features_1',['[Deprecated] WLAN Standby features',['../group__MMWLAN__STANDBY.html',1,'']]]
 ];

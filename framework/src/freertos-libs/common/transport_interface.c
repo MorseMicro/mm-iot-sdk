@@ -159,6 +159,10 @@ static void sslContextInit( SSLContext_t * pSslContext )
 {
     configASSERT( pSslContext != NULL );
 
+#if defined(MBEDTLS_USE_PSA_CRYPTO) || defined(MBEDTLS_SSL_PROTO_TLS1_3)
+    psa_crypto_init();
+#endif
+
     /* Initialize contexts for random number generation. */
 #if !TRANSPORT_EXTERNAL_CTR_DRBG_ENABLED
     mbedtls_entropy_init( &( pSslContext->entropyContext ) );
@@ -194,6 +198,12 @@ static void sslContextFree( SSLContext_t * pSslContext )
     mbedtls_ctr_drbg_free( &( pSslContext->ctrDrgbContext ) );
 #endif
     mbedtls_ssl_config_free( &( pSslContext->config ) );
+    /* For builds with MBEDTLS_TEST_USE_PSA_CRYPTO_RNG psa crypto
+     * resources are freed by rng_free(). */
+#if (defined(MBEDTLS_USE_PSA_CRYPTO) || defined(MBEDTLS_SSL_PROTO_TLS1_3)) && \
+    !defined(MBEDTLS_TEST_USE_PSA_CRYPTO_RNG)
+    mbedtls_psa_crypto_free();
+#endif
 }
 /*-----------------------------------------------------------*/
 
@@ -438,6 +448,12 @@ static TransportStatus_t tlsHandshake( NetworkContext_t * pNetworkContext,
     configASSERT( pNetworkContext != NULL );
     configASSERT( pNetworkCredentials != NULL );
 
+#if defined(MBEDTLS_SSL_PROTO_TLS1_3)
+    /* Set min and max versions to TLS 1.2 and 1.3 respectively. Client will negotiate with server which version to use */
+    mbedtls_ssl_conf_min_tls_version( &( pNetworkContext->sslContext.config ), MBEDTLS_SSL_VERSION_TLS1_2);
+    mbedtls_ssl_conf_max_tls_version( &( pNetworkContext->sslContext.config ), MBEDTLS_SSL_VERSION_TLS1_3);
+#endif
+
     /* Initialize the mbed TLS secured connection context. */
     mbedtlsError = mbedtls_ssl_setup( &( pNetworkContext->sslContext.context ),
                                       &( pNetworkContext->sslContext.config ) );
@@ -607,9 +623,21 @@ int32_t transport_recv( NetworkContext_t * pNetworkContext,
     if (pNetworkContext->sslContext.useTLS)
     {
         /* Read with TLS */
-        readStatus = ( int32_t ) mbedtls_ssl_read( &( pNetworkContext->sslContext.context ),
-                                              pBuffer,
-                                              bytesToRecv );
+        do
+        {
+            readStatus = ( int32_t ) mbedtls_ssl_read( &( pNetworkContext->sslContext.context ),
+                                                pBuffer,
+                                                bytesToRecv );
+        }
+#if defined(MBEDTLS_SSL_PROTO_TLS1_3) && !defined(MBEDTLS_SSL_SESSION_TICKETS)
+        /* In TLS 1.3, a new session ticket is issued by the server after the handshake is successfully completed.
+        * When session tickets are disabled on the client, mbedtls returns MBEDTLS_ERR_SSL_UNEXPECTED_MESSAGE
+        * when a new session ticket message is received from the server.
+        */
+        while (readStatus == MBEDTLS_ERR_SSL_UNEXPECTED_MESSAGE);
+#else
+        while (0);
+#endif
     }
     else
     {

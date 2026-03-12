@@ -20,7 +20,8 @@
 #include "mbedtls/net.h"
 #include "core_sntp_client.h"
 #include "backoff_algorithm.h"
-#include "mmhal.h"
+#include "mmhal_app.h"
+#include "mmhal_core.h"
 
 /* Implementation of SntpDnsResolve_t interface. */
 static bool resolveDns(const SntpServerInfo_t * pServerAddr,

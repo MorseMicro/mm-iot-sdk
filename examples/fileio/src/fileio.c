@@ -57,7 +57,8 @@ void app_init(void)
                 if (count >= 0)
                 {
                     printf("%d bytes written!\n"
-                        "Run application again to see what was written.\n", count);
+                           "Run application again to see what was written.\n",
+                           count);
                 }
                 else
                 {

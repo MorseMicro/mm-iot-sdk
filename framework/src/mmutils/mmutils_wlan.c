@@ -12,25 +12,27 @@ const char *mm_akm_suite_to_string(uint32_t akm_suite_oui)
 {
     switch (akm_suite_oui)
     {
-    case MM_AKM_SUITE_NONE:
-        return "None";
+        case MM_AKM_SUITE_NONE:
+            return "None";
 
-    case MM_AKM_SUITE_PSK:
-        return "PSK";
+        case MM_AKM_SUITE_PSK:
+            return "PSK";
 
-    case MM_AKM_SUITE_SAE:
-        return "SAE";
+        case MM_AKM_SUITE_SAE:
+            return "SAE";
 
-    case MM_AKM_SUITE_OWE:
-        return "OWE";
+        case MM_AKM_SUITE_OWE:
+            return "OWE";
 
-    default:
-        return "Other";
+        default:
+            return "Other";
     }
 }
 
-int mm_find_ie_from_offset(const uint8_t *ies, uint32_t ies_len,
-                           uint32_t search_offset, uint8_t ie_type)
+int mm_find_ie_from_offset(const uint8_t *ies,
+                           uint32_t ies_len,
+                           uint32_t search_offset,
+                           uint8_t ie_type)
 {
     while ((search_offset + 2) <= ies_len)
     {
@@ -52,9 +54,11 @@ int mm_find_ie_from_offset(const uint8_t *ies, uint32_t ies_len,
     return -1;
 }
 
-int mm_find_vendor_specific_ie_from_offset(const uint8_t *ies, uint32_t ies_len,
+int mm_find_vendor_specific_ie_from_offset(const uint8_t *ies,
+                                           uint32_t ies_len,
                                            uint32_t search_offset,
-                                           const uint8_t *id, size_t id_len)
+                                           const uint8_t *id,
+                                           size_t id_len)
 {
     int offset = 0;
 
@@ -87,7 +91,8 @@ int mm_find_vendor_specific_ie_from_offset(const uint8_t *ies, uint32_t ies_len,
     return -1;
 }
 
-int mm_parse_rsn_information(const uint8_t *ies, uint32_t ies_len,
+int mm_parse_rsn_information(const uint8_t *ies,
+                             uint32_t ies_len,
                              struct mm_rsn_information *output)
 {
     uint8_t length;
@@ -147,8 +152,7 @@ int mm_parse_rsn_information(const uint8_t *ies, uint32_t ies_len,
         if (ii < output->num_pairwise_cipher_suites)
         {
             output->pairwise_cipher_suites[ii] =
-                ies[offset] << 24 | ies[offset + 1] << 16 |
-                    ies[offset + 2] << 8 | ies[offset + 3];
+                ies[offset] << 24 | ies[offset + 1] << 16 | ies[offset + 2] << 8 | ies[offset + 3];
         }
         offset += 4;
         length -= 4;
@@ -175,8 +179,7 @@ int mm_parse_rsn_information(const uint8_t *ies, uint32_t ies_len,
         if (ii < output->num_akm_suites)
         {
             output->akm_suites[ii] =
-                ies[offset] << 24 | ies[offset + 1] << 16 |
-                    ies[offset + 2] << 8 | ies[offset + 3];
+                ies[offset] << 24 | ies[offset + 1] << 16 | ies[offset + 2] << 8 | ies[offset + 3];
         }
         offset += 4;
         length -= 4;
@@ -186,8 +189,7 @@ int mm_parse_rsn_information(const uint8_t *ies, uint32_t ies_len,
     return 0;
 }
 
-int mm_parse_s1g_operation(const uint8_t *ies, uint32_t ies_len,
-                           struct mm_s1g_operation *output)
+int mm_parse_s1g_operation(const uint8_t *ies, uint32_t ies_len, struct mm_s1g_operation *output)
 {
     const struct MM_PACKED dot11_ie_s1g_operation
     {

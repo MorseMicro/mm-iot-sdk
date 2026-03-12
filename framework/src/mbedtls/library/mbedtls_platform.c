@@ -36,7 +36,7 @@
 #endif
 #include "threading_alt.h"
 #include "mbedtls/entropy.h"
-#include "mmhal.h"
+#include "mmhal_core.h"
 #include "mmosal.h"
 
 #ifdef MBEDTLS_THREADING_ALT

@@ -30,8 +30,8 @@ enum shadow_update_status
  * @param json_len The length of the JSON update message.
  * @param status   The status of the update.
  */
-typedef void (*shadow_update_cb_fn_t)(char *json, size_t json_len,
-                                      enum shadow_update_status status);
+typedef void (
+    *shadow_update_cb_fn_t)(char *json, size_t json_len, enum shadow_update_status status);
 
 /**
  * Publishes to the shadow update topic: @c "$aws/things/thingName/shadow/update"

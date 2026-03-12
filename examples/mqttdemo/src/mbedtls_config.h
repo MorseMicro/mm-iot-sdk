@@ -28,7 +28,7 @@
 #ifndef MBEDTLS_CONFIG_H
 #define MBEDTLS_CONFIG_H
 
-#include "mmhal.h"
+#include "mmhal_app.h"
 #include "mmosal.h"
 
 /* Generate errors if deprecated functions are used. */
@@ -74,11 +74,11 @@
 #define MBEDTLS_NO_PLATFORM_ENTROPY
 #define MBEDTLS_ENTROPY_HARDWARE_ALT
 #define MBEDTLS_PLATFORM_NO_STD_FUNCTIONS
-#define MBEDTLS_PLATFORM_SNPRINTF_MACRO         snprintf
+#define MBEDTLS_PLATFORM_SNPRINTF_MACRO snprintf
 #define MBEDTLS_PLATFORM_C
 #define MBEDTLS_PLATFORM_MEMORY
-#define MBEDTLS_PLATFORM_CALLOC_MACRO           mmosal_calloc
-#define MBEDTLS_PLATFORM_FREE_MACRO             mmosal_free
+#define MBEDTLS_PLATFORM_CALLOC_MACRO mmosal_calloc
+#define MBEDTLS_PLATFORM_FREE_MACRO   mmosal_free
 
 /* Mbed TLS modules */
 #define MBEDTLS_AES_C
@@ -130,11 +130,11 @@
  * both ends of the connection!  (See comments in "mbedtls/ssl.h".)
  * The optimal size here depends on the typical size of records.
  */
-#define MBEDTLS_SSL_IN_CONTENT_LEN              8192
-#define MBEDTLS_SSL_OUT_CONTENT_LEN             8192
+#define MBEDTLS_SSL_IN_CONTENT_LEN  8192
+#define MBEDTLS_SSL_OUT_CONTENT_LEN 8192
 
 /* Save some RAM by adjusting to your exact needs */
-#define MBEDTLS_PSK_MAX_LEN    16 /* 128-bits keys are generally enough */
+#define MBEDTLS_PSK_MAX_LEN 16 /* 128-bits keys are generally enough */
 
 /*
  * You should adjust this to the exact number of sources you're using: default
@@ -142,7 +142,6 @@
  * Minimum is 2 for the entropy test suite.
  */
 #define MBEDTLS_ENTROPY_MAX_SOURCES 2
-
 
 /* Ensure that mbedTLS features that are required for morselib are enabled. */
 #include "mm_mbedtls_config.h"

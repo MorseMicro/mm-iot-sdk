@@ -21,7 +21,8 @@
 #include <string.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 /**
@@ -156,13 +157,13 @@ static inline char mm_nibble_to_hex_char(uint8_t nibble)
 enum mm_akm_suite_oui
 {
     /** Open (no security) */
-    MM_AKM_SUITE_NONE  = 0,
+    MM_AKM_SUITE_NONE = 0,
     /** Pre-shared key (WFA OUI) */
-    MM_AKM_SUITE_PSK   = 0x506f9a02,
+    MM_AKM_SUITE_PSK = 0x506f9a02,
     /** Simultaneous Authentication of Equals (SAE) */
-    MM_AKM_SUITE_SAE   = 0x000fac08,
+    MM_AKM_SUITE_SAE = 0x000fac08,
     /** OWE */
-    MM_AKM_SUITE_OWE   = 0x000fac12,
+    MM_AKM_SUITE_OWE = 0x000fac12,
     /** Another suite not in this enum */
     MM_AKM_SUITE_OTHER = 1,
 };
@@ -173,34 +174,34 @@ enum mm_cipher_suite_oui
     /** Open (no security) */
     MM_CIPHER_SUITE_AES_CCM = 0x000fac04,
     /** Another cipher suite not in this enum */
-    MM_CIPHER_SUITE_OTHER   = 1,
+    MM_CIPHER_SUITE_OTHER = 1,
 };
 
 /** Maximum number of pairwise cipher suites our parser will process. */
 #ifndef MM_RSN_INFORMATION_MAX_PAIRWISE_CIPHER_SUITES
-#define MM_RSN_INFORMATION_MAX_PAIRWISE_CIPHER_SUITES   (2)
+#define MM_RSN_INFORMATION_MAX_PAIRWISE_CIPHER_SUITES (2)
 #endif
 
 /** Maximum number of AKM suites our parser will process. */
 #ifndef MM_RSN_INFORMATION_MAX_AKM_SUITES
-#define MM_RSN_INFORMATION_MAX_AKM_SUITES               (2)
+#define MM_RSN_INFORMATION_MAX_AKM_SUITES (2)
 #endif
 
 /** Tag number of the RSN information element, in which we can find security details of the AP. */
-#define MM_RSN_INFORMATION_IE_TYPE                      (48)
+#define MM_RSN_INFORMATION_IE_TYPE (48)
 /** Tag number of the Vendor Specific information element. */
-#define MM_VENDOR_SPECIFIC_IE_TYPE                      (221)
+#define MM_VENDOR_SPECIFIC_IE_TYPE (221)
 /** Tag number of the S1G Operation information element. */
-#define MM_S1G_OPERATION_IE_TYPE                        (232)
+#define MM_S1G_OPERATION_IE_TYPE (232)
 
 /** Explicitly defined errno values to obviate the need to include errno.h. MM prefix to
  *  avoid namespace collision in case errno.h gets included. */
 enum mm_errno
 {
-    MM_ENOMEM    = 12,
-    MM_EFAULT    = 14,
-    MM_ENODEV    = 19,
-    MM_EINVAL    = 22,
+    MM_ENOMEM = 12,
+    MM_EFAULT = 14,
+    MM_ENODEV = 19,
+    MM_EINVAL = 22,
     MM_ETIMEDOUT = 110,
 };
 
@@ -252,8 +253,10 @@ const char *mm_akm_suite_to_string(uint32_t akm_suite_oui);
  *                       within @p ies; if
  *         no match is found then -1; if the IE is found but is malformed then -2.
  */
-int mm_find_ie_from_offset(const uint8_t *ies, uint32_t ies_len,
-                           uint32_t search_offset, uint8_t ie_type);
+int mm_find_ie_from_offset(const uint8_t *ies,
+                           uint32_t ies_len,
+                           uint32_t search_offset,
+                           uint8_t ie_type);
 
 /**
  * Search a list of Information Elements (IEs) and find the first instance of matching the
@@ -289,9 +292,11 @@ static inline int mm_find_ie(const uint8_t *ies, uint32_t ies_len, uint8_t ie_ty
  *                          within @p ies; if
  *         no match is found then -1; if the IE is found but is malformed then -2.
  */
-int mm_find_vendor_specific_ie_from_offset(const uint8_t *ies, uint32_t ies_len,
+int mm_find_vendor_specific_ie_from_offset(const uint8_t *ies,
+                                           uint32_t ies_len,
                                            uint32_t search_offset,
-                                           const uint8_t *id, size_t id_len);
+                                           const uint8_t *id,
+                                           size_t id_len);
 
 /**
  * Search through the given list of Information Elements (IEs) to find the first Vendor Specific IE
@@ -306,8 +311,10 @@ int mm_find_vendor_specific_ie_from_offset(const uint8_t *ies, uint32_t ies_len,
  *                    @p ies; if
  *         no match is found then -1; if the IE is found but is malformed then -2.
  */
-static inline int mm_find_vendor_specific_ie(const uint8_t *ies, uint32_t ies_len,
-                                             const uint8_t *id, size_t id_len)
+static inline int mm_find_vendor_specific_ie(const uint8_t *ies,
+                                             uint32_t ies_len,
+                                             const uint8_t *id,
+                                             size_t id_len)
 {
     return mm_find_vendor_specific_ie_from_offset(ies, ies_len, 0, id, id_len);
 }
@@ -322,7 +329,8 @@ static inline int mm_find_vendor_specific_ie(const uint8_t *ies, uint32_t ies_le
  *
  * @returns -2 on parse error, -1 if the RSN IE was not found, 0 if the RSN IE was found.
  */
-int mm_parse_rsn_information(const uint8_t *ies, uint32_t ies_len,
+int mm_parse_rsn_information(const uint8_t *ies,
+                             uint32_t ies_len,
                              struct mm_rsn_information *output);
 
 /**
@@ -352,8 +360,7 @@ struct mm_s1g_operation
  *
  * @returns -2 on parse error, -1 if the S1G Opration IE was not found, 0 on success.
  */
-int mm_parse_s1g_operation(const uint8_t *ies, uint32_t ies_len,
-                           struct mm_s1g_operation *output);
+int mm_parse_s1g_operation(const uint8_t *ies, uint32_t ies_len, struct mm_s1g_operation *output);
 
 /**
  * Determines if a given MAC address is all zeros.
@@ -364,8 +371,46 @@ int mm_parse_s1g_operation(const uint8_t *ies, uint32_t ies_len,
  */
 static inline bool mm_mac_addr_is_zero(const uint8_t *mac_addr)
 {
-    return (mac_addr[0] | mac_addr[1] | mac_addr[2] |
-            mac_addr[3] | mac_addr[4] | mac_addr[5]) == 0x00;
+    return (mac_addr[0] | mac_addr[1] | mac_addr[2] | mac_addr[3] | mac_addr[4] | mac_addr[5]) ==
+           0x00;
+}
+
+/**
+ * Determines if a given MAC address is a multicast/broadcast address.
+ *
+ * @param  mac_addr Array of length @ref MMWLAN_MAC_ADDR_LEN containing a MAC address.
+ *
+ * @return          @c true if given MAC address is a multicast address, else @c false
+ */
+static inline bool mm_mac_addr_is_multicast(const uint8_t *mac_addr)
+{
+    return mac_addr[0] & 0x01;
+}
+
+/**
+ * Determines if a given MAC address is the broadcast address (i.e., @c ff:ff:ff:ff:ff:ff ).
+ *
+ * @param  mac_addr Array of length @ref MMWLAN_MAC_ADDR_LEN containing a MAC address.
+ *
+ * @return          @c true if the given MAC address is the broadcast address, else @c false
+ */
+static inline bool mm_mac_addr_is_broadcast(const uint8_t *mac_addr)
+{
+    return (mac_addr[0] & mac_addr[1] & mac_addr[2] & mac_addr[3] & mac_addr[4] & mac_addr[5]) ==
+           0xff;
+}
+
+/**
+ * Compares two MAC addresses and determines if they are equal.
+ *
+ * @param  mac_addr1 Array of length @ref MMWLAN_MAC_ADDR_LEN containing a MAC address.
+ * @param  mac_addr2 Array of length @ref MMWLAN_MAC_ADDR_LEN containing a MAC address.
+ *
+ * @return              @c true if the two MAC addresses match, else @c false
+ */
+static inline bool mm_mac_addr_is_equal(const uint8_t *mac_addr1, const uint8_t *mac_addr2)
+{
+    return memcmp(mac_addr1, mac_addr2, 6) == 0;
 }
 
 /** @} */

@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 Morse Micro
+ * Copyright 2024-2025 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  * @file
@@ -9,6 +9,7 @@
 #include "mm_hal_common.h"
 #include "mmhal_uart.h"
 #include "mmutils.h"
+#include "main.h"
 
 #ifndef ENABLE_UART_HAL
 #define ENABLE_UART_HAL (0)
@@ -26,18 +27,18 @@
 #error "Unable to build UART HAL with UART logging enabled. Please define DISABLE_UART_LOG"
 #endif
 
-#define UART_INTERFACE      LOG_USART
-#define UART_IRQ_HANDLER    LOG_USART_IRQ_HANDLER
+#define UART_INTERFACE   LOG_USART
+#define UART_IRQ_HANDLER LOG_USART_IRQ_HANDLER
 
 /** Size of the receive ring buffer. */
-#define RX_RINGBUF_SIZE     (128)
+#define RX_RINGBUF_SIZE (128)
 /** Add the given value to a RX ringbuf index, taking into account wrapping. */
 #define RX_RINGBUF_IDX_ADD(_x, _y) (((_x) + (_y)) % RX_RINGBUF_SIZE)
 
 /** RX thread stack size in 32 bit words */
-#define RX_THREAD_STACK_SIZE_WORDS  (768)
+#define RX_THREAD_STACK_SIZE_WORDS (768)
 /** RX thread priority */
-#define RX_THREAD_PRIORITY          (MMOSAL_TASK_PRI_NORM)
+#define RX_THREAD_PRIORITY (MMOSAL_TASK_PRI_NORM)
 
 /** Data structure UART HAL global state. */
 struct mmhal_uart_data
@@ -52,6 +53,7 @@ struct mmhal_uart_data
         volatile bool run;
         volatile bool complete;
     } rx_thread;
+
     struct
     {
         uint8_t buf[RX_RINGBUF_SIZE];
@@ -94,8 +96,9 @@ static bool uart_rx_process(void)
 
         if (mmhal_uart.rx_cb)
         {
-            mmhal_uart.rx_cb(&mmhal_uart.rx_ringbuf.buf[snapshot_rx_rd_idx], rx_available,
-                            mmhal_uart.rx_cb_arg);
+            mmhal_uart.rx_cb(&mmhal_uart.rx_ringbuf.buf[snapshot_rx_rd_idx],
+                             rx_available,
+                             mmhal_uart.rx_cb_arg);
         }
 
         mmhal_uart.rx_ringbuf.read_idx = new_rd_idx;
@@ -153,8 +156,11 @@ void mmhal_uart_init(mmhal_uart_rx_cb_t rx_cb, void *rx_cb_arg)
     MMOSAL_ASSERT(mmhal_uart.rx_thread.semb != NULL);
 
     mmhal_uart.rx_thread.run = true;
-    mmhal_uart.rx_thread.handle = mmosal_task_create(
-        uart_rx_main, NULL, RX_THREAD_PRIORITY, RX_THREAD_STACK_SIZE_WORDS, "uart");
+    mmhal_uart.rx_thread.handle = mmosal_task_create(uart_rx_main,
+                                                     NULL,
+                                                     RX_THREAD_PRIORITY,
+                                                     RX_THREAD_STACK_SIZE_WORDS,
+                                                     "uart");
 
     /* Enable RX interrupts */
     LL_USART_ClearFlag_ORE(UART_INTERFACE);
@@ -188,7 +194,8 @@ void mmhal_uart_tx(const uint8_t *tx_data, size_t length)
     while (length-- != 0)
     {
         while (!LL_USART_IsActiveFlag_TXE(UART_INTERFACE))
-        { }
+        {
+        }
         LL_USART_TransmitData8(UART_INTERFACE, *tx_data++);
     }
 }
@@ -198,41 +205,44 @@ bool mmhal_uart_set_deep_sleep_mode(enum mmhal_uart_deep_sleep_mode mode)
     if (mode == MMHAL_UART_DEEP_SLEEP_ONE_SHOT)
     {
         /* Setup USART_RX line as interrupt */
-        LL_EXTI_InitTypeDef EXTI_InitStruct = {0};
-        LL_EXTI_SetEXTISource(LL_EXTI_EXTI_PORTA, LL_EXTI_EXTI_LINE10);
-        EXTI_InitStruct.Line_0_31 = LL_EXTI_LINE_10;
+        LL_EXTI_InitTypeDef EXTI_InitStruct = { 0 };
+        LL_EXTI_SetEXTISource(LOG_USART_RX_EXTI_Port, LOG_USART_RX_EXTI_Line);
+        EXTI_InitStruct.Line_0_31 = LOG_USART_RX_IRQ_LINE;
         EXTI_InitStruct.LineCommand = ENABLE;
         EXTI_InitStruct.Mode = LL_EXTI_MODE_IT;
         EXTI_InitStruct.Trigger = LL_EXTI_TRIGGER_FALLING;
         LL_EXTI_Init(&EXTI_InitStruct);
-        NVIC_SetPriority(EXTI10_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 15, 0));
-        LL_EXTI_ClearFallingFlag_0_31(LL_EXTI_LINE_10);
-        NVIC_EnableIRQ(EXTI10_IRQn);
+        NVIC_SetPriority(LOG_USART_RX_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 15, 0));
+        LL_EXTI_ClearFallingFlag_0_31(LOG_USART_RX_IRQ_LINE);
+        NVIC_EnableIRQ(LOG_USART_RX_IRQn);
         mmhal_clear_deep_sleep_veto(MMHAL_VETO_ID_HAL_UART);
         return true;
     }
     else if (mode == MMHAL_UART_DEEP_SLEEP_DISABLED)
     {
         mmhal_set_deep_sleep_veto(MMHAL_VETO_ID_HAL_UART);
-        NVIC_DisableIRQ(EXTI10_IRQn);
-        LL_EXTI_ClearFallingFlag_0_31(LL_EXTI_LINE_10);
+        NVIC_DisableIRQ(LOG_USART_RX_IRQn);
+        LL_EXTI_ClearFallingFlag_0_31(LOG_USART_RX_IRQ_LINE);
         return true;
     }
     return false;
 }
 
 /**
-  * This function handles UART RX falling edge interrupt.
-  */
-void EXTI10_IRQHandler(void)
+ * This function handles UART RX falling edge interrupt.
+ */
+#ifndef LOG_USART_RX_IRQ_HANDLER
+#error Must define alias macro
+#endif
+void LOG_USART_RX_IRQ_HANDLER(void)
 {
-    if (LL_EXTI_IsActiveFallingFlag_0_31(LL_EXTI_LINE_10) != RESET)
+    if (LL_EXTI_IsActiveFallingFlag_0_31(LOG_USART_RX_IRQ_LINE) != RESET)
     {
         mmhal_uart_set_deep_sleep_mode(MMHAL_UART_DEEP_SLEEP_DISABLED);
     }
 }
 
-void LOG_USART_IRQ_HANDLER(void)
+void UART_IRQ_HANDLER(void)
 {
     while (LL_USART_IsEnabledIT_RXNE(UART_INTERFACE) && LL_USART_IsActiveFlag_RXNE(UART_INTERFACE))
     {
@@ -263,7 +273,6 @@ void mmhal_uart_tx(const uint8_t *data, size_t length)
     MM_UNUSED(data);
     MM_UNUSED(length);
 }
-
 
 bool mmhal_uart_set_deep_sleep_mode(enum mmhal_uart_deep_sleep_mode mode)
 {

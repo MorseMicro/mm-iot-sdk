@@ -11,7 +11,6 @@
 
 #include "mmbuf.h"
 #include "mmutils.h"
-#include "mmhal.h"
 #include "mmosal.h"
 #include "mmagic_datalink_controller.h"
 

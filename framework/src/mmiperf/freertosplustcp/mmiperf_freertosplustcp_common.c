@@ -19,12 +19,14 @@ void iperf_freertosplustcp_session_start_common(struct mmiperf_state *base,
     if (local_addr->sin_family == FREERTOS_AF_INET)
     {
         (void)FreeRTOS_inet_ntop4(&local_addr->sin_address.ulIP_IPv4,
-                                  report->local_addr, sizeof(report->local_addr));
+                                  report->local_addr,
+                                  sizeof(report->local_addr));
     }
     if (remote_addr->sin_family == FREERTOS_AF_INET)
     {
         (void)FreeRTOS_inet_ntop4(&remote_addr->sin_address.ulIP_IPv4,
-                                  report->remote_addr, sizeof(report->remote_addr));
+                                  report->remote_addr,
+                                  sizeof(report->remote_addr));
     }
 #endif
 #if ipconfigUSE_IPv6
@@ -32,12 +34,14 @@ void iperf_freertosplustcp_session_start_common(struct mmiperf_state *base,
     if (local_addr->sin_family == FREERTOS_AF_INET6)
     {
         (void)FreeRTOS_inet_ntop6(&local_addr->sin_address.xIP_IPv6.ucBytes,
-                                  report->local_addr, sizeof(report->local_addr));
+                                  report->local_addr,
+                                  sizeof(report->local_addr));
     }
     if (remote_addr->sin_family == FREERTOS_AF_INET6)
     {
         (void)FreeRTOS_inet_ntop6(&remote_addr->sin_address.xIP_IPv6.ucBytes,
-                                  report->remote_addr, sizeof(report->remote_addr));
+                                  report->remote_addr,
+                                  sizeof(report->remote_addr));
     }
 #endif
     report->local_port = FreeRTOS_ntohs(local_addr->sin_port);

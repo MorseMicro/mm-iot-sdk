@@ -22,8 +22,20 @@ var group__MMWLAN__REGDB =
       [ "domains", "structmmwlan__regulatory__db.html#a5bc02caa23ce06e6a37872898aa26b0c", null ],
       [ "num_domains", "structmmwlan__regulatory__db.html#a4220aee7b4089dd3e817d34441df8fcd", null ]
     ] ],
+    [ "mmwlan_duty_cycle_stats", "structmmwlan__duty__cycle__stats.html", [
+      [ "burst_airtime_remaining_us", "structmmwlan__duty__cycle__stats.html#a7e6fbbf898e960ac1ea153d2e8158952", null ],
+      [ "burst_window_duration_us", "structmmwlan__duty__cycle__stats.html#a56a2783b35ac066f9b5cf45825f59d6d", null ],
+      [ "duty_cycle", "structmmwlan__duty__cycle__stats.html#aa9339f72b79dd157936fd2ff2b1763a1", null ],
+      [ "mode", "structmmwlan__duty__cycle__stats.html#ad49c29c48fe8906b1781d838508982df", null ]
+    ] ],
     [ "MMWLAN_COUNTRY_CODE_LEN", "group__MMWLAN__REGDB.html#gafc029d1ba4706f95eb0e0f3d52a4f949", null ],
     [ "MMWLAN_SKIP_OP_CLASS_CHECK", "group__MMWLAN__REGDB.html#gadc57b527f6f6b669904ed86183f8ca90", null ],
+    [ "mmwlan_duty_cycle_mode", "group__MMWLAN__REGDB.html#ga69f89b9ee99f9d1cae10474be1acf5e8", [
+      [ "MMWLAN_DUTY_CYCLE_MODE_SPREAD", "group__MMWLAN__REGDB.html#gga69f89b9ee99f9d1cae10474be1acf5e8ab9ee23f3cb0fcb042e0a1212a6c7a632", null ],
+      [ "MMWLAN_DUTY_CYCLE_MODE_BURST", "group__MMWLAN__REGDB.html#gga69f89b9ee99f9d1cae10474be1acf5e8ac3e646bfb0bcc7c0fd659340e6b98b82", null ]
+    ] ],
+    [ "mmwlan_get_duty_cycle_stats", "group__MMWLAN__REGDB.html#ga576ad2a5faf5743ede209bd0f043e72a", null ],
     [ "mmwlan_lookup_regulatory_domain", "group__MMWLAN__REGDB.html#ga64bab9d2f8a49a77267686a3489ed803", null ],
-    [ "mmwlan_set_channel_list", "group__MMWLAN__REGDB.html#ga73b6742a29b62bf0091a9b6c9cc770db", null ]
+    [ "mmwlan_set_channel_list", "group__MMWLAN__REGDB.html#ga73b6742a29b62bf0091a9b6c9cc770db", null ],
+    [ "mmwlan_set_duty_cycle_mode", "group__MMWLAN__REGDB.html#ga7c1eb7c9f6f40f2aa056e6213548ec64", null ]
 ];

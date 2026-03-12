@@ -214,6 +214,10 @@ enums:
             Timed out while waiting for PINGRESP.
             Connection to the broker has been lost.
 
+      - name: not_initialized
+        value: 31
+        description: Operation failed because the MMWLAN subsystem was not initialized.
+
       - name: bad_version
         value: 32
         description: Operation failed due to a version mismatch.
@@ -434,6 +438,11 @@ structs:
       - name: op_bw_mhz
         description: Operating bandwidth, in MHz, of the access point.
         type: uint8_t
+
+      - name: noise_dbm
+        description: Background noise measured by the chip on the channel at the time
+                     the probe response was received.
+        type: int16_t
 
       - name: tsf
         description: TSF timestamp in the Probe Response frame.
@@ -675,19 +684,13 @@ modules:
         description: Whether Centralized Authentication Controlled is enabled on the STA.
         type: bool
 
-      - name: offload_arp_response
-        id: 15
-        description: >-
-          If true, enables ARP response offload which allows the Morse chip to directly respond
-          to ARP requests without waking up the host processor.
-        type: bool
+      # Original variables moved to IP module. Kept here to prevent accidental reuse of the
+      # deprecated IDs.
+      # - name: offload_arp_response
+      #   id: 15
 
-      - name: offload_arp_refresh_s
-        id: 16
-        description: >-
-          If non zero, enables ARP refresh offload with the specified interval in seconds.
-          Note: ARP response offload needs to be enabled for this feature to work.
-        type: uint32_t
+      # - name: offload_arp_refresh_s
+      #   id: 16
 
       - name: min_health_check_intvl_ms
         id: 17
@@ -1074,6 +1077,20 @@ modules:
           will suppress these notifications. Defaults to true.
         type: bool
 
+      - name: offload_arp_response
+        id: 8
+        description: >-
+          If true, enables ARP response offload which allows the Morse chip to directly respond
+          to ARP requests without waking up the host processor.
+        type: bool
+
+      - name: offload_arp_refresh_s
+        id: 9
+        description: >-
+          If non zero, enables ARP refresh offload with the specified interval in seconds.
+          Note: ARP response offload needs to be enabled for this feature to work.
+        type: uint32_t
+
     commands:
       - name: status
         id: 8
@@ -1316,11 +1333,11 @@ modules:
             type: uint8_t
 
           - name: len
-            description: TCP port to listen on.
+            description: Maximum length of data.
             type: uint16_t
 
           - name: timeout
-            description: Timeout in ms. 0 to return immediately, UINT32_MAX to wait indefinately.
+            description: Timeout in ms. 0 to return immediately, UINT32_MAX to wait indefinitely.
             type: uint32_t
 
         response_args:
@@ -1351,7 +1368,7 @@ modules:
             type: uint8_t
 
           - name: timeout
-            description: Timeout in ms. 0 to return immediately, UINT32_MAX to wait indefinately.
+            description: Timeout in ms. 0 to return immediately, UINT32_MAX to wait indefinitely.
             type: uint32_t
 
       - name: write_poll
@@ -1364,7 +1381,7 @@ modules:
             type: uint8_t
 
           - name: timeout
-            description: Timeout in ms. 0 to return immediately, UINT32_MAX to wait indefinately.
+            description: Timeout in ms. 0 to return immediately, UINT32_MAX to wait indefinitely.
             type: uint32_t
 
       - name: accept
@@ -1388,6 +1405,31 @@ modules:
         command_args:
           - name: stream_id
             description: Stream ID of the socket to close.
+            type: uint8_t
+
+      - name: set_rx_ready_evt_enabled
+        id: 16
+        description: >-
+          Sets whether the RX ready event should be enabled for the given socket.
+          Note that the RX ready event is currently only supported for TCP sockets and that
+          behaviour with TLS sockets undefined.
+        command_args:
+          - name: stream_id
+            description: Stream ID of the socket to close.
+            type: uint8_t
+          - name: enabled
+            description: Whether the RX ready event should be enabled.
+            type: bool
+
+    events:
+      - name: rx_ready
+        id: 1
+        description: >-
+          If enabled, this event is triggered when data becomes ready for receive.
+
+        event_args:
+          - name: stream_id
+            description: Stream ID of the TCP socket this applies to.
             type: uint8_t
 
   - name: tls

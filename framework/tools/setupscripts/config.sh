@@ -5,6 +5,17 @@
 # Configuration file for ubuntu-setup.sh and env.sh
 #
 
+# Dry-run wrapper for piped commands
+function dryrun_pipe()
+{
+    local command_str="$1"
+    if [[ -n "$DRYRUNCMD" ]]; then
+        echo "$command_str"
+    else
+        eval "$command_str"
+    fi
+}
+
 MORSE_TOOLS_DIR=/opt/morse
 
 MORSE_ARCH="$(uname -m)"

@@ -7,6 +7,7 @@ var structmmwlan__scan__result =
     [ "channel_freq_hz", "structmmwlan__scan__result.html#a26b52c341cab3934afb2b7580deb073c", null ],
     [ "ies", "structmmwlan__scan__result.html#a04f7bcf93016370b0f127d3959f00d1f", null ],
     [ "ies_len", "structmmwlan__scan__result.html#a18ebe88a92e8bbb96a37837befdbbe07", null ],
+    [ "noise_dbm", "structmmwlan__scan__result.html#a9f43b8c599107fc8f56a3d6d507e1dfe", null ],
     [ "op_bw_mhz", "structmmwlan__scan__result.html#a3f586da6f3b246a0df9836e8e11fbbe4", null ],
     [ "rssi", "structmmwlan__scan__result.html#a58f987e3e1c06fd951a18311ac75d87b", null ],
     [ "ssid", "structmmwlan__scan__result.html#ac2270e59cc74ef486686fcc90e0ab3ae", null ],

@@ -209,26 +209,27 @@
 #include <stdint.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 /** The maximum length of a key in bytes */
-#define MMCONFIG_MAX_KEYLEN             32
+#define MMCONFIG_MAX_KEYLEN 32
 
 /** Return & error codes */
 enum mmconfig_result
 {
-    MMCONFIG_OK                      = 0,   /**< Operation completed successfully */
-    MMCONFIG_DATA_ERASED             = 1,   /**< Partition was erased */
-    MMCONFIG_ERR_INVALID_KEY         = -1,  /**< Key provided was invalid */
-    MMCONFIG_ERR_FULL                = -2,  /**< Config store is full */
-    MMCONFIG_ERR_NOT_FOUND           = -3,  /**< Requested key was not found */
-    MMCONFIG_ERR_INCORRECT_TYPE      = -4,  /**< Requested data type did not match found data */
-    MMCONFIG_ERR_INVALID_PARTITION   = -5,  /**< Valid partition was not found */
-    MMCONFIG_ERR_INSUFFICIENT_MEMORY = -6,  /**< Insufficient memory */
-    MMCONFIG_ERR_OUT_OF_BOUNDS       = -7,  /**< Offset was out of bounds */
-    MMCONFIG_ERR_NOT_SUPPORTED       = -8,  /**< Operation not supported */
-    MMCONFIG_ERR_WILDCARD_KEY        = -9   /**< Key contains wildcard valid only for deletion */
+    MMCONFIG_OK = 0, /**< Operation completed successfully */
+    MMCONFIG_DATA_ERASED = 1, /**< Partition was erased */
+    MMCONFIG_ERR_INVALID_KEY = -1, /**< Key provided was invalid */
+    MMCONFIG_ERR_FULL = -2, /**< Config store is full */
+    MMCONFIG_ERR_NOT_FOUND = -3, /**< Requested key was not found */
+    MMCONFIG_ERR_INCORRECT_TYPE = -4, /**< Requested data type did not match found data */
+    MMCONFIG_ERR_INVALID_PARTITION = -5, /**< Valid partition was not found */
+    MMCONFIG_ERR_INSUFFICIENT_MEMORY = -6, /**< Insufficient memory */
+    MMCONFIG_ERR_OUT_OF_BOUNDS = -7, /**< Offset was out of bounds */
+    MMCONFIG_ERR_NOT_SUPPORTED = -8, /**< Operation not supported */
+    MMCONFIG_ERR_WILDCARD_KEY = -9 /**< Key contains wildcard valid only for deletion */
 };
 
 /**
@@ -540,7 +541,8 @@ int mmconfig_validate_key_character(char character);
  *                          @c MMCONFIG_ERR_NOT_SUPPORTED if there is no persistent store
  */
 int mmconfig_check_usage(const struct mmconfig_update_node *node_list,
-                         uint32_t *bytes_used, int32_t *bytes_remaining);
+                         uint32_t *bytes_used,
+                         int32_t *bytes_remaining);
 
 /**
  * Loads and applies any other @c mmwlan settings specified in config store.

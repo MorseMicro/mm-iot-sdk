@@ -9,7 +9,8 @@
 #include "mmosal.h"
 #include "mmconfig.h"
 #include "mmwlan.h"
-#include "mmhal.h"
+#include "mmhal_app.h"
+#include "mmhal_os.h"
 #include "mmutils.h"
 
 #include "core/autogen/mmagic_core_data.h"
@@ -38,9 +39,9 @@ enum mmagic_status mmagic_core_sys_reset(struct mmagic_data *core)
     return MMAGIC_STATUS_OK;
 }
 
-enum mmagic_status mmagic_core_sys_deep_sleep(struct mmagic_data *core,
-                                              const struct mmagic_core_sys_deep_sleep_cmd_args *
-                                              cmd_args)
+enum mmagic_status mmagic_core_sys_deep_sleep(
+    struct mmagic_data *core,
+    const struct mmagic_core_sys_deep_sleep_cmd_args *cmd_args)
 {
     bool ok;
     enum mmagic_status ret = MMAGIC_STATUS_UNAVAILABLE;
@@ -58,7 +59,8 @@ enum mmagic_status mmagic_core_sys_deep_sleep(struct mmagic_data *core,
 }
 
 enum mmagic_status mmagic_core_sys_get_version(
-    struct mmagic_data *core, struct mmagic_core_sys_get_version_rsp_args *rsp_args)
+    struct mmagic_data *core,
+    struct mmagic_core_sys_get_version_rsp_args *rsp_args)
 {
     int ret;
     struct mmwlan_version version;
@@ -90,11 +92,11 @@ enum mmagic_status mmagic_core_sys_get_version(
     else
     {
         /* Did not find bootloader version in config store */
-        mmosal_safer_strcpy((char *)&rsp_args->results.bootloader_version.data, "N/A",
+        mmosal_safer_strcpy((char *)&rsp_args->results.bootloader_version.data,
+                            "N/A",
                             sizeof(rsp_args->results.bootloader_version.data) - 1);
         rsp_args->results.bootloader_version.len =
-            MM_MIN(strlen("N/A"),
-                   sizeof(rsp_args->results.bootloader_version.data) - 1);
+            MM_MIN(strlen("N/A"), sizeof(rsp_args->results.bootloader_version.data) - 1);
     }
 
     /* Get Morse versions */
@@ -113,7 +115,8 @@ enum mmagic_status mmagic_core_sys_get_version(
                sizeof(rsp_args->results.morse_firmware_version.data) - 1);
 
     /* Copy SDK version */
-    mmosal_safer_strcpy((char *)&rsp_args->results.morselib_version.data, version.morselib_version,
+    mmosal_safer_strcpy((char *)&rsp_args->results.morselib_version.data,
+                        version.morselib_version,
                         sizeof(rsp_args->results.morselib_version.data) - 1);
     rsp_args->results.morselib_version.len =
         MM_MIN(strlen(version.morselib_version),
@@ -122,7 +125,8 @@ enum mmagic_status mmagic_core_sys_get_version(
     /* Copy Morse hardware version */
     snprintf((char *)&rsp_args->results.morse_hardware_version.data,
              sizeof(rsp_args->results.morse_hardware_version.data),
-             "%lx", version.morse_chip_id);
+             "%lx",
+             version.morse_chip_id);
     rsp_args->results.morse_hardware_version.len =
         MM_MIN(strlen((char *)&rsp_args->results.morse_hardware_version.data),
                sizeof(rsp_args->results.morse_hardware_version.data) - 1);

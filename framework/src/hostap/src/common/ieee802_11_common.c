@@ -1404,6 +1404,23 @@ enum hostapd_hw_mode ieee80211_freq_to_chan(int freq, u8 *channel)
 					     &op_class, channel);
 }
 
+int ieee80211_freq_khz_to_s1g_chan(int freq_khz, u8 op_class)
+{
+	/* Per 802.11-2024 23.3.14: fc = starting_freq + fsep * channel_num */
+	int start_freq = s1g_op_class_to_start_freq(op_class);
+	if (start_freq < 0)
+	{
+		return start_freq;
+	}
+
+	freq_khz -= start_freq;
+	if (freq_khz < 0)
+	{
+		return -1;
+	}
+
+	return freq_khz / 500;
+}
 
 /**
  * ieee80211_freq_to_channel_ext - Convert frequency into channel info
@@ -3302,6 +3319,65 @@ int ieee802_edmg_is_allowed(struct ieee80211_edmg_config allowed,
 #endif
 }
 
+int s1g_op_class_to_start_freq(u8 s1g_op_class)
+{
+	/* S1G op class conversions to channel start frequency (kHz) retrieved from
+	 * IEEE Std 802.11-2024: Table E-5 */
+	switch (s1g_op_class)
+	{
+	case 1:
+	case 2:
+	case 3:
+	case 4:
+	case 5:
+	case 18:
+	case 20:
+	case 21:
+	case 22:
+	case 23:
+	case 24:
+	case 25:
+	case 26:
+	case 27:
+	case 28:
+	case 29:
+	case 31:
+	case 32:
+	case 33:
+	case 34:
+		return 902000;
+	case 6:
+	case 7:
+	case 17:
+	case 19:
+		return 863000;
+	case 8:
+		return 916500;
+	case 9:
+	case 10:
+		return 922500;
+	case 11:
+	case 12:
+		return 906500;
+	case 14:
+	case 15:
+	case 16:
+		return 917500;
+	case 30:
+		return 901400;
+	case 35:
+	case 36:
+	case 37:
+	case 38:
+		return 840000;
+	/* S1G op class proposed in IEEE P802.11-REVmf D1.0 CID 147 */
+	case 39:
+	case 40:
+		return 894000;
+	default:
+		return -1;
+	}
+}
 
 int op_class_to_bandwidth(u8 op_class)
 {

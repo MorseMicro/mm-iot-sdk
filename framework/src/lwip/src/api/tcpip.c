@@ -58,7 +58,13 @@
 /* global variables */
 static tcpip_init_done_fn tcpip_init_done;
 static void *tcpip_init_done_arg;
+
+#if MORSE_LWIP_TIMERS_ON_DEMAND
+/* The fetch operation on the tcpip mbox needs to be restarted when on demand timers are updated */
+sys_mbox_t tcpip_mbox;
+#else
 static sys_mbox_t tcpip_mbox;
+#endif
 
 #if LWIP_TCPIP_CORE_LOCKING
 /** The global semaphore to lock the stack. */
@@ -141,8 +147,12 @@ tcpip_thread(void *arg)
     /* wait for a message, timeouts are processed while waiting */
     TCPIP_MBOX_FETCH(&tcpip_mbox, (void **)&msg);
     if (msg == NULL) {
+#if MORSE_LWIP_TIMERS_ON_DEMAND
+      /* MORSE on demand timers push NULL to the mbox to force it to update */
+#else
       LWIP_DEBUGF(TCPIP_DEBUG, ("tcpip_thread: invalid message: NULL\n"));
       LWIP_ASSERT("tcpip_thread: invalid message", 0);
+#endif /* !MORSE_LWIP_TIMERS_ON_DEMAND */
       continue;
     }
     tcpip_thread_handle_msg(msg);

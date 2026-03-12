@@ -71,9 +71,10 @@
  */
 
 #include <string.h>
+#include "mmhal_app.h"
 #include "mmosal.h"
 #include "mmwlan.h"
-#include "mm_app_regdb.h"
+#include "mmregdb.h"
 #include "emmet.h"
 #include "mm_app_loadconfig.h"
 #include "mm_app_common.h"
@@ -101,6 +102,39 @@ static void link_status_callback(const struct mmipal_link_status *link_status)
     }
 }
 
+void emmet_hal_set_led(uint8_t led_id, uint8_t level)
+{
+    mmhal_set_led(led_id, level);
+}
+
+enum emmet_button_state emmet_hal_get_button_state(void)
+{
+    enum mmhal_button_state state = mmhal_get_button(BUTTON_ID_USER0);
+    if (state == BUTTON_RELEASED)
+    {
+        return EMMET_BUTTON_RELEASED;
+    }
+    else
+    {
+        return EMMET_BUTTON_PRESSED;
+    }
+}
+
+void emmet_hal_trigger_button_event(enum emmet_button_state state)
+{
+    mmhal_button_state_cb_t cb = mmhal_get_button_callback(BUTTON_ID_USER0);
+    if (cb != NULL)
+    {
+        if (state == EMMET_BUTTON_RELEASED)
+        {
+            cb(BUTTON_ID_USER0, BUTTON_RELEASED);
+        }
+        else
+        {
+            cb(BUTTON_ID_USER0, BUTTON_PRESSED);
+        }
+    }
+}
 
 /**
  * Main entry point to the application. This will be invoked in a thread once operating system
@@ -122,7 +156,6 @@ void app_init(void)
     (void)mmwlan_boot(&boot_args);
     app_print_version_info();
 
-
     /* Load IP stack settings from config store or defaults */
     struct mmipal_init_args mmipal_init_args = MMIPAL_INIT_ARGS_DEFAULT;
     load_mmipal_init_args(&mmipal_init_args);
@@ -138,5 +171,6 @@ void app_init(void)
 
     /* Configure and start Emmet so that we can begin receiving commands from the host. */
     emmet_set_reg_db(get_regulatory_db());
+
     emmet_start();
 }

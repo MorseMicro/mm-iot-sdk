@@ -16,7 +16,8 @@
 #pragma once
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 #include <stdbool.h>
@@ -24,12 +25,17 @@ extern "C" {
 
 /** Maximum length of an IP address string, including null-terminator. */
 #ifndef MMIPAL_IPADDR_STR_MAXLEN
-#define MMIPAL_IPADDR_STR_MAXLEN   (48)
+#define MMIPAL_IPADDR_STR_MAXLEN (48)
 #endif
 
 /** Maximum number of IPv6 addresses supported. */
 #ifndef MMIPAL_MAX_IPV6_ADDRESSES
 #define MMIPAL_MAX_IPV6_ADDRESSES (3)
+#endif
+
+/** Length of a MAC address. */
+#ifndef MMIPAL_MACADDR_LEN
+#define MMIPAL_MACADDR_LEN (6)
 #endif
 
 /** Enumeration of status codes returned by MMIPAL functions. */
@@ -74,6 +80,9 @@ enum mmipal_addr_mode
 /** IP address string type. */
 typedef char mmipal_ip_addr_t[MMIPAL_IPADDR_STR_MAXLEN];
 
+/** MAC address string type. */
+typedef uint8_t mmipal_mac_addr_t[MMIPAL_MACADDR_LEN];
+
 /**
  * IPv4 configuration structure.
  *
@@ -81,7 +90,7 @@ typedef char mmipal_ip_addr_t[MMIPAL_IPADDR_STR_MAXLEN];
  * For example:
  *
  * @code{.c}
- * struct mmipal_ip_config config = MMIPAL_IP_CONFIG_DEAFULT;
+ * struct mmipal_ip_config config = MMIPAL_IP_CONFIG_DEFAULT;
  * @endcode
  */
 struct mmipal_ip_config
@@ -97,7 +106,13 @@ struct mmipal_ip_config
 };
 
 /** Initializer for @ref mmipal_ip_config. */
-#define MMIPAL_IP_CONFIG_DEFAULT { MMIPAL_DHCP, "", "", "", }
+#define MMIPAL_IP_CONFIG_DEFAULT \
+    {                            \
+        MMIPAL_DHCP,             \
+        "",                      \
+        "",                      \
+        "",                      \
+    }
 
 /** Enumeration of IPv6 address allocation modes. */
 enum mmipal_ip6_addr_mode
@@ -136,6 +151,17 @@ struct mmipal_ip6_config
 #define MMIPAL_IP6_CONFIG_DEFAULT { MMIPAL_IP6_AUTOCONFIG }
 
 /**
+ * ARP configuration structure.
+ */
+struct mmipal_arp_config
+{
+    /** IP address */
+    mmipal_ip_addr_t ip_addr;
+    /** MAC address */
+    mmipal_mac_addr_t mac_addr;
+};
+
+/**
  * Initialize arguments structure.
  *
  * This should be initialized using @c MMIPAL_INIT_ARGS_DEFAULT.
@@ -170,8 +196,8 @@ struct mmipal_init_args
  * Default values for @ref mmipal_init_args. This should be used when initializing the
  * @ref mmipal_init_args structure.
  */
-#define MMIPAL_INIT_ARGS_DEFAULT   { MMIPAL_DHCP, { 0 }, { 0 }, { 0 }, \
-                                     MMIPAL_IP6_DISABLED, { 0 }, false, 0 }
+#define MMIPAL_INIT_ARGS_DEFAULT \
+    { MMIPAL_DHCP, { 0 }, { 0 }, { 0 }, MMIPAL_IP6_DISABLED, { 0 }, false, 0 }
 
 /**
  * Initialize the IP stack and enable the MMWLAN interface.
@@ -303,7 +329,7 @@ enum mmipal_status mmipal_get_local_addr(mmipal_ip_addr_t local_addr,
  *
  * @returns @c MMIPAL_SUCCESS on success, @c MMIPAL_NOT_SUPPORTED if IPv4 is not supported.
  */
-enum mmipal_status  mmipal_get_ip_config(struct mmipal_ip_config *config);
+enum mmipal_status mmipal_get_ip_config(struct mmipal_ip_config *config);
 
 /**
  * Set the IP configurations.
@@ -346,6 +372,27 @@ enum mmipal_status mmipal_get_ip6_config(struct mmipal_ip6_config *config);
  * @returns @c MMIPAL_SUCCESS on success, @c MMIPAL_NOT_SUPPORTED if IPv6 is not supported.
  */
 enum mmipal_status mmipal_set_ip6_config(const struct mmipal_ip6_config *config);
+
+/**
+ * Add a static ARP entry.
+ *
+ * @param config Static ARP entry to be added
+ *
+ * @returns @c MMIPAL_SUCCESS on success, @c MMIPAL_NOT_SUPPORTED if IPv4 is not supported
+ *          or if the IP stack does not support static ARP,
+ *          @c MMIPAL_NO_MEM if the static ARP table is already full.
+ */
+enum mmipal_status mmipal_add_static_arp_entry(const struct mmipal_arp_config *config);
+
+/**
+ * Remove a static ARP entry.
+ *
+ * @param config Static ARP entry to be removed
+ *
+ * @returns @c MMIPAL_SUCCESS on success, @c MMIPAL_NOT_SUPPORTED if IPv4 is not supported,
+ *          @c MMIPAL_INVALID_ARGUMENT if the entry was not found.
+ */
+enum mmipal_status mmipal_remove_static_arp_entry(const struct mmipal_arp_config *config);
 
 /**
  * Get current IPv4 link state.

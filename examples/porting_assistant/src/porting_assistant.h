@@ -36,16 +36,17 @@ struct test_step
     enum test_result (*exec)(char *log_buf, size_t log_buf_len);
 };
 
-#define TEST_STEP(name, description) \
+#define TEST_STEP(name, description)                                        \
     static enum test_result name##_exec(char *log_buf, size_t log_buf_len); \
-    const struct test_step name = { description, name##_exec }; \
+    const struct test_step name = { description, name##_exec };             \
     static enum test_result name##_exec(char *log_buf, size_t log_buf_len)
 
-#define TEST_LOG_APPEND(fstr, ...) \
-    do { \
-        int len = snprintf(log_buf, log_buf_len, fstr, ##__VA_ARGS__);  \
-        if (len > 0 && (int)log_buf_len >= len) { \
-            log_buf += len; \
-            log_buf_len -= len; \
-        } \
+#define TEST_LOG_APPEND(fstr, ...)                                     \
+    do {                                                               \
+        int len = snprintf(log_buf, log_buf_len, fstr, ##__VA_ARGS__); \
+        if (len > 0 && (int)log_buf_len >= len)                        \
+        {                                                              \
+            log_buf += len;                                            \
+            log_buf_len -= len;                                        \
+        }                                                              \
     } while (0)

@@ -129,7 +129,7 @@ components += env.GetProjectOption("custom_mm_iot_components", default="").split
 # morsefirmware component is a special case -- do not import the makefile fragment
 components = [component for component in components if component != "morsefirmware"]
 
-import_morse_fw_bin(env, FRAMEWORK_DIR, "morsefirmware")
+import_morse_fw_bin(env, FRAMEWORK_DIR, f"platform-{BOARD_NAME}")
 
 #
 # Load components and update Platform IOO Environment

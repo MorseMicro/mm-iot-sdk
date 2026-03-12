@@ -50,6 +50,7 @@
 #include "lwip/ip6.h"
 #include "lwip/ip6_addr.h"
 #include "lwip/prot/tcp.h"
+#include "morse/on_demand_timers.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -382,6 +383,7 @@ extern struct tcp_pcb ** const tcp_pcb_lists[NUM_TCP_PCB_LISTS];
                             (npcb)->next = NULL; \
                             LWIP_ASSERT("TCP_RMV: tcp_pcbs sane", tcp_pcbs_sane()); \
                             LWIP_DEBUGF(TCP_DEBUG, ("TCP_RMV: removed %p from %p\n", (void *)(npcb), (void *)(*(pcbs)))); \
+                            TCP_TIMER_NEEDED(); \
                             } while(0)
 
 #else /* LWIP_DEBUG */
@@ -410,6 +412,7 @@ extern struct tcp_pcb ** const tcp_pcb_lists[NUM_TCP_PCB_LISTS];
       }                                            \
     }                                              \
     (npcb)->next = NULL;                           \
+    TCP_TIMER_NEEDED();                            \
   } while(0)
 
 #endif /* LWIP_DEBUG */

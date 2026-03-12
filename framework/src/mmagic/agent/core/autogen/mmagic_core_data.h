@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Morse Micro
+ * Copyright 2026 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -22,20 +22,23 @@
 #include "mmagic_core_mqtt.h"
 
 /** Maximum length of the @c app_version string (excluding null terminator). */
-#define MMAGIC_SYS_MAX_APP_VERSION_LENGTH   (31)
+#define MMAGIC_SYS_MAX_APP_VERSION_LENGTH (31)
 
 /** Maximum number of streams we support in MMAGIC */
-#define MMAGIC_MAX_STREAMS  8
+#define MMAGIC_MAX_STREAMS 8
 
 /**
  * Function type for M2M/CLI-specific event implementation.
  *
- * @param core        MMAGIC core data structure.
- * @param payload     Event payload.
- * @param payload_len Length of the event payload.
+ * @param core          MMAGIC core data structure.
+ * @param payload       Event payload.
+ * @param payload_len   Length of the event payload.
  */
-typedef enum mmagic_status (*mmagic_event_fn_t)(void *arg, uint8_t subsystem_id, uint8_t event_id,
-                                                const uint8_t *payload, size_t payload_len);
+typedef enum mmagic_status (*mmagic_event_fn_t)(void *arg,
+                                                uint8_t subsystem_id,
+                                                uint8_t event_id,
+                                                const uint8_t *payload,
+                                                size_t payload_len);
 
 /** mmagic core data structure. */
 struct mmagic_data

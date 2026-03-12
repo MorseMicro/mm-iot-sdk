@@ -88,7 +88,6 @@ static inline int sdio_spi_clear_bits_le32(uint32_t address, uint32_t mask)
     return sdio_spi_update_le32(address, mask, 0);
 }
 
-
 /**
  * Carry out the steps to read a large buffer from a specified address in the transceiver.
  *

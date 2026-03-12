@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Morse Micro
+ * Copyright 2026 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -14,20 +14,21 @@
 /********* Enumerations **********/
 enum mmagic_ping_vars
 {
-    mmagic_ping_var_target   = 0,
+    mmagic_ping_var_target = 0,
     mmagic_ping_var_interval = 1,
-    mmagic_ping_var_count    = 2,
+    mmagic_ping_var_count = 2,
 };
 
 /**
  * Process the received M2M buffer.
  *
- * @param  agent   Reference to the M2M Agent context.
- * @param  sid     The stream ID this buffer was received on.
- * @param  header  The M2M header containing the subsystem, command and subcommand.
- * @param  cmd_buf The @c mmbuf with the buffer to be processed.
- * @return         An @c mmbuf with the response.
+ * @param agent         Reference to the M2M Agent context.
+ * @param sid           The stream ID this buffer was received on.
+ * @param header        The M2M header containing the subsystem, command and subcommand.
+ * @param cmd_buf       The @c mmbuf with the buffer to be processed.
+ * @return              An @c mmbuf with the response.
  */
-struct mmbuf *mmagic_m2m_ping_process(struct mmagic_m2m_agent *agent, uint8_t sid,
+struct mmbuf *mmagic_m2m_ping_process(struct mmagic_m2m_agent *agent,
+                                      uint8_t sid,
                                       struct mmagic_m2m_command_header *header,
                                       struct mmbuf *cmd_buf);

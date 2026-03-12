@@ -15,7 +15,7 @@
         "configstore_last_sector": 3,
         "configstore_base_address": "0x8004000",
         "configstore_size": "0x4000",
-        "supported_platforms": ["mm-mm6108-ekh05","mm-mm6108-ekh05-sdio","mm-mm8108-ekh05","mm-mm8108-ekh05-sdio"]
+        "supported_platforms": ["mm-mm6108-ekh05","mm-mm6108-ekh05-sdio","mm-mm8108-ekh05","mm-mm8108-ekh05-sdio","mm-mmecs03"]
     },
     "stm32h753zi.cpu0":
     {
@@ -33,16 +33,7 @@
         "configstore_last_sector": 7,
         "configstore_base_address": "0x8004000",
         "configstore_size": "0x4000",
-        "supported_platforms": ["mm-ekh08-wb55", "mm-ekh08-wb55-ble", "mm-mmecs02v2"]
-    },
-    "STM32F429ZIx.cpu":
-    {
-        "configstore_bank": 0,
-        "configstore_first_sector": 1,
-        "configstore_last_sector": 2,
-        "configstore_base_address": "0x8004000",
-        "configstore_size": "0x8000",
-        "supported_platforms": ["mm-ekh08-f429"]
+        "supported_platforms": ["mm-ekh08-wb55", "mm-ekh08-wb55-ble", "mm-mmecs02v2", "mm-ekh18-wb55"]
     },
     "stm32f7x.cpu":
     {

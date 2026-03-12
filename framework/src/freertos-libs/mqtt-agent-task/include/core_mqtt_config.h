@@ -80,4 +80,11 @@
 
 #define MQTT_AGENT_MAX_EVENT_QUEUE_WAIT_TIME         (1)
 
+/**
+ * @brief MQTT agent task stack size in 32-bit word.
+ */
+#ifndef MQTT_AGENT_TASK_STACK_SIZE_U32
+#define MQTT_AGENT_TASK_STACK_SIZE_U32               (1000)
+#endif
+
 #endif /* ifndef CORE_MQTT_CONFIG_H */

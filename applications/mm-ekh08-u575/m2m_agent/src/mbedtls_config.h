@@ -28,7 +28,7 @@
 #ifndef MBEDTLS_CONFIG_H
 #define MBEDTLS_CONFIG_H
 
-#include "mmhal.h"
+#include "mmhal_app.h"
 #include "mmosal.h"
 
 /* Generate errors if deprecated functions are used. */

@@ -689,6 +689,7 @@ struct dpp_pkex * dpp_pkex_init(void *msg_ctx, struct dpp_bootstrap_info *bi,
 				const u8 *own_mac,
 				const char *identifier, const char *code,
 				size_t code_len, bool v2);
+bool dpp_pkex_invalid_key_attr_len(u16 len);
 struct dpp_pkex * dpp_pkex_rx_exchange_req(void *msg_ctx,
 					   struct dpp_bootstrap_info *bi,
 					   const u8 *own_mac,

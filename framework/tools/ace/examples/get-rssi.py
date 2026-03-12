@@ -47,19 +47,20 @@ def _main():
 
     # Get rssi
     while True:
-        rsp = dutif.exec("wlan/get_rssi")
-        rsp.rssi = 0 if rsp.rssi is None else rsp.rssi
-        sys.stdout.write(f"\rrssi = {rsp.rssi} dBm")
-        sys.stdout.flush()
-
-        if not args.follow:
-            break
-
         try:
+            rsp = dutif.exec("wlan/get_rssi")
+            rsp.rssi = 0 if rsp.rssi is None else rsp.rssi
+            sys.stdout.write(f"\rrssi = {rsp.rssi} dBm")
+            sys.stdout.flush()
+
+            if not args.follow:
+                break
+
             time.sleep(1)
         except KeyboardInterrupt:
             break
-    print("\n")
+
+    print()
 
 
 if __name__ == "__main__":

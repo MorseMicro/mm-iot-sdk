@@ -9,13 +9,11 @@
 
 #include "mmutils.h"
 
-
 const uint32_t mm6108_valid_chip_ids[] = {
     0x206,
     0x306,
     0x406,
 };
-
 
 static int mm6108_gpio_set_oe(uint8_t gpio_num, bool oe)
 {

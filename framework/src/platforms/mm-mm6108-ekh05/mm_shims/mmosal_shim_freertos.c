@@ -10,8 +10,9 @@
 #include <semphr.h>
 #include <queue.h>
 #include <timers.h>
+#include <stdarg.h>
 #include "mmosal.h"
-#include "mmhal.h"
+#include "mmhal_os.h"
 #include "mmlog.h"
 #include "errno.h"
 
@@ -41,11 +42,11 @@ struct mmosal_preserved_failure_info
 
 /** Magic number to put in @c mmosal_assert_info.magic to indicate that the assertion info
  *  is valid. */
-#define ASSERT_INFO_MAGIC   (0xabcd1234)
+#define ASSERT_INFO_MAGIC (0xabcd1234)
 
 /* Persistent assertion info. Linker script should put this into memory that is not
  * zeroed on boot. Be careful to update linker script if renaming. */
-struct mmosal_preserved_failure_info preserved_failure_info __attribute__((section (".noinit")));
+struct mmosal_preserved_failure_info preserved_failure_info __attribute__((section(".noinit")));
 
 void mmosal_log_failure_info(const struct mmosal_failure_info *info)
 {
@@ -73,8 +74,8 @@ static void mmosal_dump_failure_info(void)
 
     if (new_failure_count >= MMOSAL_MAX_FAILURE_RECORDS)
     {
-        first_failure_num = FAST_MOD(preserved_failure_info.failure_count,
-                                     MMOSAL_MAX_FAILURE_RECORDS);
+        first_failure_num =
+            FAST_MOD(preserved_failure_info.failure_count, MMOSAL_MAX_FAILURE_RECORDS);
         new_failure_count = MMOSAL_MAX_FAILURE_RECORDS;
     }
 
@@ -86,7 +87,10 @@ static void mmosal_dump_failure_info(void)
 
         printf("Failure %u logged at pc 0x%08lx, lr 0x%08lx, line %ld in %08lx\n",
                first_failure_num + failure_offset,
-               info->pc, info->lr, info->line, info->fileid);
+               info->pc,
+               info->lr,
+               info->line,
+               info->fileid);
 
         for (ii = 0; ii < sizeof(info->platform_info) / sizeof(info->platform_info[0]); ii++)
         {
@@ -105,8 +109,8 @@ bool mmosal_extract_failure_info(struct mmosal_failure_info *buf, uint32_t *fail
         return false;
     }
 
-    uint32_t new_failure_count = preserved_failure_info.failure_count -
-        preserved_failure_info.displayed_failure_count;
+    uint32_t new_failure_count =
+        preserved_failure_info.failure_count - preserved_failure_info.displayed_failure_count;
 
     /* No failures are un-viewed. */
     if (new_failure_count == 0)
@@ -127,8 +131,8 @@ bool mmosal_extract_failure_info(struct mmosal_failure_info *buf, uint32_t *fail
     }
 
     /* Convert the displayed_failure_count into an index for the preserved failure log array. */
-    uint32_t oldest_entry_idx = FAST_MOD(preserved_failure_info.displayed_failure_count,
-                                         MMOSAL_MAX_FAILURE_RECORDS);
+    uint32_t oldest_entry_idx =
+        FAST_MOD(preserved_failure_info.displayed_failure_count, MMOSAL_MAX_FAILURE_RECORDS);
 
     memcpy(buf, &preserved_failure_info.info[oldest_entry_idx], sizeof(*buf));
 
@@ -207,11 +211,8 @@ static void init_task_main(void *arg)
  */
 #ifdef HEAP_5
 static uint32_t heap[configTOTAL_HEAP_SIZE / sizeof(uint32_t)];
-static const HeapRegion_t heap_regions[] =
-{
-    { (uint8_t *)heap, configTOTAL_HEAP_SIZE },
-    { NULL, 0 }
-};
+static const HeapRegion_t heap_regions[] = { { (uint8_t *)heap, configTOTAL_HEAP_SIZE },
+                                             { NULL, 0 } };
 #endif
 
 int mmosal_main(mmosal_app_init_cb_t app_init_cb)
@@ -237,9 +238,11 @@ int mmosal_main(mmosal_app_init_cb_t app_init_cb)
 
     mm_logging_init();
 
-    struct mmosal_task *init_task =
-        mmosal_task_create(init_task_main, (void *)app_init_cb,
-                           MMOSAL_TASK_PRI_LOW, INIT_STACK_SIZE_U32, "init");
+    struct mmosal_task *init_task = mmosal_task_create(init_task_main,
+                                                       (void *)app_init_cb,
+                                                       MMOSAL_TASK_PRI_LOW,
+                                                       INIT_STACK_SIZE_U32,
+                                                       "init");
     configASSERT(init_task != NULL);
     vTaskStartScheduler();
     /* We should never get here. */
@@ -365,9 +368,11 @@ void mmosal_task_main(void *arg)
     mmosal_task_delete(NULL);
 }
 
-struct mmosal_task *mmosal_task_create(mmosal_task_fn_t task_fn, void *argument,
+struct mmosal_task *mmosal_task_create(mmosal_task_fn_t task_fn,
+                                       void *argument,
                                        enum mmosal_task_priority priority,
-                                       unsigned stack_size_u32, const char *name)
+                                       unsigned stack_size_u32,
+                                       const char *name)
 {
     xTaskHandle handle;
     UBaseType_t freertos_priority = tskIDLE_PRIORITY + priority;
@@ -380,8 +385,8 @@ struct mmosal_task *mmosal_task_create(mmosal_task_fn_t task_fn, void *argument,
     task_arg->task_fn = task_fn;
     task_arg->task_fn_arg = argument;
 
-    BaseType_t result = xTaskCreate(mmosal_task_main, name, stack_size_u32, task_arg,
-                                    freertos_priority, &handle);
+    BaseType_t result =
+        xTaskCreate(mmosal_task_main, name, stack_size_u32, task_arg, freertos_priority, &handle);
     if (result == pdFAIL)
     {
         mmosal_free(task_arg);
@@ -735,8 +740,11 @@ uint32_t mmosal_ticks_per_second(void)
 
 /* --------------------------------------------------------------------------------------------- */
 
-struct mmosal_timer *mmosal_timer_create(const char *name, uint32_t timer_period, bool auto_reload,
-                                         void *arg, timer_callback_t callback)
+struct mmosal_timer *mmosal_timer_create(const char *name,
+                                         uint32_t timer_period,
+                                         bool auto_reload,
+                                         void *arg,
+                                         timer_callback_t callback)
 {
     /*
      * The software timer callback functions execute in the context of a task that is
@@ -750,8 +758,10 @@ struct mmosal_timer *mmosal_timer_create(const char *name, uint32_t timer_period
      * always
      * place the calling task into the Blocked state.
      */
-    return (struct mmosal_timer *)xTimerCreate(name, pdMS_TO_TICKS(timer_period),
-                                               (UBaseType_t)auto_reload, arg,
+    return (struct mmosal_timer *)xTimerCreate(name,
+                                               pdMS_TO_TICKS(timer_period),
+                                               (UBaseType_t)auto_reload,
+                                               arg,
                                                (TimerCallbackFunction_t)callback);
 }
 

@@ -25,7 +25,8 @@
 #include "mmosal.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 struct mmbuf_ops;
@@ -81,8 +82,11 @@ struct mmbuf_ops
  * @param data_start_offset Initial value for @c start_offset.
  * @param ops               Operations data structure.
  */
-static inline void mmbuf_init(struct mmbuf *mmbuf, uint8_t *buf, uint32_t buf_len,
-                              uint32_t data_start_offset, const struct mmbuf_ops *ops)
+static inline void mmbuf_init(struct mmbuf *mmbuf,
+                              uint8_t *buf,
+                              uint32_t buf_len,
+                              uint32_t data_start_offset,
+                              const struct mmbuf_ops *ops)
 {
     memset(mmbuf, 0, sizeof(*mmbuf));
     mmbuf->buf = buf;
@@ -334,7 +338,7 @@ struct mmbuf_list
 };
 
 /** Static initializer for @ref mmbuf_list. */
-#define MMBUF_LIST_INIT     { NULL, NULL, 0 }
+#define MMBUF_LIST_INIT { NULL, NULL, 0 }
 
 /**
  * Initialization function for @ref mmbuf_list, for cases where @c MMBUF_LIST_INIT

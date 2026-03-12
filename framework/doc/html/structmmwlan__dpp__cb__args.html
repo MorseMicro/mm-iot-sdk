@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.9.7</span>
+   &#160;<span id="projectnumber">2.10.4</span>
    </div>
   </td>
  </tr>
@@ -89,27 +89,27 @@ $(document).ready(function(){initNavTree('structmmwlan__dpp__cb__args.html','');
 <div class="header">
   <div class="summary">
 <a href="#pub-attribs">Data Fields</a>  </div>
-  <div class="headertitle"><div class="title">mmwlan_dpp_cb_args Struct Reference<div class="ingroups"><a class="el" href="group__MMWLAN.html">Morse Micro Wireless LAN (mmwlan) API</a> &raquo; <a class="el" href="group__MMWLAN__CTRL.html">WLAN Control API</a></div></div></div>
+  <div class="headertitle"><div class="title">mmwlan_dpp_cb_args Struct Reference<div class="ingroups"><a class="el" href="group__MMWLAN.html">Morse Micro Wireless LAN (mmwlan) API</a> &raquo; <a class="el" href="group__MMWLAN__DPP.html">WLAN Control API for Device Provisioning Protocol (DPP)</a></div></div></div>
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Structure passed back when a DPP event occurs. </p>
 <dl class="section warning"><dt>Warning</dt><dd>BETA NOTICE: This is beta API that is under development; breaking changes may be introduced in future releases. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01085">1085</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02156">2156</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 </div>
 <p><code>#include &lt;<a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Data Fields</h2></td></tr>
-<tr class="memitem:aefb678469add397dcbf227856c039eb7"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMWLAN__CTRL.html#gaff0a5b52c6328bf4d24644c68b723ed3">mmwlan_dpp_event</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__dpp__cb__args.html#aefb678469add397dcbf227856c039eb7">event</a></td></tr>
+<tr class="memitem:aefb678469add397dcbf227856c039eb7"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMWLAN__DPP.html#gaff0a5b52c6328bf4d24644c68b723ed3">mmwlan_dpp_event</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__dpp__cb__args.html#aefb678469add397dcbf227856c039eb7">event</a></td></tr>
 <tr class="memdesc:aefb678469add397dcbf227856c039eb7"><td class="mdescLeft">&#160;</td><td class="mdescRight">The DPP event that has occurred.  <a href="structmmwlan__dpp__cb__args.html#aefb678469add397dcbf227856c039eb7">More...</a><br /></td></tr>
 <tr class="separator:aefb678469add397dcbf227856c039eb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a02f8dc30ca3410a73f8ab26e190a28be"><td class="memItemLeft" ><a id="a02f8dc30ca3410a73f8ab26e190a28be" name="a02f8dc30ca3410a73f8ab26e190a28be"></a>
 union {</td></tr>
 <tr class="memitem:a4f225f0759624ab9968a9f58dd0ee7a3"><td class="memItemLeft" >
 &#160;&#160;&#160;struct {</td></tr>
-<tr class="memitem:ad5293e4a97a0fd3b03d5fc819ba38334"><td class="memItemLeft" >&#160;&#160;&#160;&#160;&#160;&#160;enum <a class="el" href="group__MMWLAN__CTRL.html#gade954a79247b07a1737c72f34e2697ea">mmwlan_dpp_pb_result</a>&#160;&#160;&#160;<a class="el" href="structmmwlan__dpp__cb__args.html#abf4a9352e8bd4b846461ae113e9b2921">result</a></td></tr>
+<tr class="memitem:ad5293e4a97a0fd3b03d5fc819ba38334"><td class="memItemLeft" >&#160;&#160;&#160;&#160;&#160;&#160;enum <a class="el" href="group__MMWLAN__DPP.html#gade954a79247b07a1737c72f34e2697ea">mmwlan_dpp_pb_result</a>&#160;&#160;&#160;<a class="el" href="structmmwlan__dpp__cb__args.html#abf4a9352e8bd4b846461ae113e9b2921">result</a></td></tr>
 <tr class="memdesc:ad5293e4a97a0fd3b03d5fc819ba38334"><td class="mdescLeft">&#160;</td><td class="mdescRight">Result of DPP push button.  <a href="structmmwlan__dpp__cb__args.html#abf4a9352e8bd4b846461ae113e9b2921">More...</a><br /></td></tr>
 <tr class="separator:ad5293e4a97a0fd3b03d5fc819ba38334"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3e72717962c60b81fb66b84449854dfb"><td class="memItemLeft" >&#160;&#160;&#160;&#160;&#160;&#160;const uint8_t *&#160;&#160;&#160;<a class="el" href="structmmwlan__dpp__cb__args.html#a098b37c9cbab1fc893f960103174b84e">ssid</a></td></tr>
@@ -136,14 +136,14 @@ union {</td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="group__MMWLAN__CTRL.html#gaff0a5b52c6328bf4d24644c68b723ed3">mmwlan_dpp_event</a> mmwlan_dpp_cb_args::event</td>
+          <td class="memname">enum <a class="el" href="group__MMWLAN__DPP.html#gaff0a5b52c6328bf4d24644c68b723ed3">mmwlan_dpp_event</a> mmwlan_dpp_cb_args::event</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>The DPP event that has occurred. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01088">1088</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02159">2159</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -162,7 +162,7 @@ union {</td></tr>
 <p>Passphrase, NULL terminated. </p>
 <p >May be <code>NULL</code>. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01102">1102</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02174">2174</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -173,14 +173,14 @@ union {</td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="group__MMWLAN__CTRL.html#gade954a79247b07a1737c72f34e2697ea">mmwlan_dpp_pb_result</a> mmwlan_dpp_cb_args::result</td>
+          <td class="memname">enum <a class="el" href="group__MMWLAN__DPP.html#gade954a79247b07a1737c72f34e2697ea">mmwlan_dpp_pb_result</a> mmwlan_dpp_cb_args::result</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>Result of DPP push button. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01096">1096</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02168">2168</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -199,7 +199,7 @@ union {</td></tr>
 <p>SSID of the AP to connect to. </p>
 <p >May be <code>NUlL</code>. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01098">1098</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02170">2170</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -217,7 +217,7 @@ union {</td></tr>
 
 <p>Length of the SSID. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01100">1100</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02172">2172</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -231,7 +231,7 @@ union {</td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="structmmwlan__dpp__cb__args.html">mmwlan_dpp_cb_args</a></li>
-    <li class="footer">Copyright 2021 Morse Micro </li>
+    <li class="footer">Copyright 2021-2025 Morse Micro </li>
   </ul>
 </div>
 </body>

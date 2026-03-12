@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Morse Micro
+ * Copyright 2026 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -14,4 +14,4 @@
  * Maximum allowed length of any value string. Needs to accomodate WLAN password, IP and MAC address
  * strings.
  */
-#define MAX_VAL_LEN     101
+#define MAX_VAL_LEN 101

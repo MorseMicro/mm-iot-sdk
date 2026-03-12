@@ -41,7 +41,8 @@
 #define __CC_H__
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 #ifndef BYTE_ORDER
@@ -52,27 +53,27 @@ extern "C" {
 /*
  *  // Setup PACKing macros for KEIL/RVMDK Tools
  */
-    #define PACK_STRUCT_BEGIN __packed
-    #define PACK_STRUCT_STRUCT
-    #define PACK_STRUCT_END
-    #define PACK_STRUCT_FIELD(x) x
+#define PACK_STRUCT_BEGIN __packed
+#define PACK_STRUCT_STRUCT
+#define PACK_STRUCT_END
+#define PACK_STRUCT_FIELD(x) x
 #elif defined(__IAR_SYSTEMS_ICC__)
 /*
  *  // Setup PACKing macros for IAR Tools
  */
-    #define PACK_STRUCT_BEGIN
-    #define PACK_STRUCT_STRUCT
-    #define PACK_STRUCT_END
-    #define PACK_STRUCT_FIELD(x) x
-    #define PACK_STRUCT_USE_INCLUDES
+#define PACK_STRUCT_BEGIN
+#define PACK_STRUCT_STRUCT
+#define PACK_STRUCT_END
+#define PACK_STRUCT_FIELD(x) x
+#define PACK_STRUCT_USE_INCLUDES
 #else
 /*
  *  // Setup PACKing macros for GCC Tools
  */
-    #define PACK_STRUCT_BEGIN
-    #define PACK_STRUCT_STRUCT __attribute__((__packed__))
-    #define PACK_STRUCT_END
-    #define PACK_STRUCT_FIELD(x) x
+#define PACK_STRUCT_BEGIN
+#define PACK_STRUCT_STRUCT __attribute__((__packed__))
+#define PACK_STRUCT_END
+#define PACK_STRUCT_FIELD(x) x
 #endif
 
 /*****************************************************************************
@@ -93,7 +94,10 @@ extern "C" {
  *  // what display routines are available.
  */
 #ifndef LWIP_PLATFORM_DIAG
-#define LWIP_PLATFORM_DIAG(msg) do {printf msg;} while (0)
+#define LWIP_PLATFORM_DIAG(msg) \
+    do {                        \
+        printf msg;             \
+    } while (0)
 #endif
 
 /*
@@ -109,16 +113,19 @@ extern "C" {
 
 extern void __error__(char *pcFilename, uint32_t ui32Line);
 
-#define LWIP_PLATFORM_ASSERT(msg)          \
-        {                                  \
-            LWIP_PLATFORM_DIAG(msg);       \
-            __error__(__FILE__, __LINE__); \
-        }
+#define LWIP_PLATFORM_ASSERT(msg)      \
+    {                                  \
+        LWIP_PLATFORM_DIAG(msg);       \
+        __error__(__FILE__, __LINE__); \
+    }
 #else
 #include <stdio.h>
 #include <stdlib.h>
-#define LWIP_PLATFORM_ASSERT(x) do {printf("Assertion \"%s\" failed at line %d in %s\n", \
-                                           x, __LINE__, __FILE__); abort();} while (0)
+#define LWIP_PLATFORM_ASSERT(x)                                                      \
+    do {                                                                             \
+        printf("Assertion \"%s\" failed at line %d in %s\n", x, __LINE__, __FILE__); \
+        abort();                                                                     \
+    } while (0)
 
 #endif
 #endif

@@ -2839,7 +2839,7 @@ static const struct parse_data ssid_fields[] = {
 	{ STR(country) },
 	{ INT_RANGE(op_class, 0, 80) },
 	{ INT_RANGE(s1g_prim_chwidth, 0, 2) },
-	{ INT_RANGE(s1g_prim_1mhz_chan_index, 0, 8) },
+	{ INT_RANGE(primary_1mhz_channel_loc, 0, 1) },
 	{ INT_RANGE(disable_s1g_sgi, 0, 1) },
 #ifdef CONFIG_MESH
 	{ INT_RANGE(mesh_beaconless_mode, 0, 1) },
@@ -3391,7 +3391,6 @@ void wpa_config_set_network_defaults(struct wpa_ssid *ssid)
 	ssid->cac = 0;
 	ssid->channel = DEFAULT_MORSE_IBSS_CHANNEL;
 	ssid->op_class = DEFAULT_MORSE_IBSS_OP_CLASS;
-	ssid->s1g_prim_1mhz_chan_index = DEFAULT_MORSE_S1G_PRIM_1M_CH_IDX;
 	ssid->disable_s1g_sgi = DEFAULT_DISABLE_SGI;
 #ifdef CONFIG_MESH
 	ssid->mesh_beaconless_mode = DEFAULT_MESH_BEACONLESS_MODE;

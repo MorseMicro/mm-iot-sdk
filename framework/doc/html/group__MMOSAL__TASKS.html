@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.9.7</span>
+   &#160;<span id="projectnumber">2.10.4</span>
    </div>
   </td>
  </tr>
@@ -176,15 +176,15 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>mmosal_task_yield</b>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordflow">do</span> { \</div>
-<div class="line">        MMPORT_MEM_SYNC(); \</div>
+<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordflow">do</span> {                              \</div>
+<div class="line">        MMPORT_MEM_SYNC();            \</div>
 <div class="line">        mmosal_task_enter_critical(); \</div>
 <div class="line">    } <span class="keywordflow">while</span> (0)</div>
 </div><!-- fragment -->
 <p>Enter critical section. </p>
 <p >This may result in interrupts being disabled so critical sections must be kept short. Each entry to a critical section must be matched to a corresponding exit (<a class="el" href="group__MMOSAL__TASKS.html#ga4be26c811e89a5cae31b484d77741f68">MMOSAL_TASK_EXIT_CRITICAL()</a>). </p>
 
-<p class="definition">Definition at line <a class="el" href="mmosal_8h_source.html#l00240">240</a> of file <a class="el" href="mmosal_8h_source.html">mmosal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmosal_8h_source.html#l00243">243</a> of file <a class="el" href="mmosal_8h_source.html">mmosal.h</a>.</p>
 
 </div>
 </div>
@@ -202,15 +202,15 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>mmosal_task_yield</b>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordflow">do</span> { \</div>
-<div class="line">        MMPORT_MEM_SYNC(); \</div>
+<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordflow">do</span> {                             \</div>
+<div class="line">        MMPORT_MEM_SYNC();           \</div>
 <div class="line">        mmosal_task_exit_critical(); \</div>
 <div class="line">    } <span class="keywordflow">while</span> (0)</div>
 </div><!-- fragment -->
 <p>Exit critical section. </p>
 <p >Used to exit a critical section previously entered with <a class="el" href="group__MMOSAL__TASKS.html#ga0f712aef0ecfaeceb293a07a7860df63">MMOSAL_TASK_ENTER_CRITICAL()</a>). </p>
 
-<p class="definition">Definition at line <a class="el" href="mmosal_8h_source.html#l00251">251</a> of file <a class="el" href="mmosal_8h_source.html">mmosal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmosal_8h_source.html#l00254">254</a> of file <a class="el" href="mmosal_8h_source.html">mmosal.h</a>.</p>
 
 </div>
 </div>
@@ -235,7 +235,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>mmosal_task_yield</b>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="mmosal_8h_source.html#l00173">173</a> of file <a class="el" href="mmosal_8h_source.html">mmosal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmosal_8h_source.html#l00174">174</a> of file <a class="el" href="mmosal_8h_source.html">mmosal.h</a>.</p>
 
 </div>
 </div>
@@ -266,7 +266,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>mmosal_task_yield</b>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmosal_8h_source.html#l00176">176</a> of file <a class="el" href="mmosal_8h_source.html">mmosal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmosal_8h_source.html#l00177">177</a> of file <a class="el" href="mmosal_8h_source.html">mmosal.h</a>.</p>
 
 </div>
 </div>
@@ -517,7 +517,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>mmosal_task_yield</b>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Copyright 2021 Morse Micro </li>
+    <li class="footer">Copyright 2021-2025 Morse Micro </li>
   </ul>
 </div>
 </body>

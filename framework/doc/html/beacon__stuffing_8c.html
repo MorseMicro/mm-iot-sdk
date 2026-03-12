@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.9.7</span>
+   &#160;<span id="projectnumber">2.10.4</span>
    </div>
   </td>
  </tr>
@@ -96,7 +96,7 @@ $(document).ready(function(){initNavTree('beacon__stuffing_8c.html',''); initRes
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p >Example app using the <a class="el" href="group__MMWLAN__BEACON__VENDOR__IE__FILTER__API.html">Beacon Vendor Specific IE Filter API</a>. </p>
+<div class="textblock"><p >Example app using the <a class="el" href="group__MMWLAN__BEACON__VENDOR__IE__FILTER__API.html">WLAN Beacon Vendor Specific IE Filter API</a>. </p>
 <dl class="section note"><dt>Note</dt><dd>It is assumed that you have followed the steps in the <a class="el" href="GETTING_STARTED.html">Getting Started</a> guide and are therefore familiar with how to build, flash, and monitor an application using the MM-IoT-SDK framework.</dd>
 <dd>
 We will only briefly touch on the AP side of this feature as it is out of scope for this documentation.</dd></dl>
@@ -117,7 +117,7 @@ Beacon Stuffing Overview</h1>
 <h1><a class="anchor" id="autotoc_md15"></a>
 Application Overview</h1>
 <p >This application connects and then installs one OUI to filter on. It will then log how many times it sees the Vendor Specific IE and the most recent data received.</p>
-<p >Additionally, if the length of the vendor specific content is greater than or equal to <a class="el" href="beacon__stuffing_8c.html#ac65bb652e154b13982cf8b0e6911a17e">RGB_DATA_LENGTH_BYTES</a> this application will treat it as intensity levels for the red, green and blue LEDs. These will be set in the callback using <a class="el" href="group__MMHAL.html#gac25caf50d17ead605f05658a7555ab7c">mmhal_set_led()</a>.</p>
+<p >Additionally, if the length of the vendor specific content is greater than or equal to <a class="el" href="beacon__stuffing_8c.html#ac65bb652e154b13982cf8b0e6911a17e">RGB_DATA_LENGTH_BYTES</a> this application will treat it as intensity levels for the red, green and blue LEDs. These will be set in the callback using <a class="el" href="group__MMHAL__APP.html#gac25caf50d17ead605f05658a7555ab7c">mmhal_set_led()</a>.</p>
 <p >To add a Vendor Specific IE using a Morse Micro AP the following command can be used. </p><div class="fragment"><div class="line">morse_cli vendor_ie -a 4D4D42FF00FF -b</div>
 </div><!-- fragment --><p >This will add a Vendor Specific IE with</p><ul>
 <li>OUI = <code>0x4D4D42</code> </li>
@@ -132,7 +132,7 @@ Configuration</h1>
 <p class="definition">Definition in file <a class="el" href="beacon__stuffing_8c_source.html">beacon_stuffing.c</a>.</p>
 </div><div class="textblock"><code>#include &lt;string.h&gt;</code><br />
 <code>#include &lt;endian.h&gt;</code><br />
-<code>#include &quot;mmhal.h&quot;</code><br />
+<code>#include &quot;mmhal_app.h&quot;</code><br />
 <code>#include &quot;mmosal.h&quot;</code><br />
 <code>#include &quot;mmwlan.h&quot;</code><br />
 <code>#include &quot;mmconfig.h&quot;</code><br />
@@ -143,26 +143,24 @@ Include dependency graph for beacon_stuffing.c:</div>
 <div class="dyncontent">
 <div class="center"><img src="beacon__stuffing_8c__incl.png" border="0" usemap="#abeacon__stuffing_8c" alt=""/></div>
 <map name="abeacon__stuffing_8c" id="abeacon__stuffing_8c">
-<area shape="rect" title="Example app using the Beacon Vendor Specific IE Filter API." alt="" coords="512,5,648,32"/>
-<area shape="rect" title=" " alt="" coords="130,453,201,480"/>
-<area shape="rect" title=" " alt="" coords="1130,80,1209,107"/>
-<area shape="rect" href="mmhal_8h_source.html" title=" " alt="" coords="664,80,744,107"/>
-<area shape="rect" href="mmosal_8h_source.html" title=" " alt="" coords="331,379,418,405"/>
-<area shape="rect" href="mmwlan_8h_source.html" title=" " alt="" coords="373,229,464,256"/>
-<area shape="rect" href="mmconfig_8h_source.html" title=" " alt="" coords="1043,304,1141,331"/>
-<area shape="rect" href="mmutils_8h_source.html" title=" " alt="" coords="168,379,256,405"/>
-<area shape="rect" title=" " alt="" coords="1233,80,1388,107"/>
-<area shape="rect" title=" " alt="" coords="559,453,641,480"/>
-<area shape="rect" title=" " alt="" coords="797,379,872,405"/>
-<area shape="rect" title=" " alt="" coords="682,453,753,480"/>
-<area shape="rect" title=" " alt="" coords="557,229,621,256"/>
-<area shape="rect" href="mmhal__flash_8h_source.html" title=" " alt="" coords="899,304,1018,331"/>
-<area shape="rect" href="mmhal__wlan_8h_source.html" title=" " alt="" coords="645,155,763,181"/>
-<area shape="rect" href="mmpkt_8h_source.html" title=" " alt="" coords="590,304,671,331"/>
-<area shape="rect" title=" " alt="" coords="443,453,509,480"/>
-<area shape="rect" title=" " alt="" coords="237,453,307,480"/>
-<area shape="rect" title=" " alt="" coords="331,453,418,480"/>
-<area shape="rect" title=" " alt="" coords="5,453,80,480"/>
+<area shape="rect" title="Example app using the WLAN Beacon Vendor Specific IE Filter API." alt="" coords="518,5,654,32"/>
+<area shape="rect" title=" " alt="" coords="111,155,181,181"/>
+<area shape="rect" title=" " alt="" coords="853,80,932,107"/>
+<area shape="rect" href="mmhal__app_8h_source.html" title=" " alt="" coords="719,80,829,107"/>
+<area shape="rect" href="mmosal_8h_source.html" title=" " alt="" coords="484,80,571,107"/>
+<area shape="rect" href="mmwlan_8h_source.html" title=" " alt="" coords="257,80,347,107"/>
+<area shape="rect" href="mmconfig_8h_source.html" title=" " alt="" coords="595,80,694,107"/>
+<area shape="rect" href="mmutils_8h_source.html" title=" " alt="" coords="371,80,459,107"/>
+<area shape="rect" title=" " alt="" coords="957,80,1111,107"/>
+<area shape="rect" title=" " alt="" coords="603,155,686,181"/>
+<area shape="rect" title=" " alt="" coords="806,155,881,181"/>
+<area shape="rect" title=" " alt="" coords="711,155,781,181"/>
+<area shape="rect" title=" " alt="" coords="905,155,969,181"/>
+<area shape="rect" title=" " alt="" coords="401,155,467,181"/>
+<area shape="rect" title=" " alt="" coords="305,155,376,181"/>
+<area shape="rect" title=" " alt="" coords="492,155,579,181"/>
+<area shape="rect" title=" " alt="" coords="206,155,281,181"/>
+<area shape="rect" title=" " alt="" coords="5,155,87,181"/>
 </map>
 </div>
 </div>
@@ -176,7 +174,7 @@ Data Structures</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:aa34acef92a790325e9d881eb434d6bad"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="beacon__stuffing_8c.html#aa34acef92a790325e9d881eb434d6bad">DEFAULT_OUI</a>&#160;&#160;&#160;{0x4D, 0x4D, 0x42};</td></tr>
+<tr class="memitem:aa34acef92a790325e9d881eb434d6bad"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="beacon__stuffing_8c.html#aa34acef92a790325e9d881eb434d6bad">DEFAULT_OUI</a>&#160;&#160;&#160;{ 0x4D, 0x4D, 0x42 };</td></tr>
 <tr class="memdesc:aa34acef92a790325e9d881eb434d6bad"><td class="mdescLeft">&#160;</td><td class="mdescRight">OUI to look for in the Vendor Specific IE.  <a href="beacon__stuffing_8c.html#aa34acef92a790325e9d881eb434d6bad">More...</a><br /></td></tr>
 <tr class="separator:aa34acef92a790325e9d881eb434d6bad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7c1b578734c8eef01f13e5b1e92ef43d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="beacon__stuffing_8c.html#a7c1b578734c8eef01f13e5b1e92ef43d">DEFAULT_LOG_LEN_BYTES</a>&#160;&#160;&#160;30</td></tr>
@@ -237,7 +235,7 @@ Variables</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define DEFAULT_OUI&#160;&#160;&#160;{0x4D, 0x4D, 0x42};</td>
+          <td class="memname">#define DEFAULT_OUI&#160;&#160;&#160;{ 0x4D, 0x4D, 0x42 };</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -281,7 +279,7 @@ Variables</h2></td></tr>
 
 <p>Filter index to install the OUI. </p>
 
-<p class="definition">Definition at line <a class="el" href="beacon__stuffing_8c_source.html#l00104">104</a> of file <a class="el" href="beacon__stuffing_8c_source.html">beacon_stuffing.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="beacon__stuffing_8c_source.html#l00103">103</a> of file <a class="el" href="beacon__stuffing_8c_source.html">beacon_stuffing.c</a>.</p>
 
 </div>
 </div>
@@ -299,7 +297,7 @@ Variables</h2></td></tr>
 
 <p>Length of data required for updating the LED state. </p>
 
-<p class="definition">Definition at line <a class="el" href="beacon__stuffing_8c_source.html#l00106">106</a> of file <a class="el" href="beacon__stuffing_8c_source.html">beacon_stuffing.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="beacon__stuffing_8c_source.html#l00105">105</a> of file <a class="el" href="beacon__stuffing_8c_source.html">beacon_stuffing.c</a>.</p>
 
 </div>
 </div>
@@ -323,7 +321,7 @@ Variables</h2></td></tr>
 <p>Main entry point to the application. </p>
 <p >This will be invoked in a thread once operating system and hardware initialization has completed. It may return, but it does not have to. </p>
 
-<p class="definition">Definition at line <a class="el" href="beacon__stuffing_8c_source.html#l00214">214</a> of file <a class="el" href="beacon__stuffing_8c_source.html">beacon_stuffing.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="beacon__stuffing_8c_source.html#l00213">213</a> of file <a class="el" href="beacon__stuffing_8c_source.html">beacon_stuffing.c</a>.</p>
 
 </div>
 </div>
@@ -368,7 +366,7 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Callback function that gets executed every time a beacon containing a matching Vendor Specific IE is received. </p>
-<p >Current implementation will log the stats for the filter specified and update the state of the LEDs on the board using <a class="el" href="group__MMHAL.html#gac25caf50d17ead605f05658a7555ab7c">mmhal_set_led()</a>. The LED update only occurs if there is at least <a class="el" href="beacon__stuffing_8c.html#ac65bb652e154b13982cf8b0e6911a17e">RGB_DATA_LENGTH_BYTES</a> worth of data after the OUI.</p>
+<p >Current implementation will log the stats for the filter specified and update the state of the LEDs on the board using <a class="el" href="group__MMHAL__APP.html#gac25caf50d17ead605f05658a7555ab7c">mmhal_set_led()</a>. The LED update only occurs if there is at least <a class="el" href="beacon__stuffing_8c.html#ac65bb652e154b13982cf8b0e6911a17e">RGB_DATA_LENGTH_BYTES</a> worth of data after the OUI.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">ies</td><td>Reference to the list of information elements (little endian order) present in the beacon that matched the filter. </td></tr>
@@ -378,7 +376,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="beacon__stuffing_8c_source.html#l00136">136</a> of file <a class="el" href="beacon__stuffing_8c_source.html">beacon_stuffing.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="beacon__stuffing_8c_source.html#l00135">135</a> of file <a class="el" href="beacon__stuffing_8c_source.html">beacon_stuffing.c</a>.</p>
 
 </div>
 </div>
@@ -425,7 +423,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="beacon__stuffing_8c_source.html#l00191">191</a> of file <a class="el" href="beacon__stuffing_8c_source.html">beacon_stuffing.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="beacon__stuffing_8c_source.html#l00190">190</a> of file <a class="el" href="beacon__stuffing_8c_source.html">beacon_stuffing.c</a>.</p>
 
 </div>
 </div>
@@ -445,7 +443,7 @@ Variables</h2></td></tr>
 <p>Filter structure used when calling <a class="el" href="group__MMWLAN__BEACON__VENDOR__IE__FILTER__API.html#ga1d496036182d882846e2ff48cbac5890">mmwlan_update_beacon_vendor_ie_filter()</a>. </p>
 <p >We declare it here to ensure that the memory is always valid and not used for anything else. </p>
 
-<p class="definition">Definition at line <a class="el" href="beacon__stuffing_8c_source.html#l00110">110</a> of file <a class="el" href="beacon__stuffing_8c_source.html">beacon_stuffing.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="beacon__stuffing_8c_source.html#l00109">109</a> of file <a class="el" href="beacon__stuffing_8c_source.html">beacon_stuffing.c</a>.</p>
 
 </div>
 </div>
@@ -455,8 +453,8 @@ Variables</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_91b8f418cff946e8d8b598a9068417a8.html">examples</a></li><li class="navelem"><a class="el" href="dir_ca7a3c538a0831fd6bc7cd512488671a.html">beacon_stuffing</a></li><li class="navelem"><a class="el" href="dir_dd8a6f013d5dfb6b3eb593093bc7da63.html">src</a></li><li class="navelem"><a class="el" href="beacon__stuffing_8c.html">beacon_stuffing.c</a></li>
-    <li class="footer">Copyright 2021 Morse Micro </li>
+    <li class="navelem"><a class="el" href="dir_c5388b8f7c63864c1129967aadb7f145.html">examples</a></li><li class="navelem"><a class="el" href="dir_484f00a538dd9b54471cbd6163f4edfa.html">beacon_stuffing</a></li><li class="navelem"><a class="el" href="dir_39c61d2c1f94c6ed190da468828112ca.html">src</a></li><li class="navelem"><a class="el" href="beacon__stuffing_8c.html">beacon_stuffing.c</a></li>
+    <li class="footer">Copyright 2021-2025 Morse Micro </li>
   </ul>
 </div>
 </body>

@@ -28,21 +28,21 @@
 #endif
 
 /** If ping interval is >= this threshold then per-packet log messages will be displayed. */
-#define PING_DISPLAY_THRESHOLD_MS   (1000)
+#define PING_DISPLAY_THRESHOLD_MS (1000)
 
 /** Magic number we put in the packet to make sure that the payload gets echoed. */
-#define PING_MAGIC_NUMBER           (0xabcd0123lu)
+#define PING_MAGIC_NUMBER (0xabcd0123lu)
 
 /** Number of bits in our duplicate check bitmap. */
-#define N_DUP_CHECK_BITS            (128)
+#define N_DUP_CHECK_BITS (128)
 
 /** Time to wait on failing to send a ping request. */
-#define PING_ERROR_RETRY_INTERVAL_MS    (1000)
+#define PING_ERROR_RETRY_INTERVAL_MS (1000)
 
 /** Network layer Pbuf IPv4 header length. */
-#define PBUF_IP_HLEN_V4                                 (20)
+#define PBUF_IP_HLEN_V4 (20)
 /** Network layer Pbuf IPv6 header length. */
-#define PBUF_IP_HLEN_V6                                 (40)
+#define PBUF_IP_HLEN_V6 (40)
 
 enum ping_state
 {
@@ -191,9 +191,12 @@ static void process_ping_acknowledgement(struct ping_session *session)
 /**
  * Performs the bulk of the handling for a ping response.
  */
-static uint8_t process_ping_response(uint16_t ping_id, uint16_t seq_num,
-                                     uint32_t sent_time, uint32_t magic_number,
-                                     size_t icmp_echo_len, const ip_addr_t *remote_ip_addr)
+static uint8_t process_ping_response(uint16_t ping_id,
+                                     uint16_t seq_num,
+                                     uint32_t sent_time,
+                                     uint32_t magic_number,
+                                     size_t icmp_echo_len,
+                                     const ip_addr_t *remote_ip_addr)
 {
     LWIP_UNUSED_ARG(icmp_echo_len);
     struct ping_session *session = &ping_session;
@@ -218,7 +221,8 @@ static uint8_t process_ping_response(uint16_t ping_id, uint16_t seq_num,
     {
         LWIP_DEBUGF(LWIP_DBG_LEVEL_ALL,
                     ("Ping response received out-of-order (got %u, expect %ld)\n",
-                     seq_num, session->last_rx_seq_num));
+                     seq_num,
+                     session->last_rx_seq_num));
     }
 
     if (magic_number != PING_MAGIC_NUMBER)
@@ -240,9 +244,13 @@ static uint8_t process_ping_response(uint16_t ping_id, uint16_t seq_num,
     ipaddr_ntoa_r(remote_ip_addr, ip_addr_str, sizeof(ip_addr_str));
     if (session->args.ping_interval_ms >= PING_DISPLAY_THRESHOLD_MS)
     {
-        LWIP_DEBUGF(LWIP_DBG_LEVEL_ALL, ("%10lu | %u bytes from %s: seq=%u time=%lu ms\n",
-                                         mmosal_get_time_ms(), icmp_echo_len, ip_addr_str, seq_num,
-                                         ping_rtt));
+        LWIP_DEBUGF(LWIP_DBG_LEVEL_ALL,
+                    ("%10lu | %u bytes from %s: seq=%u time=%lu ms\n",
+                     mmosal_get_time_ms(),
+                     icmp_echo_len,
+                     ip_addr_str,
+                     seq_num,
+                     ping_rtt));
     }
 
     if (ping_rtt < session->stats.ping_min_time_ms || session->stats.ping_recv_count == 0)
@@ -286,7 +294,7 @@ static uint8_t ping_recv(void *arg, struct raw_pcb *pcb, struct pbuf *p, const i
 #if LWIP_IPV4
     if (IP_IS_V4(addr))
     {
-        struct icmp_echo_hdr hdr = {0};
+        struct icmp_echo_hdr hdr = { 0 };
         offset = PBUF_IP_HLEN_V4;
         uint16_t copy_len = pbuf_copy_partial(p, &hdr, sizeof(hdr), offset);
         if (copy_len != sizeof(hdr))
@@ -303,7 +311,7 @@ static uint8_t ping_recv(void *arg, struct raw_pcb *pcb, struct pbuf *p, const i
 #if LWIP_IPV6
     if (IP_IS_V6(addr))
     {
-        struct icmp6_echo_hdr hdr = {0};
+        struct icmp6_echo_hdr hdr = { 0 };
         offset = PBUF_IP_HLEN_V6;
         uint16_t copy_len = pbuf_copy_partial(p, &hdr, sizeof(hdr), offset);
         if (copy_len != sizeof(hdr))
@@ -336,10 +344,12 @@ static uint8_t ping_recv(void *arg, struct raw_pcb *pcb, struct pbuf *p, const i
         return 0;
     }
 
-    uint8_t ret = process_ping_response(ping_id, seq_num,
+    uint8_t ret = process_ping_response(ping_id,
+                                        seq_num,
                                         ntohl(payload.sent_time),
                                         ntohl(payload.magic_number),
-                                        icmp_echo_len, addr);
+                                        icmp_echo_len,
+                                        addr);
     if (ret != 0)
     {
         pbuf_free(p);
@@ -407,8 +417,7 @@ static void generate_ping_payload(uint8_t *ping_payload, struct ping_session *se
 /**
  * Generate an ICMP echo request Pbuf.
  */
-void ping_echo_pbuf(struct pbuf *p, struct ping_session *session,
-                    uint16_t seq_num, size_t size)
+void ping_echo_pbuf(struct pbuf *p, struct ping_session *session, uint16_t seq_num, size_t size)
 {
     struct icmp_echo_hdr *hdr = (struct icmp_echo_hdr *)p->payload;
     memset(hdr, 0, sizeof(*hdr));
@@ -450,8 +459,7 @@ void ping6_echo_pbuf(struct pbuf *p, struct ping_session *session, uint16_t seq_
     /* Note: checksum needs to be calculated AFTER payload is filled out. */
     ip_addr_t *dst = &session->args.ping_target;
     ip_addr_t *src = &session->args.ping_src;
-    hdr->chksum = ip6_chksum_pseudo(p, IP6_NEXTH_ICMP6, p->tot_len,
-                                    ip_2_ip6(src), ip_2_ip6(dst));
+    hdr->chksum = ip6_chksum_pseudo(p, IP6_NEXTH_ICMP6, p->tot_len, ip_2_ip6(src), ip_2_ip6(dst));
 }
 
 #endif
@@ -461,8 +469,7 @@ void ping6_echo_pbuf(struct pbuf *p, struct ping_session *session, uint16_t seq_
  *
  * @note Must be invoked with TCPIP core locked.
  */
-static void ping_send_req(struct raw_pcb *ping_pcb, struct ping_session *session,
-                          uint16_t seq_num)
+static void ping_send_req(struct raw_pcb *ping_pcb, struct ping_session *session, uint16_t seq_num)
 {
     err_t err = ERR_ABRT;
     struct pbuf *p;
@@ -514,8 +521,8 @@ finish:
     }
     else
     {
-        LWIP_DEBUGF(LWIP_DBG_LEVEL_ALL, ("Failed to send ping req %u (retry %u)\n",
-                                         seq_num, session->num_retries));
+        LWIP_DEBUGF(LWIP_DBG_LEVEL_ALL,
+                    ("Failed to send ping req %u (retry %u)\n", seq_num, session->num_retries));
         ping_session_update_timeout_on_send(session, false);
     }
     pbuf_free(p);
@@ -622,9 +629,11 @@ void ping_task(void *arg)
     LWIP_DEBUGF(
         LWIP_DBG_LEVEL_ALL,
         ("Ping summary: %lu sent/%lu received (%lu%% loss) %lu/%lu/%lu min/avg/max RTT ms\n",
-         session->stats.ping_total_count, session->stats.ping_recv_count,
-         (session->stats.ping_total_count - session->stats.ping_recv_count) * 100 /
          session->stats.ping_total_count,
+         session->stats.ping_recv_count,
+         (session->stats.ping_total_count - session->stats.ping_recv_count) *
+             100 /
+             session->stats.ping_total_count,
          session->stats.ping_min_time_ms,
          session->rtt_sum_ms / session->stats.ping_recv_count,
          session->stats.ping_max_time_ms));
@@ -654,7 +663,8 @@ void mmping_stats(struct mmping_stats *stats)
     if (stats->ping_receiver[0] == '\0')
     {
         ipaddr_ntoa_r(&session->args.ping_target,
-                      stats->ping_receiver, sizeof(stats->ping_receiver));
+                      stats->ping_receiver,
+                      sizeof(stats->ping_receiver));
     }
     UNLOCK_TCPIP_CORE();
 }
@@ -692,9 +702,11 @@ uint16_t mmping_start(const struct mmping_args *args)
 {
     if (args->ping_size < MMPING_MIN_DATA_SIZE || args->ping_size > MMPING_MAX_DATA_SIZE)
     {
-        LWIP_DEBUGF(LWIP_DBG_LEVEL_WARNING, ("Invalid ping size %lu (valid range %d-%d)\n",
-                                             args->ping_size, MMPING_MIN_DATA_SIZE,
-                                             MMPING_MAX_DATA_SIZE));
+        LWIP_DEBUGF(LWIP_DBG_LEVEL_WARNING,
+                    ("Invalid ping size %lu (valid range %d-%d)\n",
+                     args->ping_size,
+                     MMPING_MIN_DATA_SIZE,
+                     MMPING_MAX_DATA_SIZE));
         return 0;
     }
 
@@ -726,7 +738,10 @@ uint16_t mmping_start(const struct mmping_args *args)
 
     LWIP_DEBUGF(LWIP_DBG_LEVEL_ALL,
                 ("Starting ping session. Target=%s Interval=%lums Count=%lu Size=%lu\n",
-                 args->ping_target, args->ping_interval_ms, args->ping_count, args->ping_size));
+                 args->ping_target,
+                 args->ping_interval_ms,
+                 args->ping_count,
+                 args->ping_size));
     if (session->args.ping_interval_ms < PING_DISPLAY_THRESHOLD_MS)
     {
         LWIP_DEBUGF(LWIP_DBG_LEVEL_ALL,
@@ -766,8 +781,8 @@ uint16_t mmping_start(const struct mmping_args *args)
         return 0;
     }
 
-    session->task_handle = mmosal_task_create(ping_task, NULL, MMOSAL_TASK_PRI_LOW,
-                                              512, "ping_request");
+    session->task_handle =
+        mmosal_task_create(ping_task, NULL, MMOSAL_TASK_PRI_LOW, 512, "ping_request");
     if (session->task_handle == NULL)
     {
         mmosal_semb_delete(session->semb);

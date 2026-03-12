@@ -15,7 +15,7 @@
 
 /** Interval (in milliseconds) at which to provide updates when the receive count has not
  *  changed. */
-#define UPDATE_INTERVAL_MS  (5000)
+#define UPDATE_INTERVAL_MS (5000)
 
 void mmagic_cli_ping_run(EmbeddedCli *cli, char *args, void *context)
 {
@@ -42,11 +42,15 @@ void mmagic_cli_ping_run(EmbeddedCli *cli, char *args, void *context)
         if (rsp.status.recv_count != last_ping_recv_count ||
             mmosal_time_has_passed(next_update_time_ms))
         {
-            mmagic_cli_printf(cli, "(%s) packets transmitted/received = %lu/%lu, "
+            mmagic_cli_printf(cli,
+                              "(%s) packets transmitted/received = %lu/%lu, "
                               "round-trip min/avg/max = %lu/%lu/%lu ms",
-                              rsp.status.receiver_addr.addr, rsp.status.total_count,
-                              rsp.status.recv_count, rsp.status.min_time_ms,
-                              rsp.status.avg_time_ms, rsp.status.max_time_ms);
+                              rsp.status.receiver_addr.addr,
+                              rsp.status.total_count,
+                              rsp.status.recv_count,
+                              rsp.status.min_time_ms,
+                              rsp.status.avg_time_ms,
+                              rsp.status.max_time_ms);
             next_update_time_ms = mmosal_get_time_ms() + UPDATE_INTERVAL_MS;
             last_ping_recv_count = rsp.status.recv_count;
         }
@@ -60,15 +64,22 @@ void mmagic_cli_ping_run(EmbeddedCli *cli, char *args, void *context)
     }
     else
     {
-        packet_loss = (1000 * (rsp.status.total_count - rsp.status.recv_count) * 100 /
+        packet_loss = (1000 *
+                       (rsp.status.total_count - rsp.status.recv_count) *
+                       100 /
                        rsp.status.total_count);
     }
     mmagic_cli_printf(cli,
-                      "\n--- %s ping statistics ---\n" \
+                      "\n--- %s ping statistics ---\n"
                       "%lu packets transmitted, %lu packets received, ",
-                      rsp.status.receiver_addr.addr, rsp.status.total_count,
+                      rsp.status.receiver_addr.addr,
+                      rsp.status.total_count,
                       rsp.status.recv_count);
-    mmagic_cli_printf(cli, "%lu.%03lu%% packet loss\nround-trip min/avg/max = %lu/%lu/%lu ms\n",
-                      packet_loss / 1000, packet_loss % 1000, rsp.status.min_time_ms,
-                      rsp.status.avg_time_ms, rsp.status.max_time_ms);
+    mmagic_cli_printf(cli,
+                      "%lu.%03lu%% packet loss\nround-trip min/avg/max = %lu/%lu/%lu ms\n",
+                      packet_loss / 1000,
+                      packet_loss % 1000,
+                      rsp.status.min_time_ms,
+                      rsp.status.avg_time_ms,
+                      rsp.status.max_time_ms);
 }

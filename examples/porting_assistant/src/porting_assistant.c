@@ -25,6 +25,7 @@
  */
 
 #include "porting_assistant.h"
+#include "mmhal_core.h"
 
 #if defined(ENABLE_EXT_XTAL_INIT) && ENABLE_EXT_XTAL_INIT
 /* The crystal initialization requires chip specific configuration which we do not have access
@@ -33,26 +34,25 @@
 #endif
 
 /* Test step declarations */
-extern const struct test_step test_step_os_malloc;                      /**< Test definition */
-extern const struct test_step test_step_os_realloc;                     /**< Test definition */
-extern const struct test_step test_step_os_time;                        /**< Test definition */
-extern const struct test_step test_step_os_task_creation;               /**< Test definition */
+extern const struct test_step test_step_os_malloc; /**< Test definition */
+extern const struct test_step test_step_os_realloc; /**< Test definition */
+extern const struct test_step test_step_os_time; /**< Test definition */
+extern const struct test_step test_step_os_task_creation; /**< Test definition */
 
-extern const struct test_step test_step_mmhal_wlan_init;                /**< Test definition */
-extern const struct test_step test_step_mmhal_wlan_hard_reset;          /**< Test definition */
-extern const struct test_step test_step_mmhal_wlan_sdio_startup;        /**< Test definition */
-extern const struct test_step test_step_read_chip_id;                   /**< Test definition */
-extern const struct test_step test_step_bulk_write_read;                /**< Test definition */
-extern const struct test_step test_step_raw_tput;                       /**< Test definition */
+extern const struct test_step test_step_mmhal_wlan_init; /**< Test definition */
+extern const struct test_step test_step_mmhal_wlan_hard_reset; /**< Test definition */
+extern const struct test_step test_step_mmhal_wlan_sdio_startup; /**< Test definition */
+extern const struct test_step test_step_read_chip_id; /**< Test definition */
+extern const struct test_step test_step_bulk_write_read; /**< Test definition */
+extern const struct test_step test_step_raw_tput; /**< Test definition */
 
-extern const struct test_step test_step_mmhal_wlan_validate_fw;         /**< Test definition */
-extern const struct test_step test_step_mmhal_wlan_validate_bcf;        /**< Test definition */
+extern const struct test_step test_step_mmhal_wlan_validate_fw; /**< Test definition */
+extern const struct test_step test_step_mmhal_wlan_validate_bcf; /**< Test definition */
 
-extern const struct test_step test_step_verify_busy_pin;                /**< Test definition */
-
+extern const struct test_step test_step_verify_busy_pin; /**< Test definition */
 
 /** Array of test steps. */
-static const struct test_step * const test_steps[] = {
+static const struct test_step *const test_steps[] = {
     &test_step_os_malloc,
     &test_step_os_realloc,
     &test_step_os_time,
@@ -90,11 +90,16 @@ static const char *result_code_to_string(enum test_result result)
 {
     switch (result)
     {
-    case TEST_NO_RESULT:            return "";
-    case TEST_PASSED:               return F_GREEN("PASS");
-    case TEST_SKIPPED:              return F_BLUE("SKIP");
-    case TEST_FAILED:               return F_RED("FAIL");
-    case TEST_FAILED_NON_CRITICAL:  return F_YELLOW("FAIL");
+        case TEST_NO_RESULT:
+            return "";
+        case TEST_PASSED:
+            return F_GREEN("PASS");
+        case TEST_SKIPPED:
+            return F_BLUE("SKIP");
+        case TEST_FAILED:
+            return F_RED("FAIL");
+        case TEST_FAILED_NON_CRITICAL:
+            return F_YELLOW("FAIL");
     }
     MMOSAL_ASSERT(false);
 }
@@ -107,7 +112,8 @@ static const char *result_code_to_string(enum test_result result)
  * @param num_steps     Number of steps to execute.
  * @param ctrs          Test count state to be updated by this function.
  */
-static void run_test_steps(const struct test_step * const steps[], size_t num_steps,
+static void run_test_steps(const struct test_step *const steps[],
+                           size_t num_steps,
                            struct test_counters *ctrs)
 {
     static char log_buf[1024];
@@ -137,11 +143,20 @@ static void run_test_steps(const struct test_step * const steps[], size_t num_st
 
         switch (result)
         {
-        case TEST_NO_RESULT:            ctrs->no_result++;  break;
-        case TEST_PASSED:               ctrs->pass++;       break;
-        case TEST_SKIPPED:                                  break;
-        case TEST_FAILED:               ctrs->fail++;       break;
-        case TEST_FAILED_NON_CRITICAL:  ctrs->fail++;       break;
+            case TEST_NO_RESULT:
+                ctrs->no_result++;
+                break;
+            case TEST_PASSED:
+                ctrs->pass++;
+                break;
+            case TEST_SKIPPED:
+                break;
+            case TEST_FAILED:
+                ctrs->fail++;
+                break;
+            case TEST_FAILED_NON_CRITICAL:
+                ctrs->fail++;
+                break;
         }
 
         if (result == TEST_FAILED)
@@ -162,14 +177,16 @@ void app_init(void)
     mmhal_set_deep_sleep_veto(MMHAL_VETO_ID_APP_MIN);
 
     struct test_counters ctrs = { 0 };
-    unsigned num_tests = sizeof(test_steps)/sizeof(test_steps[0]);
+    unsigned num_tests = sizeof(test_steps) / sizeof(test_steps[0]);
 
     LOG_WRITE(F_BOLD("\n\nMM-IoT-SDK Porting Assistant\n"));
     LOG_WRITE("----------------------------\n\n");
     run_test_steps(test_steps, num_tests, &ctrs);
 
-
     LOG_PRINTF("\n\n%u total test steps. %u passed, %u failed, %u no result, %u skipped\n",
-               num_tests, ctrs.pass, ctrs.fail, ctrs.no_result,
+               num_tests,
+               ctrs.pass,
+               ctrs.fail,
+               ctrs.no_result,
                num_tests - ctrs.no_result - ctrs.pass - ctrs.fail);
 }

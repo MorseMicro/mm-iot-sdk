@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.9.7</span>
+   &#160;<span id="projectnumber">2.10.4</span>
    </div>
   </td>
  </tr>
@@ -97,9 +97,16 @@ $(document).ready(function(){initNavTree('group__MMWLAN__DATA.html',''); initRes
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<p >Datapath API that is typically hooked up to the network stack. </p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Data Structures</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__vif__state.html">mmwlan_vif_state</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">VIF state used by <a class="el" href="group__MMWLAN__DATA.html#ga2debdb5c075708eff164999a9256d829">mmwlan_vif_state_cb_t</a>.  <a href="structmmwlan__vif__state.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__rx__metadata.html">mmwlan_rx_metadata</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Receive data packet metadata.  <a href="structmmwlan__rx__metadata.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__tx__metadata.html">mmwlan_tx_metadata</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Metadata for TX packets.  <a href="structmmwlan__tx__metadata.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -115,7 +122,7 @@ Macros</h2></td></tr>
 <tr class="memitem:gad9f43607aa66574ab80c278096a41576"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__DATA.html#gad9f43607aa66574ab80c278096a41576">MMWLAN_MAX_QOS_TID</a>&#160;&#160;&#160;(7)</td></tr>
 <tr class="memdesc:gad9f43607aa66574ab80c278096a41576"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum Traffic ID (TID) supported for QoS traffic.  <a href="group__MMWLAN__DATA.html#gad9f43607aa66574ab80c278096a41576">More...</a><br /></td></tr>
 <tr class="separator:gad9f43607aa66574ab80c278096a41576"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaea2485f837f11664455b410d83c1c9bc"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__DATA.html#gaea2485f837f11664455b410d83c1c9bc">MMWLAN_TX_METADATA_INIT</a>&#160;&#160;&#160;{ <a class="el" href="group__MMWLAN__DATA.html#ga883e1f4d9dcbbd02586187f52bbd3af6">MMWLAN_TX_DEFAULT_QOS_TID</a> }</td></tr>
+<tr class="memitem:gaea2485f837f11664455b410d83c1c9bc"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__DATA.html#gaea2485f837f11664455b410d83c1c9bc">MMWLAN_TX_METADATA_INIT</a>&#160;&#160;&#160;{ <a class="el" href="group__MMWLAN__DATA.html#ga883e1f4d9dcbbd02586187f52bbd3af6">MMWLAN_TX_DEFAULT_QOS_TID</a>, <a class="el" href="group__MMWLAN.html#ggaf098b35ce27e6c06e1a3b6d11b45d34ba9c193082d79ffd7b268de40260e00b02">MMWLAN_VIF_UNSPECIFIED</a>, NULL }</td></tr>
 <tr class="memdesc:gaea2485f837f11664455b410d83c1c9bc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializer for <a class="el" href="structmmwlan__tx__metadata.html">mmwlan_tx_metadata</a>.  <a href="group__MMWLAN__DATA.html#gaea2485f837f11664455b410d83c1c9bc">More...</a><br /></td></tr>
 <tr class="separator:gaea2485f837f11664455b410d83c1c9bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -124,12 +131,18 @@ Typedefs</h2></td></tr>
 <tr class="memitem:ga6cc7ccec4d0fb93de1648c19487df6bb"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__DATA.html#ga6cc7ccec4d0fb93de1648c19487df6bb">mmwlan_link_state_cb_t</a>) (enum <a class="el" href="group__MMWLAN__DATA.html#gaa4658954c9c65429abd87da6998284c5">mmwlan_link_state</a> link_state, void *arg)</td></tr>
 <tr class="memdesc:ga6cc7ccec4d0fb93de1648c19487df6bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prototype for link state change callbacks.  <a href="group__MMWLAN__DATA.html#ga6cc7ccec4d0fb93de1648c19487df6bb">More...</a><br /></td></tr>
 <tr class="separator:ga6cc7ccec4d0fb93de1648c19487df6bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga2debdb5c075708eff164999a9256d829"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__DATA.html#ga2debdb5c075708eff164999a9256d829">mmwlan_vif_state_cb_t</a>) (const struct <a class="el" href="structmmwlan__vif__state.html">mmwlan_vif_state</a> *state, void *arg)</td></tr>
+<tr class="memdesc:ga2debdb5c075708eff164999a9256d829"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prototype for VIF state change callbacks.  <a href="group__MMWLAN__DATA.html#ga2debdb5c075708eff164999a9256d829">More...</a><br /></td></tr>
+<tr class="separator:ga2debdb5c075708eff164999a9256d829"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gabd26309390e6939f003c4ca44128cce0"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__DATA.html#gabd26309390e6939f003c4ca44128cce0">mmwlan_rx_cb_t</a>) (uint8_t *header, unsigned header_len, uint8_t *payload, unsigned payload_len, void *arg)</td></tr>
 <tr class="memdesc:gabd26309390e6939f003c4ca44128cce0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Receive data packet callback function.  <a href="group__MMWLAN__DATA.html#gabd26309390e6939f003c4ca44128cce0">More...</a><br /></td></tr>
 <tr class="separator:gabd26309390e6939f003c4ca44128cce0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaf0b978677dad54e133d595dee5d4df71"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__DATA.html#gaf0b978677dad54e133d595dee5d4df71">mmwlan_rx_pkt_cb_t</a>) (struct <a class="el" href="structmmpkt.html">mmpkt</a> *<a class="el" href="structmmpkt.html">mmpkt</a>, void *arg)</td></tr>
+<tr class="memitem:gaf0b978677dad54e133d595dee5d4df71"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__DATA.html#gaf0b978677dad54e133d595dee5d4df71">mmwlan_rx_pkt_cb_t</a>) (struct mmpkt *mmpkt, void *arg)</td></tr>
 <tr class="memdesc:gaf0b978677dad54e133d595dee5d4df71"><td class="mdescLeft">&#160;</td><td class="mdescRight">Receive data packet callback function, consuming an mmpkt.  <a href="group__MMWLAN__DATA.html#gaf0b978677dad54e133d595dee5d4df71">More...</a><br /></td></tr>
 <tr class="separator:gaf0b978677dad54e133d595dee5d4df71"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf073e38c2ba01023707ba861d0c79aed"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__DATA.html#gaf073e38c2ba01023707ba861d0c79aed">mmwlan_rx_pkt_ext_cb_t</a>) (struct mmpkt *mmpkt, const struct <a class="el" href="structmmwlan__rx__metadata.html">mmwlan_rx_metadata</a> *metadata, void *arg)</td></tr>
+<tr class="memdesc:gaf073e38c2ba01023707ba861d0c79aed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extended receive data packet callback function, consuming an mmpkt.  <a href="group__MMWLAN__DATA.html#gaf073e38c2ba01023707ba861d0c79aed">More...</a><br /></td></tr>
+<tr class="separator:gaf073e38c2ba01023707ba861d0c79aed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gabe2dbbb75c01ce9a99dec02144ff2d08"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__DATA.html#gabe2dbbb75c01ce9a99dec02144ff2d08">mmwlan_tx_flow_control_cb_t</a>) (enum <a class="el" href="group__MMWLAN__DATA.html#ga95367ed3c4c32b60401e48504396410e">mmwlan_tx_flow_control_state</a> state, void *arg)</td></tr>
 <tr class="memdesc:gabe2dbbb75c01ce9a99dec02144ff2d08"><td class="mdescLeft">&#160;</td><td class="mdescRight">Transmit flow control callback function type.  <a href="group__MMWLAN__DATA.html#gabe2dbbb75c01ce9a99dec02144ff2d08">More...</a><br /></td></tr>
 <tr class="separator:gabe2dbbb75c01ce9a99dec02144ff2d08"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -150,21 +163,27 @@ Enumerations</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:ga8bdba37cf15c47965007f27c97eff5f0"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__DATA.html#ga8bdba37cf15c47965007f27c97eff5f0">mmwlan_register_link_state_cb</a> (<a class="el" href="group__MMWLAN__DATA.html#ga6cc7ccec4d0fb93de1648c19487df6bb">mmwlan_link_state_cb_t</a> callback, void *arg)</td></tr>
-<tr class="memdesc:ga8bdba37cf15c47965007f27c97eff5f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register a link status callback.  <a href="group__MMWLAN__DATA.html#ga8bdba37cf15c47965007f27c97eff5f0">More...</a><br /></td></tr>
+<tr class="memdesc:ga8bdba37cf15c47965007f27c97eff5f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register a link status callback for use in STA mode.  <a href="group__MMWLAN__DATA.html#ga8bdba37cf15c47965007f27c97eff5f0">More...</a><br /></td></tr>
 <tr class="separator:ga8bdba37cf15c47965007f27c97eff5f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab14d61b5947592e7703ba16106deeaa7"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__DATA.html#gab14d61b5947592e7703ba16106deeaa7">mmwlan_register_vif_state_cb</a> (enum <a class="el" href="group__MMWLAN.html#gaf098b35ce27e6c06e1a3b6d11b45d34b">mmwlan_vif</a> vif, <a class="el" href="group__MMWLAN__DATA.html#ga2debdb5c075708eff164999a9256d829">mmwlan_vif_state_cb_t</a> callback, void *arg)</td></tr>
+<tr class="memdesc:gab14d61b5947592e7703ba16106deeaa7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register a VIF state callback.  <a href="group__MMWLAN__DATA.html#gab14d61b5947592e7703ba16106deeaa7">More...</a><br /></td></tr>
+<tr class="separator:gab14d61b5947592e7703ba16106deeaa7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga07e4f93f5563a05beee49e3a8731c194"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__DATA.html#ga07e4f93f5563a05beee49e3a8731c194">mmwlan_register_rx_cb</a> (<a class="el" href="group__MMWLAN__DATA.html#gabd26309390e6939f003c4ca44128cce0">mmwlan_rx_cb_t</a> callback, void *arg)</td></tr>
 <tr class="memdesc:ga07e4f93f5563a05beee49e3a8731c194"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register a receive callback.  <a href="group__MMWLAN__DATA.html#ga07e4f93f5563a05beee49e3a8731c194">More...</a><br /></td></tr>
 <tr class="separator:ga07e4f93f5563a05beee49e3a8731c194"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga6501ac548a4ed7860471238854f269ed"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__DATA.html#ga6501ac548a4ed7860471238854f269ed">mmwlan_register_rx_pkt_cb</a> (<a class="el" href="group__MMWLAN__DATA.html#gaf0b978677dad54e133d595dee5d4df71">mmwlan_rx_pkt_cb_t</a> callback, void *arg)</td></tr>
 <tr class="memdesc:ga6501ac548a4ed7860471238854f269ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register a receive callback which consumes an mmpkt.  <a href="group__MMWLAN__DATA.html#ga6501ac548a4ed7860471238854f269ed">More...</a><br /></td></tr>
 <tr class="separator:ga6501ac548a4ed7860471238854f269ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga0abfd87ddf1b36b55e8656a691d7b01a"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__DATA.html#ga0abfd87ddf1b36b55e8656a691d7b01a">mmwlan_register_rx_pkt_ext_cb</a> (enum <a class="el" href="group__MMWLAN.html#gaf098b35ce27e6c06e1a3b6d11b45d34b">mmwlan_vif</a> vif, <a class="el" href="group__MMWLAN__DATA.html#gaf073e38c2ba01023707ba861d0c79aed">mmwlan_rx_pkt_ext_cb_t</a> callback, void *arg)</td></tr>
+<tr class="memdesc:ga0abfd87ddf1b36b55e8656a691d7b01a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register an extended receive callback which may consume an mmpkt.  <a href="group__MMWLAN__DATA.html#ga0abfd87ddf1b36b55e8656a691d7b01a">More...</a><br /></td></tr>
+<tr class="separator:ga0abfd87ddf1b36b55e8656a691d7b01a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga477106f18bb6c28c69338fee5d128968"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__DATA.html#ga477106f18bb6c28c69338fee5d128968">mmwlan_tx_wait_until_ready</a> (uint32_t timeout_ms)</td></tr>
 <tr class="memdesc:ga477106f18bb6c28c69338fee5d128968"><td class="mdescLeft">&#160;</td><td class="mdescRight">Blocks until the transmit path is ready for transmit.  <a href="group__MMWLAN__DATA.html#ga477106f18bb6c28c69338fee5d128968">More...</a><br /></td></tr>
 <tr class="separator:ga477106f18bb6c28c69338fee5d128968"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gab28967004268ca16bb1477a76c164de7"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structmmpkt.html">mmpkt</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__DATA.html#gab28967004268ca16bb1477a76c164de7">mmwlan_alloc_mmpkt_for_tx</a> (uint32_t payload_len, uint8_t tid)</td></tr>
+<tr class="memitem:gab28967004268ca16bb1477a76c164de7"><td class="memItemLeft" align="right" valign="top">struct mmpkt *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__DATA.html#gab28967004268ca16bb1477a76c164de7">mmwlan_alloc_mmpkt_for_tx</a> (uint32_t payload_len, uint8_t tid)</td></tr>
 <tr class="memdesc:gab28967004268ca16bb1477a76c164de7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate an <code>mmpkt</code> data structure for transmission with at least enough space for the given payload length.  <a href="group__MMWLAN__DATA.html#gab28967004268ca16bb1477a76c164de7">More...</a><br /></td></tr>
 <tr class="separator:gab28967004268ca16bb1477a76c164de7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gac99f2ca7b19d56ce14a9d3a806395c10"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__DATA.html#gac99f2ca7b19d56ce14a9d3a806395c10">mmwlan_tx_pkt</a> (struct <a class="el" href="structmmpkt.html">mmpkt</a> *pkt, const struct <a class="el" href="structmmwlan__tx__metadata.html">mmwlan_tx_metadata</a> *metadata)</td></tr>
+<tr class="memitem:gac99f2ca7b19d56ce14a9d3a806395c10"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__DATA.html#gac99f2ca7b19d56ce14a9d3a806395c10">mmwlan_tx_pkt</a> (struct mmpkt *pkt, const struct <a class="el" href="structmmwlan__tx__metadata.html">mmwlan_tx_metadata</a> *metadata)</td></tr>
 <tr class="memdesc:gac99f2ca7b19d56ce14a9d3a806395c10"><td class="mdescLeft">&#160;</td><td class="mdescRight">Transmit the given packet.  <a href="group__MMWLAN__DATA.html#gac99f2ca7b19d56ce14a9d3a806395c10">More...</a><br /></td></tr>
 <tr class="separator:gac99f2ca7b19d56ce14a9d3a806395c10"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga0607aa5a4d5a1051c6316707c1abe5be"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__DATA.html#ga0607aa5a4d5a1051c6316707c1abe5be">mmwlan_tx_tid</a> (const uint8_t *data, unsigned len, uint8_t tid)</td></tr>
@@ -192,7 +211,7 @@ Functions</h2></td></tr>
 
 <p>Maximum Traffic ID (TID) supported for QoS traffic. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02389">2389</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02790">2790</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -210,7 +229,7 @@ Functions</h2></td></tr>
 
 <p>Default QoS Traffic ID (TID) to use for transmit (<code><a class="el" href="group__MMWLAN__DATA.html#gac6b6e52154bfe307d15cae475df33df3" title="Transmit the given packet using MMWLAN_TX_DEFAULT_QOS_TID.">mmwlan_tx()</a></code>). </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02386">2386</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02787">2787</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -230,7 +249,7 @@ Functions</h2></td></tr>
 <p >Used by <a class="el" href="group__MMWLAN__DATA.html#gac6b6e52154bfe307d15cae475df33df3">mmwlan_tx()</a> and <a class="el" href="group__MMWLAN__DATA.html#ga0607aa5a4d5a1051c6316707c1abe5be">mmwlan_tx_tid()</a>. <br  />
  </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02383">2383</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02784">2784</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -241,14 +260,14 @@ Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define MMWLAN_TX_METADATA_INIT&#160;&#160;&#160;{ <a class="el" href="group__MMWLAN__DATA.html#ga883e1f4d9dcbbd02586187f52bbd3af6">MMWLAN_TX_DEFAULT_QOS_TID</a> }</td>
+          <td class="memname">#define MMWLAN_TX_METADATA_INIT&#160;&#160;&#160;{ <a class="el" href="group__MMWLAN__DATA.html#ga883e1f4d9dcbbd02586187f52bbd3af6">MMWLAN_TX_DEFAULT_QOS_TID</a>, <a class="el" href="group__MMWLAN.html#ggaf098b35ce27e6c06e1a3b6d11b45d34ba9c193082d79ffd7b268de40260e00b02">MMWLAN_VIF_UNSPECIFIED</a>, NULL }</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>Initializer for <a class="el" href="structmmwlan__tx__metadata.html">mmwlan_tx_metadata</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02417">2417</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02832">2832</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -274,7 +293,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02288">2288</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02598">2598</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -302,7 +321,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02315">2315</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02667">2667</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -313,7 +332,7 @@ Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">typedef void(* mmwlan_rx_pkt_cb_t) (struct <a class="el" href="structmmpkt.html">mmpkt</a> *<a class="el" href="structmmpkt.html">mmpkt</a>, void *arg)</td>
+          <td class="memname">typedef void(* mmwlan_rx_pkt_cb_t) (struct mmpkt *mmpkt, void *arg)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -327,7 +346,34 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02341">2341</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02694">2694</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+
+</div>
+</div>
+<a id="gaf073e38c2ba01023707ba861d0c79aed" name="gaf073e38c2ba01023707ba861d0c79aed"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaf073e38c2ba01023707ba861d0c79aed">&#9670;&nbsp;</a></span>mmwlan_rx_pkt_ext_cb_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef void(* mmwlan_rx_pkt_ext_cb_t) (struct mmpkt *mmpkt, const struct <a class="el" href="structmmwlan__rx__metadata.html">mmwlan_rx_metadata</a> *metadata, void *arg)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Extended receive data packet callback function, consuming an mmpkt. </p>
+<p >This is functionally the same as <a class="el" href="group__MMWLAN__DATA.html#gaf0b978677dad54e133d595dee5d4df71">mmwlan_rx_pkt_cb_t</a> except for the inclusion of additional <code>metadata</code>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">mmpkt</td><td>The mmpkt containing the received packet, including an 802.3 header. Ownership of the mmpkt is passed to this callback. </td></tr>
+    <tr><td class="paramname">metadata</td><td>Metadata relating to the received packet. </td></tr>
+    <tr><td class="paramname">arg</td><td>Opaque argument that was given when the callback was registered. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02734">2734</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -355,7 +401,32 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> on success, else an appropriate error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02557">2557</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02972">2972</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+
+</div>
+</div>
+<a id="ga2debdb5c075708eff164999a9256d829" name="ga2debdb5c075708eff164999a9256d829"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga2debdb5c075708eff164999a9256d829">&#9670;&nbsp;</a></span>mmwlan_vif_state_cb_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef void(* mmwlan_vif_state_cb_t) (const struct <a class="el" href="structmmwlan__vif__state.html">mmwlan_vif_state</a> *state, void *arg)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Prototype for VIF state change callbacks. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">state</td><td>The new VIF state. </td></tr>
+    <tr><td class="paramname">arg</td><td>Opaque argument that was given when the callback was registered. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02636">2636</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -380,7 +451,7 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02276">2276</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02586">2586</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -404,7 +475,7 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02539">2539</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02954">2954</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -416,7 +487,7 @@ Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">struct <a class="el" href="structmmpkt.html">mmpkt</a> * mmwlan_alloc_mmpkt_for_tx </td>
+          <td class="memname">struct mmpkt * mmwlan_alloc_mmpkt_for_tx </td>
           <td>(</td>
           <td class="paramtype">uint32_t&#160;</td>
           <td class="paramname"><em>payload_len</em>, </td>
@@ -474,10 +545,13 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Register a link status callback. </p>
+<p>Register a link status callback for use in STA mode. </p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000031">Deprecated:</a></b></dt><dd>This function is deprecated and provided for backwards compatibility. <a class="el" href="group__MMWLAN__DATA.html#gab14d61b5947592e7703ba16106deeaa7">mmwlan_register_vif_state_cb</a> should be used for new developments.</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>Only one link status callback may be registered. Further registration will overwrite the previously registered callback.</dd>
 <dd>
-The link status callback must not block and MMWLAN API functions may not be invoked from the callback.</dd></dl>
+The link status callback must not block and MMWLAN API functions may not be invoked from the callback.</dd>
+<dd>
+This link status callback will not be invoked in AP mode.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">callback</td><td>The callback to register. </td></tr>
@@ -516,9 +590,7 @@ The link status callback must not block and MMWLAN API functions may not be invo
 </div><div class="memdoc">
 
 <p>Register a receive callback. </p>
-<dl class="section note"><dt>Note</dt><dd>Only one receive callback may be registered. Further registration will overwrite the previously registered callback.</dd>
-<dd>
-Only a single receive callback may be registered at a time.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Only one receive callback of any type may be registered. Further registration will overwrite the previously registered callback (see <a class="el" href="group__MMWLAN__DATA.html#ga0abfd87ddf1b36b55e8656a691d7b01a">mmwlan_register_rx_pkt_ext_cb</a> for exceptions to this).</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">callback</td><td>The callback to register (<code>NULL</code> to unregister). </td></tr>
@@ -557,9 +629,55 @@ Only a single receive callback may be registered at a time.</dd></dl>
 </div><div class="memdoc">
 
 <p>Register a receive callback which consumes an mmpkt. </p>
-<dl class="section note"><dt>Note</dt><dd>Only one receive callback of any type may be registered. Further registration will overwrite the previously registered callback.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Only one receive callback of any type may be registered. Further registration will overwrite the previously registered callback (see <a class="el" href="group__MMWLAN__DATA.html#ga0abfd87ddf1b36b55e8656a691d7b01a">mmwlan_register_rx_pkt_ext_cb</a> for exceptions to this).</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramname">callback</td><td>The callback to register (<code>NULL</code> to unregister). </td></tr>
+    <tr><td class="paramname">arg</td><td>Opaque argument to be passed to the callback.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> on success, else an appropriate error code. </dd></dl>
+
+</div>
+</div>
+<a id="ga0abfd87ddf1b36b55e8656a691d7b01a" name="ga0abfd87ddf1b36b55e8656a691d7b01a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga0abfd87ddf1b36b55e8656a691d7b01a">&#9670;&nbsp;</a></span>mmwlan_register_rx_pkt_ext_cb()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a> mmwlan_register_rx_pkt_ext_cb </td>
+          <td>(</td>
+          <td class="paramtype">enum <a class="el" href="group__MMWLAN.html#gaf098b35ce27e6c06e1a3b6d11b45d34b">mmwlan_vif</a>&#160;</td>
+          <td class="paramname"><em>vif</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__MMWLAN__DATA.html#gaf073e38c2ba01023707ba861d0c79aed">mmwlan_rx_pkt_ext_cb_t</a>&#160;</td>
+          <td class="paramname"><em>callback</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>arg</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Register an extended receive callback which may consume an mmpkt. </p>
+<dl class="section note"><dt>Note</dt><dd>Only one receive callback of this type may be registered for each VIF. Further registration will overwrite the previously registered callback. Registration of any callback through this function will override any callbacks previously registered by <a class="el" href="group__MMWLAN__DATA.html#ga07e4f93f5563a05beee49e3a8731c194">mmwlan_register_rx_cb()</a> or <a class="el" href="group__MMWLAN__DATA.html#ga6501ac548a4ed7860471238854f269ed">mmwlan_register_rx_pkt_cb()</a>.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">vif</td><td>The VIF to register this callback for. If <a class="el" href="group__MMWLAN.html#ggaf098b35ce27e6c06e1a3b6d11b45d34ba9c193082d79ffd7b268de40260e00b02">MMWLAN_VIF_UNSPECIFIED</a> then it will be registered for all VIFs. </td></tr>
     <tr><td class="paramname">callback</td><td>The callback to register (<code>NULL</code> to unregister). </td></tr>
     <tr><td class="paramname">arg</td><td>Opaque argument to be passed to the callback.</td></tr>
   </table>
@@ -602,6 +720,54 @@ Only a single receive callback may be registered at a time.</dd></dl>
   <table class="params">
     <tr><td class="paramname">cb</td><td>The callback to register. </td></tr>
     <tr><td class="paramname">arg</td><td>Opaque argument to pass to the callback.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> on success, else an appropriate error code. </dd></dl>
+
+</div>
+</div>
+<a id="gab14d61b5947592e7703ba16106deeaa7" name="gab14d61b5947592e7703ba16106deeaa7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gab14d61b5947592e7703ba16106deeaa7">&#9670;&nbsp;</a></span>mmwlan_register_vif_state_cb()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a> mmwlan_register_vif_state_cb </td>
+          <td>(</td>
+          <td class="paramtype">enum <a class="el" href="group__MMWLAN.html#gaf098b35ce27e6c06e1a3b6d11b45d34b">mmwlan_vif</a>&#160;</td>
+          <td class="paramname"><em>vif</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__MMWLAN__DATA.html#ga2debdb5c075708eff164999a9256d829">mmwlan_vif_state_cb_t</a>&#160;</td>
+          <td class="paramname"><em>callback</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>arg</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Register a VIF state callback. </p>
+<dl class="section note"><dt>Note</dt><dd>Only one VIF state callback may be registered per VIF. Further registration for a given VIF will overwrite the previously registered callback.</dd>
+<dd>
+The VIF state callback must not block and MMWLAN API functions may not be invoked from the callback.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">vif</td><td>The VIF that this callback applies to. If <a class="el" href="group__MMWLAN.html#ggaf098b35ce27e6c06e1a3b6d11b45d34ba9c193082d79ffd7b268de40260e00b02">MMWLAN_VIF_UNSPECIFIED</a> then the callback will be registered for all interfaces. </td></tr>
+    <tr><td class="paramname">callback</td><td>The callback to register. </td></tr>
+    <tr><td class="paramname">arg</td><td>Opaque argument to be passed to the callback.</td></tr>
   </table>
   </dd>
 </dl>
@@ -664,7 +830,7 @@ Only a single receive callback may be registered at a time.</dd></dl>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> on success, else an appropriate error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02530">2530</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02945">2945</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -677,7 +843,7 @@ Only a single receive callback may be registered at a time.</dd></dl>
         <tr>
           <td class="memname">enum <a class="el" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a> mmwlan_tx_pkt </td>
           <td>(</td>
-          <td class="paramtype">struct <a class="el" href="structmmpkt.html">mmpkt</a> *&#160;</td>
+          <td class="paramtype">struct mmpkt *&#160;</td>
           <td class="paramname"><em>pkt</em>, </td>
         </tr>
         <tr>
@@ -783,7 +949,7 @@ This function is non-blocking. It will return immediately if the tx path is bloc
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> on success, else an appropriate error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02479">2479</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02894">2894</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -820,7 +986,7 @@ This function is non-blocking. It will return immediately if the tx path is bloc
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Copyright 2021 Morse Micro </li>
+    <li class="footer">Copyright 2021-2025 Morse Micro </li>
   </ul>
 </div>
 </body>

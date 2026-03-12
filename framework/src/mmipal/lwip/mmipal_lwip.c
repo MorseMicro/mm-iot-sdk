@@ -39,6 +39,7 @@ static struct mmipal_data
     bool offload_arp_response;
     /** ARP refresh offload interval in seconds */
     uint32_t offload_arp_refresh_s;
+    /** Initial dhcp offload call has been completed */
     bool dhcp_offload_init_complete;
     /** The link status callback function that has been registered. */
     mmipal_link_status_cb_fn_t link_status_callback;
@@ -63,6 +64,28 @@ static inline struct mmipal_data *mmipal_get_data(void)
 static void netif_status_callback(struct netif *netif);
 
 #if LWIP_IPV4
+
+/** Convert an error code into a status code. */
+static enum mmipal_status mmipal_err_to_status(int result)
+{
+    switch (result)
+    {
+        case ERR_OK:
+            return MMIPAL_SUCCESS;
+
+        case ERR_ARG:
+            return MMIPAL_INVALID_ARGUMENT;
+
+        case ERR_RTE:
+            return MMIPAL_NO_LINK;
+
+        case ERR_MEM:
+            return MMIPAL_NO_MEM;
+
+        default:
+            return MMIPAL_NOT_SUPPORTED;
+    }
+}
 
 /**
  * DHCP Lease update callback, invoked when we get a new DHCP lease.
@@ -106,8 +129,8 @@ enum mmipal_status mmipal_get_ip_config(struct mmipal_ip_config *config)
     result = ipaddr_ntoa_r(&data->lwip_mmnetif.netmask, config->netmask, sizeof(config->netmask));
     LWIP_ASSERT("IP buf too short", result != NULL);
 
-    result = ipaddr_ntoa_r(&data->lwip_mmnetif.gw, config->gateway_addr,
-                           sizeof(config->gateway_addr));
+    result =
+        ipaddr_ntoa_r(&data->lwip_mmnetif.gw, config->gateway_addr, sizeof(config->gateway_addr));
     LWIP_ASSERT("IP buf too short", result != NULL);
 
     return MMIPAL_SUCCESS;
@@ -130,39 +153,39 @@ enum mmipal_status mmipal_set_ip_config(const struct mmipal_ip_config *config)
 
     switch (config->mode)
     {
-    case MMIPAL_DISABLED:
-        printf("%s mode not supported\n", "DISABLED");
-        return MMIPAL_INVALID_ARGUMENT;
-
-    case MMIPAL_AUTOIP:
-        printf("%s mode not supported\n", "AutoIP");
-        return MMIPAL_INVALID_ARGUMENT;
-
-    case MMIPAL_DHCP_OFFLOAD:
-        /* Currently we only support enabling DHCP offload when initialising */
-        printf("%s mode not supported\n", "DHCP_OFFLOAD");
-        return MMIPAL_INVALID_ARGUMENT;
-
-    case MMIPAL_STATIC:
-        result = ipaddr_aton(config->ip_addr, &ip_addr);
-        if (!result)
-        {
+        case MMIPAL_DISABLED:
+            printf("%s mode not supported\n", "DISABLED");
             return MMIPAL_INVALID_ARGUMENT;
-        }
-        result = ipaddr_aton(config->netmask, &netmask);
-        if (!result)
-        {
-            return MMIPAL_INVALID_ARGUMENT;
-        }
-        result = ipaddr_aton(config->gateway_addr, &gateway);
-        if (!result)
-        {
-            return MMIPAL_INVALID_ARGUMENT;
-        }
-        break;
 
-    case MMIPAL_DHCP:
-        break;
+        case MMIPAL_AUTOIP:
+            printf("%s mode not supported\n", "AutoIP");
+            return MMIPAL_INVALID_ARGUMENT;
+
+        case MMIPAL_DHCP_OFFLOAD:
+            /* Currently we only support enabling DHCP offload when initialising */
+            printf("%s mode not supported\n", "DHCP_OFFLOAD");
+            return MMIPAL_INVALID_ARGUMENT;
+
+        case MMIPAL_STATIC:
+            result = ipaddr_aton(config->ip_addr, &ip_addr);
+            if (!result)
+            {
+                return MMIPAL_INVALID_ARGUMENT;
+            }
+            result = ipaddr_aton(config->netmask, &netmask);
+            if (!result)
+            {
+                return MMIPAL_INVALID_ARGUMENT;
+            }
+            result = ipaddr_aton(config->gateway_addr, &gateway);
+            if (!result)
+            {
+                return MMIPAL_INVALID_ARGUMENT;
+            }
+            break;
+
+        case MMIPAL_DHCP:
+            break;
     }
 
     LOCK_TCPIP_CORE();
@@ -186,6 +209,90 @@ enum mmipal_status mmipal_set_ip_config(const struct mmipal_ip_config *config)
     return MMIPAL_SUCCESS;
 }
 
+#if ETHARP_SUPPORT_STATIC_ENTRIES
+enum mmipal_status mmipal_add_static_arp_entry(const struct mmipal_arp_config *config)
+{
+    int result;
+    ip_addr_t ip_addr = ip_addr_any;
+
+    printf("Adding static ARP for %s\n", config->ip_addr);
+
+    result = ipaddr_aton(config->ip_addr, &ip_addr);
+    if (!result)
+    {
+        printf("IP address is invalid\n");
+        return MMIPAL_INVALID_ARGUMENT;
+    }
+
+    LOCK_TCPIP_CORE();
+
+    result = etharp_add_static_entry(ip_2_ip4(&ip_addr), (struct eth_addr *)&config->mac_addr);
+
+    UNLOCK_TCPIP_CORE();
+
+    if (result)
+    {
+        printf("Failed (%d)\n", result);
+    }
+
+    return mmipal_err_to_status(result);
+}
+
+#else
+enum mmipal_status mmipal_add_static_arp_entry(const struct mmipal_arp_config *config)
+{
+    MM_UNUSED(config);
+    MM_UNUSED(mmipal_err_to_status);
+
+    printf("Static ARP is not supported\n");
+
+    return MMIPAL_NOT_SUPPORTED;
+}
+
+#endif
+
+#if ETHARP_SUPPORT_STATIC_ENTRIES
+enum mmipal_status mmipal_remove_static_arp_entry(const struct mmipal_arp_config *config)
+{
+    int result;
+    ip_addr_t ip_addr = ip_addr_any;
+
+    printf("Deleting static ARP entry for %s\n", config->ip_addr);
+
+    result = ipaddr_aton(config->ip_addr, &ip_addr);
+    if (!result)
+    {
+        printf("IP address is invalid\n");
+        return MMIPAL_INVALID_ARGUMENT;
+    }
+
+    LOCK_TCPIP_CORE();
+
+    result = etharp_remove_static_entry(ip_2_ip4(&ip_addr));
+
+    UNLOCK_TCPIP_CORE();
+
+    if (result)
+    {
+        printf("Failed (%d)\n", result);
+    }
+
+    return mmipal_err_to_status(result);
+}
+
+#else
+enum mmipal_status mmipal_remove_static_arp_entry(const struct mmipal_arp_config *config)
+{
+    MM_UNUSED(config);
+    MM_UNUSED(mmipal_err_to_status);
+
+    printf("Static ARP is not supported\n");
+
+    return MMIPAL_NOT_SUPPORTED;
+}
+
+#endif
+
 enum mmipal_status mmipal_get_ip_broadcast_addr(mmipal_ip_addr_t broadcast_addr)
 {
     struct mmipal_data *data = mmipal_get_data();
@@ -207,22 +314,47 @@ enum mmipal_status mmipal_get_ip_broadcast_addr(mmipal_ip_addr_t broadcast_addr)
 #else
 enum mmipal_status mmipal_get_ip_config(struct mmipal_ip_config *config)
 {
-    MM_UNUSED(config);
-    LWIP_ASSERT("IPv4 not enabled", false);
-    return MMIPAL_NOT_SUPPORTED;
+    if (config == NULL)
+    {
+        return MMIPAL_INVALID_ARGUMENT;
+    }
+    memset(config, 0, sizeof(*config));
+    config->mode = MMIPAL_DISABLED;
+    return MMIPAL_SUCCESS;
 }
 
 enum mmipal_status mmipal_set_ip_config(const struct mmipal_ip_config *config)
 {
-    MM_UNUSED(config);
-    LWIP_ASSERT("IPv4 not enabled", false);
-    return MMIPAL_NOT_SUPPORTED;
+    if (config == NULL)
+    {
+        return MMIPAL_INVALID_ARGUMENT;
+    }
+    if (config->mode != MMIPAL_DISABLED)
+    {
+        printf("LWIP_IPV4 not enabled\n");
+        return MMIPAL_NOT_SUPPORTED;
+    }
+    return MMIPAL_SUCCESS;
 }
 
 enum mmipal_status mmipal_get_ip_broadcast_addr(mmipal_ip_addr_t broadcast_addr)
 {
     MM_UNUSED(broadcast_addr);
-    LWIP_ASSERT("IPv4 not enabled", false);
+    printf("LWIP_IPV4 not enabled\n");
+    return MMIPAL_NOT_SUPPORTED;
+}
+
+enum mmipal_status mmipal_add_static_arp_entry(const struct mmipal_arp_config *config)
+{
+    MM_UNUSED(config);
+    printf("LWIP_IPV4 not enabled\n");
+    return MMIPAL_NOT_SUPPORTED;
+}
+
+enum mmipal_status mmipal_remove_static_arp_entry(const struct mmipal_arp_config *config)
+{
+    MM_UNUSED(config);
+    printf("LWIP_IPV4 not enabled\n");
     return MMIPAL_NOT_SUPPORTED;
 }
 
@@ -346,16 +478,27 @@ enum mmipal_status mmipal_set_ip6_config(const struct mmipal_ip6_config *config)
 #else
 enum mmipal_status mmipal_get_ip6_config(struct mmipal_ip6_config *config)
 {
-    MM_UNUSED(config);
-    LWIP_ASSERT("IPv6 not enabled", false);
-    return MMIPAL_NOT_SUPPORTED;
+    if (config == NULL)
+    {
+        return MMIPAL_INVALID_ARGUMENT;
+    }
+    memset(config, 0, sizeof(*config));
+    config->ip6_mode = MMIPAL_IP6_DISABLED;
+    return MMIPAL_SUCCESS;
 }
 
-enum mmipal_status  mmipal_set_ip6_config(const struct mmipal_ip6_config *config)
+enum mmipal_status mmipal_set_ip6_config(const struct mmipal_ip6_config *config)
 {
-    MM_UNUSED(config);
-    LWIP_ASSERT("IPv6 not enabled", false);
-    return MMIPAL_NOT_SUPPORTED;
+    if (config == NULL)
+    {
+        return MMIPAL_INVALID_ARGUMENT;
+    }
+    if (config->ip6_mode != MMIPAL_IP6_DISABLED)
+    {
+        printf("LWIP_IPV6 is not enabled\n");
+        return MMIPAL_NOT_SUPPORTED;
+    }
+    return MMIPAL_SUCCESS;
 }
 
 #endif
@@ -378,18 +521,14 @@ static void netif_status_callback(struct netif *netif)
     enum mmipal_link_state new_link_state = MMIPAL_LINK_DOWN;
 
 #if LWIP_IPV4
-    if (data->ip4_mode == MMIPAL_DHCP_OFFLOAD)
+    if (data->ip4_mode == MMIPAL_DHCP_OFFLOAD &&
+        !data->dhcp_offload_init_complete &&
+        mmwlan_get_sta_state() == MMWLAN_STA_CONNECTED)
     {
-        /* Initialize DHCP offload on link up */
+        /* Initialize DHCP offload on wlan connected */
         if (mmwlan_enable_dhcp_offload(mmipal_dhcp_lease_updated, NULL) != MMWLAN_SUCCESS)
         {
             printf("Failed to enable DHCP offload!\n");
-        }
-
-        if (!data->dhcp_offload_init_complete)
-        {
-            /* This just prevents a spurious 'Link Up' message on very first call */
-            return;
         }
     }
 #endif
@@ -410,16 +549,15 @@ static void netif_status_callback(struct netif *netif)
             link_status.link_state = data->ip_link_state;
 
 #if LWIP_IPV4
-            char *result = ipaddr_ntoa_r(&netif->ip_addr,
-                                         link_status.ip_addr, sizeof(link_status.ip_addr));
+            char *result =
+                ipaddr_ntoa_r(&netif->ip_addr, link_status.ip_addr, sizeof(link_status.ip_addr));
             LWIP_ASSERT("IP buf too short", result != NULL);
 
-            result = ipaddr_ntoa_r(&netif->netmask,
-                                   link_status.netmask, sizeof(link_status.netmask));
+            result =
+                ipaddr_ntoa_r(&netif->netmask, link_status.netmask, sizeof(link_status.netmask));
             LWIP_ASSERT("IP buf too short", result != NULL);
 
-            result = ipaddr_ntoa_r(&netif->gw,
-                                   link_status.gateway, sizeof(link_status.gateway));
+            result = ipaddr_ntoa_r(&netif->gw, link_status.gateway, sizeof(link_status.gateway));
             LWIP_ASSERT("IP buf too short", result != NULL);
 
             if (data->ip_link_state == MMIPAL_LINK_UP)
@@ -434,7 +572,8 @@ static void netif_status_callback(struct netif *netif)
                 if (data->offload_arp_refresh_s > 0)
                 {
                     mmwlan_enable_arp_refresh_offload(data->offload_arp_refresh_s,
-                                                      ip4_addr_get_u32(netif_ip4_gw(netif)), true);
+                                                      ip4_addr_get_u32(netif_ip4_gw(netif)),
+                                                      true);
                 }
             }
 #endif
@@ -446,6 +585,12 @@ static void netif_status_callback(struct netif *netif)
             {
                 data->ext_link_status_callback(&link_status, data->ext_link_status_callback_arg);
             }
+        }
+
+        /* On transition to link down indicate DHCP is de-init so it can be re-init on link up */
+        if (data->ip_link_state == MMIPAL_LINK_DOWN)
+        {
+            data->dhcp_offload_init_complete = false;
         }
     }
 }
@@ -495,8 +640,10 @@ static void tcpip_init_done_handler(void *arg)
     }
     else if (args->mode == MMIPAL_STATIC)
     {
-        netif_set_addr(netif, ip_2_ip4(&(args->ip_addr)),
-                       ip_2_ip4(&(args->netmask)), ip_2_ip4(&(args->gateway_addr)));
+        netif_set_addr(netif,
+                       ip_2_ip4(&(args->ip_addr)),
+                       ip_2_ip4(&(args->netmask)),
+                       ip_2_ip4(&(args->gateway_addr)));
     }
 #endif
 
@@ -560,84 +707,84 @@ enum mmipal_status mmipal_init(const struct mmipal_init_args *args)
 #if LWIP_IPV4
     switch (args->mode)
     {
-    case MMIPAL_DISABLED:
-        printf("%s mode not supported\n", "DISABLED");
-        goto exit;
+        case MMIPAL_DISABLED:
+            printf("%s mode not supported\n", "DISABLED");
+            goto exit;
 
-    case MMIPAL_DHCP_OFFLOAD:
-    case MMIPAL_STATIC:
-        result = ipaddr_aton(args->ip_addr, &lwip_args->ip_addr);
-        if (!result)
-        {
-            goto exit;
-        }
-        result = ipaddr_aton(args->netmask, &lwip_args->netmask);
-        if (!result)
-        {
-            goto exit;
-        }
-        result = ipaddr_aton(args->gateway_addr, &lwip_args->gateway_addr);
-        if (!result)
-        {
-            goto exit;
-        }
+        case MMIPAL_DHCP_OFFLOAD:
+        case MMIPAL_STATIC:
+            result = ipaddr_aton(args->ip_addr, &lwip_args->ip_addr);
+            if (!result)
+            {
+                goto exit;
+            }
+            result = ipaddr_aton(args->netmask, &lwip_args->netmask);
+            if (!result)
+            {
+                goto exit;
+            }
+            result = ipaddr_aton(args->gateway_addr, &lwip_args->gateway_addr);
+            if (!result)
+            {
+                goto exit;
+            }
 
-        if (ip_addr_isany_val(lwip_args->ip_addr))
-        {
-            printf("IP address not specified\n");
-            goto exit;
-        }
-        break;
+            if (ip_addr_isany_val(lwip_args->ip_addr))
+            {
+                printf("IP address not specified\n");
+                goto exit;
+            }
+            break;
 
-    case MMIPAL_DHCP:
-        if (LWIP_DHCP == 0)
-        {
-            printf("DHCP not compiled in\n");
-            goto exit;
-        }
-        break;
+        case MMIPAL_DHCP:
+            if (LWIP_DHCP == 0)
+            {
+                printf("DHCP not compiled in\n");
+                goto exit;
+            }
+            break;
 
-    case MMIPAL_AUTOIP:
-        printf("%s mode not supported\n", "AutoIP");
-        break;
+        case MMIPAL_AUTOIP:
+            printf("%s mode not supported\n", "AutoIP");
+            break;
     }
 #endif
 
 #if LWIP_IPV6
     switch (args->ip6_mode)
     {
-    case MMIPAL_IP6_DISABLED:
-        break;
+        case MMIPAL_IP6_DISABLED:
+            break;
 
-    case MMIPAL_IP6_STATIC:
-        result = ipaddr_aton(args->ip6_addr, &lwip_args->ip6_addr);
-        if (!result)
-        {
-            goto exit;
-        }
+        case MMIPAL_IP6_STATIC:
+            result = ipaddr_aton(args->ip6_addr, &lwip_args->ip6_addr);
+            if (!result)
+            {
+                goto exit;
+            }
 
-        if (ip_addr_isany_val(lwip_args->ip6_addr))
-        {
-            printf("IP address not specified\n");
-            goto exit;
-        }
-        break;
+            if (ip_addr_isany_val(lwip_args->ip6_addr))
+            {
+                printf("IP address not specified\n");
+                goto exit;
+            }
+            break;
 
-    case MMIPAL_IP6_AUTOCONFIG:
-        if (LWIP_IPV6_AUTOCONFIG == 0)
-        {
-            printf("AUTOCONFIG not compiled in\n");
-            goto exit;
-        }
-        break;
+        case MMIPAL_IP6_AUTOCONFIG:
+            if (LWIP_IPV6_AUTOCONFIG == 0)
+            {
+                printf("AUTOCONFIG not compiled in\n");
+                goto exit;
+            }
+            break;
 
-    case MMIPAL_IP6_DHCP6_STATELESS:
-        if (LWIP_IPV6_DHCP6_STATELESS == 0)
-        {
-            printf("DHCP6_STATELESS not compiled in\n");
-            goto exit;
-        }
-        break;
+        case MMIPAL_IP6_DHCP6_STATELESS:
+            if (LWIP_IPV6_DHCP6_STATELESS == 0)
+            {
+                printf("DHCP6_STATELESS not compiled in\n");
+                goto exit;
+            }
+            break;
     }
 #endif
 

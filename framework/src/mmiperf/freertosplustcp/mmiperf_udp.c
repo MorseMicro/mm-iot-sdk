@@ -38,12 +38,14 @@ struct iperf_server_session_udp
 struct iperf_server_state_udp
 {
     struct mmiperf_state base;
+
     struct
     {
         IPv46_Address_t local_addr;
         uint16_t local_port;
         enum iperf_version version;
     } args;
+
     Socket_t udp_socket;
     struct freertos_sockaddr udp_server_sa;
     struct iperf_server_session_udp session;
@@ -108,8 +110,8 @@ static struct iperf_server_session_udp *get_free_session_slot(
     return NULL;
 }
 
-static struct iperf_server_session_udp *start_session(
-    struct iperf_server_state_udp *server_state, const struct freertos_sockaddr *client_sa)
+static struct iperf_server_session_udp *start_session(struct iperf_server_state_udp *server_state,
+                                                      const struct freertos_sockaddr *client_sa)
 {
     /* For now we only support a single session. */
     struct iperf_server_session_udp *session = get_free_session_slot(server_state);
@@ -138,7 +140,8 @@ static bool sockaddr_match(const struct freertos_sockaddr *a, const struct freer
     }
     else
     {
-        return !memcmp(&a->sin_address.xIP_IPv6, &b->sin_address.xIP_IPv6,
+        return !memcmp(&a->sin_address.xIP_IPv6,
+                       &b->sin_address.xIP_IPv6,
                        sizeof(a->sin_address.xIP_IPv6));
     }
 }
@@ -198,8 +201,12 @@ static void iperf_udp_recv_task(void *arg)
     {
         while (!final_packet)
         {
-            len = FreeRTOS_recvfrom(server_state->udp_socket, recv_buff, udp_recv_len, 0,
-                                    &remote_sa, &remote_sa_len);
+            len = FreeRTOS_recvfrom(server_state->udp_socket,
+                                    recv_buff,
+                                    udp_recv_len,
+                                    0,
+                                    &remote_sa,
+                                    &remote_sa_len);
 
             if (len >= (int)(sizeof(*hdr) + sizeof(*settings)))
             {
@@ -265,7 +272,8 @@ static void iperf_udp_recv_task(void *arg)
             {
                 uint32_t duration_ms =
                     server_state->base.last_rx_time_ms - server_state->base.time_started_ms;
-                iperf_finalize_report_and_invoke_callback(&server_state->base, duration_ms,
+                iperf_finalize_report_and_invoke_callback(&server_state->base,
+                                                          duration_ms,
                                                           MMIPERF_UDP_DONE_SERVER);
                 session->next_packet_id = -1;
             }
@@ -283,7 +291,10 @@ static void iperf_udp_recv_task(void *arg)
 
                 iperf_populate_udp_server_report(&server_state->base, report);
 
-                len = FreeRTOS_sendto(server_state->udp_socket, recv_buff, tx_report_len, 0,
+                len = FreeRTOS_sendto(server_state->udp_socket,
+                                      recv_buff,
+                                      tx_report_len,
+                                      0,
                                       &session->client_sa,
                                       sizeof(session->client_sa));
                 if (len <= 0)
@@ -347,21 +358,28 @@ mmiperf_handle_t mmiperf_start_udp_server(const struct mmiperf_server_args *args
 
     s->udp_socket =
         FreeRTOS_socket((s->args.local_addr.xIs_IPv6 ? FREERTOS_AF_INET6 : FREERTOS_AF_INET),
-                        FREERTOS_SOCK_DGRAM, FREERTOS_IPPROTO_UDP);
+                        FREERTOS_SOCK_DGRAM,
+                        FREERTOS_IPPROTO_UDP);
     if (s->udp_socket == NULL)
     {
         goto exit;
     }
 
     TickType_t xTimeoutTime = pdMS_TO_TICKS(IPERF_UDP_CLIENT_REPORT_TIMEOUT_MS);
-    ok = FreeRTOS_setsockopt(s->udp_socket, 0, FREERTOS_SO_RCVTIMEO, &xTimeoutTime,
+    ok = FreeRTOS_setsockopt(s->udp_socket,
+                             0,
+                             FREERTOS_SO_RCVTIMEO,
+                             &xTimeoutTime,
                              sizeof(TickType_t));
     if (ok != 0)
     {
         FreeRTOS_debug_printf(("Setting FreeRTOS socket option FREERTOS_SO_RCVTIMEO failed\n"));
     }
 
-    ok = FreeRTOS_setsockopt(s->udp_socket, 0, FREERTOS_SO_SNDTIMEO, &xTimeoutTime,
+    ok = FreeRTOS_setsockopt(s->udp_socket,
+                             0,
+                             FREERTOS_SO_SNDTIMEO,
+                             &xTimeoutTime,
                              sizeof(TickType_t));
     if (ok != 0)
     {
@@ -374,7 +392,8 @@ mmiperf_handle_t mmiperf_start_udp_server(const struct mmiperf_server_args *args
     sa->sin_port = FreeRTOS_htons(args->local_port);
     if (s->args.local_addr.xIs_IPv6)
     {
-        memcpy(sa->sin_address.xIP_IPv6.ucBytes, s->args.local_addr.xIPAddress.xIP_IPv6.ucBytes,
+        memcpy(sa->sin_address.xIP_IPv6.ucBytes,
+               s->args.local_addr.xIPAddress.xIP_IPv6.ucBytes,
                sizeof(sa->sin_address.xIP_IPv6.ucBytes));
     }
     else
@@ -391,8 +410,11 @@ mmiperf_handle_t mmiperf_start_udp_server(const struct mmiperf_server_args *args
     /* Note: Multicast is not yet supported. */
 
     iperf_list_add(&s->base);
-    s->task = mmosal_task_create(iperf_udp_recv_task, s, MMOSAL_TASK_PRI_LOW,
-                                 MMIPERF_STACK_SIZE, "iperf_udp_recv");
+    s->task = mmosal_task_create(iperf_udp_recv_task,
+                                 s,
+                                 MMOSAL_TASK_PRI_LOW,
+                                 MMIPERF_STACK_SIZE,
+                                 "iperf_udp_recv");
     MMOSAL_ASSERT(s->task != NULL);
     result = &(s->base);
     s = NULL;
@@ -406,7 +428,8 @@ exit:
 }
 
 static int iperf_udp_client_send_packet(struct iperf_client_state_udp *client_state,
-                                        uint32_t tx_amount, bool final)
+                                        uint32_t tx_amount,
+                                        bool final)
 {
     struct iperf_udp_header *udp_hdr;
     struct iperf_settings *settings;
@@ -484,8 +507,12 @@ static int iperf_udp_client_send_packet(struct iperf_client_state_udp *client_st
         sa->sin_address.ulIP_IPv4 = client_state->server_addr.xIPAddress.ulIP_IPv4;
     }
 
-    ret = FreeRTOS_sendto(client_state->udp_socket, udp_payload, udp_payload_len, 0,
-                          &sockaddr_to, sizeof(sockaddr_to));
+    ret = FreeRTOS_sendto(client_state->udp_socket,
+                          udp_payload,
+                          udp_payload_len,
+                          0,
+                          &sockaddr_to,
+                          sizeof(sockaddr_to));
 
     mmosal_free(udp_payload);
     if (ret < 0)
@@ -512,8 +539,12 @@ static void iperf_udp_client_recv(struct iperf_client_state_udp *session)
         return;
     }
 
-    len = FreeRTOS_recvfrom(session->udp_socket, recv_buff, udp_report_len, 0,
-                            &session->udp_server_sa, &server_sa_len);
+    len = FreeRTOS_recvfrom(session->udp_socket,
+                            recv_buff,
+                            udp_report_len,
+                            0,
+                            &session->udp_server_sa,
+                            &server_sa_len);
     if (len < 0)
     {
         FreeRTOS_debug_printf(("iperf UDP rx failed to recv\n"));
@@ -622,7 +653,9 @@ static void iperf_udp_client_task(void *arg)
 
         if (client_state->report_len >= sizeof(*hdr) + sizeof(*report))
         {
-            iperf_parse_udp_server_report(&client_state->base, hdr, report,
+            iperf_parse_udp_server_report(&client_state->base,
+                                          hdr,
+                                          report,
                                           client_state->args.version);
             final_duration_ms = client_state->base.report.duration_ms;
         }
@@ -643,7 +676,8 @@ static void iperf_udp_client_task(void *arg)
         }
     }
 
-    iperf_finalize_report_and_invoke_callback(&client_state->base, final_duration_ms,
+    iperf_finalize_report_and_invoke_callback(&client_state->base,
+                                              final_duration_ms,
                                               MMIPERF_UDP_DONE_CLIENT);
 
     /* Clean up state and free allocated memory. */
@@ -719,7 +753,9 @@ mmiperf_handle_t mmiperf_start_udp_client(const struct mmiperf_client_args *args
     }
 
     FreeRTOS_debug_printf(("Starting UDP iperf client to %s:%u, amount %ld\n",
-                           s->args.server_addr, s->args.server_port, args->amount));
+                           s->args.server_addr,
+                           s->args.server_port,
+                           args->amount));
 
     /* target_bw (kbps) convert to block_tx_amount (bytes) = bw * (BLOCK_DURATION_MS / 8) */
     s->block_tx_amount = s->args.target_bw * BLOCK_DURATION_MS / 8;
@@ -735,25 +771,32 @@ mmiperf_handle_t mmiperf_start_udp_client(const struct mmiperf_client_args *args
      * iterations. */
     (void)atomic_fetch_add(&session_counter, 1);
     s->local_port = IPERF_UDP_CLIENT_LOCAL_PORT_RANGE_BASE +
-        (session_counter & (IPERF_UDP_CLIENT_LOCAL_PORT_RANGE_SIZE - 1));
+                    (session_counter & (IPERF_UDP_CLIENT_LOCAL_PORT_RANGE_SIZE - 1));
 
     s->udp_socket =
         FreeRTOS_socket((s->server_addr.xIs_IPv6 ? FREERTOS_AF_INET6 : FREERTOS_AF_INET),
-                        FREERTOS_SOCK_DGRAM, FREERTOS_IPPROTO_UDP);
+                        FREERTOS_SOCK_DGRAM,
+                        FREERTOS_IPPROTO_UDP);
     if (s->udp_socket == NULL)
     {
         goto exit;
     }
 
     TickType_t xTimeoutTime = pdMS_TO_TICKS(IPERF_UDP_CLIENT_REPORT_TIMEOUT_MS);
-    ok = FreeRTOS_setsockopt(s->udp_socket, 0, FREERTOS_SO_RCVTIMEO, &xTimeoutTime,
+    ok = FreeRTOS_setsockopt(s->udp_socket,
+                             0,
+                             FREERTOS_SO_RCVTIMEO,
+                             &xTimeoutTime,
                              sizeof(TickType_t));
     if (ok != 0)
     {
         FreeRTOS_debug_printf(("Setting FreeRTOS socket option FREERTOS_SO_RCVTIMEO failed\n"));
     }
 
-    ok = FreeRTOS_setsockopt(s->udp_socket, 0, FREERTOS_SO_SNDTIMEO, &xTimeoutTime,
+    ok = FreeRTOS_setsockopt(s->udp_socket,
+                             0,
+                             FREERTOS_SO_SNDTIMEO,
+                             &xTimeoutTime,
                              sizeof(TickType_t));
     if (ok != 0)
     {
@@ -771,7 +814,8 @@ mmiperf_handle_t mmiperf_start_udp_client(const struct mmiperf_client_args *args
     sa->sin_port = FreeRTOS_htons(s->args.server_port);
     if (s->server_addr.xIs_IPv6)
     {
-        memcpy(sa->sin_address.xIP_IPv6.ucBytes, s->server_addr.xIPAddress.xIP_IPv6.ucBytes,
+        memcpy(sa->sin_address.xIP_IPv6.ucBytes,
+               s->server_addr.xIPAddress.xIP_IPv6.ucBytes,
                sizeof(sa->sin_address.xIP_IPv6.ucBytes));
     }
     else
@@ -787,8 +831,11 @@ mmiperf_handle_t mmiperf_start_udp_client(const struct mmiperf_client_args *args
 
     iperf_list_add(&s->base);
 
-    s->task = mmosal_task_create(iperf_udp_client_task, s, MMOSAL_TASK_PRI_LOW,
-                                 MMIPERF_STACK_SIZE, "iperf_udp");
+    s->task = mmosal_task_create(iperf_udp_client_task,
+                                 s,
+                                 MMOSAL_TASK_PRI_LOW,
+                                 MMIPERF_STACK_SIZE,
+                                 "iperf_udp");
     MMOSAL_ASSERT(s->task != NULL);
     result = &(s->base);
     s = NULL;

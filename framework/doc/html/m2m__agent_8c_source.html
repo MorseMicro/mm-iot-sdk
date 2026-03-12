@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.9.7</span>
+   &#160;<span id="projectnumber">2.10.4</span>
    </div>
   </td>
  </tr>
@@ -99,7 +99,7 @@ $(document).ready(function(){initNavTree('m2m__agent_8c_source.html',''); initRe
 <div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="preprocessor">#include &quot;mmosal.h&quot;</span></div>
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="preprocessor">#include &quot;mmutils.h&quot;</span></div>
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="preprocessor">#include &quot;mmagic.h&quot;</span></div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="preprocessor">#include &quot;mm_app_regdb.h&quot;</span></div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="preprocessor">#include &quot;mmregdb.h&quot;</span></div>
 <div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span> </div>
 <div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="preprocessor">#if !defined(MBEDTLS_CONFIG_FILE)</span></div>
 <div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">#include &quot;mbedtls/mbedtls_config.h&quot;</span></div>
@@ -133,18 +133,18 @@ $(document).ready(function(){initNavTree('m2m__agent_8c_source.html',''); initRe
 <div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>    printf(<span class="stringliteral">&quot;M2M interface enabled\n&quot;</span>);</div>
 <div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>}</div>
 <div class="ttc" id="agroup__MMAGIC__AGENT_html_ga0c7e0c69e10d9b0046cf7a8733a88cc8"><div class="ttname"><a href="group__MMAGIC__AGENT.html#ga0c7e0c69e10d9b0046cf7a8733a88cc8">mmagic_m2m_agent_init</a></div><div class="ttdeci">struct mmagic_m2m_agent * mmagic_m2m_agent_init(const struct mmagic_m2m_agent_init_args *args)</div><div class="ttdoc">Initialize the M2M agent.</div></div>
-<div class="ttc" id="agroup__MMUTILS_html_ga0157597bdd038d83fbb0f2f488e6e4ee"><div class="ttname"><a href="group__MMUTILS.html#ga0157597bdd038d83fbb0f2f488e6e4ee">MM_UNUSED</a></div><div class="ttdeci">#define MM_UNUSED(_x)</div><div class="ttdoc">Casts the given expression to void to avoid &quot;unused&quot; warnings from the compiler.</div><div class="ttdef"><b>Definition:</b> <a href="mmutils_8h_source.html#l00069">mmutils.h:69</a></div></div>
+<div class="ttc" id="agroup__MMUTILS_html_ga0157597bdd038d83fbb0f2f488e6e4ee"><div class="ttname"><a href="group__MMUTILS.html#ga0157597bdd038d83fbb0f2f488e6e4ee">MM_UNUSED</a></div><div class="ttdeci">#define MM_UNUSED(_x)</div><div class="ttdoc">Casts the given expression to void to avoid &quot;unused&quot; warnings from the compiler.</div><div class="ttdef"><b>Definition:</b> <a href="mmutils_8h_source.html#l00070">mmutils.h:70</a></div></div>
 <div class="ttc" id="am2m__agent_8c_html_add3190cf715f513666f4be42874d91e2"><div class="ttname"><a href="m2m__agent_8c.html#add3190cf715f513666f4be42874d91e2">app_init</a></div><div class="ttdeci">void app_init(void)</div><div class="ttdoc">Main entry point to the application.</div><div class="ttdef"><b>Definition:</b> <a href="m2m__agent_8c_source.html#l00041">m2m_agent.c:41</a></div></div>
-<div class="ttc" id="astructmmagic__m2m__agent__init__args_html"><div class="ttname"><a href="structmmagic__m2m__agent__init__args.html">mmagic_m2m_agent_init_args</a></div><div class="ttdoc">M2M initialization args.</div><div class="ttdef"><b>Definition:</b> <a href="mmagic_8h_source.html#l00292">mmagic.h:293</a></div></div>
-<div class="ttc" id="astructmmagic__m2m__agent__init__args_html_ad4731621e21f22b29c7cb8bf54e55ab9"><div class="ttname"><a href="structmmagic__m2m__agent__init__args.html#ad4731621e21f22b29c7cb8bf54e55ab9">mmagic_m2m_agent_init_args::app_version</a></div><div class="ttdeci">char app_version[MMAGIC_SYS_MAX_APP_VERSION_LENGTH+1]</div><div class="ttdoc">Application version string.</div><div class="ttdef"><b>Definition:</b> <a href="mmagic_8h_source.html#l00295">mmagic.h:295</a></div></div>
+<div class="ttc" id="astructmmagic__m2m__agent__init__args_html"><div class="ttname"><a href="structmmagic__m2m__agent__init__args.html">mmagic_m2m_agent_init_args</a></div><div class="ttdoc">M2M initialization args.</div><div class="ttdef"><b>Definition:</b> <a href="mmagic_8h_source.html#l00293">mmagic.h:294</a></div></div>
+<div class="ttc" id="astructmmagic__m2m__agent__init__args_html_ad4731621e21f22b29c7cb8bf54e55ab9"><div class="ttname"><a href="structmmagic__m2m__agent__init__args.html#ad4731621e21f22b29c7cb8bf54e55ab9">mmagic_m2m_agent_init_args::app_version</a></div><div class="ttdeci">char app_version[MMAGIC_SYS_MAX_APP_VERSION_LENGTH+1]</div><div class="ttdoc">Application version string.</div><div class="ttdef"><b>Definition:</b> <a href="mmagic_8h_source.html#l00296">mmagic.h:296</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.17-->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_a83e6f5a895aa2b1b9491908a242dbc1.html">applications</a></li><li class="navelem"><a class="el" href="dir_cfc5c4d031258b3410140d72aa2dcc6a.html">mm-ekh08-u575</a></li><li class="navelem"><a class="el" href="dir_82773fc10e454d76d9c7f822a32be539.html">m2m_agent</a></li><li class="navelem"><a class="el" href="dir_34a040427dbecbf24af965b18cb8973a.html">src</a></li><li class="navelem"><a class="el" href="m2m__agent_8c.html">m2m_agent.c</a></li>
-    <li class="footer">Copyright 2021 Morse Micro </li>
+    <li class="navelem"><a class="el" href="dir_53f24dd26f9743fa303a83f37b3ec939.html">applications</a></li><li class="navelem"><a class="el" href="dir_903dc44de6aba89209c1231ba3dbceaa.html">mm-ekh08-u575</a></li><li class="navelem"><a class="el" href="dir_7e415e744e0af70d8ea81b7b0a29d162.html">m2m_agent</a></li><li class="navelem"><a class="el" href="dir_909ff23781a840407d9dcd160a4bcfdf.html">src</a></li><li class="navelem"><a class="el" href="m2m__agent_8c.html">m2m_agent.c</a></li>
+    <li class="footer">Copyright 2021-2025 Morse Micro </li>
   </ul>
 </div>
 </body>

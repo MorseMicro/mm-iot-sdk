@@ -10,7 +10,7 @@
 
 #include "mmlog.h"
 #include "mmosal.h"
-#include "mmhal.h"
+#include "mmhal_os.h"
 #include "mmutils.h"
 
 /** Timeout when  acquiring log mutex (in milliseconds). */

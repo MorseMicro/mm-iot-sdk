@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Morse Micro
+ * Copyright 2026 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -14,4 +14,18 @@
  * Maximum allowed length of any value string. Needs to accomodate WLAN password, IP and MAC address
  * strings.
  */
-#define MAX_VAL_LEN     101
+#define MAX_VAL_LEN 101
+
+enum mmagic_status mmagic_core_event_tcp_rx_ready(
+    struct mmagic_data *core,
+    const struct mmagic_core_event_tcp_rx_ready_args *args)
+{
+    const uint8_t *payload = (const uint8_t *)args;
+    size_t payload_len = sizeof(*args);
+    MMOSAL_ASSERT(core->event_fn != NULL);
+    return core->event_fn(core->event_fn_arg,
+                          mmagic_tcp,
+                          mmagic_tcp_event_rx_ready,
+                          payload,
+                          payload_len);
+}

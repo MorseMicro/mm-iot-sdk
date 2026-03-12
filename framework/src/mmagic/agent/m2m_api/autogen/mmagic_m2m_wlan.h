@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Morse Micro
+ * Copyright 2026 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -14,46 +14,45 @@
 /********* Enumerations **********/
 enum mmagic_wlan_vars
 {
-    mmagic_wlan_var_country_code              = 0,
-    mmagic_wlan_var_ssid                      = 1,
-    mmagic_wlan_var_password                  = 2,
-    mmagic_wlan_var_security                  = 3,
-    mmagic_wlan_var_raw_priority              = 4,
-    mmagic_wlan_var_bssid                     = 5,
-    mmagic_wlan_var_pmf_mode                  = 6,
-    mmagic_wlan_var_station_type              = 7,
-    mmagic_wlan_var_rts_threshold             = 8,
-    mmagic_wlan_var_sgi_enabled               = 9,
-    mmagic_wlan_var_subbands_enabled          = 10,
-    mmagic_wlan_var_ampdu_enabled             = 11,
-    mmagic_wlan_var_power_save_mode           = 12,
-    mmagic_wlan_var_fragment_threshold        = 13,
-    mmagic_wlan_var_cac_enabled               = 14,
-    mmagic_wlan_var_offload_arp_response      = 15,
-    mmagic_wlan_var_offload_arp_refresh_s     = 16,
+    mmagic_wlan_var_country_code = 0,
+    mmagic_wlan_var_ssid = 1,
+    mmagic_wlan_var_password = 2,
+    mmagic_wlan_var_security = 3,
+    mmagic_wlan_var_raw_priority = 4,
+    mmagic_wlan_var_bssid = 5,
+    mmagic_wlan_var_pmf_mode = 6,
+    mmagic_wlan_var_station_type = 7,
+    mmagic_wlan_var_rts_threshold = 8,
+    mmagic_wlan_var_sgi_enabled = 9,
+    mmagic_wlan_var_subbands_enabled = 10,
+    mmagic_wlan_var_ampdu_enabled = 11,
+    mmagic_wlan_var_power_save_mode = 12,
+    mmagic_wlan_var_fragment_threshold = 13,
+    mmagic_wlan_var_cac_enabled = 14,
     mmagic_wlan_var_min_health_check_intvl_ms = 17,
     mmagic_wlan_var_max_health_check_intvl_ms = 18,
-    mmagic_wlan_var_ndp_probe_enabled         = 19,
-    mmagic_wlan_var_sta_scan_interval_base_s  = 20,
+    mmagic_wlan_var_ndp_probe_enabled = 19,
+    mmagic_wlan_var_sta_scan_interval_base_s = 20,
     mmagic_wlan_var_sta_scan_interval_limit_s = 21,
-    mmagic_wlan_var_qos_0_params              = 22,
-    mmagic_wlan_var_qos_1_params              = 23,
-    mmagic_wlan_var_qos_2_params              = 24,
-    mmagic_wlan_var_qos_3_params              = 25,
-    mmagic_wlan_var_mcs10_mode                = 26,
-    mmagic_wlan_var_sta_evt_en                = 27,
-    mmagic_wlan_var_duty_cycle_mode           = 28,
+    mmagic_wlan_var_qos_0_params = 22,
+    mmagic_wlan_var_qos_1_params = 23,
+    mmagic_wlan_var_qos_2_params = 24,
+    mmagic_wlan_var_qos_3_params = 25,
+    mmagic_wlan_var_mcs10_mode = 26,
+    mmagic_wlan_var_sta_evt_en = 27,
+    mmagic_wlan_var_duty_cycle_mode = 28,
 };
 
 /**
  * Process the received M2M buffer.
  *
- * @param  agent   Reference to the M2M Agent context.
- * @param  sid     The stream ID this buffer was received on.
- * @param  header  The M2M header containing the subsystem, command and subcommand.
- * @param  cmd_buf The @c mmbuf with the buffer to be processed.
- * @return         An @c mmbuf with the response.
+ * @param agent         Reference to the M2M Agent context.
+ * @param sid           The stream ID this buffer was received on.
+ * @param header        The M2M header containing the subsystem, command and subcommand.
+ * @param cmd_buf       The @c mmbuf with the buffer to be processed.
+ * @return              An @c mmbuf with the response.
  */
-struct mmbuf *mmagic_m2m_wlan_process(struct mmagic_m2m_agent *agent, uint8_t sid,
+struct mmbuf *mmagic_m2m_wlan_process(struct mmagic_m2m_agent *agent,
+                                      uint8_t sid,
                                       struct mmagic_m2m_command_header *header,
                                       struct mmbuf *cmd_buf);

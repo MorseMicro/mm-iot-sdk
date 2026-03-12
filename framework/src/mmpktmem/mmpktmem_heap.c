@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Morse Micro
+ * Copyright 2024-2025 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -7,7 +7,7 @@
 #include <stdint.h>
 #include <stdatomic.h>
 
-#include "mmhal.h"
+#include "mmhal_wlan.h"
 #include "mmosal.h"
 #include "mmpkt.h"
 #include "mmpkt_list.h"
@@ -28,9 +28,13 @@
 #define TX_DATA_POOL_UNPAUSE_THRESHOLD (MMPKTMEM_TX_POOL_N_BLOCKS - 2)
 #define TX_DATA_POOL_PAUSE_THRESHOLD   (MMPKTMEM_TX_POOL_N_BLOCKS - 1)
 
-/* Packet pool for commands configuration. */
-#define TX_COMMAND_POOL_BLOCK_SIZE  (256)
-#define TX_COMMAND_POOL_N_BLOCKS    (2)
+/* Packet pool for command requests configuration. */
+#define TX_COMMAND_POOL_BLOCK_SIZE (256)
+#define TX_COMMAND_POOL_N_BLOCKS   (2)
+
+/* Packet pool for command responses configuration. */
+#define RX_COMMAND_POOL_BLOCK_SIZE (MMHAL_WLAN_MMPKT_RX_MAX_SIZE)
+#define RX_COMMAND_POOL_N_BLOCKS   (2)
 
 #ifndef MMPKT_LOG
 #define MMPKT_LOG(...) printf(__VA_ARGS__)
@@ -45,10 +49,15 @@ struct pktmem_data
     /** Count of allocated rx packets. */
     volatile atomic_int_least32_t rx_pool_allocated;
 
-    /** Command pool free (unallocated) packet list. */
+    /** Transmit command pool free (unallocated) packet list. */
     struct mmpkt_list tx_command_pool_free_list;
-    /** Statically allocated memory for the command pool. */
+    /** Statically allocated memory for the transmit command pool. */
     uint8_t tx_command_pool[TX_COMMAND_POOL_BLOCK_SIZE * TX_COMMAND_POOL_N_BLOCKS];
+
+    /** Receive command pool free (unallocated) rx packet list. */
+    struct mmpkt_list rx_command_pool_free_list;
+    /** Statically allocated memory for the receive command pool. */
+    uint8_t rx_command_pool[RX_COMMAND_POOL_BLOCK_SIZE * RX_COMMAND_POOL_N_BLOCKS];
 
     /** Flow control callback function pointer. */
     mmhal_wlan_pktmem_tx_flow_control_cb_t tx_flow_control_cb;
@@ -71,6 +80,14 @@ void mmhal_wlan_pktmem_init(struct mmhal_wlan_pktmem_init_args *args)
         mmpkt_list_append(&pktmem.tx_command_pool_free_list,
                           (struct mmpkt *)(pktmem.tx_command_pool + offset));
     }
+
+    /* Initialize the free (unallocated) packet list of the receive command pool. */
+    for (ii = 0; ii < RX_COMMAND_POOL_N_BLOCKS; ii++)
+    {
+        size_t offset = RX_COMMAND_POOL_BLOCK_SIZE * ii;
+        mmpkt_list_append(&pktmem.rx_command_pool_free_list,
+                          (struct mmpkt *)(pktmem.rx_command_pool + offset));
+    }
 }
 
 void mmhal_wlan_pktmem_deinit(void)
@@ -81,6 +98,7 @@ void mmhal_wlan_pktmem_deinit(void)
     for (ii = 0; ii < 100; ii++)
     {
         if ((pktmem.tx_command_pool_free_list.len |
+             pktmem.rx_command_pool_free_list.len |
              pktmem.tx_data_pool_allocated |
              pktmem.tx_data_pool_allocated) == 0)
         {
@@ -93,13 +111,22 @@ void mmhal_wlan_pktmem_deinit(void)
     if (pktmem.tx_data_pool_allocated != 0)
     {
         MMPKT_LOG("Potential memory leak: %d %s pool allocations at deinit\n",
-                  (int)pktmem.tx_data_pool_allocated, "data");
+                  (int)pktmem.tx_data_pool_allocated,
+                  "data");
     }
 
     if (pktmem.tx_command_pool_free_list.len != TX_COMMAND_POOL_N_BLOCKS)
     {
         MMPKT_LOG("Potential memory leak: %d %s pool allocations at deinit\n",
-                  TX_COMMAND_POOL_N_BLOCKS - (int)pktmem.tx_command_pool_free_list.len, "command");
+                  TX_COMMAND_POOL_N_BLOCKS - (int)pktmem.tx_command_pool_free_list.len,
+                  "command");
+    }
+
+    if (pktmem.rx_command_pool_free_list.len != RX_COMMAND_POOL_N_BLOCKS)
+    {
+        MMPKT_LOG("Potential memory leak: %d %s pool allocations at deinit\n",
+                  RX_COMMAND_POOL_N_BLOCKS - (int)pktmem.rx_command_pool_free_list.len,
+                  "command");
     }
 }
 
@@ -121,8 +148,11 @@ static const struct mmpkt_ops tx_command_pool_ops = {
     .free_mmpkt = tx_command_reserved_free,
 };
 
-static struct mmpkt *alloc_pkt_from_list(struct mmpkt_list *list, uint32_t pktbufsize,
-                                         uint32_t space_at_start, uint32_t space_at_end,
+static struct mmpkt *alloc_pkt_from_list(struct mmpkt_list *list,
+                                         uint32_t pktbufsize,
+                                         const struct mmpkt_ops *ops,
+                                         uint32_t space_at_start,
+                                         uint32_t space_at_end,
                                          uint32_t metadata_length)
 {
     struct mmpkt *mmpkt_buf;
@@ -137,24 +167,44 @@ static struct mmpkt *alloc_pkt_from_list(struct mmpkt_list *list, uint32_t pktbu
         return NULL;
     }
 
-    mmpkt = mmpkt_init_buf((uint8_t *)mmpkt_buf, pktbufsize, space_at_start, space_at_end,
-                           metadata_length, &tx_command_pool_ops);
+    mmpkt = mmpkt_init_buf((uint8_t *)mmpkt_buf,
+                           pktbufsize,
+                           space_at_start,
+                           space_at_end,
+                           metadata_length,
+                           ops);
     if (mmpkt == NULL)
     {
         /* Command was too big for the reserved buffer. Return the reserved buffer. */
-        tx_command_reserved_free(mmpkt_buf);
+        ops->free_mmpkt(mmpkt_buf);
     }
 
     return mmpkt;
 }
 
-static struct mmpkt *command_pool_alloc(uint32_t space_at_start, uint32_t space_at_end,
-                                        uint32_t metadata_length)
+static struct mmpkt *tx_command_pool_alloc(uint32_t space_at_start,
+                                           uint32_t space_at_end,
+                                           uint32_t metadata_length)
 {
-    return alloc_pkt_from_list(
-        &pktmem.tx_command_pool_free_list, TX_COMMAND_POOL_BLOCK_SIZE,
-        space_at_start, space_at_end, metadata_length);
+    return alloc_pkt_from_list(&pktmem.tx_command_pool_free_list,
+                               TX_COMMAND_POOL_BLOCK_SIZE,
+                               &tx_command_pool_ops,
+                               space_at_start,
+                               space_at_end,
+                               metadata_length);
 }
+
+static void rx_command_reserved_free(void *mmpkt)
+{
+    struct mmpkt *pkt = (struct mmpkt *)mmpkt;
+    MMOSAL_TASK_ENTER_CRITICAL();
+    mmpkt_list_append(&pktmem.rx_command_pool_free_list, pkt);
+    MMOSAL_TASK_EXIT_CRITICAL();
+}
+
+static const struct mmpkt_ops rx_command_pool_ops = {
+    .free_mmpkt = rx_command_reserved_free,
+};
 
 /*
  * --------------------------------------------------------------------------------------
@@ -183,7 +233,8 @@ static const struct mmpkt_ops tx_data_pool_pkt_ops = {
 };
 
 struct mmpkt *mmhal_wlan_alloc_mmpkt_for_tx(uint8_t pkt_class,
-                                            uint32_t space_at_start, uint32_t space_at_end,
+                                            uint32_t space_at_start,
+                                            uint32_t space_at_end,
                                             uint32_t metadata_length)
 {
     atomic_int_least32_t old_value;
@@ -193,7 +244,7 @@ struct mmpkt *mmhal_wlan_alloc_mmpkt_for_tx(uint8_t pkt_class,
      * we proceed to allocate from the data pool. */
     if (pkt_class == MMHAL_WLAN_PKT_COMMAND)
     {
-        mmpkt = command_pool_alloc(space_at_start, space_at_end, metadata_length);
+        mmpkt = tx_command_pool_alloc(space_at_start, space_at_end, metadata_length);
         if (mmpkt != NULL)
         {
             return mmpkt;
@@ -244,20 +295,32 @@ static void rx_pkt_free(void *mmpkt)
     }
 }
 
-static const struct mmpkt_ops mmpkt_rx_ops = {
-    .free_mmpkt = rx_pkt_free
-};
+static const struct mmpkt_ops mmpkt_rx_ops = { .free_mmpkt = rx_pkt_free };
 
 struct mmpkt *mmhal_wlan_alloc_mmpkt_for_rx(uint8_t pkt_class,
-                                            uint32_t capacity, uint32_t metadata_length)
+                                            uint32_t capacity,
+                                            uint32_t metadata_length)
 {
     atomic_int_least32_t old_value;
     struct mmpkt *mmpkt;
 
     if (pkt_class == MMHAL_WLAN_PKT_COMMAND)
     {
-        /* If the packet class is COMMAND then the allocation limits do not apply. */
-        return mmpkt_alloc_on_heap(0, capacity, metadata_length);
+        /* Try to alloc from pre-allocated packet list first to prevent command packets from
+         * being dropped when the heap is out of memory. */
+        mmpkt = alloc_pkt_from_list(&pktmem.rx_command_pool_free_list,
+                                    RX_COMMAND_POOL_BLOCK_SIZE,
+                                    &rx_command_pool_ops,
+                                    0,
+                                    capacity,
+                                    metadata_length);
+
+        if (mmpkt == NULL)
+        {
+            MMPKT_LOG("Failed to allocate RX command packet from pre-allocated memory\n");
+            mmpkt = mmpkt_alloc_on_heap(0, capacity, metadata_length);
+        }
+        return mmpkt;
     }
 
     old_value = atomic_fetch_add(&pktmem.rx_pool_allocated, 1);

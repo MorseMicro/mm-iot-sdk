@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.9.7</span>
+   &#160;<span id="projectnumber">2.10.4</span>
    </div>
   </td>
  </tr>
@@ -89,6 +89,7 @@ $(document).ready(function(){initNavTree('group__MMAGIC__CONTROLLER__TCP.html','
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Data Structures</a> &#124;
+<a href="#typedef-members">Typedefs</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">Module tcp: TCP Socket IO, supports secure connections using TLS.<div class="ingroups"><a class="el" href="group__MMAGIC.html">MMAGIC: CLI and Machine-to-Machine interface infrastructure</a> &raquo; <a class="el" href="group__MMAGIC__CONTROLLER.html">Morse M2M Interface Controller API</a></div></div></div>
 </div><!--header-->
@@ -133,6 +134,18 @@ Data Structures</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmagic__core__tcp__close__cmd__args.html">mmagic_core_tcp_close_cmd_args</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Command arguments structure for tcp_close.  <a href="structmmagic__core__tcp__close__cmd__args.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmagic__core__tcp__set__rx__ready__evt__enabled__cmd__args.html">mmagic_core_tcp_set_rx_ready_evt_enabled_cmd_args</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Command arguments structure for tcp_set_rx_ready_evt_enabled.  <a href="structmmagic__core__tcp__set__rx__ready__evt__enabled__cmd__args.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmagic__tcp__rx__ready__event__args.html">mmagic_tcp_rx_ready_event_args</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Event arguments structure for tcp_rx_ready.  <a href="structmmagic__tcp__rx__ready__event__args.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:ga71bbcea9671862ecc5cf84dd75a161c8"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__TCP.html#ga71bbcea9671862ecc5cf84dd75a161c8">mmagic_tcp_rx_ready_event_handler_t</a>) (const struct <a class="el" href="structmmagic__tcp__rx__ready__event__args.html">mmagic_tcp_rx_ready_event_args</a> *event_args, void *arg)</td></tr>
+<tr class="memdesc:ga71bbcea9671862ecc5cf84dd75a161c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handler for the tcp-rx_ready event.  <a href="group__MMAGIC__CONTROLLER__TCP.html#ga71bbcea9671862ecc5cf84dd75a161c8">More...</a><br /></td></tr>
+<tr class="separator:ga71bbcea9671862ecc5cf84dd75a161c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -160,8 +173,90 @@ Functions</h2></td></tr>
 <tr class="memitem:gae6e7329df734163f5b0f99f0a2f272ae"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__TCP.html#gae6e7329df734163f5b0f99f0a2f272ae">mmagic_controller_tcp_close</a> (struct mmagic_controller *controller, struct <a class="el" href="structmmagic__core__tcp__close__cmd__args.html">mmagic_core_tcp_close_cmd_args</a> *cmd_args)</td></tr>
 <tr class="memdesc:gae6e7329df734163f5b0f99f0a2f272ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Closes and frees the socket.  <a href="group__MMAGIC__CONTROLLER__TCP.html#gae6e7329df734163f5b0f99f0a2f272ae">More...</a><br /></td></tr>
 <tr class="separator:gae6e7329df734163f5b0f99f0a2f272ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaa3943c917259513cf6b5115424b0597f"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__TCP.html#gaa3943c917259513cf6b5115424b0597f">mmagic_controller_tcp_set_rx_ready_evt_enabled</a> (struct mmagic_controller *controller, struct <a class="el" href="structmmagic__core__tcp__set__rx__ready__evt__enabled__cmd__args.html">mmagic_core_tcp_set_rx_ready_evt_enabled_cmd_args</a> *cmd_args)</td></tr>
+<tr class="memdesc:gaa3943c917259513cf6b5115424b0597f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets whether the RX ready event should be enabled for the given socket.  <a href="group__MMAGIC__CONTROLLER__TCP.html#gaa3943c917259513cf6b5115424b0597f">More...</a><br /></td></tr>
+<tr class="separator:gaa3943c917259513cf6b5115424b0597f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga4c15384afde95dd48370a522e512f282"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__TCP.html#ga4c15384afde95dd48370a522e512f282">mmagic_controller_register_tcp_rx_ready_handler</a> (struct mmagic_controller *controller, <a class="el" href="group__MMAGIC__CONTROLLER__TCP.html#ga71bbcea9671862ecc5cf84dd75a161c8">mmagic_tcp_rx_ready_event_handler_t</a> handler, void *arg)</td></tr>
+<tr class="memdesc:ga4c15384afde95dd48370a522e512f282"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register a handler for the tcp-rx_ready event.  <a href="group__MMAGIC__CONTROLLER__TCP.html#ga4c15384afde95dd48370a522e512f282">More...</a><br /></td></tr>
+<tr class="separator:ga4c15384afde95dd48370a522e512f282"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Typedef Documentation</h2>
+<a id="ga71bbcea9671862ecc5cf84dd75a161c8" name="ga71bbcea9671862ecc5cf84dd75a161c8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga71bbcea9671862ecc5cf84dd75a161c8">&#9670;&nbsp;</a></span>mmagic_tcp_rx_ready_event_handler_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef void(* mmagic_tcp_rx_ready_event_handler_t) (const struct <a class="el" href="structmmagic__tcp__rx__ready__event__args.html">mmagic_tcp_rx_ready_event_args</a> *event_args, void *arg)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Handler for the tcp-rx_ready event. </p>
+<p >If enabled, this event is triggered when data becomes ready for receive.</p>
+<dl class="section note"><dt>Note</dt><dd>This function will be invoked in the context of the controller data link thread and should perform minimal processing.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>This function must not invoke any mmagic API functions.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">event_args</td><td>Notication arguments received from the agent. </td></tr>
+    <tr><td class="paramname">arg</td><td>Opaque argument that was provided when the callback was registered. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l06499">6499</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+
+</div>
+</div>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="ga4c15384afde95dd48370a522e512f282" name="ga4c15384afde95dd48370a522e512f282"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga4c15384afde95dd48370a522e512f282">&#9670;&nbsp;</a></span>mmagic_controller_register_tcp_rx_ready_handler()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void mmagic_controller_register_tcp_rx_ready_handler </td>
+          <td>(</td>
+          <td class="paramtype">struct mmagic_controller *&#160;</td>
+          <td class="paramname"><em>controller</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__MMAGIC__CONTROLLER__TCP.html#ga71bbcea9671862ecc5cf84dd75a161c8">mmagic_tcp_rx_ready_event_handler_t</a>&#160;</td>
+          <td class="paramname"><em>handler</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>arg</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Register a handler for the tcp-rx_ready event. </p>
+<p >If enabled, this event is triggered when data becomes ready for receive.</p>
+<dl class="section note"><dt>Note</dt><dd>The handler callbacks will be invoked in the context of the controller data link thread. The handler should perform minimal processing.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>The handler callback must not invoke any mmagic API functions.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">controller</td><td>Reference to the the controller handle. </td></tr>
+    <tr><td class="paramname">handler</td><td>The handler function to register. </td></tr>
+    <tr><td class="paramname">arg</td><td>Opaque argument to be passed to the handler when it is invoked. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="ga0d5363251d7a7d63d5e06c020be217a1" name="ga0d5363251d7a7d63d5e06c020be217a1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga0d5363251d7a7d63d5e06c020be217a1">&#9670;&nbsp;</a></span>mmagic_controller_tcp_accept()</h2>
 
@@ -207,13 +302,13 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramdir"></td><td class="paramname">controller</td><td>Reference to the controller handle. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">cmd_args</td><td>Command arguments </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">rsp_args</td><td>Pointer to the data structure to be filled out with the result. If the If the return code is not <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> then the contents of this structure will be undefined.</td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">rsp_args</td><td>Pointer to the data structure to be filled out with the result. If the return code is not <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> then the contents of this structure will be undefined.</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l05054">5054</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l06355">6355</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -262,13 +357,13 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramdir"></td><td class="paramname">controller</td><td>Reference to the controller handle. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">cmd_args</td><td>Command arguments </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">rsp_args</td><td>Pointer to the data structure to be filled out with the result. If the If the return code is not <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> then the contents of this structure will be undefined.</td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">rsp_args</td><td>Pointer to the data structure to be filled out with the result. If the return code is not <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> then the contents of this structure will be undefined.</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l04818">4818</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l06068">6068</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -316,7 +411,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l05090">5090</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l06401">6401</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -365,13 +460,13 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramdir"></td><td class="paramname">controller</td><td>Reference to the controller handle. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">cmd_args</td><td>Command arguments </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">rsp_args</td><td>Pointer to the data structure to be filled out with the result. If the If the return code is not <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> then the contents of this structure will be undefined.</td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">rsp_args</td><td>Pointer to the data structure to be filled out with the result. If the return code is not <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> then the contents of this structure will be undefined.</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l04770">4770</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l06012">6012</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -419,7 +514,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l04952">4952</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l06233">6233</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -468,13 +563,13 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramdir"></td><td class="paramname">controller</td><td>Reference to the controller handle. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">cmd_args</td><td>Command arguments </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">rsp_args</td><td>Pointer to the data structure to be filled out with the result. If the If the return code is not <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> then the contents of this structure will be undefined.</td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">rsp_args</td><td>Pointer to the data structure to be filled out with the result. If the return code is not <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> then the contents of this structure will be undefined.</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l04868">4868</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l06128">6128</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -522,7 +617,56 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l04916">4916</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l06186">6186</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+
+</div>
+</div>
+<a id="gaa3943c917259513cf6b5115424b0597f" name="gaa3943c917259513cf6b5115424b0597f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaa3943c917259513cf6b5115424b0597f">&#9670;&nbsp;</a></span>mmagic_controller_tcp_set_rx_ready_evt_enabled()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a> mmagic_controller_tcp_set_rx_ready_evt_enabled </td>
+          <td>(</td>
+          <td class="paramtype">struct mmagic_controller *&#160;</td>
+          <td class="paramname"><em>controller</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">struct <a class="el" href="structmmagic__core__tcp__set__rx__ready__evt__enabled__cmd__args.html">mmagic_core_tcp_set_rx_ready_evt_enabled_cmd_args</a> *&#160;</td>
+          <td class="paramname"><em>cmd_args</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Sets whether the RX ready event should be enabled for the given socket. </p>
+<p >Note that the RX ready event is currently only supported for TCP sockets and that behaviour with TLS sockets undefined.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir"></td><td class="paramname">controller</td><td>Reference to the controller handle. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">cmd_args</td><td>Command arguments</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l06449">6449</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -570,7 +714,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l04999">4999</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l06290">6290</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -580,7 +724,7 @@ Functions</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Copyright 2021 Morse Micro </li>
+    <li class="footer">Copyright 2021-2025 Morse Micro </li>
   </ul>
 </div>
 </body>

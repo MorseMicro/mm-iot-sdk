@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Morse Micro
+ * Copyright 2026 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -18,11 +18,12 @@
 #include "m2m_api/mmagic_m2m_agent.h"
 
 /* Maximum allowed length of any value string, needs to accomodate IP and MAC address strings */
-#define MAX_VAL_LEN     32
+#define MAX_VAL_LEN 32
 
 /********* M2M Command Handlers **********/
 static struct mmbuf *mmagic_m2m_ntp_get(struct mmagic_m2m_agent *agent,
-                                        uint8_t sid, uint8_t subcommand,
+                                        uint8_t sid,
+                                        uint8_t subcommand,
                                         struct mmbuf *commandbuffer)
 {
     MM_UNUSED(sid);
@@ -31,19 +32,27 @@ static struct mmbuf *mmagic_m2m_ntp_get(struct mmagic_m2m_agent *agent,
     struct mmagic_ntp_data *data = mmagic_data_get_ntp(&agent->core);
     switch (subcommand)
     {
-    case mmagic_ntp_var_server:
-        return mmagic_m2m_create_response(mmagic_ntp, mmagic_ntp_cmd_get, subcommand,
-                                          MMAGIC_STATUS_OK, &data->config.server,
-                                          sizeof(data->config.server));
+        case mmagic_ntp_var_server:
+            return mmagic_m2m_create_response(mmagic_ntp,
+                                              mmagic_ntp_cmd_get,
+                                              subcommand,
+                                              MMAGIC_STATUS_OK,
+                                              &data->config.server,
+                                              sizeof(data->config.server));
 
-    default:
-        return mmagic_m2m_create_response(mmagic_ntp, mmagic_ntp_cmd_get, subcommand,
-                                          MMAGIC_STATUS_NOT_FOUND, NULL, 0);
+        default:
+            return mmagic_m2m_create_response(mmagic_ntp,
+                                              mmagic_ntp_cmd_get,
+                                              subcommand,
+                                              MMAGIC_STATUS_NOT_FOUND,
+                                              NULL,
+                                              0);
     }
 }
 
 static struct mmbuf *mmagic_m2m_ntp_set(struct mmagic_m2m_agent *agent,
-                                        uint8_t sid, uint8_t subcommand,
+                                        uint8_t sid,
+                                        uint8_t subcommand,
                                         struct mmbuf *commandbuffer)
 {
     MM_UNUSED(sid);
@@ -51,20 +60,29 @@ static struct mmbuf *mmagic_m2m_ntp_set(struct mmagic_m2m_agent *agent,
     void *args = (void *)mmbuf_get_data_start(commandbuffer);
     switch (subcommand)
     {
-    case mmagic_ntp_var_server:
-        memcpy(&data->config.server, args, sizeof(data->config.server));
-        return mmagic_m2m_create_response(mmagic_ntp, mmagic_ntp_cmd_set,
-                                          subcommand, MMAGIC_STATUS_OK, NULL, 0);
-        break;
+        case mmagic_ntp_var_server:
+            memcpy(&data->config.server, args, sizeof(data->config.server));
+            return mmagic_m2m_create_response(mmagic_ntp,
+                                              mmagic_ntp_cmd_set,
+                                              subcommand,
+                                              MMAGIC_STATUS_OK,
+                                              NULL,
+                                              0);
+            break;
 
-    default:
-        return mmagic_m2m_create_response(mmagic_ntp, mmagic_ntp_cmd_set,
-                                          subcommand, MMAGIC_STATUS_NOT_FOUND, NULL, 0);
+        default:
+            return mmagic_m2m_create_response(mmagic_ntp,
+                                              mmagic_ntp_cmd_set,
+                                              subcommand,
+                                              MMAGIC_STATUS_NOT_FOUND,
+                                              NULL,
+                                              0);
     }
 }
 
 static struct mmbuf *mmagic_m2m_ntp_load(struct mmagic_m2m_agent *agent,
-                                         uint8_t sid, uint8_t subcommand,
+                                         uint8_t sid,
+                                         uint8_t subcommand,
                                          struct mmbuf *commandbuffer)
 {
     MM_UNUSED(sid);
@@ -72,12 +90,17 @@ static struct mmbuf *mmagic_m2m_ntp_load(struct mmagic_m2m_agent *agent,
 
     mmagic_core_ntp_load_all(&agent->core);
 
-    return mmagic_m2m_create_response(mmagic_ntp, mmagic_ntp_cmd_load,
-                                      subcommand, MMAGIC_STATUS_OK, NULL, 0);
+    return mmagic_m2m_create_response(mmagic_ntp,
+                                      mmagic_ntp_cmd_load,
+                                      subcommand,
+                                      MMAGIC_STATUS_OK,
+                                      NULL,
+                                      0);
 }
 
 static struct mmbuf *mmagic_m2m_ntp_commit(struct mmagic_m2m_agent *agent,
-                                           uint8_t sid, uint8_t subcommand,
+                                           uint8_t sid,
+                                           uint8_t subcommand,
                                            struct mmbuf *commandbuffer)
 {
     MM_UNUSED(sid);
@@ -85,36 +108,46 @@ static struct mmbuf *mmagic_m2m_ntp_commit(struct mmagic_m2m_agent *agent,
 
     mmagic_core_ntp_save_all(&agent->core);
 
-    return mmagic_m2m_create_response(mmagic_ntp, mmagic_ntp_cmd_commit,
-                                      subcommand, MMAGIC_STATUS_OK, NULL, 0);
+    return mmagic_m2m_create_response(mmagic_ntp,
+                                      mmagic_ntp_cmd_commit,
+                                      subcommand,
+                                      MMAGIC_STATUS_OK,
+                                      NULL,
+                                      0);
 }
 
 static struct mmbuf *mmagic_m2m_ntp_sync(struct mmagic_m2m_agent *agent,
-                                         uint8_t sid, uint8_t subcommand,
+                                         uint8_t sid,
+                                         uint8_t subcommand,
                                          struct mmbuf *commandbuffer)
 {
     enum mmagic_status status;
     MM_UNUSED(commandbuffer);
     MM_UNUSED(sid);
     status = mmagic_core_ntp_sync(&agent->core);
-    return mmagic_m2m_create_response(mmagic_ntp, mmagic_ntp_cmd_sync,
-                                      subcommand, status, NULL, 0);
+    return mmagic_m2m_create_response(mmagic_ntp, mmagic_ntp_cmd_sync, subcommand, status, NULL, 0);
 }
 
 static struct mmbuf *mmagic_m2m_ntp_get_time(struct mmagic_m2m_agent *agent,
-                                             uint8_t sid, uint8_t subcommand,
+                                             uint8_t sid,
+                                             uint8_t subcommand,
                                              struct mmbuf *commandbuffer)
 {
     enum mmagic_status status;
     MM_UNUSED(commandbuffer);
     MM_UNUSED(sid);
-    struct mmagic_core_ntp_get_time_rsp_args rsp_args = { };
+    struct mmagic_core_ntp_get_time_rsp_args rsp_args = {};
     status = mmagic_core_ntp_get_time(&agent->core, &rsp_args);
-    return mmagic_m2m_create_response(mmagic_ntp, mmagic_ntp_cmd_get_time,
-                                      subcommand, status, &rsp_args, sizeof(rsp_args));
+    return mmagic_m2m_create_response(mmagic_ntp,
+                                      mmagic_ntp_cmd_get_time,
+                                      subcommand,
+                                      status,
+                                      &rsp_args,
+                                      sizeof(rsp_args));
 }
 
-struct mmbuf *mmagic_m2m_ntp_process(struct mmagic_m2m_agent *agent, uint8_t sid,
+struct mmbuf *mmagic_m2m_ntp_process(struct mmagic_m2m_agent *agent,
+                                     uint8_t sid,
                                      struct mmagic_m2m_command_header *header,
                                      struct mmbuf *cmd_buf)
 {
@@ -122,34 +155,37 @@ struct mmbuf *mmagic_m2m_ntp_process(struct mmagic_m2m_agent *agent, uint8_t sid
     {
         switch (header->command)
         {
-        case mmagic_ntp_cmd_get:
-            return mmagic_m2m_ntp_get(agent, sid, header->subcommand, cmd_buf);
-            break;
+            case mmagic_ntp_cmd_get:
+                return mmagic_m2m_ntp_get(agent, sid, header->subcommand, cmd_buf);
+                break;
 
-        case mmagic_ntp_cmd_set:
-            return mmagic_m2m_ntp_set(agent, sid, header->subcommand, cmd_buf);
-            break;
+            case mmagic_ntp_cmd_set:
+                return mmagic_m2m_ntp_set(agent, sid, header->subcommand, cmd_buf);
+                break;
 
-        case mmagic_ntp_cmd_load:
-            return mmagic_m2m_ntp_load(agent, sid, header->subcommand, cmd_buf);
-            break;
+            case mmagic_ntp_cmd_load:
+                return mmagic_m2m_ntp_load(agent, sid, header->subcommand, cmd_buf);
+                break;
 
-        case mmagic_ntp_cmd_commit:
-            return mmagic_m2m_ntp_commit(agent, sid, header->subcommand, cmd_buf);
-            break;
+            case mmagic_ntp_cmd_commit:
+                return mmagic_m2m_ntp_commit(agent, sid, header->subcommand, cmd_buf);
+                break;
 
-        case mmagic_ntp_cmd_sync:
-            return mmagic_m2m_ntp_sync(agent, sid, header->subcommand, cmd_buf);
-            break;
+            case mmagic_ntp_cmd_sync:
+                return mmagic_m2m_ntp_sync(agent, sid, header->subcommand, cmd_buf);
+                break;
 
-        case mmagic_ntp_cmd_get_time:
-            return mmagic_m2m_ntp_get_time(agent, sid, header->subcommand, cmd_buf);
-            break;
+            case mmagic_ntp_cmd_get_time:
+                return mmagic_m2m_ntp_get_time(agent, sid, header->subcommand, cmd_buf);
+                break;
 
-        default:
-            return mmagic_m2m_create_response(header->subsystem, header->command,
-                                              header->subcommand, MMAGIC_STATUS_NOT_SUPPORTED, NULL,
-                                              0);
+            default:
+                return mmagic_m2m_create_response(header->subsystem,
+                                                  header->command,
+                                                  header->subcommand,
+                                                  MMAGIC_STATUS_NOT_SUPPORTED,
+                                                  NULL,
+                                                  0);
         }
     }
     else

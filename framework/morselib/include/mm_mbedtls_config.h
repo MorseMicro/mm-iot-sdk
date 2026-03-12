@@ -124,18 +124,57 @@
 #endif
 
 #if defined(CONFIG_DPP)
+
+#ifndef MBEDTLS_ASN1_PARSE_C
 #define MBEDTLS_ASN1_PARSE_C
+#endif
+
+#ifndef MBEDTLS_OID_C
 #define MBEDTLS_OID_C
+#endif
+
+#ifndef MBEDTLS_PK_PARSE_C
 #define MBEDTLS_PK_PARSE_C
+#endif
+
+#ifndef MBEDTLS_X509_CRT_PARSE_C
 #define MBEDTLS_X509_CRT_PARSE_C
+#endif
+
+#ifndef MBEDTLS_X509_CRL_PARSE_C
 #define MBEDTLS_X509_CRL_PARSE_C
+#endif
+
+#ifndef MBEDTLS_MD_C
 #define MBEDTLS_MD_C
+#endif
+
+#ifndef MBEDTLS_X509_USE_C
 #define MBEDTLS_X509_USE_C
+#endif
+
+#ifndef MBEDTLS_X509_CSR_WRITE_C
 #define MBEDTLS_X509_CSR_WRITE_C
+#endif
+
+#ifndef MBEDTLS_X509_CREATE_C
 #define MBEDTLS_X509_CREATE_C
+#endif
+
+#ifndef MBEDTLS_X509_CSR_PARSE_C
 #define MBEDTLS_X509_CSR_PARSE_C
+#endif
+
+#ifndef MBEDTLS_PEM_WRITE_C
 #define MBEDTLS_PEM_WRITE_C
+#endif
+
+#ifndef MBEDTLS_BASE64_C
 #define MBEDTLS_BASE64_C
+#endif
+
+#ifndef MBEDTLS_ECDSA_C
 #define MBEDTLS_ECDSA_C
 #endif
 
+#endif /* defined(CONFIG_DPP) */

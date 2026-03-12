@@ -4,14 +4,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
- /**
-  * @defgroup MMOSAL Morse Micro Operating System Abstraction Layer (mmosal) API
-  *
-  * This API provides a layer of abstraction from the underlying operation system. Functionality
-  * is provided for typical RTOS features.
-  *
-  * @{
-  */
+/**
+ * @defgroup MMOSAL Morse Micro Operating System Abstraction Layer (mmosal) API
+ *
+ * This API provides a layer of abstraction from the underlying operation system. Functionality
+ * is provided for typical RTOS features.
+ *
+ * @{
+ */
 
 #pragma once
 
@@ -24,7 +24,8 @@
 #include "mmport.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 /**
@@ -198,9 +199,11 @@ enum mmosal_task_priority
  *
  * @returns an opaque task handle, or @c NULL on failure.
  */
-struct mmosal_task *mmosal_task_create(mmosal_task_fn_t task_fn, void *argument,
+struct mmosal_task *mmosal_task_create(mmosal_task_fn_t task_fn,
+                                       void *argument,
                                        enum mmosal_task_priority priority,
-                                       unsigned stack_size_u32, const char *name);
+                                       unsigned stack_size_u32,
+                                       const char *name);
 
 /**
  * Delete the given task.
@@ -237,9 +240,9 @@ void mmosal_task_sleep(uint32_t duration_ms);
  * Each entry to a critical section must be matched to a corresponding exit
  * (@ref MMOSAL_TASK_EXIT_CRITICAL()).
  */
-#define MMOSAL_TASK_ENTER_CRITICAL() \
-    do { \
-        MMPORT_MEM_SYNC(); \
+#define MMOSAL_TASK_ENTER_CRITICAL()  \
+    do {                              \
+        MMPORT_MEM_SYNC();            \
         mmosal_task_enter_critical(); \
     } while (0)
 
@@ -248,9 +251,9 @@ void mmosal_task_sleep(uint32_t duration_ms);
  *
  * Used to exit a critical section previously entered with @ref MMOSAL_TASK_ENTER_CRITICAL()).
  */
-#define MMOSAL_TASK_EXIT_CRITICAL() \
-    do { \
-        MMPORT_MEM_SYNC(); \
+#define MMOSAL_TASK_EXIT_CRITICAL()  \
+    do {                             \
+        MMPORT_MEM_SYNC();           \
         mmosal_task_exit_critical(); \
     } while (0)
 
@@ -351,19 +354,19 @@ bool mmosal_mutex_release(struct mmosal_mutex *mutex);
 /**
  * Attempt to get a mutex, waiting infinitely long for it. Panics on failure.
  */
-#define MMOSAL_MUTEX_GET_INF(_mutex) \
-    do { \
+#define MMOSAL_MUTEX_GET_INF(_mutex)                        \
+    do {                                                    \
         bool ok__ = mmosal_mutex_get((_mutex), UINT32_MAX); \
-        MMOSAL_ASSERT(ok__); \
+        MMOSAL_ASSERT(ok__);                                \
     } while (0)
 
 /**
  * Same as @ref mmosal_mutex_release() except it panics on failure.
  */
-#define MMOSAL_MUTEX_RELEASE(_mutex) \
-    do { \
+#define MMOSAL_MUTEX_RELEASE(_mutex)              \
+    do {                                          \
         bool ok__ = mmosal_mutex_release(_mutex); \
-        MMOSAL_ASSERT(ok__); \
+        MMOSAL_ASSERT(ok__);                      \
     } while (0)
 
 /**
@@ -664,7 +667,6 @@ static inline bool mmosal_time_lt(uint32_t a, uint32_t b)
     return ((int32_t)(a - b)) < 0;
 }
 
-
 /**
  * Check if time a is less than or equal to time b, taking into account wrapping.
  *
@@ -775,9 +777,11 @@ typedef void (*timer_callback_t)(struct mmosal_timer *timer);
  * @warning Ensure that the timer callback function does not block or cause the calling task to
  *          be placed in a blocked state.
  */
-struct mmosal_timer *mmosal_timer_create(const char *name, uint32_t timer_period_ms,
-                                         bool auto_reload, void *arg, timer_callback_t callback);
-
+struct mmosal_timer *mmosal_timer_create(const char *name,
+                                         uint32_t timer_period_ms,
+                                         bool auto_reload,
+                                         void *arg,
+                                         timer_callback_t callback);
 
 /**
  * Delete a timer.
@@ -788,6 +792,9 @@ void mmosal_timer_delete(struct mmosal_timer *timer);
 
 /**
  * Start a timer.
+ *
+ * Calling start on a timer that has already been started is permitted. The timer will restart with
+ * the configured timer period.
  *
  * @param timer The timer to start.
  *
@@ -803,7 +810,6 @@ bool mmosal_timer_start(struct mmosal_timer *timer);
  * @returns @c true if the timer was stopped successfully, else @c false.
  */
 bool mmosal_timer_stop(struct mmosal_timer *timer);
-
 
 /**
  * Change timer period.
@@ -861,7 +867,7 @@ bool mmosal_is_timer_active(struct mmosal_timer *timer);
  * no platform-specific definition exists.
  */
 #ifndef MMOSAL_MAX_FAILURE_RECORDS
-#define MMOSAL_MAX_FAILURE_RECORDS    4
+#define MMOSAL_MAX_FAILURE_RECORDS 4
 #endif
 
 /** Data structure used to store information about a failure that can be preserved across reset. */
@@ -894,18 +900,18 @@ void mmosal_log_failure_info(const struct mmosal_failure_info *info);
 #else
 /** Initialize a mmosal_failure_info struct based on current state and invoke
  *  mmosal_log_failure_info(). */
-#define MMOSAL_LOG_FAILURE_INFO(...)                                                \
-    do {                                                                            \
-        void *pc;                                                                   \
-        struct mmosal_failure_info info = {                                         \
-            .lr = (uint32_t)MMPORT_GET_LR(),                                        \
-            .fileid = MMOSAL_FILEID,                                                \
-            .line = __LINE__,                                                       \
-            .platform_info = { __VA_ARGS__ },                                       \
-        };                                                                          \
-        MMPORT_GET_PC(pc);                                                          \
-        info.pc = (uint32_t)pc;                                                     \
-        mmosal_log_failure_info(&info);                                             \
+#define MMOSAL_LOG_FAILURE_INFO(...)          \
+    do {                                      \
+        void *pc;                             \
+        struct mmosal_failure_info info = {   \
+            .lr = (uint32_t)MMPORT_GET_LR(),  \
+            .fileid = MMOSAL_FILEID,          \
+            .line = __LINE__,                 \
+            .platform_info = { __VA_ARGS__ }, \
+        };                                    \
+        MMPORT_GET_PC(pc);                    \
+        info.pc = (uint32_t)pc;               \
+        mmosal_log_failure_info(&info);       \
     } while (0)
 #endif
 
@@ -916,6 +922,7 @@ void mmosal_log_failure_info(const struct mmosal_failure_info *info);
  */
 void mmosal_impl_assert(void);
 
+/* Note that running with no assertions is untested and not recommended. */
 #ifndef MMOSAL_NOASSERT
 /**
  * Assert that the given expression evaluates to true and abort execution if not.
@@ -924,15 +931,17 @@ void mmosal_impl_assert(void);
  *              will be triggered.
  */
 #ifndef MMOSAL_ASSERT
-#define MMOSAL_ASSERT(expr)                                                                 \
-        do {                                                                                \
-            if (!(expr)) {                                                                  \
-                MMOSAL_LOG_FAILURE_INFO(0);                                                 \
-                mmosal_impl_assert();                                                       \
-                while (1)                                                                   \
-                {}                                                                          \
-            }                                                                               \
-        } while (0)
+#define MMOSAL_ASSERT(expr)             \
+    do {                                \
+        if (!(expr))                    \
+        {                               \
+            MMOSAL_LOG_FAILURE_INFO(0); \
+            mmosal_impl_assert();       \
+            while (1)                   \
+            {                           \
+            }                           \
+        }                               \
+    } while (0)
 #endif
 
 /**
@@ -943,21 +952,23 @@ void mmosal_impl_assert(void);
  * @param ...   Up to 4 32-bit unsigned integers to log.
  */
 #ifndef MMOSAL_ASSERT_LOG_DATA
-#define MMOSAL_ASSERT_LOG_DATA(expr, ...)                                                   \
-        do {                                                                                \
-            if (!(expr)) {                                                                  \
-                MMOSAL_LOG_FAILURE_INFO(__VA_ARGS__);                                       \
-                mmosal_impl_assert();                                                       \
-                while (1)                                                                   \
-                {}                                                                          \
-            }                                                                               \
-        } while (0)
+#define MMOSAL_ASSERT_LOG_DATA(expr, ...)         \
+    do {                                          \
+        if (!(expr))                              \
+        {                                         \
+            MMOSAL_LOG_FAILURE_INFO(__VA_ARGS__); \
+            mmosal_impl_assert();                 \
+            while (1)                             \
+            {                                     \
+            }                                     \
+        }                                         \
+    } while (0)
 #endif
 #else
 /** Empty assertion handler. */
-#define MMOSAL_ASSERT(expr)  (void)(expr)
+#define MMOSAL_ASSERT(expr)               (void)(expr)
 /** Empty assertion handler. */
-#define MMOSAL_ASSERT_LOG_DATA(expre, ...) (void)(expr)
+#define MMOSAL_ASSERT_LOG_DATA(expr, ...) (void)(expr)
 #endif
 
 #ifdef ENABLE_MMOSAL_DEV_ASSERT
@@ -1003,8 +1014,6 @@ bool mmosal_extract_failure_info(struct mmosal_failure_info *buf, uint32_t *fail
  * @{
  */
 
-
-
 /**
  * OS abstracted version of @c printf used by morselib.
  *
@@ -1038,8 +1047,8 @@ static inline bool mmosal_safer_strcpy(char *dst, const char *src, size_t size)
 
     strncpy(dst, src, size);
 
-    ret = dst[size-1] != '\0';
-    dst[size-1] = '\0';
+    ret = dst[size - 1] != '\0';
+    dst[size - 1] = '\0';
     return ret;
 }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Morse Micro
+ * Copyright 2026 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -30,7 +30,7 @@ int mmagic_cli_ip_get_ip_addr(struct mmagic_data *core, EmbeddedCli *cli)
     MM_STATIC_ASSERT((sizeof("ip.ip_addr") - 1) < KEY_NAME_PADDING,
                      "Key must be shorter than padding");
 
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = { 0 };
     /* -1 to allow for a NULL terminator at the end */
     const size_t max_str_len = sizeof(buf) - 1;
     size_t cursor = 0;
@@ -42,8 +42,8 @@ int mmagic_cli_ip_get_ip_addr(struct mmagic_data *core, EmbeddedCli *cli)
         return -1;
     }
     cursor += written;
-    written = mmagic_struct_ip_addr_to_string(&data->config.ip_addr,
-                                              &buf[cursor], max_str_len - cursor);
+    written =
+        mmagic_struct_ip_addr_to_string(&data->config.ip_addr, &buf[cursor], max_str_len - cursor);
     if (written == 0)
     {
         /*
@@ -72,7 +72,7 @@ int mmagic_cli_ip_get_netmask(struct mmagic_data *core, EmbeddedCli *cli)
     MM_STATIC_ASSERT((sizeof("ip.netmask") - 1) < KEY_NAME_PADDING,
                      "Key must be shorter than padding");
 
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = { 0 };
     /* -1 to allow for a NULL terminator at the end */
     const size_t max_str_len = sizeof(buf) - 1;
     size_t cursor = 0;
@@ -84,8 +84,8 @@ int mmagic_cli_ip_get_netmask(struct mmagic_data *core, EmbeddedCli *cli)
         return -1;
     }
     cursor += written;
-    written = mmagic_struct_ip_addr_to_string(&data->config.netmask,
-                                              &buf[cursor], max_str_len - cursor);
+    written =
+        mmagic_struct_ip_addr_to_string(&data->config.netmask, &buf[cursor], max_str_len - cursor);
     if (written == 0)
     {
         /*
@@ -114,7 +114,7 @@ int mmagic_cli_ip_get_gateway(struct mmagic_data *core, EmbeddedCli *cli)
     MM_STATIC_ASSERT((sizeof("ip.gateway") - 1) < KEY_NAME_PADDING,
                      "Key must be shorter than padding");
 
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = { 0 };
     /* -1 to allow for a NULL terminator at the end */
     const size_t max_str_len = sizeof(buf) - 1;
     size_t cursor = 0;
@@ -126,8 +126,8 @@ int mmagic_cli_ip_get_gateway(struct mmagic_data *core, EmbeddedCli *cli)
         return -1;
     }
     cursor += written;
-    written = mmagic_struct_ip_addr_to_string(&data->config.gateway,
-                                              &buf[cursor], max_str_len - cursor);
+    written =
+        mmagic_struct_ip_addr_to_string(&data->config.gateway, &buf[cursor], max_str_len - cursor);
     if (written == 0)
     {
         /*
@@ -156,7 +156,7 @@ int mmagic_cli_ip_get_dns_server0(struct mmagic_data *core, EmbeddedCli *cli)
     MM_STATIC_ASSERT((sizeof("ip.dns_server0") - 1) < KEY_NAME_PADDING,
                      "Key must be shorter than padding");
 
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = { 0 };
     /* -1 to allow for a NULL terminator at the end */
     const size_t max_str_len = sizeof(buf) - 1;
     size_t cursor = 0;
@@ -169,7 +169,8 @@ int mmagic_cli_ip_get_dns_server0(struct mmagic_data *core, EmbeddedCli *cli)
     }
     cursor += written;
     written = mmagic_struct_ip_addr_to_string(&data->config.dns_server0,
-                                              &buf[cursor], max_str_len - cursor);
+                                              &buf[cursor],
+                                              max_str_len - cursor);
     if (written == 0)
     {
         /*
@@ -198,7 +199,7 @@ int mmagic_cli_ip_get_dns_server1(struct mmagic_data *core, EmbeddedCli *cli)
     MM_STATIC_ASSERT((sizeof("ip.dns_server1") - 1) < KEY_NAME_PADDING,
                      "Key must be shorter than padding");
 
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = { 0 };
     /* -1 to allow for a NULL terminator at the end */
     const size_t max_str_len = sizeof(buf) - 1;
     size_t cursor = 0;
@@ -211,7 +212,8 @@ int mmagic_cli_ip_get_dns_server1(struct mmagic_data *core, EmbeddedCli *cli)
     }
     cursor += written;
     written = mmagic_struct_ip_addr_to_string(&data->config.dns_server1,
-                                              &buf[cursor], max_str_len - cursor);
+                                              &buf[cursor],
+                                              max_str_len - cursor);
     if (written == 0)
     {
         /*
@@ -240,7 +242,7 @@ int mmagic_cli_ip_get_dhcp_enabled(struct mmagic_data *core, EmbeddedCli *cli)
     MM_STATIC_ASSERT((sizeof("ip.dhcp_enabled") - 1) < KEY_NAME_PADDING,
                      "Key must be shorter than padding");
 
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = { 0 };
     /* -1 to allow for a NULL terminator at the end */
     const size_t max_str_len = sizeof(buf) - 1;
     size_t cursor = 0;
@@ -252,8 +254,7 @@ int mmagic_cli_ip_get_dhcp_enabled(struct mmagic_data *core, EmbeddedCli *cli)
         return -1;
     }
     cursor += written;
-    written = mmagic_bool_to_string(data->config.dhcp_enabled,
-                                    &buf[cursor], max_str_len - cursor);
+    written = mmagic_bool_to_string(data->config.dhcp_enabled, &buf[cursor], max_str_len - cursor);
     if (written == 0)
     {
         /*
@@ -282,7 +283,7 @@ int mmagic_cli_ip_get_dhcp_offload(struct mmagic_data *core, EmbeddedCli *cli)
     MM_STATIC_ASSERT((sizeof("ip.dhcp_offload") - 1) < KEY_NAME_PADDING,
                      "Key must be shorter than padding");
 
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = { 0 };
     /* -1 to allow for a NULL terminator at the end */
     const size_t max_str_len = sizeof(buf) - 1;
     size_t cursor = 0;
@@ -294,8 +295,7 @@ int mmagic_cli_ip_get_dhcp_offload(struct mmagic_data *core, EmbeddedCli *cli)
         return -1;
     }
     cursor += written;
-    written = mmagic_bool_to_string(data->config.dhcp_offload,
-                                    &buf[cursor], max_str_len - cursor);
+    written = mmagic_bool_to_string(data->config.dhcp_offload, &buf[cursor], max_str_len - cursor);
     if (written == 0)
     {
         /*
@@ -324,7 +324,7 @@ int mmagic_cli_ip_get_link_status_evt_en(struct mmagic_data *core, EmbeddedCli *
     MM_STATIC_ASSERT((sizeof("ip.link_status_evt_en") - 1) < KEY_NAME_PADDING,
                      "Key must be shorter than padding");
 
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = {0};
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = { 0 };
     /* -1 to allow for a NULL terminator at the end */
     const size_t max_str_len = sizeof(buf) - 1;
     size_t cursor = 0;
@@ -336,8 +336,94 @@ int mmagic_cli_ip_get_link_status_evt_en(struct mmagic_data *core, EmbeddedCli *
         return -1;
     }
     cursor += written;
-    written = mmagic_bool_to_string(data->config.link_status_evt_en,
-                                    &buf[cursor], max_str_len - cursor);
+    written =
+        mmagic_bool_to_string(data->config.link_status_evt_en, &buf[cursor], max_str_len - cursor);
+    if (written == 0)
+    {
+        /*
+         * The value we just tried writing ended up being empty. Move the cursor back to the end of
+         * the key and denote that it has an empty value.
+         */
+        const uint32_t key_len = strlen(key_name);
+        cursor = key_len;
+        written = snprintf(&buf[cursor], max_str_len - cursor, " (empty)");
+    }
+    if (written < 0 || (cursor + written) > max_str_len)
+    {
+        return -1;
+    }
+    cursor += written;
+
+    embeddedCliPrint(cli, buf);
+
+    return 0;
+}
+
+int mmagic_cli_ip_get_offload_arp_response(struct mmagic_data *core, EmbeddedCli *cli)
+{
+    struct mmagic_ip_data *data = mmagic_data_get_ip(core);
+    const char *key_name = "ip.offload_arp_response";
+    MM_STATIC_ASSERT((sizeof("ip.offload_arp_response") - 1) < KEY_NAME_PADDING,
+                     "Key must be shorter than padding");
+
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = { 0 };
+    /* -1 to allow for a NULL terminator at the end */
+    const size_t max_str_len = sizeof(buf) - 1;
+    size_t cursor = 0;
+    int written = 0;
+
+    written = snprintf(&buf[cursor], max_str_len - cursor, "%-*s", KEY_NAME_PADDING, key_name);
+    if (written < 0 || (cursor + written) > max_str_len)
+    {
+        return -1;
+    }
+    cursor += written;
+    written = mmagic_bool_to_string(data->config.offload_arp_response,
+                                    &buf[cursor],
+                                    max_str_len - cursor);
+    if (written == 0)
+    {
+        /*
+         * The value we just tried writing ended up being empty. Move the cursor back to the end of
+         * the key and denote that it has an empty value.
+         */
+        const uint32_t key_len = strlen(key_name);
+        cursor = key_len;
+        written = snprintf(&buf[cursor], max_str_len - cursor, " (empty)");
+    }
+    if (written < 0 || (cursor + written) > max_str_len)
+    {
+        return -1;
+    }
+    cursor += written;
+
+    embeddedCliPrint(cli, buf);
+
+    return 0;
+}
+
+int mmagic_cli_ip_get_offload_arp_refresh_s(struct mmagic_data *core, EmbeddedCli *cli)
+{
+    struct mmagic_ip_data *data = mmagic_data_get_ip(core);
+    const char *key_name = "ip.offload_arp_refresh_s";
+    MM_STATIC_ASSERT((sizeof("ip.offload_arp_refresh_s") - 1) < KEY_NAME_PADDING,
+                     "Key must be shorter than padding");
+
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = { 0 };
+    /* -1 to allow for a NULL terminator at the end */
+    const size_t max_str_len = sizeof(buf) - 1;
+    size_t cursor = 0;
+    int written = 0;
+
+    written = snprintf(&buf[cursor], max_str_len - cursor, "%-*s", KEY_NAME_PADDING, key_name);
+    if (written < 0 || (cursor + written) > max_str_len)
+    {
+        return -1;
+    }
+    cursor += written;
+    written = mmagic_uint32_t_to_string(data->config.offload_arp_refresh_s,
+                                        &buf[cursor],
+                                        max_str_len - cursor);
     if (written == 0)
     {
         /*
@@ -459,7 +545,8 @@ int mmagic_cli_ip_set_dhcp_offload(struct mmagic_data *core, EmbeddedCli *cli, c
     return 0;
 }
 
-int mmagic_cli_ip_set_link_status_evt_en(struct mmagic_data *core, EmbeddedCli *cli,
+int mmagic_cli_ip_set_link_status_evt_en(struct mmagic_data *core,
+                                         EmbeddedCli *cli,
                                          const char *val)
 {
     struct mmagic_ip_data *data = mmagic_data_get_ip(core);
@@ -474,21 +561,60 @@ int mmagic_cli_ip_set_link_status_evt_en(struct mmagic_data *core, EmbeddedCli *
     return 0;
 }
 
+int mmagic_cli_ip_set_offload_arp_response(struct mmagic_data *core,
+                                           EmbeddedCli *cli,
+                                           const char *val)
+{
+    struct mmagic_ip_data *data = mmagic_data_get_ip(core);
+
+    if (mmagic_string_to_bool(&data->config.offload_arp_response, val))
+    {
+        return -1;
+    }
+
+    mmagic_cli_ip_get_offload_arp_response(core, cli);
+
+    return 0;
+}
+
+int mmagic_cli_ip_set_offload_arp_refresh_s(struct mmagic_data *core,
+                                            EmbeddedCli *cli,
+                                            const char *val)
+{
+    struct mmagic_ip_data *data = mmagic_data_get_ip(core);
+
+    if (mmagic_string_to_uint32_t(&data->config.offload_arp_refresh_s, val))
+    {
+        return -1;
+    }
+
+    mmagic_cli_ip_get_offload_arp_refresh_s(core, cli);
+
+    return 0;
+}
+
 /********* Dictionary **********
  *
  * This list must be in alphabetical order as @c mmagic_cli_element_search() is implemented using
  * a binary search which requires an ordered list.
  */
 struct mmagic_cli_config_elem ip_cli_config_vars[] = {
-    {"dhcp_enabled", mmagic_cli_ip_get_dhcp_enabled, mmagic_cli_ip_set_dhcp_enabled},
-    {"dhcp_offload", mmagic_cli_ip_get_dhcp_offload, mmagic_cli_ip_set_dhcp_offload},
-    {"dns_server0", mmagic_cli_ip_get_dns_server0, mmagic_cli_ip_set_dns_server0},
-    {"dns_server1", mmagic_cli_ip_get_dns_server1, mmagic_cli_ip_set_dns_server1},
-    {"gateway", mmagic_cli_ip_get_gateway, mmagic_cli_ip_set_gateway},
-    {"ip_addr", mmagic_cli_ip_get_ip_addr, mmagic_cli_ip_set_ip_addr},
-    {"link_status_evt_en", mmagic_cli_ip_get_link_status_evt_en,
-     mmagic_cli_ip_set_link_status_evt_en},
-    {"netmask", mmagic_cli_ip_get_netmask, mmagic_cli_ip_set_netmask},
+    { "dhcp_enabled", mmagic_cli_ip_get_dhcp_enabled, mmagic_cli_ip_set_dhcp_enabled },
+    { "dhcp_offload", mmagic_cli_ip_get_dhcp_offload, mmagic_cli_ip_set_dhcp_offload },
+    { "dns_server0", mmagic_cli_ip_get_dns_server0, mmagic_cli_ip_set_dns_server0 },
+    { "dns_server1", mmagic_cli_ip_get_dns_server1, mmagic_cli_ip_set_dns_server1 },
+    { "gateway", mmagic_cli_ip_get_gateway, mmagic_cli_ip_set_gateway },
+    { "ip_addr", mmagic_cli_ip_get_ip_addr, mmagic_cli_ip_set_ip_addr },
+    { "link_status_evt_en",
+      mmagic_cli_ip_get_link_status_evt_en,
+      mmagic_cli_ip_set_link_status_evt_en },
+    { "netmask", mmagic_cli_ip_get_netmask, mmagic_cli_ip_set_netmask },
+    { "offload_arp_refresh_s",
+      mmagic_cli_ip_get_offload_arp_refresh_s,
+      mmagic_cli_ip_set_offload_arp_refresh_s },
+    { "offload_arp_response",
+      mmagic_cli_ip_get_offload_arp_response,
+      mmagic_cli_ip_set_offload_arp_response },
 };
 
 /********* IP Configuration Getter/Setter Handlers **********/
@@ -513,8 +639,8 @@ void mmagic_cli_ip_get(struct mmagic_cli *ctx, EmbeddedCli *cli, const char *con
         return;
     }
 
-    struct mmagic_cli_config_elem *elem = mmagic_cli_element_search(ip_cli_config_vars,
-                                                                    num_elements, config_var);
+    struct mmagic_cli_config_elem *elem =
+        mmagic_cli_element_search(ip_cli_config_vars, num_elements, config_var);
     if (elem == NULL)
     {
         mmagic_cli_printf(cli, "Unable to find config variable 'ip.%s'", config_var);
@@ -533,15 +659,17 @@ void mmagic_cli_ip_get(struct mmagic_cli *ctx, EmbeddedCli *cli, const char *con
     }
 }
 
-void mmagic_cli_ip_set(struct mmagic_cli *ctx, EmbeddedCli *cli, const char *config_var,
+void mmagic_cli_ip_set(struct mmagic_cli *ctx,
+                       EmbeddedCli *cli,
+                       const char *config_var,
                        const char *val)
 {
     struct mmagic_data *core = &ctx->core;
 
     uint32_t num_elements = sizeof(ip_cli_config_vars) / sizeof(ip_cli_config_vars[0]);
 
-    struct mmagic_cli_config_elem *elem = mmagic_cli_element_search(ip_cli_config_vars,
-                                                                    num_elements, config_var);
+    struct mmagic_cli_config_elem *elem =
+        mmagic_cli_element_search(ip_cli_config_vars, num_elements, config_var);
     if (elem == NULL)
     {
         mmagic_cli_printf(cli, "Unable to find config variable 'ip.%s'", config_var);
@@ -582,67 +710,63 @@ void mmagic_cli_ip_load(struct mmagic_cli *ctx, EmbeddedCli *cli)
 /********* CLI Command Handlers **********/
 
 void mmagic_cli_ip_status(EmbeddedCli *cli, char *args, void *context);
-
 void mmagic_cli_ip_reload(EmbeddedCli *cli, char *args, void *context);
-
 void mmagic_cli_ip_enable_tcp_keepalive_offload(EmbeddedCli *cli, char *args, void *context);
-
 void mmagic_cli_ip_disable_tcp_keepalive_offload(EmbeddedCli *cli, char *args, void *context);
-
 void mmagic_cli_ip_set_whitelist_filter(EmbeddedCli *cli, char *args, void *context);
-
 void mmagic_cli_ip_clear_whitelist_filter(EmbeddedCli *cli, char *args, void *context);
 
 /********* Register bindings function definition **********/
 void mmagic_cli_ip_register_bindings(EmbeddedCli *cli, struct mmagic_data *core)
 {
-    embeddedCliAddBinding(cli, (CliCommandBinding) {
-        "ip-status",
-        "Gets the status of the IP stack.",
-        true,
-        core,
-        mmagic_cli_ip_status
-    });
+    embeddedCliAddBinding(cli,
+                          (CliCommandBinding){ "ip-status",
+                                               "Gets the status of the IP stack.",
+                                               true,
+                                               core,
+                                               mmagic_cli_ip_status });
 
-    embeddedCliAddBinding(cli, (CliCommandBinding) {
-        "ip-reload",
-        "Reloads the IP stack network configuration based on the current values in the subsystem config.",
-        true,
-        core,
-        mmagic_cli_ip_reload
-    });
+    embeddedCliAddBinding(cli,
+                          (CliCommandBinding){ "ip-reload",
+                                               "Reloads the IP stack network configuration based "
+                                               "on the current values in the subsystem config.",
+                                               true,
+                                               core,
+                                               mmagic_cli_ip_reload });
 
-    embeddedCliAddBinding(cli, (CliCommandBinding) {
-        "ip-enable_tcp_keepalive_offload",
-        "Enables sending periodic TCP keep-alive packets by the morse chip allowing the TCP connection to be maintained without waking up the host processor. This needs to be enabled before opening a TCP connection. As of now, this feature will work only on the first TCP connection opened after this command.",
-        true,
-        core,
-        mmagic_cli_ip_enable_tcp_keepalive_offload
-    });
+    embeddedCliAddBinding(
+        cli,
+        (CliCommandBinding){
+            "ip-enable_tcp_keepalive_offload",
+            "Enables sending periodic TCP keep-alive packets by the morse chip allowing the TCP "
+            "connection to be maintained without waking up the host processor. This needs to be "
+            "enabled before opening a TCP connection. As of now, this feature will work only on "
+            "the first TCP connection opened after this command.",
+            true,
+            core,
+            mmagic_cli_ip_enable_tcp_keepalive_offload });
 
-    embeddedCliAddBinding(cli, (CliCommandBinding) {
-        "ip-disable_tcp_keepalive_offload",
-        "Disables sending of TCP keepalive packets.",
-        true,
-        core,
-        mmagic_cli_ip_disable_tcp_keepalive_offload
-    });
+    embeddedCliAddBinding(cli,
+                          (CliCommandBinding){ "ip-disable_tcp_keepalive_offload",
+                                               "Disables sending of TCP keepalive packets.",
+                                               true,
+                                               core,
+                                               mmagic_cli_ip_disable_tcp_keepalive_offload });
 
-    embeddedCliAddBinding(cli, (CliCommandBinding) {
-        "ip-set_whitelist_filter",
-        "Sets the whitelist filter specifing which incoming packets can wake the system from standby mode.",
-        true,
-        core,
-        mmagic_cli_ip_set_whitelist_filter
-    });
+    embeddedCliAddBinding(cli,
+                          (CliCommandBinding){ "ip-set_whitelist_filter",
+                                               "Sets the whitelist filter specifing which incoming "
+                                               "packets can wake the system from standby mode.",
+                                               true,
+                                               core,
+                                               mmagic_cli_ip_set_whitelist_filter });
 
-    embeddedCliAddBinding(cli, (CliCommandBinding) {
-        "ip-clear_whitelist_filter",
-        "Clears any applied whitelist filters.",
-        true,
-        core,
-        mmagic_cli_ip_clear_whitelist_filter
-    });
+    embeddedCliAddBinding(cli,
+                          (CliCommandBinding){ "ip-clear_whitelist_filter",
+                                               "Clears any applied whitelist filters.",
+                                               true,
+                                               core,
+                                               mmagic_cli_ip_clear_whitelist_filter });
 }
 
 void mmagic_cli_ip_init(struct mmagic_cli *ctx)

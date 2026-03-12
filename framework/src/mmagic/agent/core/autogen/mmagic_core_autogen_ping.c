@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Morse Micro
+ * Copyright 2026 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -14,13 +14,13 @@
  * Maximum allowed length of any value string. Needs to accomodate WLAN password, IP and MAC address
  * strings.
  */
-#define MAX_VAL_LEN     101
+#define MAX_VAL_LEN 101
 
 void mmagic_core_ping_load_all(struct mmagic_data *core)
 {
     struct mmagic_ping_data *data = &core->ping_data;
     {
-        char val[MAX_VAL_LEN] = {0};
+        char val[MAX_VAL_LEN] = { 0 };
         if (mmconfig_read_string("ping.target", val, sizeof(val)) > 0)
         {
             (void)mmagic_string_to_struct_ip_addr(&data->config.target, val);
@@ -28,7 +28,7 @@ void mmagic_core_ping_load_all(struct mmagic_data *core)
     }
 
     {
-        char val[MAX_VAL_LEN] = {0};
+        char val[MAX_VAL_LEN] = { 0 };
         if (mmconfig_read_string("ping.interval", val, sizeof(val)) > 0)
         {
             (void)mmagic_string_to_uint32_t(&data->config.interval, val);
@@ -36,7 +36,7 @@ void mmagic_core_ping_load_all(struct mmagic_data *core)
     }
 
     {
-        char val[MAX_VAL_LEN] = {0};
+        char val[MAX_VAL_LEN] = { 0 };
         if (mmconfig_read_string("ping.count", val, sizeof(val)) > 0)
         {
             (void)mmagic_string_to_uint32_t(&data->config.count, val);

@@ -1074,7 +1074,9 @@ options_done:
 #endif /* LWIP_UDP */
 #if LWIP_TCP
     case IP6_NEXTH_TCP:
+      TCP_UPDATE_TICK();
       tcp_input(p, inp);
+      TCP_TIMER_NEEDED();
       break;
 #endif /* LWIP_TCP */
 #if LWIP_ICMP6

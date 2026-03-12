@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.9.7</span>
+   &#160;<span id="projectnumber">2.10.4</span>
    </div>
   </td>
  </tr>
@@ -88,6 +88,8 @@ $(document).ready(function(){initNavTree('group__EMMET.html',''); initResizable(
 
 <div class="header">
   <div class="summary">
+<a href="#groups">Modules</a> &#124;
+<a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">Morse Micro Embedded Test Engine (Emmet)</div></div>
 </div><!--header-->
@@ -125,6 +127,27 @@ Enabling Emmet support in application firmware</h1>
 Example control scripts</h1>
 <p >A number of Python scripts are provided in the <code>tools/ace/examples</code> directory. These can be used to perform various operations from the command line. See <a class="el" href="emmet_8c.html#EMMET_APP_HOWTO">How to use the Emmet example application</a> for more. </p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="groups" name="groups"></a>
+Modules</h2></td></tr>
+<tr class="memitem:group__EMMET__HAL"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__EMMET__HAL.html">Hardware Abstraction Layer (HAL) for Morse Micro Embedded Test Engine (Emmet)</a></td></tr>
+<tr class="memdesc:group__EMMET__HAL"><td class="mdescLeft">&#160;</td><td class="mdescRight">This API must be implemented by applications that use Emmet. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:gaea95f2cf06569ccee16a790f38a2f9cc"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__EMMET.html#gaea95f2cf06569ccee16a790f38a2f9cc">emmet_button_state</a> { <a class="el" href="group__EMMET.html#ggaea95f2cf06569ccee16a790f38a2f9ccaa519e73441eb181898411096f9e32afc">EMMET_BUTTON_RELEASED</a>
+, <a class="el" href="group__EMMET.html#ggaea95f2cf06569ccee16a790f38a2f9cca107bec8e65fe18b5c0f38147cb126063">EMMET_BUTTON_PRESSED</a>
+ }</td></tr>
+<tr class="memdesc:gaea95f2cf06569ccee16a790f38a2f9cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enumeration of button states used by the Emmet HAL.  <a href="group__EMMET.html#gaea95f2cf06569ccee16a790f38a2f9cc">More...</a><br /></td></tr>
+<tr class="separator:gaea95f2cf06569ccee16a790f38a2f9cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gade3597d100f86bc851e46cd4adf44780"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__EMMET.html#gade3597d100f86bc851e46cd4adf44780">emmet_led_id</a> { <b>EMMET_LED_RED</b>
+, <b>EMMET_LED_GREEN</b>
+, <b>EMMET_LED_BLUE</b>
+, <b>EMMET_LED_WHITE</b>
+ }</td></tr>
+<tr class="memdesc:gade3597d100f86bc851e46cd4adf44780"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enumeration for different LEDs on the board used by the Emmet HAL.  <a href="group__EMMET.html#gade3597d100f86bc851e46cd4adf44780">More...</a><br /></td></tr>
+<tr class="separator:gade3597d100f86bc851e46cd4adf44780"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:gac1ce8a05fdfec7a0d2ffde6cd6d93d6b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__EMMET.html#gac1ce8a05fdfec7a0d2ffde6cd6d93d6b">emmet_init</a> (void)</td></tr>
@@ -137,6 +160,49 @@ Functions</h2></td></tr>
 <tr class="memdesc:ga4cd61571bf11a6fc262a0586a88d2092"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the regulatory database for Emmet to use.  <a href="group__EMMET.html#ga4cd61571bf11a6fc262a0586a88d2092">More...</a><br /></td></tr>
 <tr class="separator:ga4cd61571bf11a6fc262a0586a88d2092"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="gaea95f2cf06569ccee16a790f38a2f9cc" name="gaea95f2cf06569ccee16a790f38a2f9cc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaea95f2cf06569ccee16a790f38a2f9cc">&#9670;&nbsp;</a></span>emmet_button_state</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__EMMET.html#gaea95f2cf06569ccee16a790f38a2f9cc">emmet_button_state</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Enumeration of button states used by the Emmet HAL. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ggaea95f2cf06569ccee16a790f38a2f9ccaa519e73441eb181898411096f9e32afc" name="ggaea95f2cf06569ccee16a790f38a2f9ccaa519e73441eb181898411096f9e32afc"></a>EMMET_BUTTON_RELEASED&#160;</td><td class="fielddoc"><p >Button released state. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ggaea95f2cf06569ccee16a790f38a2f9cca107bec8e65fe18b5c0f38147cb126063" name="ggaea95f2cf06569ccee16a790f38a2f9cca107bec8e65fe18b5c0f38147cb126063"></a>EMMET_BUTTON_PRESSED&#160;</td><td class="fielddoc"><p >Button pressed state. </p>
+</td></tr>
+</table>
+
+<p class="definition">Definition at line <a class="el" href="emmet_8h_source.html#l00100">100</a> of file <a class="el" href="emmet_8h_source.html">emmet.h</a>.</p>
+
+</div>
+</div>
+<a id="gade3597d100f86bc851e46cd4adf44780" name="gade3597d100f86bc851e46cd4adf44780"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gade3597d100f86bc851e46cd4adf44780">&#9670;&nbsp;</a></span>emmet_led_id</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__EMMET.html#gade3597d100f86bc851e46cd4adf44780">emmet_led_id</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Enumeration for different LEDs on the board used by the Emmet HAL. </p>
+
+<p class="definition">Definition at line <a class="el" href="emmet_8h_source.html#l00109">109</a> of file <a class="el" href="emmet_8h_source.html">emmet.h</a>.</p>
+
+</div>
+</div>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="gac1ce8a05fdfec7a0d2ffde6cd6d93d6b" name="gac1ce8a05fdfec7a0d2ffde6cd6d93d6b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#gac1ce8a05fdfec7a0d2ffde6cd6d93d6b">&#9670;&nbsp;</a></span>emmet_init()</h2>
@@ -213,7 +279,7 @@ Functions</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Copyright 2021 Morse Micro </li>
+    <li class="footer">Copyright 2021-2025 Morse Micro </li>
   </ul>
 </div>
 </body>

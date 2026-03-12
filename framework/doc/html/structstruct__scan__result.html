@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.9.7</span>
+   &#160;<span id="projectnumber">2.10.4</span>
    </div>
   </td>
  </tr>
@@ -95,7 +95,7 @@ $(document).ready(function(){initNavTree('structstruct__scan__result.html',''); 
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Structure for holding a scan result. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00358">358</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00362">362</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 </div>
 <p><code>#include &lt;<a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>&gt;</code></p>
 <table class="memberdecls">
@@ -131,6 +131,9 @@ Data Fields</h2></td></tr>
 <tr class="memitem:a65eb1e52b8e6d5717aad59f8e4ef4930"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstruct__scan__result.html#a65eb1e52b8e6d5717aad59f8e4ef4930">op_bw_mhz</a></td></tr>
 <tr class="memdesc:a65eb1e52b8e6d5717aad59f8e4ef4930"><td class="mdescLeft">&#160;</td><td class="mdescRight">Operating bandwidth, in MHz, of the access point.  <a href="structstruct__scan__result.html#a65eb1e52b8e6d5717aad59f8e4ef4930">More...</a><br /></td></tr>
 <tr class="separator:a65eb1e52b8e6d5717aad59f8e4ef4930"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad80db3e5b17e68d46ca792ce6e72d97f"><td class="memItemLeft" align="right" valign="top">int16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstruct__scan__result.html#ad80db3e5b17e68d46ca792ce6e72d97f">noise_dbm</a></td></tr>
+<tr class="memdesc:ad80db3e5b17e68d46ca792ce6e72d97f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Background noise measured by the chip on the channel at the time the probe response was received.  <a href="structstruct__scan__result.html#ad80db3e5b17e68d46ca792ce6e72d97f">More...</a><br /></td></tr>
+<tr class="separator:ad80db3e5b17e68d46ca792ce6e72d97f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adc1ecf4836bd3d0912e89bcbdbf67755"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstruct__scan__result.html#adc1ecf4836bd3d0912e89bcbdbf67755">tsf</a></td></tr>
 <tr class="memdesc:adc1ecf4836bd3d0912e89bcbdbf67755"><td class="mdescLeft">&#160;</td><td class="mdescRight">TSF timestamp in the Probe Response frame.  <a href="structstruct__scan__result.html#adc1ecf4836bd3d0912e89bcbdbf67755">More...</a><br /></td></tr>
 <tr class="separator:adc1ecf4836bd3d0912e89bcbdbf67755"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -150,7 +153,7 @@ Data Fields</h2></td></tr>
 
 <p>Value of the Beacon Interval field. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00372">372</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00376">376</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -168,7 +171,7 @@ Data Fields</h2></td></tr>
 
 <p>BSSID of the AP network. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00363">363</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00367">367</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -186,7 +189,7 @@ Data Fields</h2></td></tr>
 
 <p>Bandwidth, in MHz, where the frame was received. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00378">378</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00382">382</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -204,7 +207,7 @@ Data Fields</h2></td></tr>
 
 <p>Value of the Capability Information field. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00374">374</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00378">378</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -222,7 +225,7 @@ Data Fields</h2></td></tr>
 
 <p>Center frequency in Hz of the channel where the frame was received. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00376">376</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00380">380</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -240,7 +243,25 @@ Data Fields</h2></td></tr>
 
 <p>Pointer to the start of the Information Elements within the Probe Response frame. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00367">367</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00371">371</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+
+</div>
+</div>
+<a id="ad80db3e5b17e68d46ca792ce6e72d97f" name="ad80db3e5b17e68d46ca792ce6e72d97f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad80db3e5b17e68d46ca792ce6e72d97f">&#9670;&nbsp;</a></span>noise_dbm</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int16_t struct_scan_result::noise_dbm</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Background noise measured by the chip on the channel at the time the probe response was received. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00387">387</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -258,7 +279,7 @@ Data Fields</h2></td></tr>
 
 <p>Operating bandwidth, in MHz, of the access point. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00380">380</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00384">384</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -277,7 +298,7 @@ Data Fields</h2></td></tr>
 <p>Length of the ies field in the received frame. </p>
 <p >May exceed the size of the ies buffer in this structure. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00370">370</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00374">374</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -295,7 +316,7 @@ Data Fields</h2></td></tr>
 
 <p>RSSI of the AP in dBm. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00365">365</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00369">369</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -313,7 +334,7 @@ Data Fields</h2></td></tr>
 
 <p>SSID of the AP. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00361">361</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00365">365</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -331,7 +352,7 @@ Data Fields</h2></td></tr>
 
 <p>TSF timestamp in the Probe Response frame. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00382">382</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00389">389</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -345,7 +366,7 @@ Data Fields</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="structstruct__scan__result.html">struct_scan_result</a></li>
-    <li class="footer">Copyright 2021 Morse Micro </li>
+    <li class="footer">Copyright 2021-2025 Morse Micro </li>
   </ul>
 </div>
 </body>

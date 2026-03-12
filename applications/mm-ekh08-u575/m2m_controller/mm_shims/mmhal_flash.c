@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 Morse Micro
+ * Copyright 2023-2025 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  * @file
@@ -7,7 +7,7 @@
  */
 
 #include <string.h>
-#include "mmhal.h"
+#include "mmhal_flash.h"
 #include "mmosal.h"
 #include "main.h"
 

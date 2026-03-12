@@ -78,6 +78,13 @@ extern "C" {
 #define LOG_USART               (USART1)
 #define LOG_USART_IRQ           (USART1_IRQn)
 #define LOG_USART_IRQ_HANDLER   USART1_IRQHandler
+
+/* LOG_USART_RX GPIO is used as deep sleep one-shot interrupt */
+#define LOG_USART_RX_IRQn           (EXTI9_5_IRQn)
+#define LOG_USART_RX_IRQ_LINE       (LL_EXTI_LINE_7)
+#define LOG_USART_RX_IRQ_HANDLER    EXTI9_5_IRQHandler
+#define LOG_USART_RX_EXTI_Port      (LL_SYSCFG_EXTI_PORTB)
+#define LOG_USART_RX_EXTI_Line      (LL_SYSCFG_EXTI_LINE7)
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
@@ -114,6 +121,10 @@ void Error_Handler(void);
 #define JTMS_GPIO_Port GPIOA
 #define JTCK_Pin LL_GPIO_PIN_14
 #define JTCK_GPIO_Port GPIOA
+#define MM_DEBUG_0_Pin LL_GPIO_PIN_0
+#define MM_DEBUG_0_GPIO_Port GPIOD
+#define MM_DEBUG_1_Pin LL_GPIO_PIN_1
+#define MM_DEBUG_1_GPIO_Port GPIOD
 #define JTDO_Pin LL_GPIO_PIN_3
 #define JTDO_GPIO_Port GPIOB
 #define GPIO_LED_BLUE_Pin LL_GPIO_PIN_5

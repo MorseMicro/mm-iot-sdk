@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Morse Micro
+ * Copyright 2026 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -18,11 +18,13 @@
 #include "m2m_api/mmagic_m2m_agent.h"
 
 /* Maximum allowed length of any value string, needs to accomodate IP and MAC address strings */
-#define MAX_VAL_LEN     32
+#define MAX_VAL_LEN 32
 
 /********* M2M Command Handlers **********/
 static struct mmbuf *mmagic_m2m_ip_get(struct mmagic_m2m_agent *agent,
-                                       uint8_t sid, uint8_t subcommand, struct mmbuf *commandbuffer)
+                                       uint8_t sid,
+                                       uint8_t subcommand,
+                                       struct mmbuf *commandbuffer)
 {
     MM_UNUSED(sid);
     MM_UNUSED(commandbuffer);
@@ -30,116 +32,223 @@ static struct mmbuf *mmagic_m2m_ip_get(struct mmagic_m2m_agent *agent,
     struct mmagic_ip_data *data = mmagic_data_get_ip(&agent->core);
     switch (subcommand)
     {
-    case mmagic_ip_var_ip_addr:
-        return mmagic_m2m_create_response(mmagic_ip, mmagic_ip_cmd_get, subcommand,
-                                          MMAGIC_STATUS_OK, &data->config.ip_addr,
-                                          sizeof(data->config.ip_addr));
+        case mmagic_ip_var_ip_addr:
+            return mmagic_m2m_create_response(mmagic_ip,
+                                              mmagic_ip_cmd_get,
+                                              subcommand,
+                                              MMAGIC_STATUS_OK,
+                                              &data->config.ip_addr,
+                                              sizeof(data->config.ip_addr));
 
-    case mmagic_ip_var_netmask:
-        return mmagic_m2m_create_response(mmagic_ip, mmagic_ip_cmd_get, subcommand,
-                                          MMAGIC_STATUS_OK, &data->config.netmask,
-                                          sizeof(data->config.netmask));
+        case mmagic_ip_var_netmask:
+            return mmagic_m2m_create_response(mmagic_ip,
+                                              mmagic_ip_cmd_get,
+                                              subcommand,
+                                              MMAGIC_STATUS_OK,
+                                              &data->config.netmask,
+                                              sizeof(data->config.netmask));
 
-    case mmagic_ip_var_gateway:
-        return mmagic_m2m_create_response(mmagic_ip, mmagic_ip_cmd_get, subcommand,
-                                          MMAGIC_STATUS_OK, &data->config.gateway,
-                                          sizeof(data->config.gateway));
+        case mmagic_ip_var_gateway:
+            return mmagic_m2m_create_response(mmagic_ip,
+                                              mmagic_ip_cmd_get,
+                                              subcommand,
+                                              MMAGIC_STATUS_OK,
+                                              &data->config.gateway,
+                                              sizeof(data->config.gateway));
 
-    case mmagic_ip_var_dns_server0:
-        return mmagic_m2m_create_response(mmagic_ip, mmagic_ip_cmd_get, subcommand,
-                                          MMAGIC_STATUS_OK, &data->config.dns_server0,
-                                          sizeof(data->config.dns_server0));
+        case mmagic_ip_var_dns_server0:
+            return mmagic_m2m_create_response(mmagic_ip,
+                                              mmagic_ip_cmd_get,
+                                              subcommand,
+                                              MMAGIC_STATUS_OK,
+                                              &data->config.dns_server0,
+                                              sizeof(data->config.dns_server0));
 
-    case mmagic_ip_var_dns_server1:
-        return mmagic_m2m_create_response(mmagic_ip, mmagic_ip_cmd_get, subcommand,
-                                          MMAGIC_STATUS_OK, &data->config.dns_server1,
-                                          sizeof(data->config.dns_server1));
+        case mmagic_ip_var_dns_server1:
+            return mmagic_m2m_create_response(mmagic_ip,
+                                              mmagic_ip_cmd_get,
+                                              subcommand,
+                                              MMAGIC_STATUS_OK,
+                                              &data->config.dns_server1,
+                                              sizeof(data->config.dns_server1));
 
-    case mmagic_ip_var_dhcp_enabled:
-        return mmagic_m2m_create_response(mmagic_ip, mmagic_ip_cmd_get, subcommand,
-                                          MMAGIC_STATUS_OK, &data->config.dhcp_enabled,
-                                          sizeof(data->config.dhcp_enabled));
+        case mmagic_ip_var_dhcp_enabled:
+            return mmagic_m2m_create_response(mmagic_ip,
+                                              mmagic_ip_cmd_get,
+                                              subcommand,
+                                              MMAGIC_STATUS_OK,
+                                              &data->config.dhcp_enabled,
+                                              sizeof(data->config.dhcp_enabled));
 
-    case mmagic_ip_var_dhcp_offload:
-        return mmagic_m2m_create_response(mmagic_ip, mmagic_ip_cmd_get, subcommand,
-                                          MMAGIC_STATUS_OK, &data->config.dhcp_offload,
-                                          sizeof(data->config.dhcp_offload));
+        case mmagic_ip_var_dhcp_offload:
+            return mmagic_m2m_create_response(mmagic_ip,
+                                              mmagic_ip_cmd_get,
+                                              subcommand,
+                                              MMAGIC_STATUS_OK,
+                                              &data->config.dhcp_offload,
+                                              sizeof(data->config.dhcp_offload));
 
-    case mmagic_ip_var_link_status_evt_en:
-        return mmagic_m2m_create_response(mmagic_ip, mmagic_ip_cmd_get, subcommand,
-                                          MMAGIC_STATUS_OK, &data->config.link_status_evt_en,
-                                          sizeof(data->config.link_status_evt_en));
+        case mmagic_ip_var_link_status_evt_en:
+            return mmagic_m2m_create_response(mmagic_ip,
+                                              mmagic_ip_cmd_get,
+                                              subcommand,
+                                              MMAGIC_STATUS_OK,
+                                              &data->config.link_status_evt_en,
+                                              sizeof(data->config.link_status_evt_en));
 
-    default:
-        return mmagic_m2m_create_response(mmagic_ip, mmagic_ip_cmd_get, subcommand,
-                                          MMAGIC_STATUS_NOT_FOUND, NULL, 0);
+        case mmagic_ip_var_offload_arp_response:
+            return mmagic_m2m_create_response(mmagic_ip,
+                                              mmagic_ip_cmd_get,
+                                              subcommand,
+                                              MMAGIC_STATUS_OK,
+                                              &data->config.offload_arp_response,
+                                              sizeof(data->config.offload_arp_response));
+
+        case mmagic_ip_var_offload_arp_refresh_s:
+            return mmagic_m2m_create_response(mmagic_ip,
+                                              mmagic_ip_cmd_get,
+                                              subcommand,
+                                              MMAGIC_STATUS_OK,
+                                              &data->config.offload_arp_refresh_s,
+                                              sizeof(data->config.offload_arp_refresh_s));
+
+        default:
+            return mmagic_m2m_create_response(mmagic_ip,
+                                              mmagic_ip_cmd_get,
+                                              subcommand,
+                                              MMAGIC_STATUS_NOT_FOUND,
+                                              NULL,
+                                              0);
     }
 }
 
 static struct mmbuf *mmagic_m2m_ip_set(struct mmagic_m2m_agent *agent,
-                                       uint8_t sid, uint8_t subcommand, struct mmbuf *commandbuffer)
+                                       uint8_t sid,
+                                       uint8_t subcommand,
+                                       struct mmbuf *commandbuffer)
 {
     MM_UNUSED(sid);
     struct mmagic_ip_data *data = mmagic_data_get_ip(&agent->core);
     void *args = (void *)mmbuf_get_data_start(commandbuffer);
     switch (subcommand)
     {
-    case mmagic_ip_var_ip_addr:
-        memcpy(&data->config.ip_addr, args, sizeof(data->config.ip_addr));
-        return mmagic_m2m_create_response(mmagic_ip, mmagic_ip_cmd_set,
-                                          subcommand, MMAGIC_STATUS_OK, NULL, 0);
-        break;
+        case mmagic_ip_var_ip_addr:
+            memcpy(&data->config.ip_addr, args, sizeof(data->config.ip_addr));
+            return mmagic_m2m_create_response(mmagic_ip,
+                                              mmagic_ip_cmd_set,
+                                              subcommand,
+                                              MMAGIC_STATUS_OK,
+                                              NULL,
+                                              0);
+            break;
 
-    case mmagic_ip_var_netmask:
-        memcpy(&data->config.netmask, args, sizeof(data->config.netmask));
-        return mmagic_m2m_create_response(mmagic_ip, mmagic_ip_cmd_set,
-                                          subcommand, MMAGIC_STATUS_OK, NULL, 0);
-        break;
+        case mmagic_ip_var_netmask:
+            memcpy(&data->config.netmask, args, sizeof(data->config.netmask));
+            return mmagic_m2m_create_response(mmagic_ip,
+                                              mmagic_ip_cmd_set,
+                                              subcommand,
+                                              MMAGIC_STATUS_OK,
+                                              NULL,
+                                              0);
+            break;
 
-    case mmagic_ip_var_gateway:
-        memcpy(&data->config.gateway, args, sizeof(data->config.gateway));
-        return mmagic_m2m_create_response(mmagic_ip, mmagic_ip_cmd_set,
-                                          subcommand, MMAGIC_STATUS_OK, NULL, 0);
-        break;
+        case mmagic_ip_var_gateway:
+            memcpy(&data->config.gateway, args, sizeof(data->config.gateway));
+            return mmagic_m2m_create_response(mmagic_ip,
+                                              mmagic_ip_cmd_set,
+                                              subcommand,
+                                              MMAGIC_STATUS_OK,
+                                              NULL,
+                                              0);
+            break;
 
-    case mmagic_ip_var_dns_server0:
-        memcpy(&data->config.dns_server0, args, sizeof(data->config.dns_server0));
-        return mmagic_m2m_create_response(mmagic_ip, mmagic_ip_cmd_set,
-                                          subcommand, MMAGIC_STATUS_OK, NULL, 0);
-        break;
+        case mmagic_ip_var_dns_server0:
+            memcpy(&data->config.dns_server0, args, sizeof(data->config.dns_server0));
+            return mmagic_m2m_create_response(mmagic_ip,
+                                              mmagic_ip_cmd_set,
+                                              subcommand,
+                                              MMAGIC_STATUS_OK,
+                                              NULL,
+                                              0);
+            break;
 
-    case mmagic_ip_var_dns_server1:
-        memcpy(&data->config.dns_server1, args, sizeof(data->config.dns_server1));
-        return mmagic_m2m_create_response(mmagic_ip, mmagic_ip_cmd_set,
-                                          subcommand, MMAGIC_STATUS_OK, NULL, 0);
-        break;
+        case mmagic_ip_var_dns_server1:
+            memcpy(&data->config.dns_server1, args, sizeof(data->config.dns_server1));
+            return mmagic_m2m_create_response(mmagic_ip,
+                                              mmagic_ip_cmd_set,
+                                              subcommand,
+                                              MMAGIC_STATUS_OK,
+                                              NULL,
+                                              0);
+            break;
 
-    case mmagic_ip_var_dhcp_enabled:
-        memcpy(&data->config.dhcp_enabled, args, sizeof(data->config.dhcp_enabled));
-        return mmagic_m2m_create_response(mmagic_ip, mmagic_ip_cmd_set,
-                                          subcommand, MMAGIC_STATUS_OK, NULL, 0);
-        break;
+        case mmagic_ip_var_dhcp_enabled:
+            memcpy(&data->config.dhcp_enabled, args, sizeof(data->config.dhcp_enabled));
+            return mmagic_m2m_create_response(mmagic_ip,
+                                              mmagic_ip_cmd_set,
+                                              subcommand,
+                                              MMAGIC_STATUS_OK,
+                                              NULL,
+                                              0);
+            break;
 
-    case mmagic_ip_var_dhcp_offload:
-        memcpy(&data->config.dhcp_offload, args, sizeof(data->config.dhcp_offload));
-        return mmagic_m2m_create_response(mmagic_ip, mmagic_ip_cmd_set,
-                                          subcommand, MMAGIC_STATUS_OK, NULL, 0);
-        break;
+        case mmagic_ip_var_dhcp_offload:
+            memcpy(&data->config.dhcp_offload, args, sizeof(data->config.dhcp_offload));
+            return mmagic_m2m_create_response(mmagic_ip,
+                                              mmagic_ip_cmd_set,
+                                              subcommand,
+                                              MMAGIC_STATUS_OK,
+                                              NULL,
+                                              0);
+            break;
 
-    case mmagic_ip_var_link_status_evt_en:
-        memcpy(&data->config.link_status_evt_en, args, sizeof(data->config.link_status_evt_en));
-        return mmagic_m2m_create_response(mmagic_ip, mmagic_ip_cmd_set,
-                                          subcommand, MMAGIC_STATUS_OK, NULL, 0);
-        break;
+        case mmagic_ip_var_link_status_evt_en:
+            memcpy(&data->config.link_status_evt_en, args, sizeof(data->config.link_status_evt_en));
+            return mmagic_m2m_create_response(mmagic_ip,
+                                              mmagic_ip_cmd_set,
+                                              subcommand,
+                                              MMAGIC_STATUS_OK,
+                                              NULL,
+                                              0);
+            break;
 
-    default:
-        return mmagic_m2m_create_response(mmagic_ip, mmagic_ip_cmd_set,
-                                          subcommand, MMAGIC_STATUS_NOT_FOUND, NULL, 0);
+        case mmagic_ip_var_offload_arp_response:
+            memcpy(&data->config.offload_arp_response,
+                   args,
+                   sizeof(data->config.offload_arp_response));
+            return mmagic_m2m_create_response(mmagic_ip,
+                                              mmagic_ip_cmd_set,
+                                              subcommand,
+                                              MMAGIC_STATUS_OK,
+                                              NULL,
+                                              0);
+            break;
+
+        case mmagic_ip_var_offload_arp_refresh_s:
+            memcpy(&data->config.offload_arp_refresh_s,
+                   args,
+                   sizeof(data->config.offload_arp_refresh_s));
+            return mmagic_m2m_create_response(mmagic_ip,
+                                              mmagic_ip_cmd_set,
+                                              subcommand,
+                                              MMAGIC_STATUS_OK,
+                                              NULL,
+                                              0);
+            break;
+
+        default:
+            return mmagic_m2m_create_response(mmagic_ip,
+                                              mmagic_ip_cmd_set,
+                                              subcommand,
+                                              MMAGIC_STATUS_NOT_FOUND,
+                                              NULL,
+                                              0);
     }
 }
 
 static struct mmbuf *mmagic_m2m_ip_load(struct mmagic_m2m_agent *agent,
-                                        uint8_t sid, uint8_t subcommand,
+                                        uint8_t sid,
+                                        uint8_t subcommand,
                                         struct mmbuf *commandbuffer)
 {
     MM_UNUSED(sid);
@@ -147,12 +256,17 @@ static struct mmbuf *mmagic_m2m_ip_load(struct mmagic_m2m_agent *agent,
 
     mmagic_core_ip_load_all(&agent->core);
 
-    return mmagic_m2m_create_response(mmagic_ip, mmagic_ip_cmd_load,
-                                      subcommand, MMAGIC_STATUS_OK, NULL, 0);
+    return mmagic_m2m_create_response(mmagic_ip,
+                                      mmagic_ip_cmd_load,
+                                      subcommand,
+                                      MMAGIC_STATUS_OK,
+                                      NULL,
+                                      0);
 }
 
 static struct mmbuf *mmagic_m2m_ip_commit(struct mmagic_m2m_agent *agent,
-                                          uint8_t sid, uint8_t subcommand,
+                                          uint8_t sid,
+                                          uint8_t subcommand,
                                           struct mmbuf *commandbuffer)
 {
     MM_UNUSED(sid);
@@ -160,37 +274,47 @@ static struct mmbuf *mmagic_m2m_ip_commit(struct mmagic_m2m_agent *agent,
 
     mmagic_core_ip_save_all(&agent->core);
 
-    return mmagic_m2m_create_response(mmagic_ip, mmagic_ip_cmd_commit,
-                                      subcommand, MMAGIC_STATUS_OK, NULL, 0);
+    return mmagic_m2m_create_response(mmagic_ip,
+                                      mmagic_ip_cmd_commit,
+                                      subcommand,
+                                      MMAGIC_STATUS_OK,
+                                      NULL,
+                                      0);
 }
 
 static struct mmbuf *mmagic_m2m_ip_status(struct mmagic_m2m_agent *agent,
-                                          uint8_t sid, uint8_t subcommand,
+                                          uint8_t sid,
+                                          uint8_t subcommand,
                                           struct mmbuf *commandbuffer)
 {
     enum mmagic_status status;
     MM_UNUSED(commandbuffer);
     MM_UNUSED(sid);
-    struct mmagic_core_ip_status_rsp_args rsp_args = { };
+    struct mmagic_core_ip_status_rsp_args rsp_args = {};
     status = mmagic_core_ip_status(&agent->core, &rsp_args);
-    return mmagic_m2m_create_response(mmagic_ip, mmagic_ip_cmd_status,
-                                      subcommand, status, &rsp_args, sizeof(rsp_args));
+    return mmagic_m2m_create_response(mmagic_ip,
+                                      mmagic_ip_cmd_status,
+                                      subcommand,
+                                      status,
+                                      &rsp_args,
+                                      sizeof(rsp_args));
 }
 
 static struct mmbuf *mmagic_m2m_ip_reload(struct mmagic_m2m_agent *agent,
-                                          uint8_t sid, uint8_t subcommand,
+                                          uint8_t sid,
+                                          uint8_t subcommand,
                                           struct mmbuf *commandbuffer)
 {
     enum mmagic_status status;
     MM_UNUSED(commandbuffer);
     MM_UNUSED(sid);
     status = mmagic_core_ip_reload(&agent->core);
-    return mmagic_m2m_create_response(mmagic_ip, mmagic_ip_cmd_reload,
-                                      subcommand, status, NULL, 0);
+    return mmagic_m2m_create_response(mmagic_ip, mmagic_ip_cmd_reload, subcommand, status, NULL, 0);
 }
 
 static struct mmbuf *mmagic_m2m_ip_enable_tcp_keepalive_offload(struct mmagic_m2m_agent *agent,
-                                                                uint8_t sid, uint8_t subcommand,
+                                                                uint8_t sid,
+                                                                uint8_t subcommand,
                                                                 struct mmbuf *commandbuffer)
 {
     enum mmagic_status status;
@@ -199,24 +323,34 @@ static struct mmbuf *mmagic_m2m_ip_enable_tcp_keepalive_offload(struct mmagic_m2
             commandbuffer);
     MM_UNUSED(sid);
     status = mmagic_core_ip_enable_tcp_keepalive_offload(&agent->core, cmd_args);
-    return mmagic_m2m_create_response(mmagic_ip, mmagic_ip_cmd_enable_tcp_keepalive_offload,
-                                      subcommand, status, NULL, 0);
+    return mmagic_m2m_create_response(mmagic_ip,
+                                      mmagic_ip_cmd_enable_tcp_keepalive_offload,
+                                      subcommand,
+                                      status,
+                                      NULL,
+                                      0);
 }
 
 static struct mmbuf *mmagic_m2m_ip_disable_tcp_keepalive_offload(struct mmagic_m2m_agent *agent,
-                                                                 uint8_t sid, uint8_t subcommand,
+                                                                 uint8_t sid,
+                                                                 uint8_t subcommand,
                                                                  struct mmbuf *commandbuffer)
 {
     enum mmagic_status status;
     MM_UNUSED(commandbuffer);
     MM_UNUSED(sid);
     status = mmagic_core_ip_disable_tcp_keepalive_offload(&agent->core);
-    return mmagic_m2m_create_response(mmagic_ip, mmagic_ip_cmd_disable_tcp_keepalive_offload,
-                                      subcommand, status, NULL, 0);
+    return mmagic_m2m_create_response(mmagic_ip,
+                                      mmagic_ip_cmd_disable_tcp_keepalive_offload,
+                                      subcommand,
+                                      status,
+                                      NULL,
+                                      0);
 }
 
 static struct mmbuf *mmagic_m2m_ip_set_whitelist_filter(struct mmagic_m2m_agent *agent,
-                                                        uint8_t sid, uint8_t subcommand,
+                                                        uint8_t sid,
+                                                        uint8_t subcommand,
                                                         struct mmbuf *commandbuffer)
 {
     enum mmagic_status status;
@@ -224,75 +358,96 @@ static struct mmbuf *mmagic_m2m_ip_set_whitelist_filter(struct mmagic_m2m_agent 
         (struct mmagic_core_ip_set_whitelist_filter_cmd_args *)mmbuf_get_data_start(commandbuffer);
     MM_UNUSED(sid);
     status = mmagic_core_ip_set_whitelist_filter(&agent->core, cmd_args);
-    return mmagic_m2m_create_response(mmagic_ip, mmagic_ip_cmd_set_whitelist_filter,
-                                      subcommand, status, NULL, 0);
+    return mmagic_m2m_create_response(mmagic_ip,
+                                      mmagic_ip_cmd_set_whitelist_filter,
+                                      subcommand,
+                                      status,
+                                      NULL,
+                                      0);
 }
 
 static struct mmbuf *mmagic_m2m_ip_clear_whitelist_filter(struct mmagic_m2m_agent *agent,
-                                                          uint8_t sid, uint8_t subcommand,
+                                                          uint8_t sid,
+                                                          uint8_t subcommand,
                                                           struct mmbuf *commandbuffer)
 {
     enum mmagic_status status;
     MM_UNUSED(commandbuffer);
     MM_UNUSED(sid);
     status = mmagic_core_ip_clear_whitelist_filter(&agent->core);
-    return mmagic_m2m_create_response(mmagic_ip, mmagic_ip_cmd_clear_whitelist_filter,
-                                      subcommand, status, NULL, 0);
+    return mmagic_m2m_create_response(mmagic_ip,
+                                      mmagic_ip_cmd_clear_whitelist_filter,
+                                      subcommand,
+                                      status,
+                                      NULL,
+                                      0);
 }
 
-struct mmbuf *mmagic_m2m_ip_process(struct mmagic_m2m_agent *agent, uint8_t sid,
-                                    struct mmagic_m2m_command_header *header, struct mmbuf *cmd_buf)
+struct mmbuf *mmagic_m2m_ip_process(struct mmagic_m2m_agent *agent,
+                                    uint8_t sid,
+                                    struct mmagic_m2m_command_header *header,
+                                    struct mmbuf *cmd_buf)
 {
     if (header)
     {
         switch (header->command)
         {
-        case mmagic_ip_cmd_get:
-            return mmagic_m2m_ip_get(agent, sid, header->subcommand, cmd_buf);
-            break;
+            case mmagic_ip_cmd_get:
+                return mmagic_m2m_ip_get(agent, sid, header->subcommand, cmd_buf);
+                break;
 
-        case mmagic_ip_cmd_set:
-            return mmagic_m2m_ip_set(agent, sid, header->subcommand, cmd_buf);
-            break;
+            case mmagic_ip_cmd_set:
+                return mmagic_m2m_ip_set(agent, sid, header->subcommand, cmd_buf);
+                break;
 
-        case mmagic_ip_cmd_load:
-            return mmagic_m2m_ip_load(agent, sid, header->subcommand, cmd_buf);
-            break;
+            case mmagic_ip_cmd_load:
+                return mmagic_m2m_ip_load(agent, sid, header->subcommand, cmd_buf);
+                break;
 
-        case mmagic_ip_cmd_commit:
-            return mmagic_m2m_ip_commit(agent, sid, header->subcommand, cmd_buf);
-            break;
+            case mmagic_ip_cmd_commit:
+                return mmagic_m2m_ip_commit(agent, sid, header->subcommand, cmd_buf);
+                break;
 
-        case mmagic_ip_cmd_status:
-            return mmagic_m2m_ip_status(agent, sid, header->subcommand, cmd_buf);
-            break;
+            case mmagic_ip_cmd_status:
+                return mmagic_m2m_ip_status(agent, sid, header->subcommand, cmd_buf);
+                break;
 
-        case mmagic_ip_cmd_reload:
-            return mmagic_m2m_ip_reload(agent, sid, header->subcommand, cmd_buf);
-            break;
+            case mmagic_ip_cmd_reload:
+                return mmagic_m2m_ip_reload(agent, sid, header->subcommand, cmd_buf);
+                break;
 
-        case mmagic_ip_cmd_enable_tcp_keepalive_offload:
-            return mmagic_m2m_ip_enable_tcp_keepalive_offload(agent, sid, header->subcommand,
-                                                              cmd_buf);
-            break;
+            case mmagic_ip_cmd_enable_tcp_keepalive_offload:
+                return mmagic_m2m_ip_enable_tcp_keepalive_offload(agent,
+                                                                  sid,
+                                                                  header->subcommand,
+                                                                  cmd_buf);
+                break;
 
-        case mmagic_ip_cmd_disable_tcp_keepalive_offload:
-            return mmagic_m2m_ip_disable_tcp_keepalive_offload(agent, sid, header->subcommand,
-                                                               cmd_buf);
-            break;
+            case mmagic_ip_cmd_disable_tcp_keepalive_offload:
+                return mmagic_m2m_ip_disable_tcp_keepalive_offload(agent,
+                                                                   sid,
+                                                                   header->subcommand,
+                                                                   cmd_buf);
+                break;
 
-        case mmagic_ip_cmd_set_whitelist_filter:
-            return mmagic_m2m_ip_set_whitelist_filter(agent, sid, header->subcommand, cmd_buf);
-            break;
+            case mmagic_ip_cmd_set_whitelist_filter:
+                return mmagic_m2m_ip_set_whitelist_filter(agent, sid, header->subcommand, cmd_buf);
+                break;
 
-        case mmagic_ip_cmd_clear_whitelist_filter:
-            return mmagic_m2m_ip_clear_whitelist_filter(agent, sid, header->subcommand, cmd_buf);
-            break;
+            case mmagic_ip_cmd_clear_whitelist_filter:
+                return mmagic_m2m_ip_clear_whitelist_filter(agent,
+                                                            sid,
+                                                            header->subcommand,
+                                                            cmd_buf);
+                break;
 
-        default:
-            return mmagic_m2m_create_response(header->subsystem, header->command,
-                                              header->subcommand, MMAGIC_STATUS_NOT_SUPPORTED, NULL,
-                                              0);
+            default:
+                return mmagic_m2m_create_response(header->subsystem,
+                                                  header->command,
+                                                  header->subcommand,
+                                                  MMAGIC_STATUS_NOT_SUPPORTED,
+                                                  NULL,
+                                                  0);
         }
     }
     else

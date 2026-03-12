@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Morse Micro
+ * Copyright 2026 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -18,11 +18,12 @@
 #include "m2m_api/mmagic_m2m_agent.h"
 
 /* Maximum allowed length of any value string, needs to accomodate IP and MAC address strings */
-#define MAX_VAL_LEN     32
+#define MAX_VAL_LEN 32
 
 /********* M2M Command Handlers **********/
 static struct mmbuf *mmagic_m2m_tls_get(struct mmagic_m2m_agent *agent,
-                                        uint8_t sid, uint8_t subcommand,
+                                        uint8_t sid,
+                                        uint8_t subcommand,
                                         struct mmbuf *commandbuffer)
 {
     MM_UNUSED(sid);
@@ -31,29 +32,43 @@ static struct mmbuf *mmagic_m2m_tls_get(struct mmagic_m2m_agent *agent,
     struct mmagic_tls_data *data = mmagic_data_get_tls(&agent->core);
     switch (subcommand)
     {
-    case mmagic_tls_var_root_ca_certificate:
-        return mmagic_m2m_create_response(mmagic_tls, mmagic_tls_cmd_get, subcommand,
-                                          MMAGIC_STATUS_OK, &data->config.root_ca_certificate,
-                                          sizeof(data->config.root_ca_certificate));
+        case mmagic_tls_var_root_ca_certificate:
+            return mmagic_m2m_create_response(mmagic_tls,
+                                              mmagic_tls_cmd_get,
+                                              subcommand,
+                                              MMAGIC_STATUS_OK,
+                                              &data->config.root_ca_certificate,
+                                              sizeof(data->config.root_ca_certificate));
 
-    case mmagic_tls_var_client_certificate:
-        return mmagic_m2m_create_response(mmagic_tls, mmagic_tls_cmd_get, subcommand,
-                                          MMAGIC_STATUS_OK, &data->config.client_certificate,
-                                          sizeof(data->config.client_certificate));
+        case mmagic_tls_var_client_certificate:
+            return mmagic_m2m_create_response(mmagic_tls,
+                                              mmagic_tls_cmd_get,
+                                              subcommand,
+                                              MMAGIC_STATUS_OK,
+                                              &data->config.client_certificate,
+                                              sizeof(data->config.client_certificate));
 
-    case mmagic_tls_var_client_private_key:
-        return mmagic_m2m_create_response(mmagic_tls, mmagic_tls_cmd_get, subcommand,
-                                          MMAGIC_STATUS_OK, &data->config.client_private_key,
-                                          sizeof(data->config.client_private_key));
+        case mmagic_tls_var_client_private_key:
+            return mmagic_m2m_create_response(mmagic_tls,
+                                              mmagic_tls_cmd_get,
+                                              subcommand,
+                                              MMAGIC_STATUS_OK,
+                                              &data->config.client_private_key,
+                                              sizeof(data->config.client_private_key));
 
-    default:
-        return mmagic_m2m_create_response(mmagic_tls, mmagic_tls_cmd_get, subcommand,
-                                          MMAGIC_STATUS_NOT_FOUND, NULL, 0);
+        default:
+            return mmagic_m2m_create_response(mmagic_tls,
+                                              mmagic_tls_cmd_get,
+                                              subcommand,
+                                              MMAGIC_STATUS_NOT_FOUND,
+                                              NULL,
+                                              0);
     }
 }
 
 static struct mmbuf *mmagic_m2m_tls_set(struct mmagic_m2m_agent *agent,
-                                        uint8_t sid, uint8_t subcommand,
+                                        uint8_t sid,
+                                        uint8_t subcommand,
                                         struct mmbuf *commandbuffer)
 {
     MM_UNUSED(sid);
@@ -61,32 +76,51 @@ static struct mmbuf *mmagic_m2m_tls_set(struct mmagic_m2m_agent *agent,
     void *args = (void *)mmbuf_get_data_start(commandbuffer);
     switch (subcommand)
     {
-    case mmagic_tls_var_root_ca_certificate:
-        memcpy(&data->config.root_ca_certificate, args, sizeof(data->config.root_ca_certificate));
-        return mmagic_m2m_create_response(mmagic_tls, mmagic_tls_cmd_set,
-                                          subcommand, MMAGIC_STATUS_OK, NULL, 0);
-        break;
+        case mmagic_tls_var_root_ca_certificate:
+            memcpy(&data->config.root_ca_certificate,
+                   args,
+                   sizeof(data->config.root_ca_certificate));
+            return mmagic_m2m_create_response(mmagic_tls,
+                                              mmagic_tls_cmd_set,
+                                              subcommand,
+                                              MMAGIC_STATUS_OK,
+                                              NULL,
+                                              0);
+            break;
 
-    case mmagic_tls_var_client_certificate:
-        memcpy(&data->config.client_certificate, args, sizeof(data->config.client_certificate));
-        return mmagic_m2m_create_response(mmagic_tls, mmagic_tls_cmd_set,
-                                          subcommand, MMAGIC_STATUS_OK, NULL, 0);
-        break;
+        case mmagic_tls_var_client_certificate:
+            memcpy(&data->config.client_certificate, args, sizeof(data->config.client_certificate));
+            return mmagic_m2m_create_response(mmagic_tls,
+                                              mmagic_tls_cmd_set,
+                                              subcommand,
+                                              MMAGIC_STATUS_OK,
+                                              NULL,
+                                              0);
+            break;
 
-    case mmagic_tls_var_client_private_key:
-        memcpy(&data->config.client_private_key, args, sizeof(data->config.client_private_key));
-        return mmagic_m2m_create_response(mmagic_tls, mmagic_tls_cmd_set,
-                                          subcommand, MMAGIC_STATUS_OK, NULL, 0);
-        break;
+        case mmagic_tls_var_client_private_key:
+            memcpy(&data->config.client_private_key, args, sizeof(data->config.client_private_key));
+            return mmagic_m2m_create_response(mmagic_tls,
+                                              mmagic_tls_cmd_set,
+                                              subcommand,
+                                              MMAGIC_STATUS_OK,
+                                              NULL,
+                                              0);
+            break;
 
-    default:
-        return mmagic_m2m_create_response(mmagic_tls, mmagic_tls_cmd_set,
-                                          subcommand, MMAGIC_STATUS_NOT_FOUND, NULL, 0);
+        default:
+            return mmagic_m2m_create_response(mmagic_tls,
+                                              mmagic_tls_cmd_set,
+                                              subcommand,
+                                              MMAGIC_STATUS_NOT_FOUND,
+                                              NULL,
+                                              0);
     }
 }
 
 static struct mmbuf *mmagic_m2m_tls_load(struct mmagic_m2m_agent *agent,
-                                         uint8_t sid, uint8_t subcommand,
+                                         uint8_t sid,
+                                         uint8_t subcommand,
                                          struct mmbuf *commandbuffer)
 {
     MM_UNUSED(sid);
@@ -94,12 +128,17 @@ static struct mmbuf *mmagic_m2m_tls_load(struct mmagic_m2m_agent *agent,
 
     mmagic_core_tls_load_all(&agent->core);
 
-    return mmagic_m2m_create_response(mmagic_tls, mmagic_tls_cmd_load,
-                                      subcommand, MMAGIC_STATUS_OK, NULL, 0);
+    return mmagic_m2m_create_response(mmagic_tls,
+                                      mmagic_tls_cmd_load,
+                                      subcommand,
+                                      MMAGIC_STATUS_OK,
+                                      NULL,
+                                      0);
 }
 
 static struct mmbuf *mmagic_m2m_tls_commit(struct mmagic_m2m_agent *agent,
-                                           uint8_t sid, uint8_t subcommand,
+                                           uint8_t sid,
+                                           uint8_t subcommand,
                                            struct mmbuf *commandbuffer)
 {
     MM_UNUSED(sid);
@@ -107,11 +146,16 @@ static struct mmbuf *mmagic_m2m_tls_commit(struct mmagic_m2m_agent *agent,
 
     mmagic_core_tls_save_all(&agent->core);
 
-    return mmagic_m2m_create_response(mmagic_tls, mmagic_tls_cmd_commit,
-                                      subcommand, MMAGIC_STATUS_OK, NULL, 0);
+    return mmagic_m2m_create_response(mmagic_tls,
+                                      mmagic_tls_cmd_commit,
+                                      subcommand,
+                                      MMAGIC_STATUS_OK,
+                                      NULL,
+                                      0);
 }
 
-struct mmbuf *mmagic_m2m_tls_process(struct mmagic_m2m_agent *agent, uint8_t sid,
+struct mmbuf *mmagic_m2m_tls_process(struct mmagic_m2m_agent *agent,
+                                     uint8_t sid,
                                      struct mmagic_m2m_command_header *header,
                                      struct mmbuf *cmd_buf)
 {
@@ -119,26 +163,29 @@ struct mmbuf *mmagic_m2m_tls_process(struct mmagic_m2m_agent *agent, uint8_t sid
     {
         switch (header->command)
         {
-        case mmagic_tls_cmd_get:
-            return mmagic_m2m_tls_get(agent, sid, header->subcommand, cmd_buf);
-            break;
+            case mmagic_tls_cmd_get:
+                return mmagic_m2m_tls_get(agent, sid, header->subcommand, cmd_buf);
+                break;
 
-        case mmagic_tls_cmd_set:
-            return mmagic_m2m_tls_set(agent, sid, header->subcommand, cmd_buf);
-            break;
+            case mmagic_tls_cmd_set:
+                return mmagic_m2m_tls_set(agent, sid, header->subcommand, cmd_buf);
+                break;
 
-        case mmagic_tls_cmd_load:
-            return mmagic_m2m_tls_load(agent, sid, header->subcommand, cmd_buf);
-            break;
+            case mmagic_tls_cmd_load:
+                return mmagic_m2m_tls_load(agent, sid, header->subcommand, cmd_buf);
+                break;
 
-        case mmagic_tls_cmd_commit:
-            return mmagic_m2m_tls_commit(agent, sid, header->subcommand, cmd_buf);
-            break;
+            case mmagic_tls_cmd_commit:
+                return mmagic_m2m_tls_commit(agent, sid, header->subcommand, cmd_buf);
+                break;
 
-        default:
-            return mmagic_m2m_create_response(header->subsystem, header->command,
-                                              header->subcommand, MMAGIC_STATUS_NOT_SUPPORTED, NULL,
-                                              0);
+            default:
+                return mmagic_m2m_create_response(header->subsystem,
+                                                  header->command,
+                                                  header->subcommand,
+                                                  MMAGIC_STATUS_NOT_SUPPORTED,
+                                                  NULL,
+                                                  0);
         }
     }
     else

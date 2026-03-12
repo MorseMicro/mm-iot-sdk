@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.9.7</span>
+   &#160;<span id="projectnumber">2.10.4</span>
    </div>
   </td>
  </tr>
@@ -96,7 +96,8 @@ $(document).ready(function(){initNavTree('bootloader_8c.html',''); initResizable
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p >Example bootloader to boot and update application securely. </p>
+<div class="textblock"><p >[Deprecated] Example bootloader to boot and update application securely. </p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000001">Deprecated:</a></b></dt><dd>This example application is deprecated and will be removed in a future release. Alternative options include third-party projects, such as MCU Boot, or a platform specific bootloader, such as <code>stm32-mw-mcuboot</code>.</dd></dl>
 <h1><a class="anchor" id="autotoc_md17"></a>
 Firmware Update Procedure</h1>
 <p >The software update is done in 2 stages.</p>
@@ -123,7 +124,8 @@ Stage 2: Flashing the Software image</h2>
 <code>#include &quot;sha256.h&quot;</code><br />
 <code>#include &quot;mmhal_flash.h&quot;</code><br />
 <code>#include &quot;mmconfig.h&quot;</code><br />
-<code>#include &quot;mmhal.h&quot;</code><br />
+<code>#include &quot;mmhal_app.h&quot;</code><br />
+<code>#include &quot;mmhal_os.h&quot;</code><br />
 <code>#include &quot;mmosal.h&quot;</code><br />
 <code>#include &quot;puff.h&quot;</code><br />
 <code>#include &quot;mbin.h&quot;</code><br />
@@ -132,30 +134,27 @@ Include dependency graph for bootloader.c:</div>
 <div class="dyncontent">
 <div class="center"><img src="bootloader_8c__incl.png" border="0" usemap="#abootloader_8c" alt=""/></div>
 <map name="abootloader_8c" id="abootloader_8c">
-<area shape="rect" title="Example bootloader to boot and update application securely." alt="" coords="798,5,901,32"/>
-<area shape="rect" title=" " alt="" coords="1155,453,1221,480"/>
-<area shape="rect" title=" " alt="" coords="651,453,722,480"/>
-<area shape="rect" title=" " alt="" coords="313,453,396,480"/>
-<area shape="rect" title=" " alt="" coords="1055,453,1126,480"/>
-<area shape="rect" title=" " alt="" coords="462,80,541,107"/>
-<area shape="rect" title=" " alt="" coords="565,80,665,107"/>
-<area shape="rect" title=" " alt="" coords="689,80,778,107"/>
-<area shape="rect" title=" " alt="" coords="802,80,897,107"/>
-<area shape="rect" title=" " alt="" coords="921,80,1002,107"/>
-<area shape="rect" href="mmhal__flash_8h_source.html" title=" " alt="" coords="217,304,335,331"/>
-<area shape="rect" href="mmconfig_8h_source.html" title=" " alt="" coords="43,304,141,331"/>
-<area shape="rect" href="mmhal_8h_source.html" title=" " alt="" coords="357,80,437,107"/>
-<area shape="rect" href="mmosal_8h_source.html" title=" " alt="" coords="771,379,858,405"/>
-<area shape="rect" title=" " alt="" coords="1229,80,1288,107"/>
-<area shape="rect" href="mbin_8h_source.html" title=" " alt="" coords="1312,80,1379,107"/>
-<area shape="rect" title=" " alt="" coords="368,379,443,405"/>
-<area shape="rect" title=" " alt="" coords="368,229,432,256"/>
-<area shape="rect" href="mmhal__wlan_8h_source.html" title=" " alt="" coords="461,155,579,181"/>
-<area shape="rect" href="mmpkt_8h_source.html" title=" " alt="" coords="518,304,599,331"/>
-<area shape="rect" href="mmwlan_8h_source.html" title=" " alt="" coords="717,229,808,256"/>
-<area shape="rect" title=" " alt="" coords="861,453,931,480"/>
-<area shape="rect" title=" " alt="" coords="750,453,837,480"/>
-<area shape="rect" title=" " alt="" coords="725,304,800,331"/>
+<area shape="rect" title="[Deprecated] Example bootloader to boot and update application securely." alt="" coords="714,5,817,32"/>
+<area shape="rect" title=" " alt="" coords="5,155,72,181"/>
+<area shape="rect" title=" " alt="" coords="1057,155,1127,181"/>
+<area shape="rect" title=" " alt="" coords="921,155,1004,181"/>
+<area shape="rect" title=" " alt="" coords="97,155,167,181"/>
+<area shape="rect" title=" " alt="" coords="322,80,401,107"/>
+<area shape="rect" title=" " alt="" coords="425,80,525,107"/>
+<area shape="rect" title=" " alt="" coords="549,80,638,107"/>
+<area shape="rect" title=" " alt="" coords="662,80,757,107"/>
+<area shape="rect" title=" " alt="" coords="781,80,862,107"/>
+<area shape="rect" href="mmhal__flash_8h_source.html" title=" " alt="" coords="1010,80,1129,107"/>
+<area shape="rect" href="mmconfig_8h_source.html" title=" " alt="" coords="887,80,985,107"/>
+<area shape="rect" href="mmhal__app_8h_source.html" title=" " alt="" coords="1331,80,1442,107"/>
+<area shape="rect" href="mmhal__os_8h_source.html" title=" " alt="" coords="1205,80,1307,107"/>
+<area shape="rect" href="mmosal_8h_source.html" title=" " alt="" coords="159,80,246,107"/>
+<area shape="rect" title=" " alt="" coords="1467,80,1525,107"/>
+<area shape="rect" href="mbin_8h_source.html" title=" " alt="" coords="1549,80,1616,107"/>
+<area shape="rect" title=" " alt="" coords="1175,155,1249,181"/>
+<area shape="rect" title=" " alt="" coords="1355,155,1419,181"/>
+<area shape="rect" title=" " alt="" coords="191,155,262,181"/>
+<area shape="rect" title=" " alt="" coords="286,155,373,181"/>
 </map>
 </div>
 </div>
@@ -255,7 +254,7 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>application_end</b
 
 <p>Maximum size of a segment, set to 32768. </p>
 
-<p class="definition">Definition at line <a class="el" href="bootloader_8c_source.html#l00078">78</a> of file <a class="el" href="bootloader_8c_source.html">bootloader.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="bootloader_8c_source.html#l00083">83</a> of file <a class="el" href="bootloader_8c_source.html">bootloader.c</a>.</p>
 
 </div>
 </div>
@@ -273,7 +272,7 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>application_end</b
 
 <p>Maximum number of times we attempt to update before giving up. </p>
 
-<p class="definition">Definition at line <a class="el" href="bootloader_8c_source.html#l00075">75</a> of file <a class="el" href="bootloader_8c_source.html">bootloader.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="bootloader_8c_source.html#l00080">80</a> of file <a class="el" href="bootloader_8c_source.html">bootloader.c</a>.</p>
 
 </div>
 </div>
@@ -292,7 +291,7 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>application_end</b
 
 <p>Bootloader return codes. </p>
 
-<p class="definition">Definition at line <a class="el" href="bootloader_8c_source.html#l00081">81</a> of file <a class="el" href="bootloader_8c_source.html">bootloader.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="bootloader_8c_source.html#l00086">86</a> of file <a class="el" href="bootloader_8c_source.html">bootloader.c</a>.</p>
 
 </div>
 </div>
@@ -329,7 +328,7 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>application_end</b
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="bootloader_8c_source.html#l00130">130</a> of file <a class="el" href="bootloader_8c_source.html">bootloader.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="bootloader_8c_source.html#l00134">134</a> of file <a class="el" href="bootloader_8c_source.html">bootloader.c</a>.</p>
 
 </div>
 </div>
@@ -358,7 +357,7 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>application_end</b
 
 <p>Check for an update, if an update is found, perform it. </p>
 
-<p class="definition">Definition at line <a class="el" href="bootloader_8c_source.html#l00550">550</a> of file <a class="el" href="bootloader_8c_source.html">bootloader.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="bootloader_8c_source.html#l00552">552</a> of file <a class="el" href="bootloader_8c_source.html">bootloader.c</a>.</p>
 
 </div>
 </div>
@@ -394,7 +393,7 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>application_end</b
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="bootloader_8c_source.html#l00113">113</a> of file <a class="el" href="bootloader_8c_source.html">bootloader.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="bootloader_8c_source.html#l00117">117</a> of file <a class="el" href="bootloader_8c_source.html">bootloader.c</a>.</p>
 
 </div>
 </div>
@@ -425,7 +424,7 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>application_end</b
 <p>This function erases the entire application flash region. </p>
 <p >We erase everything in one go as we don't want to deal with overlapping segments in the MBIN file. If a segment overlaps we need to take care that we don't erase the same flash block twice (or we lose the data data for the previous segment due to the overlap). We avoid this issue by erasing everything in one go at the start. </p>
 
-<p class="definition">Definition at line <a class="el" href="bootloader_8c_source.html#l00184">184</a> of file <a class="el" href="bootloader_8c_source.html">bootloader.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="bootloader_8c_source.html#l00188">188</a> of file <a class="el" href="bootloader_8c_source.html">bootloader.c</a>.</p>
 
 </div>
 </div>
@@ -473,7 +472,7 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>application_end</b
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>BOOTLOADER_OK on success, else error code </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="bootloader_8c_source.html#l00263">263</a> of file <a class="el" href="bootloader_8c_source.html">bootloader.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="bootloader_8c_source.html#l00266">266</a> of file <a class="el" href="bootloader_8c_source.html">bootloader.c</a>.</p>
 
 </div>
 </div>
@@ -496,7 +495,7 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>application_end</b
 <p>The bootloader entry point. </p>
 <dl class="section return"><dt>Returns</dt><dd>Does not return </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="bootloader_8c_source.html#l00620">620</a> of file <a class="el" href="bootloader_8c_source.html">bootloader.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="bootloader_8c_source.html#l00622">622</a> of file <a class="el" href="bootloader_8c_source.html">bootloader.c</a>.</p>
 
 </div>
 </div>
@@ -544,7 +543,7 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>application_end</b
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>BOOTLOADER_OK on success, else error code </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="bootloader_8c_source.html#l00218">218</a> of file <a class="el" href="bootloader_8c_source.html">bootloader.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="bootloader_8c_source.html#l00221">221</a> of file <a class="el" href="bootloader_8c_source.html">bootloader.c</a>.</p>
 
 </div>
 </div>
@@ -592,7 +591,7 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>application_end</b
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>BOOTLOADER_OK on success, else error code </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="bootloader_8c_source.html#l00241">241</a> of file <a class="el" href="bootloader_8c_source.html">bootloader.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="bootloader_8c_source.html#l00244">244</a> of file <a class="el" href="bootloader_8c_source.html">bootloader.c</a>.</p>
 
 </div>
 </div>
@@ -631,7 +630,7 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>application_end</b
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="bootloader_8c_source.html#l00164">164</a> of file <a class="el" href="bootloader_8c_source.html">bootloader.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="bootloader_8c_source.html#l00168">168</a> of file <a class="el" href="bootloader_8c_source.html">bootloader.c</a>.</p>
 
 </div>
 </div>
@@ -668,7 +667,7 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>application_end</b
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>BOOTLOADER_OK on success, else error code </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="bootloader_8c_source.html#l00501">501</a> of file <a class="el" href="bootloader_8c_source.html">bootloader.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="bootloader_8c_source.html#l00504">504</a> of file <a class="el" href="bootloader_8c_source.html">bootloader.c</a>.</p>
 
 </div>
 </div>
@@ -695,7 +694,7 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>application_end</b
 
 <p>Temporary buffer for deflating segments. </p>
 
-<p class="definition">Definition at line <a class="el" href="bootloader_8c_source.html#l00105">105</a> of file <a class="el" href="bootloader_8c_source.html">bootloader.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="bootloader_8c_source.html#l00110">110</a> of file <a class="el" href="bootloader_8c_source.html">bootloader.c</a>.</p>
 
 </div>
 </div>
@@ -721,7 +720,7 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>application_end</b
 
 <p>Temporary buffer for loading segments. </p>
 
-<p class="definition">Definition at line <a class="el" href="bootloader_8c_source.html#l00102">102</a> of file <a class="el" href="bootloader_8c_source.html">bootloader.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="bootloader_8c_source.html#l00107">107</a> of file <a class="el" href="bootloader_8c_source.html">bootloader.c</a>.</p>
 
 </div>
 </div>
@@ -731,8 +730,8 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>application_end</b
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_91b8f418cff946e8d8b598a9068417a8.html">examples</a></li><li class="navelem"><a class="el" href="dir_12cf38ffbeb76538c5f7506fe6735d1c.html">bootloader</a></li><li class="navelem"><a class="el" href="dir_cefeded39835002f59726db72b8a31dd.html">src</a></li><li class="navelem"><a class="el" href="bootloader_8c.html">bootloader.c</a></li>
-    <li class="footer">Copyright 2021 Morse Micro </li>
+    <li class="navelem"><a class="el" href="dir_c5388b8f7c63864c1129967aadb7f145.html">examples</a></li><li class="navelem"><a class="el" href="dir_f4df09e87fc484327d1e6755183801c2.html">bootloader</a></li><li class="navelem"><a class="el" href="dir_a9c72b5a38d1b595dfdc998e65672c9f.html">src</a></li><li class="navelem"><a class="el" href="bootloader_8c.html">bootloader.c</a></li>
+    <li class="footer">Copyright 2021-2025 Morse Micro </li>
   </ul>
 </div>
 </body>

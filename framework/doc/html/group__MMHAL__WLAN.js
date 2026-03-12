@@ -15,6 +15,7 @@ var group__MMHAL__WLAN =
     [ "MMPKTMEM_RX_POOL_N_BLOCKS", "group__MMHAL__WLAN.html#ga2903742172a31c8687c4f66ed12343ab", null ],
     [ "MMPKTMEM_TX_POOL_N_BLOCKS", "group__MMHAL__WLAN.html#gaf018baf42f8adbfe1b697527450876ee", null ],
     [ "mmhal_irq_handler_t", "group__MMHAL__WLAN.html#gaf0be313b72751f3657aba1e9177399e8", null ],
+    [ "mmhal_get_chip", "group__MMHAL__WLAN.html#ga5f6387a7362c470feeaf4afe277dcb34", null ],
     [ "mmhal_read_mac_addr", "group__MMHAL__WLAN.html#gacc9ed9533fb4a8005a9d054932f0f48e", null ],
     [ "mmhal_wlan_busy_is_asserted", "group__MMHAL__WLAN.html#gae8b13ec2ebe61f4594be256415a03803", null ],
     [ "mmhal_wlan_deinit", "group__MMHAL__WLAN.html#gab83474466d5aaf4b529e67651d72b5c6", null ],
@@ -24,5 +25,7 @@ var group__MMHAL__WLAN =
     [ "mmhal_wlan_register_busy_irq_handler", "group__MMHAL__WLAN.html#gab72a7ef7f7e822c772fa2d65dc5c96f4", null ],
     [ "mmhal_wlan_set_busy_irq_enabled", "group__MMHAL__WLAN.html#gad22e6d2c9262ffa5b7d045500bbc29a5", null ],
     [ "mmhal_wlan_wake_assert", "group__MMHAL__WLAN.html#ga6f4da71b88b015713f8bb6e266f18b42", null ],
-    [ "mmhal_wlan_wake_deassert", "group__MMHAL__WLAN.html#ga3ec39dce8108d5083858aadb8624316d", null ]
+    [ "mmhal_wlan_wake_deassert", "group__MMHAL__WLAN.html#ga3ec39dce8108d5083858aadb8624316d", null ],
+    [ "mmhal_mm6108", "group__MMHAL__WLAN.html#ga4bb0121fc47ef56ce9eaaedd4420c980", null ],
+    [ "mmhal_mm8108", "group__MMHAL__WLAN.html#ga4ec1a7cb3907599172544b61548aa6c1", null ]
 ];

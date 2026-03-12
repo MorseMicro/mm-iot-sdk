@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['beacon_20vendor_20specific_20ie_20filter_20api_0',['Beacon Vendor Specific IE Filter API',['../group__MMWLAN__BEACON__VENDOR__IE__FILTER__API.html',1,'']]],
-  ['binary_20semaphores_1',['Binary semaphores',['../group__MMOSAL__SEMB.html',1,'']]]
+  ['application_20layer_20protocol_20apis_0',['Application Layer Protocol APIs',['../group__MMAPP.html',1,'']]],
+  ['assertions_20and_20failure_20handling_1',['Assertions and failure handling',['../group__MMOSAL__ASSERT.html',1,'']]]
 ];

@@ -25,9 +25,10 @@ typedef void (*rest_endpoint_handler_t)(struct restfs_file *);
 /**
  * A REST endpoint
  */
-struct rest_endpoint {
+struct rest_endpoint
+{
     /** URI of endpoint */
-    char* uri;
+    char *uri;
     /** User defined function to call when this endpoint is requested by a client */
     rest_endpoint_handler_t user_function;
 };
@@ -55,7 +56,7 @@ int restfs_alloc_buffer(struct restfs_file *rest_file, uint16_t size);
  * @param rest_file - Opaque file object
  * @param str - Pointer to constant string
  */
-void restfs_write_const(struct restfs_file *rest_file, const char* str);
+void restfs_write_const(struct restfs_file *rest_file, const char *str);
 
 /**
  * Write data into REST response
@@ -87,7 +88,7 @@ int restfs_printf(struct restfs_file *rest_file, const char *fmt, ...);
  * @param rest_file - opaque file object
  * @return Pointer to raw buffer
  */
-char* restfs_claim_raw_buffer(struct restfs_file *rest_file);
+char *restfs_claim_raw_buffer(struct restfs_file *rest_file);
 
 /**
  * Release access to raw buffer after a previous call to @c restfs_claim_raw_buffer()
@@ -97,11 +98,10 @@ char* restfs_claim_raw_buffer(struct restfs_file *rest_file);
  */
 void restfs_release_raw_buffer(struct restfs_file *rest_file, uint16_t wr_len);
 
-
 /**
  * Initialize REST endpoints and their handlers
  *
  * @param endpoints - Array of rest endpoints
  * @param num_endpoints - number of elements in the array
  */
-void rest_init_endpoints(const struct rest_endpoint* endpoints, uint16_t num_endpoints);
+void rest_init_endpoints(const struct rest_endpoint *endpoints, uint16_t num_endpoints);

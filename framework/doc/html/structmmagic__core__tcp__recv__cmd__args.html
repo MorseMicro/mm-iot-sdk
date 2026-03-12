@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.9.7</span>
+   &#160;<span id="projectnumber">2.10.4</span>
    </div>
   </td>
  </tr>
@@ -95,7 +95,7 @@ $(document).ready(function(){initNavTree('structmmagic__core__tcp__recv__cmd__ar
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Command arguments structure for tcp_recv. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l04840">4840</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l06100">6100</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 </div>
 <p><code>#include &lt;<a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>&gt;</code></p>
 <table class="memberdecls">
@@ -105,7 +105,7 @@ Data Fields</h2></td></tr>
 <tr class="memdesc:ac5c116852bb3a1c6132fb3ca91b19ddb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stream ID of the socket to receive from.  <a href="structmmagic__core__tcp__recv__cmd__args.html#ac5c116852bb3a1c6132fb3ca91b19ddb">More...</a><br /></td></tr>
 <tr class="separator:ac5c116852bb3a1c6132fb3ca91b19ddb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af727e7b477605fca2b8c3018c6d5e850"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmagic__core__tcp__recv__cmd__args.html#af727e7b477605fca2b8c3018c6d5e850">len</a></td></tr>
-<tr class="memdesc:af727e7b477605fca2b8c3018c6d5e850"><td class="mdescLeft">&#160;</td><td class="mdescRight">TCP port to listen on.  <a href="structmmagic__core__tcp__recv__cmd__args.html#af727e7b477605fca2b8c3018c6d5e850">More...</a><br /></td></tr>
+<tr class="memdesc:af727e7b477605fca2b8c3018c6d5e850"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum length of data.  <a href="structmmagic__core__tcp__recv__cmd__args.html#af727e7b477605fca2b8c3018c6d5e850">More...</a><br /></td></tr>
 <tr class="separator:af727e7b477605fca2b8c3018c6d5e850"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7864b115fb386c8f9df0da53c0966c0f"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmagic__core__tcp__recv__cmd__args.html#a7864b115fb386c8f9df0da53c0966c0f">timeout</a></td></tr>
 <tr class="memdesc:a7864b115fb386c8f9df0da53c0966c0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Timeout in ms.  <a href="structmmagic__core__tcp__recv__cmd__args.html#a7864b115fb386c8f9df0da53c0966c0f">More...</a><br /></td></tr>
@@ -124,9 +124,9 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>TCP port to listen on. </p>
+<p>Maximum length of data. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l04845">4845</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l06105">6105</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -144,7 +144,7 @@ Data Fields</h2></td></tr>
 
 <p>Stream ID of the socket to receive from. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l04843">4843</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l06103">6103</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -161,9 +161,9 @@ Data Fields</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Timeout in ms. </p>
-<p >0 to return immediately, UINT32_MAX to wait indefinately. </p>
+<p >0 to return immediately, UINT32_MAX to wait indefinitely. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l04847">4847</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l06107">6107</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -177,7 +177,7 @@ Data Fields</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="structmmagic__core__tcp__recv__cmd__args.html">mmagic_core_tcp_recv_cmd_args</a></li>
-    <li class="footer">Copyright 2021 Morse Micro </li>
+    <li class="footer">Copyright 2021-2025 Morse Micro </li>
   </ul>
 </div>
 </body>

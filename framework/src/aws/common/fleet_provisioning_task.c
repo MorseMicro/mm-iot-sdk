@@ -51,6 +51,7 @@
 #include "mmosal.h"
 #include "mmwlan.h"
 #include "mmconfig.h"
+#include "mmhal_os.h"
 
 /* TinyCBOR library for CBOR encoding and decoding operations. */
 #include "cbor.h"
@@ -72,7 +73,7 @@
 #include "fleet_provisioning_serializer.h"
 
 /* The maximum topic length we support */
-#define TOPIC_BUFFER_LENGTH                 256
+#define TOPIC_BUFFER_LENGTH 256
 
 /**
  * Subject name to use when creating the certificate signing request
@@ -83,7 +84,7 @@
  * @c https://tls.mbed.org/api/x509__csr_8h.html#a954eae166b125cea2115b7db8c896e90
  */
 #ifndef CSR_SUBJECT_NAME
-    #define CSR_SUBJECT_NAME    "CN=Fleet Provisioning Demo"
+#define CSR_SUBJECT_NAME "CN=Fleet Provisioning Demo"
 #endif
 
 /**
@@ -92,17 +93,17 @@
  * See @c
  * https://docs.aws.amazon.com/iot/latest/apireference/API_CreateThing.html#iot-CreateThing-request-thingName
  */
-#define MAX_THING_NAME_LENGTH                128
+#define MAX_THING_NAME_LENGTH 128
 
 /**
  * Size of serial number string.
  */
-#define MAX_DEVICE_SERIAL_LENGTH                 20
+#define MAX_DEVICE_SERIAL_LENGTH 20
 
 /**
  * @brief Size of buffer in which to hold the certificate.
  */
-#define CERT_BUFFER_LENGTH                             1024
+#define CERT_BUFFER_LENGTH 1024
 
 /**
  * @brief Size of buffer in which to hold the certificate id.
@@ -110,24 +111,24 @@
  * See @c
  * https://docs.aws.amazon.com/iot/latest/apireference/API_Certificate.html#iot-Type-Certificate-certificateId
  */
-#define CERT_ID_BUFFER_LENGTH                          64
+#define CERT_ID_BUFFER_LENGTH 64
 
 /**
  * @brief Size of buffer in which to hold the certificate ownership token.
  */
-#define OWNERSHIP_TOKEN_BUFFER_LENGTH                  512
+#define OWNERSHIP_TOKEN_BUFFER_LENGTH 512
 
 /**
  * @brief Size of working payload buffer.
  */
-#define PAYLOAD_BUFFER_SIZE                            1024
+#define PAYLOAD_BUFFER_SIZE 1024
 
 /**
  * The maximum time to wait for an MQTT operation to be complete.
  * This involves receiving an acknowledgment for broker for SUBSCRIBE, UNSUBSCRIBE
  * and non QOS0 publishes.
  */
-#define MQTT_TIMEOUT_MS                                10000
+#define MQTT_TIMEOUT_MS 10000
 
 /**
  * @brief Status values of the Fleet Provisioning response.
@@ -182,11 +183,11 @@ static char device_serial[MAX_DEVICE_SERIAL_LENGTH] = { 0 };
 static size_t certificate_len = 0;
 
 /** Buffer for holding the certificate ID. */
-static char certificateId[ CERT_ID_BUFFER_LENGTH ];
+static char certificateId[CERT_ID_BUFFER_LENGTH];
 static size_t certificateIdLength = 0;
 
 /** Buffer for holding the certificate ownership token. */
-static char ownershipToken[ OWNERSHIP_TOKEN_BUFFER_LENGTH ];
+static char ownershipToken[OWNERSHIP_TOKEN_BUFFER_LENGTH];
 static size_t ownershipTokenLength = 0;
 
 /*-----------------------------------------------------------*/
@@ -211,8 +212,10 @@ static bool prvSubscribeToRegisterThingResponseTopics(void);
  */
 static bool prvUnsubscribeFromRegisterThingResponseTopics(void);
 
-static bool fpMQTTPublish(const char * const pacTopic, uint16_t topicLen,
-                          const char *pMsg, uint32_t msgSize)
+static bool fpMQTTPublish(const char *const pacTopic,
+                          uint16_t topicLen,
+                          const char *pMsg,
+                          uint32_t msgSize)
 {
     MQTTStatus_t mqttStatus = MQTTBadParameter;
     MQTTAgentHandle_t xMQTTAgentHandle = xGetMqttAgentHandle();
@@ -457,13 +460,12 @@ static bool prvSubscribeToRegisterThingResponseTopics(void)
 
     if (xMQTTStatus == MQTTSuccess)
     {
-        xMQTTStatus =
-            MqttAgent_SubscribeSync(xMQTTAgentHandle,
-                                    register_thing_rejected_topic,
-                                    register_thing_rejected_topic_len,
-                                    MQTTQoS1,
-                                    prvProcessRegisterThingRejected,
-                                    NULL);
+        xMQTTStatus = MqttAgent_SubscribeSync(xMQTTAgentHandle,
+                                              register_thing_rejected_topic,
+                                              register_thing_rejected_topic_len,
+                                              MQTTQoS1,
+                                              prvProcessRegisterThingRejected,
+                                              NULL);
         if (xMQTTStatus != MQTTSuccess)
         {
             LogError(("Failed to subscribe to fleet provisioning topic: %s.",
@@ -484,12 +486,11 @@ static bool prvUnsubscribeFromRegisterThingResponseTopics(void)
     MQTTStatus_t xMQTTStatus;
     MQTTAgentHandle_t xMQTTAgentHandle = xGetMqttAgentHandle();
 
-    xMQTTStatus =
-        MqttAgent_UnSubscribeSync(xMQTTAgentHandle,
-                                  register_thing_accepted_topic,
-                                  register_thing_accepted_topic_len,
-                                  prvProcessRegisterThingAccepted,
-                                  NULL);
+    xMQTTStatus = MqttAgent_UnSubscribeSync(xMQTTAgentHandle,
+                                            register_thing_accepted_topic,
+                                            register_thing_accepted_topic_len,
+                                            prvProcessRegisterThingAccepted,
+                                            NULL);
 
     if (xMQTTStatus != MQTTSuccess)
     {
@@ -499,12 +500,11 @@ static bool prvUnsubscribeFromRegisterThingResponseTopics(void)
 
     if (xMQTTStatus == MQTTSuccess)
     {
-        xMQTTStatus =
-            MqttAgent_UnSubscribeSync(xMQTTAgentHandle,
-                                      register_thing_rejected_topic,
-                                      register_thing_rejected_topic_len,
-                                      prvProcessRegisterThingRejected,
-                                      NULL);
+        xMQTTStatus = MqttAgent_UnSubscribeSync(xMQTTAgentHandle,
+                                                register_thing_rejected_topic,
+                                                register_thing_rejected_topic_len,
+                                                prvProcessRegisterThingRejected,
+                                                NULL);
         if (xMQTTStatus != MQTTSuccess)
         {
             LogError(("Failed to unsubscribe from fleet provisioning topic: %s.",
@@ -517,9 +517,7 @@ static bool prvUnsubscribeFromRegisterThingResponseTopics(void)
 
 /*-----------------------------------------------------------*/
 
-bool generateKeyAndCsr(char *pCsrBuffer,
-                       size_t csrBufferLength,
-                       size_t *pOutCsrLength)
+bool generateKeyAndCsr(char *pCsrBuffer, size_t csrBufferLength, size_t *pOutCsrLength)
 {
     mbedtls_entropy_context entropy;
     mbedtls_ctr_drbg_context ctr_drbg;
@@ -532,8 +530,11 @@ bool generateKeyAndCsr(char *pCsrBuffer,
     mbedtls_entropy_init(&entropy);
     mbedtls_x509write_csr_init(&req);
     mbedtls_x509write_csr_set_md_alg(&req, MBEDTLS_MD_SHA256);
-    mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy,
-                          (const unsigned char *)device_serial, strlen(device_serial));
+    mbedtls_ctr_drbg_seed(&ctr_drbg,
+                          mbedtls_entropy_func,
+                          &entropy,
+                          (const unsigned char *)device_serial,
+                          strlen(device_serial));
 
     mbedtlsRet = mbedtls_pk_setup(&privKey, mbedtls_pk_info_from_type(MBEDTLS_PK_ECKEY));
     if (mbedtlsRet == 0)
@@ -546,7 +547,8 @@ bool generateKeyAndCsr(char *pCsrBuffer,
 
     if (mbedtlsRet == 0)
     {
-        mbedtlsRet = mbedtls_pk_write_key_pem(&privKey, (unsigned char *)private_key_buffer,
+        mbedtlsRet = mbedtls_pk_write_key_pem(&privKey,
+                                              (unsigned char *)private_key_buffer,
                                               CERT_BUFFER_LENGTH);
     }
 
@@ -557,8 +559,8 @@ bool generateKeyAndCsr(char *pCsrBuffer,
 
     if (mbedtlsRet == 0)
     {
-        mbedtlsRet = mbedtls_x509write_csr_set_ns_cert_type(&req,
-                                                            MBEDTLS_X509_NS_CERT_TYPE_SSL_CLIENT);
+        mbedtlsRet =
+            mbedtls_x509write_csr_set_ns_cert_type(&req, MBEDTLS_X509_NS_CERT_TYPE_SSL_CLIENT);
     }
 
     if (mbedtlsRet == 0)
@@ -570,8 +572,11 @@ bool generateKeyAndCsr(char *pCsrBuffer,
     {
         mbedtls_x509write_csr_set_key(&req, &privKey);
 
-        mbedtlsRet = mbedtls_x509write_csr_pem(&req, (unsigned char *)pCsrBuffer, csrBufferLength,
-                                               mbedtls_ctr_drbg_random, &ctr_drbg);
+        mbedtlsRet = mbedtls_x509write_csr_pem(&req,
+                                               (unsigned char *)pCsrBuffer,
+                                               csrBufferLength,
+                                               mbedtls_ctr_drbg_random,
+                                               &ctr_drbg);
     }
 
     /* Clean up. */
@@ -580,7 +585,7 @@ bool generateKeyAndCsr(char *pCsrBuffer,
 
     *pOutCsrLength = strlen(pCsrBuffer);
 
-    return(mbedtlsRet == 0);
+    return (mbedtlsRet == 0);
 }
 
 /**
@@ -605,8 +610,8 @@ void fleet_provisioning_task(void *pvParameters)
     size_t xCsrLength;
 
     MQTTAgentHandle_t xMQTTAgentHandle = NULL;
-    uint8_t mac_addr[MMWLAN_MAC_ADDR_LEN] = {0};
-    char provisioning_template[FP_TEMPLATENAME_MAX_LENGTH] = {0};
+    uint8_t mac_addr[MMWLAN_MAC_ADDR_LEN] = { 0 };
+    char provisioning_template[FP_TEMPLATENAME_MAX_LENGTH] = { 0 };
 
     provisioning_semb = mmosal_semb_create("fltprov");
     if (provisioning_semb == NULL)
@@ -645,37 +650,54 @@ void fleet_provisioning_task(void *pvParameters)
     }
 
     /* Read provisioning template name - we know this key exists*/
-    (void)mmconfig_read_string(AWS_KEY_PROVISIONING_TEMPLATE, provisioning_template,
+    (void)mmconfig_read_string(AWS_KEY_PROVISIONING_TEMPLATE,
+                               provisioning_template,
                                FP_TEMPLATENAME_MAX_LENGTH);
 
     /* Setup topics */
     register_thing_accepted_topic = (char *)mmosal_malloc(TOPIC_BUFFER_LENGTH);
     MMOSAL_ASSERT(register_thing_accepted_topic);
-    FleetProvisioning_GetRegisterThingTopic(register_thing_accepted_topic, TOPIC_BUFFER_LENGTH,
-                                            FleetProvisioningCbor, FleetProvisioningAccepted,
-                                            provisioning_template, strlen(provisioning_template),
+    FleetProvisioning_GetRegisterThingTopic(register_thing_accepted_topic,
+                                            TOPIC_BUFFER_LENGTH,
+                                            FleetProvisioningCbor,
+                                            FleetProvisioningAccepted,
+                                            provisioning_template,
+                                            strlen(provisioning_template),
                                             &register_thing_accepted_topic_len);
 
     register_thing_rejected_topic = (char *)mmosal_malloc(TOPIC_BUFFER_LENGTH);
     MMOSAL_ASSERT(register_thing_rejected_topic);
-    FleetProvisioning_GetRegisterThingTopic(register_thing_rejected_topic, TOPIC_BUFFER_LENGTH,
-                                            FleetProvisioningCbor, FleetProvisioningRejected,
-                                            provisioning_template, strlen(provisioning_template),
+    FleetProvisioning_GetRegisterThingTopic(register_thing_rejected_topic,
+                                            TOPIC_BUFFER_LENGTH,
+                                            FleetProvisioningCbor,
+                                            FleetProvisioningRejected,
+                                            provisioning_template,
+                                            strlen(provisioning_template),
                                             &register_thing_rejected_topic_len);
 
     register_thing_publish_topic = (char *)mmosal_malloc(TOPIC_BUFFER_LENGTH);
     MMOSAL_ASSERT(register_thing_publish_topic);
-    FleetProvisioning_GetRegisterThingTopic(register_thing_publish_topic, TOPIC_BUFFER_LENGTH,
-                                            FleetProvisioningCbor, FleetProvisioningPublish,
-                                            provisioning_template, strlen(provisioning_template),
+    FleetProvisioning_GetRegisterThingTopic(register_thing_publish_topic,
+                                            TOPIC_BUFFER_LENGTH,
+                                            FleetProvisioningCbor,
+                                            FleetProvisioningPublish,
+                                            provisioning_template,
+                                            strlen(provisioning_template),
                                             &register_thing_publish_topic_len);
 
     LogInfo(("Waiting until MQTT Agent is connected."));
 
     /* Get our serial number */
     MMOSAL_ASSERT(mmwlan_get_mac_addr(mac_addr) == MMWLAN_SUCCESS);
-    snprintf(device_serial, sizeof(device_serial), "%02x:%02x:%02x:%02x:%02x:%02x",
-             mac_addr[0], mac_addr[1], mac_addr[2], mac_addr[3], mac_addr[4], mac_addr[5]);
+    snprintf(device_serial,
+             sizeof(device_serial),
+             "%02x:%02x:%02x:%02x:%02x:%02x",
+             mac_addr[0],
+             mac_addr[1],
+             mac_addr[2],
+             mac_addr[3],
+             mac_addr[4],
+             mac_addr[5]);
 
     /* Wait for first mqtt connection */
     vSleepUntilMQTTAgentConnected();
@@ -695,8 +717,7 @@ void fleet_provisioning_task(void *pvParameters)
 
     if (xResult)
     {
-        xResult = generateKeyAndCsr(certificate_buffer, CERT_BUFFER_LENGTH,
-                                    &xCsrLength);
+        xResult = generateKeyAndCsr(certificate_buffer, CERT_BUFFER_LENGTH, &xCsrLength);
         if (xResult == false)
         {
             LogError(("Failed to generateKeyAndCsr()"));
@@ -839,11 +860,8 @@ cleanup:
 void do_fleet_provisioning(void)
 {
     /* Start fleet provisioning in its own task due to stack requirements */
-    provisioning_task = mmosal_task_create(fleet_provisioning_task,
-                                           NULL,
-                                           MMOSAL_TASK_PRI_LOW,
-                                           2048,
-                                           "FleetProv");
+    provisioning_task =
+        mmosal_task_create(fleet_provisioning_task, NULL, MMOSAL_TASK_PRI_LOW, 2048, "FleetProv");
     /* Wait till completion, should not return on success */
     mmosal_task_join(provisioning_task);
 

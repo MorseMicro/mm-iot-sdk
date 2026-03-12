@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.9.7</span>
+   &#160;<span id="projectnumber">2.10.4</span>
    </div>
   </td>
  </tr>
@@ -116,9 +116,10 @@ How to use the Emmet example application</h1>
 
 <p class="definition">Definition in file <a class="el" href="emmet_8c_source.html">emmet.c</a>.</p>
 </div><div class="textblock"><code>#include &lt;string.h&gt;</code><br />
+<code>#include &quot;mmhal_app.h&quot;</code><br />
 <code>#include &quot;mmosal.h&quot;</code><br />
 <code>#include &quot;mmwlan.h&quot;</code><br />
-<code>#include &quot;mm_app_regdb.h&quot;</code><br />
+<code>#include &quot;mmregdb.h&quot;</code><br />
 <code>#include &quot;emmet.h&quot;</code><br />
 <code>#include &quot;mm_app_loadconfig.h&quot;</code><br />
 <code>#include &quot;mm_app_common.h&quot;</code><br />
@@ -128,23 +129,25 @@ Include dependency graph for emmet.c:</div>
 <div class="dyncontent">
 <div class="center"><img src="emmet_8c__incl.png" border="0" usemap="#aemmet_8c" alt=""/></div>
 <map name="aemmet_8c" id="aemmet_8c">
-<area shape="rect" title="Morse Micro Embedded Test Engine (Emmet) example." alt="" coords="517,5,597,32"/>
-<area shape="rect" title=" " alt="" coords="5,379,76,405"/>
-<area shape="rect" href="mmosal_8h_source.html" title=" " alt="" coords="201,304,288,331"/>
-<area shape="rect" href="mmwlan_8h_source.html" title=" " alt="" coords="361,155,451,181"/>
-<area shape="rect" title=" " alt="" coords="647,80,781,107"/>
-<area shape="rect" href="emmet_8h_source.html" title=" " alt="" coords="477,80,559,107"/>
-<area shape="rect" title=" " alt="" coords="806,80,971,107"/>
-<area shape="rect" title=" " alt="" coords="995,80,1150,107"/>
-<area shape="rect" href="mmipal_8h_source.html" title=" " alt="" coords="665,304,749,331"/>
-<area shape="rect" title=" " alt="" coords="561,379,643,405"/>
-<area shape="rect" title=" " alt="" coords="397,379,468,405"/>
-<area shape="rect" title=" " alt="" coords="211,379,278,405"/>
-<area shape="rect" title=" " alt="" coords="303,379,373,405"/>
-<area shape="rect" title=" " alt="" coords="100,379,187,405"/>
-<area shape="rect" title=" " alt="" coords="214,229,289,256"/>
-<area shape="rect" href="mmpkt_8h_source.html" title=" " alt="" coords="415,229,496,256"/>
-<area shape="rect" title=" " alt="" coords="465,304,539,331"/>
+<area shape="rect" title="Morse Micro Embedded Test Engine (Emmet) example." alt="" coords="564,5,644,32"/>
+<area shape="rect" title=" " alt="" coords="395,229,466,256"/>
+<area shape="rect" href="mmhal__app_8h_source.html" title=" " alt="" coords="329,155,439,181"/>
+<area shape="rect" href="mmosal_8h_source.html" title=" " alt="" coords="463,155,550,181"/>
+<area shape="rect" href="mmwlan_8h_source.html" title=" " alt="" coords="683,155,773,181"/>
+<area shape="rect" title=" " alt="" coords="555,80,653,107"/>
+<area shape="rect" href="emmet_8h_source.html" title=" " alt="" coords="677,80,758,107"/>
+<area shape="rect" title=" " alt="" coords="783,80,948,107"/>
+<area shape="rect" title=" " alt="" coords="972,80,1127,107"/>
+<area shape="rect" href="mmipal_8h_source.html" title=" " alt="" coords="574,155,658,181"/>
+<area shape="rect" title=" " alt="" coords="585,229,668,256"/>
+<area shape="rect" title=" " alt="" coords="5,229,80,256"/>
+<area shape="rect" title=" " alt="" coords="490,229,561,256"/>
+<area shape="rect" title=" " alt="" coords="104,229,168,256"/>
+<area shape="rect" title=" " alt="" coords="304,229,371,256"/>
+<area shape="rect" title=" " alt="" coords="693,229,763,256"/>
+<area shape="rect" title=" " alt="" coords="193,229,279,256"/>
+<area shape="rect" title=" " alt="" coords="788,229,863,256"/>
+<area shape="rect" title=" " alt="" coords="887,229,969,256"/>
 </map>
 </div>
 </div>
@@ -155,6 +158,15 @@ Functions</h2></td></tr>
 <tr class="memitem:a7d09c7aec33f5c9962ec3ba923c5bc67"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="emmet_8c.html#a7d09c7aec33f5c9962ec3ba923c5bc67">link_status_callback</a> (const struct <a class="el" href="structmmipal__link__status.html">mmipal_link_status</a> *link_status)</td></tr>
 <tr class="memdesc:a7d09c7aec33f5c9962ec3ba923c5bc67"><td class="mdescLeft">&#160;</td><td class="mdescRight">Link status callback.  <a href="emmet_8c.html#a7d09c7aec33f5c9962ec3ba923c5bc67">More...</a><br /></td></tr>
 <tr class="separator:a7d09c7aec33f5c9962ec3ba923c5bc67"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga17f54c3e81d7205185c831a1d63c8177"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__EMMET__HAL.html#ga17f54c3e81d7205185c831a1d63c8177">emmet_hal_set_led</a> (uint8_t led_id, uint8_t level)</td></tr>
+<tr class="memdesc:ga17f54c3e81d7205185c831a1d63c8177"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set LED state.  <a href="group__EMMET__HAL.html#ga17f54c3e81d7205185c831a1d63c8177">More...</a><br /></td></tr>
+<tr class="separator:ga17f54c3e81d7205185c831a1d63c8177"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga613756a3a12fac34c0ce20f268f093bb"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__EMMET.html#gaea95f2cf06569ccee16a790f38a2f9cc">emmet_button_state</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__EMMET__HAL.html#ga613756a3a12fac34c0ce20f268f093bb">emmet_hal_get_button_state</a> (void)</td></tr>
+<tr class="memdesc:ga613756a3a12fac34c0ce20f268f093bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the current button state.  <a href="group__EMMET__HAL.html#ga613756a3a12fac34c0ce20f268f093bb">More...</a><br /></td></tr>
+<tr class="separator:ga613756a3a12fac34c0ce20f268f093bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga0c8ed6b1e06e5a9a2b8d197ad45c31d0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__EMMET__HAL.html#ga0c8ed6b1e06e5a9a2b8d197ad45c31d0">emmet_hal_trigger_button_event</a> (enum <a class="el" href="group__EMMET.html#gaea95f2cf06569ccee16a790f38a2f9cc">emmet_button_state</a> state)</td></tr>
+<tr class="memdesc:ga0c8ed6b1e06e5a9a2b8d197ad45c31d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Trigger a button event to the application as if a user had pushed or released the button.  <a href="group__EMMET__HAL.html#ga0c8ed6b1e06e5a9a2b8d197ad45c31d0">More...</a><br /></td></tr>
+<tr class="separator:ga0c8ed6b1e06e5a9a2b8d197ad45c31d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:add3190cf715f513666f4be42874d91e2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="emmet_8c.html#add3190cf715f513666f4be42874d91e2">app_init</a> (void)</td></tr>
 <tr class="memdesc:add3190cf715f513666f4be42874d91e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Main entry point to the application.  <a href="emmet_8c.html#add3190cf715f513666f4be42874d91e2">More...</a><br /></td></tr>
 <tr class="separator:add3190cf715f513666f4be42874d91e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -179,7 +191,7 @@ Functions</h2></td></tr>
 <p>Main entry point to the application. </p>
 <p >This will be invoked in a thread once operating system and hardware initialization has completed. It may return, but it does not have to. </p>
 
-<p class="definition">Definition at line <a class="el" href="emmet_8c_source.html#l00109">109</a> of file <a class="el" href="emmet_8c_source.html">emmet.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="emmet_8c_source.html#l00143">143</a> of file <a class="el" href="emmet_8c_source.html">emmet.c</a>.</p>
 
 </div>
 </div>
@@ -215,7 +227,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="emmet_8c_source.html#l00088">88</a> of file <a class="el" href="emmet_8c_source.html">emmet.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="emmet_8c_source.html#l00089">89</a> of file <a class="el" href="emmet_8c_source.html">emmet.c</a>.</p>
 
 </div>
 </div>
@@ -225,8 +237,8 @@ Functions</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_91b8f418cff946e8d8b598a9068417a8.html">examples</a></li><li class="navelem"><a class="el" href="dir_e3bb1e9f8169a6a2e8209406aa6341c5.html">emmet</a></li><li class="navelem"><a class="el" href="dir_77c12ff91b2752c5cfbe43eededd1301.html">src</a></li><li class="navelem"><a class="el" href="emmet_8c.html">emmet.c</a></li>
-    <li class="footer">Copyright 2021 Morse Micro </li>
+    <li class="navelem"><a class="el" href="dir_c5388b8f7c63864c1129967aadb7f145.html">examples</a></li><li class="navelem"><a class="el" href="dir_37849bd3b833a84f4b949ee79cda9e37.html">emmet</a></li><li class="navelem"><a class="el" href="dir_95a47f1ef74ccd7a8dd1627631497053.html">src</a></li><li class="navelem"><a class="el" href="emmet_8c.html">emmet.c</a></li>
+    <li class="footer">Copyright 2021-2025 Morse Micro </li>
   </ul>
 </div>
 </body>

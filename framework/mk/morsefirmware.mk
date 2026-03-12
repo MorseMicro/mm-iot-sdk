@@ -1,5 +1,5 @@
 #
-# Copyright 2022-2023 Morse Micro
+# Copyright 2024 Morse Micro
 #
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -9,16 +9,16 @@
 # MM_FIRMWARE_EXTERNAL_START_ADDR is set to the external storage start address
 # and so the firmware is not linked into the application.  However, the MBIN
 # file should still be generated for manually writing to the external storage.
-FW_MBIN  ?= $(MMIOT_ROOT)/morsefirmware/mm6108.mbin
+FW_MBIN_PATH ?= $(MMIOT_ROOT)/morsefirmware/$(FW_MBIN)
 ifeq ($(MM_FIRMWARE_EXTERNAL_START_ADDR),)
-FW_OBJ  := $(patsubst %.mbin,$(BUILD_DIR)/%.mbin.o,$(notdir $(FW_MBIN)))
+FW_OBJ  := $(patsubst %.mbin,$(BUILD_DIR)/%.mbin.o,$(notdir $(FW_MBIN_PATH)))
 OBJS += $(FW_OBJ)
 endif
 
 #
 # If a BCF file is specified (see BCF_MBIN_REL or BCF_MBIN below), then it will be linked into
 # the MCU application, otherwise the the HAL will attempt to retrieve it from the
-# config store (see mmhal.c).
+# config store (see mmhal_wlan_binaries.c).
 #
 # BCF_MBIN_REL: Path to BCF file relative to the morsefirmware directory
 # BCF_MBIN:     Path to BCF file relative to Makefile directory (takes precedence over BCF_MBIN_REL)
@@ -46,7 +46,7 @@ start_symbol = _binary_$(subst -,_,$(subst /,_,$(subst .,_,$(1))))_start
 # (See start_symbol above for more info)
 end_symbol = _binary_$(subst -,_,$(subst /,_,$(subst .,_,$(1))))_end
 
-$(FW_OBJ): $(FW_MBIN)
+$(FW_OBJ): $(FW_MBIN_PATH)
 	@echo "Copying $<"
 	@mkdir -p $(dir $@)
 	$(QUIET)$(OBJCOPY) -I binary -O $(BFDNAME) -B $(ARCH) $< $@                 \

@@ -9,6 +9,5 @@ var searchData=
   ['free_5farg_6',['free_arg',['../structmmhal__robuf.html#a9c02d45ff49ce154092b947e3c5994f1',1,'mmhal_robuf']]],
   ['free_5fcb_7',['free_cb',['../structmmhal__robuf.html#ae7c0e29e8274e3b1e0405cf6c2f15846',1,'mmhal_robuf']]],
   ['free_5fmmbuf_8',['free_mmbuf',['../structmmbuf__ops.html#ade031f795036120ed936cd927d0439e2',1,'mmbuf_ops']]],
-  ['free_5fmmpkt_9',['free_mmpkt',['../structmmpkt__ops.html#a23aaceca7e703dd5d1edb9fd763c1357',1,'mmpkt_ops']]],
-  ['fs_5ffile_10',['fs_file',['../structrestfs__file.html#a1c55337f75f9e8011aecc1c9e273c2b6',1,'restfs_file']]]
+  ['fs_5ffile_9',['fs_file',['../structrestfs__file.html#a1c55337f75f9e8011aecc1c9e273c2b6',1,'restfs_file']]]
 ];

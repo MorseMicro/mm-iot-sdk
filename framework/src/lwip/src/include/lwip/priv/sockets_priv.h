@@ -89,6 +89,8 @@ struct lwip_sock {
 #define LWIP_SOCK_FD_FREE_TCP  1
 #define LWIP_SOCK_FD_FREE_FREE 2
 #endif
+  lwip_rx_callback_t rx_callback;
+  void *rx_callback_arg;
 };
 
 #ifndef set_errno

@@ -35,8 +35,8 @@ struct mmagic_datalink_agent
     size_t max_rx_packet_size;
 };
 
-#define UART_DATALINK_HDR_LENGTH    (1)
-#define UART_DATALINK_CRC_LENGTH    (2)
+#define UART_DATALINK_HDR_LENGTH        (1)
+#define UART_DATALINK_CRC_LENGTH        (2)
 
 #define UART_DATALINK_HDR_PKT_TYPE_MASK (0x0f)
 #define UART_DATALINK_HDR_PKT_TYPE_DATA (0x00)
@@ -173,8 +173,7 @@ struct mmagic_datalink_agent *mmagic_datalink_agent_init(
     return interface;
 }
 
-void mmagic_datalink_agent_deinit(
-    struct mmagic_datalink_agent *interface)
+void mmagic_datalink_agent_deinit(struct mmagic_datalink_agent *interface)
 {
     mmbuf_release(interface->rxbuf);
     interface->rxbuf = NULL;
@@ -182,8 +181,7 @@ void mmagic_datalink_agent_deinit(
     interface->slip_rx_state.buffer_length = 0;
 }
 
-struct mmbuf *mmagic_datalink_agent_alloc_buffer_for_tx(
-    size_t header_size, size_t payload_size)
+struct mmbuf *mmagic_datalink_agent_alloc_buffer_for_tx(size_t header_size, size_t payload_size)
 {
     return mmbuf_alloc_on_heap(header_size + UART_DATALINK_HDR_LENGTH,
                                payload_size + UART_DATALINK_CRC_LENGTH);
@@ -210,24 +208,33 @@ int mmagic_datalink_agent_tx_buffer(struct mmagic_datalink_agent *interface, str
 
     if (interface->tx_crc_enabled)
     {
-        uint16_t crc = htole16(mmcrc_16_xmodem(0, mmbuf_get_data_start(buf),
-                                               mmbuf_get_data_length(buf)));
+        uint16_t crc =
+            htole16(mmcrc_16_xmodem(0, mmbuf_get_data_start(buf), mmbuf_get_data_length(buf)));
         mmbuf_append_data(buf, (uint8_t *)&crc, sizeof(crc));
         hdr |= UART_DATALINK_FLAG_CRC_PRESENT;
     }
 
     mmbuf_prepend_data(buf, &hdr, sizeof(hdr));
 
-    ret = slip_tx(datalink_slip_tx_handler, interface,
-                  mmbuf_get_data_start(buf), mmbuf_get_data_length(buf));
+    size_t packet_len = mmbuf_get_data_length(buf);
+
+#if defined(MMAGIC_DATALINK_TRANSMISSION_HOOK_ENABLED) && MMAGIC_DATALINK_TRANSMISSION_HOOK_ENABLED
+    mmagic_datalink_transmission_hook(true);
+#endif
+
+    ret = slip_tx(datalink_slip_tx_handler, interface, mmbuf_get_data_start(buf), packet_len);
+
+#if defined(MMAGIC_DATALINK_TRANSMISSION_HOOK_ENABLED) && MMAGIC_DATALINK_TRANSMISSION_HOOK_ENABLED
+    mmagic_datalink_transmission_hook(false);
+#endif
 
     mmbuf_release(buf);
-    return ret;
+    MMOSAL_DEV_ASSERT(ret <= 0);
+    return (ret == 0) ? (int)packet_len : ret;
 }
 
-bool mmagic_datalink_agent_set_deep_sleep_mode(
-    struct mmagic_datalink_agent *interface,
-    enum mmagic_datalink_agent_deep_sleep_mode mode)
+bool mmagic_datalink_agent_set_deep_sleep_mode(struct mmagic_datalink_agent *interface,
+                                               enum mmagic_datalink_agent_deep_sleep_mode mode)
 {
     enum mmhal_uart_deep_sleep_mode mode_uart;
 
@@ -235,16 +242,16 @@ bool mmagic_datalink_agent_set_deep_sleep_mode(
 
     switch (mode)
     {
-    case MMAGIC_DATALINK_AGENT_DEEP_SLEEP_DISABLED:
-        mode_uart = MMHAL_UART_DEEP_SLEEP_DISABLED;
-        break;
+        case MMAGIC_DATALINK_AGENT_DEEP_SLEEP_DISABLED:
+            mode_uart = MMHAL_UART_DEEP_SLEEP_DISABLED;
+            break;
 
-    case MMAGIC_DATALINK_AGENT_DEEP_SLEEP_ONE_SHOT:
-        mode_uart = MMHAL_UART_DEEP_SLEEP_ONE_SHOT;
-        break;
+        case MMAGIC_DATALINK_AGENT_DEEP_SLEEP_ONE_SHOT:
+            mode_uart = MMHAL_UART_DEEP_SLEEP_ONE_SHOT;
+            break;
 
-    default:
-        return false;
+        default:
+            return false;
     }
 
     return mmhal_uart_set_deep_sleep_mode(mode_uart);

@@ -6,7 +6,12 @@
 
 /**
  * @file
- * @brief Example bootloader to boot and update application securely.
+ * @brief [Deprecated] Example bootloader to boot and update application securely.
+ *
+ * @deprecated This example application is deprecated and will be removed in a future release.
+ *             Alternative options include third-party projects, such as MCU Boot, or a platform
+ *             specific bootloader, such as @c stm32-mw-mcuboot.
+ *
  *
  * Firmware Update Procedure
  * =========================
@@ -65,17 +70,17 @@
 #include "sha256.h"
 #include "mmhal_flash.h"
 #include "mmconfig.h"
-#include "mmhal.h"
+#include "mmhal_app.h"
+#include "mmhal_os.h"
 #include "mmosal.h"
 #include "puff.h"
 #include "mbin.h"
 
-
 /** Maximum number of times we attempt to update before giving up */
-#define MAX_UPDATE_ATTEMPTS     10
+#define MAX_UPDATE_ATTEMPTS 10
 
 /** Maximum size of a segment, set to 32768 */
-#define MAX_SEGMENT_SIZE        32768
+#define MAX_SEGMENT_SIZE 32768
 
 /** Bootloader return codes */
 enum bootloader_return_codes
@@ -103,7 +108,6 @@ static uint8_t segment_buffer[MAX_SEGMENT_SIZE];
 
 /** Temporary buffer for deflating segments */
 static uint8_t deflate_buffer[MAX_SEGMENT_SIZE];
-
 
 /**
  * Implements a delay of approximately the duration specified.
@@ -183,8 +187,8 @@ static void update_failed(int code)
  */
 static void erase_application_area(void)
 {
-    uint32_t block_address = (uint32_t) &application_start;
-    uint32_t end_address = (uint32_t) &application_end;
+    uint32_t block_address = (uint32_t)&application_start;
+    uint32_t end_address = (uint32_t)&application_end;
 
     while (block_address < end_address)
     {
@@ -206,7 +210,6 @@ static void erase_application_area(void)
         block_address += mmhal_flash_getblocksize(block_address);
     }
 }
-
 
 /**
  * Loads the segment header from file
@@ -265,7 +268,7 @@ static int load_and_flash_mbin(const char *fname, bool make_changes)
     struct mbin_tlv_hdr seg_hdr;
     uint32_t mbin_magic = 0;
     uint32_t load_address, load_size;
-    unsigned long compressed_size, puffed_size;   // NOLINT(runtime/int) match puff API
+    unsigned long compressed_size, puffed_size; // NOLINT(runtime/int) match puff API
     int ret;
     bool eof = false;
     bool modified = false;
@@ -313,161 +316,161 @@ static int load_and_flash_mbin(const char *fname, bool make_changes)
 
         switch (seg_hdr.type)
         {
-        case FIELD_TYPE_SW_SEGMENT:
-            ret = read_uint32(fd, &load_address);
-            if (ret != BOOTLOADER_OK)
-            {
-                /* We had a failure reading MBIN, give up */
-                goto bailout;
-            }
-
-            load_size = seg_hdr.len - sizeof(load_address);
-            if (load_size > MAX_SEGMENT_SIZE)
-            {
-                /* We had a failure reading MBIN, give up */
-                ret = BOOTLOADER_ERR_FILE_CORRUPT;
-                goto bailout;
-            }
-
-            ret = read(fd, segment_buffer, load_size);
-            if (ret != (int)load_size)
-            {
-                /* We had a failure reading MBIN, give up */
-                ret = BOOTLOADER_ERR_FILE_CORRUPT;
-                goto bailout;
-            }
-
-            /* Does the load address fall within the application area? */
-            if ((load_address >= (uint32_t) &application_start) &&
-                (load_address + load_size <= (uint32_t) &application_end))
-            {
-                modified = true;
-                if (make_changes)
+            case FIELD_TYPE_SW_SEGMENT:
+                ret = read_uint32(fd, &load_address);
+                if (ret != BOOTLOADER_OK)
                 {
-                    ret = mmhal_flash_write(load_address, segment_buffer, load_size);
-                    if (ret != 0)
+                    /* We had a failure reading MBIN, give up */
+                    goto bailout;
+                }
+
+                load_size = seg_hdr.len - sizeof(load_address);
+                if (load_size > MAX_SEGMENT_SIZE)
+                {
+                    /* We had a failure reading MBIN, give up */
+                    ret = BOOTLOADER_ERR_FILE_CORRUPT;
+                    goto bailout;
+                }
+
+                ret = read(fd, segment_buffer, load_size);
+                if (ret != (int)load_size)
+                {
+                    /* We had a failure reading MBIN, give up */
+                    ret = BOOTLOADER_ERR_FILE_CORRUPT;
+                    goto bailout;
+                }
+
+                /* Does the load address fall within the application area? */
+                if ((load_address >= (uint32_t)&application_start) &&
+                    (load_address + load_size <= (uint32_t)&application_end))
+                {
+                    modified = true;
+                    if (make_changes)
                     {
-                        /* We had a failure while flashing, give up as flash state is unknown */
-                        ret = BOOTLOADER_ERR_PROGRAM_FAILED;
-                        goto bailout;
+                        ret = mmhal_flash_write(load_address, segment_buffer, load_size);
+                        if (ret != 0)
+                        {
+                            /* We had a failure while flashing, give up as flash state is unknown */
+                            ret = BOOTLOADER_ERR_PROGRAM_FAILED;
+                            goto bailout;
+                        }
                     }
                 }
-            }
-            else
-            {
-                /* We attempted to write outside the valid area */
-                ret = BOOTLOADER_ERR_INVALID_FILE;
-                goto bailout;
-            }
-            break;
-
-        case FIELD_TYPE_SW_SEGMENT_DEFLATED:
-            ret = read_uint32(fd, &load_address);
-            if (ret != BOOTLOADER_OK)
-            {
-                /* We had a failure reading MBIN, give up */
-                goto bailout;
-            }
-
-            ret = read_uint32(fd, &load_size);
-            if (ret != BOOTLOADER_OK)
-            {
-                /* We had a failure reading MBIN, give up */
-                goto bailout;
-            }
-
-            if (load_size > MAX_SEGMENT_SIZE)
-            {
-                /* We had a failure reading MBIN, give up */
-                ret = BOOTLOADER_ERR_FILE_CORRUPT;
-                goto bailout;
-            }
-
-            compressed_size = seg_hdr.len - sizeof(load_address) - sizeof(load_size);
-            if (compressed_size > MAX_SEGMENT_SIZE)
-            {
-                /* We had a failure reading MBIN, give up */
-                ret = BOOTLOADER_ERR_FILE_CORRUPT;
-                goto bailout;
-            }
-
-            ret = read(fd, deflate_buffer, compressed_size);
-            if (ret != (int)compressed_size)
-            {
-                /* We had a failure reading MBIN, give up */
-                ret = BOOTLOADER_ERR_FILE_CORRUPT;
-                goto bailout;
-            }
-
-            /* Decompress the segment */
-            puffed_size = load_size;
-            puff(segment_buffer, &puffed_size, deflate_buffer, &compressed_size);
-            if (puffed_size != load_size)
-            {
-                /* We had a failure decompressing, give up */
-                ret = BOOTLOADER_ERR_FILE_DECOMPRESSION;
-                goto bailout;
-            }
-
-            /* Does the load address fall within the application area? */
-            if ((load_address >= (uint32_t) &application_start) &&
-                (load_address + load_size <= (uint32_t) &application_end))
-            {
-                modified = true;
-                if (make_changes)
+                else
                 {
-                    ret = mmhal_flash_write(load_address, segment_buffer, load_size);
-                    if (ret!= 0)
+                    /* We attempted to write outside the valid area */
+                    ret = BOOTLOADER_ERR_INVALID_FILE;
+                    goto bailout;
+                }
+                break;
+
+            case FIELD_TYPE_SW_SEGMENT_DEFLATED:
+                ret = read_uint32(fd, &load_address);
+                if (ret != BOOTLOADER_OK)
+                {
+                    /* We had a failure reading MBIN, give up */
+                    goto bailout;
+                }
+
+                ret = read_uint32(fd, &load_size);
+                if (ret != BOOTLOADER_OK)
+                {
+                    /* We had a failure reading MBIN, give up */
+                    goto bailout;
+                }
+
+                if (load_size > MAX_SEGMENT_SIZE)
+                {
+                    /* We had a failure reading MBIN, give up */
+                    ret = BOOTLOADER_ERR_FILE_CORRUPT;
+                    goto bailout;
+                }
+
+                compressed_size = seg_hdr.len - sizeof(load_address) - sizeof(load_size);
+                if (compressed_size > MAX_SEGMENT_SIZE)
+                {
+                    /* We had a failure reading MBIN, give up */
+                    ret = BOOTLOADER_ERR_FILE_CORRUPT;
+                    goto bailout;
+                }
+
+                ret = read(fd, deflate_buffer, compressed_size);
+                if (ret != (int)compressed_size)
+                {
+                    /* We had a failure reading MBIN, give up */
+                    ret = BOOTLOADER_ERR_FILE_CORRUPT;
+                    goto bailout;
+                }
+
+                /* Decompress the segment */
+                puffed_size = load_size;
+                puff(segment_buffer, &puffed_size, deflate_buffer, &compressed_size);
+                if (puffed_size != load_size)
+                {
+                    /* We had a failure decompressing, give up */
+                    ret = BOOTLOADER_ERR_FILE_DECOMPRESSION;
+                    goto bailout;
+                }
+
+                /* Does the load address fall within the application area? */
+                if ((load_address >= (uint32_t)&application_start) &&
+                    (load_address + load_size <= (uint32_t)&application_end))
+                {
+                    modified = true;
+                    if (make_changes)
                     {
-                        /* We had a failure while flashing, give up as flash state is unknown */
-                        ret = BOOTLOADER_ERR_PROGRAM_FAILED;
-                        goto bailout;
+                        ret = mmhal_flash_write(load_address, segment_buffer, load_size);
+                        if (ret != 0)
+                        {
+                            /* We had a failure while flashing, give up as flash state is unknown */
+                            ret = BOOTLOADER_ERR_PROGRAM_FAILED;
+                            goto bailout;
+                        }
                     }
                 }
-            }
-            else
-            {
-                /* We attempted to write outside the valid area */
-                ret = BOOTLOADER_ERR_INVALID_FILE;
-                goto bailout;
-            }
-            break;
+                else
+                {
+                    /* We attempted to write outside the valid area */
+                    ret = BOOTLOADER_ERR_INVALID_FILE;
+                    goto bailout;
+                }
+                break;
 
-        case FIELD_TYPE_EOF_WITH_SIGNATURE:
-            /* We validate this signature in the application and generate the
-             * simplified IMAGE_SIGNATURE hash in config store for the bootloader.
-             * So the bootloader just treats this as an EOF. */
-        case FIELD_TYPE_EOF:
-            eof = true;
-            break;
+            case FIELD_TYPE_EOF_WITH_SIGNATURE:
+                /* We validate this signature in the application and generate the
+                 * simplified IMAGE_SIGNATURE hash in config store for the bootloader.
+                 * So the bootloader just treats this as an EOF. */
+            case FIELD_TYPE_EOF:
+                eof = true;
+                break;
 
-        /* Skip these fields since they are not used for the software update process */
-        case FIELD_TYPE_FW_SEGMENT:
-        case FIELD_TYPE_FW_SEGMENT_DEFLATED:
-        case FIELD_TYPE_FW_TLV_BCF_ADDR:
-        case FIELD_TYPE_BCF_BOARD_CONFIG:
-        case FIELD_TYPE_BCF_REGDOM:
-            if (seg_hdr.len > MAX_SEGMENT_SIZE)
-            {
-                /* We had a failure reading MBIN, give up */
+            /* Skip these fields since they are not used for the software update process */
+            case FIELD_TYPE_FW_SEGMENT:
+            case FIELD_TYPE_FW_SEGMENT_DEFLATED:
+            case FIELD_TYPE_FW_TLV_BCF_ADDR:
+            case FIELD_TYPE_BCF_BOARD_CONFIG:
+            case FIELD_TYPE_BCF_REGDOM:
+                if (seg_hdr.len > MAX_SEGMENT_SIZE)
+                {
+                    /* We had a failure reading MBIN, give up */
+                    ret = BOOTLOADER_ERR_FILE_CORRUPT;
+                    goto bailout;
+                }
+                /* Skip over */
+                ret = read(fd, segment_buffer, seg_hdr.len);
+                if (ret != seg_hdr.len)
+                {
+                    /* We had an error reading the file */
+                    ret = BOOTLOADER_ERR_FILE_CORRUPT;
+                    goto bailout;
+                }
+                break;
+
+            case FIELD_TYPE_MAGIC:
+            default:
+                /* These are unexpected */
                 ret = BOOTLOADER_ERR_FILE_CORRUPT;
                 goto bailout;
-            }
-             /* Skip over */
-            ret = read(fd, segment_buffer, seg_hdr.len);
-            if (ret != seg_hdr.len)
-            {
-                /* We had an error reading the file */
-                ret = BOOTLOADER_ERR_FILE_CORRUPT;
-                goto bailout;
-            }
-            break;
-
-        case FIELD_TYPE_MAGIC:
-        default:
-            /* These are unexpected */
-            ret = BOOTLOADER_ERR_FILE_CORRUPT;
-            goto bailout;
         }
     }
 
@@ -522,8 +525,7 @@ static int verify_signature(const char *fname)
     }
 
     int bytesread;
-    do
-    {
+    do {
         bytesread = read(fd, data, sizeof(data));
         if (bytesread <= 0)
         {
@@ -631,8 +633,8 @@ int main(void)
      * in the vector table located at the start of application area.
      * Note: we ignore the first entry (Stack pointer) as this is usually the same
      * for the bootloader and set to end of RAM - requires messy assembly to change. */
-    uint32_t go_address = (*((volatile uint32_t*) (((uint32_t)&application_start) + 4)));
-    void (*jump_to_app)(void) = (void (*)(void)) go_address;
+    uint32_t go_address = (*((volatile uint32_t *)(((uint32_t)&application_start) + 4)));
+    void (*jump_to_app)(void) = (void (*)(void))go_address;
 
     /* No updates found, jump to application */
     jump_to_app();

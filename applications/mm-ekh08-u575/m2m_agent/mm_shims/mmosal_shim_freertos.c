@@ -10,8 +10,10 @@
 #include <semphr.h>
 #include <queue.h>
 #include <timers.h>
+#include <stdarg.h>
+#include <sys/types.h>
 #include "mmosal.h"
-#include "mmhal.h"
+#include "mmhal_os.h"
 #include "mmlog.h"
 #include "errno.h"
 

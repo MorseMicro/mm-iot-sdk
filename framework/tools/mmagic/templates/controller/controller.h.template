@@ -30,6 +30,7 @@
 
 #include <stdbool.h>
 #include <stddef.h>
+#include <stdint.h>
 #include <memory.h>
 
 #ifdef __cplusplus
@@ -199,7 +200,7 @@ void mmagic_controller_deinit(struct mmagic_controller *controller);
  * @param command_id    The command.
  * @param subcommand_id A sub command or resource id if applicable.
  * @param buffer        A pointer to any data associated with this command.
-                        May be NULL if none.
+ *                      May be NULL if none.
  * @param buffer_length Length of above data.
  *
  * @return              MMAGIC_STATUS_OK on success, else an error code.
@@ -218,10 +219,10 @@ enum mmagic_status mmagic_controller_tx(
  * @param command_id    The command to wait on.
  * @param subcommand_id A sub command or resource id if applicable.
  * @param buffer        A pointer to a buffer to load with any returned data.
-                        May be NULL if none.
+ *                      May be NULL if none.
  * @param buffer_length Length of above buffer.
  * @param timeout_ms    The time in milliseconds to wait for a response from the agent,
-                        set to @c UINT32_MAX for an indefinite wait.
+ *                      set to @c UINT32_MAX for an indefinite wait.
  *
  * @return              MMAGIC_STATUS_OK on success, else an error code.
  */
@@ -269,7 +270,7 @@ enum mmagic_{{module.name}}_var
 {
     {%- for var in module.configs %}
     /** {{var.description}} */
-    {{mm.var_label(config, module, var)}} = {{loop.index0}},
+    {{mm.var_label(config, module, var)}} = {{var.id}},
     {%- endfor %}
 };
 {%- endif %}
@@ -458,7 +459,7 @@ struct MM_PACKED mmagic_core_{{module.name}}_{{command.name}}_rsp_args
  *
  * @param controller        Reference to the controller handle.
  * @param[in] cmd_args      Command arguments
- * @param[out] rsp_args     Pointer to the data structure to be filled out with the result. If the
+ * @param[out] rsp_args     Pointer to the data structure to be filled out with the result.
  *                          If the return code is not @ref MMAGIC_STATUS_OK then the
  *                          contents of this structure will be undefined.
  *
@@ -485,7 +486,7 @@ static inline enum mmagic_status mmagic_controller_{{module.name}}_{{command.nam
  * {{command.description}}
  *
  * @param controller        Reference to the controller handle.
- * @param[out] rsp_args     Pointer to the data structure to be filled out with the result. If the
+ * @param[out] rsp_args     Pointer to the data structure to be filled out with the result.
  *                          If the return code is not @ref MMAGIC_STATUS_OK then the
  *                          contents of this structure will be undefined.
  *

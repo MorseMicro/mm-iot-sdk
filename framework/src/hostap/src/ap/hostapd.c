@@ -2704,9 +2704,7 @@ static int hostapd_setup_interface_complete_sync(struct hostapd_iface *iface,
 				     hostapd_get_oper_centr_freq_seg0_idx(
 					     hapd->iconf),
 				     hostapd_get_oper_centr_freq_seg1_idx(
-					     hapd->iconf),
-					hapd->iconf->s1g_prim_chwidth,
-					hapd->iconf->s1g_prim_1mhz_chan_index)) {
+					     hapd->iconf))) {
 			wpa_printf(MSG_ERROR, "Could not set channel for "
 				   "kernel driver");
 			goto fail;
@@ -4449,8 +4447,7 @@ static int hostapd_change_config_freq(struct hostapd_data *hapd,
 				    NULL,
 				    mode ? &mode->eht_capab[IEEE80211_MODE_AP] :
 				    NULL,
-				    hostapd_get_punct_bitmap(hapd),
-				    conf->s1g_prim_chwidth, conf->s1g_prim_1mhz_chan_index))
+				    hostapd_get_punct_bitmap(hapd)))
 		return -1;
 
 	switch (params->bandwidth) {
@@ -4818,8 +4815,8 @@ hostapd_switch_channel_fallback(struct hostapd_iface *iface,
 
 		iface->conf->s1g_op_class = hapd->cs_s1g_freq_params.s1g_global_op_class;
 		iface->conf->s1g_prim_chwidth = hapd->cs_s1g_freq_params.s1g_prim_bw - 1;
-		iface->conf->s1g_prim_1mhz_chan_index =
-			hapd->cs_s1g_freq_params.s1g_prim_channel_index_1MHz;
+		iface->conf->s1g_prim_1mhz_chan_loc =
+			hapd->cs_s1g_freq_params.s1g_prim_1mhz_channel_loc;
 	}
 #endif
 

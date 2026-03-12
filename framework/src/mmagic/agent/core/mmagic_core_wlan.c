@@ -23,14 +23,13 @@
 #define MMAGIC_DEFAULT_POWER_SAVE_MODE MMAGIC_POWER_SAVE_MODE_ENABLED
 #endif /* MMAGIC_DEFAULT_POWER_SAVE_MODE */
 
-static struct mmagic_wlan_config default_config =
-{
-    .country_code = {.country_code = MMAGIC_DEFAULT_COUNTRY_CODE},
-    .ssid = {.data = "MorseMicro", .len = sizeof("MorseMicro") - 1},
-    .password = {.data = "12345678", .len = sizeof("12345678") - 1},
+static struct mmagic_wlan_config default_config = {
+    .country_code = { .country_code = MMAGIC_DEFAULT_COUNTRY_CODE },
+    .ssid = { .data = "MorseMicro", .len = sizeof("MorseMicro") - 1 },
+    .password = { .data = "12345678", .len = sizeof("12345678") - 1 },
     .security = MMAGIC_SECURITY_TYPE_SAE,
     .raw_priority = -1,
-    .bssid = {.addr = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
+    .bssid = { .addr = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 } },
     .pmf_mode = MMAGIC_PMF_MODE_REQUIRED,
     .station_type = MMAGIC_STATION_TYPE_NON_SENSOR,
     .rts_threshold = 0,
@@ -40,17 +39,15 @@ static struct mmagic_wlan_config default_config =
     .power_save_mode = MMAGIC_DEFAULT_POWER_SAVE_MODE,
     .fragment_threshold = 0,
     .cac_enabled = false,
-    .offload_arp_response = false,
-    .offload_arp_refresh_s = 0,
     .min_health_check_intvl_ms = MMWLAN_DEFAULT_MIN_HEALTH_CHECK_INTERVAL_MS,
     .max_health_check_intvl_ms = MMWLAN_DEFAULT_MAX_HEALTH_CHECK_INTERVAL_MS,
     .ndp_probe_enabled = false,
     .sta_scan_interval_base_s = 0,
     .sta_scan_interval_limit_s = 0,
-    .qos_0_params = {.data = "", .len = 0},
-    .qos_1_params = {.data = "", .len = 0},
-    .qos_2_params = {.data = "", .len = 0},
-    .qos_3_params = {.data = "", .len = 0},
+    .qos_0_params = { .data = "", .len = 0 },
+    .qos_1_params = { .data = "", .len = 0 },
+    .qos_2_params = { .data = "", .len = 0 },
+    .qos_3_params = { .data = "", .len = 0 },
     .mcs10_mode = MMAGIC_MCS10_MODE_DISABLED,
     .sta_evt_en = false,
     .duty_cycle_mode = MMAGIC_DUTY_CYCLE_MODE_SPREAD,
@@ -78,7 +75,8 @@ static enum mmagic_status mmagic_core_wlan_parse_qos_params(struct mmwlan_qos_qu
     if (ret != 4)
     {
         mmosal_printf("Error setting QoS queue %u params to %s, number of values != 4\n",
-                      params->aci, data);
+                      params->aci,
+                      data);
         return MMAGIC_STATUS_INVALID_ARG;
     }
 
@@ -100,14 +98,15 @@ static enum mmagic_status mmagic_core_wlan_parse_qos_params(struct mmwlan_qos_qu
 /** Helper macro for checking failure of a call to mmwlan_* api.
  * Requires an @c mmwlan_status variable of type @c enum mmwlan_status and a @mmwlan_error label.
  */
-#define CHECK_MMWLAN_GOTO(mmwlan_expr)                                                         \
-        do {                                                                                   \
-            mmwlan_status = mmwlan_expr;                                                       \
-            if (mmwlan_status != MMWLAN_SUCCESS) {                                             \
-                mmosal_printf(STRINGIFY(mmwlan_expr) " failed with code %d\n", mmwlan_status); \
-                goto mmwlan_error;                                                             \
-            }                                                                                  \
-        } while (0)
+#define CHECK_MMWLAN_GOTO(mmwlan_expr)                                                     \
+    do {                                                                                   \
+        mmwlan_status = mmwlan_expr;                                                       \
+        if (mmwlan_status != MMWLAN_SUCCESS)                                               \
+        {                                                                                  \
+            mmosal_printf(STRINGIFY(mmwlan_expr) " failed with code %d\n", mmwlan_status); \
+            goto mmwlan_error;                                                             \
+        }                                                                                  \
+    } while (0)
 
 /**
  * Function to install any wlan core config parameters that are not set by @c mmwlan_sta_enable.
@@ -120,7 +119,8 @@ static enum mmagic_status mmagic_core_wlan_parse_qos_params(struct mmwlan_qos_qu
  * @return        On success returns MMAGIC_STATUS_OK, else appropriate @c mmagic_status.
  */
 static enum mmagic_status mmagic_core_wlan_configure_mmwlan(
-    struct mmagic_wlan_data *data, const struct mmwlan_regulatory_db *reg_db)
+    struct mmagic_wlan_data *data,
+    const struct mmwlan_regulatory_db *reg_db)
 {
     enum mmwlan_status mmwlan_status = MMWLAN_SUCCESS;
 
@@ -152,16 +152,16 @@ static enum mmagic_status mmagic_core_wlan_configure_mmwlan(
     enum mmwlan_ps_mode ps_mode;
     switch (data->config.power_save_mode)
     {
-    case MMAGIC_POWER_SAVE_MODE_DISABLED:
-        ps_mode = MMWLAN_PS_DISABLED;
-        break;
+        case MMAGIC_POWER_SAVE_MODE_DISABLED:
+            ps_mode = MMWLAN_PS_DISABLED;
+            break;
 
-    case MMAGIC_POWER_SAVE_MODE_ENABLED:
-        ps_mode = MMWLAN_PS_ENABLED;
-        break;
+        case MMAGIC_POWER_SAVE_MODE_ENABLED:
+            ps_mode = MMWLAN_PS_ENABLED;
+            break;
 
-    default:
-        return MMAGIC_STATUS_INVALID_ARG;
+        default:
+            return MMAGIC_STATUS_INVALID_ARG;
     }
     CHECK_MMWLAN_GOTO(mmwlan_set_power_save_mode(ps_mode));
 
@@ -173,18 +173,18 @@ static enum mmagic_status mmagic_core_wlan_configure_mmwlan(
     enum mmwlan_mcs10_mode msc10_mode;
     switch (data->config.mcs10_mode)
     {
-    case MMAGIC_MCS10_MODE_FORCED:
-        msc10_mode = MMWLAN_MCS10_MODE_FORCED;
-        break;
+        case MMAGIC_MCS10_MODE_FORCED:
+            msc10_mode = MMWLAN_MCS10_MODE_FORCED;
+            break;
 
-    case MMAGIC_MCS10_MODE_AUTO:
-        msc10_mode = MMWLAN_MCS10_MODE_AUTO;
-        break;
+        case MMAGIC_MCS10_MODE_AUTO:
+            msc10_mode = MMWLAN_MCS10_MODE_AUTO;
+            break;
 
-    case MMAGIC_MCS10_MODE_DISABLED:
-    default:
-        msc10_mode = MMWLAN_MCS10_MODE_DISABLED;
-        break;
+        case MMAGIC_MCS10_MODE_DISABLED:
+        default:
+            msc10_mode = MMWLAN_MCS10_MODE_DISABLED;
+            break;
     }
 
     CHECK_MMWLAN_GOTO(mmwlan_set_mcs10_mode(msc10_mode));
@@ -192,16 +192,16 @@ static enum mmagic_status mmagic_core_wlan_configure_mmwlan(
     enum mmwlan_duty_cycle_mode duty_cycle_mode;
     switch (data->config.duty_cycle_mode)
     {
-    case MMAGIC_DUTY_CYCLE_MODE_SPREAD:
-        duty_cycle_mode = MMWLAN_DUTY_CYCLE_MODE_SPREAD;
-        break;
+        case MMAGIC_DUTY_CYCLE_MODE_SPREAD:
+            duty_cycle_mode = MMWLAN_DUTY_CYCLE_MODE_SPREAD;
+            break;
 
-    case MMAGIC_DUTY_CYCLE_MODE_BURST:
-        duty_cycle_mode = MMWLAN_DUTY_CYCLE_MODE_BURST;
-        break;
+        case MMAGIC_DUTY_CYCLE_MODE_BURST:
+            duty_cycle_mode = MMWLAN_DUTY_CYCLE_MODE_BURST;
+            break;
 
-    default:
-        return MMAGIC_STATUS_INVALID_ARG;
+        default:
+            return MMAGIC_STATUS_INVALID_ARG;
     }
 
     CHECK_MMWLAN_GOTO(mmwlan_set_duty_cycle_mode(duty_cycle_mode));
@@ -219,8 +219,8 @@ static enum mmagic_status mmagic_core_wlan_configure_mmwlan(
     {
         params = &qos_params[n_updated];
         params->aci = 0;
-        qos_status = mmagic_core_wlan_parse_qos_params(params,
-                                                       (char *)data->config.qos_0_params.data);
+        qos_status =
+            mmagic_core_wlan_parse_qos_params(params, (char *)data->config.qos_0_params.data);
 
         if (qos_status != MMAGIC_STATUS_OK)
         {
@@ -234,8 +234,8 @@ static enum mmagic_status mmagic_core_wlan_configure_mmwlan(
     {
         params = &qos_params[n_updated];
         params->aci = 1;
-        qos_status = mmagic_core_wlan_parse_qos_params(params,
-                                                       (char *)data->config.qos_1_params.data);
+        qos_status =
+            mmagic_core_wlan_parse_qos_params(params, (char *)data->config.qos_1_params.data);
 
         if (qos_status != MMAGIC_STATUS_OK)
         {
@@ -249,8 +249,8 @@ static enum mmagic_status mmagic_core_wlan_configure_mmwlan(
     {
         params = &qos_params[n_updated];
         params->aci = 2;
-        qos_status = mmagic_core_wlan_parse_qos_params(params,
-                                                       (char *)data->config.qos_2_params.data);
+        qos_status =
+            mmagic_core_wlan_parse_qos_params(params, (char *)data->config.qos_2_params.data);
 
         if (qos_status != MMAGIC_STATUS_OK)
         {
@@ -263,8 +263,8 @@ static enum mmagic_status mmagic_core_wlan_configure_mmwlan(
     {
         params = &qos_params[n_updated];
         params->aci = 3;
-        qos_status = mmagic_core_wlan_parse_qos_params(params,
-                                                       (char *)data->config.qos_3_params.data);
+        qos_status =
+            mmagic_core_wlan_parse_qos_params(params, (char *)data->config.qos_3_params.data);
 
         if (qos_status != MMAGIC_STATUS_OK)
         {
@@ -290,18 +290,18 @@ static void mmagic_core_wlan_shim_sta_status_cb(enum mmwlan_sta_state sta_state)
 {
     switch (sta_state)
     {
-    case MMWLAN_STA_DISABLED:
-        mmosal_printf("WLAN STA disabled\n");
-        break;
+        case MMWLAN_STA_DISABLED:
+            mmosal_printf("WLAN STA disabled\n");
+            break;
 
-    case MMWLAN_STA_CONNECTING:
-        mmosal_printf("WLAN STA connecting\n");
-        break;
+        case MMWLAN_STA_CONNECTING:
+            mmosal_printf("WLAN STA connecting\n");
+            break;
 
-    case MMWLAN_STA_CONNECTED:
-        mmosal_printf("WLAN STA connected\n");
-        mmosal_semb_give(sta_connected_semb);
-        break;
+        case MMWLAN_STA_CONNECTED:
+            mmosal_printf("WLAN STA connected\n");
+            mmosal_semb_give(sta_connected_semb);
+            break;
     }
 }
 
@@ -314,45 +314,45 @@ static void mmagic_core_wlan_shim_sta_evt_cb(const struct mmwlan_sta_event_cb_ar
 
     switch (sta_event->event)
     {
-    case MMWLAN_STA_EVT_SCAN_REQUEST:
-        mmosal_printf("Beginning scan\n");
-        sta_event_args.event = MMAGIC_STA_EVENT_SCAN_REQUEST;
-        break;
+        case MMWLAN_STA_EVT_SCAN_REQUEST:
+            mmosal_printf("Beginning scan\n");
+            sta_event_args.event = MMAGIC_STA_EVENT_SCAN_REQUEST;
+            break;
 
-    case MMWLAN_STA_EVT_SCAN_COMPLETE:
-        mmosal_printf("Scan complete\n");
-        sta_event_args.event = MMAGIC_STA_EVENT_SCAN_COMPLETE;
-        break;
+        case MMWLAN_STA_EVT_SCAN_COMPLETE:
+            mmosal_printf("Scan complete\n");
+            sta_event_args.event = MMAGIC_STA_EVENT_SCAN_COMPLETE;
+            break;
 
-    case MMWLAN_STA_EVT_SCAN_ABORT:
-        mmosal_printf("Scan aborted\n");
-        sta_event_args.event = MMAGIC_STA_EVENT_SCAN_ABORT;
-        break;
+        case MMWLAN_STA_EVT_SCAN_ABORT:
+            mmosal_printf("Scan aborted\n");
+            sta_event_args.event = MMAGIC_STA_EVENT_SCAN_ABORT;
+            break;
 
-    case MMWLAN_STA_EVT_AUTH_REQUEST:
-        mmosal_printf("Sending auth request\n");
-        sta_event_args.event = MMAGIC_STA_EVENT_AUTH_REQUEST;
-        break;
+        case MMWLAN_STA_EVT_AUTH_REQUEST:
+            mmosal_printf("Sending auth request\n");
+            sta_event_args.event = MMAGIC_STA_EVENT_AUTH_REQUEST;
+            break;
 
-    case MMWLAN_STA_EVT_ASSOC_REQUEST:
-        mmosal_printf("Sending assoc request\n");
-        sta_event_args.event = MMAGIC_STA_EVENT_ASSOC_REQUEST;
-        break;
+        case MMWLAN_STA_EVT_ASSOC_REQUEST:
+            mmosal_printf("Sending assoc request\n");
+            sta_event_args.event = MMAGIC_STA_EVENT_ASSOC_REQUEST;
+            break;
 
-    case MMWLAN_STA_EVT_DEAUTH_TX:
-        mmosal_printf("Sending deauth\n");
-        sta_event_args.event = MMAGIC_STA_EVENT_DEAUTH_TX;
-        break;
+        case MMWLAN_STA_EVT_DEAUTH_TX:
+            mmosal_printf("Sending deauth\n");
+            sta_event_args.event = MMAGIC_STA_EVENT_DEAUTH_TX;
+            break;
 
-    case MMWLAN_STA_EVT_CTRL_PORT_OPEN:
-        mmosal_printf("Opened supplicant control port\n");
-        sta_event_args.event = MMAGIC_STA_EVENT_CTRL_PORT_OPEN;
-        break;
+        case MMWLAN_STA_EVT_CTRL_PORT_OPEN:
+            mmosal_printf("Opened supplicant control port\n");
+            sta_event_args.event = MMAGIC_STA_EVENT_CTRL_PORT_OPEN;
+            break;
 
-    case MMWLAN_STA_EVT_CTRL_PORT_CLOSED:
-        mmosal_printf("Closed supplicant control port\n");
-        sta_event_args.event = MMAGIC_STA_EVENT_CTRL_PORT_CLOSED;
-        break;
+        case MMWLAN_STA_EVT_CTRL_PORT_CLOSED:
+            mmosal_printf("Closed supplicant control port\n");
+            sta_event_args.event = MMAGIC_STA_EVENT_CTRL_PORT_CLOSED;
+            break;
     }
 
     if (wlan_data->config.sta_evt_en)
@@ -380,7 +380,8 @@ void mmagic_core_wlan_start(struct mmagic_data *core)
 /********* MMAGIC Core WLAN ops **********/
 
 enum mmagic_status mmagic_core_wlan_connect(
-    struct mmagic_data *core, const struct mmagic_core_wlan_connect_cmd_args *cmd_args)
+    struct mmagic_data *core,
+    const struct mmagic_core_wlan_connect_cmd_args *cmd_args)
 {
     struct mmagic_wlan_data *data = mmagic_data_get_wlan(core);
     enum mmagic_status mmagic_status = mmagic_core_wlan_configure_mmwlan(data, core->reg_db);
@@ -395,17 +396,17 @@ enum mmagic_status mmagic_core_wlan_connect(
 
     switch (data->config.security)
     {
-    case MMAGIC_SECURITY_TYPE_SAE:
-        args.security_type = MMWLAN_SAE;
-        break;
+        case MMAGIC_SECURITY_TYPE_SAE:
+            args.security_type = MMWLAN_SAE;
+            break;
 
-    case MMAGIC_SECURITY_TYPE_OWE:
-        args.security_type = MMWLAN_OWE;
-        break;
+        case MMAGIC_SECURITY_TYPE_OWE:
+            args.security_type = MMWLAN_OWE;
+            break;
 
-    case MMAGIC_SECURITY_TYPE_OPEN:
-        args.security_type = MMWLAN_OPEN;
-        break;
+        case MMAGIC_SECURITY_TYPE_OPEN:
+            args.security_type = MMWLAN_OPEN;
+            break;
     }
 
     memcpy(args.passphrase, data->config.password.data, data->config.password.len);
@@ -413,26 +414,26 @@ enum mmagic_status mmagic_core_wlan_connect(
 
     switch (data->config.pmf_mode)
     {
-    case MMAGIC_PMF_MODE_REQUIRED:
-        args.pmf_mode = MMWLAN_PMF_REQUIRED;
-        break;
+        case MMAGIC_PMF_MODE_REQUIRED:
+            args.pmf_mode = MMWLAN_PMF_REQUIRED;
+            break;
 
-    case MMAGIC_PMF_MODE_DISABLED:
-        args.pmf_mode = MMWLAN_PMF_DISABLED;
-        break;
+        case MMAGIC_PMF_MODE_DISABLED:
+            args.pmf_mode = MMWLAN_PMF_DISABLED;
+            break;
     }
 
     args.raw_sta_priority = data->config.raw_priority;
 
     switch (data->config.station_type)
     {
-    case MMAGIC_STATION_TYPE_SENSOR:
-        args.sta_type = MMWLAN_STA_TYPE_SENSOR;
-        break;
+        case MMAGIC_STATION_TYPE_SENSOR:
+            args.sta_type = MMWLAN_STA_TYPE_SENSOR;
+            break;
 
-    case MMAGIC_STATION_TYPE_NON_SENSOR:
-        args.sta_type = MMWLAN_STA_TYPE_NON_SENSOR;
-        break;
+        case MMAGIC_STATION_TYPE_NON_SENSOR:
+            args.sta_type = MMWLAN_STA_TYPE_NON_SENSOR;
+            break;
     }
 
     args.cac_mode = data->config.cac_enabled ? MMWLAN_CAC_ENABLED : MMWLAN_CAC_DISABLED;
@@ -517,6 +518,7 @@ static void mmagic_core_wlan_scan_rx_callback(const struct mmwlan_scan_result *r
     curr_result->bw_mhz = result->bw_mhz;
     curr_result->op_bw_mhz = result->op_bw_mhz;
     curr_result->tsf = result->tsf;
+    curr_result->noise_dbm = (int16_t)result->noise_dbm;
 }
 
 /**
@@ -597,7 +599,8 @@ enum mmagic_status mmagic_core_wlan_get_rssi(struct mmagic_data *core,
 }
 
 enum mmagic_status mmagic_core_wlan_get_mac_addr(
-    struct mmagic_data *core, struct mmagic_core_wlan_get_mac_addr_rsp_args *rsp_args)
+    struct mmagic_data *core,
+    struct mmagic_core_wlan_get_mac_addr_rsp_args *rsp_args)
 {
     MM_UNUSED(core);
 
@@ -607,7 +610,8 @@ enum mmagic_status mmagic_core_wlan_get_mac_addr(
 }
 
 enum mmagic_status mmagic_core_wlan_get_sta_status(
-    struct mmagic_data *core, struct mmagic_core_wlan_get_sta_status_rsp_args *rsp_args)
+    struct mmagic_data *core,
+    struct mmagic_core_wlan_get_sta_status_rsp_args *rsp_args)
 {
     MM_UNUSED(core);
 
@@ -615,24 +619,25 @@ enum mmagic_status mmagic_core_wlan_get_sta_status(
 
     switch (state)
     {
-    case MMWLAN_STA_DISABLED:
-        rsp_args->sta_status = MMAGIC_STA_STATE_DISCONNECTED;
-        break;
+        case MMWLAN_STA_DISABLED:
+            rsp_args->sta_status = MMAGIC_STA_STATE_DISCONNECTED;
+            break;
 
-    case MMWLAN_STA_CONNECTING:
-        rsp_args->sta_status = MMAGIC_STA_STATE_CONNECTING;
-        break;
+        case MMWLAN_STA_CONNECTING:
+            rsp_args->sta_status = MMAGIC_STA_STATE_CONNECTING;
+            break;
 
-    case MMWLAN_STA_CONNECTED:
-        rsp_args->sta_status = MMAGIC_STA_STATE_CONNECTED;
-        break;
+        case MMWLAN_STA_CONNECTED:
+            rsp_args->sta_status = MMAGIC_STA_STATE_CONNECTED;
+            break;
     }
 
     return MMAGIC_STATUS_OK;
 }
 
 enum mmagic_status mmagic_core_wlan_wnm_sleep(
-    struct mmagic_data *core, const struct mmagic_core_wlan_wnm_sleep_cmd_args *cmd_args)
+    struct mmagic_data *core,
+    const struct mmagic_core_wlan_wnm_sleep_cmd_args *cmd_args)
 {
     MM_UNUSED(core);
     enum mmwlan_status status = mmwlan_set_wnm_sleep_enabled(cmd_args->wnm_sleep_enabled);
@@ -677,7 +682,9 @@ static void mmagic_vendor_ie_filter_handler(const uint8_t *ies, uint32_t ies_len
         int offset = 0;
         while (offset >= 0)
         {
-            offset = mm_find_vendor_specific_ie_from_offset(ies, ies_len, offset,
+            offset = mm_find_vendor_specific_ie_from_offset(ies,
+                                                            ies_len,
+                                                            offset,
                                                             data->filter_args.ouis[ii],
                                                             MMWLAN_OUI_SIZE);
             if (offset >= 0)
@@ -694,7 +701,8 @@ static void mmagic_vendor_ie_filter_handler(const uint8_t *ies, uint32_t ies_len
                 }
 
                 memcpy(&data->evt_args.vendor_ies.data[data->evt_args.vendor_ies.len],
-                       &ies[offset], length);
+                       &ies[offset],
+                       length);
                 data->evt_args.vendor_ies.len += length;
                 offset += length;
             }
@@ -737,7 +745,8 @@ enum mmagic_status mmagic_core_wlan_beacon_monitor_enable(
 
     for (ii = 0; ii < cmd_args->oui_filter.count; ii++)
     {
-        memcpy(data->filter_args.ouis[ii], cmd_args->oui_filter.ouis[ii].oui,
+        memcpy(data->filter_args.ouis[ii],
+               cmd_args->oui_filter.ouis[ii].oui,
                sizeof(data->filter_args.ouis[ii]));
     }
     data->filter_args.n_ouis = cmd_args->oui_filter.count;
@@ -754,8 +763,7 @@ enum mmagic_status mmagic_core_wlan_beacon_monitor_enable(
     return MMAGIC_STATUS_OK;
 }
 
-enum mmagic_status mmagic_core_wlan_beacon_monitor_disable(
-    struct mmagic_data *core)
+enum mmagic_status mmagic_core_wlan_beacon_monitor_disable(struct mmagic_data *core)
 {
     enum mmwlan_status status;
     struct mmagic_beacon_monitor_data *data = &mmagic_beacon_monitor_data;
@@ -838,10 +846,9 @@ enum mmagic_status mmagic_core_wlan_standby_set_wake_filter(
     return mmagic_mmwlan_status_to_mmagic_status(status);
 }
 
-enum mmagic_status mmagic_core_wlan_standby_set_config(struct mmagic_data *core,
-                                                       const struct
-                                                       mmagic_core_wlan_standby_set_config_cmd_args
-                                                       *cmd_args)
+enum mmagic_status mmagic_core_wlan_standby_set_config(
+    struct mmagic_data *core,
+    const struct mmagic_core_wlan_standby_set_config_cmd_args *cmd_args)
 {
     uint32_t ip1, ip2, ip3, ip4;
     struct mmwlan_standby_config config = { 0 };

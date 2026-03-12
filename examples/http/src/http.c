@@ -52,13 +52,12 @@
 #include "restfs.h"
 #include "mm_app_common.h"
 
-
 #if !defined(LWIP_HTTPD_CGI)
 #error "http_rest requires HTTPD CGI"
 #endif
 
 /** Buffer to store the string set by cgi_set_string() */
-static char cgi_string[32] = {0};
+static char cgi_string[32] = { 0 };
 
 /**
  * Example CGI handler to set a global variable based on query parameters.
@@ -76,7 +75,7 @@ static char cgi_string[32] = {0};
  *
  * See lwIP @c httpd for more information
  */
-static const char* cgi_set_string(int index, int nparams, char *params[], char *values[])
+static const char *cgi_set_string(int index, int nparams, char *params[], char *values[])
 {
     int i;
 
@@ -148,10 +147,10 @@ static void rest_ep_hello(struct restfs_file *fil)
  * For example, HTTP GET on `<ip address>/rest/example_endpoint`
  */
 static const struct rest_endpoint rest_endpoints[] = {
-    {"success.html", rest_ep_success},
-    {"failed.html", rest_ep_failed},
-    {"/rest/hello", rest_ep_hello},
-    {"/rest/get_string.txt", rest_ep_getstring},
+    { "success.html", rest_ep_success },
+    { "failed.html", rest_ep_failed },
+    { "/rest/hello", rest_ep_hello },
+    { "/rest/get_string.txt", rest_ep_getstring },
 };
 
 /**
@@ -160,10 +159,7 @@ static const struct rest_endpoint rest_endpoints[] = {
  * Will pass query parameters to function call.
  * For example, `<ip_address>/rest/<endpoint>?queryname=queryval&queryname2=queryval2` ... etc.
  */
-static const tCGI cgi_endpoints[] = {
-    {"/rest/set_string", cgi_set_string}
-};
-
+static const tCGI cgi_endpoints[] = { { "/rest/set_string", cgi_set_string } };
 
 /**
  * Main entry point to the application. This will be invoked in a thread once operating system

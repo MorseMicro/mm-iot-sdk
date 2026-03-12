@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Morse Micro
+ * Copyright 2026 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -14,7 +14,7 @@
  * Maximum allowed length of any value string. Needs to accomodate WLAN password, IP and MAC address
  * strings.
  */
-#define MAX_VAL_LEN     101
+#define MAX_VAL_LEN 101
 
 enum mmagic_status mmagic_core_event_mqtt_message_received(
     struct mmagic_data *core,
@@ -23,9 +23,11 @@ enum mmagic_status mmagic_core_event_mqtt_message_received(
     const uint8_t *payload = (const uint8_t *)args;
     size_t payload_len = sizeof(*args);
     MMOSAL_ASSERT(core->event_fn != NULL);
-    return core->event_fn(
-        core->event_fn_arg, mmagic_mqtt,
-        mmagic_mqtt_event_message_received, payload, payload_len);
+    return core->event_fn(core->event_fn_arg,
+                          mmagic_mqtt,
+                          mmagic_mqtt_event_message_received,
+                          payload,
+                          payload_len);
 }
 
 enum mmagic_status mmagic_core_event_mqtt_broker_connection(
@@ -35,7 +37,9 @@ enum mmagic_status mmagic_core_event_mqtt_broker_connection(
     const uint8_t *payload = (const uint8_t *)args;
     size_t payload_len = sizeof(*args);
     MMOSAL_ASSERT(core->event_fn != NULL);
-    return core->event_fn(
-        core->event_fn_arg, mmagic_mqtt,
-        mmagic_mqtt_event_broker_connection, payload, payload_len);
+    return core->event_fn(core->event_fn_arg,
+                          mmagic_mqtt,
+                          mmagic_mqtt_event_broker_connection,
+                          payload,
+                          payload_len);
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Morse Micro
+ * Copyright 2026 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -389,6 +389,10 @@ static const struct enum_status_string_lut
         .enum_value = MMAGIC_STATUS_MQTT_KEEPALIVE_TIMEOUT,
     },
     {
+        .string_value = "not_initialized",
+        .enum_value = MMAGIC_STATUS_NOT_INITIALIZED,
+    },
+    {
         .string_value = "bad_version",
         .enum_value = MMAGIC_STATUS_BAD_VERSION,
     },
@@ -639,13 +643,16 @@ static const struct enum_standby_mode_exit_reason_string_lut
 };
 
 int mmagic_enum_standby_mode_exit_reason_to_string(enum mmagic_standby_mode_exit_reason value,
-                                                   char *buf, size_t len)
+                                                   char *buf,
+                                                   size_t len)
 {
     for (size_t ii = 0; ii < MM_ARRAY_COUNT(enum_standby_mode_exit_reason_string_lut); ii++)
     {
         if (enum_standby_mode_exit_reason_string_lut[ii].enum_value == value)
         {
-            return snprintf(buf, len, "%s",
+            return snprintf(buf,
+                            len,
+                            "%s",
                             enum_standby_mode_exit_reason_string_lut[ii].string_value);
         }
     }
@@ -918,7 +925,8 @@ int mmagic_string_to_string254(struct string254 *value, const char *buf)
 
 /* -------------------- Struct types -------------------- */
 
-int mmagic_struct_country_code_to_string(const struct struct_country_code *value, char *buf,
+int mmagic_struct_country_code_to_string(const struct struct_country_code *value,
+                                         char *buf,
                                          size_t len)
 {
     return snprintf(buf, len, "%.*s", 2, value->country_code);
@@ -957,9 +965,15 @@ int mmagic_string_to_struct_ip_addr(struct struct_ip_addr *value, const char *bu
 
 int mmagic_struct_mac_addr_to_string(const struct struct_mac_addr *value, char *buf, size_t len)
 {
-    return snprintf(buf, len, "%02x:%02x:%02x:%02x:%02x:%02x",
-                    value->addr[0], value->addr[1], value->addr[2],
-                    value->addr[3], value->addr[4], value->addr[5]);
+    return snprintf(buf,
+                    len,
+                    "%02x:%02x:%02x:%02x:%02x:%02x",
+                    value->addr[0],
+                    value->addr[1],
+                    value->addr[2],
+                    value->addr[3],
+                    value->addr[4],
+                    value->addr[5]);
 }
 
 int mmagic_string_to_struct_mac_addr(struct struct_mac_addr *value, const char *buf)
@@ -968,9 +982,14 @@ int mmagic_string_to_struct_mac_addr(struct struct_mac_addr *value, const char *
     int temp[6];
     int i;
 
-    int ret = sscanf(buf, "%x:%x:%x:%x:%x:%x",
-                     &temp[0], &temp[1], &temp[2],
-                     &temp[3], &temp[4], &temp[5]);
+    int ret = sscanf(buf,
+                     "%x:%x:%x:%x:%x:%x",
+                     &temp[0],
+                     &temp[1],
+                     &temp[2],
+                     &temp[3],
+                     &temp[4],
+                     &temp[5]);
     if (ret != 6)
     {
         return -1;

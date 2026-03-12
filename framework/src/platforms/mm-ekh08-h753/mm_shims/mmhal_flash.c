@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 Morse Micro
+ * Copyright 2023-2025 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  * @file
@@ -7,12 +7,12 @@
  */
 
 #include <string.h>
-#include "mmhal.h"
-#include "main.h"
-#include "stm32h7xx_hal_flash.h"
-#include "stm32h7xx_hal_flash_ex.h"
 
-const struct mmhal_flash_partition_config* mmhal_get_mmconfig_partition(void)
+#include "mmhal_flash.h"
+#include "mmosal.h"
+#include "main.h"
+
+const struct mmhal_flash_partition_config *mmhal_get_mmconfig_partition(void)
 {
     /** Start of MMCONFIG region in flash. */
     extern uint8_t mmconfig_start;
@@ -23,8 +23,8 @@ const struct mmhal_flash_partition_config* mmhal_get_mmconfig_partition(void)
     static struct mmhal_flash_partition_config mmconfig_partition =
         MMHAL_FLASH_PARTITION_CONFIG_DEFAULT;
 
-    mmconfig_partition.partition_start = (uint32_t) &mmconfig_start;
-    mmconfig_partition.partition_size = (uint32_t) (&mmconfig_end - &mmconfig_start);
+    mmconfig_partition.partition_start = (uint32_t)&mmconfig_start;
+    mmconfig_partition.partition_size = (uint32_t)(&mmconfig_end - &mmconfig_start);
     mmconfig_partition.not_memory_mapped = false;
 
     return &mmconfig_partition;
@@ -69,7 +69,7 @@ int mmhal_flash_erase(uint32_t block_address)
 int mmhal_flash_read(uint32_t read_address, uint8_t *buf, size_t size)
 {
     /* Stub for memory mapped flash */
-    memcpy(buf, (void*) read_address, size);
+    memcpy(buf, (void *)read_address, size);
     return 0;
 }
 
@@ -90,24 +90,23 @@ int mmhal_flash_write(uint32_t write_address, const uint8_t *data, size_t size)
             uint32_t byte_offset = write_address & 0x1F;
 
             /* Read current flashword */
-            memcpy(fw_data, (void*) fw_address, 32);
+            memcpy(fw_data, (void *)fw_address, 32);
 
             /* Merge existing flash qword with incomming offset data */
             for (int i = byte_offset; i < 32 && size > 0; i++)
             {
-                fw_data[i] = *data++;            /* Replace specific bytes to be programmed */
+                fw_data[i] = *data++; /* Replace specific bytes to be programmed */
                 size--;
                 write_address++;
             }
             /* perform aligned writes */
-            HAL_FLASH_Program(FLASH_TYPEPROGRAM_FLASHWORD, fw_address,
-                              (uint32_t)fw_data);
+            HAL_FLASH_Program(FLASH_TYPEPROGRAM_FLASHWORD, fw_address, (uint32_t)fw_data);
         }
 
         /* Now write remaining DWords */
         while (size >= 32)
         {
-            HAL_FLASH_Program(FLASH_TYPEPROGRAM_FLASHWORD, write_address, (uint32_t) data);
+            HAL_FLASH_Program(FLASH_TYPEPROGRAM_FLASHWORD, write_address, (uint32_t)data);
             write_address += 32;
             data += 32;
             size -= 32;
@@ -120,17 +119,16 @@ int mmhal_flash_write(uint32_t write_address, const uint8_t *data, size_t size)
             uint8_t fw_data[32];
 
             /* Read current flash word */
-            memcpy(fw_data, (void*) write_address, 32);
+            memcpy(fw_data, (void *)write_address, 32);
 
             /* Merge existing flash word with incomming offset data */
             size_t i;
             for (i = 0; i < size; i++)
             {
-                fw_data[i] = *data++;            /* Replace specific bytes to be programmed */
+                fw_data[i] = *data++; /* Replace specific bytes to be programmed */
             }
             /* perform aligned writes */
-            HAL_FLASH_Program(FLASH_TYPEPROGRAM_FLASHWORD, write_address,
-                              *((uint64_t*)fw_data));
+            HAL_FLASH_Program(FLASH_TYPEPROGRAM_FLASHWORD, write_address, *((uint64_t *)fw_data));
         }
 
         retval = 0;
@@ -139,9 +137,4 @@ int mmhal_flash_write(uint32_t write_address, const uint8_t *data, size_t size)
     HAL_FLASH_Lock();
 
     return retval;
-}
-
-const struct lfs_config* mmhal_get_littlefs_config(void)
-{
-    return NULL;
 }

@@ -922,7 +922,6 @@ int hostapd_handle_dfs(struct hostapd_iface *iface)
 		hostapd_get_oper_chwidth(iface->conf),
 		hostapd_get_oper_centr_freq_seg0_idx(iface->conf),
 		hostapd_get_oper_centr_freq_seg1_idx(iface->conf),
-		iface->conf->s1g_prim_chwidth, iface->conf->s1g_prim_1mhz_chan_index,
 		dfs_use_radar_background(iface));
 
 	if (res) {
@@ -1027,9 +1026,7 @@ static int hostapd_dfs_request_channel_switch(struct hostapd_iface *iface,
 				      cmode->vht_capab,
 				      &cmode->he_capab[ieee80211_mode],
 				      &cmode->eht_capab[ieee80211_mode],
-				      hostapd_get_punct_bitmap(iface->bss[0]),
-				      iface->conf->s1g_prim_chwidth,
-				      iface->conf->s1g_prim_1mhz_chan_index);
+				      hostapd_get_punct_bitmap(iface->bss[0]));
 
 	if (err) {
 		wpa_printf(MSG_ERROR,
@@ -1106,10 +1103,7 @@ static void hostapd_dfs_update_background_chain(struct hostapd_iface *iface)
 				  iface->conf->ieee80211ah,
 				  sec, hostapd_get_oper_chwidth(iface->conf),
 				  oper_centr_freq_seg0_idx,
-				  oper_centr_freq_seg1_idx,
-				  iface->conf->s1g_prim_chwidth,
-				  iface->conf->s1g_prim_1mhz_chan_index,
-				  true)) {
+				  oper_centr_freq_seg1_idx, true)) {
 		wpa_printf(MSG_ERROR, "DFS failed to start CAC offchannel");
 		iface->radar_background.channel = -1;
 		return;

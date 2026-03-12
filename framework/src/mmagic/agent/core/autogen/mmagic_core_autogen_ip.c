@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Morse Micro
+ * Copyright 2026 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -14,13 +14,13 @@
  * Maximum allowed length of any value string. Needs to accomodate WLAN password, IP and MAC address
  * strings.
  */
-#define MAX_VAL_LEN     101
+#define MAX_VAL_LEN 101
 
 void mmagic_core_ip_load_all(struct mmagic_data *core)
 {
     struct mmagic_ip_data *data = &core->ip_data;
     {
-        char val[MAX_VAL_LEN] = {0};
+        char val[MAX_VAL_LEN] = { 0 };
         if (mmconfig_read_string("ip.ip_addr", val, sizeof(val)) > 0)
         {
             (void)mmagic_string_to_struct_ip_addr(&data->config.ip_addr, val);
@@ -28,7 +28,7 @@ void mmagic_core_ip_load_all(struct mmagic_data *core)
     }
 
     {
-        char val[MAX_VAL_LEN] = {0};
+        char val[MAX_VAL_LEN] = { 0 };
         if (mmconfig_read_string("ip.netmask", val, sizeof(val)) > 0)
         {
             (void)mmagic_string_to_struct_ip_addr(&data->config.netmask, val);
@@ -36,7 +36,7 @@ void mmagic_core_ip_load_all(struct mmagic_data *core)
     }
 
     {
-        char val[MAX_VAL_LEN] = {0};
+        char val[MAX_VAL_LEN] = { 0 };
         if (mmconfig_read_string("ip.gateway", val, sizeof(val)) > 0)
         {
             (void)mmagic_string_to_struct_ip_addr(&data->config.gateway, val);
@@ -44,7 +44,7 @@ void mmagic_core_ip_load_all(struct mmagic_data *core)
     }
 
     {
-        char val[MAX_VAL_LEN] = {0};
+        char val[MAX_VAL_LEN] = { 0 };
         if (mmconfig_read_string("ip.dns_server0", val, sizeof(val)) > 0)
         {
             (void)mmagic_string_to_struct_ip_addr(&data->config.dns_server0, val);
@@ -52,7 +52,7 @@ void mmagic_core_ip_load_all(struct mmagic_data *core)
     }
 
     {
-        char val[MAX_VAL_LEN] = {0};
+        char val[MAX_VAL_LEN] = { 0 };
         if (mmconfig_read_string("ip.dns_server1", val, sizeof(val)) > 0)
         {
             (void)mmagic_string_to_struct_ip_addr(&data->config.dns_server1, val);
@@ -60,7 +60,7 @@ void mmagic_core_ip_load_all(struct mmagic_data *core)
     }
 
     {
-        char val[MAX_VAL_LEN] = {0};
+        char val[MAX_VAL_LEN] = { 0 };
         if (mmconfig_read_string("ip.dhcp_enabled", val, sizeof(val)) > 0)
         {
             (void)mmagic_string_to_bool(&data->config.dhcp_enabled, val);
@@ -68,7 +68,7 @@ void mmagic_core_ip_load_all(struct mmagic_data *core)
     }
 
     {
-        char val[MAX_VAL_LEN] = {0};
+        char val[MAX_VAL_LEN] = { 0 };
         if (mmconfig_read_string("ip.dhcp_offload", val, sizeof(val)) > 0)
         {
             (void)mmagic_string_to_bool(&data->config.dhcp_offload, val);
@@ -76,10 +76,26 @@ void mmagic_core_ip_load_all(struct mmagic_data *core)
     }
 
     {
-        char val[MAX_VAL_LEN] = {0};
+        char val[MAX_VAL_LEN] = { 0 };
         if (mmconfig_read_string("ip.link_status_evt_en", val, sizeof(val)) > 0)
         {
             (void)mmagic_string_to_bool(&data->config.link_status_evt_en, val);
+        }
+    }
+
+    {
+        char val[MAX_VAL_LEN] = { 0 };
+        if (mmconfig_read_string("ip.offload_arp_response", val, sizeof(val)) > 0)
+        {
+            (void)mmagic_string_to_bool(&data->config.offload_arp_response, val);
+        }
+    }
+
+    {
+        char val[MAX_VAL_LEN] = { 0 };
+        if (mmconfig_read_string("ip.offload_arp_refresh_s", val, sizeof(val)) > 0)
+        {
+            (void)mmagic_string_to_uint32_t(&data->config.offload_arp_refresh_s, val);
         }
     }
 }
@@ -134,6 +150,18 @@ void mmagic_core_ip_save_all(struct mmagic_data *core)
         mmagic_bool_to_string(data->config.link_status_evt_en, val, sizeof(val));
         mmconfig_write_string("ip.link_status_evt_en", val);
     }
+
+    {
+        char val[MAX_VAL_LEN];
+        mmagic_bool_to_string(data->config.offload_arp_response, val, sizeof(val));
+        mmconfig_write_string("ip.offload_arp_response", val);
+    }
+
+    {
+        char val[MAX_VAL_LEN];
+        mmagic_uint32_t_to_string(data->config.offload_arp_refresh_s, val, sizeof(val));
+        mmconfig_write_string("ip.offload_arp_refresh_s", val);
+    }
 }
 
 enum mmagic_status mmagic_core_event_ip_link_status(
@@ -143,7 +171,9 @@ enum mmagic_status mmagic_core_event_ip_link_status(
     const uint8_t *payload = (const uint8_t *)args;
     size_t payload_len = sizeof(*args);
     MMOSAL_ASSERT(core->event_fn != NULL);
-    return core->event_fn(
-        core->event_fn_arg, mmagic_ip,
-        mmagic_ip_event_link_status, payload, payload_len);
+    return core->event_fn(core->event_fn_arg,
+                          mmagic_ip,
+                          mmagic_ip_event_link_status,
+                          payload,
+                          payload_len);
 }

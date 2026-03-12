@@ -98,7 +98,7 @@
  * A mesh STA is configured as a root mesh STA if dot11MeshHWMPRootMode is
  * set to 2, 3 or 4. Different values correspond to different modes of the
  * root mesh.
- * 
+ *
  * 0: Not a Root Node
  * 2: Proactive PREQ no PREP
  * 3: Proactive PREQ with PREP
@@ -1347,6 +1347,16 @@ struct wpa_config {
 	 * op_class is requered for the device that will be started as an AP.
 	 */
 	int op_class;
+
+	/**
+	 * s1g_op_class - S1G Operating class to use
+	 *
+	 * By default, op_class is set to 0. This is only needed when using softAP.
+	 * op_class is requered for the device that will be started as an AP.
+	 *
+	 * This takes precedence over @c op_class if non-zero.
+	 */
+	int s1g_op_class;
 
 	/**
 	 * sae_groups - Preference list of enabled groups for SAE

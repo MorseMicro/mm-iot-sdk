@@ -17,6 +17,8 @@ struct mmagic_m2m_stream
 {
     /** The agent. */
     struct mmagic_m2m_agent *agent;
+    /** Subsystem ID */
+    uint8_t subsystem_id;
     /** The stream ID */
     uint8_t sid;
     /** The queue to post this streams packets to */
@@ -66,11 +68,18 @@ static void mmagic_m2m_agent_stream_task(void *arg)
         /* Posting a NULL to the queue will close the stream */
         if (rx_buffer == NULL)
         {
+            MMOSAL_DEV_ASSERT(stream->sid != CONTROL_STREAM);
+            if (stream->sid == CONTROL_STREAM)
+            {
+                mmosal_printf("Ignoring request to close CONTROL stream\n", stream->sid);
+                /* We require the control stream to remain open, ignore closure. */
+                continue;
+            }
             break;
         }
 
-        struct mmagic_m2m_command_header *header = (struct mmagic_m2m_command_header *)
-            mmbuf_remove_from_start(rx_buffer, sizeof(*header));
+        struct mmagic_m2m_command_header *header =
+            (struct mmagic_m2m_command_header *)mmbuf_remove_from_start(rx_buffer, sizeof(*header));
         if (header)
         {
             resp_buf = mmagic_m2m_process(stream->agent, stream->sid, header, rx_buffer);
@@ -84,8 +93,11 @@ static void mmagic_m2m_agent_stream_task(void *arg)
         /* Response buffer should not be NULL, assert here to catch problems early. */
         MMOSAL_ASSERT(resp_buf);
 
-        MMOSAL_DEV_ASSERT(mmagic_llc_agent_tx(stream->agent->agent_llc, MMAGIC_LLC_PTYPE_RESPONSE,
-                                              stream->sid, resp_buf));
+        enum mmagic_status status = mmagic_llc_agent_tx(stream->agent->agent_llc,
+                                                        MMAGIC_LLC_PTYPE_RESPONSE,
+                                                        stream->sid,
+                                                        resp_buf);
+        MMOSAL_DEV_ASSERT(status == MMAGIC_STATUS_OK);
         mmbuf_release(rx_buffer);
     }
 
@@ -94,7 +106,9 @@ static void mmagic_m2m_agent_stream_task(void *arg)
 }
 
 enum mmagic_status mmagic_m2m_agent_open_stream(struct mmagic_data *core,
-                                                void *stream_context, uint8_t *sid)
+                                                void *stream_context,
+                                                uint8_t subsystem_id,
+                                                uint8_t *sid)
 {
     MMOSAL_DEV_ASSERT(core);
     MMOSAL_DEV_ASSERT(sid);
@@ -104,8 +118,8 @@ enum mmagic_status mmagic_m2m_agent_open_stream(struct mmagic_data *core,
     {
         if (core->stream[ii] == NULL)
         {
-            core->stream[ii] = (struct mmagic_m2m_stream *)
-                mmosal_malloc(sizeof(struct mmagic_m2m_stream));
+            core->stream[ii] =
+                (struct mmagic_m2m_stream *)mmosal_malloc(sizeof(struct mmagic_m2m_stream));
             if (core->stream[ii] == NULL)
             {
                 return MMAGIC_STATUS_NO_MEM;
@@ -118,9 +132,11 @@ enum mmagic_status mmagic_m2m_agent_open_stream(struct mmagic_data *core,
                 mmosal_free(core->stream[ii]);
                 return MMAGIC_STATUS_NO_MEM;
             }
-            struct mmosal_task *stream_task =
-                mmosal_task_create(mmagic_m2m_agent_stream_task, core->stream[ii],
-                                   MMOSAL_TASK_PRI_NORM, 1024, "mmagic_stream_task");
+            struct mmosal_task *stream_task = mmosal_task_create(mmagic_m2m_agent_stream_task,
+                                                                 core->stream[ii],
+                                                                 MMOSAL_TASK_PRI_NORM,
+                                                                 1024,
+                                                                 "mmagic_stream_task");
             if (stream_task == NULL)
             {
                 mmosal_queue_delete(core->stream[ii]->stream_queue);
@@ -131,6 +147,7 @@ enum mmagic_status mmagic_m2m_agent_open_stream(struct mmagic_data *core,
             core->stream[ii]->agent = mmagic_m2m_agent_get();
             *sid = ii;
             core->stream[ii]->sid = *sid;
+            core->stream[ii]->subsystem_id = subsystem_id;
 
             return MMAGIC_STATUS_OK;
         }
@@ -142,7 +159,10 @@ enum mmagic_status mmagic_m2m_agent_open_stream(struct mmagic_data *core,
 
 void *mmagic_m2m_agent_get_stream_context(struct mmagic_data *core, uint8_t stream_id)
 {
-    MMOSAL_ASSERT(stream_id < MMAGIC_MAX_STREAMS);
+    if (stream_id >= MMAGIC_MAX_STREAMS)
+    {
+        return NULL;
+    }
 
     if (core->stream[stream_id])
     {
@@ -151,25 +171,40 @@ void *mmagic_m2m_agent_get_stream_context(struct mmagic_data *core, uint8_t stre
     return NULL;
 }
 
-void mmagic_m2m_agent_close_stream(struct mmagic_data *core, uint8_t stream_id)
+uint8_t mmagic_m2m_agent_get_stream_subsystem_id(struct mmagic_data *core, uint8_t stream_id)
+{
+    if ((stream_id < MMAGIC_MAX_STREAMS) && (core->stream[stream_id] != NULL))
+    {
+        return core->stream[stream_id]->subsystem_id;
+    }
+    return 0;
+}
+
+enum mmagic_status mmagic_m2m_agent_close_stream(struct mmagic_data *core, uint8_t stream_id)
 {
     void *nullpointer = NULL;
 
     /* We cannot close the command stream */
-    MMOSAL_ASSERT(stream_id != CONTROL_STREAM);
-
-    MMOSAL_ASSERT(stream_id < MMAGIC_MAX_STREAMS);
+    if (stream_id == CONTROL_STREAM || stream_id >= MMAGIC_MAX_STREAMS)
+    {
+        return MMAGIC_STATUS_INVALID_ARG;
+    }
 
     if (core->stream[stream_id])
     {
         /* Push a null pointer to the queue to signal the task to close */
         mmosal_queue_push(core->stream[stream_id]->stream_queue, &nullpointer, UINT32_MAX);
     }
+
+    return MMAGIC_STATUS_OK;
 }
 
-struct mmbuf *mmagic_m2m_create_response(uint8_t subsystem, uint8_t command, uint8_t subcommand,
+struct mmbuf *mmagic_m2m_create_response(uint8_t subsystem,
+                                         uint8_t command,
+                                         uint8_t subcommand,
                                          enum mmagic_status result,
-                                         const void *data, size_t size)
+                                         const void *data,
+                                         size_t size)
 {
     struct mmagic_m2m_response_header *txheader;
 
@@ -192,8 +227,10 @@ struct mmbuf *mmagic_m2m_create_response(uint8_t subsystem, uint8_t command, uin
     return txbuffer;
 }
 
-enum mmagic_status mmagic_m2m_rx_callback(struct mmagic_llc_agent *agent_llc, void *app_ctx,
-                                          uint8_t sid, struct mmbuf *rxbuffer)
+enum mmagic_status mmagic_m2m_rx_callback(struct mmagic_llc_agent *agent_llc,
+                                          void *app_ctx,
+                                          uint8_t sid,
+                                          struct mmbuf *rxbuffer)
 {
     struct mmagic_m2m_agent *agent = (struct mmagic_m2m_agent *)app_ctx;
     MM_UNUSED(agent_llc);
@@ -214,14 +251,20 @@ enum mmagic_status mmagic_m2m_rx_callback(struct mmagic_llc_agent *agent_llc, vo
     }
 }
 
-enum mmagic_status mmagic_m2m_event_handler(void *arg, uint8_t subsystem_id,
-                                            uint8_t notification_id, const uint8_t *payload,
+enum mmagic_status mmagic_m2m_event_handler(void *arg,
+                                            uint8_t subsystem_id,
+                                            uint8_t notification_id,
+                                            const uint8_t *payload,
                                             size_t payload_len)
 {
     struct mmagic_m2m_agent *agent = (struct mmagic_m2m_agent *)arg;
 
-    struct mmbuf *mmbuf = mmagic_m2m_create_response(subsystem_id, notification_id, 0,
-                                                     MMAGIC_STATUS_OK, payload, payload_len);
+    struct mmbuf *mmbuf = mmagic_m2m_create_response(subsystem_id,
+                                                     notification_id,
+                                                     0,
+                                                     MMAGIC_STATUS_OK,
+                                                     payload,
+                                                     payload_len);
     if (mmbuf == NULL)
     {
         return MMAGIC_STATUS_NO_MEM;
@@ -254,7 +297,8 @@ struct mmagic_m2m_agent *mmagic_m2m_agent_init(const struct mmagic_m2m_agent_ini
 
     memset(agent, 0, sizeof(*agent));
 
-    mmosal_safer_strcpy(agent->core.app_version, args->app_version,
+    mmosal_safer_strcpy(agent->core.app_version,
+                        args->app_version,
                         sizeof(agent->core.app_version));
     agent->core.reg_db = args->reg_db;
     agent->core.event_fn = mmagic_m2m_event_handler;
@@ -269,8 +313,10 @@ struct mmagic_m2m_agent *mmagic_m2m_agent_init(const struct mmagic_m2m_agent_ini
     agent->core.set_deep_sleep_mode_cb = mmagic_m2m_agent_deep_sleep_mode_handler;
     agent->core.set_deep_sleep_mode_cb_arg = (void *)agent->agent_llc;
 
-    MMOSAL_ASSERT(mmagic_m2m_agent_open_stream(&agent->core, (void *)agent, &command_sid) ==
-                  MMAGIC_STATUS_OK);
+    MMOSAL_ASSERT(mmagic_m2m_agent_open_stream(&agent->core,
+                                               (void *)agent,
+                                               mmagic_subsystem_reserved,
+                                               &command_sid) == MMAGIC_STATUS_OK);
     MMOSAL_ASSERT(command_sid == CONTROL_STREAM);
 
     MMOSAL_ASSERT(mmagic_llc_send_start_notification(agent->agent_llc) == MMAGIC_STATUS_OK);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Morse Micro
+ * Copyright 2026 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -26,12 +26,13 @@
 /**
  * Process the received M2M buffer.
  *
- * @param  ctx     Reference to the global mmagic data structure.
- * @param  sid     The stream ID this buffer was received on.
- * @param  header  The M2M header containing the subsystem, command and subcommand.
- * @param  cmd_buf The @c mmbuf with the buffer to be processed.
- * @return         An @c mmbuf with the response.
+ * @param ctx           Reference to the global mmagic data structure.
+ * @param sid     The stream ID this buffer was received on.
+ * @param header        The M2M header containing the subsystem, command and subcommand.
+ * @param cmd_buf       The @c mmbuf with the buffer to be processed.
+ * @return              An @c mmbuf with the response.
  */
 struct mmbuf *mmagic_m2m_process(struct mmagic_m2m_agent *agent,
-                                 uint8_t sid, struct mmagic_m2m_command_header *header,
+                                 uint8_t sid,
+                                 struct mmagic_m2m_command_header *header,
                                  struct mmbuf *cmd_buf);

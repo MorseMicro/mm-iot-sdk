@@ -35,6 +35,8 @@ def _main():
                         help="GDB port to use")
     parser.add_argument("-t", "--tcl-port", default=DEFAULT_TCL_PORT, type=int,
                         help="OpenOCD TCL port to use")
+    parser.add_argument("-V", "--vif", choices=["ap", "sta"], default="sta",
+                        help="Interface to get the MAC address of")
 
     args = parser.parse_args()
 
@@ -42,7 +44,8 @@ def _main():
 
     dutif = DutIf(debug_host=args.debug_host, gdb_port=args.gdb_port, tcl_port=args.tcl_port)
 
-    rsp = dutif.exec("wlan/get_mac_address")
+    vif = "VIF_" + args.vif.upper()
+    rsp = dutif.exec("wlan/get_mac_address", vif=vif)
     rsp.mac_address = b"\0\0\0\0\0\0" if rsp.mac_address is None else rsp.mac_address
     mac_address_str = ":".join([f"{octet:02x}" for octet in rsp.mac_address])
     print(f"\rMAC address = {mac_address_str}")

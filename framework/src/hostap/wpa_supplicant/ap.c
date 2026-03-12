@@ -291,23 +291,18 @@ int wpa_supplicant_conf_ap_ht(struct wpa_supplicant *wpa_s,
 			return -1;
 		}
 
+		conf->channel = 0;
+		conf->s1g_op_class = wpa_s->conf->s1g_op_class;
 		conf->op_class = wpa_s->conf->op_class;
-		for (int ii = 0; ii < hw_mode->num_channels; ii++)
-		{
-			if (hw_mode->channels[ii].freq_khz == ssid->frequency_khz)
-			{
-				conf->channel = hw_mode->channels[ii].chan;
-			}
-		}
-
-		if (conf->channel == 0)
+		conf->channel = ieee80211_freq_khz_to_s1g_chan(ssid->frequency_khz, wpa_s->conf->s1g_op_class);
+		if (conf->channel <= 0)
 		{
 			wpa_printf(MSG_ERROR, "No channel for freq %u kHz", ssid->frequency_khz);
 			return -1;
 		}
 
-		wpa_printf(MSG_DEBUG, "S1G freq %d khz, op class %d, channel %d\n",
-			   ssid->frequency_khz, conf->op_class, conf->channel);
+		wpa_printf(MSG_DEBUG, "S1G freq %d khz, s1g_op class %d, s1g_op_class %d, channel %d\n",
+			   ssid->frequency_khz,conf->s1g_op_class, conf->channel);
 	}
 	else
 	{
@@ -388,7 +383,8 @@ int wpa_supplicant_conf_ap_ht(struct wpa_supplicant *wpa_s,
 			conf->country[0] = wpa_s->conf->country[0];
 			conf->country[1] = wpa_s->conf->country[1];
 			conf->country[2] = ' ';
-			conf->s1g_prim_1mhz_chan_index = ssid->s1g_prim_1mhz_chan_index;
+			conf->s1g_prim_channel = ssid->s1g_prim_channel;
+			conf->s1g_prim_1mhz_chan_loc = ssid->primary_1mhz_channel_loc;
 			conf->s1g_prim_chwidth = ssid->s1g_prim_chwidth;
 			conf->s1g_capab |= S1G_CAP0_SGI_1MHZ |
 					   S1G_CAP0_SGI_2MHZ |

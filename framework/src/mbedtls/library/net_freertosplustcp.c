@@ -32,8 +32,8 @@
 
 #define FREERTOS_IPV4_SOCKADDR_LEN 12
 #define FREERTOS_IPV6_SOCKADDR_LEN 24
-#define FREERTOS_SOCKADDR_LEN(ip_type) (((ip_type) == FREERTOS_AF_INET6) \
-                                        ? FREERTOS_IPV6_SOCKADDR_LEN : FREERTOS_IPV4_SOCKADDR_LEN)
+#define FREERTOS_SOCKADDR_LEN(ip_type) \
+    (((ip_type) == FREERTOS_AF_INET6) ? FREERTOS_IPV6_SOCKADDR_LEN : FREERTOS_IPV4_SOCKADDR_LEN)
 
 /*
  * Initialize a context
@@ -46,8 +46,12 @@ void mbedtls_net_init(mbedtls_net_context *ctx)
 
 typedef int (*dns_success_callback_t)(mbedtls_net_context *ctx, struct freertos_addrinfo *addr);
 
-static int dns_lookup(mbedtls_net_context *ctx, dns_success_callback_t callback,
-                      const char *host, const char *port, int proto, int family)
+static int dns_lookup(mbedtls_net_context *ctx,
+                      dns_success_callback_t callback,
+                      const char *host,
+                      const char *port,
+                      int proto,
+                      int family)
 {
     int ret = MBEDTLS_ERR_ERROR_CORRUPTION_DETECTED;
     struct freertos_addrinfo hints, *addr_list, *cur;
@@ -66,19 +70,16 @@ static int dns_lookup(mbedtls_net_context *ctx, dns_success_callback_t callback,
 
     if (host == NULL)
     {
-        struct freertos_addrinfo addr_info = {
-            .ai_addr = &addr_info.xPrivateStorage.sockaddr,
-            .ai_addrlen = ipSIZE_OF_IPv4_ADDRESS,
-            .ai_family = family,
-            .ai_protocol = protocol,
-            .xPrivateStorage = {
-                .sockaddr = {
-                    .sin_len = FREERTOS_SOCKADDR_LEN(family),
-                    .sin_family = family,
-                    .sin_port = htobe16(port_num),
-                }
-            }
-        };
+        struct freertos_addrinfo addr_info = { .ai_addr = &addr_info.xPrivateStorage.sockaddr,
+                                               .ai_addrlen = ipSIZE_OF_IPv4_ADDRESS,
+                                               .ai_family = family,
+                                               .ai_protocol = protocol,
+                                               .xPrivateStorage = {
+                                                   .sockaddr = {
+                                                       .sin_len = FREERTOS_SOCKADDR_LEN(family),
+                                                       .sin_family = family,
+                                                       .sin_port = htobe16(port_num),
+                                                   } } };
         ret = callback(ctx, &addr_info);
         return ret;
     }
@@ -112,11 +113,22 @@ static int dns_lookup(mbedtls_net_context *ctx, dns_success_callback_t callback,
 static int net_connect_dns_callback(mbedtls_net_context *ctx, struct freertos_addrinfo *addr)
 {
     int ret;
-    int proto = (ctx->freertos.type ==
-                 FREERTOS_SOCK_DGRAM) ? FREERTOS_IPPROTO_UDP : FREERTOS_IPPROTO_TCP;
+    int proto = (ctx->freertos.type == FREERTOS_SOCK_DGRAM) ? FREERTOS_IPPROTO_UDP :
+                                                              FREERTOS_IPPROTO_TCP;
     ctx->socket = FreeRTOS_socket(addr->ai_family, ctx->freertos.type, proto);
     if (ctx->socket == NULL)
     {
+        return MBEDTLS_ERR_NET_SOCKET_FAILED;
+    }
+
+    uint32_t sock_recv_timeout = MBEDTLS_NET_CLIENT_SOCK_RECV_TIMEOUT_MS;
+    if (FreeRTOS_setsockopt(ctx->socket,
+                            0,
+                            FREERTOS_SO_RCVTIMEO,
+                            &sock_recv_timeout,
+                            sizeof(sock_recv_timeout)) != 0)
+    {
+        FreeRTOS_closesocket(ctx->socket);
         return MBEDTLS_ERR_NET_SOCKET_FAILED;
     }
 
@@ -135,15 +147,12 @@ static int net_connect_dns_callback(mbedtls_net_context *ctx, struct freertos_ad
 /*
  * Initiate a TCP connection with host:port and the given protocol
  */
-int mbedtls_net_connect(mbedtls_net_context *ctx, const char *host,
-                        const char *port, int proto)
+int mbedtls_net_connect(mbedtls_net_context *ctx, const char *host, const char *port, int proto)
 {
-    int ret = dns_lookup(ctx, net_connect_dns_callback, host, port, proto,
-                         FREERTOS_AF_INET);
+    int ret = dns_lookup(ctx, net_connect_dns_callback, host, port, proto, FREERTOS_AF_INET);
     if (ret == MBEDTLS_ERR_NET_UNKNOWN_HOST)
     {
-        ret = dns_lookup(ctx, net_connect_dns_callback, host, port, proto,
-                         FREERTOS_AF_INET6);
+        ret = dns_lookup(ctx, net_connect_dns_callback, host, port, proto, FREERTOS_AF_INET6);
     }
     ctx->freertos.non_blocking_flag = 0;
     return ret;
@@ -192,12 +201,10 @@ static int net_bind_dns_callback(mbedtls_net_context *ctx, struct freertos_addri
  */
 int mbedtls_net_bind(mbedtls_net_context *ctx, const char *bind_ip, const char *port, int proto)
 {
-    int ret = dns_lookup(ctx, net_bind_dns_callback, bind_ip, port, proto,
-                         FREERTOS_AF_INET);
+    int ret = dns_lookup(ctx, net_bind_dns_callback, bind_ip, port, proto, FREERTOS_AF_INET);
     if (ret == MBEDTLS_ERR_NET_UNKNOWN_HOST)
     {
-        ret = dns_lookup(ctx, net_bind_dns_callback, bind_ip, port, proto,
-                         FREERTOS_AF_INET6);
+        ret = dns_lookup(ctx, net_bind_dns_callback, bind_ip, port, proto, FREERTOS_AF_INET6);
     }
     return ret;
 }
@@ -207,7 +214,9 @@ int mbedtls_net_bind(mbedtls_net_context *ctx, const char *bind_ip, const char *
  */
 int mbedtls_net_accept(mbedtls_net_context *bind_ctx,
                        mbedtls_net_context *client_ctx,
-                       void *client_ip, size_t buf_size, size_t *ip_len)
+                       void *client_ip,
+                       size_t buf_size,
+                       size_t *ip_len)
 {
     struct freertos_sockaddr client_addr;
 
@@ -348,15 +357,15 @@ int mbedtls_net_recv(void *vctx, unsigned char *buf, size_t len)
     {
         switch (ret)
         {
-        case 0:
-        case -pdFREERTOS_ERRNO_EINTR:
-            return MBEDTLS_ERR_SSL_WANT_READ;
+            case 0:
+            case -pdFREERTOS_ERRNO_EINTR:
+                return MBEDTLS_ERR_SSL_WANT_READ;
 
-        case -pdFREERTOS_ERRNO_ENOTCONN:
-            return MBEDTLS_ERR_NET_CONN_RESET;
+            case -pdFREERTOS_ERRNO_ENOTCONN:
+                return MBEDTLS_ERR_NET_CONN_RESET;
 
-        default:
-            return MBEDTLS_ERR_NET_RECV_FAILED;
+            default:
+                return MBEDTLS_ERR_NET_RECV_FAILED;
         }
     }
 
@@ -366,8 +375,7 @@ int mbedtls_net_recv(void *vctx, unsigned char *buf, size_t len)
 /*
  * Read at most 'len' characters, blocking for at most 'timeout' ms
  */
-int mbedtls_net_recv_timeout(void *vctx, unsigned char *buf,
-                             size_t len, uint32_t timeout)
+int mbedtls_net_recv_timeout(void *vctx, unsigned char *buf, size_t len, uint32_t timeout)
 {
     int ret;
     mbedtls_net_context *ctx = (mbedtls_net_context *)vctx;
@@ -416,15 +424,15 @@ int mbedtls_net_send(void *vctx, const unsigned char *buf, size_t len)
     {
         switch (ret)
         {
-        case 0:
-        case -pdFREERTOS_ERRNO_EINTR:
-            return MBEDTLS_ERR_SSL_WANT_WRITE;
+            case 0:
+            case -pdFREERTOS_ERRNO_EINTR:
+                return MBEDTLS_ERR_SSL_WANT_WRITE;
 
-        case -pdFREERTOS_ERRNO_ENOTCONN:
-            return MBEDTLS_ERR_NET_CONN_RESET;
+            case -pdFREERTOS_ERRNO_ENOTCONN:
+                return MBEDTLS_ERR_NET_CONN_RESET;
 
-        default:
-            return MBEDTLS_ERR_NET_SEND_FAILED;
+            default:
+                return MBEDTLS_ERR_NET_SEND_FAILED;
         }
     }
 
@@ -462,4 +470,20 @@ void mbedtls_net_free(mbedtls_net_context *ctx)
     FreeRTOS_shutdown(ctx->socket, 2);
     FreeRTOS_closesocket(ctx->socket);
     ctx->socket = NULL;
+}
+
+int mbedtls_net_register_rx_callback(struct mbedtls_net_context *ctx,
+                                     mbedtls_net_rx_callback_t cb,
+                                     void *arg)
+{
+    (void)ctx;
+    (void)cb;
+    (void)arg;
+    return MBEDTLS_ERR_PLATFORM_FEATURE_UNSUPPORTED;
+}
+
+int mbedtls_net_check_and_clear_rx_ready(mbedtls_net_context *ctx)
+{
+    (void)ctx;
+    return MBEDTLS_ERR_PLATFORM_FEATURE_UNSUPPORTED;
 }

@@ -36,7 +36,6 @@
 #ifndef MBEDTLS_CONFIG_H
 #define MBEDTLS_CONFIG_H
 
-#include "mmhal.h"
 #include "mmosal.h"
 
 /* System support */
@@ -48,11 +47,11 @@
 #define MBEDTLS_ENTROPY_HARDWARE_ALT
 #define MBEDTLS_PLATFORM_NO_STD_FUNCTIONS
 #define MBEDTLS_DEBUG_C
-#define MBEDTLS_PLATFORM_SNPRINTF_MACRO         snprintf
+#define MBEDTLS_PLATFORM_SNPRINTF_MACRO snprintf
 #define MBEDTLS_PLATFORM_C
 #define MBEDTLS_PLATFORM_MEMORY
-#define MBEDTLS_PLATFORM_CALLOC_MACRO           mmosal_calloc
-#define MBEDTLS_PLATFORM_FREE_MACRO             mmosal_free
+#define MBEDTLS_PLATFORM_CALLOC_MACRO mmosal_calloc
+#define MBEDTLS_PLATFORM_FREE_MACRO   mmosal_free
 
 /* Mbed TLS modules */
 #define MBEDTLS_AES_C
@@ -102,9 +101,8 @@
  * save ROM and a few bytes of RAM by specifying our own ciphersuite list
  */
 #if 0
-#define MBEDTLS_SSL_CIPHERSUITES                        \
-        MBEDTLS_TLS_PSK_WITH_AES_256_CCM_8,             \
-        MBEDTLS_TLS_PSK_WITH_AES_128_CCM_8
+#define MBEDTLS_SSL_CIPHERSUITES \
+    MBEDTLS_TLS_PSK_WITH_AES_256_CCM_8, MBEDTLS_TLS_PSK_WITH_AES_128_CCM_8
 #endif
 
 /*
@@ -112,14 +110,14 @@
  * both ends of the connection!  (See comments in "mbedtls/ssl.h".)
  * The optimal size here depends on the typical size of records.
  */
-#define MBEDTLS_SSL_IN_CONTENT_LEN              8192
-#define MBEDTLS_SSL_OUT_CONTENT_LEN             8192
+#define MBEDTLS_SSL_IN_CONTENT_LEN  8192
+#define MBEDTLS_SSL_OUT_CONTENT_LEN 8192
 
 /* Save RAM at the expense of ROM */
 #define MBEDTLS_AES_ROM_TABLES
 
 /* Save some RAM by adjusting to your exact needs */
-#define MBEDTLS_PSK_MAX_LEN    16 /* 128-bits keys are generally enough */
+#define MBEDTLS_PSK_MAX_LEN 16 /* 128-bits keys are generally enough */
 
 /*
  * You should adjust this to the exact number of sources you're using: default
@@ -137,7 +135,6 @@
  * (huge code size increase, needed for tests/ssl-opt.sh) */
 // #define MBEDTLS_DEBUG_C
 // #define MBEDTLS_ERROR_C
-
 
 /* Ensure that mbedTLS features that are required for morselib are enabled. */
 #include "mm_mbedtls_config.h"
