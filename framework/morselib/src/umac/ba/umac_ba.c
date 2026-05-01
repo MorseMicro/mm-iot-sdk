@@ -347,10 +347,9 @@ static void umac_ba_rx_addba_req(struct umac_sta_data *stad,
 
 void umac_ba_process_rx_frame(struct umac_sta_data *stad, const uint8_t *frame, uint32_t frame_len)
 {
-    MMOSAL_DEV_ASSERT(stad != NULL);
-    if (stad == NULL)
+    if (!umac_sta_data_is_associated(stad))
     {
-        MMLOG_WRN("Cannot process BA frame without a STA record\n");
+        MMLOG_WRN("Cannot process BA frame pre-association\n");
         return;
     }
     const struct dot11_action *action_frame = (const struct dot11_action *)frame;

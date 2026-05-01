@@ -8,6 +8,7 @@
 
 #include "mm_hal_common.h"
 #include "mmhal_uart.h"
+#include "mmosal.h"
 #include "mmutils.h"
 #include "main.h"
 
@@ -261,8 +262,9 @@ void mmhal_uart_init(mmhal_uart_rx_cb_t rx_cb, void *rx_cb_arg)
 {
     MM_UNUSED(rx_cb);
     MM_UNUSED(rx_cb_arg);
-    printf("UART HAL not supported as UART is in use for logs\n");
-    printf("Please rebuild with DISABLE_UART_LOG defined\n");
+    mmosal_printf("UART HAL not supported as UART is in use for logs\n");
+    mmosal_printf("Please rebuild with ENABLE_UART_HAL defined to a non-zero value\n");
+    mmosal_printf("and with DISABLE_UART_LOG defined.\n");
 }
 
 void mmhal_uart_deinit(void)

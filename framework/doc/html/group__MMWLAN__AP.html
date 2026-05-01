@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.10.4</span>
+   &#160;<span id="projectnumber">2.11.2</span>
    </div>
   </td>
  </tr>
@@ -98,7 +98,7 @@ $(document).ready(function(){initNavTree('group__MMWLAN__AP.html',''); initResiz
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p >API for configuration and control of Access Point (AP) mode. </p>
-<dl class="section warning"><dt>Warning</dt><dd>BETA NOTICE: This is beta API that is under development; breaking changes may be introduced in future releases. </dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>ALPHA NOTICE: This is an alpha API that is under development. It is not intended for production use and breaking changes may be introduced in future releases </dd></dl>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Data Structures</h2></td></tr>
@@ -136,6 +136,7 @@ Typedefs</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
 <tr class="memitem:ga03b994d1e0ad93b3449e0d2687dd9929"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__AP.html#ga03b994d1e0ad93b3449e0d2687dd9929">mmwlan_ap_sta_state</a> { <a class="el" href="group__MMWLAN__AP.html#gga03b994d1e0ad93b3449e0d2687dd9929ad4e28299d3fa5fd33f8c82bb797abc9d">MMWLAN_AP_STA_UNKNOWN</a>
+, <a class="el" href="group__MMWLAN__AP.html#gga03b994d1e0ad93b3449e0d2687dd9929af0b9fdd47ec072a27ad31ecb30e1a931">MMWLAN_AP_STA_AUTHENTICATED</a>
 , <a class="el" href="group__MMWLAN__AP.html#gga03b994d1e0ad93b3449e0d2687dd9929aa330105e26ff914939217973fed82124">MMWLAN_AP_STA_ASSOCIATED</a>
 , <a class="el" href="group__MMWLAN__AP.html#gga03b994d1e0ad93b3449e0d2687dd9929a728acedd2fe1ee0b8b35e6af585b975f">MMWLAN_AP_STA_AUTHORIZED</a>
  }</td></tr>
@@ -153,9 +154,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ga471c74789c1c8649a7ce91065c1eb206"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__AP.html#ga471c74789c1c8649a7ce91065c1eb206">mmwlan_ap_disable</a> (void)</td></tr>
 <tr class="memdesc:ga471c74789c1c8649a7ce91065c1eb206"><td class="mdescLeft">&#160;</td><td class="mdescRight">Disable AP mode.  <a href="group__MMWLAN__AP.html#ga471c74789c1c8649a7ce91065c1eb206">More...</a><br /></td></tr>
 <tr class="separator:ga471c74789c1c8649a7ce91065c1eb206"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaf15144a48c67b3e4510060e098e73279"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__AP.html#gaf15144a48c67b3e4510060e098e73279">mmwlan_ap_get_bssid</a> (uint8_t *bssid)</td></tr>
-<tr class="memdesc:gaf15144a48c67b3e4510060e098e73279"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the BSSID address of the AP, if it is active.  <a href="group__MMWLAN__AP.html#gaf15144a48c67b3e4510060e098e73279">More...</a><br /></td></tr>
-<tr class="separator:gaf15144a48c67b3e4510060e098e73279"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gade015bdc0a6893e2799c4b654679eb1e"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__AP.html#gade015bdc0a6893e2799c4b654679eb1e">mmwlan_ap_get_bssid</a> (uint8_t *bssid)</td></tr>
+<tr class="memdesc:gade015bdc0a6893e2799c4b654679eb1e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the BSSID address of the AP, if it is active.  <a href="group__MMWLAN__AP.html#gade015bdc0a6893e2799c4b654679eb1e">More...</a><br /></td></tr>
+<tr class="separator:gade015bdc0a6893e2799c4b654679eb1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="ga471aec5c5cf5adf216186b429bf05f31" name="ga471aec5c5cf5adf216186b429bf05f31"></a>
@@ -187,14 +188,15 @@ Functions</h2></td></tr>
 <div class="line">        .sta_status_cb = NULL,           \</div>
 <div class="line">        .sta_status_cb_arg = NULL,       \</div>
 <div class="line">        .max_stas = 0,                   \</div>
+<div class="line">        .async_start = <span class="keyword">false</span>,            \</div>
 <div class="line">    }</div>
-<div class="ttc" id="agroup__MMWLAN_html_gga6f1e10b52468bc91ff773e96377bfa17add2d30cc5a82b600eae097ba325c1073"><div class="ttname"><a href="group__MMWLAN.html#gga6f1e10b52468bc91ff773e96377bfa17add2d30cc5a82b600eae097ba325c1073">MMWLAN_PMF_REQUIRED</a></div><div class="ttdeci">@ MMWLAN_PMF_REQUIRED</div><div class="ttdoc">Protected management frames must be used.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00128">mmwlan.h:128</a></div></div>
-<div class="ttc" id="agroup__MMWLAN_html_ggaa1811e3233be70cf35a4611111eddca0a4ce45048653a785b9591d1305f47825a"><div class="ttname"><a href="group__MMWLAN.html#ggaa1811e3233be70cf35a4611111eddca0a4ce45048653a785b9591d1305f47825a">MMWLAN_OPEN</a></div><div class="ttdeci">@ MMWLAN_OPEN</div><div class="ttdoc">Open (no security)</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00117">mmwlan.h:117</a></div></div>
+<div class="ttc" id="agroup__MMWLAN_html_gga6f1e10b52468bc91ff773e96377bfa17add2d30cc5a82b600eae097ba325c1073"><div class="ttname"><a href="group__MMWLAN.html#gga6f1e10b52468bc91ff773e96377bfa17add2d30cc5a82b600eae097ba325c1073">MMWLAN_PMF_REQUIRED</a></div><div class="ttdeci">@ MMWLAN_PMF_REQUIRED</div><div class="ttdoc">Protected management frames must be used.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00132">mmwlan.h:132</a></div></div>
+<div class="ttc" id="agroup__MMWLAN_html_ggaa1811e3233be70cf35a4611111eddca0a4ce45048653a785b9591d1305f47825a"><div class="ttname"><a href="group__MMWLAN.html#ggaa1811e3233be70cf35a4611111eddca0a4ce45048653a785b9591d1305f47825a">MMWLAN_OPEN</a></div><div class="ttdeci">@ MMWLAN_OPEN</div><div class="ttdoc">Open (no security)</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00121">mmwlan.h:121</a></div></div>
 </div><!-- fragment -->
 <p>Initializer for <a class="el" href="structmmwlan__ap__args.html">mmwlan_ap_args</a>. </p>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="structmmwlan__ap__args.html" title="Arguments data structure for mmwlan_ap_enable().">mmwlan_ap_args</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02409">2409</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01878">1878</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -212,7 +214,7 @@ Functions</h2></td></tr>
 
 <p>Maximum limit of connected stations. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02242">2242</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01702">1702</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -230,7 +232,7 @@ Functions</h2></td></tr>
 
 <p>Default Beacon Interval in AP mode (in TUs). </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02233">2233</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01693">1693</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -248,7 +250,7 @@ Functions</h2></td></tr>
 
 <p>Default DTIM period in AP mode. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02236">2236</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01696">1696</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -266,7 +268,7 @@ Functions</h2></td></tr>
 
 <p>Default limit of connected stations. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02239">2239</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01699">1699</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -284,16 +286,16 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Type definition for callback to be invoked on change in status of a connected STA. </p>
+<dl class="section warning"><dt>Warning</dt><dd>ALPHA NOTICE: This is an alpha API that is under development; breaking changes may be introduced in future releases.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">sta_status</td><td>The STA status information. </td></tr>
-    <tr><td class="paramname">arg</td><td>Opaque argument that was provided when the callback was registered.</td></tr>
+    <tr><td class="paramname">arg</td><td>Opaque argument that was provided when the callback was registered. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section warning"><dt>Warning</dt><dd>BETA NOTICE: This is beta API that is under development; breaking changes may be introduced in future releases. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02285">2285</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01747">1747</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -311,9 +313,11 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Enumeration of STA states. </p>
-<dl class="section warning"><dt>Warning</dt><dd>BETA NOTICE: This is beta API that is under development; breaking changes may be introduced in future releases. </dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>ALPHA NOTICE: This is an alpha API that is under development; breaking changes may be introduced in future releases. </dd></dl>
 <table class="fieldtable">
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="gga03b994d1e0ad93b3449e0d2687dd9929ad4e28299d3fa5fd33f8c82bb797abc9d" name="gga03b994d1e0ad93b3449e0d2687dd9929ad4e28299d3fa5fd33f8c82bb797abc9d"></a>MMWLAN_AP_STA_UNKNOWN&#160;</td><td class="fielddoc"><p >The STA is not known. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga03b994d1e0ad93b3449e0d2687dd9929af0b9fdd47ec072a27ad31ecb30e1a931" name="gga03b994d1e0ad93b3449e0d2687dd9929af0b9fdd47ec072a27ad31ecb30e1a931"></a>MMWLAN_AP_STA_AUTHENTICATED&#160;</td><td class="fielddoc"><p >The STA is authenticated but not associated. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="gga03b994d1e0ad93b3449e0d2687dd9929aa330105e26ff914939217973fed82124" name="gga03b994d1e0ad93b3449e0d2687dd9929aa330105e26ff914939217973fed82124"></a>MMWLAN_AP_STA_ASSOCIATED&#160;</td><td class="fielddoc"><p >The STA is associated but not yet authorized for data transmission. </p>
 </td></tr>
@@ -321,7 +325,7 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02250">2250</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01710">1710</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -343,9 +347,9 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Disable AP mode. </p>
-<p >This will disconnect any stations from the AP. It will also shut down the transceiver if nothing else is holding it open. Note that if the transceiver was booted by <code><a class="el" href="group__MMWLAN__CTRL.html#ga1a5050da56c30035ffcc4c49b7ff95d4" title="Boot the Morse Micro transceiver and leave it in an idle state.">mmwlan_boot()</a></code> then this function will not shut down the transceiver.</p>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> if successful and the transceiver was also shut down, <a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a4cd4f5db45e1f2396387d37575b745da">MMWLAN_SHUTDOWN_BLOCKED</a> if successful and the transceiver was not shut down, else an appropriate error code.</dd></dl>
-<dl class="section warning"><dt>Warning</dt><dd>BETA NOTICE: This is beta API that is under development; breaking changes may be introduced in future releases. </dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>ALPHA NOTICE: This is an alpha API that is under development; breaking changes may be introduced in future releases.</dd></dl>
+<p>This will disconnect any stations from the AP. It will also shut down the transceiver if nothing else is holding it open. Note that if the transceiver was booted by <code><a class="el" href="group__MMWLAN__CTRL.html#ga1a5050da56c30035ffcc4c49b7ff95d4" title="Boot the Morse Micro transceiver and leave it in an idle state.">mmwlan_boot()</a></code> then this function will not shut down the transceiver.</p>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> if successful and the transceiver was also shut down, <a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a4cd4f5db45e1f2396387d37575b745da">MMWLAN_SHUTDOWN_BLOCKED</a> if successful and the transceiver was not shut down, else an appropriate error code. </dd></dl>
 
 </div>
 </div>
@@ -366,8 +370,9 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Enable AP mode. </p>
-<p >This will power on the transceiver then start Access Point mode.</p>
-<dl class="section warning"><dt>Warning</dt><dd>Channel list must be set before enabling station mode. <a class="el" href="group__MMWLAN__REGDB.html#ga73b6742a29b62bf0091a9b6c9cc770db">mmwlan_set_channel_list()</a>.</dd>
+<dl class="section warning"><dt>Warning</dt><dd>ALPHA NOTICE: This is an alpha API that is under development; breaking changes may be introduced in future releases.</dd></dl>
+<p>This will power on the transceiver, if it is not already running, then start Access Point mode.</p>
+<dl class="section warning"><dt>Warning</dt><dd>Channel list must be set before enabling AP mode. See <a class="el" href="group__MMWLAN__REGDB.html#ga73b6742a29b62bf0091a9b6c9cc770db">mmwlan_set_channel_list()</a>.</dd>
 <dd>
 OWE security is not currently supported for AP mode.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -376,28 +381,36 @@ OWE security is not currently supported for AP mode.</dd></dl>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> on success, else an appropriate error code.</dd></dl>
-<dl class="section warning"><dt>Warning</dt><dd>BETA NOTICE: This is beta API that is under development; breaking changes may be introduced in future releases. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> on success, else an appropriate error code. </dd></dl>
 
 </div>
 </div>
-<a id="gaf15144a48c67b3e4510060e098e73279" name="gaf15144a48c67b3e4510060e098e73279"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gaf15144a48c67b3e4510060e098e73279">&#9670;&nbsp;</a></span>mmwlan_ap_get_bssid()</h2>
+<a id="gade015bdc0a6893e2799c4b654679eb1e" name="gade015bdc0a6893e2799c4b654679eb1e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gade015bdc0a6893e2799c4b654679eb1e">&#9670;&nbsp;</a></span>mmwlan_ap_get_bssid()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a> mmwlan_ap_get_bssid </td>
+          <td class="memname">static enum <a class="el" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a> mmwlan_ap_get_bssid </td>
           <td>(</td>
           <td class="paramtype">uint8_t *&#160;</td>
           <td class="paramname"><em>bssid</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 <p>Gets the BSSID address of the AP, if it is active. </p>
+<dl class="section warning"><dt>Warning</dt><dd>ALPHA NOTICE: This is an alpha API that is under development; breaking changes may be introduced in future releases.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">bssid</td><td>The BSSID of the AP. Length must be <a class="el" href="group__MMWLAN.html#gad1f02bb330d9d2f4c831a1cf9d44ff1a">MMWLAN_MAC_ADDR_LEN</a>.</td></tr>
@@ -405,6 +418,8 @@ OWE security is not currently supported for AP mode.</dd></dl>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> on success, <a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086af8311c13f95546d0b338ea2b86384a00">MMWLAN_UNAVAILABLE</a> if AP mode is not active. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01944">1944</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -435,6 +450,7 @@ OWE security is not currently supported for AP mode.</dd></dl>
 </div><div class="memdoc">
 
 <p>Gets the STA status of the STA with the given MAC address. </p>
+<dl class="section warning"><dt>Warning</dt><dd>ALPHA NOTICE: This is an alpha API that is under development; breaking changes may be introduced in future releases.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">sta_addr</td><td>Address of the STA to get the status of. </td></tr>
@@ -442,8 +458,7 @@ OWE security is not currently supported for AP mode.</dd></dl>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> on success, <a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086afad19641afc5f570e9c05e71a5e65f88">MMWLAN_NOT_FOUND</a> if no STA record was found matching the given MAC address, or another error code as appropriate.</dd></dl>
-<dl class="section warning"><dt>Warning</dt><dd>BETA NOTICE: This is beta API that is under development; breaking changes may be introduced in future releases. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> on success, <a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086afad19641afc5f570e9c05e71a5e65f88">MMWLAN_NOT_FOUND</a> if no STA record was found matching the given MAC address, or another error code as appropriate. </dd></dl>
 
 </div>
 </div>

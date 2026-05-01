@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.10.4</span>
+   &#160;<span id="projectnumber">2.11.2</span>
    </div>
   </td>
  </tr>
@@ -109,10 +109,10 @@ Data Structures</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ga0a55ab2b7a600bb03c672a224f393a97"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__NTP.html#ga0a55ab2b7a600bb03c672a224f393a97">mmagic_controller_ntp_sync</a> (struct mmagic_controller *controller)</td></tr>
+<tr class="memitem:ga0a55ab2b7a600bb03c672a224f393a97"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga202c6db4afd9d9ff976b0e61267ab6bb">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__NTP.html#ga0a55ab2b7a600bb03c672a224f393a97">mmagic_controller_ntp_sync</a> (struct mmagic_controller *controller)</td></tr>
 <tr class="memdesc:ga0a55ab2b7a600bb03c672a224f393a97"><td class="mdescLeft">&#160;</td><td class="mdescRight">Synchronizes internal time using the NTP server.  <a href="group__MMAGIC__CONTROLLER__NTP.html#ga0a55ab2b7a600bb03c672a224f393a97">More...</a><br /></td></tr>
 <tr class="separator:ga0a55ab2b7a600bb03c672a224f393a97"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga51ce5ae2a6820591a00c1596e16651f7"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__NTP.html#ga51ce5ae2a6820591a00c1596e16651f7">mmagic_controller_ntp_get_time</a> (struct mmagic_controller *controller, struct <a class="el" href="structmmagic__core__ntp__get__time__rsp__args.html">mmagic_core_ntp_get_time_rsp_args</a> *rsp_args)</td></tr>
+<tr class="memitem:ga51ce5ae2a6820591a00c1596e16651f7"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga202c6db4afd9d9ff976b0e61267ab6bb">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__NTP.html#ga51ce5ae2a6820591a00c1596e16651f7">mmagic_controller_ntp_get_time</a> (struct mmagic_controller *controller, struct <a class="el" href="structmmagic__core__ntp__get__time__rsp__args.html">mmagic_core_ntp_get_time_rsp_args</a> *rsp_args)</td></tr>
 <tr class="memdesc:ga51ce5ae2a6820591a00c1596e16651f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads current internal time.  <a href="group__MMAGIC__CONTROLLER__NTP.html#ga51ce5ae2a6820591a00c1596e16651f7">More...</a><br /></td></tr>
 <tr class="separator:ga51ce5ae2a6820591a00c1596e16651f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -127,7 +127,7 @@ Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a> mmagic_controller_ntp_get_time </td>
+          <td class="memname">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga202c6db4afd9d9ff976b0e61267ab6bb">mmagic_status</a> mmagic_controller_ntp_get_time </td>
           <td>(</td>
           <td class="paramtype">struct mmagic_controller *&#160;</td>
           <td class="paramname"><em>controller</em>, </td>
@@ -155,13 +155,13 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir"></td><td class="paramname">controller</td><td>Reference to the controller handle. </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">rsp_args</td><td>Pointer to the data structure to be filled out with the result. If the return code is not <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> then the contents of this structure will be undefined.</td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">rsp_args</td><td>Pointer to the data structure to be filled out with the result. If the return code is not <code>MMAGIC_STATUS_OK</code> then the contents of this structure will be undefined.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><code>MMAGIC_STATUS_OK</code> else an appropriate error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l06970">6970</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l06479">6479</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -175,7 +175,7 @@ Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a> mmagic_controller_ntp_sync </td>
+          <td class="memname">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga202c6db4afd9d9ff976b0e61267ab6bb">mmagic_status</a> mmagic_controller_ntp_sync </td>
           <td>(</td>
           <td class="paramtype">struct mmagic_controller *&#160;</td>
           <td class="paramname"><em>controller</em></td><td>)</td>
@@ -196,9 +196,9 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><code>MMAGIC_STATUS_OK</code> else an appropriate error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l06930">6930</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l06439">6439</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>

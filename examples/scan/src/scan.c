@@ -23,6 +23,7 @@
 #include "mmutils.h"
 #include "mmwlan.h"
 #include "mm_app_loadconfig.h"
+#include "mm_app_common.h"
 
 /*
  * ANSI escape characters will be used for rich text in the console. To disable ANSI escape
@@ -135,7 +136,6 @@ static void scan_complete_callback(enum mmwlan_scan_state state, void *arg)
 void app_init(void)
 {
     enum mmwlan_status status;
-    struct mmwlan_version version;
 
     printf("\n\nMorse Scan Demo (Built "__DATE__
            " " __TIME__ ")\n\n");
@@ -154,12 +154,7 @@ void app_init(void)
     status = mmwlan_boot(&boot_args);
     MMOSAL_ASSERT(status == MMWLAN_SUCCESS);
 
-    status = mmwlan_get_version(&version);
-    MMOSAL_ASSERT(status == MMWLAN_SUCCESS);
-    printf("Morse firmware version %s, morselib version %s, Morse chip ID 0x%lx\n\n",
-           version.morse_fw_version,
-           version.morselib_version,
-           version.morse_chip_id);
+    app_print_version_info();
 
     num_scan_results = 0;
     struct mmwlan_scan_req scan_req = MMWLAN_SCAN_REQ_INIT;

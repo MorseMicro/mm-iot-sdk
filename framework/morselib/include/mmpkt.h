@@ -329,7 +329,7 @@ static inline uint8_t *mmpkt_get_data_end(struct mmpktview *view)
  * @returns the length of the data currently in the mmpkt (note that this is different from the
  *          length of the available buffer space).
  */
-static inline uint32_t mmpkt_peek_data_length(struct mmpkt *mmpkt)
+static inline uint32_t mmpkt_peek_data_length(const struct mmpkt *mmpkt)
 {
     return mmpkt->data_len;
 }

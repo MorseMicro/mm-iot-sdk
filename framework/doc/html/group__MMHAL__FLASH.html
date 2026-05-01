@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.10.4</span>
+   &#160;<span id="projectnumber">2.11.2</span>
    </div>
   </td>
  </tr>
@@ -119,10 +119,10 @@ Functions</h2></td></tr>
 <tr class="memdesc:gaabe05e475ba03621d7e4ba776ed2d616"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get MMCONFIG flash partition configuration.  <a href="group__MMHAL__FLASH.html#gaabe05e475ba03621d7e4ba776ed2d616">More...</a><br /></td></tr>
 <tr class="separator:gaabe05e475ba03621d7e4ba776ed2d616"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga45280345c4e63146ddba4a28a43fbf7b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMHAL__FLASH.html#ga45280345c4e63146ddba4a28a43fbf7b">mmhal_flash_erase</a> (uint32_t block_address)</td></tr>
-<tr class="memdesc:ga45280345c4e63146ddba4a28a43fbf7b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Erases a block of Flash pointed to by the block_address.  <a href="group__MMHAL__FLASH.html#ga45280345c4e63146ddba4a28a43fbf7b">More...</a><br /></td></tr>
+<tr class="memdesc:ga45280345c4e63146ddba4a28a43fbf7b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Erases a specified block of flash.  <a href="group__MMHAL__FLASH.html#ga45280345c4e63146ddba4a28a43fbf7b">More...</a><br /></td></tr>
 <tr class="separator:ga45280345c4e63146ddba4a28a43fbf7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga63486f8a2f1291fcf9675949dd14511f"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMHAL__FLASH.html#ga63486f8a2f1291fcf9675949dd14511f">mmhal_flash_getblocksize</a> (uint32_t block_address)</td></tr>
-<tr class="memdesc:ga63486f8a2f1291fcf9675949dd14511f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the size of the Flash block at the specified address.  <a href="group__MMHAL__FLASH.html#ga63486f8a2f1291fcf9675949dd14511f">More...</a><br /></td></tr>
+<tr class="memdesc:ga63486f8a2f1291fcf9675949dd14511f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the size of the flash block at the specified address.  <a href="group__MMHAL__FLASH.html#ga63486f8a2f1291fcf9675949dd14511f">More...</a><br /></td></tr>
 <tr class="separator:ga63486f8a2f1291fcf9675949dd14511f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gabf7a0c5f9b2351de5dcc264c375fda34"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMHAL__FLASH.html#gabf7a0c5f9b2351de5dcc264c375fda34">mmhal_flash_read</a> (uint32_t read_address, uint8_t *<a class="el" href="sslclient_8c.html#abdc8ea8147d82c962a7d88863ee32ee0">buf</a>, size_t size)</td></tr>
 <tr class="memdesc:gabf7a0c5f9b2351de5dcc264c375fda34"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read a block of data from the specified Flash address into the buffer.  <a href="group__MMHAL__FLASH.html#gabf7a0c5f9b2351de5dcc264c375fda34">More...</a><br /></td></tr>
@@ -168,7 +168,7 @@ Functions</h2></td></tr>
 
 <p>Initial values for <a class="el" href="structmmhal__flash__partition__config.html">mmhal_flash_partition_config</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmhal__flash_8h_source.html#l00065">65</a> of file <a class="el" href="mmhal__flash_8h_source.html">mmhal_flash.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmhal__flash_8h_source.html#l00072">72</a> of file <a class="el" href="mmhal__flash_8h_source.html">mmhal_flash.h</a>.</p>
 
 </div>
 </div>
@@ -189,11 +189,11 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Erases a block of Flash pointed to by the block_address. </p>
-<p >The block address may be anywhere within the block to erase. The entire block gets erased. Once erased all bytes in the block shall be <code>MMHAL_FLASH_ERASE_VALUE</code> (<code>0xFF</code>).</p>
+<p>Erases a specified block of flash. </p>
+<p >The given <code>block_address</code> may be anywhere within the block to erase &ndash; the entire block will be erased. Once erased all bytes in the block shall be <code>MMHAL_FLASH_ERASE_VALUE</code>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">block_address</td><td>The address of the block of Flash to erase. </td></tr>
+    <tr><td class="paramname">block_address</td><td>The address of the block of flash to erase. Addresses are implementation dependent, but should be within a range defined by a given <code><a class="el" href="structmmhal__flash__partition__config.html" title="Flash partition configuration structure.">mmhal_flash_partition_config</a></code>. </td></tr>
   </table>
   </dd>
 </dl>
@@ -217,10 +217,10 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Returns the size of the Flash block at the specified address. </p>
+<p>Returns the size of the flash block at the specified address. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">block_address</td><td>The address of the Flash block. </td></tr>
+    <tr><td class="paramname">block_address</td><td>The address of the flash block. Addresses are implementation dependent, but should be within a range defined by a given <code><a class="el" href="structmmhal__flash__partition__config.html" title="Flash partition configuration structure.">mmhal_flash_partition_config</a></code>. </td></tr>
   </table>
   </dd>
 </dl>
@@ -263,7 +263,7 @@ Functions</h2></td></tr>
 <p>Read a block of data from the specified Flash address into the buffer. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">read_address</td><td>The address in Flash to read from. </td></tr>
+    <tr><td class="paramname">read_address</td><td>The address to read from. Addresses are implementation dependent, but should be within a range defined by a given <code><a class="el" href="structmmhal__flash__partition__config.html" title="Flash partition configuration structure.">mmhal_flash_partition_config</a></code>. </td></tr>
     <tr><td class="paramname">buf</td><td>The buffer to read into. </td></tr>
     <tr><td class="paramname">size</td><td>The number of bytes to read. </td></tr>
   </table>
@@ -309,7 +309,7 @@ Functions</h2></td></tr>
 <p >There is no alignment or minimum size requirement. This function will take care of aligning the data and merging with existing Flash contents. The Flash block is not erased, it is up to the application to determine if the block needs to be erased before programming.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">write_address</td><td>The address in Flash to write to. </td></tr>
+    <tr><td class="paramname">write_address</td><td>The address to write to. Addresses are implementation dependent, but should be within a range defined by a given <code><a class="el" href="structmmhal__flash__partition__config.html" title="Flash partition configuration structure.">mmhal_flash_partition_config</a></code>. </td></tr>
     <tr><td class="paramname">data</td><td>A pointer to the block of data to write. </td></tr>
     <tr><td class="paramname">size</td><td>The number of bytes to write. </td></tr>
   </table>
@@ -359,7 +359,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Get MMCONFIG flash partition configuration. </p>
-<p >MMCONFIG initialization is done by <code>mmconfig_init()</code> in <code>mmconfig.c</code>. which in turn calls this function to fetch the partition configuration for config store from the HAL layer. If config store is not supported by the platform then we just return NULL. This function returns a static pointer to <code>struct</code> <code><a class="el" href="structmmhal__flash__partition__config.html" title="Flash partition configuration structure.">mmhal_flash_partition_config</a></code>.</p>
+<p >MMCONFIG initialization is done by <code>mmconfig_init()</code> in <code>mmconfig.c</code>, which in turn calls this function to fetch the partition configuration for config store from the HAL layer. If config store is not supported by the platform then we just return NULL. This function returns a static pointer to <code>struct</code> <code><a class="el" href="structmmhal__flash__partition__config.html" title="Flash partition configuration structure.">mmhal_flash_partition_config</a></code>.</p>
 <dl class="section return"><dt>Returns</dt><dd>A static pointer to the partition config for MMCONFIG, or NULL if not supported. </dd></dl>
 
 </div>

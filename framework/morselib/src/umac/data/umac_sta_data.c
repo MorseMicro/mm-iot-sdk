@@ -130,3 +130,9 @@ bool umac_sta_data_is_paused(struct umac_sta_data *stad)
 
     return false;
 }
+
+bool umac_sta_data_is_associated(struct umac_sta_data *stad)
+{
+    MMOSAL_ASSERT(stad != NULL);
+    return !mm_mac_addr_is_zero(umac_sta_data_peek_peer_addr(stad));
+}

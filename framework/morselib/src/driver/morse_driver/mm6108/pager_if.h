@@ -52,34 +52,7 @@ struct morse_pager
     int page_size_bytes;
 
 
-    const struct morse_pager_ops *ops;
-    void *aux_data;
-};
-
-struct morse_pager_ops
-{
-
-    int (*put)(struct morse_pager *pager, struct morse_page *page);
-
-
-    int (*pop)(struct morse_pager *pager, struct morse_page *page);
-
-
-    int (*notify)(const struct morse_pager *pager);
-
-
-    int (*write_page)(struct morse_pager *pager,
-                      struct morse_page *page,
-                      int offset,
-                      const uint8_t *buf,
-                      uint32_t num_bytes);
-
-
-    int (*read_page)(struct morse_pager *pager,
-                     struct morse_page *page,
-                     int offset,
-                     uint8_t *buf,
-                     uint32_t num_bytes);
+    struct morse_pager_hw_aux_data *aux_data;
 };
 
 

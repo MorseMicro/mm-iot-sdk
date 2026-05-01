@@ -27,6 +27,7 @@ struct mmagic_tls_config
 
 struct mmagic_tls_data
 {
+    bool is_started;
     struct mmagic_tls_config config;
     /** Subsystem private data (to be allocated/managed by the subsystem implementation). */
     void *priv;
@@ -59,3 +60,11 @@ void mmagic_core_tls_save_all(struct mmagic_data *core);
  * @param core   Reference to to global mmagic context struct.
  */
 void mmagic_core_tls_start(struct mmagic_data *core);
+
+/**
+ * Function to check if the tls subsystem has been initialized.
+ *
+ * @param core   Reference to to global mmagic context struct.
+ * @return       True if mmagic_core_tls_init has been called, false otherwise.
+ */
+bool mmagic_core_tls_is_started(struct mmagic_data *core);

@@ -418,6 +418,20 @@ void p2p_buf_add_service_hash(struct wpabuf *buf, struct p2p_data *p2p)
 }
 
 
+void p2p_buf_add_usd_service_hash(struct wpabuf *buf, struct p2p_data *p2p)
+{
+	if (!p2p)
+		return;
+
+	/* USD Service Hash */
+	wpabuf_put_u8(buf, P2P_ATTR_SERVICE_HASH);
+	wpabuf_put_le16(buf, P2PS_HASH_LEN);
+	wpabuf_put_data(buf, p2p->p2p_service_hash, P2PS_HASH_LEN);
+	wpa_hexdump(MSG_DEBUG, "P2P: * Service Hash",
+		    p2p->p2p_service_hash, P2PS_HASH_LEN);
+}
+
+
 void p2p_buf_add_session_info(struct wpabuf *buf, const char *info)
 {
 	size_t info_len = 0;
@@ -741,6 +755,9 @@ void p2p_buf_add_pcea(struct wpabuf *buf, struct p2p_data *p2p)
 	if (p2p->cfg->dfs_owner)
 		capability_info |= P2P_PCEA_DFS_OWNER;
 
+	if (p2p->cfg->chan_switch_req_enable)
+		capability_info |= P2P_PCEA_CLI_REQ_CS;
+
 	if (p2p->cfg->pairing_config.pairing_capable)
 		capability_info |= P2P_PCEA_PAIRING_CAPABLE;
 
@@ -806,8 +823,7 @@ void p2p_buf_add_dira(struct wpabuf *buf, struct p2p_data *p2p)
 	struct p2p_id_key *dev_ik;
 
 	if (!p2p->cfg->pairing_config.pairing_capable ||
-	    !p2p->cfg->pairing_config.enable_pairing_cache ||
-	    !p2p->cfg->pairing_config.enable_pairing_verification)
+	    !p2p->cfg->pairing_config.enable_pairing_cache)
 		return;
 
 	dev_ik = &p2p->pairing_info->dev_ik;

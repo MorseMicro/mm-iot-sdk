@@ -39,6 +39,7 @@ BUILD_DEFINES += CONFIG_NO_RRM=1
 BUILD_DEFINES += CONFIG_NO_VLAN=1
 BUILD_DEFINES += CONFIG_WNM=1
 BUILD_DEFINES += CONFIG_IEEE80211AH=1
+BUILD_DEFINES += CONFIG_DRIVER_NL80211_MORSE=1
 BUILD_DEFINES += CONFIG_NO_CONFIG_WRITE=1
 BUILD_DEFINES += OS_NO_C_LIB_DEFINES=1
 BUILD_DEFINES += CONFIG_BGSCAN=1
@@ -96,8 +97,6 @@ SUPP_SRCS_C += src/common/dpp_pkex.c
 SUPP_SRCS_C += src/common/dpp_reconfig.c
 SUPP_SRCS_C += wpa_supplicant/dpp_supplicant.c
 SUPP_SRCS_C += wpa_supplicant/offchannel.c
-SUPP_SRCS_C += src/crypto/aes-siv.c
-SUPP_SRCS_C += src/crypto/aes-ctr.c
 SUPP_SRCS_C += src/utils/json.c
 SUPP_SRCS_C += src/common/gas_server.c
 SUPP_SRCS_C += src/common/gas.c
@@ -125,6 +124,7 @@ ifneq ($(BUILD_SUPPLICANT_FROM_SOURCE),)
 #
 
 SUPP_SRCS_C += drivers_morse.c
+SUPP_SRCS_C += morse_stubs.c
 SUPP_SRCS_C += os_mmosal.c
 SUPP_SRCS_C += src/common/dragonfly.c
 SUPP_SRCS_C += src/common/hw_features_common.c
@@ -132,6 +132,8 @@ SUPP_SRCS_C += src/common/ieee802_11_common.c
 SUPP_SRCS_C += src/common/ptksa_cache.c
 SUPP_SRCS_C += src/common/sae.c
 SUPP_SRCS_C += src/common/wpa_common.c
+SUPP_SRCS_C += src/crypto/aes-ctr.c
+SUPP_SRCS_C += src/crypto/aes-siv.c
 SUPP_SRCS_C += src/crypto/aes-unwrap.c
 SUPP_SRCS_C += src/crypto/dh_groups.c
 SUPP_SRCS_C += src/crypto/sha256-kdf.c
@@ -172,7 +174,6 @@ SUPP_SRCS_C += wpa_supplicant/wnm_sta.c
 
 # AP Mode
 ifneq ($(BUILD_SUPPLICANT_WITH_AP),)
-SUPP_SRCS_C += morse_stubs.c
 SUPP_SRCS_C += wpa_supplicant/ap.c
 SUPP_SRCS_C += src/ap/authsrv.c
 SUPP_SRCS_C += src/ap/bss_load.c

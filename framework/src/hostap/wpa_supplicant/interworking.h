@@ -8,6 +8,9 @@
 
 #ifndef INTERWORKING_H
 #define INTERWORKING_H
+#ifdef CONFIG_AIDL
+#include "gas_query.h"
+#endif /* CONFIG_AIDL */
 
 enum gas_query_result;
 

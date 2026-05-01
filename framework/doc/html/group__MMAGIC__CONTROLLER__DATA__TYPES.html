@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.10.4</span>
+   &#160;<span id="projectnumber">2.11.2</span>
    </div>
   </td>
  </tr>
@@ -89,7 +89,8 @@ $(document).ready(function(){initNavTree('group__MMAGIC__CONTROLLER__DATA__TYPES
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Data Structures</a> &#124;
-<a href="#enum-members">Enumerations</a>  </div>
+<a href="#enum-members">Enumerations</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">Data types<div class="ingroups"><a class="el" href="group__MMAGIC.html">MMAGIC: CLI and Machine-to-Machine interface infrastructure</a> &raquo; <a class="el" href="group__MMAGIC__CONTROLLER.html">Morse M2M Interface Controller API</a></div></div></div>
 </div><!--header-->
 <div class="contents">
@@ -111,6 +112,9 @@ Data Structures</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structraw1536.html">raw1536</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Raw octet string type with maximum length of 1536.  <a href="structraw1536.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structraw1600.html">raw1600</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Raw octet string type with maximum length of 1600.  <a href="structraw1600.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstruct__mac__addr.html">struct_mac_addr</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Data type to contain mac address byte array.  <a href="structstruct__mac__addr.html#details">More...</a><br /></td></tr>
@@ -151,143 +155,6 @@ Data Structures</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:gac0cc9a0a39a6292bf1087fc917bf3dff"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gac0cc9a0a39a6292bf1087fc917bf3dff">mmagic_security_type</a> { <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggac0cc9a0a39a6292bf1087fc917bf3dffaa09c9f5ec37c900d7b9ba2cf72936a5f">MMAGIC_SECURITY_TYPE_SAE</a> = 0
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggac0cc9a0a39a6292bf1087fc917bf3dffaaa8188d0f3fe0640aec5f1015a1a3898">MMAGIC_SECURITY_TYPE_OWE</a> = 1
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggac0cc9a0a39a6292bf1087fc917bf3dffa63be0779ad549b18d24dd55d040d41ab">MMAGIC_SECURITY_TYPE_OPEN</a> = 2
- }</td></tr>
-<tr class="memdesc:gac0cc9a0a39a6292bf1087fc917bf3dff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connection security type.  <a href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gac0cc9a0a39a6292bf1087fc917bf3dff">More...</a><br /></td></tr>
-<tr class="separator:gac0cc9a0a39a6292bf1087fc917bf3dff"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gafe69353f5ae6df1244b958011101fa89"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gafe69353f5ae6df1244b958011101fa89">mmagic_pmf_mode</a> { <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggafe69353f5ae6df1244b958011101fa89a871cfca963e3b81b84348374a6c0b8b4">MMAGIC_PMF_MODE_REQUIRED</a> = 0
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggafe69353f5ae6df1244b958011101fa89a3a413c4c23f1bc92b716040ada19fb66">MMAGIC_PMF_MODE_DISABLED</a> = 1
- }</td></tr>
-<tr class="memdesc:gafe69353f5ae6df1244b958011101fa89"><td class="mdescLeft">&#160;</td><td class="mdescRight">Protected management frame mode.  <a href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gafe69353f5ae6df1244b958011101fa89">More...</a><br /></td></tr>
-<tr class="separator:gafe69353f5ae6df1244b958011101fa89"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gab72d6fbf5274af0a3bf24d67f4b2cfff"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gab72d6fbf5274af0a3bf24d67f4b2cfff">mmagic_power_save_mode</a> { <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggab72d6fbf5274af0a3bf24d67f4b2cfffa5eb2f347e926d962823f5ba3d1ae9775">MMAGIC_POWER_SAVE_MODE_DISABLED</a> = 0
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggab72d6fbf5274af0a3bf24d67f4b2cfffa2adc7507b47a9abc80d7210f05bbe134">MMAGIC_POWER_SAVE_MODE_ENABLED</a> = 1
- }</td></tr>
-<tr class="memdesc:gab72d6fbf5274af0a3bf24d67f4b2cfff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enumeration of supported 802.11 power save modes.  <a href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gab72d6fbf5274af0a3bf24d67f4b2cfff">More...</a><br /></td></tr>
-<tr class="separator:gab72d6fbf5274af0a3bf24d67f4b2cfff"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gacd8a0b4b005bd5422c06bcd19e5188f8"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gacd8a0b4b005bd5422c06bcd19e5188f8">mmagic_mcs10_mode</a> { <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggacd8a0b4b005bd5422c06bcd19e5188f8ad018d44370cc27dd993e3378b4ce30e4">MMAGIC_MCS10_MODE_DISABLED</a> = 0
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggacd8a0b4b005bd5422c06bcd19e5188f8a4edcf61e90ce01a21c983854455dfe26">MMAGIC_MCS10_MODE_FORCED</a> = 1
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggacd8a0b4b005bd5422c06bcd19e5188f8a1226170b0f9672a2995e43b11e302fb9">MMAGIC_MCS10_MODE_AUTO</a> = 2
- }</td></tr>
-<tr class="memdesc:gacd8a0b4b005bd5422c06bcd19e5188f8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enumeration of MCS10 modes.  <a href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gacd8a0b4b005bd5422c06bcd19e5188f8">More...</a><br /></td></tr>
-<tr class="separator:gacd8a0b4b005bd5422c06bcd19e5188f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaaa8c41d233711415a15d8e746d61a974"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gaaa8c41d233711415a15d8e746d61a974">mmagic_duty_cycle_mode</a> { <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggaaa8c41d233711415a15d8e746d61a974a4a8307e647356b4c3f2e085a7da11a5b">MMAGIC_DUTY_CYCLE_MODE_SPREAD</a> = 0
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggaaa8c41d233711415a15d8e746d61a974ad7d88ff711af93ab2faf2f713190e4f3">MMAGIC_DUTY_CYCLE_MODE_BURST</a> = 1
- }</td></tr>
-<tr class="memdesc:gaaa8c41d233711415a15d8e746d61a974"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enumeration of duty cycle modes.  <a href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gaaa8c41d233711415a15d8e746d61a974">More...</a><br /></td></tr>
-<tr class="separator:gaaa8c41d233711415a15d8e746d61a974"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga5961084162be913fd782e74577f96520"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga5961084162be913fd782e74577f96520">mmagic_station_type</a> { <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gga5961084162be913fd782e74577f96520a606fcd381619e2b21597c4954831cf33">MMAGIC_STATION_TYPE_SENSOR</a> = 0
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gga5961084162be913fd782e74577f96520a1a9af032f9b9f090405e3bdff254f18e">MMAGIC_STATION_TYPE_NON_SENSOR</a> = 1
- }</td></tr>
-<tr class="memdesc:ga5961084162be913fd782e74577f96520"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enumeration of S1G non-AP STA types.  <a href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga5961084162be913fd782e74577f96520">More...</a><br /></td></tr>
-<tr class="separator:ga5961084162be913fd782e74577f96520"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gad2f6cd96ec8731a96031b0b5614f9f92"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a> { <br />
-&#160;&#160;<a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> = 0
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a7b037b2dd01fdce4eeac4afa38ccf727">MMAGIC_STATUS_ERROR</a> = 1
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92af131c679ccf68d0b37278086792aa209">MMAGIC_STATUS_INVALID_ARG</a> = 2
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92aa73cb7cf2316260716d918a3adf44f65">MMAGIC_STATUS_UNAVAILABLE</a> = 3
-, <br />
-&#160;&#160;<a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a2c1d729cfbc229d96fbbdb89f7f46a30">MMAGIC_STATUS_TIMEOUT</a> = 4
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a9ca6214fd1a7875979ce2b589e2714a0">MMAGIC_STATUS_INVALID_STREAM</a> = 5
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a052c9dad19216a3a3756ac096c0fdb2c">MMAGIC_STATUS_NOT_FOUND</a> = 6
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a83b08590d21f9130bddd127b002971c2">MMAGIC_STATUS_NOT_SUPPORTED</a> = 7
-, <br />
-&#160;&#160;<a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a9afd35ed2c57c25887eed910c9ad713f">MMAGIC_STATUS_TX_ERROR</a> = 8
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92abe80e31a894b419ef3b53e6f1c4f2995">MMAGIC_STATUS_NO_MEM</a> = 9
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92aa49755e66951b7d030bdf090f4d5de27">MMAGIC_STATUS_CLOSED</a> = 10
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a00c737695a1f2638d65cab6e15a0fe0b">MMAGIC_STATUS_CHANNEL_LIST_NOT_SET</a> = 11
-, <br />
-&#160;&#160;<a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92aef247ebae18d86c5090e6b120d302404">MMAGIC_STATUS_SHUTDOWN_BLOCKED</a> = 12
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a72a9c2bb10041ccf7a01a15def3267cc">MMAGIC_STATUS_CHANNEL_INVALID</a> = 13
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92aba3219c36022bb6b3ffe6c1c67f38427">MMAGIC_STATUS_NOT_RUNNING</a> = 14
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a410c796f38cf9c64ba9a8b03bfb2afef">MMAGIC_STATUS_NO_LINK</a> = 15
-, <br />
-&#160;&#160;<a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a94b9d1eef2064e9f097fa6c6c8b2a795">MMAGIC_STATUS_UNKNOWN_HOST</a> = 16
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92ae370f3b93b96a043d3e91c9223360bb8">MMAGIC_STATUS_SOCKET_FAILED</a> = 17
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92ab8c53b7e40d35ed2944001ed79a22bba">MMAGIC_STATUS_SOCKET_CONNECT_FAILED</a> = 18
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a3d8ae0507b43c6cbd6e9acf00a300b7a">MMAGIC_STATUS_SOCKET_BIND_FAILED</a> = 19
-, <br />
-&#160;&#160;<a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a273683e027ae66b77f99af86940c87e4">MMAGIC_STATUS_SOCKET_LISTEN_FAILED</a> = 20
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a814c9b34b03c4e0faf209b5a57d5e4a6">MMAGIC_STATUS_NTP_KOD_RECEIVED</a> = 21
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92ad50db21882ded796cb522f92fabcd570">MMAGIC_STATUS_NTP_KOD_BACKOFF_RECEIVED</a> = 22
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a9c59be04b7228d08de5ac188cc45324a">MMAGIC_STATUS_SOCKET_SEND_FAILED</a> = 23
-, <br />
-&#160;&#160;<a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92ae5e3cd68fc14fcc64f196b7cb449583a">MMAGIC_STATUS_INVALID_CREDENTIALS</a> = 24
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92ac3fe866989e9197be9597137466c6f4f">MMAGIC_STATUS_HANDSHAKE_FAILED</a> = 25
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a6cbad4b631b9a589f6f378325843dfff">MMAGIC_STATUS_AUTHENTICATION_FAILED</a> = 26
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a7145f1fdf033d19ac93d7dad41ecdb7a">MMAGIC_STATUS_MISSING_CREDENTIALS</a> = 27
-, <br />
-&#160;&#160;<a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a49dc0377bbf2486b6d08b8a50604ba2a">MMAGIC_STATUS_TIME_NOT_SYNCHRONIZED</a> = 28
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92ab46093c0d16e6713d9986e8bb1c1ba07">MMAGIC_STATUS_MQTT_REFUSED</a> = 29
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a25505fb5b0ff3a2956fea1710d264b4a">MMAGIC_STATUS_MQTT_KEEPALIVE_TIMEOUT</a> = 30
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a4f4476c6024e47bd7c45eb3305f49612">MMAGIC_STATUS_NOT_INITIALIZED</a> = 31
-, <br />
-&#160;&#160;<a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92af434dd4ec6060646e5c698813b928748">MMAGIC_STATUS_BAD_VERSION</a> = 32
-<br />
- }</td></tr>
-<tr class="memdesc:gad2f6cd96ec8731a96031b0b5614f9f92"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enumeration of return status codes.  <a href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">More...</a><br /></td></tr>
-<tr class="separator:gad2f6cd96ec8731a96031b0b5614f9f92"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gad3cb603a5516a77d2899fb7ea756252e"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad3cb603a5516a77d2899fb7ea756252e">mmagic_iperf_mode</a> { <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad3cb603a5516a77d2899fb7ea756252eabb1077faadf0fef221bae80550995f51">MMAGIC_IPERF_MODE_UDP_SERVER</a> = 0
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad3cb603a5516a77d2899fb7ea756252ea816a42a2cee8cc8d4907eb28003ab978">MMAGIC_IPERF_MODE_TCP_SERVER</a> = 1
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad3cb603a5516a77d2899fb7ea756252ea5999401b9e180faf6c39172dfd7dc1ea">MMAGIC_IPERF_MODE_UDP_CLIENT</a> = 2
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad3cb603a5516a77d2899fb7ea756252ea3ef094265f8085827162c11890425a08">MMAGIC_IPERF_MODE_TCP_CLIENT</a> = 3
- }</td></tr>
-<tr class="memdesc:gad3cb603a5516a77d2899fb7ea756252e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mode to use when running the iperf.  <a href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad3cb603a5516a77d2899fb7ea756252e">More...</a><br /></td></tr>
-<tr class="separator:gad3cb603a5516a77d2899fb7ea756252e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga1c06869357e904d5103b07c572c06d9e"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga1c06869357e904d5103b07c572c06d9e">mmagic_iperf_state</a> { <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gga1c06869357e904d5103b07c572c06d9eaa41e3781eba5654320b2e89a3e351db7">MMAGIC_IPERF_STATE_NOT_STARTED</a> = 0
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gga1c06869357e904d5103b07c572c06d9ea13a2b39d0eaf1d8e2d7c61bb3a9fca82">MMAGIC_IPERF_STATE_RUNNING</a> = 1
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gga1c06869357e904d5103b07c572c06d9eab789dcb9880519f3fb3b31852cc077e4">MMAGIC_IPERF_STATE_FINISHED</a> = 2
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gga1c06869357e904d5103b07c572c06d9eadbbe18d255e79b50ba5656c00fe1661d">MMAGIC_IPERF_STATE_ABORTED</a> = 3
- }</td></tr>
-<tr class="memdesc:ga1c06869357e904d5103b07c572c06d9e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Current state of iperf session.  <a href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga1c06869357e904d5103b07c572c06d9e">More...</a><br /></td></tr>
-<tr class="separator:ga1c06869357e904d5103b07c572c06d9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga1692061985bc1a94d4a15a880aaeb95f"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga1692061985bc1a94d4a15a880aaeb95f">mmagic_ip_link_state</a> { <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gga1692061985bc1a94d4a15a880aaeb95fa0a11453e48b342a0c0099c4fa97b5aec">MMAGIC_IP_LINK_STATE_DOWN</a> = 0
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gga1692061985bc1a94d4a15a880aaeb95fae1fa6920d2c0139e585e96e202de1764">MMAGIC_IP_LINK_STATE_UP</a> = 1
- }</td></tr>
-<tr class="memdesc:ga1692061985bc1a94d4a15a880aaeb95f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Status of the IP link.  <a href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga1692061985bc1a94d4a15a880aaeb95f">More...</a><br /></td></tr>
-<tr class="separator:ga1692061985bc1a94d4a15a880aaeb95f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga6bff6987d5569c51bb6bb13b8fecb3eb"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga6bff6987d5569c51bb6bb13b8fecb3eb">mmagic_deep_sleep_mode</a> { <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gga6bff6987d5569c51bb6bb13b8fecb3eba4ac15813152be41be5e8a1bf42f5eea4">MMAGIC_DEEP_SLEEP_MODE_DISABLED</a> = 0
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gga6bff6987d5569c51bb6bb13b8fecb3eba26dd8e91f6c92d184d1410c1b54ae763">MMAGIC_DEEP_SLEEP_MODE_ONE_SHOT</a> = 1
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gga6bff6987d5569c51bb6bb13b8fecb3eba0b356867a4da64378e5122a27673c6fe">MMAGIC_DEEP_SLEEP_MODE_HARDWARE</a> = 2
- }</td></tr>
-<tr class="memdesc:ga6bff6987d5569c51bb6bb13b8fecb3eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deep sleep modes for the agent MCU.  <a href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga6bff6987d5569c51bb6bb13b8fecb3eb">More...</a><br /></td></tr>
-<tr class="separator:ga6bff6987d5569c51bb6bb13b8fecb3eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gab67ae7b325fb681fb00aaff541c63410"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gab67ae7b325fb681fb00aaff541c63410">mmagic_standby_mode_exit_reason</a> { <br />
-&#160;&#160;<a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggab67ae7b325fb681fb00aaff541c63410a9760249555936caae4cd9ce4120d7fd1">MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_NONE</a> = 0
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggab67ae7b325fb681fb00aaff541c63410a51e98ab2185bcc49065a0ecd9931f896">MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_WAKEUP_FRAME</a> = 1
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggab67ae7b325fb681fb00aaff541c63410a2a3f19943110f937fad0e6f309d687bf">MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_ASSOCIATE</a> = 2
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggab67ae7b325fb681fb00aaff541c63410a042ce0df65ebdcd8613ddc532fa1ee29">MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_EXT_INPUT</a> = 3
-, <br />
-&#160;&#160;<a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggab67ae7b325fb681fb00aaff541c63410a6d3a493adccd4545ddf3b12b290a7ce9">MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_WHITELIST_PKT</a> = 4
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggab67ae7b325fb681fb00aaff541c63410a1000ac0430f0cb2cdc9bf804e841627e">MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_TCP_CONNECTION_LOST</a> = 5
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggab67ae7b325fb681fb00aaff541c63410ab5dc6728ea2f3e3c21d3211467db7444">MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_HW_SCAN_NOT_ENABLED</a> = 6
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggab67ae7b325fb681fb00aaff541c63410a480e4754f7ffb6fb74cf79e6fb7f4bc5">MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_HW_SCAN_FAILED_TO_START</a> = 7
-<br />
- }</td></tr>
-<tr class="memdesc:gab67ae7b325fb681fb00aaff541c63410"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reasons for exiting standby mode.  <a href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gab67ae7b325fb681fb00aaff541c63410">More...</a><br /></td></tr>
-<tr class="separator:gab67ae7b325fb681fb00aaff541c63410"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga88a4a443f7e7b9959144eecefdf785a8"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga88a4a443f7e7b9959144eecefdf785a8">mmagic_sta_state</a> { <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gga88a4a443f7e7b9959144eecefdf785a8abf055ba93216e860515915d5bbf751eb">MMAGIC_STA_STATE_DISCONNECTED</a> = 1
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gga88a4a443f7e7b9959144eecefdf785a8a2fe04b4b880b052398eca7ca8e49a8e8">MMAGIC_STA_STATE_CONNECTING</a> = 2
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gga88a4a443f7e7b9959144eecefdf785a8ada7aa555c65b5c841f8445a2ec774b54">MMAGIC_STA_STATE_CONNECTED</a> = 3
- }</td></tr>
-<tr class="memdesc:ga88a4a443f7e7b9959144eecefdf785a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Station states.  <a href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga88a4a443f7e7b9959144eecefdf785a8">More...</a><br /></td></tr>
-<tr class="separator:ga88a4a443f7e7b9959144eecefdf785a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga64a3537e1a6d31e31bcc7f99bd3cadb8"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga64a3537e1a6d31e31bcc7f99bd3cadb8">mmagic_sta_event</a> { <br />
-&#160;&#160;<a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gga64a3537e1a6d31e31bcc7f99bd3cadb8acb84933f9a38f363b44962289be017ab">MMAGIC_STA_EVENT_SCAN_REQUEST</a> = 0
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gga64a3537e1a6d31e31bcc7f99bd3cadb8a5f7fac6b06c5688169470188c33539a0">MMAGIC_STA_EVENT_SCAN_COMPLETE</a> = 1
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gga64a3537e1a6d31e31bcc7f99bd3cadb8a8b49634c8018481898e8e45b0c76d438">MMAGIC_STA_EVENT_SCAN_ABORT</a> = 2
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gga64a3537e1a6d31e31bcc7f99bd3cadb8ac602600feb6716bf1d4e1967e101911c">MMAGIC_STA_EVENT_AUTH_REQUEST</a> = 3
-, <br />
-&#160;&#160;<a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gga64a3537e1a6d31e31bcc7f99bd3cadb8ace9e6c894d27644483f775d3fc8de328">MMAGIC_STA_EVENT_ASSOC_REQUEST</a> = 4
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gga64a3537e1a6d31e31bcc7f99bd3cadb8af3ef2c4086d70fb8b62d77866ac6e363">MMAGIC_STA_EVENT_DEAUTH_TX</a> = 5
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gga64a3537e1a6d31e31bcc7f99bd3cadb8a68a930c611991b0abf5c4d96714b60ce">MMAGIC_STA_EVENT_CTRL_PORT_OPEN</a> = 6
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gga64a3537e1a6d31e31bcc7f99bd3cadb8ad16b8510cbf6516a51c53bedcfb6051c">MMAGIC_STA_EVENT_CTRL_PORT_CLOSED</a> = 7
-<br />
- }</td></tr>
-<tr class="memdesc:ga64a3537e1a6d31e31bcc7f99bd3cadb8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Station connection events.  <a href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga64a3537e1a6d31e31bcc7f99bd3cadb8">More...</a><br /></td></tr>
-<tr class="separator:ga64a3537e1a6d31e31bcc7f99bd3cadb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gadc12f63888a42e66b656dd64b32b37e9"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gadc12f63888a42e66b656dd64b32b37e9">mmagic_subsystem</a> { <br />
 &#160;&#160;<a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggadc12f63888a42e66b656dd64b32b37e9a34813320ada453d675b27dbe970fb8ed">MMAGIC_WLAN</a> = 1
 , <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggadc12f63888a42e66b656dd64b32b37e9a3b6b5222af560bb57816ce820aab65d5">MMAGIC_IP</a> = 2
@@ -295,7 +162,7 @@ Enumerations</h2></td></tr>
 , <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggadc12f63888a42e66b656dd64b32b37e9a6b0d6e4219269707d311c6c0f78f39e2">MMAGIC_IPERF</a> = 4
 , <br />
 &#160;&#160;<a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggadc12f63888a42e66b656dd64b32b37e9a78ef328aa0c243b67cc6466a0f5385c5">MMAGIC_SYS</a> = 5
-, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggadc12f63888a42e66b656dd64b32b37e9a80df37c4ae90674770e88fa9379f23d7">MMAGIC_TCP</a> = 6
+, <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggadc12f63888a42e66b656dd64b32b37e9a6976a42560b75abf347cb7cec721c832">MMAGIC_SOCKET</a> = 6
 , <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggadc12f63888a42e66b656dd64b32b37e9a1c85845892b5d56d8ded48fba66d15f2">MMAGIC_TLS</a> = 7
 , <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggadc12f63888a42e66b656dd64b32b37e9aca15e7d182da3cb55511a011c48d3a1a">MMAGIC_NTP</a> = 8
 , <br />
@@ -304,452 +171,56 @@ Enumerations</h2></td></tr>
  }</td></tr>
 <tr class="memdesc:gadc12f63888a42e66b656dd64b32b37e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Subsytem IDs.  <a href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gadc12f63888a42e66b656dd64b32b37e9">More...</a><br /></td></tr>
 <tr class="separator:gadc12f63888a42e66b656dd64b32b37e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:ga85a18ec81764aaf65a7871202f07aee3"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMAGIC__CONTROLLER.html#gabfc75e5c38f3054e1643a04b81e3b54e">MM_PACKED</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga85a18ec81764aaf65a7871202f07aee3">mmagic_security_type</a></td></tr>
+<tr class="memdesc:ga85a18ec81764aaf65a7871202f07aee3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connection security type.  <a href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga85a18ec81764aaf65a7871202f07aee3">More...</a><br /></td></tr>
+<tr class="separator:ga85a18ec81764aaf65a7871202f07aee3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga010aee97c9acd7d463b3b4d90de5d2a9"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMAGIC__CONTROLLER.html#gabfc75e5c38f3054e1643a04b81e3b54e">MM_PACKED</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga010aee97c9acd7d463b3b4d90de5d2a9">mmagic_pmf_mode</a></td></tr>
+<tr class="memdesc:ga010aee97c9acd7d463b3b4d90de5d2a9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Protected management frame mode.  <a href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga010aee97c9acd7d463b3b4d90de5d2a9">More...</a><br /></td></tr>
+<tr class="separator:ga010aee97c9acd7d463b3b4d90de5d2a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga2bb82195122ddc0d954005aab92722aa"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMAGIC__CONTROLLER.html#gabfc75e5c38f3054e1643a04b81e3b54e">MM_PACKED</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga2bb82195122ddc0d954005aab92722aa">mmagic_power_save_mode</a></td></tr>
+<tr class="memdesc:ga2bb82195122ddc0d954005aab92722aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enumeration of supported 802.11 power save modes.  <a href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga2bb82195122ddc0d954005aab92722aa">More...</a><br /></td></tr>
+<tr class="separator:ga2bb82195122ddc0d954005aab92722aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaedcac996caf2e30d71595ac2a9c66bc1"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMAGIC__CONTROLLER.html#gabfc75e5c38f3054e1643a04b81e3b54e">MM_PACKED</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gaedcac996caf2e30d71595ac2a9c66bc1">mmagic_mcs10_mode</a></td></tr>
+<tr class="memdesc:gaedcac996caf2e30d71595ac2a9c66bc1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enumeration of MCS10 modes.  <a href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gaedcac996caf2e30d71595ac2a9c66bc1">More...</a><br /></td></tr>
+<tr class="separator:gaedcac996caf2e30d71595ac2a9c66bc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga6f93d49b6859217d9708fb49329c7792"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMAGIC__CONTROLLER.html#gabfc75e5c38f3054e1643a04b81e3b54e">MM_PACKED</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga6f93d49b6859217d9708fb49329c7792">mmagic_duty_cycle_mode</a></td></tr>
+<tr class="memdesc:ga6f93d49b6859217d9708fb49329c7792"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enumeration of duty cycle modes.  <a href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga6f93d49b6859217d9708fb49329c7792">More...</a><br /></td></tr>
+<tr class="separator:ga6f93d49b6859217d9708fb49329c7792"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaa5494d861e7bcdeeaa0a77ebc1636f42"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMAGIC__CONTROLLER.html#gabfc75e5c38f3054e1643a04b81e3b54e">MM_PACKED</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gaa5494d861e7bcdeeaa0a77ebc1636f42">mmagic_station_type</a></td></tr>
+<tr class="memdesc:gaa5494d861e7bcdeeaa0a77ebc1636f42"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enumeration of S1G non-AP STA types.  <a href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gaa5494d861e7bcdeeaa0a77ebc1636f42">More...</a><br /></td></tr>
+<tr class="separator:gaa5494d861e7bcdeeaa0a77ebc1636f42"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga202c6db4afd9d9ff976b0e61267ab6bb"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMAGIC__CONTROLLER.html#gabfc75e5c38f3054e1643a04b81e3b54e">MM_PACKED</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga202c6db4afd9d9ff976b0e61267ab6bb">mmagic_status</a></td></tr>
+<tr class="memdesc:ga202c6db4afd9d9ff976b0e61267ab6bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enumeration of return status codes.  <a href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga202c6db4afd9d9ff976b0e61267ab6bb">More...</a><br /></td></tr>
+<tr class="separator:ga202c6db4afd9d9ff976b0e61267ab6bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga1c99e012025b7f9f2a650b25e5e3129b"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMAGIC__CONTROLLER.html#gabfc75e5c38f3054e1643a04b81e3b54e">MM_PACKED</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga1c99e012025b7f9f2a650b25e5e3129b">mmagic_iperf_mode</a></td></tr>
+<tr class="memdesc:ga1c99e012025b7f9f2a650b25e5e3129b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mode to use when running the iperf.  <a href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga1c99e012025b7f9f2a650b25e5e3129b">More...</a><br /></td></tr>
+<tr class="separator:ga1c99e012025b7f9f2a650b25e5e3129b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga6816f1701e8d658fcb7d916623c766de"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMAGIC__CONTROLLER.html#gabfc75e5c38f3054e1643a04b81e3b54e">MM_PACKED</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga6816f1701e8d658fcb7d916623c766de">mmagic_iperf_state</a></td></tr>
+<tr class="memdesc:ga6816f1701e8d658fcb7d916623c766de"><td class="mdescLeft">&#160;</td><td class="mdescRight">Current state of iperf session.  <a href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga6816f1701e8d658fcb7d916623c766de">More...</a><br /></td></tr>
+<tr class="separator:ga6816f1701e8d658fcb7d916623c766de"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab6c13e7c29278ad543024a8cb030ebb5"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMAGIC__CONTROLLER.html#gabfc75e5c38f3054e1643a04b81e3b54e">MM_PACKED</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gab6c13e7c29278ad543024a8cb030ebb5">mmagic_ip_link_state</a></td></tr>
+<tr class="memdesc:gab6c13e7c29278ad543024a8cb030ebb5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Status of the IP link.  <a href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gab6c13e7c29278ad543024a8cb030ebb5">More...</a><br /></td></tr>
+<tr class="separator:gab6c13e7c29278ad543024a8cb030ebb5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga4e5f620cee786a562fbbaef1534d60ae"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMAGIC__CONTROLLER.html#gabfc75e5c38f3054e1643a04b81e3b54e">MM_PACKED</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga4e5f620cee786a562fbbaef1534d60ae">mmagic_deep_sleep_mode</a></td></tr>
+<tr class="memdesc:ga4e5f620cee786a562fbbaef1534d60ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deep sleep modes for the agent MCU.  <a href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga4e5f620cee786a562fbbaef1534d60ae">More...</a><br /></td></tr>
+<tr class="separator:ga4e5f620cee786a562fbbaef1534d60ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga172bbf6131b9143f531313f23e234c3f"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMAGIC__CONTROLLER.html#gabfc75e5c38f3054e1643a04b81e3b54e">MM_PACKED</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga172bbf6131b9143f531313f23e234c3f">mmagic_sta_state</a></td></tr>
+<tr class="memdesc:ga172bbf6131b9143f531313f23e234c3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Station states.  <a href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga172bbf6131b9143f531313f23e234c3f">More...</a><br /></td></tr>
+<tr class="separator:ga172bbf6131b9143f531313f23e234c3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gadaaecd281dc2d651e4bf4c937c56d87a"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMAGIC__CONTROLLER.html#gabfc75e5c38f3054e1643a04b81e3b54e">MM_PACKED</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gadaaecd281dc2d651e4bf4c937c56d87a">mmagic_sta_event</a></td></tr>
+<tr class="memdesc:gadaaecd281dc2d651e4bf4c937c56d87a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Station connection events.  <a href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gadaaecd281dc2d651e4bf4c937c56d87a">More...</a><br /></td></tr>
+<tr class="separator:gadaaecd281dc2d651e4bf4c937c56d87a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga18ae6d6d69d03c68f9defc8544c81285"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMAGIC__CONTROLLER.html#gabfc75e5c38f3054e1643a04b81e3b54e">MM_PACKED</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga18ae6d6d69d03c68f9defc8544c81285">mmagic_socket_proto</a></td></tr>
+<tr class="memdesc:ga18ae6d6d69d03c68f9defc8544c81285"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enumeration of socket protocols.  <a href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga18ae6d6d69d03c68f9defc8544c81285">More...</a><br /></td></tr>
+<tr class="separator:ga18ae6d6d69d03c68f9defc8544c81285"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga209351de1f06508107b1ddce9ace0bf7"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMAGIC__CONTROLLER.html#gabfc75e5c38f3054e1643a04b81e3b54e">MM_PACKED</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga209351de1f06508107b1ddce9ace0bf7">mmagic_subsystem_id</a></td></tr>
+<tr class="memdesc:ga209351de1f06508107b1ddce9ace0bf7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Morse subsystem identifiers.  <a href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga209351de1f06508107b1ddce9ace0bf7">More...</a><br /></td></tr>
+<tr class="separator:ga209351de1f06508107b1ddce9ace0bf7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
-<a id="ga6bff6987d5569c51bb6bb13b8fecb3eb" name="ga6bff6987d5569c51bb6bb13b8fecb3eb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga6bff6987d5569c51bb6bb13b8fecb3eb">&#9670;&nbsp;</a></span>mmagic_deep_sleep_mode</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga6bff6987d5569c51bb6bb13b8fecb3eb">mmagic_deep_sleep_mode</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Deep sleep modes for the agent MCU. </p>
-<table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="gga6bff6987d5569c51bb6bb13b8fecb3eba4ac15813152be41be5e8a1bf42f5eea4" name="gga6bff6987d5569c51bb6bb13b8fecb3eba4ac15813152be41be5e8a1bf42f5eea4"></a>MMAGIC_DEEP_SLEEP_MODE_DISABLED&#160;</td><td class="fielddoc"><p >Deep sleep is disabled. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="gga6bff6987d5569c51bb6bb13b8fecb3eba26dd8e91f6c92d184d1410c1b54ae763" name="gga6bff6987d5569c51bb6bb13b8fecb3eba26dd8e91f6c92d184d1410c1b54ae763"></a>MMAGIC_DEEP_SLEEP_MODE_ONE_SHOT&#160;</td><td class="fielddoc"><p >Deep sleep is enabled until activity occurs on the datalink. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="gga6bff6987d5569c51bb6bb13b8fecb3eba0b356867a4da64378e5122a27673c6fe" name="gga6bff6987d5569c51bb6bb13b8fecb3eba0b356867a4da64378e5122a27673c6fe"></a>MMAGIC_DEEP_SLEEP_MODE_HARDWARE&#160;</td><td class="fielddoc"><p >The datalink layer is responsible for waking the agent. </p>
-</td></tr>
-</table>
-
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00217">217</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
-
-</div>
-</div>
-<a id="gaaa8c41d233711415a15d8e746d61a974" name="gaaa8c41d233711415a15d8e746d61a974"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gaaa8c41d233711415a15d8e746d61a974">&#9670;&nbsp;</a></span>mmagic_duty_cycle_mode</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gaaa8c41d233711415a15d8e746d61a974">mmagic_duty_cycle_mode</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Enumeration of duty cycle modes. </p>
-<table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ggaaa8c41d233711415a15d8e746d61a974a4a8307e647356b4c3f2e085a7da11a5b" name="ggaaa8c41d233711415a15d8e746d61a974a4a8307e647356b4c3f2e085a7da11a5b"></a>MMAGIC_DUTY_CYCLE_MODE_SPREAD&#160;</td><td class="fielddoc"><p >Duty cycle air time is evenly spread. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggaaa8c41d233711415a15d8e746d61a974ad7d88ff711af93ab2faf2f713190e4f3" name="ggaaa8c41d233711415a15d8e746d61a974ad7d88ff711af93ab2faf2f713190e4f3"></a>MMAGIC_DUTY_CYCLE_MODE_BURST&#160;</td><td class="fielddoc"><p >Duty cycle air time available in burst. </p>
-</td></tr>
-</table>
-
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00090">90</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
-
-</div>
-</div>
-<a id="ga1692061985bc1a94d4a15a880aaeb95f" name="ga1692061985bc1a94d4a15a880aaeb95f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga1692061985bc1a94d4a15a880aaeb95f">&#9670;&nbsp;</a></span>mmagic_ip_link_state</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga1692061985bc1a94d4a15a880aaeb95f">mmagic_ip_link_state</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Status of the IP link. </p>
-<table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="gga1692061985bc1a94d4a15a880aaeb95fa0a11453e48b342a0c0099c4fa97b5aec" name="gga1692061985bc1a94d4a15a880aaeb95fa0a11453e48b342a0c0099c4fa97b5aec"></a>MMAGIC_IP_LINK_STATE_DOWN&#160;</td><td class="fielddoc"><p >Link is down because the interface is down or DHCP has not yet completed. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="gga1692061985bc1a94d4a15a880aaeb95fae1fa6920d2c0139e585e96e202de1764" name="gga1692061985bc1a94d4a15a880aaeb95fae1fa6920d2c0139e585e96e202de1764"></a>MMAGIC_IP_LINK_STATE_UP&#160;</td><td class="fielddoc"><p >Link is up. </p>
-<p >This implies that the interface is up and DHCP has completed. </p>
-</td></tr>
-</table>
-
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00208">208</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
-
-</div>
-</div>
-<a id="gad3cb603a5516a77d2899fb7ea756252e" name="gad3cb603a5516a77d2899fb7ea756252e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gad3cb603a5516a77d2899fb7ea756252e">&#9670;&nbsp;</a></span>mmagic_iperf_mode</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad3cb603a5516a77d2899fb7ea756252e">mmagic_iperf_mode</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Mode to use when running the iperf. </p>
-<table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ggad3cb603a5516a77d2899fb7ea756252eabb1077faadf0fef221bae80550995f51" name="ggad3cb603a5516a77d2899fb7ea756252eabb1077faadf0fef221bae80550995f51"></a>MMAGIC_IPERF_MODE_UDP_SERVER&#160;</td><td class="fielddoc"><p >Iperf UDP server (RX). </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggad3cb603a5516a77d2899fb7ea756252ea816a42a2cee8cc8d4907eb28003ab978" name="ggad3cb603a5516a77d2899fb7ea756252ea816a42a2cee8cc8d4907eb28003ab978"></a>MMAGIC_IPERF_MODE_TCP_SERVER&#160;</td><td class="fielddoc"><p >Iperf TCP server (RX). </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggad3cb603a5516a77d2899fb7ea756252ea5999401b9e180faf6c39172dfd7dc1ea" name="ggad3cb603a5516a77d2899fb7ea756252ea5999401b9e180faf6c39172dfd7dc1ea"></a>MMAGIC_IPERF_MODE_UDP_CLIENT&#160;</td><td class="fielddoc"><p >Iperf UDP client (TX). </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggad3cb603a5516a77d2899fb7ea756252ea3ef094265f8085827162c11890425a08" name="ggad3cb603a5516a77d2899fb7ea756252ea3ef094265f8085827162c11890425a08"></a>MMAGIC_IPERF_MODE_TCP_CLIENT&#160;</td><td class="fielddoc"><p >Iperf TCP client (TX). </p>
-</td></tr>
-</table>
-
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00182">182</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
-
-</div>
-</div>
-<a id="ga1c06869357e904d5103b07c572c06d9e" name="ga1c06869357e904d5103b07c572c06d9e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga1c06869357e904d5103b07c572c06d9e">&#9670;&nbsp;</a></span>mmagic_iperf_state</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga1c06869357e904d5103b07c572c06d9e">mmagic_iperf_state</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Current state of iperf session. </p>
-<table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="gga1c06869357e904d5103b07c572c06d9eaa41e3781eba5654320b2e89a3e351db7" name="gga1c06869357e904d5103b07c572c06d9eaa41e3781eba5654320b2e89a3e351db7"></a>MMAGIC_IPERF_STATE_NOT_STARTED&#160;</td><td class="fielddoc"><p >Iperf session not started. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="gga1c06869357e904d5103b07c572c06d9ea13a2b39d0eaf1d8e2d7c61bb3a9fca82" name="gga1c06869357e904d5103b07c572c06d9ea13a2b39d0eaf1d8e2d7c61bb3a9fca82"></a>MMAGIC_IPERF_STATE_RUNNING&#160;</td><td class="fielddoc"><p >Iperf session is in progress. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="gga1c06869357e904d5103b07c572c06d9eab789dcb9880519f3fb3b31852cc077e4" name="gga1c06869357e904d5103b07c572c06d9eab789dcb9880519f3fb3b31852cc077e4"></a>MMAGIC_IPERF_STATE_FINISHED&#160;</td><td class="fielddoc"><p >Iperf session has completed. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="gga1c06869357e904d5103b07c572c06d9eadbbe18d255e79b50ba5656c00fe1661d" name="gga1c06869357e904d5103b07c572c06d9eadbbe18d255e79b50ba5656c00fe1661d"></a>MMAGIC_IPERF_STATE_ABORTED&#160;</td><td class="fielddoc"><p >Iperf session has been aborted. </p>
-</td></tr>
-</table>
-
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00195">195</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
-
-</div>
-</div>
-<a id="gacd8a0b4b005bd5422c06bcd19e5188f8" name="gacd8a0b4b005bd5422c06bcd19e5188f8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gacd8a0b4b005bd5422c06bcd19e5188f8">&#9670;&nbsp;</a></span>mmagic_mcs10_mode</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gacd8a0b4b005bd5422c06bcd19e5188f8">mmagic_mcs10_mode</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Enumeration of MCS10 modes. </p>
-<table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ggacd8a0b4b005bd5422c06bcd19e5188f8ad018d44370cc27dd993e3378b4ce30e4" name="ggacd8a0b4b005bd5422c06bcd19e5188f8ad018d44370cc27dd993e3378b4ce30e4"></a>MMAGIC_MCS10_MODE_DISABLED&#160;</td><td class="fielddoc"><p >MCS10 is not used. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggacd8a0b4b005bd5422c06bcd19e5188f8a4edcf61e90ce01a21c983854455dfe26" name="ggacd8a0b4b005bd5422c06bcd19e5188f8a4edcf61e90ce01a21c983854455dfe26"></a>MMAGIC_MCS10_MODE_FORCED&#160;</td><td class="fielddoc"><p >MCS10 is always used instead of MCS0 when the bandwidth is 1 MHz. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggacd8a0b4b005bd5422c06bcd19e5188f8a1226170b0f9672a2995e43b11e302fb9" name="ggacd8a0b4b005bd5422c06bcd19e5188f8a1226170b0f9672a2995e43b11e302fb9"></a>MMAGIC_MCS10_MODE_AUTO&#160;</td><td class="fielddoc"><p >MCS10 is used on retries instead of MCS0 when the bandwidth is 1 MHz. </p>
-</td></tr>
-</table>
-
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00079">79</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
-
-</div>
-</div>
-<a id="gafe69353f5ae6df1244b958011101fa89" name="gafe69353f5ae6df1244b958011101fa89"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gafe69353f5ae6df1244b958011101fa89">&#9670;&nbsp;</a></span>mmagic_pmf_mode</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gafe69353f5ae6df1244b958011101fa89">mmagic_pmf_mode</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Protected management frame mode. </p>
-<table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ggafe69353f5ae6df1244b958011101fa89a871cfca963e3b81b84348374a6c0b8b4" name="ggafe69353f5ae6df1244b958011101fa89a871cfca963e3b81b84348374a6c0b8b4"></a>MMAGIC_PMF_MODE_REQUIRED&#160;</td><td class="fielddoc"><p >Protected management frames must be used. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggafe69353f5ae6df1244b958011101fa89a3a413c4c23f1bc92b716040ada19fb66" name="ggafe69353f5ae6df1244b958011101fa89a3a413c4c23f1bc92b716040ada19fb66"></a>MMAGIC_PMF_MODE_DISABLED&#160;</td><td class="fielddoc"><p >No protected management frames. </p>
-</td></tr>
-</table>
-
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00061">61</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
-
-</div>
-</div>
-<a id="gab72d6fbf5274af0a3bf24d67f4b2cfff" name="gab72d6fbf5274af0a3bf24d67f4b2cfff"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gab72d6fbf5274af0a3bf24d67f4b2cfff">&#9670;&nbsp;</a></span>mmagic_power_save_mode</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gab72d6fbf5274af0a3bf24d67f4b2cfff">mmagic_power_save_mode</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Enumeration of supported 802.11 power save modes. </p>
-<table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ggab72d6fbf5274af0a3bf24d67f4b2cfffa5eb2f347e926d962823f5ba3d1ae9775" name="ggab72d6fbf5274af0a3bf24d67f4b2cfffa5eb2f347e926d962823f5ba3d1ae9775"></a>MMAGIC_POWER_SAVE_MODE_DISABLED&#160;</td><td class="fielddoc"><p >Power save disabled. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggab72d6fbf5274af0a3bf24d67f4b2cfffa2adc7507b47a9abc80d7210f05bbe134" name="ggab72d6fbf5274af0a3bf24d67f4b2cfffa2adc7507b47a9abc80d7210f05bbe134"></a>MMAGIC_POWER_SAVE_MODE_ENABLED&#160;</td><td class="fielddoc"><p >Power save enabled. </p>
-</td></tr>
-</table>
-
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00070">70</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
-
-</div>
-</div>
-<a id="gac0cc9a0a39a6292bf1087fc917bf3dff" name="gac0cc9a0a39a6292bf1087fc917bf3dff"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gac0cc9a0a39a6292bf1087fc917bf3dff">&#9670;&nbsp;</a></span>mmagic_security_type</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gac0cc9a0a39a6292bf1087fc917bf3dff">mmagic_security_type</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Connection security type. </p>
-<table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ggac0cc9a0a39a6292bf1087fc917bf3dffaa09c9f5ec37c900d7b9ba2cf72936a5f" name="ggac0cc9a0a39a6292bf1087fc917bf3dffaa09c9f5ec37c900d7b9ba2cf72936a5f"></a>MMAGIC_SECURITY_TYPE_SAE&#160;</td><td class="fielddoc"><p >Simultaneous Authentication of Equals (password-based authentication). </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggac0cc9a0a39a6292bf1087fc917bf3dffaaa8188d0f3fe0640aec5f1015a1a3898" name="ggac0cc9a0a39a6292bf1087fc917bf3dffaaa8188d0f3fe0640aec5f1015a1a3898"></a>MMAGIC_SECURITY_TYPE_OWE&#160;</td><td class="fielddoc"><p >Opportunistic Wireless Encryption (encrypted, passwordless). </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggac0cc9a0a39a6292bf1087fc917bf3dffa63be0779ad549b18d24dd55d040d41ab" name="ggac0cc9a0a39a6292bf1087fc917bf3dffa63be0779ad549b18d24dd55d040d41ab"></a>MMAGIC_SECURITY_TYPE_OPEN&#160;</td><td class="fielddoc"><p >No security enabled at all. </p>
-</td></tr>
-</table>
-
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00050">50</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
-
-</div>
-</div>
-<a id="ga64a3537e1a6d31e31bcc7f99bd3cadb8" name="ga64a3537e1a6d31e31bcc7f99bd3cadb8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga64a3537e1a6d31e31bcc7f99bd3cadb8">&#9670;&nbsp;</a></span>mmagic_sta_event</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga64a3537e1a6d31e31bcc7f99bd3cadb8">mmagic_sta_event</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Station connection events. </p>
-<table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="gga64a3537e1a6d31e31bcc7f99bd3cadb8acb84933f9a38f363b44962289be017ab" name="gga64a3537e1a6d31e31bcc7f99bd3cadb8acb84933f9a38f363b44962289be017ab"></a>MMAGIC_STA_EVENT_SCAN_REQUEST&#160;</td><td class="fielddoc"><p >The STA is starting a scan. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="gga64a3537e1a6d31e31bcc7f99bd3cadb8a5f7fac6b06c5688169470188c33539a0" name="gga64a3537e1a6d31e31bcc7f99bd3cadb8a5f7fac6b06c5688169470188c33539a0"></a>MMAGIC_STA_EVENT_SCAN_COMPLETE&#160;</td><td class="fielddoc"><p >The STA has finished a scan. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="gga64a3537e1a6d31e31bcc7f99bd3cadb8a8b49634c8018481898e8e45b0c76d438" name="gga64a3537e1a6d31e31bcc7f99bd3cadb8a8b49634c8018481898e8e45b0c76d438"></a>MMAGIC_STA_EVENT_SCAN_ABORT&#160;</td><td class="fielddoc"><p >The STA has aborted a scan early. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="gga64a3537e1a6d31e31bcc7f99bd3cadb8ac602600feb6716bf1d4e1967e101911c" name="gga64a3537e1a6d31e31bcc7f99bd3cadb8ac602600feb6716bf1d4e1967e101911c"></a>MMAGIC_STA_EVENT_AUTH_REQUEST&#160;</td><td class="fielddoc"><p >The STA is sending an authentication request to the AP. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="gga64a3537e1a6d31e31bcc7f99bd3cadb8ace9e6c894d27644483f775d3fc8de328" name="gga64a3537e1a6d31e31bcc7f99bd3cadb8ace9e6c894d27644483f775d3fc8de328"></a>MMAGIC_STA_EVENT_ASSOC_REQUEST&#160;</td><td class="fielddoc"><p >The STA is sending an association request to the AP. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="gga64a3537e1a6d31e31bcc7f99bd3cadb8af3ef2c4086d70fb8b62d77866ac6e363" name="gga64a3537e1a6d31e31bcc7f99bd3cadb8af3ef2c4086d70fb8b62d77866ac6e363"></a>MMAGIC_STA_EVENT_DEAUTH_TX&#160;</td><td class="fielddoc"><p >The STA is sending an de-authorization request to the AP. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="gga64a3537e1a6d31e31bcc7f99bd3cadb8a68a930c611991b0abf5c4d96714b60ce" name="gga64a3537e1a6d31e31bcc7f99bd3cadb8a68a930c611991b0abf5c4d96714b60ce"></a>MMAGIC_STA_EVENT_CTRL_PORT_OPEN&#160;</td><td class="fielddoc"><p >The Supplicant IEEE 802.1X Controlled Port is now open. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="gga64a3537e1a6d31e31bcc7f99bd3cadb8ad16b8510cbf6516a51c53bedcfb6051c" name="gga64a3537e1a6d31e31bcc7f99bd3cadb8ad16b8510cbf6516a51c53bedcfb6051c"></a>MMAGIC_STA_EVENT_CTRL_PORT_CLOSED&#160;</td><td class="fielddoc"><p >The Supplicant IEEE 802.1X Controlled Port is now closed. </p>
-</td></tr>
-</table>
-
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00260">260</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
-
-</div>
-</div>
-<a id="ga88a4a443f7e7b9959144eecefdf785a8" name="ga88a4a443f7e7b9959144eecefdf785a8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga88a4a443f7e7b9959144eecefdf785a8">&#9670;&nbsp;</a></span>mmagic_sta_state</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga88a4a443f7e7b9959144eecefdf785a8">mmagic_sta_state</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Station states. </p>
-<table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="gga88a4a443f7e7b9959144eecefdf785a8abf055ba93216e860515915d5bbf751eb" name="gga88a4a443f7e7b9959144eecefdf785a8abf055ba93216e860515915d5bbf751eb"></a>MMAGIC_STA_STATE_DISCONNECTED&#160;</td><td class="fielddoc"><p >Disconnected from the AP. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="gga88a4a443f7e7b9959144eecefdf785a8a2fe04b4b880b052398eca7ca8e49a8e8" name="gga88a4a443f7e7b9959144eecefdf785a8a2fe04b4b880b052398eca7ca8e49a8e8"></a>MMAGIC_STA_STATE_CONNECTING&#160;</td><td class="fielddoc"><p >Connecting to the AP. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="gga88a4a443f7e7b9959144eecefdf785a8ada7aa555c65b5c841f8445a2ec774b54" name="gga88a4a443f7e7b9959144eecefdf785a8ada7aa555c65b5c841f8445a2ec774b54"></a>MMAGIC_STA_STATE_CONNECTED&#160;</td><td class="fielddoc"><p >Connected to the AP. </p>
-</td></tr>
-</table>
-
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00249">249</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
-
-</div>
-</div>
-<a id="gab67ae7b325fb681fb00aaff541c63410" name="gab67ae7b325fb681fb00aaff541c63410"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gab67ae7b325fb681fb00aaff541c63410">&#9670;&nbsp;</a></span>mmagic_standby_mode_exit_reason</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gab67ae7b325fb681fb00aaff541c63410">mmagic_standby_mode_exit_reason</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Reasons for exiting standby mode. </p>
-<table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ggab67ae7b325fb681fb00aaff541c63410a9760249555936caae4cd9ce4120d7fd1" name="ggab67ae7b325fb681fb00aaff541c63410a9760249555936caae4cd9ce4120d7fd1"></a>MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_NONE&#160;</td><td class="fielddoc"><p >Standby mode was exited manually through a call to standby_exit. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggab67ae7b325fb681fb00aaff541c63410a51e98ab2185bcc49065a0ecd9931f896" name="ggab67ae7b325fb681fb00aaff541c63410a51e98ab2185bcc49065a0ecd9931f896"></a>MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_WAKEUP_FRAME&#160;</td><td class="fielddoc"><p >We were woken up by a wakeup frame. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggab67ae7b325fb681fb00aaff541c63410a2a3f19943110f937fad0e6f309d687bf" name="ggab67ae7b325fb681fb00aaff541c63410a2a3f19943110f937fad0e6f309d687bf"></a>MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_ASSOCIATE&#160;</td><td class="fielddoc"><p >We just reassociated with the AP. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggab67ae7b325fb681fb00aaff541c63410a042ce0df65ebdcd8613ddc532fa1ee29" name="ggab67ae7b325fb681fb00aaff541c63410a042ce0df65ebdcd8613ddc532fa1ee29"></a>MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_EXT_INPUT&#160;</td><td class="fielddoc"><p >We were woken up by an external input trigger. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggab67ae7b325fb681fb00aaff541c63410a6d3a493adccd4545ddf3b12b290a7ce9" name="ggab67ae7b325fb681fb00aaff541c63410a6d3a493adccd4545ddf3b12b290a7ce9"></a>MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_WHITELIST_PKT&#160;</td><td class="fielddoc"><p >We received a packet from a whitelist source. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggab67ae7b325fb681fb00aaff541c63410a1000ac0430f0cb2cdc9bf804e841627e" name="ggab67ae7b325fb681fb00aaff541c63410a1000ac0430f0cb2cdc9bf804e841627e"></a>MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_TCP_CONNECTION_LOST&#160;</td><td class="fielddoc"><p >An open TCP connection was lost. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggab67ae7b325fb681fb00aaff541c63410ab5dc6728ea2f3e3c21d3211467db7444" name="ggab67ae7b325fb681fb00aaff541c63410ab5dc6728ea2f3e3c21d3211467db7444"></a>MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_HW_SCAN_NOT_ENABLED&#160;</td><td class="fielddoc"><p >Hardware scan was not enabled. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggab67ae7b325fb681fb00aaff541c63410a480e4754f7ffb6fb74cf79e6fb7f4bc5" name="ggab67ae7b325fb681fb00aaff541c63410a480e4754f7ffb6fb74cf79e6fb7f4bc5"></a>MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_HW_SCAN_FAILED_TO_START&#160;</td><td class="fielddoc"><p >Hardware scan failed to start. </p>
-</td></tr>
-</table>
-
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00228">228</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
-
-</div>
-</div>
-<a id="ga5961084162be913fd782e74577f96520" name="ga5961084162be913fd782e74577f96520"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga5961084162be913fd782e74577f96520">&#9670;&nbsp;</a></span>mmagic_station_type</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga5961084162be913fd782e74577f96520">mmagic_station_type</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Enumeration of S1G non-AP STA types. </p>
-<table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="gga5961084162be913fd782e74577f96520a606fcd381619e2b21597c4954831cf33" name="gga5961084162be913fd782e74577f96520a606fcd381619e2b21597c4954831cf33"></a>MMAGIC_STATION_TYPE_SENSOR&#160;</td><td class="fielddoc"><p >Sensor type. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="gga5961084162be913fd782e74577f96520a1a9af032f9b9f090405e3bdff254f18e" name="gga5961084162be913fd782e74577f96520a1a9af032f9b9f090405e3bdff254f18e"></a>MMAGIC_STATION_TYPE_NON_SENSOR&#160;</td><td class="fielddoc"><p >Non-Sensor type. </p>
-</td></tr>
-</table>
-
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00099">99</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
-
-</div>
-</div>
-<a id="gad2f6cd96ec8731a96031b0b5614f9f92" name="gad2f6cd96ec8731a96031b0b5614f9f92"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gad2f6cd96ec8731a96031b0b5614f9f92">&#9670;&nbsp;</a></span>mmagic_status</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Enumeration of return status codes. </p>
-<table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0" name="ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0"></a>MMAGIC_STATUS_OK&#160;</td><td class="fielddoc"><p >Operation was successful. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggad2f6cd96ec8731a96031b0b5614f9f92a7b037b2dd01fdce4eeac4afa38ccf727" name="ggad2f6cd96ec8731a96031b0b5614f9f92a7b037b2dd01fdce4eeac4afa38ccf727"></a>MMAGIC_STATUS_ERROR&#160;</td><td class="fielddoc"><p >The operation failed with an unspecified error. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggad2f6cd96ec8731a96031b0b5614f9f92af131c679ccf68d0b37278086792aa209" name="ggad2f6cd96ec8731a96031b0b5614f9f92af131c679ccf68d0b37278086792aa209"></a>MMAGIC_STATUS_INVALID_ARG&#160;</td><td class="fielddoc"><p >The operation failed due to an invalid argument. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggad2f6cd96ec8731a96031b0b5614f9f92aa73cb7cf2316260716d918a3adf44f65" name="ggad2f6cd96ec8731a96031b0b5614f9f92aa73cb7cf2316260716d918a3adf44f65"></a>MMAGIC_STATUS_UNAVAILABLE&#160;</td><td class="fielddoc"><p >Functionality is temporarily unavailable. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggad2f6cd96ec8731a96031b0b5614f9f92a2c1d729cfbc229d96fbbdb89f7f46a30" name="ggad2f6cd96ec8731a96031b0b5614f9f92a2c1d729cfbc229d96fbbdb89f7f46a30"></a>MMAGIC_STATUS_TIMEOUT&#160;</td><td class="fielddoc"><p >The operation timed out. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggad2f6cd96ec8731a96031b0b5614f9f92a9ca6214fd1a7875979ce2b589e2714a0" name="ggad2f6cd96ec8731a96031b0b5614f9f92a9ca6214fd1a7875979ce2b589e2714a0"></a>MMAGIC_STATUS_INVALID_STREAM&#160;</td><td class="fielddoc"><p >An invalid stream was specified. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggad2f6cd96ec8731a96031b0b5614f9f92a052c9dad19216a3a3756ac096c0fdb2c" name="ggad2f6cd96ec8731a96031b0b5614f9f92a052c9dad19216a3a3756ac096c0fdb2c"></a>MMAGIC_STATUS_NOT_FOUND&#160;</td><td class="fielddoc"><p >Specified operation was not found. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggad2f6cd96ec8731a96031b0b5614f9f92a83b08590d21f9130bddd127b002971c2" name="ggad2f6cd96ec8731a96031b0b5614f9f92a83b08590d21f9130bddd127b002971c2"></a>MMAGIC_STATUS_NOT_SUPPORTED&#160;</td><td class="fielddoc"><p >Specified operation is not supported. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggad2f6cd96ec8731a96031b0b5614f9f92a9afd35ed2c57c25887eed910c9ad713f" name="ggad2f6cd96ec8731a96031b0b5614f9f92a9afd35ed2c57c25887eed910c9ad713f"></a>MMAGIC_STATUS_TX_ERROR&#160;</td><td class="fielddoc"><p >An error occured during transmission. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggad2f6cd96ec8731a96031b0b5614f9f92abe80e31a894b419ef3b53e6f1c4f2995" name="ggad2f6cd96ec8731a96031b0b5614f9f92abe80e31a894b419ef3b53e6f1c4f2995"></a>MMAGIC_STATUS_NO_MEM&#160;</td><td class="fielddoc"><p >Failed due to memory allocation failure. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggad2f6cd96ec8731a96031b0b5614f9f92aa49755e66951b7d030bdf090f4d5de27" name="ggad2f6cd96ec8731a96031b0b5614f9f92aa49755e66951b7d030bdf090f4d5de27"></a>MMAGIC_STATUS_CLOSED&#160;</td><td class="fielddoc"><p >Failed due to stream being closed from the other side. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggad2f6cd96ec8731a96031b0b5614f9f92a00c737695a1f2638d65cab6e15a0fe0b" name="ggad2f6cd96ec8731a96031b0b5614f9f92a00c737695a1f2638d65cab6e15a0fe0b"></a>MMAGIC_STATUS_CHANNEL_LIST_NOT_SET&#160;</td><td class="fielddoc"><p >WLAN operation failed because the channel list has not been set. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggad2f6cd96ec8731a96031b0b5614f9f92aef247ebae18d86c5090e6b120d302404" name="ggad2f6cd96ec8731a96031b0b5614f9f92aef247ebae18d86c5090e6b120d302404"></a>MMAGIC_STATUS_SHUTDOWN_BLOCKED&#160;</td><td class="fielddoc"><p >WLAN shutdown failed. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggad2f6cd96ec8731a96031b0b5614f9f92a72a9c2bb10041ccf7a01a15def3267cc" name="ggad2f6cd96ec8731a96031b0b5614f9f92a72a9c2bb10041ccf7a01a15def3267cc"></a>MMAGIC_STATUS_CHANNEL_INVALID&#160;</td><td class="fielddoc"><p >Attempted to tune to a channel that was not available. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggad2f6cd96ec8731a96031b0b5614f9f92aba3219c36022bb6b3ffe6c1c67f38427" name="ggad2f6cd96ec8731a96031b0b5614f9f92aba3219c36022bb6b3ffe6c1c67f38427"></a>MMAGIC_STATUS_NOT_RUNNING&#160;</td><td class="fielddoc"><p >Operation failed because the WLAN device was not booted. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggad2f6cd96ec8731a96031b0b5614f9f92a410c796f38cf9c64ba9a8b03bfb2afef" name="ggad2f6cd96ec8731a96031b0b5614f9f92a410c796f38cf9c64ba9a8b03bfb2afef"></a>MMAGIC_STATUS_NO_LINK&#160;</td><td class="fielddoc"><p >Operation failed because the link was not up. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggad2f6cd96ec8731a96031b0b5614f9f92a94b9d1eef2064e9f097fa6c6c8b2a795" name="ggad2f6cd96ec8731a96031b0b5614f9f92a94b9d1eef2064e9f097fa6c6c8b2a795"></a>MMAGIC_STATUS_UNKNOWN_HOST&#160;</td><td class="fielddoc"><p >Failed to get an IP address for the given hostname. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggad2f6cd96ec8731a96031b0b5614f9f92ae370f3b93b96a043d3e91c9223360bb8" name="ggad2f6cd96ec8731a96031b0b5614f9f92ae370f3b93b96a043d3e91c9223360bb8"></a>MMAGIC_STATUS_SOCKET_FAILED&#160;</td><td class="fielddoc"><p >Failed to open the socket. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggad2f6cd96ec8731a96031b0b5614f9f92ab8c53b7e40d35ed2944001ed79a22bba" name="ggad2f6cd96ec8731a96031b0b5614f9f92ab8c53b7e40d35ed2944001ed79a22bba"></a>MMAGIC_STATUS_SOCKET_CONNECT_FAILED&#160;</td><td class="fielddoc"><p >Socket connection failed. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggad2f6cd96ec8731a96031b0b5614f9f92a3d8ae0507b43c6cbd6e9acf00a300b7a" name="ggad2f6cd96ec8731a96031b0b5614f9f92a3d8ae0507b43c6cbd6e9acf00a300b7a"></a>MMAGIC_STATUS_SOCKET_BIND_FAILED&#160;</td><td class="fielddoc"><p >Socket bind failed. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggad2f6cd96ec8731a96031b0b5614f9f92a273683e027ae66b77f99af86940c87e4" name="ggad2f6cd96ec8731a96031b0b5614f9f92a273683e027ae66b77f99af86940c87e4"></a>MMAGIC_STATUS_SOCKET_LISTEN_FAILED&#160;</td><td class="fielddoc"><p >Socket listen failed. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggad2f6cd96ec8731a96031b0b5614f9f92a814c9b34b03c4e0faf209b5a57d5e4a6" name="ggad2f6cd96ec8731a96031b0b5614f9f92a814c9b34b03c4e0faf209b5a57d5e4a6"></a>MMAGIC_STATUS_NTP_KOD_RECEIVED&#160;</td><td class="fielddoc"><p >NTP server returned Kiss-o'-Death. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggad2f6cd96ec8731a96031b0b5614f9f92ad50db21882ded796cb522f92fabcd570" name="ggad2f6cd96ec8731a96031b0b5614f9f92ad50db21882ded796cb522f92fabcd570"></a>MMAGIC_STATUS_NTP_KOD_BACKOFF_RECEIVED&#160;</td><td class="fielddoc"><p >NTP server returned Kiss-o'-Death with rate code. </p>
-<p >Client should backoff then retry. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggad2f6cd96ec8731a96031b0b5614f9f92a9c59be04b7228d08de5ac188cc45324a" name="ggad2f6cd96ec8731a96031b0b5614f9f92a9c59be04b7228d08de5ac188cc45324a"></a>MMAGIC_STATUS_SOCKET_SEND_FAILED&#160;</td><td class="fielddoc"><p >Socket send failed. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggad2f6cd96ec8731a96031b0b5614f9f92ae5e3cd68fc14fcc64f196b7cb449583a" name="ggad2f6cd96ec8731a96031b0b5614f9f92ae5e3cd68fc14fcc64f196b7cb449583a"></a>MMAGIC_STATUS_INVALID_CREDENTIALS&#160;</td><td class="fielddoc"><p >Credentials provided were invalid. </p>
-<p >Possible cause: missing null terminator on a PEM key/certificate. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggad2f6cd96ec8731a96031b0b5614f9f92ac3fe866989e9197be9597137466c6f4f" name="ggad2f6cd96ec8731a96031b0b5614f9f92ac3fe866989e9197be9597137466c6f4f"></a>MMAGIC_STATUS_HANDSHAKE_FAILED&#160;</td><td class="fielddoc"><p >Error during TLS handshake. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggad2f6cd96ec8731a96031b0b5614f9f92a6cbad4b631b9a589f6f378325843dfff" name="ggad2f6cd96ec8731a96031b0b5614f9f92a6cbad4b631b9a589f6f378325843dfff"></a>MMAGIC_STATUS_AUTHENTICATION_FAILED&#160;</td><td class="fielddoc"><p >Credentials provided by the server were not valid. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggad2f6cd96ec8731a96031b0b5614f9f92a7145f1fdf033d19ac93d7dad41ecdb7a" name="ggad2f6cd96ec8731a96031b0b5614f9f92a7145f1fdf033d19ac93d7dad41ecdb7a"></a>MMAGIC_STATUS_MISSING_CREDENTIALS&#160;</td><td class="fielddoc"><p >Missing certificate or key to open TLS connection. </p>
-<p >Provided through the TLS module configuration. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggad2f6cd96ec8731a96031b0b5614f9f92a49dc0377bbf2486b6d08b8a50604ba2a" name="ggad2f6cd96ec8731a96031b0b5614f9f92a49dc0377bbf2486b6d08b8a50604ba2a"></a>MMAGIC_STATUS_TIME_NOT_SYNCHRONIZED&#160;</td><td class="fielddoc"><p >Internal time has not been synchronized. </p>
-<p >This is required for certificate verification for TLS. Use the NTP module to synchronize internal time. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggad2f6cd96ec8731a96031b0b5614f9f92ab46093c0d16e6713d9986e8bb1c1ba07" name="ggad2f6cd96ec8731a96031b0b5614f9f92ab46093c0d16e6713d9986e8bb1c1ba07"></a>MMAGIC_STATUS_MQTT_REFUSED&#160;</td><td class="fielddoc"><p >The server refused a CONNECT or SUBSCRIBE. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggad2f6cd96ec8731a96031b0b5614f9f92a25505fb5b0ff3a2956fea1710d264b4a" name="ggad2f6cd96ec8731a96031b0b5614f9f92a25505fb5b0ff3a2956fea1710d264b4a"></a>MMAGIC_STATUS_MQTT_KEEPALIVE_TIMEOUT&#160;</td><td class="fielddoc"><p >Timed out while waiting for PINGRESP. </p>
-<p >Connection to the broker has been lost. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggad2f6cd96ec8731a96031b0b5614f9f92a4f4476c6024e47bd7c45eb3305f49612" name="ggad2f6cd96ec8731a96031b0b5614f9f92a4f4476c6024e47bd7c45eb3305f49612"></a>MMAGIC_STATUS_NOT_INITIALIZED&#160;</td><td class="fielddoc"><p >Operation failed because the MMWLAN subsystem was not initialized. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggad2f6cd96ec8731a96031b0b5614f9f92af434dd4ec6060646e5c698813b928748" name="ggad2f6cd96ec8731a96031b0b5614f9f92af434dd4ec6060646e5c698813b928748"></a>MMAGIC_STATUS_BAD_VERSION&#160;</td><td class="fielddoc"><p >Operation failed due to a version mismatch. </p>
-</td></tr>
-</table>
-
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00108">108</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
-
-</div>
-</div>
 <a id="gadc12f63888a42e66b656dd64b32b37e9" name="gadc12f63888a42e66b656dd64b32b37e9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#gadc12f63888a42e66b656dd64b32b37e9">&#9670;&nbsp;</a></span>mmagic_subsystem</h2>
 
@@ -774,7 +245,7 @@ Enumerations</h2></td></tr>
 </td></tr>
 <tr><td class="fieldname"><a id="ggadc12f63888a42e66b656dd64b32b37e9a78ef328aa0c243b67cc6466a0f5385c5" name="ggadc12f63888a42e66b656dd64b32b37e9a78ef328aa0c243b67cc6466a0f5385c5"></a>MMAGIC_SYS&#160;</td><td class="fielddoc"><p >Subsystem ID for <a class="el" href="group__MMAGIC__CONTROLLER__SYS.html">Module sys: System management.</a>. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="ggadc12f63888a42e66b656dd64b32b37e9a80df37c4ae90674770e88fa9379f23d7" name="ggadc12f63888a42e66b656dd64b32b37e9a80df37c4ae90674770e88fa9379f23d7"></a>MMAGIC_TCP&#160;</td><td class="fielddoc"><p >Subsystem ID for <a class="el" href="group__MMAGIC__CONTROLLER__TCP.html">Module tcp: TCP Socket IO, supports secure connections using TLS.</a>. </p>
+<tr><td class="fieldname"><a id="ggadc12f63888a42e66b656dd64b32b37e9a6976a42560b75abf347cb7cec721c832" name="ggadc12f63888a42e66b656dd64b32b37e9a6976a42560b75abf347cb7cec721c832"></a>MMAGIC_SOCKET&#160;</td><td class="fielddoc"><p >Subsystem ID for <a class="el" href="group__MMAGIC__CONTROLLER__SOCKET.html">Module socket: Socket IO, supports secure connections using</a>. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="ggadc12f63888a42e66b656dd64b32b37e9a1c85845892b5d56d8ded48fba66d15f2" name="ggadc12f63888a42e66b656dd64b32b37e9a1c85845892b5d56d8ded48fba66d15f2"></a>MMAGIC_TLS&#160;</td><td class="fielddoc"><p >Subsystem ID for <a class="el" href="group__MMAGIC__CONTROLLER__TLS.html">Module tls: TLS support.</a>. </p>
 </td></tr>
@@ -784,7 +255,278 @@ Enumerations</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00495">495</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00510">510</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="ga4e5f620cee786a562fbbaef1534d60ae" name="ga4e5f620cee786a562fbbaef1534d60ae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga4e5f620cee786a562fbbaef1534d60ae">&#9670;&nbsp;</a></span>mmagic_deep_sleep_mode</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__MMAGIC__CONTROLLER.html#gabfc75e5c38f3054e1643a04b81e3b54e">MM_PACKED</a> mmagic_deep_sleep_mode</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Deep sleep modes for the agent MCU. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00221">221</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+
+</div>
+</div>
+<a id="ga6f93d49b6859217d9708fb49329c7792" name="ga6f93d49b6859217d9708fb49329c7792"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga6f93d49b6859217d9708fb49329c7792">&#9670;&nbsp;</a></span>mmagic_duty_cycle_mode</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__MMAGIC__CONTROLLER.html#gabfc75e5c38f3054e1643a04b81e3b54e">MM_PACKED</a> mmagic_duty_cycle_mode</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Enumeration of duty cycle modes. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00090">90</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+
+</div>
+</div>
+<a id="gab6c13e7c29278ad543024a8cb030ebb5" name="gab6c13e7c29278ad543024a8cb030ebb5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gab6c13e7c29278ad543024a8cb030ebb5">&#9670;&nbsp;</a></span>mmagic_ip_link_state</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__MMAGIC__CONTROLLER.html#gabfc75e5c38f3054e1643a04b81e3b54e">MM_PACKED</a> mmagic_ip_link_state</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Status of the IP link. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00212">212</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+
+</div>
+</div>
+<a id="ga1c99e012025b7f9f2a650b25e5e3129b" name="ga1c99e012025b7f9f2a650b25e5e3129b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga1c99e012025b7f9f2a650b25e5e3129b">&#9670;&nbsp;</a></span>mmagic_iperf_mode</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__MMAGIC__CONTROLLER.html#gabfc75e5c38f3054e1643a04b81e3b54e">MM_PACKED</a> mmagic_iperf_mode</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Mode to use when running the iperf. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00186">186</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+
+</div>
+</div>
+<a id="ga6816f1701e8d658fcb7d916623c766de" name="ga6816f1701e8d658fcb7d916623c766de"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga6816f1701e8d658fcb7d916623c766de">&#9670;&nbsp;</a></span>mmagic_iperf_state</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__MMAGIC__CONTROLLER.html#gabfc75e5c38f3054e1643a04b81e3b54e">MM_PACKED</a> mmagic_iperf_state</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Current state of iperf session. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00199">199</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+
+</div>
+</div>
+<a id="gaedcac996caf2e30d71595ac2a9c66bc1" name="gaedcac996caf2e30d71595ac2a9c66bc1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaedcac996caf2e30d71595ac2a9c66bc1">&#9670;&nbsp;</a></span>mmagic_mcs10_mode</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__MMAGIC__CONTROLLER.html#gabfc75e5c38f3054e1643a04b81e3b54e">MM_PACKED</a> mmagic_mcs10_mode</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Enumeration of MCS10 modes. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00079">79</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+
+</div>
+</div>
+<a id="ga010aee97c9acd7d463b3b4d90de5d2a9" name="ga010aee97c9acd7d463b3b4d90de5d2a9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga010aee97c9acd7d463b3b4d90de5d2a9">&#9670;&nbsp;</a></span>mmagic_pmf_mode</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__MMAGIC__CONTROLLER.html#gabfc75e5c38f3054e1643a04b81e3b54e">MM_PACKED</a> mmagic_pmf_mode</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Protected management frame mode. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00061">61</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+
+</div>
+</div>
+<a id="ga2bb82195122ddc0d954005aab92722aa" name="ga2bb82195122ddc0d954005aab92722aa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga2bb82195122ddc0d954005aab92722aa">&#9670;&nbsp;</a></span>mmagic_power_save_mode</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__MMAGIC__CONTROLLER.html#gabfc75e5c38f3054e1643a04b81e3b54e">MM_PACKED</a> mmagic_power_save_mode</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Enumeration of supported 802.11 power save modes. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00070">70</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+
+</div>
+</div>
+<a id="ga85a18ec81764aaf65a7871202f07aee3" name="ga85a18ec81764aaf65a7871202f07aee3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga85a18ec81764aaf65a7871202f07aee3">&#9670;&nbsp;</a></span>mmagic_security_type</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__MMAGIC__CONTROLLER.html#gabfc75e5c38f3054e1643a04b81e3b54e">MM_PACKED</a> mmagic_security_type</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Connection security type. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00050">50</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+
+</div>
+</div>
+<a id="ga18ae6d6d69d03c68f9defc8544c81285" name="ga18ae6d6d69d03c68f9defc8544c81285"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga18ae6d6d69d03c68f9defc8544c81285">&#9670;&nbsp;</a></span>mmagic_socket_proto</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__MMAGIC__CONTROLLER.html#gabfc75e5c38f3054e1643a04b81e3b54e">MM_PACKED</a> mmagic_socket_proto</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Enumeration of socket protocols. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00264">264</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+
+</div>
+</div>
+<a id="gadaaecd281dc2d651e4bf4c937c56d87a" name="gadaaecd281dc2d651e4bf4c937c56d87a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gadaaecd281dc2d651e4bf4c937c56d87a">&#9670;&nbsp;</a></span>mmagic_sta_event</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__MMAGIC__CONTROLLER.html#gabfc75e5c38f3054e1643a04b81e3b54e">MM_PACKED</a> mmagic_sta_event</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Station connection events. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00243">243</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+
+</div>
+</div>
+<a id="ga172bbf6131b9143f531313f23e234c3f" name="ga172bbf6131b9143f531313f23e234c3f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga172bbf6131b9143f531313f23e234c3f">&#9670;&nbsp;</a></span>mmagic_sta_state</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__MMAGIC__CONTROLLER.html#gabfc75e5c38f3054e1643a04b81e3b54e">MM_PACKED</a> mmagic_sta_state</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Station states. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00232">232</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+
+</div>
+</div>
+<a id="gaa5494d861e7bcdeeaa0a77ebc1636f42" name="gaa5494d861e7bcdeeaa0a77ebc1636f42"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaa5494d861e7bcdeeaa0a77ebc1636f42">&#9670;&nbsp;</a></span>mmagic_station_type</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__MMAGIC__CONTROLLER.html#gabfc75e5c38f3054e1643a04b81e3b54e">MM_PACKED</a> mmagic_station_type</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Enumeration of S1G non-AP STA types. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00099">99</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+
+</div>
+</div>
+<a id="ga202c6db4afd9d9ff976b0e61267ab6bb" name="ga202c6db4afd9d9ff976b0e61267ab6bb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga202c6db4afd9d9ff976b0e61267ab6bb">&#9670;&nbsp;</a></span>mmagic_status</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__MMAGIC__CONTROLLER.html#gabfc75e5c38f3054e1643a04b81e3b54e">MM_PACKED</a> mmagic_status</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Enumeration of return status codes. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00108">108</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+
+</div>
+</div>
+<a id="ga209351de1f06508107b1ddce9ace0bf7" name="ga209351de1f06508107b1ddce9ace0bf7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga209351de1f06508107b1ddce9ace0bf7">&#9670;&nbsp;</a></span>mmagic_subsystem_id</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__MMAGIC__CONTROLLER.html#gabfc75e5c38f3054e1643a04b81e3b54e">MM_PACKED</a> mmagic_subsystem_id</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Morse subsystem identifiers. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l00273">273</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>

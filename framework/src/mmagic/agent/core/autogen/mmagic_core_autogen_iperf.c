@@ -16,6 +16,11 @@
  */
 #define MAX_VAL_LEN 101
 
+bool mmagic_core_iperf_is_started(struct mmagic_data *core)
+{
+    return core->iperf_data.is_started;
+}
+
 void mmagic_core_iperf_load_all(struct mmagic_data *core)
 {
     struct mmagic_iperf_data *data = &core->iperf_data;

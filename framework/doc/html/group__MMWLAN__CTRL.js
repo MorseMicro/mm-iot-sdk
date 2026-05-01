@@ -22,7 +22,7 @@ var group__MMWLAN__CTRL =
       [ "txop_max_us", "structmmwlan__qos__queue__params.html#a8ccffd8fbab6955b1af8bfa9f05731d1", null ]
     ] ],
     [ "mmwlan_boot_args", "structmmwlan__boot__args.html", [
-      [ "reserved", "structmmwlan__boot__args.html#ad1b87292b086d2c5338c47d78b6b3b24", null ]
+      [ "sta_mac_addr_override", "structmmwlan__boot__args.html#a451c1a9244468e0ec308eb3f1b3b25ec", null ]
     ] ],
     [ "MMWLAN_BCF_BOARD_DESC_MAXLEN", "group__MMWLAN__CTRL.html#ga6a527270b405c92b3b55085bfe979f9a", null ],
     [ "MMWLAN_BCF_BUILD_VERSION_MAXLEN", "group__MMWLAN__CTRL.html#ga8e76866a523294df88f5d0ebde46da2f", null ],

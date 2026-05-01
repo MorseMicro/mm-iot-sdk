@@ -32,6 +32,7 @@ FREERTOS_COMMON_SRCS_H += include/stack_macros.h
 FREERTOS_COMMON_SRCS_H += include/event_groups.h
 FREERTOS_COMMON_SRCS_H += include/semphr.h
 FREERTOS_COMMON_SRCS_H += include/mpu_wrappers.h
+FREERTOS_COMMON_SRCS_H += include/mpu_syscall_numbers.h
 FREERTOS_COMMON_SRCS_H += include/message_buffer.h
 FREERTOS_COMMON_SRCS_H += include/stream_buffer.h
 FREERTOS_COMMON_SRCS_H += include/timers.h

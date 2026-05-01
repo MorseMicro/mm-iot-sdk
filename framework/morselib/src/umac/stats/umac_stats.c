@@ -23,7 +23,7 @@ void umac_stats_dump(struct umac_data *umacd)
 #else
     struct mmwlan_stats_umac_data *data = umac_data_get_stats(umacd);
     MMLOG_APP("Stats: %lu %lu %lu [ %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu ] %d %u %u %u %u %u "
-              "%lu %lu %lu %u %lu %lu %lu %lu %lu %lu\n",
+              "%lu %lu %lu %u %lu %lu %lu %lu %lu %lu %lu %lu\n",
               data->last_tx_time,
               data->datapath_rxq_frames_dropped,
               data->datapath_txq_frames_dropped,
@@ -52,7 +52,9 @@ void umac_stats_dump(struct umac_data *umacd)
               data->datapath_rx_reorder_outdated_drops,
               data->datapath_rx_reorder_retransmit_drops,
               data->datapath_rx_reorder_total,
-              data->timeouts_fired);
+              data->timeouts_fired,
+              data->datapath_driver_tx_skbq_timeout,
+              data->datapath_driver_tx_pending_status_timeout);
 #endif
 }
 
@@ -216,6 +218,18 @@ int umac_stats_serialise(struct umac_data *umacd, uint8_t *buf, size_t buf_size)
                           20,
                           (const uint8_t *)&data->timeouts_fired,
                           sizeof(data->timeouts_fired));
+    ok = ok && append_tlv(buf,
+                          buf_size,
+                          &offset,
+                          21,
+                          (const uint8_t *)&data->datapath_driver_tx_skbq_timeout,
+                          sizeof(data->datapath_driver_tx_skbq_timeout));
+    ok = ok && append_tlv(buf,
+                          buf_size,
+                          &offset,
+                          22,
+                          (const uint8_t *)&data->datapath_driver_tx_pending_status_timeout,
+                          sizeof(data->datapath_driver_tx_pending_status_timeout));
     if (ok)
     {
         return offset;
@@ -649,4 +663,46 @@ void umac_stats_clear_timeouts_fired(struct umac_data *umacd)
     struct mmwlan_stats_umac_data *data = umac_data_get_stats(umacd);
 
     data->timeouts_fired = 0;
+}
+
+void umac_stats_increment_datapath_driver_tx_skbq_timeout(struct umac_data *umacd)
+{
+    struct mmwlan_stats_umac_data *data = umac_data_get_stats(umacd);
+
+    data->datapath_driver_tx_skbq_timeout++;
+}
+
+uint32_t umac_stats_get_datapath_driver_tx_skbq_timeout(struct umac_data *umacd)
+{
+    struct mmwlan_stats_umac_data *data = umac_data_get_stats(umacd);
+
+    return data->datapath_driver_tx_skbq_timeout;
+}
+
+void umac_stats_clear_datapath_driver_tx_skbq_timeout(struct umac_data *umacd)
+{
+    struct mmwlan_stats_umac_data *data = umac_data_get_stats(umacd);
+
+    data->datapath_driver_tx_skbq_timeout = 0;
+}
+
+void umac_stats_increment_datapath_driver_tx_pending_status_timeout(struct umac_data *umacd)
+{
+    struct mmwlan_stats_umac_data *data = umac_data_get_stats(umacd);
+
+    data->datapath_driver_tx_pending_status_timeout++;
+}
+
+uint32_t umac_stats_get_datapath_driver_tx_pending_status_timeout(struct umac_data *umacd)
+{
+    struct mmwlan_stats_umac_data *data = umac_data_get_stats(umacd);
+
+    return data->datapath_driver_tx_pending_status_timeout;
+}
+
+void umac_stats_clear_datapath_driver_tx_pending_status_timeout(struct umac_data *umacd)
+{
+    struct mmwlan_stats_umac_data *data = umac_data_get_stats(umacd);
+
+    data->datapath_driver_tx_pending_status_timeout = 0;
 }

@@ -20,17 +20,25 @@
 #error MMPKTMEM_RX_POOL_N_BLOCKS not defined
 #endif
 
+/* Optional statically allocated pool for MGMT class packets. Recommended when using AP mode to
+ * reserve packets for association frames and reliable beacon transmission. */
+#ifndef MMPKTMEM_TX_MGMT_POOL_N_BLOCKS
+#define MMPKTMEM_TX_MGMT_POOL_N_BLOCKS 0
+#endif
+
 /* Packet pool for data/management frames configuration. */
 #define MMPKTMEM_TX_DATA_POOL_UNPAUSE_THRESHOLD (2)
 #define MMPKTMEM_TX_DATA_POOL_PAUSE_THRESHOLD   (1)
 
-#define MMPKTMEM_TX_COMMAND_POOL_BLOCK_SIZE     (256)
+#define MMPKTMEM_TX_COMMAND_POOL_BLOCK_SIZE     (352)
 #define MMPKTMEM_TX_COMMAND_POOL_N_BLOCKS       (2)
 #define MMPKTMEM_RX_COMMAND_POOL_BLOCK_SIZE     (MMHAL_WLAN_MMPKT_RX_MAX_SIZE)
 #define MMPKTMEM_RX_COMMAND_POOL_N_BLOCKS       (2)
 
 #define MMPKTMEM_TX_POOL_BLOCK_SIZE             (MMHAL_WLAN_MMPKT_TX_MAX_SIZE)
 #define MMPKTMEM_RX_POOL_BLOCK_SIZE             (MMHAL_WLAN_MMPKT_RX_MAX_SIZE)
+
+#define MMPKTMEM_TX_MGMT_POOL_BLOCK_SIZE        (MMHAL_WLAN_MMPKT_TX_MAX_SIZE)
 
 #ifndef MMPKT_LOG
 #define MMPKT_LOG(...) printf(__VA_ARGS__)
@@ -52,12 +60,17 @@ struct pktmem_data
     /** Statically allocated memory for the TX data pool. */
     uint8_t tx_data_pool[MMPKTMEM_TX_POOL_BLOCK_SIZE * MMPKTMEM_TX_POOL_N_BLOCKS];
 
+    /** TX mgmt pool free (unallocated) packet list. */
+    struct mmpkt_list tx_mgmt_pool_free_list;
+    /** Statically allocated memory for the TX mgmt pool. */
+    uint8_t tx_mgmt_pool[MMPKTMEM_TX_MGMT_POOL_BLOCK_SIZE * MMPKTMEM_TX_MGMT_POOL_N_BLOCKS];
+
     /** RX command pool free (unallocated) packet list. */
     struct mmpkt_list rx_command_pool_free_list;
     /** Statically allocated memory for the RX command pool. */
     uint8_t rx_command_pool[MMPKTMEM_RX_POOL_BLOCK_SIZE * MMPKTMEM_RX_COMMAND_POOL_N_BLOCKS];
 
-    /** TX data pool free (unallocated) packet list. */
+    /** RX data pool free (unallocated) packet list. */
     struct mmpkt_list rx_data_pool_free_list;
     /** Statically allocated memory for the TX data pool. */
     uint8_t rx_data_pool[MMPKTMEM_RX_POOL_BLOCK_SIZE * MMPKTMEM_RX_POOL_N_BLOCKS];
@@ -92,6 +105,16 @@ void mmhal_wlan_pktmem_init(struct mmhal_wlan_pktmem_init_args *args)
                           (struct mmpkt *)(pktmem.tx_data_pool + offset));
     }
 
+#if MMPKTMEM_TX_MGMT_POOL_N_BLOCKS != 0
+    /* Initialize the free (unallocated) packet list of the transmit mgmt pool. */
+    for (ii = 0; ii < MMPKTMEM_TX_MGMT_POOL_N_BLOCKS; ii++)
+    {
+        size_t offset = MMPKTMEM_TX_MGMT_POOL_BLOCK_SIZE * ii;
+        mmpkt_list_append(&pktmem.tx_mgmt_pool_free_list,
+                          (struct mmpkt *)(pktmem.tx_mgmt_pool + offset));
+    }
+#endif
+
     /* Initialize the free (unallocated) packet list of the receive command pool. */
     for (ii = 0; ii < MMPKTMEM_RX_COMMAND_POOL_N_BLOCKS; ii++)
     {
@@ -118,6 +141,7 @@ void mmhal_wlan_pktmem_deinit(void)
     {
         if (pktmem.tx_command_pool_free_list.len != MMPKTMEM_TX_COMMAND_POOL_N_BLOCKS ||
             pktmem.tx_data_pool_free_list.len != MMPKTMEM_TX_POOL_N_BLOCKS ||
+            pktmem.tx_mgmt_pool_free_list.len != MMPKTMEM_TX_MGMT_POOL_N_BLOCKS ||
             pktmem.rx_command_pool_free_list.len != MMPKTMEM_RX_COMMAND_POOL_N_BLOCKS ||
             pktmem.rx_data_pool_free_list.len != MMPKTMEM_RX_POOL_N_BLOCKS)
         {
@@ -140,11 +164,18 @@ void mmhal_wlan_pktmem_deinit(void)
                   "tx data");
     }
 
+    if (pktmem.tx_mgmt_pool_free_list.len != MMPKTMEM_TX_MGMT_POOL_N_BLOCKS)
+    {
+        MMPKT_LOG("Potential memory leak: %d %s pool allocations at deinit\n",
+                  MMPKTMEM_TX_MGMT_POOL_N_BLOCKS - (int)pktmem.tx_mgmt_pool_free_list.len,
+                  "tx mgmt");
+    }
+
     if (pktmem.rx_command_pool_free_list.len != MMPKTMEM_RX_COMMAND_POOL_N_BLOCKS)
     {
         MMPKT_LOG("Potential memory leak: %d %s pool allocations at deinit\n",
                   MMPKTMEM_RX_COMMAND_POOL_N_BLOCKS - (int)pktmem.rx_command_pool_free_list.len,
-                  "rx");
+                  "rx cmd");
     }
 
     if (pktmem.rx_data_pool_free_list.len != MMPKTMEM_RX_POOL_N_BLOCKS)
@@ -251,6 +282,32 @@ static struct mmpkt *tx_command_pool_alloc(uint32_t space_at_start,
                                metadata_length);
 }
 
+#if MMPKTMEM_TX_MGMT_POOL_N_BLOCKS != 0
+static void tx_mgmt_free(void *mmpkt)
+{
+    struct mmpkt *pkt = (struct mmpkt *)mmpkt;
+    MMOSAL_TASK_ENTER_CRITICAL();
+    mmpkt_list_append(&pktmem.tx_mgmt_pool_free_list, pkt);
+    MMOSAL_TASK_EXIT_CRITICAL();
+}
+
+static const struct mmpkt_ops tx_mgmt_pool_ops = {
+    .free_mmpkt = tx_mgmt_free,
+};
+
+static struct mmpkt *tx_mgmt_pool_alloc(uint32_t space_at_start,
+                                        uint32_t space_at_end,
+                                        uint32_t metadata_length)
+{
+    return alloc_pkt_from_list(&pktmem.tx_mgmt_pool_free_list,
+                               MMPKTMEM_TX_MGMT_POOL_BLOCK_SIZE,
+                               &tx_mgmt_pool_ops,
+                               space_at_start,
+                               space_at_end,
+                               metadata_length);
+}
+#endif
+
 static struct mmpkt *tx_data_pool_alloc(uint32_t space_at_start,
                                         uint32_t space_at_end,
                                         uint32_t metadata_length)
@@ -295,6 +352,19 @@ struct mmpkt *mmhal_wlan_alloc_mmpkt_for_tx(uint8_t pkt_class,
             return mmpkt;
         }
     }
+
+#if MMPKTMEM_TX_MGMT_POOL_N_BLOCKS != 0
+    /* For management packets, try allocating from the management pool first. If that fails then we
+     * proceed to allocate from the data pool. */
+    if (pkt_class == MMHAL_WLAN_PKT_MANAGEMENT)
+    {
+        mmpkt = tx_mgmt_pool_alloc(space_at_start, space_at_end, metadata_length);
+        if (mmpkt != NULL)
+        {
+            return mmpkt;
+        }
+    }
+#endif
 
     mmpkt = tx_data_pool_alloc(space_at_start, space_at_end, metadata_length);
 

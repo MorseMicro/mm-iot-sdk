@@ -45,11 +45,6 @@ enum mmagic_status mmagic_cli_handle_event(void *arg,
                         ctx,
                         (const struct mmagic_core_event_wlan_beacon_rx_args *)payload);
                     return MMAGIC_STATUS_OK;
-                case mmagic_wlan_event_standby_exit:
-                    mmagic_cli_wlan_handle_event_standby_exit(
-                        ctx,
-                        (const struct mmagic_core_event_wlan_standby_exit_args *)payload);
-                    return MMAGIC_STATUS_OK;
                 case mmagic_wlan_event_sta_event:
                     mmagic_cli_wlan_handle_event_sta_event(
                         ctx,

@@ -20,6 +20,7 @@ struct mmagic_ntp_config
 
 struct mmagic_ntp_data
 {
+    bool is_started;
     struct mmagic_ntp_config config;
     /** Subsystem private data (to be allocated/managed by the subsystem implementation). */
     void *priv;
@@ -52,6 +53,14 @@ void mmagic_core_ntp_save_all(struct mmagic_data *core);
  * @param core   Reference to to global mmagic context struct.
  */
 void mmagic_core_ntp_start(struct mmagic_data *core);
+
+/**
+ * Function to check if the ntp subsystem has been initialized.
+ *
+ * @param core   Reference to to global mmagic context struct.
+ * @return       True if mmagic_core_ntp_init has been called, false otherwise.
+ */
+bool mmagic_core_ntp_is_started(struct mmagic_data *core);
 
 enum mmagic_status mmagic_core_ntp_sync(struct mmagic_data *core);
 

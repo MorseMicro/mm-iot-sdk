@@ -40,9 +40,6 @@ struct datapath_txq_data
 };
 
 
-struct umac_datapath_ops;
-
-
 struct umac_datapath_data
 {
 
@@ -73,8 +70,6 @@ struct umac_datapath_data
     void *rx_frame_cb_arg;
 
     uint32_t rx_frame_filter;
-
-    const struct umac_datapath_ops *ops;
 };
 
 

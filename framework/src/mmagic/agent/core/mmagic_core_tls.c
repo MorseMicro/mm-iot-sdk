@@ -17,5 +17,6 @@ void mmagic_core_tls_init(struct mmagic_data *core)
 
 void mmagic_core_tls_start(struct mmagic_data *core)
 {
-    MM_UNUSED(core);
+    struct mmagic_tls_data *data = mmagic_data_get_tls(core);
+    data->is_started = true;
 }

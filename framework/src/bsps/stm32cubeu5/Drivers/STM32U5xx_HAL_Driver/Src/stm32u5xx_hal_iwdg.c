@@ -78,7 +78,7 @@
       (++) Enable instance by writing Start keyword in IWDG_KEY register. LSI
            clock is forced ON and IWDG counter starts counting down.
       (++) Enable write access to configuration registers:
-          IWDG_PR, IWDG_RLR, IWDG_WINR and EWCR.
+          IWDG_PR, IWDG_RLR, IWDG_WINR, IWDG_EWCR.
       (++) Configure the IWDG prescaler and counter reload value. This reload
            value will be loaded in the IWDG counter each time the watchdog is
            reloaded, then the IWDG will start counting down from this value.
@@ -137,7 +137,8 @@
    The timeout value is multiplied by 1000 to be converted in milliseconds.
    LSI startup time is also considered here by adding LSI_STARTUP_TIME
    converted in milliseconds. */
-#define HAL_IWDG_DEFAULT_TIMEOUT        (((1UL * 1024UL * 1000UL) / LSI_VALUE) + ((LSI_STARTUP_TIME / 1000UL) + 1UL))
+#define HAL_IWDG_DEFAULT_TIMEOUT        (((1UL * 1024UL * 1000UL) / (LSI_VALUE / 128U)) + \
+                                         ((LSI_STARTUP_TIME / 1000UL) + 1UL))
 #define IWDG_KERNEL_UPDATE_FLAGS        (IWDG_SR_EWU | IWDG_SR_WVU | IWDG_SR_RVU | IWDG_SR_PVU)
 /**
   * @}
@@ -216,7 +217,7 @@ HAL_StatusTypeDef HAL_IWDG_Init(IWDG_HandleTypeDef *hiwdg)
   /* Enable IWDG. LSI is turned on automatically */
   __HAL_IWDG_START(hiwdg);
 
-  /* Enable write access to IWDG_PR, IWDG_RLR, IWDG_WINR and EWCR registers by writing
+  /* Enable write access to IWDG_PR, IWDG_RLR, IWDG_WINR, IWDG_EWCR registers by writing
   0x5555 in KR */
   IWDG_ENABLE_WRITE_ACCESS(hiwdg);
 
@@ -297,7 +298,7 @@ __weak void HAL_IWDG_MspInit(IWDG_HandleTypeDef *hiwdg)
 #if (USE_HAL_IWDG_REGISTER_CALLBACKS == 1)
 /**
   * @brief  Register a User IWDG Callback
-  *         To be used instead of the weak (surcharged) predefined callback
+  *         To be used instead of the weak (overridden) predefined callback
   * @param  hiwdg IWDG handle
   * @param  CallbackID ID of the callback to be registered
   *         This parameter can be one of the following values:
@@ -338,7 +339,7 @@ HAL_StatusTypeDef HAL_IWDG_RegisterCallback(IWDG_HandleTypeDef *hiwdg, HAL_IWDG_
 
 /**
   * @brief  Unregister a IWDG Callback
-  *         IWDG Callback is redirected to the weak (surcharged) predefined callback
+  *         IWDG Callback is redirected to the weak (overridden) predefined callback
   * @param  hiwdg IWDG handle
   * @param  CallbackID ID of the callback to be registered
   *         This parameter can be one of the following values:

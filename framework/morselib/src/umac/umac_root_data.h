@@ -18,4 +18,7 @@ struct umac_root_data
     mmwlan_scan_rx_cb_t scan_rx_cb;
     mmwlan_scan_complete_cb_t scan_complete_cb;
     void *scan_cb_arg;
+    mmwlan_fatal_error_handler_t fatal_error_handler;
+    void *fatal_error_handler_arg;
+    bool fatal_error;
 };

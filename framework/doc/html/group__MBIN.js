@@ -20,5 +20,6 @@ var group__MBIN =
     [ "MBIN_FW_MAGIC_NUMBER", "group__MBIN.html#ga19596314ce03f3c5a77c7134a9f6b1c8", null ],
     [ "MBIN_SW_MAGIC_NUMBER", "group__MBIN.html#ga5741dea85b112cfa0965f8fac9faa299", null ],
     [ "PACKED", "group__MBIN.html#ga36d525cf4d116b2fe4ecc00222b256f1", null ],
+    [ "mbin_coredump_region_types", "group__MBIN.html#ga89cc722539e219664eb444fa8dd1160d", null ],
     [ "mbin_tlv_types", "group__MBIN.html#gab0d3f4ede88ad76c355d75fef726ba43", null ]
 ];

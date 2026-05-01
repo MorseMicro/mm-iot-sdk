@@ -38,6 +38,8 @@
 
 static const u8 null_rsc[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
+static const u8 * wpa_sm_get_ap_rsnxe(struct wpa_sm *sm, size_t *len);
+
 
 static void _wpa_hexdump_link(int level, u8 link_id, const char *title,
 			      const void *buf, size_t len, bool key)
@@ -257,8 +259,7 @@ void wpa_sm_key_request(struct wpa_sm *sm, int error, int pairwise)
 	if (rbuf == NULL)
 		return;
 
-	reply->type = (sm->proto == WPA_PROTO_RSN ||
-		       sm->proto == WPA_PROTO_OSEN) ?
+	reply->type = (sm->proto == WPA_PROTO_RSN) ?
 		EAPOL_KEY_TYPE_RSN : EAPOL_KEY_TYPE_WPA;
 	key_info = WPA_KEY_INFO_REQUEST | ver;
 	key_info |= WPA_KEY_INFO_SECURE;
@@ -483,8 +484,7 @@ static int wpa_supplicant_get_pmk(struct wpa_sm *sm,
 
 	if (abort_cached && wpa_key_mgmt_wpa_ieee8021x(sm->key_mgmt) &&
 	    !wpa_key_mgmt_suite_b(sm->key_mgmt) &&
-	    !wpa_key_mgmt_ft(sm->key_mgmt) && sm->key_mgmt != WPA_KEY_MGMT_OSEN)
-	{
+	    !wpa_key_mgmt_ft(sm->key_mgmt)) {
 		/* Send EAPOL-Start to trigger full EAP authentication. */
 		u8 *buf;
 		size_t buflen;
@@ -638,8 +638,7 @@ int wpa_supplicant_send_2_of_4(struct wpa_sm *sm, const unsigned char *dst,
 		return -1;
 	}
 
-	reply->type = (sm->proto == WPA_PROTO_RSN ||
-		       sm->proto == WPA_PROTO_OSEN) ?
+	reply->type = (sm->proto == WPA_PROTO_RSN) ?
 		EAPOL_KEY_TYPE_RSN : EAPOL_KEY_TYPE_WPA;
 	key_info = ver | WPA_KEY_INFO_KEY_TYPE;
 	if (sm->ptk_set && sm->proto != WPA_PROTO_WPA)
@@ -651,9 +650,11 @@ int wpa_supplicant_send_2_of_4(struct wpa_sm *sm, const unsigned char *dst,
 #ifdef CONFIG_TESTING_OPTIONS
 	if (sm->encrypt_eapol_m2)
 		key_info |= WPA_KEY_INFO_ENCR_KEY_DATA;
+	if (sm->eapol_2_key_info_set_mask)
+		key_info |= sm->eapol_2_key_info_set_mask;
 #endif /* CONFIG_TESTING_OPTIONS */
 	WPA_PUT_BE16(reply->key_info, key_info);
-	if (sm->proto == WPA_PROTO_RSN || sm->proto == WPA_PROTO_OSEN)
+	if (sm->proto == WPA_PROTO_RSN)
 		WPA_PUT_BE16(reply->key_length, 0);
 	else
 		os_memcpy(reply->key_length, key->key_length, 2);
@@ -719,9 +720,11 @@ static int wpa_derive_ptk(struct wpa_sm *sm, const unsigned char *src_addr,
 			  const struct wpa_eapol_key *key, struct wpa_ptk *ptk)
 {
 	int ret;
-	const u8 *z = NULL;
-	size_t z_len = 0, kdk_len;
+	const u8 *z = NULL, *ap_rsnxe;
+	size_t z_len = 0, kdk_len, ap_rsnxe_len;
 	int akmp;
+
+	ap_rsnxe = wpa_sm_get_ap_rsnxe(sm, &ap_rsnxe_len);
 
 #ifdef CONFIG_IEEE80211R
 	if (wpa_key_mgmt_ft(sm->key_mgmt))
@@ -747,7 +750,7 @@ static int wpa_derive_ptk(struct wpa_sm *sm, const unsigned char *src_addr,
 
 	if (sm->force_kdk_derivation ||
 	    (sm->secure_ltf &&
-	     ieee802_11_rsnx_capab(sm->ap_rsnxe, WLAN_RSNX_CAPAB_SECURE_LTF)))
+	     ieee802_11_rsnx_capab(ap_rsnxe, WLAN_RSNX_CAPAB_SECURE_LTF)))
 		kdk_len = WPA_KDK_MAX_LEN;
 	else
 		kdk_len = 0;
@@ -764,7 +767,7 @@ static int wpa_derive_ptk(struct wpa_sm *sm, const unsigned char *src_addr,
 
 #ifdef CONFIG_PASN
 	if (sm->secure_ltf &&
-	    ieee802_11_rsnx_capab(sm->ap_rsnxe, WLAN_RSNX_CAPAB_SECURE_LTF))
+	    ieee802_11_rsnx_capab(ap_rsnxe, WLAN_RSNX_CAPAB_SECURE_LTF))
 		ret = wpa_ltf_keyseed(ptk, akmp, sm->pairwise_cipher);
 #endif /* CONFIG_PASN */
 
@@ -1266,15 +1269,21 @@ static int wpa_supplicant_install_ptk(struct wpa_sm *sm,
 	int keylen, rsclen;
 	enum wpa_alg alg;
 	const u8 *key_rsc;
+#ifdef CONFIG_PASN
+	const u8 *ap_rsnxe;
+	size_t ap_rsnxe_len;
+#endif /* CONFIG_PASN */
 
-	if (sm->ptk.installed) {
+	if (sm->ptk.installed ||
+	    (sm->ptk.installed_rx && (key_flag & KEY_FLAG_NEXT))) {
 		wpa_dbg(sm->ctx->msg_ctx, MSG_DEBUG,
 			"WPA: Do not re-install same PTK to the driver");
 		return 0;
 	}
 
 	wpa_dbg(sm->ctx->msg_ctx, MSG_DEBUG,
-		"WPA: Installing PTK to the driver");
+		"WPA: Installing %sTK to the driver",
+		(key_flag & KEY_FLAG_NEXT) ? "next " : "");
 
 	if (sm->pairwise_cipher == WPA_CIPHER_NONE) {
 		wpa_dbg(sm->ctx->msg_ctx, MSG_DEBUG, "WPA: Pairwise Cipher "
@@ -1298,7 +1307,7 @@ static int wpa_supplicant_install_ptk(struct wpa_sm *sm,
 	}
 	rsclen = wpa_cipher_rsc_len(sm->pairwise_cipher);
 
-	if (sm->proto == WPA_PROTO_RSN || sm->proto == WPA_PROTO_OSEN) {
+	if (sm->proto == WPA_PROTO_RSN) {
 		key_rsc = null_rsc;
 	} else {
 		key_rsc = key->key_rsc;
@@ -1308,6 +1317,9 @@ static int wpa_supplicant_install_ptk(struct wpa_sm *sm,
 	if (wpa_sm_set_key(sm, -1, alg, wpa_sm_get_auth_addr(sm),
 			   sm->keyidx_active, 1, key_rsc, rsclen, sm->ptk.tk,
 			   keylen, KEY_FLAG_PAIRWISE | key_flag) < 0) {
+		if (key_flag & KEY_FLAG_NEXT)
+			return 0; /* Not all drivers support this, so do not
+				   * report failures on the RX-only set_key */
 		wpa_msg(sm->ctx->msg_ctx, MSG_WARNING,
 			"WPA: Failed to set PTK to the driver (alg=%d keylen=%d auth_addr="
 			MACSTR " idx=%d key_flag=0x%x)",
@@ -1317,8 +1329,9 @@ static int wpa_supplicant_install_ptk(struct wpa_sm *sm,
 	}
 
 #ifdef CONFIG_PASN
+	ap_rsnxe = wpa_sm_get_ap_rsnxe(sm, &ap_rsnxe_len);
 	if (sm->secure_ltf &&
-	    ieee802_11_rsnx_capab(sm->ap_rsnxe, WLAN_RSNX_CAPAB_SECURE_LTF) &&
+	    ieee802_11_rsnx_capab(ap_rsnxe, WLAN_RSNX_CAPAB_SECURE_LTF) &&
 	    wpa_sm_set_ltf_keyseed(sm, sm->own_addr, sm->bssid,
 				   sm->ptk.ltf_keyseed_len,
 				   sm->ptk.ltf_keyseed) < 0) {
@@ -1333,14 +1346,17 @@ static int wpa_supplicant_install_ptk(struct wpa_sm *sm,
 	wpa_sm_store_ptk(sm, sm->bssid, sm->pairwise_cipher,
 			 sm->dot11RSNAConfigPMKLifetime, &sm->ptk);
 
-	if (!WPA_EAPOL_M4_TIMEOUT_RESEND) {
-		/* TK is not needed anymore in supplicant */
-		os_memset(sm->ptk.tk, 0, WPA_TK_MAX_LEN);
-		sm->ptk.tk_len = 0;
+	if (key_flag & KEY_FLAG_NEXT) {
+		sm->ptk.installed_rx = true;
+	} else {
+		if (!WPA_EAPOL_M4_TIMEOUT_RESEND) {
+			/* TK is not needed anymore in supplicant */
+			os_memset(sm->ptk.tk, 0, WPA_TK_MAX_LEN);
+			sm->ptk.tk_len = 0;
+		}
+		sm->ptk.installed = 1;
+		sm->tk_set = true;
 	}
-
-	sm->ptk.installed = 1;
-	sm->tk_set = true;
 
 	if (sm->wpa_ptk_rekey) {
 		eloop_cancel_timeout(wpa_sm_rekey_ptk, sm, NULL);
@@ -2405,8 +2421,7 @@ int wpa_supplicant_send_4_of_4(struct wpa_sm *sm, const unsigned char *dst,
 		return -1;
 	}
 
-	reply->type = (sm->proto == WPA_PROTO_RSN ||
-		       sm->proto == WPA_PROTO_OSEN) ?
+	reply->type = (sm->proto == WPA_PROTO_RSN) ?
 		EAPOL_KEY_TYPE_RSN : EAPOL_KEY_TYPE_WPA;
 	key_info &= WPA_KEY_INFO_SECURE;
 	key_info |= ver | WPA_KEY_INFO_KEY_TYPE;
@@ -2419,7 +2434,7 @@ int wpa_supplicant_send_4_of_4(struct wpa_sm *sm, const unsigned char *dst,
 		key_info |= WPA_KEY_INFO_ENCR_KEY_DATA;
 #endif /* CONFIG_TESTING_OPTIONS */
 	WPA_PUT_BE16(reply->key_info, key_info);
-	if (sm->proto == WPA_PROTO_RSN || sm->proto == WPA_PROTO_OSEN)
+	if (sm->proto == WPA_PROTO_RSN)
 		WPA_PUT_BE16(reply->key_length, 0);
 	else
 		os_memcpy(reply->key_length, key->key_length, 2);
@@ -2759,6 +2774,52 @@ failed:
 }
 
 
+static void wpa_sm_sae_pw_id_change(struct wpa_sm *sm, const u8 *kde,
+				    size_t kde_len)
+{
+	const u8 *pos = kde, *end = kde + kde_len;
+	u8 flags;
+	struct wpabuf_array *wa;
+
+	wpa_hexdump(MSG_DEBUG, "RSN: Received SAE Password Identifiers KDE",
+		    kde, kde_len);
+
+	if (end - pos < 1)
+		return;
+	flags = *pos++;
+	wpa_printf(MSG_DEBUG, "RSN: SAE Password Identifiers Flags: 0x%x",
+		   flags);
+
+	if (!sm->ctx->sae_pw_id_change)
+		return;
+
+	wa = wpabuf_array_alloc();
+	if (!wa)
+		return;
+
+	while (end > pos) {
+		u8 len;
+
+		len = *pos++;
+		if (end - pos < len) {
+			wpa_printf(MSG_INFO,
+				   "RSN: Truncated SAE Password Identifier Tuple");
+			wpabuf_array_free(wa);
+			return;
+		}
+		wpa_hexdump(MSG_DEBUG, "RSN: SAE Password Identifier",
+			    pos, len);
+		if (wpabuf_array_add(wa, wpabuf_alloc_copy(pos, len))) {
+			wpabuf_array_free(wa);
+			return;
+		}
+		pos += len;
+	}
+
+	sm->ctx->sae_pw_id_change(sm->ctx->ctx, wa);
+}
+
+
 static void wpa_supplicant_process_3_of_4(struct wpa_sm *sm,
 					  const struct wpa_eapol_key *key,
 					  u16 ver, const u8 *key_data,
@@ -2947,6 +3008,16 @@ static void wpa_supplicant_process_3_of_4(struct wpa_sm *sm,
 	    wpa_supplicant_install_ptk(sm, key, KEY_FLAG_RX))
 		goto failed;
 
+	if (!sm->use_ext_key_id &&
+	    wpa_supplicant_install_ptk(sm, key, KEY_FLAG_RX | KEY_FLAG_NEXT)) {
+		/* Continue anyway since the many drivers do not support
+		 * configuration of the TK for RX-only purposes for cases where
+		 * multiple keys might be in use in parallel and this being an
+		 * optional optimization to avoid race condition during TK
+		 * changes that could result in some protected frames getting
+		 * discarded. */
+	}
+
 	if (old_state == WPA_COMPLETED && WPA_EAPOL_M4_TIMEOUT_RESEND)
 		wpa_supplicant_handle_m4_timeout(sm);
 
@@ -3033,6 +3104,9 @@ static void wpa_supplicant_process_3_of_4(struct wpa_sm *sm,
 
 	if (ie.transition_disable)
 		wpa_sm_transition_disable(sm, ie.transition_disable[0]);
+	if (ie.sae_pw_ids && wpa_key_mgmt_sae(sm->key_mgmt) &&
+	    sm->sae_pw_id_change)
+		wpa_sm_sae_pw_id_change(sm, ie.sae_pw_ids, ie.sae_pw_ids_len);
 	sm->msg_3_of_4_ok = 1;
 	return;
 
@@ -3069,8 +3143,7 @@ static int wpa_supplicant_send_2_of_2(struct wpa_sm *sm,
 	if (rbuf == NULL)
 		return -1;
 
-	reply->type = (sm->proto == WPA_PROTO_RSN ||
-		       sm->proto == WPA_PROTO_OSEN) ?
+	reply->type = (sm->proto == WPA_PROTO_RSN) ?
 		EAPOL_KEY_TYPE_RSN : EAPOL_KEY_TYPE_WPA;
 	key_info &= WPA_KEY_INFO_KEY_INDEX_MASK;
 	key_info |= ver | WPA_KEY_INFO_SECURE;
@@ -3079,7 +3152,7 @@ static int wpa_supplicant_send_2_of_2(struct wpa_sm *sm,
 	else
 		key_info |= WPA_KEY_INFO_ENCR_KEY_DATA;
 	WPA_PUT_BE16(reply->key_info, key_info);
-	if (sm->proto == WPA_PROTO_RSN || sm->proto == WPA_PROTO_OSEN)
+	if (sm->proto == WPA_PROTO_RSN)
 		WPA_PUT_BE16(reply->key_length, 0);
 	else
 		os_memcpy(reply->key_length, key->key_length, 2);
@@ -3478,6 +3551,28 @@ failed:
 }
 
 
+static void wpa_sm_tptk_to_ptk(struct wpa_sm *sm)
+{
+	sm->tptk_set = 0;
+	sm->ptk_set = 1;
+	os_memcpy(&sm->ptk, &sm->tptk, sizeof(sm->ptk));
+	os_memset(&sm->tptk, 0, sizeof(sm->tptk));
+
+	if (wpa_sm_pmf_enabled(sm)) {
+		os_memcpy(sm->last_kck, sm->ptk.kck, sm->ptk.kck_len);
+		sm->last_kck_len = sm->ptk.kck_len;
+		sm->last_kck_pmk_len = sm->pmk_len;
+		sm->last_kck_key_mgmt = sm->key_mgmt;
+		sm->last_kck_eapol_key_ver = sm->last_eapol_key_ver;
+		os_memcpy(sm->last_kck_aa, wpa_sm_get_auth_addr(sm), ETH_ALEN);
+	} else {
+		os_memset(sm->last_kck, 0, sizeof(sm->last_kck));
+		sm->last_kck_len = 0;
+		os_memset(sm->last_kck_aa, 0, ETH_ALEN);
+	}
+}
+
+
 static int wpa_supplicant_verify_eapol_key_mic(struct wpa_sm *sm,
 					       struct wpa_eapol_key *key,
 					       u16 ver,
@@ -3507,10 +3602,7 @@ static int wpa_supplicant_verify_eapol_key_mic(struct wpa_sm *sm,
 		continue_fuzz:
 #endif /* TEST_FUZZ */
 			ok = 1;
-			sm->tptk_set = 0;
-			sm->ptk_set = 1;
-			os_memcpy(&sm->ptk, &sm->tptk, sizeof(sm->ptk));
-			os_memset(&sm->tptk, 0, sizeof(sm->tptk));
+			wpa_sm_tptk_to_ptk(sm);
 			/*
 			 * This assures the same TPTK in sm->tptk can never be
 			 * copied twice to sm->ptk as the new PTK. In
@@ -3763,12 +3855,8 @@ static int wpa_supp_aead_decrypt(struct wpa_sm *sm, u8 *buf, size_t buf_len,
 	WPA_PUT_BE16(pos, *key_data_len);
 	bin_clear_free(tmp, *key_data_len);
 
-	if (sm->tptk_set) {
-		sm->tptk_set = 0;
-		sm->ptk_set = 1;
-		os_memcpy(&sm->ptk, &sm->tptk, sizeof(sm->ptk));
-		os_memset(&sm->tptk, 0, sizeof(sm->tptk));
-	}
+	if (sm->tptk_set)
+		wpa_sm_tptk_to_ptk(sm);
 
 	os_memcpy(sm->rx_replay_counter, key->replay_counter,
 		  WPA_REPLAY_COUNTER_LEN);
@@ -3868,7 +3956,8 @@ static int wpa_sm_rx_eapol_wpa(struct wpa_sm *sm, const u8 *src_addr,
  * @buf: Pointer to the beginning of the EAPOL data (EAPOL header)
  * @len: Length of the EAPOL frame
  * @encrypted: Whether the frame was encrypted
- * Returns: 1 = WPA EAPOL-Key processed, 0 = not a WPA EAPOL-Key, -1 failure
+ * Returns: 1 = WPA EAPOL-Key processed, 0 = not a WPA EAPOL-Key, -1 failure,
+ *	    -2 = reply counter did not increase.
  *
  * This function is called for each received EAPOL frame. Other than EAPOL-Key
  * frames can be skipped if filtering is done elsewhere. wpa_sm_rx_eapol() is
@@ -3977,6 +4066,7 @@ int wpa_sm_rx_eapol(struct wpa_sm *sm, const u8 *src_addr,
 		      WPA_REPLAY_COUNTER_LEN) <= 0) {
 		wpa_msg(sm->ctx->msg_ctx, MSG_WARNING,
 			"WPA: EAPOL-Key Replay Counter did not increase - dropping packet");
+		ret = -2;
 		goto out;
 	}
 
@@ -4091,6 +4181,8 @@ int wpa_sm_rx_eapol(struct wpa_sm *sm, const u8 *src_addr,
 		goto out;
 	}
 
+	sm->last_eapol_key_ver = ver;
+
 	if ((key_info & WPA_KEY_INFO_MIC) &&
 	    wpa_supplicant_verify_eapol_key_mic(sm, key, ver, tmp, data_len))
 		goto out;
@@ -4102,7 +4194,7 @@ int wpa_sm_rx_eapol(struct wpa_sm *sm, const u8 *src_addr,
 	}
 #endif /* CONFIG_FILS */
 
-	if ((sm->proto == WPA_PROTO_RSN || sm->proto == WPA_PROTO_OSEN) &&
+	if (sm->proto == WPA_PROTO_RSN &&
 	    (key_info & WPA_KEY_INFO_ENCR_KEY_DATA) && mic_len) {
 		/*
 		 * Only decrypt the Key Data field if the frame's authenticity
@@ -4172,8 +4264,7 @@ static u32 wpa_key_mgmt_suite(struct wpa_sm *sm)
 {
 	switch (sm->key_mgmt) {
 	case WPA_KEY_MGMT_IEEE8021X:
-		return ((sm->proto == WPA_PROTO_RSN ||
-			 sm->proto == WPA_PROTO_OSEN) ?
+		return ((sm->proto == WPA_PROTO_RSN) ?
 			RSN_AUTH_KEY_MGMT_UNSPEC_802_1X :
 			WPA_AUTH_KEY_MGMT_UNSPEC_802_1X);
 	case WPA_KEY_MGMT_PSK:
@@ -4426,6 +4517,8 @@ void wpa_sm_deinit(struct wpa_sm *sm)
 	wpabuf_free(sm->test_assoc_ie);
 	wpabuf_free(sm->test_eapol_m2_elems);
 	wpabuf_free(sm->test_eapol_m4_elems);
+	wpabuf_free(sm->test_rsnxe_data);
+	wpabuf_free(sm->test_rsnxe_mask);
 #endif /* CONFIG_TESTING_OPTIONS */
 #ifdef CONFIG_FILS_SK_PFS
 	crypto_ecdh_deinit(sm->fils_ecdh);
@@ -4439,6 +4532,7 @@ void wpa_sm_deinit(struct wpa_sm *sm)
 #ifdef CONFIG_DPP2
 	wpabuf_clear_free(sm->dpp_z);
 #endif /* CONFIG_DPP2 */
+	os_memset(sm->last_kck, 0, sizeof(sm->last_kck));
 	os_free(sm);
 }
 
@@ -4745,14 +4839,36 @@ void wpa_sm_set_ssid(struct wpa_sm *sm, const u8 *ssid, size_t ssid_len)
 }
 
 
+static void wpa_sm_clear_mlo_group_keys(struct wpa_sm *sm, int link_id)
+{
+	if (!sm)
+		return;
+
+	os_memset(&sm->mlo.links[link_id].gtk, 0,
+		  sizeof(sm->mlo.links[link_id].gtk));
+	os_memset(&sm->mlo.links[link_id].gtk_wnm_sleep, 0,
+		  sizeof(sm->mlo.links[link_id].gtk_wnm_sleep));
+	os_memset(&sm->mlo.links[link_id].igtk, 0,
+		  sizeof(sm->mlo.links[link_id].igtk));
+	os_memset(&sm->mlo.links[link_id].igtk_wnm_sleep, 0,
+		  sizeof(sm->mlo.links[link_id].igtk_wnm_sleep));
+	os_memset(&sm->mlo.links[link_id].bigtk, 0,
+		  sizeof(sm->mlo.links[link_id].bigtk));
+	os_memset(&sm->mlo.links[link_id].bigtk_wnm_sleep, 0,
+		  sizeof(sm->mlo.links[link_id].bigtk_wnm_sleep));
+}
+
+
 int wpa_sm_set_mlo_params(struct wpa_sm *sm, const struct wpa_sm_mlo *mlo)
 {
 	int i;
+	u16 removed_links;
 
 	if (!sm)
 		return -1;
 
 	os_memcpy(sm->mlo.ap_mld_addr, mlo->ap_mld_addr, ETH_ALEN);
+	removed_links = ~mlo->valid_links & sm->mlo.valid_links;
 	sm->mlo.assoc_link_id =  mlo->assoc_link_id;
 	sm->mlo.valid_links = mlo->valid_links;
 	sm->mlo.req_links = mlo->req_links;
@@ -4881,6 +4997,13 @@ int wpa_sm_set_mlo_params(struct wpa_sm *sm, const struct wpa_sm_mlo *mlo)
 			}
 			sm->mlo.links[i].ap_rsnxoe_len = len;
 		}
+
+		if (removed_links & BIT(i)) {
+			wpa_printf(MSG_DEBUG,
+				   "RSN: Clearing MLO group keys for link[%u]",
+				   i);
+			wpa_sm_clear_mlo_group_keys(sm, i);
+		}
 	}
 
 	return 0;
@@ -5000,6 +5123,9 @@ int wpa_sm_set_param(struct wpa_sm *sm, enum wpa_sm_conf_params param,
 	case WPA_PARAM_USE_EXT_KEY_ID:
 		sm->use_ext_key_id = value;
 		break;
+	case WPA_PARAM_SPP_AMSDU:
+		sm->spp_amsdu = !!value;
+		break;
 #ifdef CONFIG_TESTING_OPTIONS
 	case WPA_PARAM_FT_RSNXE_USED:
 		sm->ft_rsnxe_used = value;
@@ -5025,7 +5151,16 @@ int wpa_sm_set_param(struct wpa_sm *sm, enum wpa_sm_conf_params param,
 	case WPA_PARAM_ENCRYPT_EAPOL_M4:
 		sm->encrypt_eapol_m4 = value;
 		break;
+	case WPA_PARAM_EAPOL_2_KEY_INFO_SET_MASK:
+		sm->eapol_2_key_info_set_mask = value;
+		break;
 #endif /* CONFIG_TESTING_OPTIONS */
+	case WPA_PARAM_URNM_MFPR:
+		sm->prot_range_neg = value;
+		break;
+	case WPA_PARAM_URNM_MFPR_X20:
+		sm->prot_range_neg_x20 = value;
+		break;
 #ifdef CONFIG_DPP2
 	case WPA_PARAM_DPP_PFS:
 		sm->dpp_pfs = value;
@@ -5045,6 +5180,9 @@ int wpa_sm_set_param(struct wpa_sm *sm, enum wpa_sm_conf_params param,
 		break;
 	case WPA_PARAM_RSN_OVERRIDE_SUPPORT:
 		sm->rsn_override_support = value;
+		break;
+	case WPA_PARAM_SAE_PW_ID_CHANGE:
+		sm->sae_pw_id_change = !!value;
 		break;
 	default:
 		break;
@@ -5068,6 +5206,19 @@ static const u8 * wpa_sm_get_ap_rsne(struct wpa_sm *sm, size_t *len)
 
 	*len = sm->ap_rsn_ie_len;
 	return sm->ap_rsn_ie;
+}
+
+
+static const u8 * wpa_sm_get_ap_rsnxe(struct wpa_sm *sm, size_t *len)
+{
+	if (sm->rsn_override != RSN_OVERRIDE_NOT_USED &&
+	    sm->ap_rsnxe_override && sm->ap_rsnxe_override_len) {
+		*len = sm->ap_rsnxe_override_len;
+		return sm->ap_rsnxe_override;
+	}
+
+	*len = sm->ap_rsnxe_len;
+	return sm->ap_rsnxe;
 }
 
 
@@ -5293,6 +5444,76 @@ int wpa_sm_set_assoc_wpa_ie(struct wpa_sm *sm, const u8 *ie, size_t len)
 }
 
 
+#ifdef CONFIG_TESTING_OPTIONS
+
+int wpa_sm_set_test_rsnxe_data(struct wpa_sm *sm, struct wpabuf *data,
+			       struct wpabuf *mask)
+{
+	size_t data_len = 0, mask_len = 0;
+
+	wpabuf_free(sm->test_rsnxe_data);
+	sm->test_rsnxe_data = NULL;
+	wpabuf_free(sm->test_rsnxe_mask);
+	sm->test_rsnxe_mask = NULL;
+
+	if (!data && !mask)
+		return 0;
+
+	if (data)
+		data_len = wpabuf_len(data);
+	if (mask)
+		mask_len = wpabuf_len(mask);
+
+	if (data_len != mask_len || data_len > 255)
+		return -1;
+
+	sm->test_rsnxe_data = data;
+	sm->test_rsnxe_mask = mask;
+
+	return 0;
+}
+
+
+static int wpa_set_test_rsnxe_data(struct wpa_sm *sm, u8 *rsnxe,
+				   size_t orig_len, size_t max_len)
+{
+	const u8 *data, *mask;
+	size_t i, data_len;
+
+	if (!sm->test_rsnxe_data || !sm->test_rsnxe_mask)
+		return orig_len;
+
+	mask = wpabuf_head(sm->test_rsnxe_mask);
+	data = wpabuf_head(sm->test_rsnxe_data);
+	data_len = wpabuf_len(sm->test_rsnxe_data);
+	if (max_len < data_len + 2) {
+		wpa_printf(MSG_ERROR, "Couldn't fit RSNXE test data");
+		return -1;
+	}
+
+	/* Set data after original RSNXE to zero */
+	if (orig_len < data_len + 2)
+		os_memset(&rsnxe[orig_len], 0, data_len + 2 - orig_len);
+
+	/* Set EID and length fields */
+	*rsnxe++ = WLAN_EID_RSNX;
+	*rsnxe++ = data_len;
+
+	/* Preserve original RSNXE bit value when mask bit is zero */
+	for (i = 0; i < data_len; i++) {
+		if (!mask[i])
+			continue;
+
+		rsnxe[i] &= ~mask[i];
+		rsnxe[i] |= data[i] & mask[i];
+	}
+
+	return data_len + 2;
+}
+
+#endif /* CONFIG_TESTING_OPTIONS */
+
+
 /**
  * wpa_sm_set_assoc_rsnxe_default - Generate own RSNXE from configuration
  * @sm: Pointer to WPA state machine data from wpa_sm_init()
@@ -5311,6 +5532,11 @@ int wpa_sm_set_assoc_rsnxe_default(struct wpa_sm *sm, u8 *rsnxe,
 	res = wpa_gen_rsnxe(sm, rsnxe, *rsnxe_len);
 	if (res < 0)
 		return -1;
+#ifdef CONFIG_TESTING_OPTIONS
+	res = wpa_set_test_rsnxe_data(sm, rsnxe, res, *rsnxe_len);
+	if (res < 0)
+		return -1;
+#endif /* CONFIG_TESTING_OPTIONS */
 	*rsnxe_len = res;
 
 	wpa_hexdump(MSG_DEBUG, "RSN: Set own RSNXE default", rsnxe, *rsnxe_len);
@@ -5625,6 +5851,25 @@ struct rsn_pmksa_cache_entry * wpa_sm_pmksa_cache_get(struct wpa_sm *sm,
 {
 	return pmksa_cache_get(sm->pmksa, aa, sm->own_addr, pmkid, network_ctx,
 			       akmp);
+}
+
+
+int wpa_sm_pmksa_get_pmk(struct wpa_sm *sm, const u8 *aa, const u8 **pmk,
+			 size_t *pmk_len, const u8 **pmkid)
+{
+	struct rsn_pmksa_cache_entry *pmksa;
+
+	pmksa = wpa_sm_pmksa_cache_get(sm, aa, NULL, NULL, 0);
+	if (!pmksa) {
+		wpa_printf(MSG_DEBUG, "RSN: Failed to get PMKSA for " MACSTR,
+			   MAC2STR(aa));
+		return -1;
+	}
+
+	*pmk = pmksa->pmk;
+	*pmk_len = pmksa->pmk_len;
+	*pmkid = pmksa->pmkid;
+	return 0;
 }
 
 
@@ -6692,6 +6937,29 @@ int fils_process_assoc_resp(struct wpa_sm *sm, const u8 *resp, size_t len)
 		goto fail;
 	}
 
+	if ((sm->ap_rsnxe && !elems.rsnxe) ||
+	    (!sm->ap_rsnxe && elems.rsnxe) ||
+	    (sm->ap_rsnxe && elems.rsnxe && sm->ap_rsnxe_len >= 2 &&
+	     (sm->ap_rsnxe_len != 2U + elems.rsnxe_len ||
+	      os_memcmp(sm->ap_rsnxe + 2, elems.rsnxe, sm->ap_rsnxe_len - 2) !=
+	      0))) {
+		wpa_msg(sm->ctx->msg_ctx, MSG_INFO,
+			"FILS: RSNXE mismatch between Beacon/Probe Response and (Re)Association Response");
+		wpa_hexdump(MSG_INFO, "FILS: RSNXE in Beacon/Probe Response",
+			    sm->ap_rsnxe, sm->ap_rsnxe_len);
+		wpa_hexdump(MSG_INFO, "RSNXE in (Re)Association Response",
+			    elems.rsnxe, elems.rsnxe_len);
+		/* As an interop workaround, allow this for now if we did not
+		 * include the RSNXE in (Re)Association Request frame since
+		 * IEEE Std 802.11-2020 does not say anything about verifying
+		 * the RSNXE in FILS cases and there have been hostapd releases
+		 * that might omit the RSNXE in cases where the STA did not
+		 * include it in the Association Request frame. This workaround
+		 * might eventually be removed. */
+		if (sm->assoc_rsnxe && sm->assoc_rsnxe_len)
+			goto fail;
+	}
+
 	/* TODO: FILS Public Key */
 
 	if (!elems.fils_key_confirm) {
@@ -7122,6 +7390,12 @@ void wpa_sm_pmksa_cache_reconfig(struct wpa_sm *sm)
 }
 
 
+bool wpa_sm_uses_spp_amsdu(struct wpa_sm *sm)
+{
+	return sm ? sm->spp_amsdu : false;
+}
+
+
 struct rsn_pmksa_cache * wpa_sm_get_pmksa_cache(struct wpa_sm *sm)
 {
 	return sm ? sm->pmksa : NULL;
@@ -7141,4 +7415,109 @@ void wpa_sm_set_driver_bss_selection(struct wpa_sm *sm,
 {
 	if (sm)
 		sm->driver_bss_selection = driver_bss_selection;
+}
+
+
+struct wpabuf * wpa_sm_known_sta_identification(struct wpa_sm *sm, const u8 *aa,
+						u64 timestamp)
+{
+	struct wpabuf *ie;
+	unsigned int mic_len;
+	const u8 *start;
+	u8 *mic;
+
+	if (!sm || sm->last_kck_len == 0)
+		return NULL;
+
+	if (!ether_addr_equal(aa, sm->last_kck_aa))
+		return NULL;
+
+	mic_len = wpa_mic_len(sm->last_kck_key_mgmt, sm->last_kck_pmk_len);
+
+	ie = wpabuf_alloc(3 + 8 + 1 + mic_len);
+	if (!ie)
+		return NULL;
+
+	wpabuf_put_u8(ie, WLAN_EID_EXTENSION);
+	wpabuf_put_u8(ie, 1 + 8 + 1 + mic_len);
+	wpabuf_put_u8(ie, WLAN_EID_EXT_KNOWN_STA_IDENTIFICATION);
+	start = wpabuf_put(ie, 0);
+	wpabuf_put_le64(ie, timestamp);
+	wpabuf_put_u8(ie, mic_len);
+	mic = wpabuf_put(ie, mic_len);
+	if (wpa_eapol_key_mic(sm->last_kck, sm->last_kck_len,
+			      sm->last_kck_key_mgmt, sm->last_kck_eapol_key_ver,
+			      start, 8, mic) < 0) {
+		wpabuf_free(ie);
+		return NULL;
+	}
+
+	return ie;
+}
+
+
+static int mlo_ieee80211w_set_keys_for_new_links(struct wpa_sm *sm,
+						 struct wpa_eapol_ie_parse *ie,
+						 u16 added_links_bitmap)
+{
+	int i;
+
+	if (!wpa_cipher_valid_mgmt_group(sm->mgmt_group_cipher) ||
+	    sm->mgmt_group_cipher == WPA_CIPHER_GTK_NOT_USED)
+		return 0;
+
+	for_each_link(added_links_bitmap, i) {
+		if (_mlo_ieee80211w_set_keys(sm, i, ie))
+			return -1;
+	}
+
+	return 0;
+}
+
+
+static int wpa_supplicant_install_mlo_gtk_keys(struct wpa_sm *sm,
+					       struct wpa_eapol_ie_parse *ie,
+					       u16 added_links_bitmap)
+{
+	int i;
+
+	for_each_link(added_links_bitmap, i) {
+		if (!ie->mlo_gtk[i]) {
+			wpa_msg(sm->ctx->msg_ctx, MSG_INFO,
+				"MLO RSN: GTK not found for link ID %u", i);
+			return -1;
+		}
+
+		if (wpa_supplicant_mlo_gtk(sm, i, ie->mlo_gtk[i],
+					   ie->mlo_gtk_len[i], 0))
+			return -1;
+	}
+
+	return 0;
+}
+
+
+int wpa_sm_install_mlo_group_keys(struct wpa_sm *sm, const u8 *key_data,
+				  size_t key_data_len, u16 added_links_bitmap)
+{
+	struct wpa_eapol_ie_parse ie;
+
+	if (!sm)
+		return -1;
+
+	wpa_hexdump_key(MSG_DEBUG, "RSN: IE KeyData for MLO link reconfig",
+			key_data, key_data_len);
+
+	if (wpa_supplicant_parse_ies(key_data, key_data_len, &ie) < 0)
+		return -1;
+
+	if (wpa_supplicant_install_mlo_gtk_keys(
+		    sm, &ie, added_links_bitmap) < 0)
+		return -1;
+
+	if (mlo_ieee80211w_set_keys_for_new_links(sm, &ie,
+						  added_links_bitmap) < 0)
+		return -1;
+
+	return 0;
 }

@@ -18,7 +18,7 @@
 #include "m2m_api/autogen/mmagic_m2m_ping.h"
 #include "m2m_api/autogen/mmagic_m2m_iperf.h"
 #include "m2m_api/autogen/mmagic_m2m_sys.h"
-#include "m2m_api/autogen/mmagic_m2m_tcp.h"
+#include "m2m_api/autogen/mmagic_m2m_socket.h"
 #include "m2m_api/autogen/mmagic_m2m_tls.h"
 #include "m2m_api/autogen/mmagic_m2m_ntp.h"
 #include "m2m_api/autogen/mmagic_m2m_mqtt.h"

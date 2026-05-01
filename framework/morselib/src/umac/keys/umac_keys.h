@@ -92,3 +92,6 @@ int umac_keys_get_active_key_id(struct umac_sta_data *stad, enum umac_key_type k
 void umac_keys_increment_tx_seq(struct umac_sta_data *stad, uint8_t key_id);
 
 
+uint64_t umac_keys_get_tx_seq(struct umac_sta_data *stad, uint8_t key_id);
+
+

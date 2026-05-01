@@ -41,6 +41,7 @@ enum mmagic_wlan_vars
     mmagic_wlan_var_mcs10_mode = 26,
     mmagic_wlan_var_sta_evt_en = 27,
     mmagic_wlan_var_duty_cycle_mode = 28,
+    mmagic_wlan_var_connect_on_boot = 29,
 };
 
 /**

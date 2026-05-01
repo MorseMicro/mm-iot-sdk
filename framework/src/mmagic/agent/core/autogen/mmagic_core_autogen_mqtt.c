@@ -16,6 +16,33 @@
  */
 #define MAX_VAL_LEN 101
 
+bool mmagic_core_mqtt_is_started(struct mmagic_data *core)
+{
+    return core->mqtt_data.is_started;
+}
+
+void mmagic_core_mqtt_load_all(struct mmagic_data *core)
+{
+    struct mmagic_mqtt_data *data = &core->mqtt_data;
+    {
+        char val[MAX_VAL_LEN] = { 0 };
+        if (mmconfig_read_string("mqtt.keepalive_s", val, sizeof(val)) > 0)
+        {
+            (void)mmagic_string_to_uint16_t(&data->config.keepalive_s, val);
+        }
+    }
+}
+
+void mmagic_core_mqtt_save_all(struct mmagic_data *core)
+{
+    struct mmagic_mqtt_data *data = &core->mqtt_data;
+    {
+        char val[MAX_VAL_LEN];
+        mmagic_uint16_t_to_string(data->config.keepalive_s, val, sizeof(val));
+        mmconfig_write_string("mqtt.keepalive_s", val);
+    }
+}
+
 enum mmagic_status mmagic_core_event_mqtt_message_received(
     struct mmagic_data *core,
     const struct mmagic_core_event_mqtt_message_received_args *args)

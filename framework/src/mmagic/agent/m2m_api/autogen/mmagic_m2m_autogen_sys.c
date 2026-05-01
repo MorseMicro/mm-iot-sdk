@@ -75,38 +75,68 @@ static struct mmbuf *mmagic_m2m_sys_get_version(struct mmagic_m2m_agent *agent,
                                       sizeof(rsp_args));
 }
 
+static struct mmbuf *mmagic_m2m_sys_get_stats(struct mmagic_m2m_agent *agent,
+                                              uint8_t sid,
+                                              uint8_t subcommand,
+                                              struct mmbuf *commandbuffer)
+{
+    enum mmagic_status status;
+    struct mmagic_core_sys_get_stats_cmd_args *cmd_args =
+        (struct mmagic_core_sys_get_stats_cmd_args *)mmbuf_get_data_start(commandbuffer);
+    MM_UNUSED(sid);
+    struct mmagic_core_sys_get_stats_rsp_args rsp_args = {};
+    status = mmagic_core_sys_get_stats(&agent->core, cmd_args, &rsp_args);
+    return mmagic_m2m_create_response(mmagic_sys,
+                                      mmagic_sys_cmd_get_stats,
+                                      subcommand,
+                                      status,
+                                      &rsp_args,
+                                      sizeof(rsp_args));
+}
+
 struct mmbuf *mmagic_m2m_sys_process(struct mmagic_m2m_agent *agent,
                                      uint8_t sid,
                                      struct mmagic_m2m_command_header *header,
                                      struct mmbuf *cmd_buf)
 {
-    if (header)
-    {
-        switch (header->command)
-        {
-            case mmagic_sys_cmd_reset:
-                return mmagic_m2m_sys_reset(agent, sid, header->subcommand, cmd_buf);
-                break;
-
-            case mmagic_sys_cmd_deep_sleep:
-                return mmagic_m2m_sys_deep_sleep(agent, sid, header->subcommand, cmd_buf);
-                break;
-
-            case mmagic_sys_cmd_get_version:
-                return mmagic_m2m_sys_get_version(agent, sid, header->subcommand, cmd_buf);
-                break;
-
-            default:
-                return mmagic_m2m_create_response(header->subsystem,
-                                                  header->command,
-                                                  header->subcommand,
-                                                  MMAGIC_STATUS_NOT_SUPPORTED,
-                                                  NULL,
-                                                  0);
-        }
-    }
-    else
+    if (!header)
     {
         return mmagic_m2m_create_response(0, 0, 0, MMAGIC_STATUS_ERROR, NULL, 0);
     }
+
+    /* Commands rely on already being initialised and started */
+    if (!mmagic_core_sys_is_started(&agent->core))
+    {
+        return mmagic_m2m_create_response(header->subsystem,
+                                          header->command,
+                                          header->subcommand,
+                                          MMAGIC_STATUS_UNAVAILABLE,
+                                          NULL,
+                                          0);
+    }
+
+    switch (header->command)
+    {
+        case mmagic_sys_cmd_reset:
+            return mmagic_m2m_sys_reset(agent, sid, header->subcommand, cmd_buf);
+
+        case mmagic_sys_cmd_deep_sleep:
+            return mmagic_m2m_sys_deep_sleep(agent, sid, header->subcommand, cmd_buf);
+
+        case mmagic_sys_cmd_get_version:
+            return mmagic_m2m_sys_get_version(agent, sid, header->subcommand, cmd_buf);
+
+        case mmagic_sys_cmd_get_stats:
+            return mmagic_m2m_sys_get_stats(agent, sid, header->subcommand, cmd_buf);
+
+        default:
+            break;
+    }
+
+    return mmagic_m2m_create_response(header->subsystem,
+                                      header->command,
+                                      header->subcommand,
+                                      MMAGIC_STATUS_NOT_SUPPORTED,
+                                      NULL,
+                                      0);
 }

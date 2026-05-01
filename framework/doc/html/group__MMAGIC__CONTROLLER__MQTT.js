@@ -1,5 +1,6 @@
 var group__MMAGIC__CONTROLLER__MQTT =
 [
+    [ "mqtt configuration variables", "group__MMAGIC__CONTROLLER__MQTT__CONFIG.html", "group__MMAGIC__CONTROLLER__MQTT__CONFIG" ],
     [ "mmagic_core_mqtt_start_agent_cmd_args", "structmmagic__core__mqtt__start__agent__cmd__args.html", [
       [ "password", "structmmagic__core__mqtt__start__agent__cmd__args.html#aa27a161f7c9e7bffcafcfe28baa407bc", null ],
       [ "port", "structmmagic__core__mqtt__start__agent__cmd__args.html#abbc2cc703a5080395da0f79ea43217cb", null ],

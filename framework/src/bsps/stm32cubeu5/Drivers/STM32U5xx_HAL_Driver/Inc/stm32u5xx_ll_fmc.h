@@ -38,6 +38,7 @@ extern "C" {
 /** @addtogroup FMC_LL_Private_Macros
   * @{
   */
+#if defined(FMC_BANK1)
 
 #define IS_FMC_NORSRAM_BANK(__BANK__) (((__BANK__) == FMC_NORSRAM_BANK1) || \
                                        ((__BANK__) == FMC_NORSRAM_BANK2) || \
@@ -95,6 +96,8 @@ extern "C" {
 #define IS_FMC_NORSRAM_EXTENDED_DEVICE(__INSTANCE__) ((__INSTANCE__) == FMC_NORSRAM_EXTENDED_DEVICE)
 #define IS_FMC_MAX_CHIP_SELECT_PULSE_TIME(__TIME__) (((__TIME__) >= 1U) && ((__TIME__) <= 65535U))
 
+#endif /* FMC_BANK1 */
+#if  defined(FMC_BANK3)
 
 #define IS_FMC_NAND_BANK(__BANK__) ((__BANK__) == FMC_NAND_BANK3)
 #define IS_FMC_WAIT_FEATURE(__FEATURE__) (((__FEATURE__) == FMC_NAND_WAIT_FEATURE_DISABLE) || \
@@ -118,6 +121,7 @@ extern "C" {
 #define IS_FMC_HIZ_TIME(__TIME__) ((__TIME__) <= 254U)
 #define IS_FMC_NAND_DEVICE(__INSTANCE__) ((__INSTANCE__) == FMC_NAND_DEVICE)
 
+#endif /* FMC_BANK3 */
 
 /**
   * @}
@@ -129,88 +133,98 @@ extern "C" {
   * @{
   */
 
+#if defined(FMC_BANK1)
 #define FMC_NORSRAM_TypeDef            FMC_Bank1_TypeDef
 #define FMC_NORSRAM_EXTENDED_TypeDef   FMC_Bank1E_TypeDef
+#endif /* FMC_BANK1 */
+#if defined(FMC_BANK3)
 #define FMC_NAND_TypeDef               FMC_Bank3_TypeDef
+#endif /* FMC_BANK3 */
 
+#if defined(FMC_BANK1)
 #define FMC_NORSRAM_DEVICE             FMC_Bank1_R
 #define FMC_NORSRAM_EXTENDED_DEVICE    FMC_Bank1E_R
+#endif /* FMC_BANK1 */
+#if defined(FMC_BANK3)
 #define FMC_NAND_DEVICE                FMC_Bank3_R
+#endif /* FMC_BANK3 */
 
+#if defined(FMC_BANK1)
 /**
   * @brief  FMC NORSRAM Configuration Structure definition
   */
 typedef struct
 {
   uint32_t NSBank;                       /*!< Specifies the NORSRAM memory device that will be used.
-                                              This parameter can be a value of @ref FMC_NORSRAM_Bank                  */
+                                              This parameter can be a value of @ref FMC_NORSRAM_Bank                 */
 
   uint32_t DataAddressMux;               /*!< Specifies whether the address and data values are
                                               multiplexed on the data bus or not.
-                                              This parameter can be a value of @ref FMC_Data_Address_Bus_Multiplexing */
+                                              This parameter can be a value of @ref FMC_Data_Address_Bus_Multiplexing*/
 
   uint32_t MemoryType;                   /*!< Specifies the type of external memory attached to
                                               the corresponding memory device.
-                                              This parameter can be a value of @ref FMC_Memory_Type                   */
+                                              This parameter can be a value of @ref FMC_Memory_Type                  */
 
   uint32_t MemoryDataWidth;              /*!< Specifies the external memory device width.
-                                              This parameter can be a value of @ref FMC_NORSRAM_Data_Width            */
+                                              This parameter can be a value of @ref FMC_NORSRAM_Data_Width           */
 
   uint32_t BurstAccessMode;              /*!< Enables or disables the burst access mode for Flash memory,
                                               valid only with synchronous burst Flash memories.
-                                              This parameter can be a value of @ref FMC_Burst_Access_Mode             */
+                                              This parameter can be a value of @ref FMC_Burst_Access_Mode            */
 
   uint32_t WaitSignalPolarity;           /*!< Specifies the wait signal polarity, valid only when accessing
                                               the Flash memory in burst mode.
-                                              This parameter can be a value of @ref FMC_Wait_Signal_Polarity          */
+                                              This parameter can be a value of @ref FMC_Wait_Signal_Polarity         */
 
   uint32_t WaitSignalActive;             /*!< Specifies if the wait signal is asserted by the memory one
                                               clock cycle before the wait state or during the wait state,
                                               valid only when accessing memories in burst mode.
-                                              This parameter can be a value of @ref FMC_Wait_Timing                   */
+                                              This parameter can be a value of @ref FMC_Wait_Timing                  */
 
-  uint32_t WriteOperation;               /*!< Enables or disables the write operation in the selected device by the FMC.
-                                              This parameter can be a value of @ref FMC_Write_Operation               */
+  uint32_t WriteOperation;               /*!< Enables or disables the write operation in the selected device
+                                              by the FMC.
+                                              This parameter can be a value of @ref FMC_Write_Operation              */
 
   uint32_t WaitSignal;                   /*!< Enables or disables the wait state insertion via wait
                                               signal, valid for Flash memory access in burst mode.
-                                              This parameter can be a value of @ref FMC_Wait_Signal                   */
+                                              This parameter can be a value of @ref FMC_Wait_Signal                  */
 
   uint32_t ExtendedMode;                 /*!< Enables or disables the extended mode.
-                                              This parameter can be a value of @ref FMC_Extended_Mode                 */
+                                              This parameter can be a value of @ref FMC_Extended_Mode                */
 
   uint32_t AsynchronousWait;             /*!< Enables or disables wait signal during asynchronous transfers,
                                               valid only with asynchronous Flash memories.
-                                              This parameter can be a value of @ref FMC_AsynchronousWait              */
+                                              This parameter can be a value of @ref FMC_AsynchronousWait             */
 
   uint32_t WriteBurst;                   /*!< Enables or disables the write burst operation.
-                                              This parameter can be a value of @ref FMC_Write_Burst                   */
+                                              This parameter can be a value of @ref FMC_Write_Burst                  */
 
   uint32_t ContinuousClock;              /*!< Enables or disables the FMC clock output to external memory devices.
                                               This parameter is only enabled through the FMC_BCR1 register,
                                               and don't care through FMC_BCR2..4 registers.
-                                              This parameter can be a value of @ref FMC_Continous_Clock               */
+                                              This parameter can be a value of @ref FMC_Continous_Clock              */
 
   uint32_t WriteFifo;                    /*!< Enables or disables the write FIFO used by the FMC controller.
                                               This parameter is only enabled through the FMC_BCR1 register,
                                               and don't care through FMC_BCR2..4 registers.
-                                              This parameter can be a value of @ref FMC_Write_FIFO                    */
+                                              This parameter can be a value of @ref FMC_Write_FIFO                   */
 
   uint32_t PageSize;                     /*!< Specifies the memory page size.
-                                              This parameter can be a value of @ref FMC_Page_Size                     */
+                                              This parameter can be a value of @ref FMC_Page_Size                    */
 
   uint32_t NBLSetupTime;                 /*!< Specifies the NBL setup timing clock cycle number
-                                              This parameter can be a value of @ref FMC_Byte_Lane                     */
+                                              This parameter can be a value of @ref FMC_Byte_Lane                    */
 
   FunctionalState MaxChipSelectPulse;    /*!< Enables or disables the maximum chip select pulse management in this
                                               NSBank for PSRAM refresh.
-                                              This parameter can be set to ENABLE or DISABLE                          */
+                                              This parameter can be set to ENABLE or DISABLE                         */
 
   uint32_t MaxChipSelectPulseTime;       /*!< Specifies the maximum chip select pulse time in FMC_CLK cycles for
                                               synchronous accesses and in HCLK cycles for asynchronous accesses,
                                               valid only if MaxChipSelectPulse is ENABLE.
                                               This parameter can be a value between Min_Data = 1 and Max_Data = 65535.
-                                              @note: This parameter is common to all NSBank.                          */
+                                              @note: This parameter is common to all NSBank.                         */
 } FMC_NORSRAM_InitTypeDef;
 
 /**
@@ -259,9 +273,11 @@ typedef struct
                                                 in NOR Flash memories with synchronous burst mode enable              */
 
   uint32_t AccessMode;                   /*!< Specifies the asynchronous access mode.
-                                              This parameter can be a value of @ref FMC_Access_Mode                   */
+                                              This parameter can be a value of @ref FMC_Access_Mode                  */
 } FMC_NORSRAM_TimingTypeDef;
+#endif /* FMC_BANK1 */
 
+#if defined(FMC_BANK3)
 /**
   * @brief  FMC NAND Configuration Structure definition
   */
@@ -290,7 +306,9 @@ typedef struct
                                         delay between ALE low and RE low.
                                         This parameter can be a number between Min_Data = 0 and Max_Data = 255 */
 } FMC_NAND_InitTypeDef;
+#endif /* FMC_BANK3 */
 
+#if defined(FMC_BANK3)
 /**
   * @brief  FMC NAND Timing parameters structure definition
   */
@@ -321,6 +339,7 @@ typedef struct
                                       on the memory space timing to be configured).
                                       This parameter can be a number between Min_Data = 0 and Max_Data = 254   */
 } FMC_NAND_PCC_TimingTypeDef;
+#endif /* FMC_BANK3 */
 
 
 /**
@@ -331,6 +350,7 @@ typedef struct
 /** @addtogroup FMC_LL_Exported_Constants FMC Low Layer Exported Constants
   * @{
   */
+#if defined(FMC_BANK1)
 
 /** @defgroup FMC_LL_NOR_SRAM_Controller FMC NOR/SRAM Controller
   * @{
@@ -515,7 +535,9 @@ typedef struct
 /**
   * @}
   */
+#endif /* FMC_BANK1 */
 
+#if defined(FMC_BANK3)
 
 /** @defgroup FMC_LL_NAND_Controller FMC NAND Controller
   * @{
@@ -579,14 +601,17 @@ typedef struct
 /**
   * @}
   */
+#endif /* FMC_BANK3 */
 
 
 /** @defgroup FMC_LL_Interrupt_definition FMC Low Layer Interrupt definition
   * @{
   */
+#if defined(FMC_BANK3)
 #define FMC_IT_RISING_EDGE                      (0x00000008U)
 #define FMC_IT_LEVEL                            (0x00000010U)
 #define FMC_IT_FALLING_EDGE                     (0x00000020U)
+#endif /* FMC_BANK3 */
 /**
   * @}
   */
@@ -594,10 +619,12 @@ typedef struct
 /** @defgroup FMC_LL_Flag_definition FMC Low Layer Flag definition
   * @{
   */
+#if defined(FMC_BANK3)
 #define FMC_FLAG_RISING_EDGE                    (0x00000001U)
 #define FMC_FLAG_LEVEL                          (0x00000002U)
 #define FMC_FLAG_FALLING_EDGE                   (0x00000004U)
 #define FMC_FLAG_FEMPT                          (0x00000040U)
+#endif /* FMC_BANK3 */
 /**
   * @}
   */
@@ -625,6 +652,7 @@ typedef struct
   * @retval None
   */
 #define __FMC_DISABLE()  (FMC_Bank1_R->BTCR[0] &= ~FMC_BCR1_FMCEN)
+#if defined(FMC_BANK1)
 /** @defgroup FMC_LL_NOR_Macros FMC NOR/SRAM Macros
   * @brief macros to handle NOR device enable/disable and read/write operations
   * @{
@@ -651,7 +679,9 @@ typedef struct
 /**
   * @}
   */
+#endif /* FMC_BANK1 */
 
+#if defined(FMC_BANK3)
 /** @defgroup FMC_LL_NAND_Macros FMC NAND Macros
   *  @brief macros to handle NAND device enable/disable
   *  @{
@@ -675,7 +705,9 @@ typedef struct
 /**
   * @}
   */
+#endif /* FMC_BANK3 */
 
+#if defined(FMC_BANK3)
 /** @defgroup FMC_LL_NAND_Interrupt FMC NAND Interrupt
   * @brief macros to handle NAND interrupts
   * @{
@@ -735,6 +767,7 @@ typedef struct
 /**
   * @}
   */
+#endif /* FMC_BANK3 */
 
 
 /**
@@ -750,6 +783,7 @@ typedef struct
   *  @{
   */
 
+#if defined(FMC_BANK1)
 /** @defgroup FMC_LL_NORSRAM  NOR SRAM
   *  @{
   */
@@ -757,11 +791,11 @@ typedef struct
   *  @{
   */
 HAL_StatusTypeDef  FMC_NORSRAM_Init(FMC_NORSRAM_TypeDef *Device,
-                                    FMC_NORSRAM_InitTypeDef *Init);
+                                    const FMC_NORSRAM_InitTypeDef *Init);
 HAL_StatusTypeDef  FMC_NORSRAM_Timing_Init(FMC_NORSRAM_TypeDef *Device,
-                                           FMC_NORSRAM_TimingTypeDef *Timing, uint32_t Bank);
+                                           const FMC_NORSRAM_TimingTypeDef *Timing, uint32_t Bank);
 HAL_StatusTypeDef  FMC_NORSRAM_Extended_Timing_Init(FMC_NORSRAM_EXTENDED_TypeDef *Device,
-                                                    FMC_NORSRAM_TimingTypeDef *Timing, uint32_t Bank,
+                                                    const FMC_NORSRAM_TimingTypeDef *Timing, uint32_t Bank,
                                                     uint32_t ExtendedMode);
 HAL_StatusTypeDef  FMC_NORSRAM_DeInit(FMC_NORSRAM_TypeDef *Device,
                                       FMC_NORSRAM_EXTENDED_TypeDef *ExDevice, uint32_t Bank);
@@ -780,18 +814,20 @@ HAL_StatusTypeDef  FMC_NORSRAM_WriteOperation_Disable(FMC_NORSRAM_TypeDef *Devic
 /**
   * @}
   */
+#endif /* FMC_BANK1 */
 
+#if defined(FMC_BANK3)
 /** @defgroup FMC_LL_NAND NAND
   *  @{
   */
 /** @defgroup FMC_LL_NAND_Private_Functions_Group1 NAND Initialization/de-initialization functions
   *  @{
   */
-HAL_StatusTypeDef  FMC_NAND_Init(FMC_NAND_TypeDef *Device, FMC_NAND_InitTypeDef *Init);
+HAL_StatusTypeDef  FMC_NAND_Init(FMC_NAND_TypeDef *Device, const FMC_NAND_InitTypeDef *Init);
 HAL_StatusTypeDef  FMC_NAND_CommonSpace_Timing_Init(FMC_NAND_TypeDef *Device,
-                                                    FMC_NAND_PCC_TimingTypeDef *Timing, uint32_t Bank);
+                                                    const FMC_NAND_PCC_TimingTypeDef *Timing, uint32_t Bank);
 HAL_StatusTypeDef  FMC_NAND_AttributeSpace_Timing_Init(FMC_NAND_TypeDef *Device,
-                                                       FMC_NAND_PCC_TimingTypeDef *Timing, uint32_t Bank);
+                                                       const FMC_NAND_PCC_TimingTypeDef *Timing, uint32_t Bank);
 HAL_StatusTypeDef  FMC_NAND_DeInit(FMC_NAND_TypeDef *Device, uint32_t Bank);
 /**
   * @}
@@ -802,7 +838,7 @@ HAL_StatusTypeDef  FMC_NAND_DeInit(FMC_NAND_TypeDef *Device, uint32_t Bank);
   */
 HAL_StatusTypeDef  FMC_NAND_ECC_Enable(FMC_NAND_TypeDef *Device, uint32_t Bank);
 HAL_StatusTypeDef  FMC_NAND_ECC_Disable(FMC_NAND_TypeDef *Device, uint32_t Bank);
-HAL_StatusTypeDef  FMC_NAND_GetECC(FMC_NAND_TypeDef *Device, uint32_t *ECCval, uint32_t Bank,
+HAL_StatusTypeDef  FMC_NAND_GetECC(const FMC_NAND_TypeDef *Device, uint32_t *ECCval, uint32_t Bank,
                                    uint32_t Timeout);
 /**
   * @}
@@ -810,7 +846,7 @@ HAL_StatusTypeDef  FMC_NAND_GetECC(FMC_NAND_TypeDef *Device, uint32_t *ECCval, u
 /**
   * @}
   */
-
+#endif /* FMC_BANK3 */
 
 
 /**

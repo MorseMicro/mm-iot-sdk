@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Morse Micro
+ * Copyright 2023-2026 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -27,6 +27,41 @@ struct mmagic_m2m_stream
     void *stream_context;
 };
 
+/** Stream request type. */
+enum mmagic_m2m_stream_request_type
+{
+    /** Standard M2M request payload received from Controller. */
+    MMAGIC_M2M_STREAM_REQUEST_WIRE,
+    /** Local M2M command request (see @ref mmagic_m2m_agent_local_command). */
+    MMAGIC_M2M_STREAM_REQUEST_LOCAL,
+    /** Close stream and terminate stream task. */
+    MMAGIC_M2M_STREAM_REQUEST_CLOSE,
+};
+
+/** M2M stream request descriptor. */
+struct mmagic_m2m_stream_request
+{
+    /** Request kind that selects the active member in @ref mmagic_m2m_stream_request::data. */
+    enum mmagic_m2m_stream_request_type type;
+
+    union
+    {
+        struct
+        {
+            /** Received wire buffer to process for @ref MMAGIC_M2M_STREAM_REQUEST_WIRE. */
+            struct mmbuf *rx_buffer;
+        } wire; /**< Payload for @ref MMAGIC_M2M_STREAM_REQUEST_WIRE. */
+
+        struct
+        {
+            /** Callback to execute for @ref MMAGIC_M2M_STREAM_REQUEST_LOCAL. */
+            void (*cb)(struct mmagic_data *core, void *arg);
+            /** User argument forwarded to @p cb. */
+            void *cb_arg;
+        } local; /**< Payload for @ref MMAGIC_M2M_STREAM_REQUEST_LOCAL. */
+    } data;
+};
+
 /**
  * Static allocation of the agent structure. Currently it is expected that there will only ever
  * be one instance.
@@ -52,55 +87,71 @@ static void mmagic_m2m_agent_free_stream(struct mmagic_m2m_stream *stream)
 
 static void mmagic_m2m_agent_stream_task(void *arg)
 {
+    struct mmagic_m2m_stream_request request;
     struct mmagic_m2m_stream *stream = (struct mmagic_m2m_stream *)arg;
+
     MMOSAL_ASSERT(stream);
 
-    while (true)
+    while (mmosal_queue_pop(stream->stream_queue, (void *)&request, UINT32_MAX))
     {
-        struct mmbuf *rx_buffer = NULL;
-        struct mmbuf *resp_buf = NULL;
-
-        if (!mmosal_queue_pop(stream->stream_queue, (void *)&rx_buffer, UINT32_MAX))
+        switch (request.type)
         {
-            break;
-        }
-
-        /* Posting a NULL to the queue will close the stream */
-        if (rx_buffer == NULL)
-        {
-            MMOSAL_DEV_ASSERT(stream->sid != CONTROL_STREAM);
-            if (stream->sid == CONTROL_STREAM)
+            case MMAGIC_M2M_STREAM_REQUEST_WIRE:
             {
-                mmosal_printf("Ignoring request to close CONTROL stream\n", stream->sid);
-                /* We require the control stream to remain open, ignore closure. */
-                continue;
+                struct mmbuf *resp_buf = NULL;
+                struct mmbuf *rx_buffer = request.data.wire.rx_buffer;
+                MMOSAL_ASSERT(rx_buffer != NULL);
+
+                struct mmagic_m2m_command_header *header =
+                    (struct mmagic_m2m_command_header *)mmbuf_remove_from_start(rx_buffer,
+                                                                                sizeof(*header));
+                if (header)
+                {
+                    resp_buf = mmagic_m2m_process(stream->agent, stream->sid, header, rx_buffer);
+                }
+                else
+                {
+                    /* We could not parse the M2M header */
+                    resp_buf = mmagic_m2m_create_response(0, 0, 0, MMAGIC_STATUS_ERROR, NULL, 0);
+                }
+
+                /* Response buffer should not be NULL, assert here to catch problems early. */
+                MMOSAL_ASSERT(resp_buf);
+
+                enum mmagic_status status = mmagic_llc_agent_tx(stream->agent->agent_llc,
+                                                                MMAGIC_LLC_PTYPE_RESPONSE,
+                                                                stream->sid,
+                                                                resp_buf);
+                MMOSAL_DEV_ASSERT(status == MMAGIC_STATUS_OK);
+                mmbuf_release(rx_buffer);
+                break;
             }
-            break;
-        }
 
-        struct mmagic_m2m_command_header *header =
-            (struct mmagic_m2m_command_header *)mmbuf_remove_from_start(rx_buffer, sizeof(*header));
-        if (header)
-        {
-            resp_buf = mmagic_m2m_process(stream->agent, stream->sid, header, rx_buffer);
-        }
-        else
-        {
-            /* We could not parse the M2M header */
-            resp_buf = mmagic_m2m_create_response(0, 0, 0, MMAGIC_STATUS_ERROR, NULL, 0);
-        }
+            case MMAGIC_M2M_STREAM_REQUEST_LOCAL:
+                MMOSAL_ASSERT(request.data.local.cb != NULL);
+                request.data.local.cb(&stream->agent->core, request.data.local.cb_arg);
+                break;
 
-        /* Response buffer should not be NULL, assert here to catch problems early. */
-        MMOSAL_ASSERT(resp_buf);
+            case MMAGIC_M2M_STREAM_REQUEST_CLOSE:
+                MMOSAL_DEV_ASSERT(stream->sid != CONTROL_STREAM);
+                if (stream->sid == CONTROL_STREAM)
+                {
+                    mmosal_printf("Ignoring request to close CONTROL stream\n", stream->sid);
+                    /* We require the control stream to remain open, ignore closure. */
+                }
+                else
+                {
+                    goto cleanup;
+                }
+                break;
 
-        enum mmagic_status status = mmagic_llc_agent_tx(stream->agent->agent_llc,
-                                                        MMAGIC_LLC_PTYPE_RESPONSE,
-                                                        stream->sid,
-                                                        resp_buf);
-        MMOSAL_DEV_ASSERT(status == MMAGIC_STATUS_OK);
-        mmbuf_release(rx_buffer);
+            default:
+                MMOSAL_ASSERT(false);
+                break;
+        }
     }
 
+cleanup:
     /* Free stream resources after stream task shuts down */
     mmagic_m2m_agent_free_stream(stream);
 }
@@ -126,7 +177,8 @@ enum mmagic_status mmagic_m2m_agent_open_stream(struct mmagic_data *core,
             }
 
             core->stream[ii]->stream_context = stream_context;
-            core->stream[ii]->stream_queue = mmosal_queue_create(1, sizeof(struct mmbuf *), NULL);
+            core->stream[ii]->stream_queue =
+                mmosal_queue_create(1, sizeof(struct mmagic_m2m_stream_request), NULL);
             if (core->stream[ii]->stream_queue == NULL)
             {
                 mmosal_free(core->stream[ii]);
@@ -135,7 +187,7 @@ enum mmagic_status mmagic_m2m_agent_open_stream(struct mmagic_data *core,
             struct mmosal_task *stream_task = mmosal_task_create(mmagic_m2m_agent_stream_task,
                                                                  core->stream[ii],
                                                                  MMOSAL_TASK_PRI_NORM,
-                                                                 1024,
+                                                                 1088,
                                                                  "mmagic_stream_task");
             if (stream_task == NULL)
             {
@@ -182,7 +234,9 @@ uint8_t mmagic_m2m_agent_get_stream_subsystem_id(struct mmagic_data *core, uint8
 
 enum mmagic_status mmagic_m2m_agent_close_stream(struct mmagic_data *core, uint8_t stream_id)
 {
-    void *nullpointer = NULL;
+    static const struct mmagic_m2m_stream_request close_request = {
+        .type = MMAGIC_M2M_STREAM_REQUEST_CLOSE
+    };
 
     /* We cannot close the command stream */
     if (stream_id == CONTROL_STREAM || stream_id >= MMAGIC_MAX_STREAMS)
@@ -192,8 +246,7 @@ enum mmagic_status mmagic_m2m_agent_close_stream(struct mmagic_data *core, uint8
 
     if (core->stream[stream_id])
     {
-        /* Push a null pointer to the queue to signal the task to close */
-        mmosal_queue_push(core->stream[stream_id]->stream_queue, &nullpointer, UINT32_MAX);
+        mmosal_queue_push(core->stream[stream_id]->stream_queue, &close_request, UINT32_MAX);
     }
 
     return MMAGIC_STATUS_OK;
@@ -244,11 +297,16 @@ enum mmagic_status mmagic_m2m_rx_callback(struct mmagic_llc_agent *agent_llc,
         mmbuf_release(rxbuffer);
         return MMAGIC_STATUS_INVALID_STREAM;
     }
-    else
+    struct mmagic_m2m_stream_request request = {
+        .type = MMAGIC_M2M_STREAM_REQUEST_WIRE,
+        .data = { .wire = { .rx_buffer = rxbuffer } },
+    };
+    if (!mmosal_queue_push(agent->core.stream[sid]->stream_queue, (void *)&request, UINT32_MAX))
     {
-        mmosal_queue_push(agent->core.stream[sid]->stream_queue, (void *)&rxbuffer, UINT32_MAX);
-        return MMAGIC_STATUS_OK;
+        mmbuf_release(rxbuffer);
+        return MMAGIC_STATUS_ERROR;
     }
+    return MMAGIC_STATUS_OK;
 }
 
 enum mmagic_status mmagic_m2m_event_handler(void *arg,
@@ -258,6 +316,11 @@ enum mmagic_status mmagic_m2m_event_handler(void *arg,
                                             size_t payload_len)
 {
     struct mmagic_m2m_agent *agent = (struct mmagic_m2m_agent *)arg;
+    if (!agent->initialized)
+    {
+        /* Drop events until the M2M agent init sequence has completed. */
+        return MMAGIC_STATUS_OK;
+    }
 
     struct mmbuf *mmbuf = mmagic_m2m_create_response(subsystem_id,
                                                      notification_id,
@@ -277,7 +340,7 @@ enum mmagic_status mmagic_m2m_event_handler(void *arg,
  * Set the deep sleep mode. See @ref mmagic_deep_sleep_mode for possible deep sleep modes.
  *
  * @param mode The deep sleep mode to set.
- * @param arg  This is an argurment that is register with the callback. It is expected to be the LLC
+ * @param arg  This is an argument that is register with the callback. It is expected to be the LLC
  *             handle.
  *
  * @returns @ true if the mode was set successfully; @c false on failure (e.g. unsupported mode).
@@ -320,6 +383,26 @@ struct mmagic_m2m_agent *mmagic_m2m_agent_init(const struct mmagic_m2m_agent_ini
     MMOSAL_ASSERT(command_sid == CONTROL_STREAM);
 
     MMOSAL_ASSERT(mmagic_llc_send_start_notification(agent->agent_llc) == MMAGIC_STATUS_OK);
+    agent->initialized = true;
 
     return agent;
+}
+
+enum mmagic_status mmagic_m2m_agent_local_command(struct mmagic_m2m_agent *agent,
+                                                  void (*cb)(struct mmagic_data *core, void *arg),
+                                                  void *cb_arg,
+                                                  uint32_t timeout)
+{
+    struct mmagic_m2m_stream_request request = {
+        .type = MMAGIC_M2M_STREAM_REQUEST_LOCAL,
+        .data = { .local = { .cb = cb, .cb_arg = cb_arg } },
+    };
+
+    if (!mmosal_queue_push(agent->core.stream[CONTROL_STREAM]->stream_queue,
+                           (void *)&request,
+                           timeout))
+    {
+        return MMAGIC_STATUS_ERROR;
+    }
+    return MMAGIC_STATUS_OK;
 }

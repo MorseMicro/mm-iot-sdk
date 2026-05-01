@@ -33,7 +33,8 @@ static void request_scan(struct wpa_supplicant *wpa_s)
 	wpa_s->scan_req = MANUAL_SCAN_REQ;
 
 	if (wpa_supplicant_req_sched_scan(wpa_s))
-		wpa_supplicant_req_scan(wpa_s, wpa_s->scan_interval, rand() % 1000000);
+		wpa_supplicant_req_scan(wpa_s, wpa_s->scan_interval,
+			(wpa_s->conf->autoscan_jitter) ? os_random() % 1000000 : 0);
 }
 
 
@@ -104,6 +105,8 @@ int autoscan_init(struct wpa_supplicant *wpa_s, int req_scan)
 
 	wpa_printf(MSG_DEBUG, "autoscan: Initialized module '%s' with "
 		   "parameters '%s'", ops->name, params);
+	wpa_printf(MSG_DEBUG,
+		"autoscan: parameter autoscan_jitter=%d", wpa_s->conf->autoscan_jitter);
 	if (!req_scan)
 		return 0;
 
@@ -150,16 +153,17 @@ int autoscan_notify_scan(struct wpa_supplicant *wpa_s,
 							scan_res);
 
 		int half_interval = interval / 2;
-		int jitter = rand() % interval;
-
 		if (interval <= 0)
 			return -1;
 
 		/*
-		 * Randomise the scan interval by the interval value
-		 * uniformly around the interval value.
+		 * Randomise the scan interval from interval/2 to interval*3/2
+		 * to prevent the thundering herd problem (syncing of probe/connection requests)
+		 * in large scale networks.
 		 */
-		interval = half_interval + jitter;
+		if (wpa_s->conf->autoscan_jitter)
+			interval = half_interval + os_random() % interval;
+
 		wpa_s->scan_interval = interval;
 		wpa_s->sched_scan_plans[0].interval = interval;
 

@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['queues_20_28aka_20pipes_29_0',['Queues (aka pipes)',['../group__MMOSAL__QUEUE.html',1,'']]]
+  ['sdio_20utilities_0',['SDIO Utilities',['../group__MMHAL__WLAN__SDIO__UTILS.html',1,'']]],
+  ['serial_20line_20internet_20protocol_20_28slip_29_20implementation_2e_1',['Serial Line Internet Protocol (SLIP) implementation.',['../group__SLIP.html',1,'']]]
 ];

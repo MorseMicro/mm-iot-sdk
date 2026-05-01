@@ -1,5 +1,6 @@
 var group__MMHAL__WLAN__SPI =
 [
+    [ "mmhal_wlan_assert_reset", "group__MMHAL__WLAN__SPI.html#ga3fb0ed468163fdfc415c0fe831579562", null ],
     [ "mmhal_wlan_clear_spi_irq", "group__MMHAL__WLAN__SPI.html#ga8f248d785042a9fb4585dd75d286ceac", null ],
     [ "mmhal_wlan_ext_xtal_init_is_required", "group__MMHAL__WLAN__SPI.html#ga6d257565b2e1f9c20b91a1c6d9c5fea1", null ],
     [ "mmhal_wlan_hard_reset", "group__MMHAL__WLAN__SPI.html#gaf816182d2816a9a447642fc77c4d9a2a", null ],

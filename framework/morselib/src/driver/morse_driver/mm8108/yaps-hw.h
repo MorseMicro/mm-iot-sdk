@@ -50,12 +50,23 @@ struct driver_data;
 
 int morse_yaps_hw_init(struct driver_data *driverd);
 
-void morse_yaps_hw_yaps_flush_tx_data(struct driver_data *driverd);
-
 void morse_yaps_hw_finish(struct driver_data *driverd);
 
 void morse_yaps_hw_read_table(struct driver_data *driverd, struct morse_yaps_hw_table *tbl_ptr);
 
 
-uint32_t morse_yaps_hw_get_tc_queue_space(struct morse_yaps *yaps,
-                                          enum morse_yaps_to_chip_q tc_queue);
+int morse_yaps_hw_write_pkt(struct morse_yaps *yaps,
+                            struct mmpkt *mmpkt,
+                            enum morse_yaps_to_chip_q tc_queue,
+                            struct mmpkt *next_pkt);
+
+
+int morse_yaps_hw_read_pkt(struct morse_yaps *yaps, struct mmpkt **mmpkt);
+
+
+int morse_yaps_hw_update_status(struct morse_yaps *yaps);
+
+
+uint32_t morse_yaps_hw_get_num_pkts(struct morse_yaps *yaps,
+                                    enum morse_yaps_to_chip_q tc_queue,
+                                    struct mmpkt_list *pkt_list);

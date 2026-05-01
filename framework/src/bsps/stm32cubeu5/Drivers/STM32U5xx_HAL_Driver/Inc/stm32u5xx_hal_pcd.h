@@ -362,7 +362,7 @@ HAL_StatusTypeDef HAL_PCD_EP_Abort(PCD_HandleTypeDef *hpcd, uint8_t ep_addr);
 HAL_StatusTypeDef HAL_PCD_ActivateRemoteWakeup(PCD_HandleTypeDef *hpcd);
 HAL_StatusTypeDef HAL_PCD_DeActivateRemoteWakeup(PCD_HandleTypeDef *hpcd);
 #if defined (USB_OTG_FS) || defined (USB_OTG_HS)
-HAL_StatusTypeDef HAL_PCD_SetTestMode(PCD_HandleTypeDef *hpcd, uint8_t testmode);
+HAL_StatusTypeDef HAL_PCD_SetTestMode(const PCD_HandleTypeDef *hpcd, uint8_t testmode);
 #endif /* defined (USB_OTG_FS) || defined (USB_OTG_HS) */
 
 uint32_t          HAL_PCD_EP_GetRxCount(PCD_HandleTypeDef const *hpcd, uint8_t ep_addr);
@@ -508,6 +508,14 @@ PCD_StateTypeDef HAL_PCD_GetState(PCD_HandleTypeDef const *hpcd);
 #define PCD_SET_BULK_EP_DBUF                   PCD_SET_EP_KIND
 #define PCD_CLEAR_BULK_EP_DBUF                 PCD_CLEAR_EP_KIND
 
+/**
+  * @brief  Sets/clears directly STATUS_OUT bit in the endpoint register.
+  * @param  USBx USB peripheral instance register address.
+  * @param  bEpNum Endpoint Number.
+  * @retval None
+  */
+#define PCD_SET_OUT_STATUS                     USB_DRD_SET_CHEP_KIND
+#define PCD_CLEAR_OUT_STATUS                   USB_DRD_CLEAR_CHEP_KIND
 
 /**
   * @brief  Clears bit CTR_RX / CTR_TX in the endpoint register.

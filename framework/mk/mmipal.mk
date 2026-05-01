@@ -17,7 +17,7 @@ ifeq ($(MMIPAL_IPV6_ENABLED),)
 MMIPAL_IPV6_ENABLED = 0
 endif
 ifeq ($(ON_DEMAND_TIMERS_ENABLED),)
-ON_DEMAND_TIMERS_ENABLED = 0
+ON_DEMAND_TIMERS_ENABLED = 1
 endif
 
 BUILD_DEFINES += MMIPAL_IPV4_ENABLED=$(MMIPAL_IPV4_ENABLED)
@@ -28,10 +28,10 @@ ifeq ($(IP_STACK),lwip)
 MMIPAL_SRCS_C += lwip/mmipal_lwip.c
 MMIPAL_SRCS_C += lwip/mmnetif.c
 MMIPAL_SRCS_H += lwip/mmnetif.h
+
 MMIOT_INCLUDES += $(MMIPAL_DIR)/lwip
 else
-# Warning: FreeRTOS-plus-TCP support is deprecated and will be removed in a future release.
-MMIPAL_SRCS_C += freertosplustcp/mmipal_freertosplustcp.c
+$(error Unknown IP_STACK '$(IP_STACK)' specified)
 endif
 
 MMIPAL_SRCS_H += mmipal.h

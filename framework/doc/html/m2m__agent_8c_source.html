@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.10.4</span>
+   &#160;<span id="projectnumber">2.11.2</span>
    </div>
   </td>
  </tr>
@@ -100,50 +100,120 @@ $(document).ready(function(){initNavTree('m2m__agent_8c_source.html',''); initRe
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="preprocessor">#include &quot;mmutils.h&quot;</span></div>
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="preprocessor">#include &quot;mmagic.h&quot;</span></div>
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="preprocessor">#include &quot;mmregdb.h&quot;</span></div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span> </div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="preprocessor">#if !defined(MBEDTLS_CONFIG_FILE)</span></div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">#include &quot;mbedtls/mbedtls_config.h&quot;</span></div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="preprocessor">#else</span></div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="preprocessor">#include MBEDTLS_CONFIG_FILE</span></div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="preprocessor">#ifdef MBEDTLS_THREADING_ALT</span></div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="preprocessor">#include &quot;threading_alt.h&quot;</span></div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span> </div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="preprocessor">#include &quot;mmwlan.h&quot;</span></div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span> </div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">#if !defined(MBEDTLS_CONFIG_FILE)</span></div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="preprocessor">#include &quot;mbedtls/mbedtls_config.h&quot;</span></div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="preprocessor">#else</span></div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="preprocessor">#include MBEDTLS_CONFIG_FILE</span></div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="preprocessor">#ifdef MBEDTLS_THREADING_ALT</span></div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="preprocessor">#include &quot;threading_alt.h&quot;</span></div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span> </div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span><span class="preprocessor">#ifndef APPLICATION_VERSION</span></div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="preprocessor">#error Please define APPLICATION_VERSION to an appropriate value.</span></div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span> </div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno"><a class="line" href="m2m__agent_8c.html#add3190cf715f513666f4be42874d91e2">   41</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="m2m__agent_8c.html#add3190cf715f513666f4be42874d91e2">app_init</a>(<span class="keywordtype">void</span>)</div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>{</div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>    printf(<span class="stringliteral">&quot;\n\nM2M Agent Example (Built &quot;</span> __DATE__ <span class="stringliteral">&quot; &quot;</span> __TIME__ <span class="stringliteral">&quot;)\n\n&quot;</span>);</div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span> </div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>    <span class="comment">/* Initialize mbedTLS threading (required if MBEDTLS_THREADING_ALT is defined) */</span></div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span><span class="preprocessor">#ifdef MBEDTLS_THREADING_ALT</span></div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>    mbedtls_platform_threading_init();</div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span> </div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>    <span class="keyword">const</span> <span class="keyword">struct </span><a class="code hl_struct" href="structmmagic__m2m__agent__init__args.html">mmagic_m2m_agent_init_args</a> init_args = {</div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>        .<a class="code hl_variable" href="structmmagic__m2m__agent__init__args.html#ad4731621e21f22b29c7cb8bf54e55ab9">app_version</a> = APPLICATION_VERSION,</div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>        .reg_db = get_regulatory_db(),</div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    };</div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>    <span class="keyword">struct </span>mmagic_m2m_agent *m2m_agent = <a class="code hl_function" href="group__MMAGIC__AGENT.html#ga0c7e0c69e10d9b0046cf7a8733a88cc8">mmagic_m2m_agent_init</a>(&amp;init_args);</div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    <a class="code hl_define" href="group__MMUTILS.html#ga0157597bdd038d83fbb0f2f488e6e4ee">MM_UNUSED</a>(m2m_agent);</div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>    printf(<span class="stringliteral">&quot;M2M interface enabled\n&quot;</span>);</div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>}</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span> </div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="preprocessor">#ifndef APPLICATION_VERSION</span></div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span><span class="preprocessor">#error Please define APPLICATION_VERSION to an appropriate value.</span></div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span> </div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno"><a class="line" href="m2m__agent_8c.html#a85c08015804356c687d26bcc43147a63">   39</a></span><span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code hl_function" href="m2m__agent_8c.html#a85c08015804356c687d26bcc43147a63">app_print_version_info</a>(<span class="keywordtype">void</span>)</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>{</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>    <span class="keyword">enum</span> <a class="code hl_enumeration" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a> status;</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>    <span class="keyword">struct </span><a class="code hl_struct" href="structmmwlan__version.html">mmwlan_version</a> version = { 0 };</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>    <span class="keyword">struct </span><a class="code hl_struct" href="structmmwlan__bcf__metadata.html">mmwlan_bcf_metadata</a> bcf_metadata = { 0 };</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>    <span class="keywordtype">char</span> hw_version_string[32] = { 0 };</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span> </div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>    <span class="keywordtype">bool</span> ok = <a class="code hl_function" href="group__MMHAL__APP.html#ga096a248615b478e215eeb4bfc29327ee">mmhal_get_hardware_version</a>(hw_version_string, <span class="keyword">sizeof</span>(hw_version_string));</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>    <span class="keywordflow">if</span> (!ok)</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>    {</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>        snprintf(hw_version_string, <span class="keyword">sizeof</span>(hw_version_string), <span class="stringliteral">&quot;%s&quot;</span>, <span class="stringliteral">&quot;Unknown&quot;</span>);</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>    }</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span> </div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>    printf(<span class="stringliteral">&quot;-----------------------------------\n&quot;</span>);</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span> </div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>    printf(<span class="stringliteral">&quot;  HW Version:              %s\n&quot;</span>, hw_version_string);</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    status = <a class="code hl_function" href="group__MMWLAN__CTRL.html#ga8fbf9fea8dd680ee8cd92e4f34e7c12e">mmwlan_get_bcf_metadata</a>(&amp;bcf_metadata);</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>    <span class="keywordflow">if</span> (status == <a class="code hl_enumvalue" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a>)</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>    {</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>        printf(<span class="stringliteral">&quot;  BCF API version:         %u.%u.%u\n&quot;</span>,</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>               bcf_metadata.<a class="code hl_variable" href="structmmwlan__bcf__metadata.html#adf230bcb317ee6f9fce43d306c9c7cbf">version</a>.<a class="code hl_variable" href="structmmwlan__bcf__metadata.html#af0010394bc1d65e7a15d33697808db00">major</a>,</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>               bcf_metadata.<a class="code hl_variable" href="structmmwlan__bcf__metadata.html#adf230bcb317ee6f9fce43d306c9c7cbf">version</a>.<a class="code hl_variable" href="structmmwlan__bcf__metadata.html#af0e72dd46bc0cebc74edf50d6a6b885f">minor</a>,</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>               bcf_metadata.<a class="code hl_variable" href="structmmwlan__bcf__metadata.html#adf230bcb317ee6f9fce43d306c9c7cbf">version</a>.<a class="code hl_variable" href="structmmwlan__bcf__metadata.html#aa1672c89d57924d6620459fef51d27ad">patch</a>);</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>        <span class="keywordflow">if</span> (bcf_metadata.<a class="code hl_variable" href="structmmwlan__bcf__metadata.html#af41f071a4fb5a0c1d7364ec66780b86f">build_version</a>[0] != <span class="charliteral">&#39;\0&#39;</span>)</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>        {</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>            printf(<span class="stringliteral">&quot;  BCF build version:       %s\n&quot;</span>, bcf_metadata.<a class="code hl_variable" href="structmmwlan__bcf__metadata.html#af41f071a4fb5a0c1d7364ec66780b86f">build_version</a>);</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>        }</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>        <span class="keywordflow">if</span> (bcf_metadata.<a class="code hl_variable" href="structmmwlan__bcf__metadata.html#aa1376e6194a9038499db696871788ccd">board_desc</a>[0] != <span class="charliteral">&#39;\0&#39;</span>)</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>        {</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>            printf(<span class="stringliteral">&quot;  BCF board description:   %s\n&quot;</span>, bcf_metadata.<a class="code hl_variable" href="structmmwlan__bcf__metadata.html#aa1376e6194a9038499db696871788ccd">board_desc</a>);</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>        }</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>    }</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>    <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>    {</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>        printf(<span class="stringliteral">&quot;  !! BCF metadata retrival failed !!\n&quot;</span>);</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>    }</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span> </div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>    status = <a class="code hl_function" href="group__MMWLAN__CTRL.html#ga13dae535ef5e45beed9abdead556ca84">mmwlan_get_version</a>(&amp;<a class="code hl_variable" href="structmmwlan__bcf__metadata.html#adf230bcb317ee6f9fce43d306c9c7cbf">version</a>);</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>    <span class="keywordflow">if</span> (status != <a class="code hl_enumvalue" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a>)</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>    {</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>        printf(<span class="stringliteral">&quot;  !! Error occured whilst retrieving version info !!\n&quot;</span>);</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>    }</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>    printf(<span class="stringliteral">&quot;  Morselib version:        %s\n&quot;</span>, <a class="code hl_variable" href="structmmwlan__bcf__metadata.html#adf230bcb317ee6f9fce43d306c9c7cbf">version</a>.morselib_version);</div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>    printf(<span class="stringliteral">&quot;  Morse firmware version:  %s\n&quot;</span>, <a class="code hl_variable" href="structmmwlan__bcf__metadata.html#adf230bcb317ee6f9fce43d306c9c7cbf">version</a>.morse_fw_version);</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>    printf(<span class="stringliteral">&quot;  Morse chip ID:           0x%04lx\n&quot;</span>, <a class="code hl_variable" href="structmmwlan__bcf__metadata.html#adf230bcb317ee6f9fce43d306c9c7cbf">version</a>.morse_chip_id);</div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>    printf(<span class="stringliteral">&quot;  Morse chip name:         %s\n&quot;</span>, <a class="code hl_variable" href="structmmwlan__bcf__metadata.html#adf230bcb317ee6f9fce43d306c9c7cbf">version</a>.morse_chip_id_string);</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>    printf(<span class="stringliteral">&quot;  Application version:     %s\n&quot;</span>, APPLICATION_VERSION);</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>    printf(<span class="stringliteral">&quot;-----------------------------------\n&quot;</span>);</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span> </div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>    <a class="code hl_define" href="group__MMOSAL__ASSERT.html#ga9bae87b1059a31f390403d647b73e4b9">MMOSAL_ASSERT</a>(status == <a class="code hl_enumvalue" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a>);</div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>}</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span> </div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno"><a class="line" href="m2m__agent_8c.html#add3190cf715f513666f4be42874d91e2">   95</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="m2m__agent_8c.html#add3190cf715f513666f4be42874d91e2">app_init</a>(<span class="keywordtype">void</span>)</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>{</div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>    printf(<span class="stringliteral">&quot;\n\nM2M Agent Example (Built &quot;</span> __DATE__ <span class="stringliteral">&quot; &quot;</span> __TIME__ <span class="stringliteral">&quot;)\n\n&quot;</span>);</div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span> </div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span> </div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>    <span class="comment">/* Initialize mbedTLS threading (required if MBEDTLS_THREADING_ALT is defined) */</span></div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span><span class="preprocessor">#ifdef MBEDTLS_THREADING_ALT</span></div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>    mbedtls_platform_threading_init();</div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span> </div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>    <span class="keyword">const</span> <span class="keyword">struct </span><a class="code hl_struct" href="structmmagic__m2m__agent__init__args.html">mmagic_m2m_agent_init_args</a> init_args = {</div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>        .<a class="code hl_variable" href="structmmagic__m2m__agent__init__args.html#ad4731621e21f22b29c7cb8bf54e55ab9">app_version</a> = APPLICATION_VERSION,</div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>        .reg_db = get_regulatory_db(),</div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>    };</div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>    <span class="keyword">struct </span>mmagic_m2m_agent *m2m_agent = <a class="code hl_function" href="group__MMAGIC__AGENT.html#ga0c7e0c69e10d9b0046cf7a8733a88cc8">mmagic_m2m_agent_init</a>(&amp;init_args);</div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>    <a class="code hl_define" href="group__MMUTILS.html#ga0157597bdd038d83fbb0f2f488e6e4ee">MM_UNUSED</a>(m2m_agent);</div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>    printf(<span class="stringliteral">&quot;M2M interface enabled\n&quot;</span>);</div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>    <a class="code hl_function" href="m2m__agent_8c.html#a85c08015804356c687d26bcc43147a63">app_print_version_info</a>();</div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>}</div>
 <div class="ttc" id="agroup__MMAGIC__AGENT_html_ga0c7e0c69e10d9b0046cf7a8733a88cc8"><div class="ttname"><a href="group__MMAGIC__AGENT.html#ga0c7e0c69e10d9b0046cf7a8733a88cc8">mmagic_m2m_agent_init</a></div><div class="ttdeci">struct mmagic_m2m_agent * mmagic_m2m_agent_init(const struct mmagic_m2m_agent_init_args *args)</div><div class="ttdoc">Initialize the M2M agent.</div></div>
+<div class="ttc" id="agroup__MMHAL__APP_html_ga096a248615b478e215eeb4bfc29327ee"><div class="ttname"><a href="group__MMHAL__APP.html#ga096a248615b478e215eeb4bfc29327ee">mmhal_get_hardware_version</a></div><div class="ttdeci">bool mmhal_get_hardware_version(char *version_buffer, size_t version_buffer_length)</div><div class="ttdoc">Reads information that can be used to identify the hardware platform, such as hardware ID and version...</div></div>
+<div class="ttc" id="agroup__MMOSAL__ASSERT_html_ga9bae87b1059a31f390403d647b73e4b9"><div class="ttname"><a href="group__MMOSAL__ASSERT.html#ga9bae87b1059a31f390403d647b73e4b9">MMOSAL_ASSERT</a></div><div class="ttdeci">#define MMOSAL_ASSERT(expr)</div><div class="ttdoc">Assert that the given expression evaluates to true and abort execution if not.</div><div class="ttdef"><b>Definition:</b> <a href="mmosal_8h_source.html#l01006">mmosal.h:1006</a></div></div>
 <div class="ttc" id="agroup__MMUTILS_html_ga0157597bdd038d83fbb0f2f488e6e4ee"><div class="ttname"><a href="group__MMUTILS.html#ga0157597bdd038d83fbb0f2f488e6e4ee">MM_UNUSED</a></div><div class="ttdeci">#define MM_UNUSED(_x)</div><div class="ttdoc">Casts the given expression to void to avoid &quot;unused&quot; warnings from the compiler.</div><div class="ttdef"><b>Definition:</b> <a href="mmutils_8h_source.html#l00070">mmutils.h:70</a></div></div>
-<div class="ttc" id="am2m__agent_8c_html_add3190cf715f513666f4be42874d91e2"><div class="ttname"><a href="m2m__agent_8c.html#add3190cf715f513666f4be42874d91e2">app_init</a></div><div class="ttdeci">void app_init(void)</div><div class="ttdoc">Main entry point to the application.</div><div class="ttdef"><b>Definition:</b> <a href="m2m__agent_8c_source.html#l00041">m2m_agent.c:41</a></div></div>
+<div class="ttc" id="agroup__MMWLAN__CTRL_html_ga13dae535ef5e45beed9abdead556ca84"><div class="ttname"><a href="group__MMWLAN__CTRL.html#ga13dae535ef5e45beed9abdead556ca84">mmwlan_get_version</a></div><div class="ttdeci">enum mmwlan_status mmwlan_get_version(struct mmwlan_version *version)</div><div class="ttdoc">Retrieve version information from morselib and the connected Morse transceiver.</div></div>
+<div class="ttc" id="agroup__MMWLAN__CTRL_html_ga8fbf9fea8dd680ee8cd92e4f34e7c12e"><div class="ttname"><a href="group__MMWLAN__CTRL.html#ga8fbf9fea8dd680ee8cd92e4f34e7c12e">mmwlan_get_bcf_metadata</a></div><div class="ttdeci">enum mmwlan_status mmwlan_get_bcf_metadata(struct mmwlan_bcf_metadata *metadata)</div><div class="ttdoc">Read the metadata from the board configuration file (BCF).</div></div>
+<div class="ttc" id="agroup__MMWLAN_html_ga0039072000d47e5c3712686bf1e43086"><div class="ttname"><a href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a></div><div class="ttdeci">mmwlan_status</div><div class="ttdoc">Enumeration of status return codes.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00049">mmwlan.h:50</a></div></div>
+<div class="ttc" id="agroup__MMWLAN_html_gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c"><div class="ttname"><a href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a></div><div class="ttdeci">@ MMWLAN_SUCCESS</div><div class="ttdoc">The operation was successful.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00052">mmwlan.h:52</a></div></div>
+<div class="ttc" id="am2m__agent_8c_html_a85c08015804356c687d26bcc43147a63"><div class="ttname"><a href="m2m__agent_8c.html#a85c08015804356c687d26bcc43147a63">app_print_version_info</a></div><div class="ttdeci">static void app_print_version_info(void)</div><div class="ttdoc">Prints various version information.</div><div class="ttdef"><b>Definition:</b> <a href="m2m__agent_8c_source.html#l00039">m2m_agent.c:39</a></div></div>
+<div class="ttc" id="am2m__agent_8c_html_add3190cf715f513666f4be42874d91e2"><div class="ttname"><a href="m2m__agent_8c.html#add3190cf715f513666f4be42874d91e2">app_init</a></div><div class="ttdeci">void app_init(void)</div><div class="ttdoc">Main entry point to the application.</div><div class="ttdef"><b>Definition:</b> <a href="m2m__agent_8c_source.html#l00095">m2m_agent.c:95</a></div></div>
 <div class="ttc" id="astructmmagic__m2m__agent__init__args_html"><div class="ttname"><a href="structmmagic__m2m__agent__init__args.html">mmagic_m2m_agent_init_args</a></div><div class="ttdoc">M2M initialization args.</div><div class="ttdef"><b>Definition:</b> <a href="mmagic_8h_source.html#l00293">mmagic.h:294</a></div></div>
 <div class="ttc" id="astructmmagic__m2m__agent__init__args_html_ad4731621e21f22b29c7cb8bf54e55ab9"><div class="ttname"><a href="structmmagic__m2m__agent__init__args.html#ad4731621e21f22b29c7cb8bf54e55ab9">mmagic_m2m_agent_init_args::app_version</a></div><div class="ttdeci">char app_version[MMAGIC_SYS_MAX_APP_VERSION_LENGTH+1]</div><div class="ttdoc">Application version string.</div><div class="ttdef"><b>Definition:</b> <a href="mmagic_8h_source.html#l00296">mmagic.h:296</a></div></div>
+<div class="ttc" id="astructmmwlan__bcf__metadata_html"><div class="ttname"><a href="structmmwlan__bcf__metadata.html">mmwlan_bcf_metadata</a></div><div class="ttdoc">Board configuration file (BCF) metadata.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00349">mmwlan.h:350</a></div></div>
+<div class="ttc" id="astructmmwlan__bcf__metadata_html_aa1376e6194a9038499db696871788ccd"><div class="ttname"><a href="structmmwlan__bcf__metadata.html#aa1376e6194a9038499db696871788ccd">mmwlan_bcf_metadata::board_desc</a></div><div class="ttdeci">char board_desc[MMWLAN_BCF_BOARD_DESC_MAXLEN+1]</div><div class="ttdoc">Board description string.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00368">mmwlan.h:368</a></div></div>
+<div class="ttc" id="astructmmwlan__bcf__metadata_html_aa1672c89d57924d6620459fef51d27ad"><div class="ttname"><a href="structmmwlan__bcf__metadata.html#aa1672c89d57924d6620459fef51d27ad">mmwlan_bcf_metadata::patch</a></div><div class="ttdeci">uint8_t patch</div><div class="ttdoc">Patch version field.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00359">mmwlan.h:359</a></div></div>
+<div class="ttc" id="astructmmwlan__bcf__metadata_html_adf230bcb317ee6f9fce43d306c9c7cbf"><div class="ttname"><a href="structmmwlan__bcf__metadata.html#adf230bcb317ee6f9fce43d306c9c7cbf">mmwlan_bcf_metadata::version</a></div><div class="ttdeci">struct mmwlan_bcf_metadata::@1 version</div><div class="ttdoc">BCF semantic version.</div></div>
+<div class="ttc" id="astructmmwlan__bcf__metadata_html_af0010394bc1d65e7a15d33697808db00"><div class="ttname"><a href="structmmwlan__bcf__metadata.html#af0010394bc1d65e7a15d33697808db00">mmwlan_bcf_metadata::major</a></div><div class="ttdeci">uint16_t major</div><div class="ttdoc">Major version field.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00355">mmwlan.h:355</a></div></div>
+<div class="ttc" id="astructmmwlan__bcf__metadata_html_af0e72dd46bc0cebc74edf50d6a6b885f"><div class="ttname"><a href="structmmwlan__bcf__metadata.html#af0e72dd46bc0cebc74edf50d6a6b885f">mmwlan_bcf_metadata::minor</a></div><div class="ttdeci">uint8_t minor</div><div class="ttdoc">Minor version field.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00357">mmwlan.h:357</a></div></div>
+<div class="ttc" id="astructmmwlan__bcf__metadata_html_af41f071a4fb5a0c1d7364ec66780b86f"><div class="ttname"><a href="structmmwlan__bcf__metadata.html#af41f071a4fb5a0c1d7364ec66780b86f">mmwlan_bcf_metadata::build_version</a></div><div class="ttdeci">char build_version[MMWLAN_BCF_BUILD_VERSION_MAXLEN+1]</div><div class="ttdoc">Build version string.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00376">mmwlan.h:376</a></div></div>
+<div class="ttc" id="astructmmwlan__version_html"><div class="ttname"><a href="structmmwlan__version.html">mmwlan_version</a></div><div class="ttdoc">Structure for retrieving version information from the mmwlan subsystem.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00319">mmwlan.h:320</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.17-->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_53f24dd26f9743fa303a83f37b3ec939.html">applications</a></li><li class="navelem"><a class="el" href="dir_903dc44de6aba89209c1231ba3dbceaa.html">mm-ekh08-u575</a></li><li class="navelem"><a class="el" href="dir_7e415e744e0af70d8ea81b7b0a29d162.html">m2m_agent</a></li><li class="navelem"><a class="el" href="dir_909ff23781a840407d9dcd160a4bcfdf.html">src</a></li><li class="navelem"><a class="el" href="m2m__agent_8c.html">m2m_agent.c</a></li>
+    <li class="navelem"><a class="el" href="dir_2271e79b5286dc6f86ff0018a58db5d1.html">applications</a></li><li class="navelem"><a class="el" href="dir_30998d3c2d0e794661365b9b7cc51676.html">mm-ekh08-u575</a></li><li class="navelem"><a class="el" href="dir_b5700e6714c2d025c79c9e95fd240cec.html">m2m_agent</a></li><li class="navelem"><a class="el" href="dir_f17ac1b3a74c8f408855309fcbb8812d.html">src</a></li><li class="navelem"><a class="el" href="m2m__agent_8c.html">m2m_agent.c</a></li>
     <li class="footer">Copyright 2021-2025 Morse Micro </li>
   </ul>
 </div>

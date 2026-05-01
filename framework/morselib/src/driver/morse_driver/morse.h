@@ -9,6 +9,7 @@
 #include "mmosal.h"
 #include "mmpkt.h"
 #include "mmdrv.h"
+#include "coredump.h"
 
 #define MORSE_DRIVER_SEMVER_MAJOR 56
 #define MORSE_DRIVER_SEMVER_MINOR 0
@@ -68,6 +69,7 @@ enum driver_task_event
     DRV_EVT_TX_PACKET_FREED_UP_PEND,
     DRV_EVT_TRAFFIC_PAUSE_PEND,
     DRV_EVT_TRAFFIC_RESUME_PEND,
+    DRV_EVT_TRAFFIC_PAUSE_TIMEOUT,
 
     DRV_EVT_PS_ASYNC_WAKEUP_PEND,
     DRV_EVT_PS_DELAYED_EVAL_PEND,
@@ -76,8 +78,9 @@ enum driver_task_event
     DRV_EVT_STALE_TX_STATUS_PEND,
 
     DRV_EVT_SHUTDOWN,
+    DRV_EVT_STOP_NOTICATION,
 
-    DRV_EVT_BEACON_REQ_PEND,
+    DRV_EVT_BEACON_REQ_PEND
 };
 
 
@@ -91,6 +94,13 @@ enum driver_task_event
         (1ul << DRV_EVT_TRAFFIC_PAUSE_PEND) |  \
         (1ul << DRV_EVT_TRAFFIC_RESUME_PEND) | \
         (1ul << DRV_EVT_TX_PACKET_FREED_UP_PEND)
+
+
+#define DRV_EVT_TX_MASK                   \
+    (1ul << DRV_EVT_TX_COMMAND_PEND) |    \
+        (1ul << DRV_EVT_TX_BEACON_PEND) | \
+        (1ul << DRV_EVT_TX_MGMT_PEND) |   \
+        (1ul << DRV_EVT_TX_DATA_PEND)
 
 struct driver_scheduled_evt
 {
@@ -123,9 +133,6 @@ struct driver_data
     uint32_t state_flags;
 
 
-    volatile bool standby_waiting_for_wakeup;
-
-
     uint32_t bcf_address;
 
 
@@ -145,6 +152,9 @@ struct driver_data
     const struct mmhal_chip *cfg;
 
     uint32_t host_table_ptr;
+
+
+    uint32_t tx_max_pause_time_ms;
 
 
     struct
@@ -170,17 +180,8 @@ struct driver_data
 
     struct
     {
-        struct mmosal_task *task;
-        struct mmosal_semb *pending_semb;
-        volatile uint32_t last_checked;
-        volatile uint32_t interval_ms;
-        volatile bool task_enabled;
-        volatile bool task_running;
-
-        volatile atomic_uint_fast32_t periodic_check_vetoes;
-
-        volatile bool check_demanded;
-    } health_check;
+        struct morse_coredump_mem_region memory_regions[4];
+    } coredump;
 
     struct
     {

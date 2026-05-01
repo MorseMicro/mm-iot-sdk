@@ -8,10 +8,13 @@
 #ifndef MORSE_H
 #define MORSE_H
 
+#include <assert.h>
 #include "utils/includes.h"
 #include "utils/common.h"
 #include "ap/ap_config.h"
 #include "ap/hostapd.h"
+#include <sys/stat.h>
+struct wpa_supplicant;
 
 #define MORSE_S1G_RETURN_ERROR (-1)
 #define MORSE_INVALID_CHANNEL (-2)
@@ -31,12 +34,32 @@
 #define MORSE_JP_S1G_NON_OVERLAP_CHAN 21
 
 #define S1G_OP_CLASS_IE_LEN 3 /* eid + ie len + op class */
-extern const unsigned int S1G_OP_CLASSES_LEN;
+extern unsigned int S1G_OP_CLASSES_LEN;
 
 /* Define Maximum interfaces supported for MBSSID IE */
 #define MBSSID_MAX_INTERFACES 2
 
 #define MORSE_OUI	0x0CBF74
+
+#define RAW_PRIORITY_GROUP_MAX  (7)
+#define RAW_GROUP_SIZE          (256)
+#define RAW_AID_SPILL_RANGE     (512)
+#define BITS_PER_WORD           (32)
+
+#define IEEE80211_CHAN_1MHZ (1)
+#define IEEE80211_CHAN_2MHZ (2)
+#define IEEE80211_CHAN_4MHZ (4)
+#define IEEE80211_CHAN_8MHZ (8)
+#define IEEE80211_CHAN_16MHZ (16)
+
+#define CHANNELIZATION_SCHEME_NONE 0
+/** Channelization per IEEE Std 802.11-2020 */
+#define CHANNELIZATION_SCHEME_IEEE80211_2020 1
+/** Channelization per IEEE Std 802.11-2024 */
+#define CHANNELIZATION_SCHEME_IEEE80211_2024 2
+/** Channelization per IEEE Std 802.11-REVmf */
+#define CHANNELIZATION_SCHEME_IEEE80211_REVMF 3
+#define CHANNELIZATION_SCHEME_DEFAULT CHANNELIZATION_SCHEME_IEEE80211_REVMF
 
 enum morse_vendor_events {
 	MORSE_VENDOR_EVENT_BCN_VENDOR_IE_FOUND = 0, /* To be deprecated in a future version */
@@ -89,9 +112,11 @@ enum morse_dot11ah_region {
  * Return the pointer to the start of a container when a pointer within
  * the container is known
  */
+#ifndef container_of
 #define container_of(ptr, type, member) ({\
 	const typeof(((type *)0)->member)*__mptr = (const typeof(((type *)0)->member) *)(ptr); \
 	(type *)((char *)__mptr - offsetof(type, member)); })
+#endif
 
 /* RAW limits */
 #define MORSE_RAW_MAX_3BIT_SLOTS		(0b111)
@@ -120,121 +145,134 @@ int morse_s1g_validate_csa_params(struct hostapd_iface *iface, struct csa_settin
 /* Return the configured 1 or 2MHz primary channel */
 int morse_s1g_get_primary_channel(struct hostapd_config *conf, int bw);
 
+
+/**
+ * morse_is_multi_channelization_country() - Check if country has multiple channelization
+ *
+ * @alpha: Country code
+ *
+ * Returns: True if alpha matches a country with multiple channelization.
+ */
+bool morse_is_multi_channelization_country(const char *alpha);
+
+/**
+ * morse_dot11_2020_channelization_is_in_use() - Check if 802.11-2020 channelization is in use
+ *
+ * Return: true if IEEE802.11-2020 channelization is in use otherwise false.
+ */
+bool morse_dot11_2020_channelization_is_in_use(void);
+
+/**
+ * morse_get_channelization_scheme_in_use() - Get channelization scheme in use
+ *
+ * Returns: channelization scheme being used.
+ */
+u32 morse_get_channelization_scheme_in_use(void);
+
+/**
+ * morse_set_channelization_scheme() - Set the channelization scheme.
+ *
+ * @country: Country code
+ * @channelization_scheme: Channelization scheme
+ *
+ * Used to select an alternative set of channels for countries that have more than one scheme.
+ */
+void morse_set_channelization_scheme(char *country, u32 channelization_scheme);
+
+/**
+ * morse_ap_configure_channelization() - Derive channelization and configure it
+ *
+ * @country: Country code
+ * @op_class: Global operating class
+ *
+ * Returns: 0 on success, else -1
+ */
+int morse_ap_configure_channelization(char *country, u8 op_class);
+
+/**
+ * morse_sta_configure_channelization() - Derive channelization and configure it
+ *
+ * @ifname: wpa_supplicant structure for a network interface
+ * @country: Country code
+ *
+ * Returns: 0 on success, else -1
+ */
+int morse_sta_configure_channelization(struct wpa_supplicant *wpa_s, char *country);
+
 /* Defined in driver/driver/h */
 enum wnm_oper;
 
-#ifdef CONFIG_MORSE_WNM
 /**
- * Handle wnm_oper from driver.
+ * morse_s1g_chan_to_ht20_prim_chan() - Convert S1G Primary channel to HT20 channel.
  *
- * @param ifname	The name of the interface that this operation applies to.
- * @param oper		The operation type.
+ * @s1g_op_channel: S1G Operating Channel
+ * @s1g_prim_1MHz_channel: S1G 1MHz primary channel
+ * @cc: Country code
  *
- * @returns 0 on success, else an error code.
- *
- * @see wpa_driver_ops::wnm_oper
+ * Returns: HT20 Channel if mapping is successful, 0 otherwise
  */
-int morse_wnm_oper(const char *ifname, enum wnm_oper oper);
-#endif
+int morse_s1g_chan_to_ht20_prim_chan(int s1g_op_channel, int s1g_prim_1MHz_channel, char *cc);
 
 /**
- * Issue a Morse control command to enable or disable long sleep (i.e., sleep through DTIMs).
+ * morse_s1g_get_start_freq_for_country() - Get starting frequency for given country.
  *
- * @param iface		The name of the interface (e.g., wlan0)
- * @param enabled	Boolean indicating whether long sleep should be enabled or not.
+ * @cc: Country code
+ * @freq: S1G Frequency
+ * @bw: Bandwidth
  *
- * @returns 0 on success, else an error code.
+ * Returns: S1G Starting frequency for given country.
  */
-int morse_set_long_sleep_enabled(const char *iface, bool enabled);
+int morse_s1g_get_start_freq_for_country(char *cc, int freq, int bw);
 
 /**
- * Issue a morse_cli command to store session information after succesful association
+ * morse_calculate_primary_s1g_channel_au() - Derive primary S1G channel from given inputs
  *
- * @param ifname	The name of the interface (e.g., wlan0)
- * @param bssid		The BSSID for the association
- * @param dir		The directory path for storing Standby session information
+ * @op_bw_mhz: Operating channel bandwidth in MHz
+ * @pr_bw_mhz: Primary channel bandwidth in MHz
+ * @s1g_op_chan: S1G channel for operating center frequency
+ * @pr_1mhz_chan_idx: 1MHz channel index of primary channel
+ *
+ * Returns: derived channel on success, else an error code.
  */
-void morse_standby_session_store(const char* ifname, const u8* bssid,
-	const char* standby_session_dir);
-
-#ifdef CONFIG_MORSE_KEEP_ALIVE_OFFLOAD
+int morse_calculate_primary_s1g_channel_au(int op_bw_mhz, int pr_bw_mhz, int s1g_op_chan,
+								int pr_1mhz_chan_idx);
 
 /**
- * Issue a morse_cli command to set/offload the bss keep-alive frames.
+ * morse_ht_chan_offset_au () - For "AU" get offset value to derive HT channel
  *
- * @param iface			The name of the interface (e.g., wlan0)
- * @param bss_max_idle_period	The BSS max idle period as derived directly
- *				from the WLAN_EID_BSS_MAX_IDLE_PERIOD
- * @param as_11ah		Intepret BSS max idle period as per the 11ah spec.
+ * @chan: S1G/HT primary channel
+ * @primary_chan: S1G primary channel when chan is S1G channel - ignored otherwise
+ * @ht: true to use HT/S1G channel as input (for testing only)
  *
- * @returns 0 on success, else an error code.
+ * Returns: Offset value
  */
-int morse_set_keep_alive(const char* ifname, u16 bss_max_idle_period, bool as_11ah);
-
-#endif /* CONFIG_MORSE_KEEP_ALIVE_OFFLOAD */
-
-int morse_twt_conf(const char* ifname, struct morse_twt *twt_config);
+int morse_ht_chan_offset_au(int chan, int primary_chan, bool ht);
 
 /**
- * Issue a morse_cli command to set ecsa channel parameters
+ * Determine if a channel has a disabled primary channel confiuration
  *
- * @param ifname		The name of the interface (e.g., wlan0)
- * @param global_oper_class	Global operating class for the operating country
- *				and operating bandwidth (eg: for AU 68, 69, 70, 71)
- * @param prim_chwidth		Primary channel width in MHz (1, 2)
- * @param oper_chwidth		Operating channel width in MHz (1, 2, 4, 8)
- * @param oper_freq		Frequency of operating channel in kHz
- * @param prim_1mhz_ch_idx	1MHz channel index of primary channel
- * @param prim_global_op_class	Global operating class for primary channel
- * @param s1g_capab  User configured S1G capabilities.
+ * This function checks if a HT-mapped operating channel has a disabled HT primary or HT secondary
+ * channel. The function is only valid to be called on a channel that has the same bandwidth as the
+ * configs operating class, as it uses the primary channel index from the config.
  *
- * @returns 0 on success, else an error code.
+ * @param conf Hostapd config, including configuration containing primary channel parameters
+ * @param mode Supported HW mode information, including a list of enabled/disabled channels
+ * @param s1g_op_chan S1G operating channel
+ *
+ * @return True if HT primary or HT secondary is disabled
  */
-int morse_set_ecsa_params(const char* ifname, u8 global_oper_class, u8 prim_chwidth,
-			int oper_chwidth, int oper_freq, u8 prim_1mhz_ch_idx,
-			u8 prim_global_op_class, u32 s1g_capab);
-
-int morse_set_mbssid_info(const char *ifname, const char *tx_iface_idx,
-					u8 max_bss_index);
-/**
- * Issue a morse_cli command to enable or disable CAC
- *
- * @param ifname		The name of the interface (e.g., wlan0)
- * @param enable		True to enable CAC, false to disable CAC
- *
- * @returns 0 on success, else an error code.
- */
-int morse_cac_conf(const char* ifname, bool enable);
+bool morse_s1g_is_chan_conf_primary_disabled(struct hostapd_config *conf,
+					     struct hostapd_hw_modes *mode, int s1g_op_chan);
 
 /**
- * Globally enable / disable RAW
+ * Configure the chip during setup interface sequence.
  *
- * @param ifname the name of the interface
- * @param enable true to enable RAW, false to disable RAW
+ * Handles the morse_cli calls to set channel and operating class, including details that are not
+ * otherwise mapped to 5GHz channels (e.g. primary channel width)
  *
- * @returns 0 on success, else error code
+ * @param iface Hostapd interface struct
+ *
+ * @return 0 upon success, MORSE_S1G_RETURN_ERROR on failure
  */
-int morse_raw_global_enable(const char *ifname, bool enable);
-
-/**
- * Enable or disable RAW priorities.
- *
- * @param ifname the name of the interface
- * @param enable true to enable the priority, false to disable
- * @param prio index of the priority
- * @param start_time_us Start time from last beacon or RAW
- * @param duration_us RAW duration time
- * @param num_slots number of slots
- * @param cross_slot Cross slot boundary bleed allowed
- * @param max_bcn_spread maximum beacons to spread over (0 for no limit)
- * @param nom_stas_per_bcn Nominal number of STAs per beacon (0 for no spreading)
- * @param praw_period the period of the PRAW in beacons (0 for PRAW disabled)
- * @param praw_start_offset the beacon offset of the PRAW within the period
- *
- * @return 0 on success, else error code
- */
-int morse_raw_priority_enable(const char *ifname, bool enable, u8 prio, u32 start_time_us,
-	u32 duration_us, u8 num_slots, bool cross_slot, u16 max_bcn_spread, u16 nom_stas_per_bcn,
-	u8 praw_period, u8 praw_start_offset);
-
+int morse_set_interface(struct hostapd_iface *iface);
 #endif /* MORSE_H */

@@ -1,0 +1,9 @@
+make
+dos2unix
+coreutils
+findutils
+gnu-sed
+gnu-tar
+grep
+gawk
+pipenv

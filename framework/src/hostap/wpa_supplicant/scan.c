@@ -13,6 +13,7 @@
 #include "utils/eloop.h"
 #include "common/ieee802_11_defs.h"
 #include "common/wpa_ctrl.h"
+#include "common/morse/morse_commands.h"
 #include "config.h"
 #include "wpa_supplicant_i.h"
 #include "driver_i.h"
@@ -752,17 +753,20 @@ static struct wpabuf * wpa_supplicant_extra_ies(struct wpa_supplicant *wpa_s)
 	ext_capab_len = wpas_build_ext_capab(wpa_s, ext_capab,
 					     sizeof(ext_capab), NULL);
 	if (ext_capab_len > 0 &&
+	    (size_t) ext_capab_len < wpa_s->drv_max_probe_req_ie_len &&
 	    wpabuf_resize(&extra_ie, ext_capab_len) == 0)
 		wpabuf_put_data(extra_ie, ext_capab, ext_capab_len);
 
 #ifdef CONFIG_INTERWORKING
 	if (wpa_s->conf->interworking &&
+	    wpa_s->drv_max_probe_req_ie_len >= 2 &&
 	    wpabuf_resize(&extra_ie, 100) == 0)
 		wpas_add_interworking_elements(wpa_s, extra_ie);
 #endif /* CONFIG_INTERWORKING */
 
 #ifdef CONFIG_MBO
-	if (wpa_s->enable_oce & OCE_STA)
+	if ((wpa_s->enable_oce & OCE_STA) &&
+	    wpa_s->drv_max_probe_req_ie_len >= 5)
 		wpas_fils_req_param_add_max_channel(wpa_s, &extra_ie);
 #endif /* CONFIG_MBO */
 
@@ -776,17 +780,19 @@ static struct wpabuf * wpa_supplicant_extra_ies(struct wpa_supplicant *wpa_s)
 						&wpa_s->wps->dev,
 						wpa_s->wps->uuid, req_type,
 						0, NULL);
-		if (wps_ie) {
-			if (wpabuf_resize(&extra_ie, wpabuf_len(wps_ie)) == 0)
-				wpabuf_put_buf(extra_ie, wps_ie);
-			wpabuf_free(wps_ie);
-		}
+		if (wps_ie &&
+		    wpabuf_len(wps_ie) <= wpa_s->drv_max_probe_req_ie_len &&
+		    wpabuf_resize(&extra_ie, wpabuf_len(wps_ie)) == 0)
+			wpabuf_put_buf(extra_ie, wps_ie);
+		wpabuf_free(wps_ie);
 	}
 
 #ifdef CONFIG_P2P
 	if (wps) {
 		size_t ielen = p2p_scan_ie_buf_len(wpa_s->global->p2p);
-		if (wpabuf_resize(&extra_ie, ielen) == 0)
+
+		if (ielen <= wpa_s->drv_max_probe_req_ie_len &&
+		    wpabuf_resize(&extra_ie, ielen) == 0)
 			wpas_p2p_scan_ie(wpa_s, extra_ie);
 	}
 #endif /* CONFIG_P2P */
@@ -799,12 +805,14 @@ static struct wpabuf * wpa_supplicant_extra_ies(struct wpa_supplicant *wpa_s)
 #endif /* CONFIG_MESH */
 
 #ifdef CONFIG_HS20
-	if (wpa_s->conf->hs20 && wpabuf_resize(&extra_ie, 9) == 0)
+	if (wpa_s->conf->hs20 && wpa_s->drv_max_probe_req_ie_len >= 9 &&
+	    wpabuf_resize(&extra_ie, 9) == 0)
 		wpas_hs20_add_indication(extra_ie, -1, 0);
 #endif /* CONFIG_HS20 */
 
 #ifdef CONFIG_FST
 	if (wpa_s->fst_ies &&
+	    wpa_s->drv_max_probe_req_ie_len >= wpabuf_len(wpa_s->fst_ies) &&
 	    wpabuf_resize(&extra_ie, wpabuf_len(wpa_s->fst_ies)) == 0)
 		wpabuf_put_buf(extra_ie, wpa_s->fst_ies);
 #endif /* CONFIG_FST */
@@ -818,7 +826,8 @@ static struct wpabuf * wpa_supplicant_extra_ies(struct wpa_supplicant *wpa_s)
 	if (wpa_s->vendor_elem[VENDOR_ELEM_PROBE_REQ]) {
 		struct wpabuf *buf = wpa_s->vendor_elem[VENDOR_ELEM_PROBE_REQ];
 
-		if (wpabuf_resize(&extra_ie, wpabuf_len(buf)) == 0)
+		if (wpa_s->drv_max_probe_req_ie_len >= wpabuf_len(buf) &&
+		    wpabuf_resize(&extra_ie, wpabuf_len(buf)) == 0)
 			wpabuf_put_buf(extra_ie, buf);
 	}
 
@@ -852,6 +861,47 @@ static int non_p2p_network_enabled(struct wpa_supplicant *wpa_s)
 
 #endif /* CONFIG_P2P */
 
+int calculate_min_scan_timeout(struct wpa_supplicant *wpa_s,
+			       struct wpa_driver_scan_params *params)
+{
+	int num_chans = 0;
+	int timeout;
+
+	if (params->freqs) {
+		while (params->freqs[num_chans])
+			num_chans++;
+	} else {
+		/* Freqs is not provided, will scan all usable channels in regdom */
+		int i, j;
+
+		if (!wpa_s->hw.modes)
+			return 0;
+
+		for (i = 0; i < wpa_s->hw.num_modes; i++) {
+			struct hostapd_hw_modes *mode = &wpa_s->hw.modes[i];
+
+			if (!mode->num_channels)
+				continue;
+
+			for (j = 0; j < mode->num_channels; j++) {
+				if (mode->channels[j].flag & HOSTAPD_CHAN_DISABLED)
+					continue;
+				if (mode->channels[j].flag & HOSTAPD_CHAN_RADAR)
+					continue;
+
+				num_chans++;
+			}
+		}
+	}
+
+	/* The minimum time required to scan is bound by the dwell duration and number of
+	 * channels. Include a second of overhead for each channel in the scan list.
+	 */
+	timeout = (params->duration * 1024 * num_chans) / 1000000;
+	timeout += 1 * num_chans;
+
+	return timeout;
+}
 
 int wpa_add_scan_freqs_list(struct wpa_supplicant *wpa_s,
 			    enum hostapd_hw_mode band,
@@ -1108,8 +1158,8 @@ static void wpa_supplicant_scan(void *eloop_ctx, void *timeout_ctx)
 
 #if defined(CONFIG_MESH) && defined(CONFIG_IEEE80211AH)
 	ssid = wpa_supplicant_get_mesh_ssid(wpa_s);
-	if (ssid && ssid->mode == WPAS_MODE_MESH && ssid->mesh_beaconless_mode) {
-		wpa_dbg(wpa_s, MSG_DEBUG, "Scan is blocked in Mesh beaconless mode");
+	if (ssid && ssid->mode == WPAS_MODE_MESH) {
+		wpa_dbg(wpa_s, MSG_DEBUG, "Scan is blocked in Mesh");
 		return;
 	}
 #endif
@@ -1393,6 +1443,9 @@ static void wpa_supplicant_scan(void *eloop_ctx, void *timeout_ctx)
 			"SSID");
 	}
 
+	if (wpa_s->conf->scan_dwell)
+		params.duration =  MAX(wpa_s->conf->scan_dwell, params.duration);
+
 	if (wpa_s->next_scan_dwell_duration) {
 		params.duration = wpa_s->next_scan_dwell_duration;
 		wpa_s->next_scan_dwell_duration = 0;
@@ -1462,6 +1515,9 @@ ssid_list_set:
 			}
 		}
 	}
+
+	if (params.duration)
+		params.min_scan_timeout = calculate_min_scan_timeout(wpa_s, &params);
 
 #ifdef CONFIG_MBO
 	if (wpa_s->enable_oce & OCE_STA)
@@ -1969,6 +2025,27 @@ scan:
 
 	wpa_scan_set_relative_rssi_params(wpa_s, scan_params);
 
+#if defined(CONFIG_MORSE_SET_SCHED_SCAN_DWELL) && defined(CONFIG_DRIVER_NL80211_MORSE)
+	if (wpa_s->conf->scan_dwell) {
+		wpa_dbg(wpa_s, MSG_DEBUG, "Configuring dwell period for schedule scan %d TUs",
+			wpa_s->conf->scan_dwell);
+
+		if (!wpa_s->driver->param_get_set) {
+			wpa_printf(MSG_ERROR,
+				     "Driver interface not defined for param_get_set");
+			return -1;
+		}
+
+		if (wpa_s->driver->param_get_set(wpa_s->drv_priv,
+						MORSE_CMD_PARAM_ID_DEFAULT_ACTIVE_SCAN_DWELL_MS,
+						MORSE_CMD_PARAM_ACTION_SET,
+					      (wpa_s->conf->scan_dwell * 1024) / 1000, NULL)) {
+			wpa_printf(MSG_ERROR, "Failed to set active_scan_dwell_ms");
+			return -1;
+		}
+	}
+#endif /* CONFIG_MORSE_SET_SCHED_SCAN_DWELL && CONFIG_DRIVER_NL80211_MORSE*/
+
 	ret = wpa_supplicant_start_sched_scan(wpa_s, scan_params);
 	wpabuf_free(extra_ie);
 	os_free(params.filter_ssids);
@@ -2403,7 +2480,9 @@ static int wpa_scan_result_compar(const void *a, const void *b)
 	int wpa_a, wpa_b;
 	int snr_a, snr_b, snr_a_full, snr_b_full;
 	size_t ies_len;
+#ifndef CONFIG_NO_WPA
 	const u8 *rsne_a, *rsne_b;
+#endif /* CONFIG_NO_WPA */
 
 	/* WPA/WPA2 support preferred */
 	wpa_a = wpa_scan_get_vendor_ie(wa, WPA_IE_VENDOR_TYPE) != NULL ||
@@ -2447,6 +2526,7 @@ static int wpa_scan_result_compar(const void *a, const void *b)
 		snr_b = snr_b_full = wb->level;
 	}
 
+#ifndef CONFIG_NO_WPA
 	/* If SNR of a SAE BSS is good or at least as high as the PSK BSS,
 	 * prefer SAE over PSK for mixed WPA3-Personal transition mode and
 	 * WPA2-Personal deployments */
@@ -2472,6 +2552,7 @@ static int wpa_scan_result_compar(const void *a, const void *b)
 		    (snr_b >= GREAT_SNR || snr_b >= snr_a))
 			return 1;
 	}
+#endif /* CONFIG_NO_WPA */
 
 	/* If SNR is close, decide by max rate or frequency band. For cases
 	 * involving the 6 GHz band, use the throughput estimate irrespective
@@ -2826,6 +2907,138 @@ static const struct minsnr_bitrate_entry he160_table[] = {
 	{ -1, 1441200 }  /* SNR > 51 */
 };
 
+/* See IEEE P802.11be/D7.0, Table 36-78 - EHT-MCSs for 484+242-tone MRU,
+ * NSS,u = 1
+ */
+static const struct minsnr_bitrate_entry eht60_table[] = {
+	{ 0, 0 },
+	{ 8, 25800 },   /* EHT80 with 20 MHz punctured MCS0 */
+	{ 11, 51600 },  /* EHT80 with 20 MHz punctured MCS1 */
+	{ 15, 77400 },  /* EHT80 with 20 MHz punctured MCS2 */
+	{ 17, 103200 }, /* EHT80 with 20 MHz punctured MCS3 */
+	{ 21, 154900 }, /* EHT80 with 20 MHz punctured MCS4 */
+	{ 24, 206500 }, /* EHT80 with 20 MHz punctured MCS5 */
+	{ 26, 232300 }, /* EHT80 with 20 MHz punctured MCS6 */
+	{ 31, 258100 }, /* EHT80 with 20 MHz punctured MCS7 */
+	{ 35, 309700 }, /* EHT80 with 20 MHz punctured MCS8 */
+	{ 37, 344100 }, /* EHT80 with 20 MHz punctured MCS9 */
+	{ 40, 387100 }, /* EHT80 with 20 MHz punctured MCS10 */
+	{ 42, 430100 }, /* EHT80 with 20 MHz punctured MCS11 */
+	{ 45, 464600 }, /* EHT80 with 20 MHz punctured MCS12 */
+	{ 48, 516200 }, /* EHT80 with 20 MHz punctured MCS13 */
+	{ -1, 516200 }  /* SNR > 48 */
+};
+
+/* See IEEE P802.11be/D7.0, Table 36-80 - EHT-MCSs for 996+484-tone MRU,
+ * NSS,u = 1
+ */
+static const struct minsnr_bitrate_entry eht120_table[] = {
+	{ 0, 0 },
+	{ 11, 53200 },   /* EHT160 with 40 MHz punctured MCS0 */
+	{ 14, 106500 },  /* EHT160 with 40 MHz punctured MCS1 */
+	{ 18, 159700 },  /* EHT160 with 40 MHz punctured MCS2 */
+	{ 20, 212900 },  /* EHT160 with 40 MHz punctured MCS3 */
+	{ 24, 319400 },  /* EHT160 with 40 MHz punctured MCS4 */
+	{ 27, 425900 },  /* EHT160 with 40 MHz punctured MCS5 */
+	{ 29, 479100 },  /* EHT160 with 40 MHz punctured MCS6 */
+	{ 34, 532400 },  /* EHT160 with 40 MHz punctured MCS7 */
+	{ 38, 638800 },  /* EHT160 with 40 MHz punctured MCS8 */
+	{ 40, 709800 },  /* EHT160 with 40 MHz punctured MCS9 */
+	{ 43, 798500 },  /* EHT160 with 40 MHz punctured MCS10 */
+	{ 45, 887200 },  /* EHT160 with 40 MHz punctured MCS11 */
+	{ 48, 958200 },  /* EHT160 with 40 MHz punctured MCS12 */
+	{ 51, 1064700 }, /* EHT160 with 40 MHz punctured MCS13 */
+	{ -1, 1064700 }  /* SNR > 51 */
+};
+
+/* See IEEE P802.11be/D7.0, Table 36-81 - EHT-MCSs for 996+484+242-tone MRU,
+ * NSS,u = 1
+ */
+static const struct minsnr_bitrate_entry eht140_table[] = {
+	{ 0, 0 },
+	{ 11, 61800 },   /* EHT160 with 20 MHz punctured MCS0 */
+	{ 14, 123700 },  /* EHT160 with 20 MHz punctured MCS1 */
+	{ 18, 185500 },  /* EHT160 with 20 MHz punctured MCS2 */
+	{ 20, 247400 },  /* EHT160 with 20 MHz punctured MCS3 */
+	{ 24, 371000 },  /* EHT160 with 20 MHz punctured MCS4 */
+	{ 27, 494700 },  /* EHT160 with 20 MHz punctured MCS5 */
+	{ 29, 556500 },  /* EHT160 with 20 MHz punctured MCS6 */
+	{ 34, 618400 },  /* EHT160 with 20 MHz punctured MCS7 */
+	{ 38, 742100 },  /* EHT160 with 20 MHz punctured MCS8 */
+	{ 40, 824500 },  /* EHT160 with 20 MHz punctured MCS9 */
+	{ 43, 927600 },  /* EHT160 with 20 MHz punctured MCS10 */
+	{ 45, 1030600 }, /* EHT160 with 20 MHz punctured MCS11 */
+	{ 48, 1113100 }, /* EHT160 with 20 MHz punctured MCS12 */
+	{ 51, 1236800 }, /* EHT160 with 20 MHz punctured MCS13 */
+	{ -1, 1236800 }  /* SNR > 51 */
+};
+
+/* See IEEE P802.11be/D7.0, Table 36-83 - EHT-MCSs for 2x996+484-tone NRU,
+ * NSS,u = 1
+ */
+static const struct minsnr_bitrate_entry eht200_table[] = {
+	{ 0, 0 },
+	{ 14, 89300 },    /* EHT320 with 120 MHz punctured MCS0 */
+	{ 17, 178500 },   /* EHT320 with 120 MHz punctured MCS1 */
+	{ 21, 267800 },   /* EHT320 with 120 MHz punctured MCS2 */
+	{ 23, 357100 },   /* EHT320 with 120 MHz punctured MCS3 */
+	{ 27, 535600 },   /* EHT320 with 120 MHz punctured MCS4 */
+	{ 30, 714100 },   /* EHT320 with 120 MHz punctured MCS5 */
+	{ 32, 803400 },   /* EHT320 with 120 MHz punctured MCS6 */
+	{ 37, 892600 },   /* EHT320 with 120 MHz punctured MCS7 */
+	{ 41, 1071200 },  /* EHT320 with 120 MHz punctured MCS8 */
+	{ 43, 1190100 },  /* EHT320 with 120 MHz punctured MCS9 */
+	{ 46, 1339000 },  /* EHT320 with 120 MHz punctured MCS10 */
+	{ 48, 1487700 },  /* EHT320 with 120 MHz punctured MCS11 */
+	{ 51, 1606800 },  /* EHT320 with 120 MHz punctured MCS12 */
+	{ 54, 1785300 },  /* EHT320 with 120 MHz punctured MCS13 */
+	{ -1, 1785300 }   /* SNR > 54 */
+};
+
+/* See IEEE P802.11be/D7.0, Table 36-84 - EHT-MCSs for 3x996-tone MRU,
+ * NSS,u = 1
+ */
+static const struct minsnr_bitrate_entry eht240_table[] = {
+	{ 0, 0 },
+	{ 14, 108100 },   /* EHT320 with 80 MHz punctured MCS0 */
+	{ 17, 216200 },   /* EHT320 with 80 MHz punctured MCS1 */
+	{ 21, 324300 },   /* EHT320 with 80 MHz punctured MCS2 */
+	{ 23, 432400 },   /* EHT320 with 80 MHz punctured MCS3 */
+	{ 27, 648500 },   /* EHT320 with 80 MHz punctured MCS4 */
+	{ 30, 864700 },   /* EHT320 with 80 MHz punctured MCS5 */
+	{ 32, 972800 },   /* EHT320 with 80 MHz punctured MCS6 */
+	{ 37, 1080900 },  /* EHT320 with 80 MHz punctured MCS7 */
+	{ 41, 1297100 },  /* EHT320 with 80 MHz punctured MCS8 */
+	{ 43, 1441200 },  /* EHT320 with 80 MHz punctured MCS9 */
+	{ 46, 1621300 },  /* EHT320 with 80 MHz punctured MCS10 */
+	{ 48, 1801500 },  /* EHT320 with 80 MHz punctured MCS11 */
+	{ 51, 1945600 },  /* EHT320 with 80 MHz punctured MCS12 */
+	{ 54, 2161800 },  /* EHT320 with 80 MHz punctured MCS13 */
+	{ -1, 2161800 }   /* SNR > 54 */
+};
+
+/* See IEEE P802.11be/D7.0, Table 36-85: EHT-MCSs for 3x996+484-tone MRU,
+ * NSS,u = 1
+ */
+static const struct minsnr_bitrate_entry eht280_table[] = {
+	{ 0, 0 },
+	{ 14, 125300 },   /* EHT320 with 40 MHz punctured MCS0 */
+	{ 17, 250600 },   /* EHT320 with 40 MHz punctured MCS1 */
+	{ 21, 375900 },   /* EHT320 with 40 MHz punctured MCS2 */
+	{ 23, 501200 },   /* EHT320 with 40 MHz punctured MCS3 */
+	{ 27, 751800 },   /* EHT320 with 40 MHz punctured MCS4 */
+	{ 30, 1002400 },  /* EHT320 with 40 MHz punctured MCS5 */
+	{ 32, 1127600 },  /* EHT320 with 40 MHz punctured MCS6 */
+	{ 37, 1252900 },  /* EHT320 with 40 MHz punctured MCS7 */
+	{ 41, 1503500 },  /* EHT320 with 40 MHz punctured MCS8 */
+	{ 43, 1670600 },  /* EHT320 with 40 MHz punctured MCS9 */
+	{ 46, 1879400 },  /* EHT320 with 40 MHz punctured MCS10 */
+	{ 48, 2088200 },  /* EHT320 with 40 MHz punctured MCS11 */
+	{ 51, 2255300 },  /* EHT320 with 40 MHz punctured MCS12 */
+	{ 54, 2505900 },  /* EHT320 with 40 MHz punctured MCS13 */
+	{ -1, 2505900 }   /* SNR > 54 */
+};
+
 /* See IEEE P802.11be/D2.0, Table 36-86: EHT-MCSs for 4x996-tone RU, NSS,u = 1
  */
 static const struct minsnr_bitrate_entry eht320_table[] = {
@@ -2912,6 +3125,96 @@ static unsigned int max_he_eht_rate(const struct minsnr_bitrate_entry table[],
 		return prev->bitrate;
 	return interpolate_rate(snr, prev->minsnr, entry->minsnr,
 				prev->bitrate, entry->bitrate);
+}
+
+
+static unsigned int get_eht_punctured_rate(enum chan_width cw,
+					   u8 num_punct_bits, int adjusted_snr,
+					   u8 boost)
+{
+	const struct minsnr_bitrate_entry *eht_table;
+
+	switch (cw) {
+	case CHAN_WIDTH_80:
+		switch (num_punct_bits) {
+		case 1:
+			/* EHT80 with 20 MHz punctured */
+			eht_table = eht60_table;
+			break;
+		default:
+			eht_table = he80_table;
+			break;
+		}
+		break;
+	case CHAN_WIDTH_160:
+		switch (num_punct_bits) {
+		case 2:
+			/* EHT160 with 40 MHz punctured */
+			eht_table = eht120_table;
+			break;
+		case 1:
+			/* EHT160 with 20 MHz punctured */
+			eht_table = eht140_table;
+			break;
+		default:
+			eht_table = he160_table;
+			break;
+		}
+		break;
+	case CHAN_WIDTH_320:
+		switch (num_punct_bits) {
+		case 6:
+			/* EHT320 with 120 MHz punctured */
+			eht_table = eht200_table;
+			break;
+		case 4:
+			/* EHT320 with 80 MHz punctured */
+			eht_table = eht240_table;
+			break;
+		case 2:
+			/* EHT320 with 40 MHz punctured */
+			eht_table = eht280_table;
+			break;
+		default:
+			eht_table = eht320_table;
+			break;
+		}
+		break;
+	default:
+		/* Puncturing is not supported for the channel width */
+		return 0;
+	}
+
+	return max_he_eht_rate(eht_table, adjusted_snr, true) + boost;
+}
+
+
+static u8 get_eht_num_punct_bits(const u8 *ies, size_t ies_len)
+{
+	const u8 *eht_ie;
+
+	eht_ie = get_ie_ext(ies, ies_len, WLAN_EID_EXT_EHT_OPERATION);
+	if (eht_ie && eht_ie[1] >= 1 + IEEE80211_EHT_OP_MIN_LEN) {
+		struct ieee80211_eht_operation *eht_op;
+
+		eht_op = (struct ieee80211_eht_operation *) &eht_ie[3];
+
+		if (eht_op->oper_params &
+		    EHT_OPER_DISABLED_SUBCHAN_BITMAP_PRESENT) {
+			u16 punct_bitmap;
+			u8 count = 0;
+
+			punct_bitmap = le_to_host16(
+				eht_op->oper_info.disabled_chan_bitmap);
+			while (punct_bitmap) {
+				count += punct_bitmap & 1;
+				punct_bitmap >>= 1;
+			}
+			return count;
+		}
+	}
+
+	return 0;
 }
 
 
@@ -3072,8 +3375,9 @@ unsigned int wpas_get_est_tpt(const struct wpa_supplicant *wpa_s,
 		struct ieee80211_eht_capabilities *eht;
 		struct he_capabilities *own_he;
 		u8 cw, boost = 2;
-		const u8 *eht_ie;
+		const u8 *eht_ie = NULL;
 		bool is_eht = false;
+		u8 num_punct_bits;
 
 		ie = get_ie_ext(ies, ies_len, WLAN_EID_EXT_HE_CAPABILITIES);
 		if (!ie || (ie[1] < 1 + IEEE80211_HE_CAPAB_MIN_LEN))
@@ -3123,8 +3427,17 @@ unsigned int wpas_get_est_tpt(const struct wpa_supplicant *wpa_s,
 				*max_cw = CHAN_WIDTH_80;
 			adjusted_snr = snr + wpas_channel_width_rssi_bump(
 				ies, ies_len, CHAN_WIDTH_80);
-			tmp = max_he_eht_rate(he80_table, adjusted_snr,
-					      is_eht) + boost;
+
+			num_punct_bits = get_eht_num_punct_bits(ies, ies_len);
+			if (is_eht && num_punct_bits)
+				tmp = get_eht_punctured_rate(CHAN_WIDTH_80,
+							     num_punct_bits,
+							     adjusted_snr,
+							     boost);
+			else
+				tmp = max_he_eht_rate(he80_table, adjusted_snr,
+						      is_eht) + boost;
+
 			if (tmp > est)
 				est = tmp;
 		}
@@ -3138,13 +3451,21 @@ unsigned int wpas_get_est_tpt(const struct wpa_supplicant *wpa_s,
 				*max_cw = CHAN_WIDTH_160;
 			adjusted_snr = snr + wpas_channel_width_rssi_bump(
 				ies, ies_len, CHAN_WIDTH_160);
-			tmp = max_he_eht_rate(he160_table, adjusted_snr,
-					      is_eht) + boost;
+
+			num_punct_bits = get_eht_num_punct_bits(ies, ies_len);
+			if (is_eht && num_punct_bits)
+				tmp = get_eht_punctured_rate(CHAN_WIDTH_160,
+							     num_punct_bits,
+							     adjusted_snr,
+							     boost);
+			else
+				tmp = max_he_eht_rate(he160_table, adjusted_snr,
+						      is_eht) + boost;
 			if (tmp > est)
 				est = tmp;
 		}
 
-		if (!is_eht)
+		if (!is_eht || !eht_ie)
 			return est;
 
 		eht = (struct ieee80211_eht_capabilities *) &eht_ie[3];
@@ -3157,7 +3478,16 @@ unsigned int wpas_get_est_tpt(const struct wpa_supplicant *wpa_s,
 				*max_cw = CHAN_WIDTH_320;
 			adjusted_snr = snr + wpas_channel_width_rssi_bump(
 				ies, ies_len, CHAN_WIDTH_320);
-			tmp = max_he_eht_rate(eht320_table, adjusted_snr, true);
+
+			num_punct_bits = get_eht_num_punct_bits(ies, ies_len);
+			if (num_punct_bits)
+				tmp = get_eht_punctured_rate(CHAN_WIDTH_320,
+							     num_punct_bits,
+							     adjusted_snr,
+							     0);
+			else
+				tmp = max_he_eht_rate(eht320_table, adjusted_snr,
+						      true);
 			if (tmp > est)
 				est = tmp;
 		}
@@ -3415,6 +3745,7 @@ wpa_scan_clone_params(const struct wpa_driver_scan_params *src)
 	params->p2p_include_6ghz = src->p2p_include_6ghz;
 	params->non_coloc_6ghz = src->non_coloc_6ghz;
 	params->min_probe_req_content = src->min_probe_req_content;
+	params->min_scan_timeout = src->min_scan_timeout;
 	return params;
 
 failed:

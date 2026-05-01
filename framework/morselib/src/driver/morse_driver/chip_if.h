@@ -38,16 +38,7 @@ struct chip_if_ops
     int (*init)(struct driver_data *driverd);
 
 
-    void (*flush_tx_data)(struct driver_data *driverd);
-
-
     void (*finish)(struct driver_data *driverd);
-
-
-    void (*skbq_get_tx_qs)(struct driver_data *driverd, struct morse_skbq **qs, int *num_qs);
-
-
-    void (*skbq_close)(struct morse_skbq *mq);
 
 
     struct morse_skbq *(*skbq_cmd_tc_q)(struct driver_data *driverd);

@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.10.4</span>
+   &#160;<span id="projectnumber">2.11.2</span>
    </div>
   </td>
  </tr>
@@ -248,107 +248,12 @@ Integrating with Alexa</h1>
 Automation and Production</h1>
 <p >In the example above we used the AWS IoT console to create certificates and publish/subscribe to MQTT messages. While this may be convenient for development and testing, it is hardly a practical approach for real world applications. Luckily, we have options - Amazon provides us with the AWS CLI (Command Line Interface), which lets us do everything above using a command line interface such as creating certificates, registering devices, publishing and subscribing to MQTT messages. This allows us to automate and script production and registration of devices and even implement M2M communications using the MQTT publish/subscribe API. A full reference of the available commands is at: <code><a href="https://docs.aws.amazon.com/cli/latest/index.html">https://docs.aws.amazon.com/cli/latest/index.html</a></code> </p>
 <h1><a class="anchor" id="autotoc_md5"></a>
-OTA Updates</h1>
-<p >This application supports Over The Air updates. OTA updates can be used to update the existing application on the IoT device with newer versions of itself. For OTA updates to work, there must be a bootloader installed and an existing version of the application that is able to connect to the AWS IoT infrastructure.</p>
-<dl class="section note"><dt>Note</dt><dd>OTA updates are disabled by default, to enable set the build define <code>ENABLE_OTA_APP</code> to 1.</dd></dl>
-<p>To perform an OTA update, first ensure there is a version of this application running on the device with the right credentials and certificates to connect to the service. In addition to certificates and keys described in step 3 of the Getting Started section above, we will also need a code signing certificate to be installed on the device. This certificate can be generated using a tool like openssl as described below:</p>
-<dl class="section note"><dt>Note</dt><dd>OTA update feature is supported only on <code>mm-ekh08-u575</code> and <code>mm-mm6108-ekh05</code> platforms - you will get an error on all other platforms if you attempt an OTA update. To add OTA support to your platform, you will need to:<ul>
-<li>Build and install the bootloader for your platform. (See <a class="el" href="bootloader_8c.html">bootloader.c</a>) If you are loading the application using <code>openocd</code>, then <em>first</em> load the application and then load the bootloader. Do this every time you load the application using openocd as the application contains a stub bootloader that will overwrite the real bootloader.</li>
-<li>Ensure you have enabled flash file-system support for your platform. To add flash file-system support for your platform, you will need to add a <code></code>.filesystem section to your linker definition file that is big enough to accommodate the OTA download image plus any other data you may store in the file-system. Also ensure you have a valid implementation of <a class="el" href="group__MMHAL__FLASH.html#ga9cf859409f0916684a34f5d4726cb2e3">mmhal_get_littlefs_config()</a> that returns your file-system configuration.</li>
-</ul>
-</dd></dl>
-<h2><a class="anchor" id="autotoc_md6"></a>
-Generating Code Signing Keys</h2>
-<h3><a class="anchor" id="autotoc_md7"></a>
-Option 1: Generating @c ECDSA Keys for signing by AWS</h3>
-<p >The steps below are from the following document: <code><a href="https://docs.aws.amazon.com/freertos/latest/userguide/ota-code-sign-cert-win.html">https://docs.aws.amazon.com/freertos/latest/userguide/ota-code-sign-cert-win.html</a></code> </p><ul>
-<li>In your working directory, create a file named <code>cert_config.txt</code> with the following text: <div class="fragment"><div class="line">[ req ]</div>
-<div class="line">prompt             = no</div>
-<div class="line">distinguished_name = my_dn</div>
-<div class="line">[ my_dn ]</div>
-<div class="line">commonName = me@myemail.com</div>
-<div class="line">[ my_exts ]</div>
-<div class="line">keyUsage         = digitalSignature</div>
-<div class="line">extendedKeyUsage = codeSigning</div>
-</div><!-- fragment --> Replace <code><a href="#" onclick="location.href='mai'+'lto:'+'me@'+'my'+'ema'+'il'+'.co'+'m'; return false;">me@my<span class="obfuscator">.nosp@m.</span>emai<span class="obfuscator">.nosp@m.</span>l.com</a></code> with your organization email and replace the my in <code>my_dn</code> and <code>my_exts</code> with your organization name as appropriate.</li>
-<li>Create an <code>ECDSA</code> code-signing private key: <div class="fragment"><div class="line">openssl genpkey -algorithm EC -pkeyopt ec_paramgen_curve:P-256 -pkeyopt ec_param_enc:named_curve -outform PEM -out otasigning.key</div>
-</div><!-- fragment --></li>
-<li>Create an <code>ECDSA</code> code-signing certificate: <div class="fragment"><div class="line">openssl req -<span class="keyword">new</span> -x509 -config cert_config.txt -extensions my_exts -nodes -days 365 -key otasigning.key -out otasigning.pem.crt</div>
-</div><!-- fragment --></li>
-<li>Copy the <code>otasigning.pem.crt</code> file to the credentials folder and follow the <a class="el" href="group__MMCONFIG.html#MMCONFIG_PROGRAMMING">Programming the config store from a host PC</a> instructions to load the <code>config.hjson</code> file to the device. Ensure you have generated the other certificates, keys and provisioning information as described in <a class="el" href="aws__iot_8c.html#AWS_GETTING_STARTED">Getting Started</a> section above.</li>
-</ul>
-<h3><a class="anchor" id="autotoc_md8"></a>
-Option 2: Generating Self signing (RSA) keys</h3>
-<ul>
-<li>Create the signing keys &amp; certificate as shown below: <div class="fragment"><div class="line">openssl genrsa -out otasigning.key 2048</div>
-<div class="line">openssl rsa -in otasigning.key -pubout otasigning.pem.crt</div>
-</div><!-- fragment --></li>
-<li>Copy the <code>otasigning.pem.crt</code> file to the credentials folder and follow the <a class="el" href="group__MMCONFIG.html#MMCONFIG_PROGRAMMING">Programming the config store from a host PC</a> instructions to load the <code>config.hjson</code> file to the device. Ensure you have generated the other certificates, keys and provisioning information as described in <a class="el" href="aws__iot_8c.html#AWS_GETTING_STARTED">Getting Started</a> section above.</li>
-<li>Sign the code<ul>
-<li>Build the update file for the application, you should get a .mbin file in the output directory <div class="fragment"><div class="line">make mbin -j4</div>
-</div><!-- fragment --></li>
-<li>Sign the .mbin file as shown below <div class="fragment"><div class="line">openssl dgst -sha256 -sign otasigning.key -out signature.bin &lt;MBIN file&gt;</div>
-<div class="line">openssl enc -base64 -in signature.bin -out signature.txt</div>
-</div><!-- fragment --></li>
-</ul>
-</li>
-<li>Upload the MBIN file to AWS as described below, paste the contents of the <code>signature.txt</code> file into the signature field</li>
-</ul>
-<h2><a class="anchor" id="autotoc_md9"></a>
-Deploying the update</h2>
-<ul>
-<li>First, ensure your AWS account has the required permissions. For more information, see: <code><a href="https://docs.aws.amazon.com/freertos/latest/userguide/code-sign-policy.html">https://docs.aws.amazon.com/freertos/latest/userguide/code-sign-policy.html</a></code> </li>
-<li>In the AWS IoT Core portal, select Manage &gt; Remote Actions &gt; Jobs, then click Create job.</li>
-<li>Under Job type select Create FreeRTOS OTA update job, then choose Next.</li>
-<li>Enter a name for the job and click Next.</li>
-<li>Under Devices to update, choose one or more things or thing groups from the drop down menu.</li>
-<li>Select <code>MQTT</code> for file transfer protocol.</li>
-<li>Under Sign and choose your file, select Sign a new file for me.</li>
-<li>If you are using Option 2 (Self signed image), then select Use My custom signed file<ul>
-<li>Cut and paste the contents of the <code>signature.txt</code> file that you generated while signing into the signature box.</li>
-<li>Select SHA-256 as the original hash algorithm.</li>
-<li>Select RSA as the original encryption algorithm.</li>
-<li>Enter <code>aws.ota_cert</code> as the path name of the code signing certificate on the device. (This incidentally is the name of the config store key that contains the certificate)</li>
-<li>Click Upload a new file and upload the .mbin file.</li>
-<li>If you have not already done so, create an S3 bucket and specify the path to save the file as.</li>
-<li>In path name of the file on the device enter the name of the mbin file. Ensure this is a valid file name or the update will fail.</li>
-<li>Select an <code>IAM</code> role with permissions to do OTA updates and click Next.</li>
-<li>In the next screen click Create Job.</li>
-</ul>
-</li>
-<li>If you are using Option 1 (Signing by AWS)<ul>
-<li>If you have not already done so, under Code signing profile, choose Create new profile.<ul>
-<li>In Create a code signing profile, enter a name for your code-signing profile.</li>
-<li>Under Device hardware platform choose Windows Simulator. You will need to get your platform certified by AWS for it to appear here.</li>
-<li>Select Import a new code signing certificate.</li>
-<li>Upload <code>otasigning.pem.crt</code> as the certificate body.</li>
-<li>Upload <code>otasigning.key</code> as the certificate private key.</li>
-<li>Click import.</li>
-<li>Enter <code>aws.ota_cert</code> as the path name of the code signing certificate on the device.</li>
-<li>Click Create.</li>
-</ul>
-</li>
-<li>Back at the previous screen, select the code signing profile you just created.</li>
-<li>Click Upload a new file and upload the .mbin file.</li>
-<li>If you have not already done so, create an S3 bucket and specify the path to save the file as.</li>
-<li>In path name of the file on the device enter the name of the mbin file. Ensure this is a valid file name or the update will fail.</li>
-<li>Select an <code>IAM</code> role with permissions to do OTA updates and click Next.</li>
-<li>In the next screen click Create Job.</li>
-</ul>
-</li>
-</ul>
-<p >Congratulations! The update has been deployed. If the application is currently running on the device, it should immediately see the update and start downloading it. In a minute or two the device should reboot and the new update will be applied. AWS will indicate successful update on the console once the updated firmware boots and connects to AWS.</p>
-<dl class="section note"><dt>Note</dt><dd>OTA update performance will depend on the configuration in <code>ota_config.h</code> and modifying this configuration may decrease update time. See <code>ota_config.h</code> for more information on each option and what they are used for. </dd>
-<dd>
-If the above process does not work for you, then you can debug the issue by enabling OTA logging by removing the <code>DISABLE_OTA_LOGGING</code> flag from the <code>Makefile</code> and <code>platformio.ini</code> files for this example. Also, ensure you increment the version numbers in <code><a class="el" href="version_8h.html" title="Contains the software version used for OTA update.">version.h</a></code> prior to every OTA update or you will get warnings that the new version is not higher than the old version, the update will still complete though.</dd></dl>
-<p>For more information, see: <code><a href="https://docs.aws.amazon.com/freertos/latest/userguide/ota-console-workflow.html">https://docs.aws.amazon.com/freertos/latest/userguide/ota-console-workflow.html</a></code> </p>
-<h1><a class="anchor" id="autotoc_md10"></a>
 Fleet Provisioning</h1>
 <p >The steps above describe how to provision one device at a time for AWS IoT. This however is not practical when we have to provision thousands of devices in the field. Thankfully AWS provides a mechanism called Fleet Provisioning that allows us to automate this process.</p>
 <p >For more information on Fleet Provisioning see: <code><a href="https://docs.aws.amazon.com/whitepapers/latest/device-manufacturing-provisioning/provisioning-identity-in-aws-iot-core-for-device-connections.html">https://docs.aws.amazon.com/whitepapers/latest/device-manufacturing-provisioning/provisioning-identity-in-aws-iot-core-for-device-connections.html</a></code> </p>
 <p >There are multiple mechanisms of implementing Fleet Provisioning - we have implemented the <em>Fleet Provisioning by claim</em> mechanism. In this mechanism a batch of devices (say 1000) will be loaded with a shared claim certificate and keys. The device will make first contact with the AWS endpoint using this shared certificate and key just as it would with regular device certificates and keys. The device then generates a new set of keys and sends the certificate to AWS for signing. AWS signs the certificate and assigns the device a new thing name based on the provisioning template - the provisioning template may specify the thing name is an amalgam of the device serial number (in our case the MAC address) and some prefix. The device saves the signed certificate, generated keys and thing name and uses them for all connections henceforth.</p>
 <p >Use the steps below to implement fleet provisioning. Alternatively, if you prefer to use the AWS command line, then all the steps below are described here for the command line: <code><a href="https://www.freertos.org/iot-fleet-provisioning/demo.html#setting-up">https://www.freertos.org/iot-fleet-provisioning/demo.html#setting-up</a></code> </p>
-<h2><a class="anchor" id="autotoc_md11"></a>
+<h2><a class="anchor" id="autotoc_md6"></a>
 Prerequisites</h2>
 <p >Ensure you have the required permissions and roles to implement fleet provisioning. Your AWS administrator can setup the roles using the following commands on the AWS command line:</p><ul>
 <li>Create <code>FleetProvisioningRole</code> role <div class="fragment"><div class="line">aws iam create-role --role-name <span class="stringliteral">&quot;FleetProvisioningRole&quot;</span> --assume-role-policy-document \</div>
@@ -476,7 +381,7 @@ Create provisioning template</h2>
 </div><!-- fragment --> Ensure <code>_AllowAll_</code> matches the name of the <code>AllowAll</code> policy you created in the prerequisites. Ensure <code>_fp_demo_things_</code> matches the thing type you created in <a class="el" href="aws__iot_8c.html#CREATE_THING_TYPE">Create a thing type</a></li>
 <li>Click <em>Save as new version</em></li>
 </ul>
-<h2><a class="anchor" id="autotoc_md12"></a>
+<h2><a class="anchor" id="autotoc_md7"></a>
 Generate claim certificates and keys</h2>
 <ul>
 <li>On the AWS IoT console go to <em>Manage &gt; Security &gt; Certificates</em></li>
@@ -485,7 +390,7 @@ Generate claim certificates and keys</h2>
 <li>Use this certificate and key as the claim certificate for a batch of devices. You may create multiple certificates here, one for each batch.</li>
 <li>Select the certificate(s) you just created then click <em>Attach policy</em> and attach the claim policy you created earlier to all the claim certificates you generated now.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md13"></a>
+<h2><a class="anchor" id="autotoc_md8"></a>
 Setting up the device</h2>
 <ul>
 <li>Once the above steps are done, load the claim certificate, private key and root certificate as described in <a class="el" href="aws__iot_8c.html#INSTALL_CREDENTIALS">Install device certificates and keys</a>. The device will use these credentials for the initial connection and will be replaced by device certificate and keys provided by AWS when provisioning has successfully completed.</li>
@@ -580,7 +485,7 @@ Functions</h2></td></tr>
 
 <p>Maximum back-off jitter per attempt. </p>
 
-<p class="definition">Definition at line <a class="el" href="aws__iot_8c_source.html#l00534">534</a> of file <a class="el" href="aws__iot_8c_source.html">aws_iot.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="aws__iot_8c_source.html#l00386">386</a> of file <a class="el" href="aws__iot_8c_source.html">aws_iot.c</a>.</p>
 
 </div>
 </div>
@@ -598,7 +503,7 @@ Functions</h2></td></tr>
 
 <p>We need to back-off at least 60 seconds or most NTP Servers will tell us to go away. </p>
 
-<p class="definition">Definition at line <a class="el" href="aws__iot_8c_source.html#l00530">530</a> of file <a class="el" href="aws__iot_8c_source.html">aws_iot.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="aws__iot_8c_source.html#l00382">382</a> of file <a class="el" href="aws__iot_8c_source.html">aws_iot.c</a>.</p>
 
 </div>
 </div>
@@ -616,7 +521,7 @@ Functions</h2></td></tr>
 
 <p>Minimum back-off jitter per attempt. </p>
 
-<p class="definition">Definition at line <a class="el" href="aws__iot_8c_source.html#l00532">532</a> of file <a class="el" href="aws__iot_8c_source.html">aws_iot.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="aws__iot_8c_source.html#l00384">384</a> of file <a class="el" href="aws__iot_8c_source.html">aws_iot.c</a>.</p>
 
 </div>
 </div>
@@ -634,7 +539,7 @@ Functions</h2></td></tr>
 
 <p>Minimum NTP timeout per attempt. </p>
 
-<p class="definition">Definition at line <a class="el" href="aws__iot_8c_source.html#l00528">528</a> of file <a class="el" href="aws__iot_8c_source.html">aws_iot.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="aws__iot_8c_source.html#l00380">380</a> of file <a class="el" href="aws__iot_8c_source.html">aws_iot.c</a>.</p>
 
 </div>
 </div>
@@ -669,7 +574,7 @@ Functions</h2></td></tr>
 <div class="line">}</div>
 </div><!-- fragment --><p> Note the client token, which is optional. The token is used to identify the response to an update. The client token must be unique at any given time, but may be reused once the update is completed. For this demo, a timestamp is used for a client token. </p>
 
-<p class="definition">Definition at line <a class="el" href="aws__iot_8c_source.html#l00555">555</a> of file <a class="el" href="aws__iot_8c_source.html">aws_iot.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="aws__iot_8c_source.html#l00407">407</a> of file <a class="el" href="aws__iot_8c_source.html">aws_iot.c</a>.</p>
 
 </div>
 </div>
@@ -693,7 +598,7 @@ Functions</h2></td></tr>
 <p>Main entry point to the application. </p>
 <p >This will be invoked in a thread once operating system and hardware initialization has completed. It may return, but it does not have to. </p>
 
-<p class="definition">Definition at line <a class="el" href="aws__iot_8c_source.html#l00845">845</a> of file <a class="el" href="aws__iot_8c_source.html">aws_iot.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="aws__iot_8c_source.html#l00650">650</a> of file <a class="el" href="aws__iot_8c_source.html">aws_iot.c</a>.</p>
 
 </div>
 </div>
@@ -703,7 +608,7 @@ Functions</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_c5388b8f7c63864c1129967aadb7f145.html">examples</a></li><li class="navelem"><a class="el" href="dir_cda28d5a0716c0e2a44f9676bbf5f637.html">aws_iot</a></li><li class="navelem"><a class="el" href="dir_3a1893574609c91bef1035d4fc906e7a.html">src</a></li><li class="navelem"><a class="el" href="aws__iot_8c.html">aws_iot.c</a></li>
+    <li class="navelem"><a class="el" href="dir_4a117e60a3f8308259f4d16395856081.html">examples</a></li><li class="navelem"><a class="el" href="dir_e65589efdd88c39c6981e7ba269a6828.html">aws_iot</a></li><li class="navelem"><a class="el" href="dir_199781b17e3028960c005a9b3be6620d.html">src</a></li><li class="navelem"><a class="el" href="aws__iot_8c.html">aws_iot.c</a></li>
     <li class="footer">Copyright 2021-2025 Morse Micro </li>
   </ul>
 </div>

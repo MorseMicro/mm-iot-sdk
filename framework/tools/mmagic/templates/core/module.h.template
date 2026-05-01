@@ -25,6 +25,7 @@ struct mmagic_{{data.name}}_config
 
 struct mmagic_{{data.name}}_data
 {
+    bool is_started;
     struct mmagic_{{data.name}}_config config;
     /** Subsystem private data (to be allocated/managed by the subsystem implementation). */
     void *priv;
@@ -37,6 +38,7 @@ struct mmagic_{{data.name}}_data
  */
 void mmagic_core_{{data.name}}_init(struct mmagic_data *core);
 
+{% if data.configs -%}
 /**
  * Function to load settings from persistent store for the core {{data.name}} subsystem.
  *
@@ -50,6 +52,7 @@ void mmagic_core_{{data.name}}_load_all(struct mmagic_data *core);
  * @param core   Reference to to global mmagic context struct.
  */
 void mmagic_core_{{data.name}}_save_all(struct mmagic_data *core);
+{% endif %}
 
 /**
  * Function to start any of the core processes for the core {{data.name}} subsystem.
@@ -57,6 +60,14 @@ void mmagic_core_{{data.name}}_save_all(struct mmagic_data *core);
  * @param core   Reference to to global mmagic context struct.
  */
 void mmagic_core_{{data.name}}_start(struct mmagic_data *core);
+
+/**
+ * Function to check if the {{data.name}} subsystem has been initialized.
+ *
+ * @param core   Reference to to global mmagic context struct.
+ * @return       True if mmagic_core_{{data.name}}_init has been called, false otherwise.
+ */
+bool mmagic_core_{{data.name}}_is_started(struct mmagic_data *core);
 
 {% for command in data.commands %}
 {%- if command.command_args -%}

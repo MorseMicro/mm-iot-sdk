@@ -5,8 +5,8 @@
  */
 
 #include "mmipal.h"
+#include "mmlog.h"
 #include "mmnetif.h"
-#include "mmwlan.h"
 #include "mmosal.h"
 #include "mmutils.h"
 
@@ -35,12 +35,6 @@ static struct mmipal_data
     struct netif lwip_mmnetif;
     /** This stores the IPv4 link state for the IP stack. I.e., do we have an IP address or not. */
     enum mmipal_link_state ip_link_state;
-    /** Flag requesting ARP response offload feature */
-    bool offload_arp_response;
-    /** ARP refresh offload interval in seconds */
-    uint32_t offload_arp_refresh_s;
-    /** Initial dhcp offload call has been completed */
-    bool dhcp_offload_init_complete;
     /** The link status callback function that has been registered. */
     mmipal_link_status_cb_fn_t link_status_callback;
     /** The extended link status callback function that has been registered. */
@@ -87,35 +81,6 @@ static enum mmipal_status mmipal_err_to_status(int result)
     }
 }
 
-/**
- * DHCP Lease update callback, invoked when we get a new DHCP lease.
- *
- * @param lease_info The new DHCP lease.
- */
-static void mmipal_dhcp_lease_updated(const struct mmwlan_dhcp_lease_info *lease_info, void *arg)
-{
-    struct mmipal_data *data = mmipal_get_data();
-
-    ip4_addr_t ip_addr, netmask, gateway;
-    ip_addr_t dns_addr = ip_addr_any;
-
-    MM_UNUSED(arg);
-
-    data->dhcp_offload_init_complete = true;
-
-    ip4_addr_set_u32(&ip_addr, lease_info->ip4_addr);
-    ip4_addr_set_u32(&netmask, lease_info->mask4_addr);
-    ip4_addr_set_u32(&gateway, lease_info->gw4_addr);
-    ip4_addr_set_u32(ip_2_ip4(&dns_addr), lease_info->dns4_addr);
-
-    LOCK_TCPIP_CORE();
-    netif_set_addr(&data->lwip_mmnetif, &ip_addr, &netmask, &gateway);
-    dns_setserver(0, &dns_addr);
-    UNLOCK_TCPIP_CORE();
-
-    netif_status_callback(&data->lwip_mmnetif);
-}
-
 enum mmipal_status mmipal_get_ip_config(struct mmipal_ip_config *config)
 {
     struct mmipal_data *data = mmipal_get_data();
@@ -145,12 +110,6 @@ enum mmipal_status mmipal_set_ip_config(const struct mmipal_ip_config *config)
     ip_addr_t gateway = ip_addr_any;
     struct netif *netif = &data->lwip_mmnetif;
 
-    if (config->mode != MMIPAL_DHCP_OFFLOAD && data->ip4_mode == MMIPAL_DHCP_OFFLOAD)
-    {
-        printf("Once enabled DHCP offload mode cannot be disabled\n");
-        return MMIPAL_NOT_SUPPORTED;
-    }
-
     switch (config->mode)
     {
         case MMIPAL_DISABLED:
@@ -159,11 +118,6 @@ enum mmipal_status mmipal_set_ip_config(const struct mmipal_ip_config *config)
 
         case MMIPAL_AUTOIP:
             printf("%s mode not supported\n", "AutoIP");
-            return MMIPAL_INVALID_ARGUMENT;
-
-        case MMIPAL_DHCP_OFFLOAD:
-            /* Currently we only support enabling DHCP offload when initialising */
-            printf("%s mode not supported\n", "DHCP_OFFLOAD");
             return MMIPAL_INVALID_ARGUMENT;
 
         case MMIPAL_STATIC:
@@ -520,23 +474,12 @@ static void netif_status_callback(struct netif *netif)
     struct mmipal_data *data = mmipal_get_data();
     enum mmipal_link_state new_link_state = MMIPAL_LINK_DOWN;
 
-#if LWIP_IPV4
-    if (data->ip4_mode == MMIPAL_DHCP_OFFLOAD &&
-        !data->dhcp_offload_init_complete &&
-        mmwlan_get_sta_state() == MMWLAN_STA_CONNECTED)
-    {
-        /* Initialize DHCP offload on wlan connected */
-        if (mmwlan_enable_dhcp_offload(mmipal_dhcp_lease_updated, NULL) != MMWLAN_SUCCESS)
-        {
-            printf("Failed to enable DHCP offload!\n");
-        }
-    }
-#endif
-
     if (mmipal_link_status_check(netif))
     {
         new_link_state = MMIPAL_LINK_UP;
     }
+
+    MMLOG_APP("NetIf Link status %s\n", new_link_state == MMIPAL_LINK_UP ? "UP" : "DOWN");
 
     if (data->ip_link_state != new_link_state)
     {
@@ -559,24 +502,8 @@ static void netif_status_callback(struct netif *netif)
 
             result = ipaddr_ntoa_r(&netif->gw, link_status.gateway, sizeof(link_status.gateway));
             LWIP_ASSERT("IP buf too short", result != NULL);
-
-            if (data->ip_link_state == MMIPAL_LINK_UP)
-            {
-                /* Check if ARP response offload feature is enabled */
-                if (data->offload_arp_response)
-                {
-                    mmwlan_enable_arp_response_offload(ip4_addr_get_u32(netif_ip4_addr(netif)));
-                }
-
-                /* Check if ARP refresh offload feature is enabled */
-                if (data->offload_arp_refresh_s > 0)
-                {
-                    mmwlan_enable_arp_refresh_offload(data->offload_arp_refresh_s,
-                                                      ip4_addr_get_u32(netif_ip4_gw(netif)),
-                                                      true);
-                }
-            }
 #endif
+
             if (data->link_status_callback)
             {
                 data->link_status_callback(&link_status);
@@ -585,12 +512,6 @@ static void netif_status_callback(struct netif *netif)
             {
                 data->ext_link_status_callback(&link_status, data->ext_link_status_callback_arg);
             }
-        }
-
-        /* On transition to link down indicate DHCP is de-init so it can be re-init on link up */
-        if (data->ip_link_state == MMIPAL_LINK_DOWN)
-        {
-            data->dhcp_offload_init_complete = false;
         }
     }
 }
@@ -700,9 +621,6 @@ enum mmipal_status mmipal_init(const struct mmipal_init_args *args)
 
     data->link_status_callback = NULL;
 
-    data->offload_arp_response = args->offload_arp_response;
-    data->offload_arp_refresh_s = args->offload_arp_refresh_s;
-
     /* Validate arguments */
 #if LWIP_IPV4
     switch (args->mode)
@@ -711,7 +629,6 @@ enum mmipal_status mmipal_init(const struct mmipal_init_args *args)
             printf("%s mode not supported\n", "DISABLED");
             goto exit;
 
-        case MMIPAL_DHCP_OFFLOAD:
         case MMIPAL_STATIC:
             result = ipaddr_aton(args->ip_addr, &lwip_args->ip_addr);
             if (!result)

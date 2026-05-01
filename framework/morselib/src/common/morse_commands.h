@@ -8,8 +8,8 @@
 
 #include "common/common.h"
 
-#define MORSE_CMD_SEMVER_MAJOR 56
-#define MORSE_CMD_SEMVER_MINOR 18
+#define MORSE_CMD_SEMVER_MAJOR 57
+#define MORSE_CMD_SEMVER_MINOR 0
 #define MORSE_CMD_SEMVER_PATCH 0
 
 enum morse_cmd_id
@@ -90,7 +90,6 @@ enum morse_cmd_id
 
 
     MORSE_CMD_ID_TURBO_MODE = 0x0018,
-    MORSE_CMD_ID_SET_FRAG_THRESHOLD = 0x0037,
 };
 
 #define MORSE_CMD_TYPE_REQ     BIT(0)
@@ -773,6 +772,8 @@ enum morse_cmd_standby_mode
     MORSE_CMD_STANDBY_MODE_SET_CONFIG_V2 = 5,
 
     MORSE_CMD_STANDBY_MODE_SET_CONFIG_V3 = 6,
+
+    MORSE_CMD_STANDBY_MODE_SET_CONFIG_V4 = 7,
 };
 
 
@@ -826,7 +827,9 @@ struct MM_PACKED morse_cmd_standby_set_config
 
     uint16_t dst_port;
 
-    uint8_t pad[2];
+    uint8_t pad[1];
+
+    uint8_t disassoc_on_wake;
 
     uint32_t deep_sleep_increment_s;
 
@@ -1339,6 +1342,8 @@ struct MM_PACKED morse_cmd_req_force_assert
     struct morse_cmd_header hdr;
 
     uint32_t hart_id;
+
+    uint32_t delay;
 };
 
 #define MORSE_CMD_HOST_BLOCK_TX_FRAMES BIT(0)
@@ -1395,7 +1400,11 @@ enum morse_cmd_param_id
     MORSE_CMD_PARAM_ID_CTS_TO_SELF = 28,
     MORSE_CMD_PARAM_ID_CHANNELIZATION = 29,
     MORSE_CMD_PARAM_ID_CRYPTO_IN_HOST = 30,
-    MORSE_CMD_PARAM_ID_LAST = 31,
+
+    MORSE_CMD_PARAM_ID_AUTOCONNECT = 31,
+    MORSE_CMD_PARAM_ID_HOST_PWR_OFF_GPIO = 32,
+    MORSE_CMD_PARAM_ID_HOST_PWR_OFF_GPIO_PULSE_MS = 33,
+    MORSE_CMD_PARAM_ID_LAST = 34,
 };
 
 
@@ -1438,21 +1447,4 @@ struct MM_PACKED morse_cmd_resp_turbo_mode
 {
     struct morse_cmd_header hdr;
     uint32_t status;
-};
-
-
-struct MM_PACKED morse_cmd_req_set_frag_threshold
-{
-    struct morse_cmd_header hdr;
-
-    uint32_t frag_threshold;
-};
-
-
-struct MM_PACKED morse_cmd_resp_set_frag_threshold
-{
-    struct morse_cmd_header hdr;
-    uint32_t status;
-
-    uint32_t frag_threshold;
 };

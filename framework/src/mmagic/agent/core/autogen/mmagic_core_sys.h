@@ -19,6 +19,7 @@ struct mmagic_sys_config
 
 struct mmagic_sys_data
 {
+    bool is_started;
     struct mmagic_sys_config config;
     /** Subsystem private data (to be allocated/managed by the subsystem implementation). */
     void *priv;
@@ -32,25 +33,19 @@ struct mmagic_sys_data
 void mmagic_core_sys_init(struct mmagic_data *core);
 
 /**
- * Function to load settings from persistent store for the core sys subsystem.
- *
- * @param core   Reference to to global mmagic context struct.
- */
-void mmagic_core_sys_load_all(struct mmagic_data *core);
-
-/**
- * Function to save settings to persistent store for the core sys subsystem.
- *
- * @param core   Reference to to global mmagic context struct.
- */
-void mmagic_core_sys_save_all(struct mmagic_data *core);
-
-/**
  * Function to start any of the core processes for the core sys subsystem.
  *
  * @param core   Reference to to global mmagic context struct.
  */
 void mmagic_core_sys_start(struct mmagic_data *core);
+
+/**
+ * Function to check if the sys subsystem has been initialized.
+ *
+ * @param core   Reference to to global mmagic context struct.
+ * @return       True if mmagic_core_sys_init has been called, false otherwise.
+ */
+bool mmagic_core_sys_is_started(struct mmagic_data *core);
 
 enum mmagic_status mmagic_core_sys_reset(struct mmagic_data *core);
 
@@ -73,3 +68,21 @@ struct MM_PACKED mmagic_core_sys_get_version_rsp_args
 enum mmagic_status mmagic_core_sys_get_version(
     struct mmagic_data *core,
     struct mmagic_core_sys_get_version_rsp_args *rsp_args);
+
+/** Command arguments structure for sys_get_stats */
+struct MM_PACKED mmagic_core_sys_get_stats_cmd_args
+{
+    enum mmagic_subsystem_id subsystem;
+    bool reset;
+};
+
+/** Response arguments structure for sys_get_stats */
+struct MM_PACKED mmagic_core_sys_get_stats_rsp_args
+{
+    struct raw1600 buffer;
+};
+
+enum mmagic_status mmagic_core_sys_get_stats(
+    struct mmagic_data *core,
+    const struct mmagic_core_sys_get_stats_cmd_args *cmd_args,
+    struct mmagic_core_sys_get_stats_rsp_args *rsp_args);

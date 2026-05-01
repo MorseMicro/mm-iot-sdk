@@ -560,6 +560,14 @@ static int wpa_supplicant_conf_ap(struct wpa_supplicant *wpa_s,
 	}
 #endif /* CONFIG_ACS */
 
+#ifdef CONFIG_IEEE80211AH
+	if (wpa_s->conf->country[0]) {
+		conf->op_country[0] = wpa_s->conf->country[0];
+		conf->op_country[1] = wpa_s->conf->country[1];
+		conf->op_country[2] = ' ';
+	}
+#endif
+
 	if (ieee80211_is_dfs(ssid->frequency, wpa_s->hw.modes,
 			     wpa_s->hw.num_modes) && wpa_s->conf->country[0]) {
 		conf->ieee80211h = 1;
@@ -579,7 +587,7 @@ static int wpa_supplicant_conf_ap(struct wpa_supplicant *wpa_s,
 			list[0] = 60;
 			list[1] = 120;
 			list[2] = 240;
-			list[3] = -1;
+			list[3] = 0;
 		}
 		conf->basic_rates = list;
 
@@ -593,16 +601,10 @@ static int wpa_supplicant_conf_ap(struct wpa_supplicant *wpa_s,
 			list[5] = 360;
 			list[6] = 480;
 			list[7] = 540;
-			list[8] = -1;
+			list[8] = 0;
 		}
 		conf->supported_rates = list;
 	}
-
-#ifdef CONFIG_IEEE80211AX
-	if (ssid->mode == WPAS_MODE_P2P_GO ||
-	    ssid->mode == WPAS_MODE_P2P_GROUP_FORMATION)
-		conf->ieee80211ax = ssid->he;
-#endif /* CONFIG_IEEE80211AX */
 
 	bss->isolate = !wpa_s->conf->p2p_intra_bss;
 	bss->extended_key_id = wpa_s->conf->extended_key_id;
@@ -640,6 +642,19 @@ static int wpa_supplicant_conf_ap(struct wpa_supplicant *wpa_s,
 	else
 		bss->wpa_key_mgmt = ssid->key_mgmt;
 	bss->wpa_pairwise = ssid->pairwise_cipher;
+
+#ifdef CONFIG_P2P
+	if (ssid->p2p_mode == WPA_P2P_MODE_WFD_PCC) {
+		bss->wpa_key_mgmt = WPA_KEY_MGMT_PSK;
+		bss->rsn_override_key_mgmt = WPA_KEY_MGMT_SAE |
+			WPA_KEY_MGMT_PASN;
+		bss->wpa_pairwise = WPA_CIPHER_CCMP;
+		bss->rsn_override_pairwise = WPA_CIPHER_CCMP;
+		bss->rsn_override_mfp = 2;
+		bss->rsn_override_omit_rsnxe = 1;
+	}
+#endif /* CONFIG_P2P */
+
 	if (wpa_key_mgmt_sae(bss->wpa_key_mgmt) && ssid->passphrase) {
 		bss->ssid.wpa_passphrase = os_strdup(ssid->passphrase);
 	} else if (ssid->psk_set) {
@@ -696,10 +711,7 @@ static int wpa_supplicant_conf_ap(struct wpa_supplicant *wpa_s,
 		bss->sae_passwords = pw;
 	}
 
-	if (ssid->sae_pwe != DEFAULT_SAE_PWE)
-		bss->sae_pwe = ssid->sae_pwe;
-	else
-		bss->sae_pwe = wpa_s->conf->sae_pwe;
+	bss->sae_pwe = wpas_get_ssid_sae_pwe(wpa_s, ssid);
 #endif /* CONFIG_SAE */
 
 	if (wpa_s->conf->go_interworking) {
@@ -1094,8 +1106,10 @@ int wpa_supplicant_create_ap(struct wpa_supplicant *wpa_s,
 
 #ifdef CONFIG_P2P
 	if (ssid->mode == WPAS_MODE_P2P_GO ||
-	    ssid->mode == WPAS_MODE_P2P_GROUP_FORMATION)
+	    ssid->mode == WPAS_MODE_P2P_GROUP_FORMATION) {
 		params.p2p = 1;
+		params.p2p_mode = wpa_s->p2p_mode;
+	}
 #endif /* CONFIG_P2P */
 
 	if (wpa_s->p2pdev->set_ap_uapsd)
@@ -1911,6 +1925,8 @@ int ap_switch_channel(struct wpa_supplicant *wpa_s,
 	if (!iface || !iface->bss[0])
 		return -1;
 
+	hostapd_chan_switch_config(iface->bss[0], &settings->freq_params);
+
 	return hostapd_switch_channel(iface->bss[0], settings);
 #else /* NEED_AP_MLME */
 	return -1;
@@ -1922,8 +1938,22 @@ int ap_switch_channel(struct wpa_supplicant *wpa_s,
 int ap_ctrl_iface_chanswitch(struct wpa_supplicant *wpa_s, const char *pos)
 {
 	struct csa_settings settings;
-	int ret = hostapd_parse_csa_settings(pos, &settings);
+	struct hostapd_iface *iface = NULL;
+	int ret;
 
+#ifdef CONFIG_AP
+	if (wpa_s->ap_iface)
+		iface = wpa_s->ap_iface;
+#endif /* CONFIG_AP */
+#ifdef CONFIG_MESH
+	if (!iface && wpa_s->ifmsh)
+		iface = wpa_s->ifmsh;
+#endif /* CONFIG_MESH */
+
+	if (!iface)
+		return -1;
+
+	ret = hostapd_parse_csa_settings(iface, pos, &settings);
 	if (ret)
 		return ret;
 

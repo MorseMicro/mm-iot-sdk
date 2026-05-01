@@ -15,10 +15,10 @@
 #include "umac/ps/umac_ps_data.h"
 #include "umac/rc/umac_rc_data.h"
 #include "umac/scan/umac_scan_data.h"
+#include "umac/health_check/umac_health_check_data.h"
 #include "umac/supplicant_shim/umac_supp_shim_data.h"
 #include "umac/twt/umac_twt_data.h"
 #include "umac/wnm_sleep/umac_wnm_sleep_data.h"
-#include "umac/offload/umac_offload_data.h"
 #include "mmwlan_stats.h"
 
 static struct umac_data
@@ -35,10 +35,13 @@ static struct umac_data
     struct umac_twt_data twt;
     struct umac_root_data root;
     struct umac_wnm_sleep_data wnm_sleep;
-    struct umac_offload_data offload;
+#if !(defined(DISABLE_MMWLAN_HEALTH_CHECK) && DISABLE_MMWLAN_HEALTH_CHECK)
+    struct umac_health_check_data health_check;
+#endif
     struct umac_ap_data *ap;
     struct umac_interface_vif_data interface_vif_sta;
     struct umac_interface_vif_data interface_vif_ap;
+    struct umac_relay_data *relay;
 } umac_data;
 
 struct umac_data *umac_data_get_umacd(void)
@@ -139,11 +142,13 @@ struct umac_wnm_sleep_data *umac_data_get_wnm_sleep(struct umac_data *umacd)
     return &umacd->wnm_sleep;
 }
 
-struct umac_offload_data *umac_data_get_offload(struct umac_data *umacd)
+#if !(defined(DISABLE_MMWLAN_HEALTH_CHECK) && DISABLE_MMWLAN_HEALTH_CHECK)
+struct umac_health_check_data *umac_data_get_health_check(struct umac_data *umacd)
 {
     UMAC_DATA_SANITY_CHECK(umacd);
-    return &umacd->offload;
+    return &umacd->health_check;
 }
+#endif
 
 struct umac_ap_data *umac_data_get_ap(struct umac_data *umacd)
 {
@@ -163,6 +168,27 @@ void umac_data_dealloc_ap(struct umac_data *umacd)
 {
     mmosal_free(umacd->ap);
     umacd->ap = NULL;
+}
+
+struct umac_relay_data *umac_data_get_relay(struct umac_data *umacd)
+{
+    UMAC_DATA_SANITY_CHECK(umacd);
+    return umacd->relay;
+}
+
+struct umac_relay_data *umac_data_alloc_relay(struct umac_data *umacd, size_t size)
+{
+    UMAC_DATA_SANITY_CHECK(umacd);
+    MMOSAL_ASSERT(umacd->relay == NULL);
+    umacd->relay = (struct umac_relay_data *)mmosal_calloc(1, size);
+    return umacd->relay;
+}
+
+void umac_data_dealloc_relay(struct umac_data *umacd)
+{
+    UMAC_DATA_SANITY_CHECK(umacd);
+    mmosal_free(umacd->relay);
+    umacd->relay = NULL;
 }
 
 

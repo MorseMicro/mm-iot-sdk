@@ -41,6 +41,8 @@
 
 /* Private variables ---------------------------------------------------------*/
 
+PKA_HandleTypeDef hpka;
+
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -55,6 +57,7 @@ static void MX_SPI1_Init(void);
 static void MX_RNG_Init(void);
 static void MX_RTC_Init(void);
 static void MX_LPTIM1_Init(void);
+static void MX_PKA_Init(void);
 /* USER CODE BEGIN PFP */
 void app_init(void);
 /* USER CODE END PFP */
@@ -70,6 +73,7 @@ void app_init(void);
   */
 int main(void)
 {
+
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
@@ -77,9 +81,7 @@ int main(void)
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-
-  /* System interrupt init*/
-  NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
+  HAL_Init();
 
   /* USER CODE BEGIN Init */
 
@@ -88,7 +90,7 @@ int main(void)
   /* Configure the system clock */
   SystemClock_Config();
 
-/* Configure the peripherals common clocks */
+  /* Configure the peripherals common clocks */
   PeriphCommonClock_Config();
 
   /* USER CODE BEGIN SysInit */
@@ -103,6 +105,7 @@ int main(void)
   MX_RNG_Init();
   MX_RTC_Init();
   MX_LPTIM1_Init();
+  MX_PKA_Init();
   /* USER CODE BEGIN 2 */
 #if defined(ENABLE_DEBUG_IN_STOP_MODE) && ENABLE_DEBUG_IN_STOP_MODE
   LL_DBGMCU_EnableDBGStopMode();
@@ -196,10 +199,14 @@ void SystemClock_Config(void)
   /* Set APB2 prescaler*/
   LL_RCC_SetAPB2Prescaler(LL_RCC_APB2_DIV_1);
 
-  LL_Init1msTick(64000000);
-
   /* Update CMSIS variable (which can be updated also through SystemCoreClockUpdate function) */
   LL_SetSystemCoreClock(64000000);
+
+   /* Update the time base */
+  if (HAL_InitTick (TICK_INT_PRIORITY) != HAL_OK)
+  {
+    Error_Handler();
+  }
 }
 
 /**
@@ -271,6 +278,32 @@ static void MX_LPTIM1_Init(void)
 }
 
 /**
+  * @brief PKA Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_PKA_Init(void)
+{
+
+  /* USER CODE BEGIN PKA_Init 0 */
+
+  /* USER CODE END PKA_Init 0 */
+
+  /* USER CODE BEGIN PKA_Init 1 */
+
+  /* USER CODE END PKA_Init 1 */
+  hpka.Instance = PKA;
+  if (HAL_PKA_Init(&hpka) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN PKA_Init 2 */
+
+  /* USER CODE END PKA_Init 2 */
+
+}
+
+/**
   * @brief RNG Initialization Function
   * @param None
   * @retval None
@@ -313,14 +346,39 @@ static void MX_RTC_Init(void)
 
   LL_RTC_InitTypeDef RTC_InitStruct = {0};
 
-  if(LL_RCC_GetRTCClockSource() != LL_RCC_RTC_CLKSOURCE_LSE)
-  {
-    LL_RCC_ForceBackupDomainReset();
-    LL_RCC_ReleaseBackupDomainReset();
-  }
-  if(LL_RCC_GetRTCClockSource() != LL_RCC_RTC_CLKSOURCE_LSE)
-  {
-    LL_RCC_SetRTCClockSource(LL_RCC_RTC_CLKSOURCE_LSE);
+     uint32_t rtcclocksource = LL_RCC_GetRTCClockSource();
+
+    /* Configure the clock source only if a different source is expected */
+    if(rtcclocksource != LL_RCC_RTC_CLKSOURCE_LSE)
+    {
+      LL_PWR_EnableBkUpAccess();
+      if(rtcclocksource == LL_RCC_RTC_CLKSOURCE_NONE)
+      {
+        /* Directly set the configuration of the clock source selection */
+        LL_RCC_SetRTCClockSource(LL_RCC_RTC_CLKSOURCE_LSE);
+      }
+     else
+     {
+      /* Store the content of BDCR register before the reset of Backup Domain */
+      uint32_t bdcr = LL_RCC_ReadReg(BDCR);
+
+      /* RTC Clock selection can be changed only if the Backup Domain is reset */
+      LL_RCC_ForceBackupDomainReset();
+      LL_RCC_ReleaseBackupDomainReset();
+
+      /* Set the value of the clock source selection */
+      MODIFY_REG(bdcr, RCC_BDCR_RTCSEL, LL_RCC_RTC_CLKSOURCE_LSE);
+
+      /* Restore the content of BDCR register */
+      LL_RCC_WriteReg(BDCR, bdcr);
+
+      /* Wait for LSE reactivation if LSE was enable prior to Backup Domain reset */
+      if (LL_RCC_LSE_IsEnabled() == 1U)
+      {
+        /* Wait till LSE is ready */
+        while (LL_RCC_LSE_IsReady() != 1U);
+      }
+    }
   }
   LL_RCC_EnableRTC();
 
@@ -531,8 +589,9 @@ static void MX_GPIO_Init(void)
 {
   LL_EXTI_InitTypeDef EXTI_InitStruct = {0};
   LL_GPIO_InitTypeDef GPIO_InitStruct = {0};
-/* USER CODE BEGIN MX_GPIO_Init_1 */
-/* USER CODE END MX_GPIO_Init_1 */
+  /* USER CODE BEGIN MX_GPIO_Init_1 */
+
+  /* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOC);
@@ -622,8 +681,9 @@ static void MX_GPIO_Init(void)
   NVIC_SetPriority(EXTI1_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),15, 0));
   NVIC_SetPriority(EXTI3_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),15, 0));
 
-/* USER CODE BEGIN MX_GPIO_Init_2 */
-/* USER CODE END MX_GPIO_Init_2 */
+  /* USER CODE BEGIN MX_GPIO_Init_2 */
+
+  /* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
@@ -645,8 +705,7 @@ void Error_Handler(void)
   }
   /* USER CODE END Error_Handler_Debug */
 }
-
-#ifdef  USE_FULL_ASSERT
+#ifdef USE_FULL_ASSERT
 /**
   * @brief  Reports the name of the source file and the source line number
   *         where the assert_param error has occurred.

@@ -1,1 +1,1 @@
-MM-IOT-SDK version 2.10.4
+MM-IOT-SDK version 2.11.2

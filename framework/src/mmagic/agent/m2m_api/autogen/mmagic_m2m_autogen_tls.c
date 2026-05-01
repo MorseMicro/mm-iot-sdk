@@ -159,37 +159,33 @@ struct mmbuf *mmagic_m2m_tls_process(struct mmagic_m2m_agent *agent,
                                      struct mmagic_m2m_command_header *header,
                                      struct mmbuf *cmd_buf)
 {
-    if (header)
-    {
-        switch (header->command)
-        {
-            case mmagic_tls_cmd_get:
-                return mmagic_m2m_tls_get(agent, sid, header->subcommand, cmd_buf);
-                break;
-
-            case mmagic_tls_cmd_set:
-                return mmagic_m2m_tls_set(agent, sid, header->subcommand, cmd_buf);
-                break;
-
-            case mmagic_tls_cmd_load:
-                return mmagic_m2m_tls_load(agent, sid, header->subcommand, cmd_buf);
-                break;
-
-            case mmagic_tls_cmd_commit:
-                return mmagic_m2m_tls_commit(agent, sid, header->subcommand, cmd_buf);
-                break;
-
-            default:
-                return mmagic_m2m_create_response(header->subsystem,
-                                                  header->command,
-                                                  header->subcommand,
-                                                  MMAGIC_STATUS_NOT_SUPPORTED,
-                                                  NULL,
-                                                  0);
-        }
-    }
-    else
+    if (!header)
     {
         return mmagic_m2m_create_response(0, 0, 0, MMAGIC_STATUS_ERROR, NULL, 0);
     }
+
+    switch (header->command)
+    {
+        case mmagic_tls_cmd_get:
+            return mmagic_m2m_tls_get(agent, sid, header->subcommand, cmd_buf);
+
+        case mmagic_tls_cmd_set:
+            return mmagic_m2m_tls_set(agent, sid, header->subcommand, cmd_buf);
+
+        case mmagic_tls_cmd_load:
+            return mmagic_m2m_tls_load(agent, sid, header->subcommand, cmd_buf);
+
+        case mmagic_tls_cmd_commit:
+            return mmagic_m2m_tls_commit(agent, sid, header->subcommand, cmd_buf);
+
+        default:
+            break;
+    }
+
+    return mmagic_m2m_create_response(header->subsystem,
+                                      header->command,
+                                      header->subcommand,
+                                      MMAGIC_STATUS_NOT_SUPPORTED,
+                                      NULL,
+                                      0);
 }

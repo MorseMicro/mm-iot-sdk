@@ -71,7 +71,7 @@ enum mmagic_datalink_agent_deep_sleep_mode
 };
 
 /**
- * Agent datalink struct used internally by the implementaton. This will be specific to each
+ * Agent datalink struct used internally by the implementation. This will be specific to each
  * type of interface. i.e SPI and UART may have different elements in the struct.
  */
 struct mmagic_datalink_agent;

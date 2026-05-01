@@ -1,7 +1,5 @@
 var group__MMWLAN__STA =
 [
-    [ "[Deprecated] WLAN offload features", "group__MMWLAN__OFFLOAD.html", "group__MMWLAN__OFFLOAD" ],
-    [ "[Deprecated] WLAN Standby features", "group__MMWLAN__STANDBY.html", "group__MMWLAN__STANDBY" ],
     [ "WNM Sleep management", "group__MMWLAN__WNM.html", "group__MMWLAN__WNM" ],
     [ "mmwlan_sta_event_cb_args", "structmmwlan__sta__event__cb__args.html", [
       [ "event", "structmmwlan__sta__event__cb__args.html#a38137d0a6000b1b39de91eb82c615c66", null ]

@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.10.4</span>
+   &#160;<span id="projectnumber">2.11.2</span>
    </div>
   </td>
  </tr>
@@ -169,7 +169,7 @@ $(document).ready(function(){initNavTree('chip__cfg_8c_source.html',''); initRes
 <div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>        .gpio_set_value = mm6108_gpio_set_value,</div>
 <div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>        .busy_gpio_num = 0,</div>
 <div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>        .valid_chip_ids = mm6108_valid_chip_ids,</div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>        .n_valid_chip_ids = <a class="code hl_define" href="group__MMUTILS.html#gae620c8867523894d4dae229f5e6ec0d2">MM_ARRAY_COUNT</a>(mm6108_valid_chip_ids),</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>        .n_valid_chip_ids = <a class="code hl_define" href="group__MMUTILS.html#gaf21398a773a93e233b554e0f5a9ed447">MM_ARRAY_COUNT</a>(mm6108_valid_chip_ids),</div>
 <div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>    },</div>
 <div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>    {</div>
 <div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>        .name = <span class="stringliteral">&quot;mm8108&quot;</span>,</div>
@@ -178,12 +178,12 @@ $(document).ready(function(){initNavTree('chip__cfg_8c_source.html',''); initRes
 <div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>        .gpio_set_value = mm8108_gpio_set_value,</div>
 <div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>        .busy_gpio_num = 2,</div>
 <div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>        .valid_chip_ids = mm8108_valid_chip_ids,</div>
-<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>        .n_valid_chip_ids = <a class="code hl_define" href="group__MMUTILS.html#gae620c8867523894d4dae229f5e6ec0d2">MM_ARRAY_COUNT</a>(mm8108_valid_chip_ids),</div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>        .n_valid_chip_ids = <a class="code hl_define" href="group__MMUTILS.html#gaf21398a773a93e233b554e0f5a9ed447">MM_ARRAY_COUNT</a>(mm8108_valid_chip_ids),</div>
 <div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>    },</div>
 <div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>};</div>
 <div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span> </div>
-<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span><span class="keyword">const</span> <span class="keywordtype">size_t</span> n_chip_cfgs = <a class="code hl_define" href="group__MMUTILS.html#gae620c8867523894d4dae229f5e6ec0d2">MM_ARRAY_COUNT</a>(chip_cfgs);</div>
-<div class="ttc" id="agroup__MMUTILS_html_gae620c8867523894d4dae229f5e6ec0d2"><div class="ttname"><a href="group__MMUTILS.html#gae620c8867523894d4dae229f5e6ec0d2">MM_ARRAY_COUNT</a></div><div class="ttdeci">#define MM_ARRAY_COUNT(_a)</div><div class="ttdoc">Return the number of elements in the given array.</div><div class="ttdef"><b>Definition:</b> <a href="mmutils_8h_source.html#l00111">mmutils.h:111</a></div></div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span><span class="keyword">const</span> <span class="keywordtype">size_t</span> n_chip_cfgs = <a class="code hl_define" href="group__MMUTILS.html#gaf21398a773a93e233b554e0f5a9ed447">MM_ARRAY_COUNT</a>(chip_cfgs);</div>
+<div class="ttc" id="agroup__MMUTILS_html_gaf21398a773a93e233b554e0f5a9ed447"><div class="ttname"><a href="group__MMUTILS.html#gaf21398a773a93e233b554e0f5a9ed447">MM_ARRAY_COUNT</a></div><div class="ttdeci">#define MM_ARRAY_COUNT(a)</div><div class="ttdoc">Return the number of elements in the given array.</div><div class="ttdef"><b>Definition:</b> <a href="mmutils_8h_source.html#l00116">mmutils.h:116</a></div></div>
 <div class="ttc" id="astructchip__cfg_html"><div class="ttname"><a href="structchip__cfg.html">chip_cfg</a></div><div class="ttdoc">Chip configuration data structure.</div><div class="ttdef"><b>Definition:</b> <a href="chip__cfg_8h_source.html#l00014">chip_cfg.h:15</a></div></div>
 <div class="ttc" id="astructchip__cfg_html_aac7dca6b93b5a47657dd9e250c849990"><div class="ttname"><a href="structchip__cfg.html#aac7dca6b93b5a47657dd9e250c849990">chip_cfg::name</a></div><div class="ttdeci">const char * name</div><div class="ttdoc">Chip name.</div><div class="ttdef"><b>Definition:</b> <a href="chip__cfg_8h_source.html#l00017">chip_cfg.h:17</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
@@ -192,7 +192,7 @@ $(document).ready(function(){initNavTree('chip__cfg_8c_source.html',''); initRes
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_c5388b8f7c63864c1129967aadb7f145.html">examples</a></li><li class="navelem"><a class="el" href="dir_5e468357e77f084276a7e24e7b567dca.html">porting_assistant</a></li><li class="navelem"><a class="el" href="dir_912954fbdfccd3bccf2652d86d3192e7.html">src</a></li><li class="navelem"><b>chip_cfg.c</b></li>
+    <li class="navelem"><a class="el" href="dir_4a117e60a3f8308259f4d16395856081.html">examples</a></li><li class="navelem"><a class="el" href="dir_dd87c239b7fb09f8ba6a92871a3af1d5.html">porting_assistant</a></li><li class="navelem"><a class="el" href="dir_38d371ceeee0b2e390d709f2eded64cc.html">src</a></li><li class="navelem"><b>chip_cfg.c</b></li>
     <li class="footer">Copyright 2021-2025 Morse Micro </li>
   </ul>
 </div>

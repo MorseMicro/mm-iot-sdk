@@ -201,10 +201,10 @@ int hostapd_prepare_rates(struct hostapd_iface *iface,
 {
 #ifndef MM_IOT
 	int i, num_basic_rates = 0;
-	int basic_rates_a[] = { 60, 120, 240, -1 };
-	int basic_rates_b[] = { 10, 20, -1 };
-	int basic_rates_g[] = { 10, 20, 55, 110, -1 };
-	int *basic_rates;
+	int basic_rates_a[] = { 60, 120, 240, 0 };
+	int basic_rates_b[] = { 10, 20, 0 };
+	int basic_rates_g[] = { 10, 20, 55, 110, 0 };
+	const int *basic_rates;
 
 	if (iface->conf->basic_rates)
 		basic_rates = iface->conf->basic_rates;
@@ -224,15 +224,8 @@ int hostapd_prepare_rates(struct hostapd_iface *iface,
 		return -1;
 	}
 
-	i = 0;
-	while (basic_rates[i] >= 0)
-		i++;
-	if (i)
-		i++; /* -1 termination */
 	os_free(iface->basic_rates);
-	iface->basic_rates = os_malloc(i * sizeof(int));
-	if (iface->basic_rates)
-		os_memcpy(iface->basic_rates, basic_rates, i * sizeof(int));
+	iface->basic_rates = int_array_dup(basic_rates);
 
 	os_free(iface->current_rates);
 	iface->num_rates = 0;
@@ -249,13 +242,13 @@ int hostapd_prepare_rates(struct hostapd_iface *iface,
 		struct hostapd_rate_data *rate;
 
 		if (iface->conf->supported_rates &&
-		    !hostapd_rate_found(iface->conf->supported_rates,
+		    !int_array_includes(iface->conf->supported_rates,
 					mode->rates[i]))
 			continue;
 
 		rate = &iface->current_rates[iface->num_rates];
 		rate->rate = mode->rates[i];
-		if (hostapd_rate_found(basic_rates, rate->rate)) {
+		if (int_array_includes(basic_rates, rate->rate)) {
 			rate->flags |= HOSTAPD_RATE_BASIC;
 			num_basic_rates++;
 		}
@@ -295,6 +288,17 @@ static int ieee80211n_allowed_ht40_channel_pair(struct hostapd_iface *iface)
 	s_chan = hw_get_channel_freq(iface->current_mode->mode, sec_freq, 0, NULL,
 				     iface->hw_features,
 				     iface->num_hw_features);
+
+#ifdef CONFIG_IEEE80211AH
+	/* S1G channels with 1MHz S1G Primary need only validate HT40 primary, not secondary */
+	if (iface->conf->ieee80211ah && iface->conf->s1g_prim_chwidth == S1G_PRIM_CHWIDTH_1) {
+		if (chan_pri_allowed(p_chan))
+			return 1;
+
+		wpa_printf(MSG_ERROR, "Channel %d is not allowed as primary", p_chan->chan);
+		return 0;
+	}
+#endif
 
 	return allowed_ht40_channel_pair(iface->current_mode->mode,
 					 p_chan, s_chan);
@@ -541,12 +545,6 @@ static void ap_ht40_scan_retry(void *eloop_data, void *user_data)
 	else
 		ieee80211n_scan_channels_5g(iface, &params);
 
-	params.link_id = -1;
-#ifdef CONFIG_IEEE80211BE
-	if (iface->bss[0]->conf->mld_ap)
-		params.link_id = iface->bss[0]->mld_link_id;
-#endif /* CONFIG_IEEE80211BE */
-
 	ret = hostapd_driver_scan(iface->bss[0], &params);
 	iface->num_ht40_scan_tries++;
 	os_free(params.freqs);
@@ -598,11 +596,6 @@ static int ieee80211n_check_40mhz(struct hostapd_iface *iface)
 	else
 		ieee80211n_scan_channels_5g(iface, &params);
 
-	params.link_id = -1;
-#ifdef CONFIG_IEEE80211BE
-	if (iface->bss[0]->conf->mld_ap)
-		params.link_id = iface->bss[0]->mld_link_id;
-#endif /* CONFIG_IEEE80211BE */
 	ret = hostapd_driver_scan(iface->bss[0], &params);
 	os_free(params.freqs);
 
@@ -751,10 +744,18 @@ static int ieee80211ac_supported_vht_capab(struct hostapd_iface *iface)
 #endif /* CONFIG_IEEE80211AC */
 
 
+#ifdef CONFIG_IEEE80211BE
+static int ieee80211be_supported_eht_capab(struct hostapd_iface *iface)
+{
+	return iface->current_mode->eht_capab[IEEE80211_MODE_AP].eht_supported;
+}
+#endif /* CONFIG_IEEE80211BE */
+
+
 #ifdef CONFIG_IEEE80211AX
 static int ieee80211ax_supported_he_capab(struct hostapd_iface *iface)
 {
-	return 1;
+	return iface->current_mode->he_capab[IEEE80211_MODE_AP].he_supported;
 }
 #endif /* CONFIG_IEEE80211AX */
 
@@ -778,10 +779,19 @@ int hostapd_check_ht_capab(struct hostapd_iface *iface)
 
 	if (!ieee80211n_supported_ht_capab(iface))
 		return -1;
+#ifdef CONFIG_IEEE80211BE
+	if (iface->conf->ieee80211be &&
+	    !ieee80211be_supported_eht_capab(iface)) {
+		wpa_printf(MSG_ERROR, "Driver does not support EHT");
+		return -1;
+	}
+#endif /* CONFIG_IEEE80211BE */
 #ifdef CONFIG_IEEE80211AX
 	if (iface->conf->ieee80211ax &&
-	    !ieee80211ax_supported_he_capab(iface))
+	    !ieee80211ax_supported_he_capab(iface)) {
+		wpa_printf(MSG_ERROR, "Driver does not support HE");
 		return -1;
+	}
 #endif /* CONFIG_IEEE80211AX */
 #ifdef CONFIG_IEEE80211AC
 	if (iface->conf->ieee80211ac &&

@@ -15,3 +15,8 @@
  * strings.
  */
 #define MAX_VAL_LEN 101
+
+bool mmagic_core_sys_is_started(struct mmagic_data *core)
+{
+    return core->sys_data.is_started;
+}

@@ -86,6 +86,12 @@ enum mmagic_status mmagic_mmwlan_status_to_mmagic_status(enum mmwlan_status stat
         case MMWLAN_VIF_ERROR:
             return MMAGIC_STATUS_ERROR;
 
+        case MMWLAN_NOT_SUPPORTED:
+            return MMAGIC_STATUS_NOT_SUPPORTED;
+
+        case MMWLAN_COMMAND_ERROR:
+            return MMAGIC_STATUS_ERROR;
+
             /* Note that we do not add a default case here. The compiler should therefore give us a
              * warning if new fields get added to mmwlan_status and we do not handle them. */
     }
@@ -144,6 +150,9 @@ enum mmagic_status mmagic_transport_status_to_mmagic_status(TransportStatus_t st
 
         case TRANSPORT_CONNECT_FAILURE:
             return MMAGIC_STATUS_SOCKET_CONNECT_FAILED;
+
+        case TRANSPORT_NOT_SUPPORTED:
+            return MMAGIC_STATUS_NOT_SUPPORTED;
 
         default:
             return MMAGIC_STATUS_ERROR;

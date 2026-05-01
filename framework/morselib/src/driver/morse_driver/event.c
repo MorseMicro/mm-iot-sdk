@@ -18,33 +18,57 @@ static void handle_beacon_loss_evt(struct morse_cmd_evt_beacon_loss *bcn_loss_ev
     mmdrv_host_beacon_loss(num_bcns);
 }
 
+static void handle_cqm_rssi_notify(struct morse_cmd_evt_cqm_rssi_notify *rssi_notify)
+{
+    switch (rssi_notify->event)
+    {
+        case MORSE_CMD_CQM_RSSI_THRESHOLD_EVENT_LOW:
+        {
+            mmdrv_host_cqm_event(MMDRV_CQM_EVENT_RSSI_THRESHOLD_LOW, rssi_notify->rssi);
+            break;
+        }
+        case MORSE_CMD_CQM_RSSI_THRESHOLD_EVENT_HIGH:
+        {
+            mmdrv_host_cqm_event(MMDRV_CQM_EVENT_RSSI_THRESHOLD_HIGH, rssi_notify->rssi);
+            break;
+        }
+        default:
+            MMLOG_WRN("Unknown cqm_rssi_notify event %u\n", rssi_notify->event);
+    }
+}
+
 static void handle_umac_traffic_control(
     struct driver_data *driverd,
     struct morse_cmd_evt_umac_traffic_control *umac_traffic_control)
 {
     bool pause_data_traffic = umac_traffic_control->pause_data_traffic ? true : false;
-
     if (pause_data_traffic)
     {
         mmdrv_host_set_tx_paused(MMDRV_PAUSE_SOURCE_MASK_TRAFFIC_CTRL, true);
         driver_task_notify_event(driverd, DRV_EVT_TRAFFIC_PAUSE_PEND);
+
+        bool pause_timeout_enabled = driverd->tx_max_pause_time_ms != 0;
+        bool pause_source_is_duty_cycle =
+            (umac_traffic_control->sources & MORSE_CMD_UMAC_TRAFFIC_CONTROL_SOURCE_DUTY_CYCLE) ==
+            MORSE_CMD_UMAC_TRAFFIC_CONTROL_SOURCE_DUTY_CYCLE;
+
+        if (pause_timeout_enabled && pause_source_is_duty_cycle)
+        {
+            driver_task_schedule_notification(driverd,
+                                              DRV_EVT_TRAFFIC_PAUSE_TIMEOUT,
+                                              driverd->tx_max_pause_time_ms);
+        }
         MMLOG_INF("UMAC Traffic control paused by 0x%02lx\n", umac_traffic_control->sources);
     }
     else
     {
+        driver_task_notification_check_and_clear(driverd, DRV_EVT_TRAFFIC_PAUSE_TIMEOUT);
+        driver_task_drop_scheduled_event(driverd, DRV_EVT_TRAFFIC_PAUSE_TIMEOUT);
+
         driver_task_notify_event(driverd, DRV_EVT_TRAFFIC_RESUME_PEND);
         mmdrv_host_set_tx_paused(MMDRV_PAUSE_SOURCE_MASK_TRAFFIC_CTRL, false);
         MMLOG_INF("UMAC Traffic control unpaused\n");
     }
-}
-
-static void handle_umac_dhcp_lease_update(struct morse_cmd_evt_dhcp_lease_update *dhcp_lease)
-{
-    uint32_t ip = dhcp_lease->my_ip;
-    uint32_t mask = dhcp_lease->netmask;
-    uint32_t gw = dhcp_lease->router;
-    uint32_t dns = dhcp_lease->dns;
-    mmdrv_host_dhcp_lease_update(ip, mask, gw, dns);
 }
 
 static void handle_umac_connection_loss(struct morse_cmd_evt_connection_loss *connection_loss)
@@ -101,6 +125,21 @@ int morse_mac_event_recv(struct driver_data *driverd, struct mmpktview *view)
             break;
         }
 
+        case MORSE_CMD_ID_EVT_CQM_RSSI_NOTIFY:
+        {
+            struct morse_cmd_evt_cqm_rssi_notify *rssi_notify =
+                (struct morse_cmd_evt_cqm_rssi_notify *)mmpkt_remove_from_start(
+                    view,
+                    sizeof(*rssi_notify));
+            if (rssi_notify == NULL)
+            {
+                MMLOG_WRN("Recieved event too short (%lu)\n", mmpkt_get_data_length(view));
+                break;
+            }
+            handle_cqm_rssi_notify(rssi_notify);
+            break;
+        }
+
         case MORSE_CMD_ID_EVT_UMAC_TRAFFIC_CONTROL:
         {
             struct morse_cmd_evt_umac_traffic_control *umac_traffic_control =
@@ -113,21 +152,6 @@ int morse_mac_event_recv(struct driver_data *driverd, struct mmpktview *view)
                 break;
             }
             handle_umac_traffic_control(driverd, umac_traffic_control);
-            break;
-        }
-
-        case MORSE_CMD_ID_EVT_DHCP_LEASE_UPDATE:
-        {
-            struct morse_cmd_evt_dhcp_lease_update *dhcp_lease =
-                (struct morse_cmd_evt_dhcp_lease_update *)mmpkt_remove_from_start(
-                    view,
-                    sizeof(*dhcp_lease));
-            if (dhcp_lease == NULL)
-            {
-                MMLOG_WRN("Received event too short (%lu)\n", mmpkt_get_data_length(view));
-                break;
-            }
-            handle_umac_dhcp_lease_update(dhcp_lease);
 
             break;
         }

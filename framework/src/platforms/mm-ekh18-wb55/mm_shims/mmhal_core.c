@@ -57,7 +57,7 @@ uint32_t mmhal_random_u32(uint32_t min, uint32_t max)
     if (min != 0 || max != UINT32_MAX)
     {
         /* Warning: this does not guarantee uniformly distributed random numbers */
-        rand = rand % (max - min) + min;
+        rand = rand % (max - min + 1) + min;
     }
 
     return rand;

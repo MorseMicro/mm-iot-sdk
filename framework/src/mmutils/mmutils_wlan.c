@@ -7,6 +7,13 @@
 #include <stdio.h>
 
 #include "mmutils.h"
+#include "mmlog.h"
+
+/* Defined as inline in mmutils.h. These prototypes cause the compiler to emit a copy of the inline
+ * functions as global symbols, so that any calling site where the compiler chose not to inline the
+ * function can link against this. */
+extern bool mm_mac_addr_is_zero(const uint8_t *mac_addr);
+extern bool mm_mac_addr_is_broadcast(const uint8_t *mac_addr);
 
 const char *mm_akm_suite_to_string(uint32_t akm_suite_oui)
 {
@@ -117,7 +124,7 @@ int mm_parse_rsn_information(const uint8_t *ies,
 
     if (length < 8)
     {
-        printf("*WRN* RSN IE too short\n");
+        MMLOG_WRN("RSN IE too short\n");
         return -2;
     }
 
@@ -143,7 +150,7 @@ int mm_parse_rsn_information(const uint8_t *ies,
 
     if (length < 4 * num_pairwise_cipher_suites + 2)
     {
-        printf("*WRN* RSN IE too short\n");
+        MMLOG_WRN("RSN IE too short\n");
         return -2;
     }
 
@@ -170,7 +177,7 @@ int mm_parse_rsn_information(const uint8_t *ies,
 
     if (length < 4 * num_akm_suites + 2)
     {
-        printf("*WRN* RSN IE too short\n");
+        MMLOG_WRN("RSN IE too short\n");
         return -2;
     }
 
@@ -221,7 +228,7 @@ int mm_parse_s1g_operation(const uint8_t *ies, uint32_t ies_len, struct mm_s1g_o
     s1g_op = (const struct dot11_ie_s1g_operation *)(ies + offset);
     if (sizeof(*s1g_op) > ((size_t)s1g_op->length + 2))
     {
-        printf("ERROR: S1G Operation IE too short\n");
+        MMLOG_ERR("S1G Operation IE too short\n");
         return -2;
     }
 

@@ -8,19 +8,16 @@
 #include "includes.h"
 
 #include <sys/stat.h>
-#include <assert.h>
 #include "utils/common.h"
 #include "drivers/driver.h"
 #include "drivers/nl80211_copy.h"
+#include "common/hw_features_common.h"
+#include "common/morse/morse_commands.h"
+#include "../../wpa_supplicant/wpa_supplicant_i.h"
 
 #include "morse.h"
 #include "config.h"
 
-#define IEEE80211_CHAN_1MHZ (1)
-#define IEEE80211_CHAN_2MHZ (2)
-#define IEEE80211_CHAN_4MHZ (4)
-#define IEEE80211_CHAN_8MHZ (8)
-#define IEEE80211_CHAN_16MHZ (16)
 #define START_FREQ_5GHZ (5000)
 #define END_FREQ_5GHZ (5900)
 #define HT_FREQ_TO_HT_CHAN(ht_freq) ((ht_freq - START_FREQ_5GHZ) / 5)
@@ -72,7 +69,7 @@ static const int s1g_overlap_chan_jp[] = {
 	4, 8, 38
 };
 
-/** Implements the channelisation scheme used in most regions (AU, US etc.) */
+/** Implements the channelisation scheme per regulatory domain (US, CA etc.) */
 static const struct s1g_ht_chan_pair s1g_ht_chan_pairs_default[] = {
 	/* nulls for alignment */
 	{-1, -1, -1},
@@ -127,6 +124,145 @@ static const struct s1g_ht_chan_pair s1g_ht_chan_pairs_default[] = {
 	{49, 173, 1},
 	{50, 175, 2},
 	{51, 177, 1},
+	{52, -1, -1},	/* unmapped */
+	{53, -1, -1},	/* unmapped */
+	{54, -1, -1},	/* unmapped */
+	{55, -1, -1},	/* unmapped */
+	{56, -1, -1},	/* unmapped */
+	{57, -1, -1},	/* unmapped */
+	{58, -1, -1},	/* unmapped */
+	{59, -1, -1},	/* unmapped */
+};
+
+/** Implements the AU specific channelization scheme per IEEE Std 802.11-REVmf */
+static const struct s1g_ht_chan_pair s1g_ht_chan_pairs_au[] = {
+	/* nulls for alignment */
+	{-1, -1, -1},
+	{1, -1, -1},
+	{2, -1, -1},
+	{3, -1, -1},
+	{4, -1, -1},	/* unmapped */
+	{5, -1, -1},
+	{6, -1, -1},
+	{7, -1, -1},
+	{8, -1, -1},
+	{9, -1, -1},
+	{10, -1, -1},
+	{11, -1, -1},
+	{12, -1, -1},
+	{13, -1, -1},
+	{14, -1, -1},
+	{15, -1, -1},
+	{16, -1, -1},
+	{17, -1, -1},
+	{18, -1, -1},
+	{19, -1, -1},
+	{20, -1, -1},	/* unmapped */
+	{21, -1, -1},
+	{22, -1, -1},
+	{23, -1, -1},
+	{24, -1, -1},
+	{25, -1, -1},
+	{26, -1, -1},
+	{27, -1, -1},  /* unmapped */
+	{28, 36, 1},
+	{29, 38, 2},
+	{30, 40, 1},
+	{31, 42, 4},
+	{32, 44, 1},
+	{33, 46, 2},
+	{34, 48, 1},
+	{35, 50, 8},
+	{36, 52, 1},
+	{37, 54, 2},
+	{38, 56, 1},
+	{39, 58, 4},
+	{40, 60, 1},
+	{41, 62, 2},
+	{42, 64, 1},
+	{43, 114, 8},
+	{44, 116, 1},
+	{45, 118, 2},
+	{46, 120, 1},
+	{47, 122, 4},
+	{48, 124, 1},
+	{49, 126, 2},
+	{50, 128, 1},
+	/* Proposed channels 51, 55 & 59 are not part of standard yet */
+	{51, 155, 4},
+	{52, -1, -1}, /* unmapped */
+	{53, -1, -1}, /* unmapped */
+	{54, -1, -1}, /* unmapped */
+	{55, 163, 8},
+	{56, -1, -1}, /* unmapped */
+	{57, -1, -1}, /* unmapped */
+	{58, -1, -1}, /* unmapped */
+	{59, 171, 4},
+};
+
+/** Implements the AU specific channelization scheme per IEEE Std 802.11-2024 */
+static const struct s1g_ht_chan_pair s1g_ht_chan_pairs_au_2024[] = {
+	/* nulls for alignment */
+	{-1, -1, -1},
+	{1, -1, -1},
+	{2, -1, -1},
+	{3, -1, -1},
+	{4, -1, -1},	/* unmapped */
+	{5, -1, -1},
+	{6, -1, -1},
+	{7, -1, -1},
+	{8, -1, -1},
+	{9, -1, -1},
+	{10, -1, -1},
+	{11, -1, -1},
+	{12, -1, -1},
+	{13, -1, -1},
+	{14, -1, -1},
+	{15, -1, -1},
+	{16, -1, -1},
+	{17, -1, -1},
+	{18, -1, -1},
+	{19, -1, -1},
+	{20, -1, -1},	/* unmapped */
+	{21, -1, -1},
+	{22, -1, -1},
+	{23, -1, -1},
+	{24, -1, -1},
+	{25, -1, -1},
+	{26, -1, -1},
+	{27, -1, -1},  /* unmapped */
+	{28, 36, 1},
+	{29, 38, 2},
+	{30, 40, 1},
+	{31, 42, 4},
+	{32, 44, 1},
+	{33, 46, 2},
+	{34, 48, 1},
+	{35, 50, 8},
+	{36, 52, 1},
+	{37, 54, 2},
+	{38, 56, 1},
+	{39, 58, 4},
+	{40, 60, 1},
+	{41, 62, 2},
+	{42, 64, 1},
+	{43, 114, 8},
+	{44, 116, 1},
+	{45, 118, 2},
+	{46, 120, 1},
+	{47, 122, 4},
+	{48, 124, 1},
+	{49, 126, 2},
+	{50, 128, 1},
+	{51, -1, -1}, /* unmapped */
+	{52, -1, -1}, /* unmapped */
+	{53, -1, -1}, /* unmapped */
+	{54, -1, -1}, /* unmapped */
+	{55, -1, -1}, /* unmapped */
+	{56, -1, -1}, /* unmapped */
+	{57, -1, -1}, /* unmapped */
+	{58, -1, -1}, /* unmapped */
+	{59, -1, -1}, /* unmapped */
 };
 
 /** Implements the JP specific channelisation scheme */
@@ -184,20 +320,111 @@ static const struct s1g_ht_chan_pair s1g_ht_chan_pairs_jp[] = {
 	{49, -1, -1},	/* unmapped */
 	{50, -1, -1},	/* unmapped */
 	{51, -1, -1},	/* unmapped */
+	{52, -1, -1},	/* unmapped */
+	{53, -1, -1},	/* unmapped */
+	{54, -1, -1},	/* unmapped */
+	{55, -1, -1},	/* unmapped */
+	{56, -1, -1},	/* unmapped */
+	{57, -1, -1},	/* unmapped */
+	{58, -1, -1},	/* unmapped */
+	{59, -1, -1},	/* unmapped */
+};
+
+/** Implements the KR specific channelisation scheme */
+static const struct s1g_ht_chan_pair s1g_ht_chan_pairs_kr[] = {
+	/* nulls for alignment */
+	{-1, -1, -1},
+	{1, 132, 1},
+	{2, 134, 2},
+	{3, 136, 1},
+	{4, -1, -1},	/* unmapped */
+	{5, 36, 1},
+	{6, 38, 2},
+	{7, 40, 1},
+	{8, 42, 4},
+	{9, 44, 1},
+	{10, 46, 2},
+	{11, 48, 1},
+	{12, -1, -1},	/* unmapped */
+	{13, -1, -1},	/* unmapped */
+	{14, -1, -1},	/* unmapped */
+	{15, -1, -1},	/* unmapped */
+	{16, -1, -1},	/* unmapped */
+	{17, -1, -1},	/* unmapped */
+	{18, 165, 1},
+	{19, 167, 2},
+	{20, 169, 1},
+	{21, -1, -1},	/* unmapped */
+	{22, 173, 1},
+	{23, 175, 2},
+	{24, 177, 1},
+	{25, -1, -1},	/* unmapped */
+	{26, -1, -1},	/* unmapped */
+	{27, -1, -1},	/* unmapped */
+	{28, -1, -1},	/* unmapped */
+	{29, -1, -1},	/* unmapped */
+	{30, -1, -1},	/* unmapped */
+	{31, -1, -1},	/* unmapped */
+	{32, -1, -1},	/* unmapped */
+	{33, -1, -1},	/* unmapped */
+	{34, -1, -1},	/* unmapped */
+	{35, -1, -1},	/* unmapped */
+	{36, -1, -1},	/* unmapped */
+	{37, -1, -1},	/* unmapped */
+	{38, -1, -1},	/* unmapped */
+	{39, -1, -1},	/* unmapped */
+	{40, -1, -1},	/* unmapped */
+	{41, -1, -1},	/* unmapped */
+	{42, -1, -1},	/* unmapped */
+	{43, -1, -1},	/* unmapped */
+	{44, -1, -1},	/* unmapped */
+	{45, -1, -1},	/* unmapped */
+	{46, -1, -1},	/* unmapped */
+	{47, -1, -1},	/* unmapped */
+	{48, -1, -1},	/* unmapped */
+	{49, -1, -1},	/* unmapped */
+	{50, -1, -1},	/* unmapped */
+	{51, -1, -1},	/* unmapped */
+	{52, -1, -1},	/* unmapped */
+	{53, -1, -1},	/* unmapped */
+	{54, -1, -1},	/* unmapped */
+	{55, -1, -1},	/* unmapped */
+	{56, -1, -1},	/* unmapped */
+	{57, -1, -1},	/* unmapped */
+	{58, -1, -1},	/* unmapped */
+	{59, -1, -1},	/* unmapped */
 };
 
 /** Pointer to the configured channelisation pair map */
 static const struct s1g_ht_chan_pair *s1g_ht_chan_pairs = s1g_ht_chan_pairs_default;
+static u32 channelization_scheme_in_use;
+
+bool morse_dot11_2020_channelization_is_in_use(void)
+{
+	return (channelization_scheme_in_use == CHANNELIZATION_SCHEME_IEEE80211_2020);
+}
+
+u32 morse_get_channelization_scheme_in_use(void)
+{
+	return channelization_scheme_in_use;
+}
 
 void morse_set_s1g_ht_chan_pairs(const char *cc)
 {
 	if (cc && strncmp("JP", cc, COUNTRY_CODE_LEN) == 0)
 		s1g_ht_chan_pairs = s1g_ht_chan_pairs_jp;
+	else if (cc && strncmp("KR", cc, COUNTRY_CODE_LEN) == 0)
+		s1g_ht_chan_pairs = s1g_ht_chan_pairs_kr;
+	else if (cc && strncmp("AU", cc, COUNTRY_CODE_LEN) == 0 &&
+		!morse_dot11_2020_channelization_is_in_use())
+		s1g_ht_chan_pairs = channelization_scheme_in_use ==
+			CHANNELIZATION_SCHEME_IEEE80211_REVMF ? s1g_ht_chan_pairs_au :
+			s1g_ht_chan_pairs_au_2024;
 	else
 		s1g_ht_chan_pairs = s1g_ht_chan_pairs_default;
 }
 
-#define S1G_CHAN_COUNT (52)
+#define S1G_CHAN_COUNT (60)
 #define S1G_CHAN_MIN (1L)
 #define S1G_CHAN_MAX (S1G_CHAN_COUNT - 1L)
 
@@ -214,6 +441,7 @@ int morse_s1g_verify_ht_chan_pairs(void)
 
 	return 0;
 }
+
 /* Country code of supported countries, extendable in future
  * mapping to countries in struct ah_class.
  */
@@ -427,7 +655,11 @@ static const struct ah_class kr14 = {
 		S1G_CHAN_ENABLED_FLAG(5) |
 		S1G_CHAN_ENABLED_FLAG(7) |
 		S1G_CHAN_ENABLED_FLAG(9) |
-		S1G_CHAN_ENABLED_FLAG(11)
+		S1G_CHAN_ENABLED_FLAG(11)|
+		S1G_CHAN_ENABLED_FLAG(18)|
+		S1G_CHAN_ENABLED_FLAG(20)|
+		S1G_CHAN_ENABLED_FLAG(22)|
+		S1G_CHAN_ENABLED_FLAG(24)
 	),
 };
 
@@ -441,7 +673,9 @@ static const struct ah_class kr15 = {
 	.chans = (
 		S1G_CHAN_ENABLED_FLAG(2) |
 		S1G_CHAN_ENABLED_FLAG(6) |
-		S1G_CHAN_ENABLED_FLAG(10)
+		S1G_CHAN_ENABLED_FLAG(10)|
+		S1G_CHAN_ENABLED_FLAG(19)|
+		S1G_CHAN_ENABLED_FLAG(23)
 	),
 };
 
@@ -524,7 +758,7 @@ static const struct ah_class sg21 = {
 	),
 };
 
-static const struct ah_class au22 = {
+static const struct ah_class au22_2020 = {
 	.s1g_freq_start = 902000,
 	.s1g_op_class = 22,
 	.s1g_op_class_idx = 22,
@@ -548,7 +782,7 @@ static const struct ah_class au22 = {
 	),
 };
 
-static const struct ah_class au23 = {
+static const struct ah_class au23_2020 = {
 	.s1g_freq_start = 902000,
 	.s1g_op_class = 23,
 	.s1g_op_class_idx = 23,
@@ -565,7 +799,7 @@ static const struct ah_class au23 = {
 	),
 };
 
-static const struct ah_class au24 = {
+static const struct ah_class au24_2020 = {
 	.s1g_freq_start = 902000,
 	.s1g_op_class = 24,
 	.s1g_op_class_idx = 24,
@@ -579,7 +813,7 @@ static const struct ah_class au24 = {
 	),
 };
 
-static const struct ah_class au25 = {
+static const struct ah_class au25_2020 = {
 	.s1g_freq_start = 902000,
 	.s1g_op_class = 25,
 	.s1g_op_class_idx = 25,
@@ -588,6 +822,102 @@ static const struct ah_class au25 = {
 	.cc_list = {"AU"},
 	.chans = (
 		S1G_CHAN_ENABLED_FLAG(44)
+	),
+};
+
+static const struct ah_class au22 = {
+	.s1g_freq_start = 902000,
+	.s1g_op_class = 22,
+	.s1g_op_class_idx = 22,
+	.global_op_class = 50,
+	.s1g_width = IEEE80211_CHAN_1MHZ,
+	.cc_list = {"AU"},
+	.chans = (
+		S1G_CHAN_ENABLED_FLAG(28) |
+		S1G_CHAN_ENABLED_FLAG(30) |
+		S1G_CHAN_ENABLED_FLAG(32) |
+		S1G_CHAN_ENABLED_FLAG(34) |
+		S1G_CHAN_ENABLED_FLAG(36) |
+		S1G_CHAN_ENABLED_FLAG(38) |
+		S1G_CHAN_ENABLED_FLAG(40) |
+		S1G_CHAN_ENABLED_FLAG(42) |
+		S1G_CHAN_ENABLED_FLAG(44) |
+		S1G_CHAN_ENABLED_FLAG(46) |
+		S1G_CHAN_ENABLED_FLAG(48) |
+		S1G_CHAN_ENABLED_FLAG(50)
+	),
+};
+
+static const struct ah_class au23 = {
+	.s1g_freq_start = 902000,
+	.s1g_op_class = 23,
+	.s1g_op_class_idx = 23,
+	.global_op_class = 51,
+	.s1g_width = IEEE80211_CHAN_2MHZ,
+	.cc_list = {"AU"},
+	.chans = (
+		S1G_CHAN_ENABLED_FLAG(29) |
+		S1G_CHAN_ENABLED_FLAG(33) |
+		S1G_CHAN_ENABLED_FLAG(37) |
+		S1G_CHAN_ENABLED_FLAG(41) |
+		S1G_CHAN_ENABLED_FLAG(45) |
+		S1G_CHAN_ENABLED_FLAG(49)
+	),
+};
+
+/* AU 2024, including proposed channels 51 and 59 */
+static const struct ah_class au24 = {
+	.s1g_freq_start = 902000,
+	.s1g_op_class = 24,
+	.s1g_op_class_idx = 24,
+	.global_op_class = 52,
+	.s1g_width = IEEE80211_CHAN_4MHZ,
+	.cc_list = {"AU"},
+	.chans = (
+		S1G_CHAN_ENABLED_FLAG(31) |
+		S1G_CHAN_ENABLED_FLAG(39) |
+		S1G_CHAN_ENABLED_FLAG(47)
+	),
+};
+
+/* AU 2024, including proposed channel 55 */
+static const struct ah_class au25 = {
+	.s1g_freq_start = 902000,
+	.s1g_op_class = 25,
+	.s1g_op_class_idx = 25,
+	.global_op_class = 53,
+	.s1g_width = IEEE80211_CHAN_8MHZ,
+	.cc_list = {"AU"},
+	.chans = (
+		S1G_CHAN_ENABLED_FLAG(35) |
+		S1G_CHAN_ENABLED_FLAG(43)
+	),
+};
+
+/* AU Proposed */
+static const struct ah_class au39 = {
+	.s1g_freq_start = 894000,
+	.s1g_op_class = 39,
+	.s1g_op_class_idx = 39,
+	.global_op_class = 48,
+	.s1g_width = IEEE80211_CHAN_4MHZ,
+	.cc_list = {"AU"},
+	.chans = (
+		S1G_CHAN_ENABLED_FLAG(51) |
+		S1G_CHAN_ENABLED_FLAG(59)
+	),
+};
+
+/* AU Proposed */
+static const struct ah_class au40 = {
+	.s1g_freq_start = 894000,
+	.s1g_op_class = 40,
+	.s1g_op_class_idx = 40,
+	.global_op_class = 49,
+	.s1g_width = IEEE80211_CHAN_8MHZ,
+	.cc_list = {"AU"},
+	.chans = (
+		S1G_CHAN_ENABLED_FLAG(55)
 	),
 };
 
@@ -614,6 +944,7 @@ static const struct ah_class nz26 = {
 		S1G_CHAN_ENABLED_FLAG(51)
 	),
 };
+
 
 static const struct ah_class nz27 = {
 	.s1g_freq_start = 902000,
@@ -686,8 +1017,92 @@ static const struct ah_class in31 = {
 	),
 };
 
+/* Operating classes per IEEE Std 802.11-2020 */
 static const struct ah_class
-		*s1g_op_classes[] = {
+		*s1g_op_classes_2020[] = {
+	NULL,
+	&us1,
+	&us2,
+	&us3,
+	&us4,
+	NULL,
+	&eu6,
+	&eu7,
+	&jp8,
+	&jp9,
+	&jp10,
+	&jp11,
+	&jp12,
+	NULL,
+	&kr14,
+	&kr15,
+	&kr16,
+	&sg17,
+	&sg18,
+	&sg19,
+	&sg20,
+	&sg21,
+	&au22_2020,
+	&au23_2020,
+	&au24_2020,
+	&au25_2020,
+	&nz26,
+	&nz27,
+	&nz28,
+	&nz29,
+	&eu30,
+	&in31,
+};
+
+/* Operating classes per IEEE Std 802.11-REVmf */
+static const struct ah_class
+		*s1g_op_classes_revmf[] = {
+	NULL,
+	&us1,
+	&us2,
+	&us3,
+	&us4,
+	NULL,
+	&eu6,
+	&eu7,
+	&jp8,
+	&jp9,
+	&jp10,
+	&jp11,
+	&jp12,
+	NULL,
+	&kr14,
+	&kr15,
+	&kr16,
+	&sg17,
+	&sg18,
+	&sg19,
+	&sg20,
+	&sg21,
+	&au22,
+	&au23,
+	&au24,
+	&au25,
+	&nz26,
+	&nz27,
+	&nz28,
+	&nz29,
+	&eu30,
+	&in31,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	&au39,
+	&au40,
+};
+
+/* Operating classes per IEEE Std 802.11-2024 */
+static const struct ah_class
+		*s1g_op_classes_2024[] = {
 	NULL,
 	&us1,
 	&us2,
@@ -722,7 +1137,101 @@ static const struct ah_class
 	&in31,
 };
 
-const unsigned int S1G_OP_CLASSES_LEN = ARRAY_SIZE(s1g_op_classes);
+static const struct ah_class **s1g_op_classes = s1g_op_classes_revmf;
+unsigned int S1G_OP_CLASSES_LEN = ARRAY_SIZE(s1g_op_classes_revmf);
+
+/* countries with multiple channelization */
+static const char * const mors_multi_channelization_countries[] = {
+	"AU",
+};
+
+bool morse_is_multi_channelization_country(const char *alpha)
+{
+	size_t i;
+
+	if (!alpha)
+		return false;
+
+	for (i = 0; i < ARRAY_SIZE(mors_multi_channelization_countries); i++) {
+		if (strncmp(alpha, mors_multi_channelization_countries[i], COUNTRY_CODE_LEN) == 0)
+			return true;
+	}
+	return false;
+}
+
+void morse_set_channelization_scheme(char *country, u32 channelization_scheme)
+{
+	wpa_printf(MSG_INFO, "%s: scheme=%u\n", __func__, channelization_scheme);
+	channelization_scheme_in_use = channelization_scheme;
+	if (channelization_scheme == CHANNELIZATION_SCHEME_IEEE80211_2020) {
+		s1g_op_classes = s1g_op_classes_2020;
+		S1G_OP_CLASSES_LEN = ARRAY_SIZE(s1g_op_classes_2020);
+	} else if (channelization_scheme == CHANNELIZATION_SCHEME_IEEE80211_2024) {
+		s1g_op_classes = s1g_op_classes_2024;
+		S1G_OP_CLASSES_LEN = ARRAY_SIZE(s1g_op_classes_2024);
+	} else {
+		s1g_op_classes = s1g_op_classes_revmf;
+		S1G_OP_CLASSES_LEN = ARRAY_SIZE(s1g_op_classes_revmf);
+	}
+
+	morse_set_s1g_ht_chan_pairs(country);
+}
+
+int morse_ap_configure_channelization(char *country, u8 op_class)
+{
+	u32 channelization_scheme = CHANNELIZATION_SCHEME_DEFAULT;
+
+	if (morse_is_multi_channelization_country(country)) {
+		if (strncmp(country, "AU", COUNTRY_CODE_LEN) == 0) {
+			if (op_class >= 68 && op_class <= 71) {
+				channelization_scheme = CHANNELIZATION_SCHEME_IEEE80211_2020;
+			} else if (op_class >= 48 && op_class <= 53) {
+				channelization_scheme = CHANNELIZATION_SCHEME_IEEE80211_REVMF;
+			} else {
+				wpa_printf(MSG_ERROR, "%s: invalid op_class=%u for country %c%c\n",
+					__func__, op_class, country[0], country[1]);
+				return -1;
+			}
+		}
+	}
+
+	wpa_printf(MSG_INFO, "%s: channelization scheme %u country %c%c\n", __func__,
+			   channelization_scheme, country[0], country[1]);
+
+	morse_set_channelization_scheme(country, channelization_scheme);
+	return 0;
+}
+
+#ifdef CONFIG_IEEE80211AH
+int morse_sta_configure_channelization(struct wpa_supplicant *wpa_s, char *country)
+{
+	u32 driver_channelization_scheme = CHANNELIZATION_SCHEME_DEFAULT;
+
+#ifdef CONFIG_DRIVER_NL80211_MORSE
+	if (!wpa_s->driver->param_get_set) {
+		wpa_printf(MSG_ERROR,
+			     "Driver interface not defined for param_get_set");
+		return -1;
+	}
+
+	if (wpa_s->driver->param_get_set(wpa_s->drv_priv,
+					MORSE_CMD_PARAM_ID_CHANNELIZATION,
+					MORSE_CMD_PARAM_ACTION_GET, 0,
+					&driver_channelization_scheme) &&
+	    morse_is_multi_channelization_country(country)) {
+		wpa_printf(MSG_ERROR, "Failed to get channelization scheme for %c%c",
+				country[0], country[1]);
+		return -1;
+	}
+#endif /* CONFIG_DRIVER_NL80211_MORSE */
+
+	wpa_printf(MSG_INFO, "%s: channelization scheme %u country %c%c\n", __func__,
+			driver_channelization_scheme, country[0], country[1]);
+
+	morse_set_channelization_scheme(country, driver_channelization_scheme);
+	return 0;
+}
+#endif /* CONFIG_IEEE80211AH */
 
 /*
  * Classify an operating class number as S1G local, global or invalid.
@@ -731,9 +1240,8 @@ const unsigned int S1G_OP_CLASSES_LEN = ARRAY_SIZE(s1g_op_classes);
 enum s1g_op_class_type morse_s1g_op_class_valid(u8 s1g_op_class, const struct ah_class **class)
 {
 	/* known global range */
-	if ((s1g_op_class >= 64) && (s1g_op_class <= 77)) {
+	if ((s1g_op_class >= 48) && (s1g_op_class <= 77))
 		return OP_CLASS_S1G_GLOBAL;
-	}
 
 	/* local index */
 	if (s1g_op_class < S1G_OP_CLASSES_LEN) {
@@ -909,11 +1417,65 @@ int morse_ht_freq_to_s1g_chan(int ht_freq)
 
 int morse_s1g_chan_to_ht20_prim_chan(int s1g_op_channel, int s1g_prim_1MHz_channel, char *cc)
 {
+	int ht_chan;
+	int offset;
+
+	ht_chan = morse_s1g_chan_to_ht_chan(s1g_prim_1MHz_channel);
 	if (strncmp(cc, "JP", COUNTRY_CODE_LEN) == 0)
-		return morse_s1g_chan_to_ht_chan(s1g_prim_1MHz_channel) +
-				morse_ht_chan_offset_jp(s1g_op_channel, s1g_prim_1MHz_channel, 0);
+		offset = morse_ht_chan_offset_jp(s1g_op_channel, s1g_prim_1MHz_channel, 0);
+	else if (strncmp(cc, "AU", COUNTRY_CODE_LEN) == 0 &&
+		 !morse_dot11_2020_channelization_is_in_use())
+		offset = morse_ht_chan_offset_au(s1g_op_channel, s1g_prim_1MHz_channel, false);
 	else
-		return morse_s1g_chan_to_ht_chan(s1g_prim_1MHz_channel);
+		offset = 0;
+
+	if (ht_chan < 0 || offset < 0)
+		return MORSE_S1G_RETURN_ERROR;
+
+	return ht_chan + offset;
+}
+
+int morse_ht_chan_offset_au(int chan, int primary_chan, bool ht)
+{
+	int ht20mhz_offset = 0;
+
+	if (morse_dot11_2020_channelization_is_in_use())
+		return ht20mhz_offset;
+
+	/* Get ht20 channel offset value from ht channel */
+	if (ht) {
+		if (chan >= 100 && chan <= 112)
+			ht20mhz_offset = 48;
+		else if (chan >= 149 && chan <= 169 && chan != 155 && chan != 163)
+			ht20mhz_offset = 105;
+		else if (chan >= 173 && chan <= 177)
+			ht20mhz_offset = 57;
+
+		return ht20mhz_offset;
+	}
+
+	/* Get ht20 channel offset value from S1G channel */
+	if (s1g_ht_chan_pairs == NULL ||
+	    (chan < S1G_CHAN_MIN || chan > S1G_CHAN_MAX))
+		return MORSE_INVALID_CHANNEL;
+
+	/* In the AU regulatory, some channels have duplicate entries
+	 * so to get the correct 5g value, the op chan must be considered.
+	 */
+	if (chan == 43 && primary_chan < 43)
+		ht20mhz_offset = 48;
+
+	if (chan == 51)
+		ht20mhz_offset = 105;
+
+	if (chan == 55 || chan == 59) {
+		if (primary_chan <= 42)
+			ht20mhz_offset = 105;
+		else
+			ht20mhz_offset = 57;
+	}
+
+	return ht20mhz_offset;
 }
 
 /* Get ht channel offset value for Japan from s1g/ht channel */
@@ -1263,6 +1825,10 @@ int morse_cc_get_primary_s1g_channel(int op_bw_mhz, int pr_bw_mhz,
 	if (strncmp(cc, "JP", COUNTRY_CODE_LEN) == 0)
 		return morse_calculate_primary_s1g_channel_jp(op_bw_mhz, pr_bw_mhz,
 							s1g_op_chan, pr_1mhz_chan_idx);
+	else if (strncmp(cc, "AU", COUNTRY_CODE_LEN) == 0 &&
+		 !morse_dot11_2020_channelization_is_in_use())
+		return morse_calculate_primary_s1g_channel_au(op_bw_mhz, pr_bw_mhz,
+							s1g_op_chan, pr_1mhz_chan_idx);
 	else
 		return morse_calculate_primary_s1g_channel(op_bw_mhz, pr_bw_mhz,
 							s1g_op_chan, pr_1mhz_chan_idx);
@@ -1328,8 +1894,33 @@ int morse_calculate_primary_s1g_channel(int op_bw_mhz, int pr_bw_mhz, int s1g_op
 	return MORSE_S1G_RETURN_ERROR;
 }
 
+int morse_calculate_primary_s1g_channel_au(int op_bw_mhz, int pr_bw_mhz, int s1g_op_chan,
+					int pr_1mhz_chan_idx)
+{
+	/* Proposed AU channels 51, 55 and 59 require a different calculation */
+	if (s1g_op_chan <= 50 || morse_dot11_2020_channelization_is_in_use()) {
+		return morse_calculate_primary_s1g_channel(op_bw_mhz, pr_bw_mhz, s1g_op_chan,
+				pr_1mhz_chan_idx);
+	} else {
+		switch (op_bw_mhz) {
+		case 4:
+			if (pr_bw_mhz == 1)
+				return ((2 * pr_1mhz_chan_idx) - 19) + s1g_op_chan;
+			else
+				return ((pr_1mhz_chan_idx / 2) * 4) - 18 + s1g_op_chan;
+		case 8:
+			if (pr_bw_mhz == 1)
+				return ((2 * pr_1mhz_chan_idx) - 23) + s1g_op_chan;
+			else
+				return ((pr_1mhz_chan_idx / 2) * 4) - 22 + s1g_op_chan;
+		}
+	}
+	return MORSE_S1G_RETURN_ERROR;
+}
+
 /* Derive operating class struct for the country based on bandwidth and channel */
-const struct ah_class *morse_s1g_ch_to_op_class(u8 s1g_bw, char *cc, int s1g_chan)
+const struct ah_class *morse_s1g_ch_to_op_class(u8 s1g_bw, char *cc, int s1g_chan,
+				bool report_error)
 {
 	unsigned int i;
 
@@ -1341,7 +1932,7 @@ const struct ah_class *morse_s1g_ch_to_op_class(u8 s1g_bw, char *cc, int s1g_cha
 				return class;
 			if (morse_s1g_op_class_has_cc(class, cc)) {
 				if (morse_s1g_op_class_channel_valid(class,
-							s1g_chan, true) == s1g_chan)
+							s1g_chan, report_error) == s1g_chan)
 					return class;
 			}
 		}
@@ -1363,10 +1954,10 @@ static bool morse_check_valid_s1g_prim_1Mhz_chan_index(u8 s1g_bw, u8 s1g_1mhz_pr
 {
 	bool valid_s1g_prim_index = (s1g_1mhz_prim_index <= (s1g_bw -1));
 
-	if (!valid_s1g_prim_index)
-		wpa_printf(MSG_ERROR, "Not a valid s1g prim index for bw %d",
-					s1g_bw);
-
+	if (!valid_s1g_prim_index) {
+		wpa_printf(MSG_ERROR, "S1G Primary 1MHz index %d invalid for operating BW %d",
+			   s1g_1mhz_prim_index, s1g_bw);
+	}
 	return valid_s1g_prim_index;
 }
 
@@ -1486,6 +2077,15 @@ int morse_s1g_get_start_freq_for_country(char *cc, int freq, int bw)
 		if (strncmp(ah_country[region], cc, COUNTRY_CODE_LEN) == 0) {
 			switch (region) {
 			case MORSE_AU:
+				/* Handle proposed AU channels */
+				if (!morse_dot11_2020_channelization_is_in_use() &&
+					((bw == IEEE80211_CHAN_8MHZ && freq == 921500) ||
+					 (bw == IEEE80211_CHAN_4MHZ &&
+					  (freq == 919500 || freq == 923500))))
+					start_freq = 894000;
+				else
+					start_freq = 902000;
+				break;
 			case MORSE_CA:
 			case MORSE_NZ:
 			case MORSE_US:
@@ -1681,13 +2281,87 @@ int morse_s1g_freq_and_cc_to_ht_freq(int s1g_frequency, const char *cc)
 	return MORSE_S1G_RETURN_ERROR;
 }
 
+/**
+ * Find the 5G-mapped centre frequency of a primary channel
+ *
+ * @param s1g_op_bw S1G operating bandwidth (MHz)
+ * @param s1g_prim_bw S1G primary bandwidth (MHz)
+ * @param s1g_op_chan Operating channel
+ * @param s1g_prim_1mhz_chan_index Primary S1G 1MHz channel index
+ * @param country Country code
+ *
+ * @return 5G-mapped centre frequency of primary channel (KHz)
+ */
+static int morse_s1g_chan_get_primary_chan_freq_ht(int s1g_op_bw, int s1g_prim_bw, int s1g_op_chan,
+					    int s1g_prim_1mhz_chan_index, char* country)
+{
+	int s1g_prim_chan;
+	int ht_prim_chan;
+	int ht_prim_freq;
+
+	s1g_prim_chan = morse_cc_get_primary_s1g_channel(s1g_op_bw, s1g_prim_bw, s1g_op_chan,
+							     s1g_prim_1mhz_chan_index, country);
+	if (s1g_prim_chan < 0)
+		return MORSE_S1G_RETURN_ERROR;
+
+	ht_prim_chan = morse_s1g_chan_to_ht20_prim_chan(s1g_op_chan, s1g_prim_chan, country);
+	if (ht_prim_chan < 0)
+		return MORSE_S1G_RETURN_ERROR;
+
+	ht_prim_freq = ieee80211_channel_to_frequency(ht_prim_chan, NL80211_BAND_5GHZ);
+	return ht_prim_freq ? ht_prim_freq : MORSE_S1G_RETURN_ERROR;
+}
+
+bool morse_s1g_is_chan_conf_primary_disabled(struct hostapd_config *conf,
+					     struct hostapd_hw_modes *mode, int s1g_op_chan)
+{
+	int ht20_prim_freq;
+	int ht20_sec_freq;
+	int s1g_op_bw;
+	struct hostapd_channel_data *chan;
+
+	/* Primary 1MHz channel index taken from config means that this function is not capable of
+	 * validating operating channel with a different bandwidth to the configuration, as the
+	 * 1MHz index will be meaningless and potentially invalid.
+	 */
+	char* country = conf->op_country;
+	int s1g_prim_1mhz_chan_index = conf->s1g_prim_1mhz_chan_index;
+
+	s1g_op_bw = morse_s1g_chan_to_bw(s1g_op_chan);
+	if (s1g_op_bw == MORSE_S1G_RETURN_ERROR)
+		return true;
+
+	/* HT mapping of S1G 1MHz primary channel, not S1G primary channel. This is the HT primary
+	 * channel in the 5G mapping
+	 */
+	ht20_prim_freq = morse_s1g_chan_get_primary_chan_freq_ht(s1g_op_bw, IEEE80211_CHAN_1MHZ,
+								 s1g_op_chan,
+								 s1g_prim_1mhz_chan_index,
+								 country);
+	if (ht20_prim_freq == MORSE_S1G_RETURN_ERROR)
+		return true;
+
+	chan = hw_mode_get_channel(mode, ht20_prim_freq, NULL);
+	if (!chan || (chan->flag & HOSTAPD_CHAN_DISABLED))
+		return true;
+
+	/* 2, 4 and 8MHz channels have an HT 20MHz secondary channel, which maps to the S1G 1MHz
+	 * secondary channel. Validate it if S1G primary channel width is 2MHz.
+	 */
+	if (conf->secondary_channel && conf->s1g_prim_chwidth == S1G_PRIM_CHWIDTH_2) {
+		ht20_sec_freq = ht20_prim_freq + conf->secondary_channel * 20;
+		chan = hw_mode_get_channel(mode, ht20_sec_freq, NULL);
+		if (!chan || (chan->flag & HOSTAPD_CHAN_DISABLED))
+			return true;
+	}
+	return false;
+}
+
 /* Validate ECSA primary channel with the current primary and operating channels */
 int morse_s1g_csa_validate_primary_chan(struct hostapd_iface *iface, int csa_ht20_frequency)
 {
 	int oper_chwidth;
 	int prim_chwidth;
-	int current_s1g_prim_chan;
-	int ht20_mapped_channel;
 	int current_ht20_frequency;
 	int ht_center_chan = morse_ht_chan_to_ht_chan_center(iface->conf, iface->conf->channel);
 	int current_s1g_chan_center = morse_ht_chan_to_s1g_chan(ht_center_chan);
@@ -1717,18 +2391,20 @@ int morse_s1g_csa_validate_primary_chan(struct hostapd_iface *iface, int csa_ht2
 		return MORSE_S1G_RETURN_ERROR;
 	}
 
-	current_s1g_prim_chan = morse_cc_get_primary_s1g_channel(
-					oper_chwidth, IEEE80211_CHAN_1MHZ, current_s1g_chan_center,
+	current_ht20_frequency = morse_s1g_chan_get_primary_chan_freq_ht(
+					oper_chwidth,
+					IEEE80211_CHAN_1MHZ,
+					current_s1g_chan_center,
 					iface->conf->s1g_prim_1mhz_chan_index,
-					iface->conf->op_country);
-	ht20_mapped_channel = morse_s1g_chan_to_ht20_prim_chan(current_s1g_chan_center,
-				current_s1g_prim_chan, iface->conf->op_country);
-	current_ht20_frequency = ieee80211_channel_to_frequency(ht20_mapped_channel,
-				NL80211_BAND_5GHZ);
+					iface->conf->op_country
+				);
+	if (current_ht20_frequency == MORSE_S1G_RETURN_ERROR)
+		return MORSE_S1G_RETURN_ERROR;
 
 	if (csa_ht20_frequency == current_ht20_frequency) {
-		wpa_printf(MSG_ERROR, "ECSA: Switching to same primary 1Mhz channel %d not allowed",
-			   current_s1g_prim_chan);
+		wpa_printf(MSG_ERROR,
+			   "ECSA: Switching to same primary 1Mhz channel not allowed (freq: %d)",
+			   current_ht20_frequency);
 		return MORSE_S1G_RETURN_ERROR;
 	}
 
@@ -1776,14 +2452,14 @@ int morse_s1g_validate_csa_params(struct hostapd_iface *iface,	struct csa_settin
 	s1g_prim_channel = (s1g_prim_frequency - s1g_start_freq) / S1G_CHAN_SEP_KHZ;
 
 	class = morse_s1g_ch_to_op_class(s1g_bandwidth,
-				iface->conf->op_country, s1g_op_channel);
+				iface->conf->op_country, s1g_op_channel, true);
 	if (!class) {
 		wpa_printf(MSG_ERROR, "Failed to derive class from s1g operating bandwidth");
 		return MORSE_S1G_RETURN_ERROR;
 	}
 
 	prim_class = morse_s1g_ch_to_op_class(s1g_prim_bw,
-					iface->conf->op_country, s1g_prim_channel);
+					iface->conf->op_country, s1g_prim_channel, true);
 	if (!prim_class) {
 		wpa_printf(MSG_ERROR, "Failed to derive class from s1g primary bandwidth");
 		return MORSE_S1G_RETURN_ERROR;
@@ -1925,14 +2601,15 @@ int morse_remove_duplicates_and_sort_buf(struct wpabuf *buf, int buf_offset)
 int morse_insert_supported_op_class(struct wpabuf *buf, char *cc,
 				int s1g_ch_width, int s1g_op_chan)
 {
-	const struct ah_class *class;
+	const struct ah_class *class = NULL;
 	const struct ah_class *current_class;
 	unsigned int i;
 
 	/* Fill current operating class based on oper ie */
-	current_class = morse_s1g_ch_to_op_class(s1g_ch_width, cc, s1g_op_chan);
+	current_class = morse_s1g_ch_to_op_class(s1g_ch_width, cc, s1g_op_chan, false);
 	if (!current_class) {
-		wpa_printf(MSG_ERROR,"Failed to derive class from s1g operating bandwidth");
+		wpa_printf(MSG_ERROR, "Failed to derive class from s1g op_bw=%d, op_channel=%d\n",
+							s1g_ch_width, s1g_op_chan);
 		return MORSE_S1G_RETURN_ERROR;
 	}
 
@@ -1950,44 +2627,7 @@ int morse_insert_supported_op_class(struct wpabuf *buf, char *cc,
 
 	return MORSE_SUCCESS;
 }
-#endif /* CONFIG_IEEE80211AH */
 
-#ifdef CONFIG_MORSE_WNM
-int morse_wnm_oper(const char *ifname, enum wnm_oper oper)
-{
-	int ret = -1;
-
-	wpa_printf(MSG_INFO, "morse: wnm_oper %d", oper);
-
-	switch (oper) {
-	case WNM_SLEEP_ENTER_CONFIRM:
-		ret = morse_set_long_sleep_enabled(ifname, true);
-		break;
-
-	case WNM_SLEEP_EXIT_CONFIRM:
-		ret = morse_set_long_sleep_enabled(ifname, false);
-		break;
-
-	case WNM_SLEEP_ENTER_FAIL:
-		wpa_printf(MSG_WARNING, "Failed to enter WNM Sleep");
-		ret = 0;
-		break;
-
-	case WNM_SLEEP_EXIT_FAIL:
-		wpa_printf(MSG_WARNING, "Failed to exit WNM Sleep");
-		ret = morse_set_long_sleep_enabled(ifname, false);
-		break;
-
-	default:
-		wpa_printf(MSG_DEBUG, "Unsupported WNM operation %d", oper);
-		break;
-	}
-
-	return ret;
-}
-#endif
-
-#ifdef CONFIG_IEEE80211AH
 /*
  * If a frequency is in the S1G band, convert it to an HT frequency
  * for internal processing.
@@ -2028,6 +2668,11 @@ int morse_s1g_get_first_center_freq_for_country(char *cc)
 		if (strncmp(ah_country[region], cc, COUNTRY_CODE_LEN) == 0) {
 			switch (region) {
 			case MORSE_AU:
+				if (!morse_dot11_2020_channelization_is_in_use())
+					freq = 916000;
+				else
+					freq = 915500;
+				break;
 			case MORSE_NZ:
 				freq = 915500;
 				break;
@@ -2062,5 +2707,211 @@ int morse_s1g_get_first_center_freq_for_country(char *cc)
 	}
 
 	return freq;
+}
+
+int morse_set_interface(struct hostapd_iface *iface)
+{
+	const struct ah_class *op_chan_class = NULL;
+	const struct ah_class *prim_chan_class = NULL;
+	int ret;
+	int prim_chwidth;
+	int oper_freq;
+	int oper_chwidth;
+	int ht_center_chan;
+	int s1g_chan_center;
+	int s1g_prim_chan;
+	u32 driver_channelization_scheme = CHANNELIZATION_SCHEME_DEFAULT;
+
+	/* Set channel with morse_cli to convey to the driver parameters that can't be
+	 * mapped to 5GHz, namely S1G primary channel width
+	 */
+	prim_chwidth = iface->conf->s1g_prim_chwidth == S1G_PRIM_CHWIDTH_1 ? 1 : 2;
+
+	ret = morse_s1g_op_class_valid(iface->conf->s1g_op_class, &op_chan_class);
+	if (ret == OP_CLASS_INVALID) {
+		wpa_printf(MSG_ERROR, "Invalid OP class (%d)", iface->conf->s1g_op_class);
+		goto fail;
+	}
+
+	oper_chwidth = morse_s1g_op_class_to_ch_width(iface->conf->s1g_op_class);
+	if (oper_chwidth == MORSE_S1G_RETURN_ERROR) {
+		wpa_printf(MSG_ERROR,
+			   "error determining S1G operating channel width from op class (%d)",
+			   iface->conf->s1g_op_class);
+		goto fail;
+	}
+
+	ht_center_chan = morse_ht_chan_to_ht_chan_center(iface->conf,
+								iface->conf->channel);
+	if (ht_center_chan == MORSE_S1G_RETURN_ERROR) {
+		wpa_printf(MSG_ERROR, "No HT centre chan for HT chan %d", iface->conf->channel);
+		goto fail;
+	}
+
+	s1g_chan_center = morse_ht_chan_to_s1g_chan(ht_center_chan);
+	if (s1g_chan_center == MORSE_S1G_RETURN_ERROR) {
+		wpa_printf(MSG_ERROR, "NO S1G chan for HT chan %d", ht_center_chan);
+		goto fail;
+	}
+
+	wpa_printf(MSG_INFO, "%s: s1g_chan_center=%d, ht_center_chan=%d, ht_chan=%d\n",
+		__func__, s1g_chan_center, ht_center_chan, iface->conf->channel);
+
+	if (morse_is_multi_channelization_country(iface->conf->op_country)) {
+#ifdef CONFIG_DRIVER_NL80211_MORSE
+		if (!iface->bss[0]->driver->param_get_set) {
+			wpa_printf(MSG_ERROR,
+				     "Driver interface not defined for param_get_set");
+				return -1;
+		}
+
+		if (iface->bss[0]->driver->param_get_set(iface->bss[0]->drv_priv,
+					MORSE_CMD_PARAM_ID_CHANNELIZATION,
+					MORSE_CMD_PARAM_ACTION_GET, 0,
+					&driver_channelization_scheme)) {
+			wpa_printf(MSG_ERROR, "%s: Failed to get channelization scheme for %c%c",
+				__func__, iface->conf->op_country[0], iface->conf->op_country[1]);
+			return -1;
+		}
+#endif /* CONFIG_DRIVER_NL80211_MORSE */
+
+		if (driver_channelization_scheme != channelization_scheme_in_use) {
+			if (morse_dot11_2020_channelization_is_in_use() ||
+			    driver_channelization_scheme == CHANNELIZATION_SCHEME_IEEE80211_2020) {
+				wpa_printf(MSG_ERROR,
+					"Driver channelization scheme (%u) does not include configured Op class (%u)\n",
+					 driver_channelization_scheme, op_chan_class ?
+					op_chan_class->global_op_class : iface->conf->s1g_op_class);
+				return -1;
+			}
+
+			if (driver_channelization_scheme == CHANNELIZATION_SCHEME_IEEE80211_2024 &&
+				s1g_chan_center >= 51) {
+				wpa_printf(MSG_ERROR,
+					"Driver channelization scheme (%u) does not include configured Op class (%u)\n",
+					 driver_channelization_scheme, op_chan_class ?
+					op_chan_class->global_op_class : iface->conf->s1g_op_class);
+				return -1;
+			}
+
+			morse_set_channelization_scheme(iface->conf->op_country,
+							driver_channelization_scheme);
+		}
+	}
+
+	oper_freq = morse_s1g_op_class_ht_chan_to_s1g_freq(iface->conf->s1g_op_class,
+							   ht_center_chan);
+	if (oper_freq < 0) {
+		wpa_printf(MSG_ERROR, "S1G freq not found to match op class %d ht chan %d",
+			   iface->conf->s1g_op_class, ht_center_chan);
+
+		/* In the case of failure because op class does not match desired channel,
+		 * recalculate a new op class and proceed. This is a WAR for failing WFA tests.
+		 */
+		wpa_printf(MSG_INFO, "Default to new op class for chan %d", s1g_chan_center);
+
+		oper_chwidth = morse_s1g_chan_to_bw(s1g_chan_center);
+		if (oper_chwidth == MORSE_S1G_RETURN_ERROR) {
+			wpa_printf(MSG_ERROR, "No BW for S1G chan %d", s1g_chan_center);
+			goto fail;
+		}
+
+		op_chan_class = morse_s1g_ch_to_op_class(oper_chwidth, iface->conf->op_country,
+							 s1g_chan_center, true);
+		if (!op_chan_class) {
+			wpa_printf(MSG_ERROR, "Could not find new op class for chan %d bw %dMHz",
+				   s1g_chan_center, oper_chwidth);
+			goto fail;
+		}
+
+		wpa_printf(MSG_DEBUG, "New S1G op class: %d", op_chan_class->s1g_op_class);
+		iface->conf->s1g_op_class = op_chan_class->s1g_op_class_idx;
+
+		oper_freq = morse_s1g_op_class_ht_chan_to_s1g_freq(iface->conf->s1g_op_class,
+								   ht_center_chan);
+		if (oper_freq < 0) {
+			wpa_printf(MSG_ERROR, "S1G freq not found to match op class %d ht chan %d",
+				   iface->conf->s1g_op_class, ht_center_chan);
+			goto fail;
+		}
+
+		iface->conf->s1g_prim_1mhz_chan_index =
+			iface->conf->s1g_prim_1mhz_chan_index % oper_chwidth;
+		iface->conf->s1g_prim_chwidth =
+			oper_chwidth == 1 ? 0 : iface->conf->s1g_prim_chwidth;
+		prim_chwidth = iface->conf->s1g_prim_chwidth == S1G_PRIM_CHWIDTH_1 ? 1 : 2;
+		wpa_printf(MSG_DEBUG, "Adjusted primary channel params: Width %d index %d",
+			   prim_chwidth, iface->conf->s1g_prim_1mhz_chan_index);
+
+	}
+
+	s1g_prim_chan = morse_cc_get_primary_s1g_channel(oper_chwidth, prim_chwidth,
+							 s1g_chan_center,
+							 iface->conf->s1g_prim_1mhz_chan_index,
+							 iface->conf->op_country);
+	if (s1g_prim_chan < 0) {
+		wpa_printf(MSG_ERROR, "No S1G primary chan (%d)", s1g_prim_chan);
+		goto fail;
+	}
+
+	prim_chan_class = morse_s1g_ch_to_op_class(prim_chwidth, iface->conf->op_country,
+						   s1g_prim_chan, true);
+	if (!prim_chan_class) {
+		wpa_printf(MSG_ERROR, "No OP class for prim ch_width(%d)", prim_chwidth);
+		goto fail;
+	}
+
+	/* Validated necessary parameters, now set channel and op class */
+	wpa_printf(MSG_INFO, "S1G operating channel %d (BW: %d, freq: %d, local class: %d)",
+		   s1g_chan_center, oper_chwidth, oper_freq, iface->conf->s1g_op_class);
+	wpa_printf(MSG_INFO,
+		   "S1G primary channel %d (BW: %d, 1MHz primary chan index: %d, global class: %d)",
+		   s1g_prim_chan, prim_chwidth, iface->conf->s1g_prim_1mhz_chan_index,
+		   prim_chan_class->global_op_class);
+
+#ifdef CONFIG_DRIVER_NL80211_MORSE
+	if (!iface->bss[0]->driver->set_s1g_channel) {
+		wpa_printf(MSG_ERROR, "Driver interface not defined for set_s1g_channel");
+		goto fail;
+	}
+	ret = iface->bss[0]->driver->set_s1g_channel(iface->bss[0]->drv_priv,
+							oper_freq, oper_chwidth,
+							prim_chwidth,
+							iface->conf->s1g_prim_1mhz_chan_index);
+
+	if (ret) {
+		wpa_printf(MSG_ERROR, "Failed to set channel: ret %d%s", ret,
+			   ret == 1 ? " (Unsupported by firmware)" : "");
+		goto fail;
+	}
+
+	if (!iface->bss[0]->driver->set_s1g_op_class) {
+		wpa_printf(MSG_ERROR, "Driver interface not defined for set_s1g_op_class");
+		goto fail;
+	}
+	ret = iface->bss[0]->driver->set_s1g_op_class(iface->bss[0]->drv_priv,
+								op_chan_class->s1g_op_class,
+								prim_chan_class->global_op_class);
+	if (ret) {
+		wpa_printf(MSG_ERROR, "Failed to set op_class (ret %d)", ret);
+		goto fail;
+	}
+
+	if (!iface->bss[0]->driver->set_bss_color) {
+		wpa_printf(MSG_ERROR, "Driver interface not defined for set_bss_color");
+		goto fail;
+	}
+
+	ret = iface->bss[0]->driver->set_bss_color(iface->bss[0]->drv_priv,
+			iface->conf->bss[0]->s1g_bss_color);
+	if (ret) {
+		wpa_printf(MSG_ERROR, "Failed to set s1g_bss_color (ret %d)", ret);
+		goto fail;
+	}
+#endif /* CONFIG_DRIVER_NL80211_MORSE */
+	return 0;
+fail:
+	wpa_printf(MSG_ERROR, "%s: Could not setup interface", __func__);
+	return MORSE_S1G_RETURN_ERROR;
 }
 #endif /* CONFIG_IEEE80211AH */

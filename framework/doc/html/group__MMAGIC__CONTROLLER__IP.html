@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.10.4</span>
+   &#160;<span id="projectnumber">2.11.2</span>
    </div>
   </td>
  </tr>
@@ -107,12 +107,6 @@ Data Structures</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmagic__core__ip__status__rsp__args.html">mmagic_core_ip_status_rsp_args</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Response arguments structure for ip_status.  <a href="structmmagic__core__ip__status__rsp__args.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmagic__core__ip__enable__tcp__keepalive__offload__cmd__args.html">mmagic_core_ip_enable_tcp_keepalive_offload_cmd_args</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Command arguments structure for ip_enable_tcp_keepalive_offload.  <a href="structmmagic__core__ip__enable__tcp__keepalive__offload__cmd__args.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmagic__core__ip__set__whitelist__filter__cmd__args.html">mmagic_core_ip_set_whitelist_filter_cmd_args</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Command arguments structure for ip_set_whitelist_filter.  <a href="structmmagic__core__ip__set__whitelist__filter__cmd__args.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmagic__ip__link__status__event__args.html">mmagic_ip_link_status_event_args</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Event arguments structure for ip_link_status.  <a href="structmmagic__ip__link__status__event__args.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -125,24 +119,12 @@ Typedefs</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:gaa9fac010b58383ad46ec1eec7f10e3e1"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__IP.html#gaa9fac010b58383ad46ec1eec7f10e3e1">mmagic_controller_ip_status</a> (struct mmagic_controller *controller, struct <a class="el" href="structmmagic__core__ip__status__rsp__args.html">mmagic_core_ip_status_rsp_args</a> *rsp_args)</td></tr>
+<tr class="memitem:gaa9fac010b58383ad46ec1eec7f10e3e1"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga202c6db4afd9d9ff976b0e61267ab6bb">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__IP.html#gaa9fac010b58383ad46ec1eec7f10e3e1">mmagic_controller_ip_status</a> (struct mmagic_controller *controller, struct <a class="el" href="structmmagic__core__ip__status__rsp__args.html">mmagic_core_ip_status_rsp_args</a> *rsp_args)</td></tr>
 <tr class="memdesc:gaa9fac010b58383ad46ec1eec7f10e3e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the status of the IP stack.  <a href="group__MMAGIC__CONTROLLER__IP.html#gaa9fac010b58383ad46ec1eec7f10e3e1">More...</a><br /></td></tr>
 <tr class="separator:gaa9fac010b58383ad46ec1eec7f10e3e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga90492843c7097e31c32105811c883b59"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__IP.html#ga90492843c7097e31c32105811c883b59">mmagic_controller_ip_reload</a> (struct mmagic_controller *controller)</td></tr>
+<tr class="memitem:ga90492843c7097e31c32105811c883b59"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga202c6db4afd9d9ff976b0e61267ab6bb">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__IP.html#ga90492843c7097e31c32105811c883b59">mmagic_controller_ip_reload</a> (struct mmagic_controller *controller)</td></tr>
 <tr class="memdesc:ga90492843c7097e31c32105811c883b59"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reloads the IP stack network configuration based on the current values in the subsystem config.  <a href="group__MMAGIC__CONTROLLER__IP.html#ga90492843c7097e31c32105811c883b59">More...</a><br /></td></tr>
 <tr class="separator:ga90492843c7097e31c32105811c883b59"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga3b785071288aef70161ebc8bdcf0af99"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__IP.html#ga3b785071288aef70161ebc8bdcf0af99">mmagic_controller_ip_enable_tcp_keepalive_offload</a> (struct mmagic_controller *controller, struct <a class="el" href="structmmagic__core__ip__enable__tcp__keepalive__offload__cmd__args.html">mmagic_core_ip_enable_tcp_keepalive_offload_cmd_args</a> *cmd_args)</td></tr>
-<tr class="memdesc:ga3b785071288aef70161ebc8bdcf0af99"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enables sending periodic TCP keep-alive packets by the morse chip allowing the TCP connection to be maintained without waking up the host processor.  <a href="group__MMAGIC__CONTROLLER__IP.html#ga3b785071288aef70161ebc8bdcf0af99">More...</a><br /></td></tr>
-<tr class="separator:ga3b785071288aef70161ebc8bdcf0af99"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga2b07b4e3e8db2928f827d794c0050bb6"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__IP.html#ga2b07b4e3e8db2928f827d794c0050bb6">mmagic_controller_ip_disable_tcp_keepalive_offload</a> (struct mmagic_controller *controller)</td></tr>
-<tr class="memdesc:ga2b07b4e3e8db2928f827d794c0050bb6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Disables sending of TCP keepalive packets.  <a href="group__MMAGIC__CONTROLLER__IP.html#ga2b07b4e3e8db2928f827d794c0050bb6">More...</a><br /></td></tr>
-<tr class="separator:ga2b07b4e3e8db2928f827d794c0050bb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gabcc3f4f5900b53f6007b4d7c8164d12b"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__IP.html#gabcc3f4f5900b53f6007b4d7c8164d12b">mmagic_controller_ip_set_whitelist_filter</a> (struct mmagic_controller *controller, struct <a class="el" href="structmmagic__core__ip__set__whitelist__filter__cmd__args.html">mmagic_core_ip_set_whitelist_filter_cmd_args</a> *cmd_args)</td></tr>
-<tr class="memdesc:gabcc3f4f5900b53f6007b4d7c8164d12b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the whitelist filter specifing which incoming packets can wake the system from standby mode.  <a href="group__MMAGIC__CONTROLLER__IP.html#gabcc3f4f5900b53f6007b4d7c8164d12b">More...</a><br /></td></tr>
-<tr class="separator:gabcc3f4f5900b53f6007b4d7c8164d12b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga21da01928c171a33ff9fa5d6b9c6b6b4"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__IP.html#ga21da01928c171a33ff9fa5d6b9c6b6b4">mmagic_controller_ip_clear_whitelist_filter</a> (struct mmagic_controller *controller)</td></tr>
-<tr class="memdesc:ga21da01928c171a33ff9fa5d6b9c6b6b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears any applied whitelist filters.  <a href="group__MMAGIC__CONTROLLER__IP.html#ga21da01928c171a33ff9fa5d6b9c6b6b4">More...</a><br /></td></tr>
-<tr class="separator:ga21da01928c171a33ff9fa5d6b9c6b6b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga56f63ca4244adfd379d1f0d1a9fb79f1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__IP.html#ga56f63ca4244adfd379d1f0d1a9fb79f1">mmagic_controller_register_ip_link_status_handler</a> (struct mmagic_controller *controller, <a class="el" href="group__MMAGIC__CONTROLLER__IP.html#ga9f31a68c37d1365cc67421359a6916da">mmagic_ip_link_status_event_handler_t</a> handler, void *arg)</td></tr>
 <tr class="memdesc:ga56f63ca4244adfd379d1f0d1a9fb79f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register a handler for the ip-link_status event.  <a href="group__MMAGIC__CONTROLLER__IP.html#ga56f63ca4244adfd379d1f0d1a9fb79f1">More...</a><br /></td></tr>
 <tr class="separator:ga56f63ca4244adfd379d1f0d1a9fb79f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -166,140 +148,17 @@ Functions</h2></td></tr>
 <dl class="section warning"><dt>Warning</dt><dd>This function must not invoke any mmagic API functions.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">event_args</td><td>Notication arguments received from the agent. </td></tr>
+    <tr><td class="paramname">event_args</td><td>Notification arguments received from the agent. </td></tr>
     <tr><td class="paramname">arg</td><td>Opaque argument that was provided when the callback was registered. </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l05132">5132</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l04577">4577</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="ga21da01928c171a33ff9fa5d6b9c6b6b4" name="ga21da01928c171a33ff9fa5d6b9c6b6b4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga21da01928c171a33ff9fa5d6b9c6b6b4">&#9670;&nbsp;</a></span>mmagic_controller_ip_clear_whitelist_filter()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a> mmagic_controller_ip_clear_whitelist_filter </td>
-          <td>(</td>
-          <td class="paramtype">struct mmagic_controller *&#160;</td>
-          <td class="paramname"><em>controller</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Clears any applied whitelist filters. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">controller</td><td>Reference to the controller handle.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l05082">5082</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
-
-</div>
-</div>
-<a id="ga2b07b4e3e8db2928f827d794c0050bb6" name="ga2b07b4e3e8db2928f827d794c0050bb6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga2b07b4e3e8db2928f827d794c0050bb6">&#9670;&nbsp;</a></span>mmagic_controller_ip_disable_tcp_keepalive_offload()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a> mmagic_controller_ip_disable_tcp_keepalive_offload </td>
-          <td>(</td>
-          <td class="paramtype">struct mmagic_controller *&#160;</td>
-          <td class="paramname"><em>controller</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Disables sending of TCP keepalive packets. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">controller</td><td>Reference to the controller handle.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l04988">4988</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
-
-</div>
-</div>
-<a id="ga3b785071288aef70161ebc8bdcf0af99" name="ga3b785071288aef70161ebc8bdcf0af99"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga3b785071288aef70161ebc8bdcf0af99">&#9670;&nbsp;</a></span>mmagic_controller_ip_enable_tcp_keepalive_offload()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a> mmagic_controller_ip_enable_tcp_keepalive_offload </td>
-          <td>(</td>
-          <td class="paramtype">struct mmagic_controller *&#160;</td>
-          <td class="paramname"><em>controller</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">struct <a class="el" href="structmmagic__core__ip__enable__tcp__keepalive__offload__cmd__args.html">mmagic_core_ip_enable_tcp_keepalive_offload_cmd_args</a> *&#160;</td>
-          <td class="paramname"><em>cmd_args</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Enables sending periodic TCP keep-alive packets by the morse chip allowing the TCP connection to be maintained without waking up the host processor. </p>
-<p >This needs to be enabled before opening a TCP connection. As of now, this feature will work only on the first TCP connection opened after this command.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir"></td><td class="paramname">controller</td><td>Reference to the controller handle. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">cmd_args</td><td>Command arguments</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l04951">4951</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
-
-</div>
-</div>
 <a id="ga90492843c7097e31c32105811c883b59" name="ga90492843c7097e31c32105811c883b59"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga90492843c7097e31c32105811c883b59">&#9670;&nbsp;</a></span>mmagic_controller_ip_reload()</h2>
 
@@ -310,7 +169,7 @@ Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a> mmagic_controller_ip_reload </td>
+          <td class="memname">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga202c6db4afd9d9ff976b0e61267ab6bb">mmagic_status</a> mmagic_controller_ip_reload </td>
           <td>(</td>
           <td class="paramtype">struct mmagic_controller *&#160;</td>
           <td class="paramname"><em>controller</em></td><td>)</td>
@@ -331,57 +190,9 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><code>MMAGIC_STATUS_OK</code> else an appropriate error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l04906">4906</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
-
-</div>
-</div>
-<a id="gabcc3f4f5900b53f6007b4d7c8164d12b" name="gabcc3f4f5900b53f6007b4d7c8164d12b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gabcc3f4f5900b53f6007b4d7c8164d12b">&#9670;&nbsp;</a></span>mmagic_controller_ip_set_whitelist_filter()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a> mmagic_controller_ip_set_whitelist_filter </td>
-          <td>(</td>
-          <td class="paramtype">struct mmagic_controller *&#160;</td>
-          <td class="paramname"><em>controller</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">struct <a class="el" href="structmmagic__core__ip__set__whitelist__filter__cmd__args.html">mmagic_core_ip_set_whitelist_filter_cmd_args</a> *&#160;</td>
-          <td class="paramname"><em>cmd_args</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Sets the whitelist filter specifing which incoming packets can wake the system from standby mode. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir"></td><td class="paramname">controller</td><td>Reference to the controller handle. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">cmd_args</td><td>Command arguments</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l05045">5045</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l04533">4533</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -395,7 +206,7 @@ Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a> mmagic_controller_ip_status </td>
+          <td class="memname">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga202c6db4afd9d9ff976b0e61267ab6bb">mmagic_status</a> mmagic_controller_ip_status </td>
           <td>(</td>
           <td class="paramtype">struct mmagic_controller *&#160;</td>
           <td class="paramname"><em>controller</em>, </td>
@@ -423,13 +234,13 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir"></td><td class="paramname">controller</td><td>Reference to the controller handle. </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">rsp_args</td><td>Pointer to the data structure to be filled out with the result. If the return code is not <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> then the contents of this structure will be undefined.</td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">rsp_args</td><td>Pointer to the data structure to be filled out with the result. If the return code is not <code>MMAGIC_STATUS_OK</code> then the contents of this structure will be undefined.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><code>MMAGIC_STATUS_OK</code> else an appropriate error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l04874">4874</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l04501">4501</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>

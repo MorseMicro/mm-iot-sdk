@@ -112,18 +112,15 @@ bool umac_evt_queue(struct umac_core_evtq *evtq,
     if (ok)
     {
         EVTQ_TRACE("Queued handler %x\n", (intptr_t)evt->handler);
-        MMLOG_VRB("Queued evt %08lx (handler %p) at %s\n",
-                  (uint32_t)evt,
+        MMLOG_VRB("Queued evt %p (handler %p) at %s\n",
+                  evt,
                   evt->handler,
                   (position == EVTQ_HEAD) ? "head" : "tail");
     }
     else
     {
         EVTQ_TRACE("Failed to queue handler %x\n", (intptr_t)evt->handler);
-        MMLOG_INF("Failed to queue evt %08lx (handler %p); qfree=%p\n",
-                  (uint32_t)evt,
-                  evt->handler,
-                  evtq->free);
+        MMLOG_INF("Failed to queue evt %p (handler %p); qfree=%p\n", evt, evt->handler, evtq->free);
 #ifdef ENABLE_UMAC_EVTQ_DUMP_ON_QUEUE_FAILURE
         umac_evtq_dump(evtq);
 #endif
@@ -166,7 +163,7 @@ struct umac_evt *umac_evt_dequeue(struct umac_core_evtq *evtq)
     if (evt)
     {
         EVTQ_TRACE("Dequeued handler %x\n", (intptr_t)evt->handler);
-        MMLOG_VRB("Dequeued evt %08lx (handler %p)\n", (uint32_t)evt, evt->handler);
+        MMLOG_VRB("Dequeued evt %p (handler %p)\n", evt, evt->handler);
     }
     else
     {
@@ -182,6 +179,6 @@ void umac_evtq_dump(struct umac_core_evtq *evtq)
     MMLOG_INF("UMAC Event Queue:\n");
     for (walk = evtq->head; walk != NULL; walk = walk->next)
     {
-        MMLOG_INF("EVT %08lx: handler=%p\n", (uint32_t)walk, walk->handler);
+        MMLOG_INF("EVT %p: handler=%p\n", walk, walk->handler);
     }
 }

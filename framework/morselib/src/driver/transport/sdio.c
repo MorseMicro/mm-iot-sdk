@@ -5,7 +5,6 @@
 
 #include "morse_transport.h"
 #include "driver/morse_driver/hw.h"
-#include "driver/health/driver_health.h"
 #include "driver/driver.h"
 
 #include "mmosal.h"
@@ -127,7 +126,7 @@ static void comms_op_check(struct driver_data *driverd, morse_error_t return_cod
         {
             MMLOG_WRN("%d consecutive comm failures\n", consecutive_comm_failures);
             morse_trns_set_irq_enabled(driverd, false);
-            driver_health_demand_check(driverd);
+            mmdrv_host_health_check_required();
             consecutive_comm_failures = 0;
         }
     }
@@ -491,14 +490,22 @@ morse_error_t morse_trns_read_multi_byte(struct driver_data *driverd,
             size = next_boundary - address;
         }
 
-        morse_cmd53_read(function, address, data, size);
+        result = morse_cmd53_read(function, address, data, size);
+        if (result != MORSE_SUCCESS)
+        {
+            goto exit;
+        }
 
 
         if ((size >= 8) && driverd->cfg->bus_double_read && !memcmp(data, data + 4, 4))
         {
 
-            MMLOG_DBG("Corrupt Payload. Re-Read first 8 bytes\n");
-            morse_cmd53_read(function, address, data, 8);
+            MMLOG_WRN("Corrupt Payload. Re-Read first 8 bytes\n");
+            result = morse_cmd53_read(function, address, data, 8);
+            if (result != MORSE_SUCCESS)
+            {
+                goto exit;
+            }
         }
 
         address += size;
@@ -854,6 +861,8 @@ void morse_trns_stop(struct driver_data *driverd)
     spi_irq_semb = NULL;
 
     mmhal_wlan_deinit();
+
+    mmosal_task_sleep(20);
 }
 
 void morse_trns_set_irq_enabled(struct driver_data *driverd, bool enabled)

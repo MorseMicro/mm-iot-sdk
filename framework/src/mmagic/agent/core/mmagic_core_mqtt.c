@@ -39,12 +39,12 @@ struct mmagic_mqtt_cb_context
 
 void mmagic_core_mqtt_init(struct mmagic_data *core)
 {
-    MM_UNUSED(core);
+    core->mqtt_data.config.keepalive_s = KEEP_ALIVE_INTERVAL_S;
 }
 
 void mmagic_core_mqtt_start(struct mmagic_data *core)
 {
-    MM_UNUSED(core);
+    core->mqtt_data.is_started = true;
 }
 
 /* MQTT Agent configuration */
@@ -52,7 +52,6 @@ void mmagic_core_mqtt_start(struct mmagic_data *core)
 void mqtt_agent_config_initialise_connect_info(MQTTConnectInfo_t *pxConnectInfo)
 {
     pxConnectInfo->cleanSession = true;
-    pxConnectInfo->keepAliveSeconds = KEEP_ALIVE_INTERVAL_S;
     pxConnectInfo->pUserName = NULL;
     pxConnectInfo->pPassword = NULL;
     pxConnectInfo->pClientIdentifier = NULL;
@@ -82,6 +81,8 @@ void mqtt_agent_config_initialise_connect_info(MQTTConnectInfo_t *pxConnectInfo)
                    mqtt_agent_config_connect_info.passwordLength + 1);
         }
     }
+
+    pxConnectInfo->keepAliveSeconds = mqtt_agent_config_connect_info.keepAliveSeconds;
 
     /* Generates client identifier from MAC address */
     uint8_t mac_addr[MMWLAN_MAC_ADDR_LEN] = { 0 };
@@ -249,6 +250,7 @@ enum mmagic_status mmagic_core_mqtt_start_agent(
     mqtt_agent_config_connect_info.userNameLength = cmd_args->username.len;
     mqtt_agent_config_connect_info.pPassword = cmd_args->password.data;
     mqtt_agent_config_connect_info.passwordLength = cmd_args->password.len;
+    mqtt_agent_config_connect_info.keepAliveSeconds = core->mqtt_data.config.keepalive_s;
 
     /* Broker endpoint */
     mqtt_agent_config_endpoint.pcMqttEndpoint = cmd_args->url.data;

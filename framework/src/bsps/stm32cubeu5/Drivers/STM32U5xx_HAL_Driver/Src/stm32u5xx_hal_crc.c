@@ -200,7 +200,7 @@ HAL_StatusTypeDef HAL_CRC_DeInit(CRC_HandleTypeDef *hcrc)
   __HAL_CRC_DR_RESET(hcrc);
 
   /* Reset IDR register content */
-  CLEAR_BIT(hcrc->Instance->IDR, CRC_IDR_IDR);
+  CLEAR_REG(hcrc->Instance->IDR);
 
   /* DeInit the low level hardware */
   HAL_CRC_MspDeInit(hcrc);
@@ -452,19 +452,23 @@ static uint32_t CRC_Handle_8(CRC_HandleTypeDef *hcrc, uint8_t pBuffer[], uint32_
     {
       *(__IO uint8_t *)(__IO void *)(&hcrc->Instance->DR) = pBuffer[4U * i];         /* Derogation MisraC2012 R.11.5 */
     }
-    if ((BufferLength % 4U) == 2U)
+    else if ((BufferLength % 4U) == 2U)
     {
       data = ((uint16_t)(pBuffer[4U * i]) << 8U) | (uint16_t)pBuffer[(4U * i) + 1U];
       pReg = (__IO uint16_t *)(__IO void *)(&hcrc->Instance->DR);                    /* Derogation MisraC2012 R.11.5 */
       *pReg = data;
     }
-    if ((BufferLength % 4U) == 3U)
+    else if ((BufferLength % 4U) == 3U)
     {
       data = ((uint16_t)(pBuffer[4U * i]) << 8U) | (uint16_t)pBuffer[(4U * i) + 1U];
       pReg = (__IO uint16_t *)(__IO void *)(&hcrc->Instance->DR);                    /* Derogation MisraC2012 R.11.5 */
       *pReg = data;
 
       *(__IO uint8_t *)(__IO void *)(&hcrc->Instance->DR) = pBuffer[(4U * i) + 2U];  /* Derogation MisraC2012 R.11.5 */
+    }
+    else
+    {
+      /* Nothing to do */
     }
   }
 

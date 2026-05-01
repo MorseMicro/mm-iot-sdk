@@ -6,6 +6,7 @@
 
 /**
  * @ingroup MMPKT
+ * @defgroup MMPKT_LIST Morse Micro Packet List (mmpkt_list) API
  *
  * @{
  */
@@ -103,6 +104,22 @@ void mmpkt_list_remove(struct mmpkt_list *list, struct mmpkt *mmpkt);
 struct mmpkt *mmpkt_list_dequeue(struct mmpkt_list *list);
 
 /**
+ * Remove up to @p count mmpkts from the head of @p src and append them to @p dst.
+ *
+ * The relative packet order is preserved. If @p count exceeds the list length, all
+ * packets are moved.
+ *
+ * @param src   The list to dequeue from.
+ * @param dst   The list to append to.
+ * @param count The maximum number of packets to dequeue.
+ *
+ * @returns the number of mmpkts dequeued from the list.
+ */
+uint32_t mmpkt_list_dequeue_multiple(struct mmpkt_list *src,
+                                     struct mmpkt_list *dst,
+                                     uint32_t count);
+
+/**
  * Remove the mmpkt at the tail of the list and return it.
  *
  * @param list The list to dequeue from.
@@ -167,8 +184,10 @@ static inline struct mmpkt *mmpkt_list_peek_tail(struct mmpkt_list *list)
  * Free all the packets in the given list and reset the list to empty state.
  *
  * @param list The list to clear.
+ *
+ * @returns the number of mmpkts cleared from the list
  */
-void mmpkt_list_clear(struct mmpkt_list *list);
+uint32_t mmpkt_list_clear(struct mmpkt_list *list);
 
 /**
  * Insert mmpkts to the end of an mmpkt list, from another mmpkt list.

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2024 Morse Micro
+ * Copyright 2021-2026 Morse Micro
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -71,6 +71,8 @@ enum mmiperf_report_type
     MMIPERF_UDP_DONE_CLIENT,
     /** Interrim report requested via @ref mmiperf_get_interim_report(). */
     MMIPERF_INTERRIM_REPORT,
+    /** User requested stop via @ref mmiperf_stop() */
+    MMIPERF_STOPPED,
 };
 
 /** Enumeration of traffic agent state. */
@@ -263,6 +265,22 @@ mmiperf_handle_t mmiperf_start_tcp_server(const struct mmiperf_server_args *args
  * @returns @c true on success or @c false on error (e.g., the handle was invalid).
  */
 bool mmiperf_get_interim_report(mmiperf_handle_t handle, struct mmiperf_report *report);
+
+/**
+ * Stop an in-progress iperf session.
+ *
+ * Closes active connections, sends any applicable reports (e.g. UDP server to client),
+ * removes the session from the active list, and invokes the report callback with
+ * @ref MMIPERF_STOPPED.
+ *
+ * @note The handle must not be used after this returns. The report callback may be invoked
+ *       synchronously (TCP, UDP server) or asynchronously (UDP client, from the client task).
+ *
+ * @param handle Handle to the iperf session to stop.
+ *
+ * @return @c true if the session was found and stop was initiated, @c false if handle is invalid.
+ */
+bool mmiperf_stop(mmiperf_handle_t handle);
 
 #ifdef __cplusplus
 }

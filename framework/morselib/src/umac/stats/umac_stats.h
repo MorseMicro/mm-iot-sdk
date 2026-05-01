@@ -207,3 +207,21 @@ uint32_t umac_stats_get_timeouts_fired(struct umac_data *umacd);
 
 void umac_stats_clear_timeouts_fired(struct umac_data *umacd);
 
+
+void umac_stats_increment_datapath_driver_tx_skbq_timeout(struct umac_data *umacd);
+
+
+uint32_t umac_stats_get_datapath_driver_tx_skbq_timeout(struct umac_data *umacd);
+
+
+void umac_stats_clear_datapath_driver_tx_skbq_timeout(struct umac_data *umacd);
+
+
+void umac_stats_increment_datapath_driver_tx_pending_status_timeout(struct umac_data *umacd);
+
+
+uint32_t umac_stats_get_datapath_driver_tx_pending_status_timeout(struct umac_data *umacd);
+
+
+void umac_stats_clear_datapath_driver_tx_pending_status_timeout(struct umac_data *umacd);
+

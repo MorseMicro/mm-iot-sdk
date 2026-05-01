@@ -37,6 +37,11 @@ enum mmwlan_status umac_supp_add_ap_interface(struct umac_data *umacd)
     };
 
     data->ap_wpa_s = wpa_supplicant_add_iface(data->global, &iface, NULL);
+    if (data->ap_wpa_s == NULL)
+    {
+        MMLOG_WRN("Failed to add Supplicant AP iface\n");
+        return MMWLAN_ERROR;
+    }
 
     return MMWLAN_SUCCESS;
 }

@@ -12,6 +12,7 @@
 #include "common/common.h"
 #include "common/consbuf.h"
 #include "common/mac_address.h"
+#include "common/morse_commands.h"
 #include "dot11/dot11.h"
 #include "umac/data/umac_data.h"
 #include "umac/config/umac_config.h"
@@ -30,6 +31,7 @@
 #include "umac/stats/umac_stats.h"
 #include "umac/wnm_sleep/umac_wnm_sleep.h"
 #include "umac/ies/s1g_capabilities.h"
+#include "utils/morse.h"
 
 
 #define HZ_TO_KHZ(x) ((x) / 1000)
@@ -218,8 +220,12 @@ static struct wpa_scan_res *mmwpas_alloc_and_fill_scan_result(const struct umac_
     res->flags = WPA_SCAN_QUAL_INVALID | WPA_SCAN_LEVEL_DBM;
     PACK_LE64(res->tsf, rsp->frame.timestamp);
     mac_addr_copy(res->bssid, rsp->frame.bssid);
+#if (defined(MM810XB2_HOSTAP_ROM_COMPAT_ENABLED) && MM810XB2_HOSTAP_ROM_COMPAT_ENABLED)
+    res->freq = -1;
+#else
     res->freq = KHZ_TO_MHZ(HZ_TO_KHZ(rsp->channel_freq_hz));
-    res->freq_offset = KHZ_TO_S1G_OFFSET(HZ_TO_KHZ(rsp->channel_freq_hz));
+    res->freq_offset = HZ_TO_KHZ(rsp->channel_freq_hz) % 1000;
+#endif
     res->beacon_int = rsp->frame.beacon_interval;
     res->caps = rsp->frame.capability_info;
     res->level = rsp->rssi;
@@ -258,6 +264,30 @@ static void mmwpas_scan_rx_handler(struct umac_data *umacd, const struct umac_sc
     }
 
 
+    if (data->num_filter_ssids != 0)
+    {
+        bool found = false;
+        for (size_t ii = 0; ii < data->num_filter_ssids; ii++)
+        {
+            const uint8_t *filter = data->filter_ssids[ii].ssid;
+            if (rsp->frame.ssid_len == data->filter_ssids[ii].ssid_len &&
+                memcmp(filter, rsp->frame.ssid, data->filter_ssids[ii].ssid_len) == 0)
+            {
+                found = true;
+                break;
+            }
+        }
+
+        if (!found)
+        {
+            MMLOG_DBG("Scan result (SSID:%.*s) did not match filter(s)\n",
+                      rsp->frame.ssid_len,
+                      rsp->frame.ssid);
+            return;
+        }
+    }
+
+
     if (data->in_progress_scan_results->num == 0)
     {
         MMLOG_VRB("Inserting scan result " MM_MAC_ADDR_FMT " @ idx 0 (num, %u)\n",
@@ -277,7 +307,6 @@ static void mmwpas_scan_rx_handler(struct umac_data *umacd, const struct umac_sc
 
     int ii;
     int insert_at_idx = 0;
-    int old_entry_idx = -1;
     for (ii = 0; ii < (int)data->in_progress_scan_results->num; ii++)
     {
         struct wpa_scan_res *res = data->in_progress_scan_results->res[ii];
@@ -285,12 +314,6 @@ static void mmwpas_scan_rx_handler(struct umac_data *umacd, const struct umac_sc
         if (res->level >= rsp->rssi)
         {
             insert_at_idx = ii + 1;
-        }
-
-        if (mm_mac_addr_is_equal(rsp->frame.bssid, res->bssid))
-        {
-            MMOSAL_ASSERT(old_entry_idx == -1);
-            old_entry_idx = ii;
         }
     }
 
@@ -302,31 +325,6 @@ static void mmwpas_scan_rx_handler(struct umac_data *umacd, const struct umac_sc
                   data->in_progress_scan_results->num,
                   data->max_scan_results);
         return;
-    }
-
-
-    if (old_entry_idx >= 0)
-    {
-        struct wpa_scan_res *old_entry_res = data->in_progress_scan_results->res[old_entry_idx];
-
-        MMLOG_VRB("Found an existing entry for " MM_MAC_ADDR_FMT "\n",
-                  MM_MAC_ADDR_VAL(rsp->frame.bssid));
-        MMLOG_VRB("    Old entry @ %d, RSSI %d dBm\n", old_entry_idx, old_entry_res->level);
-        MMLOG_VRB("    New entry @ %d, RSSI %d dBm\n", insert_at_idx, rsp->rssi);
-        if (old_entry_idx <= insert_at_idx)
-        {
-            MMLOG_VRB("Old entry has better RSSI than new entry. Dropping new entry\n");
-            return;
-        }
-
-        MMLOG_VRB("Removing old entry with lower RSSI\n");
-
-        os_free(old_entry_res);
-        data->in_progress_scan_results->num--;
-        for (ii = old_entry_idx; ii < (int)data->in_progress_scan_results->num; ii++)
-        {
-            data->in_progress_scan_results->res[ii] = data->in_progress_scan_results->res[ii + 1];
-        }
     }
 
     MMLOG_VRB("Inserting scan result " MM_MAC_ADDR_FMT " @ idx %d (num %u)\n",
@@ -368,6 +366,12 @@ static void mmwpas_clean_up_scan_data(struct umac_supp_shim_data *data)
     data->in_progress_scan_results = NULL;
     mmosal_free(data->bss_cache);
     data->bss_cache = NULL;
+    if (data->filter_ssids != NULL)
+    {
+        os_free(data->filter_ssids);
+        data->filter_ssids = NULL;
+    }
+    data->num_filter_ssids = 0;
 }
 
 
@@ -526,7 +530,8 @@ static int mmwpas_initialise_scan_data(struct umac_data *umacd,
 
 
     args->dwell_time_ms = umac_config_get_supp_scan_dwell_time(umacd);
-    dwell_on_home = mmwlan_get_sta_state() == MMWLAN_STA_CONNECTED && !data->sta_wpa_s->reassociate;
+    dwell_on_home = umac_connection_get_state(umacd) == MMWLAN_STA_CONNECTED &&
+                    !data->sta_wpa_s->reassociate;
     args->dwell_on_home_ms = dwell_on_home ? umac_config_get_supp_scan_home_dwell_time(umacd) : 0;
 
     if (params->extra_ies_len)
@@ -558,6 +563,19 @@ static int mmwpas_initialise_scan_data(struct umac_data *umacd,
         goto error;
     }
     memset(data->in_progress_scan_results->res, 0, alloc_size);
+
+    if (params->filter_ssids != NULL)
+    {
+        if (data->filter_ssids != NULL)
+        {
+            os_free(data->filter_ssids);
+        }
+
+
+        data->filter_ssids = params->filter_ssids;
+        params->filter_ssids = NULL;
+        data->num_filter_ssids = params->num_filter_ssids;
+    }
 
     return 0;
 
@@ -675,7 +693,7 @@ int mmwpas_associate(void *priv, struct wpa_driver_associate_params *params)
         return -1;
     }
 
-    MMLOG_DBG("WPAS: Assoc\n");
+    MMLOG_DBG("WPAS: Assoc Req to " MM_MAC_ADDR_FMT "\n", MM_MAC_ADDR_VAL(params->bssid));
 
     uint8_t own_addr[DOT11_MAC_ADDR_LEN];
     if (umac_interface_get_vif_mac_addr(umacd, MMWLAN_VIF_STA, own_addr) != MMWLAN_SUCCESS)
@@ -708,6 +726,17 @@ int mmwpas_associate(void *priv, struct wpa_driver_associate_params *params)
     return 0;
 }
 
+#if (defined(MM810XB2_HOSTAP_ROM_COMPAT_ENABLED) && MM810XB2_HOSTAP_ROM_COMPAT_ENABLED)
+struct hostapd_hw_modes *mmwpas_get_hw_feature_data(void *priv, u16 *num_modes, u16 *flags, u8 *dfs)
+{
+    MM_UNUSED(priv);
+    MM_UNUSED(num_modes);
+    MM_UNUSED(flags);
+    MM_UNUSED(dfs);
+    return NULL;
+}
+
+#else
 struct hostapd_hw_modes *mmwpas_get_hw_feature_data(void *priv, u16 *num_modes, u16 *flags, u8 *dfs)
 {
     MM_UNUSED(flags);
@@ -735,9 +764,10 @@ struct hostapd_hw_modes *mmwpas_get_hw_feature_data(void *priv, u16 *num_modes, 
 
     for (unsigned ii = 0; ii < channel_list->num_channels; ii++)
     {
+        uint32_t freq_khz = HZ_TO_KHZ(channel_list->channels[ii].centre_freq_hz);
         hw_mode->channels[ii].chan = channel_list->channels[ii].s1g_chan_num;
         hw_mode->channels[ii].freq = 0;
-        hw_mode->channels[ii].freq_khz = HZ_TO_KHZ(channel_list->channels[ii].centre_freq_hz);
+        hw_mode->channels[ii].freq_khz = freq_khz;
         switch (channel_list->channels[ii].bw_mhz)
         {
             case 16:
@@ -771,6 +801,7 @@ struct hostapd_hw_modes *mmwpas_get_hw_feature_data(void *priv, u16 *num_modes, 
     struct dot11_ie_s1g_capabilities s1g_cap_ie;
     struct consbuf buf = CONSBUF_INIT_WITH_BUF((uint8_t *)&s1g_cap_ie, sizeof(s1g_cap_ie));
     ie_s1g_capabilities_build(umacd, &buf);
+
     MM_STATIC_ASSERT(sizeof(s1g_cap_ie.s1g_capabilities_information) == sizeof(hw_mode->s1g_capab),
                      "Size of S1G Capabilities Element in Driver and Supplicant do not match");
     MM_STATIC_ASSERT(sizeof(s1g_cap_ie.supported_s1g_mcs_nss_set) == sizeof(hw_mode->s1g_mcs),
@@ -793,6 +824,7 @@ failure:
     return NULL;
 }
 
+#endif
 
 int mmwpas_get_bssid(void *priv, u8 *bssid)
 {
@@ -850,6 +882,14 @@ int mmwpas_set_key(void *priv, struct wpa_driver_set_key_params *params)
     enum mmwlan_status status = MMWLAN_ERROR;
     struct umac_data *umacd = (struct umac_data *)priv;
 
+#if !(defined(MM810XB2_HOSTAP_ROM_COMPAT_ENABLED) && MM810XB2_HOSTAP_ROM_COMPAT_ENABLED)
+    if (params->key_flag & KEY_FLAG_NEXT)
+    {
+        MMLOG_DBG("Set_key for next TK ignored\n");
+        return -EOPNOTSUPP;
+    }
+#endif
+
     uint16_t vif_id = umac_connection_get_vif_id(umacd);
     struct umac_sta_data *stad = umac_connection_get_stad(umacd);
     if (stad == NULL)
@@ -897,11 +937,10 @@ int mmwpas_set_key(void *priv, struct wpa_driver_set_key_params *params)
         }
         else
         {
-            MMLOG_WRN(
-                "morse_set_key - unsupported combination with key_flag: %u, alg: %u, key_index: %d",
-                params->key_flag,
-                params->alg,
-                params->key_idx);
+            MMLOG_WRN("Unsupported combination with key_flag: %02x, alg: %u, key_index: %d\n",
+                      params->key_flag,
+                      params->alg,
+                      params->key_idx);
             return -1;
         }
 
@@ -946,21 +985,28 @@ int mmwpas_set_key(void *priv, struct wpa_driver_set_key_params *params)
     return 0;
 }
 
-static int mmwpas_send_action(void *priv,
-                              unsigned int freq,
-                              unsigned int wait_time,
-                              const u8 *dst,
-                              const u8 *src,
-                              const u8 *bssid,
-                              const u8 *data,
-                              size_t data_len,
-                              int no_cck)
+static int
+mmwpas_send_action(void *priv,
+                   unsigned int freq,
+                   unsigned int wait_time,
+                   const u8 *dst,
+                   const u8 *src,
+                   const u8 *bssid,
+                   const u8 *data,
+                   size_t data_len,
+                   int no_cck,
+                   int link_id)
 {
 
     MM_UNUSED(freq);
     MM_UNUSED(wait_time);
 
     MM_UNUSED(no_cck);
+#if !(defined(MM810XB2_HOSTAP_ROM_COMPAT_ENABLED) && MM810XB2_HOSTAP_ROM_COMPAT_ENABLED)
+
+    MMOSAL_DEV_ASSERT(link_id == -1);
+    MM_UNUSED(link_id);
+#endif
 
     struct umac_data *umacd = (struct umac_data *)priv;
     struct umac_supp_shim_data *supp_data = umac_data_get_supp_shim(umacd);
@@ -1009,12 +1055,14 @@ static void signal_remain_on_channel_evt(struct umac_data *umacd, const struct u
 
     MMLOG_DBG("Signal remain on channel event\n");
 
+
     wpa_event_data.remain_on_channel.freq = evt->args.remain_on_channel.freq_khz;
     wpa_event_data.remain_on_channel.duration = evt->args.remain_on_channel.duration_ms;
     umac_supp_event(data->sta_driver_ctx, EVENT_REMAIN_ON_CHANNEL, &wpa_event_data);
 }
 
-static int mmwpas_remain_on_channel(void *priv, unsigned int freq, unsigned int duration)
+static int
+mmwpas_remain_on_channel(void *priv, unsigned int freq, unsigned int duration)
 {
     enum mmwlan_status status = MMWLAN_ERROR;
     struct umac_data *umacd = (struct umac_data *)priv;
@@ -1029,9 +1077,11 @@ static int mmwpas_remain_on_channel(void *priv, unsigned int freq, unsigned int 
         return -1;
     }
 
-    DEV_ASSERT_IN_S1G_RANGE(freq);
+    uint32_t freq_khz = freq;
+    DEV_ASSERT_IN_S1G_RANGE(freq_khz);
+
     const struct mmwlan_s1g_channel *channel =
-        umac_regdb_get_channel_from_freq_and_bw(umacd, KHZ_TO_HZ(freq), (1 | 2));
+        umac_regdb_get_channel_from_freq_and_bw(umacd, KHZ_TO_HZ(freq_khz), (1 | 2));
     if (channel == NULL)
     {
         status = MMWLAN_CHANNEL_INVALID;
@@ -1047,7 +1097,7 @@ static int mmwpas_remain_on_channel(void *priv, unsigned int freq, unsigned int 
 
     struct umac_evt evt = UMAC_EVT_INIT_ARGS(signal_remain_on_channel_evt,
                                              remain_on_channel,
-                                             .freq_khz = freq,
+                                             .freq_khz = freq_khz,
                                              .duration_ms = duration);
     bool ok = umac_core_evt_queue(umacd, &evt);
     if (!ok)
@@ -1113,11 +1163,79 @@ static int mmwpas_wnm_oper(void *priv, enum wnm_oper oper, const u8 *peer, u8 *b
 static int mmwpas_signal_monitor(void *priv, int threshold, int hysteresis)
 {
     struct umac_data *umacd = (struct umac_data *)priv;
+    enum mmwlan_status status = umac_connection_set_signal_monitor(umacd, threshold, hysteresis);
 
-    umac_connection_set_signal_monitor(umacd, threshold, hysteresis);
+    return (status == MMWLAN_SUCCESS) ? 0 : -1;
+}
+
+#if !(defined(MM810XB2_HOSTAP_ROM_COMPAT_ENABLED) && MM810XB2_HOSTAP_ROM_COMPAT_ENABLED)
+static int mmwpas_twt_conf(void *priv, struct morse_twt *twt_config)
+{
+    struct umac_data *umacd = (struct umac_data *)priv;
+
+    MMLOG_INF("TWT: wake_interval_us=0x" MM_X64_FMT ", wake_duration_us=%lu, setup_command=%lu\n",
+              MM_X64_VAL(twt_config->wake_interval_us),
+              twt_config->wake_duration_us,
+              twt_config->setup_command);
+
+    struct umac_twt_command cmd = {
+        .type = UMAC_TWT_CMD_TYPE_CONFIGURE,
+        .wake_interval_us = twt_config->wake_interval_us,
+        .min_wake_duration_us = twt_config->wake_duration_us,
+        .twt_setup_command = twt_config->setup_command,
+    };
+
+    const struct mmwlan_twt_config_args *twt_config_args = umac_twt_get_config(umacd);
+    if (twt_config_args->twt_wake_interval_mantissa || twt_config_args->twt_wake_interval_exponent)
+    {
+        cmd.type = UMAC_TWT_CMD_TYPE_CONFIGURE_EXPLICIT;
+        cmd.expl.wake_interval_mantissa = twt_config_args->twt_wake_interval_mantissa;
+        cmd.expl.wake_interval_exponent = twt_config_args->twt_wake_interval_exponent;
+    }
+
+    enum mmwlan_status status = umac_twt_handle_command(umacd, &cmd);
+
+    return (status == MMWLAN_SUCCESS) ? 0 : -1;
+}
+
+static int mmwpas_cac_conf(void *priv, bool enable)
+{
+    MM_UNUSED(priv);
+    MM_UNUSED(enable);
+
 
     return 0;
 }
+
+static int mmwpas_param_get_set(void *priv,
+                                enum morse_cmd_param_id param_id,
+                                enum morse_cmd_param_action action,
+                                u32 value_in,
+                                u32 *value_out)
+{
+    MM_UNUSED(priv);
+    MM_UNUSED(value_in);
+
+    switch (param_id)
+    {
+        case MORSE_CMD_PARAM_ID_CHANNELIZATION:
+            if (action == MORSE_CMD_PARAM_ACTION_GET)
+            {
+
+                *value_out = CHANNELIZATION_SCHEME_IEEE80211_2020;
+                return 0;
+            }
+            break;
+        default:
+
+            break;
+    }
+
+    MMLOG_DBG("Unsupported param_get_set for param %u, action %u.\n", param_id, action);
+    MMOSAL_DEV_ASSERT(false);
+    return -1;
+}
+#endif
 
 const struct wpa_driver_ops mmwlan_wpas_ops = {
     .name = UMAC_SUPP_STA_DRIVER_NAME,
@@ -1142,4 +1260,9 @@ const struct wpa_driver_ops mmwlan_wpas_ops = {
     .cancel_remain_on_channel = mmwpas_cancel_remain_on_channel,
     .wnm_oper = mmwpas_wnm_oper,
     .signal_monitor = mmwpas_signal_monitor,
+#if !(defined(MM810XB2_HOSTAP_ROM_COMPAT_ENABLED) && MM810XB2_HOSTAP_ROM_COMPAT_ENABLED)
+    .twt_conf = mmwpas_twt_conf,
+    .cac_conf = mmwpas_cac_conf,
+    .param_get_set = mmwpas_param_get_set,
+#endif
 };

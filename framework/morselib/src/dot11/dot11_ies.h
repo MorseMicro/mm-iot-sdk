@@ -128,6 +128,28 @@ struct MM_PACKED dot11_ie_twt
 };
 
 
+struct MM_PACKED dot11_reachable_address_subfield
+{
+
+    uint8_t flags;
+
+    uint8_t mac[6];
+};
+
+
+struct MM_PACKED dot11_ie_reachable_address
+{
+
+    struct dot11_ie_hdr header;
+
+    uint8_t initiator_mac[6];
+
+    uint8_t address_count;
+
+    uint8_t reachable_addresses[];
+};
+
+
 struct MM_PACKED dot11_ie_s1g_capabilities
 {
 

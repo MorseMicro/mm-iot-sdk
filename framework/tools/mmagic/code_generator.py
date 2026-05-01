@@ -38,6 +38,12 @@ class CodeGenerator:
         with open(output_filename, 'w') as outf:
             outf.write(c_template.render(config=self.config, data=data))
 
+    def write_py(self, output_filename, py_template, data=None):
+        if os.path.splitext(output_filename)[-1] in [".py"]:
+            self.output_filenames.append(output_filename)
+        with open(output_filename, 'w') as outf:
+            outf.write(py_template.render(config=self.config, data=data))
+
     def _generate_types(self, output_dir):
         template = self.template_env.get_template('core/types.h.template')
         output_file = os.path.join(output_dir, 'mmagic_core_types.h')
@@ -163,6 +169,19 @@ class CodeGenerator:
         self._generate_m2m_internal_files(m2m_output_dir)
         self._generate_m2m_c(m2m_output_dir)
 
+    def _generate_pysdk_py(self, output_dir):
+        template = self.template_env.get_template('pysdk/m2msdktypes.py.template')
+        output_file = os.path.join(output_dir, 'm2msdktypes.py')
+        self.write_py(output_file, template)
+        template = self.template_env.get_template('pysdk/m2msdkapi.py.template')
+        output_file = os.path.join(output_dir, 'm2msdkapi.py')
+        self.write_py(output_file, template)
+
+    def generate_pysdk_files(self):
+        controller_output_dir = os.path.join(self.output_dir, 'tools/mmagiclib/autogen')
+        os.makedirs(controller_output_dir, exist_ok=True)
+        self._generate_pysdk_py(controller_output_dir)
+
     def generate_doc_files(self):
         make_output_dir = os.path.join(self.output_dir, 'autogen')
         os.makedirs(make_output_dir, exist_ok=True)
@@ -197,6 +216,7 @@ def _app_main(args):
     codegen.generate_cli_files()
     codegen.generate_controller_files()
     codegen.generate_m2m_files()
+    codegen.generate_pysdk_files()
 
     if args.list_outputs:
         with open(args.list_outputs, "w") as f:

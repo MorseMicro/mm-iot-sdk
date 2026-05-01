@@ -37,6 +37,7 @@
  */
 
 /* Standard includes. */
+#include <stdint.h>
 #include <string.h>
 #include <stdio.h>
 #include <assert.h>
@@ -60,6 +61,7 @@
 #include "subscription_manager.h"
 
 #include "transport_interface.h"
+#include "mqtt_agent_task_powersave.h"
 
 /* Morse Includes */
 #include "mmhal_core.h"
@@ -95,6 +97,10 @@ static_assert(RETRY_BACKOFF_BASE < UINT16_MAX, "");
 static_assert(RETRY_MAX_BACKOFF_DELAY < UINT16_MAX, "");
 static_assert(((uint64_t)RETRY_BACKOFF_MULTIPLIER * \
                (uint64_t)RETRY_MAX_BACKOFF_DELAY) < UINT32_MAX, "");
+
+#if MQTT_AGENT_TASK_USE_RX_CALLBACK
+MM_STATIC_ASSERT(MQTT_AGENT_MAX_EVENT_QUEUE_WAIT_TIME == UINT32_MAX, "Must be set to UINT32_MAX as it is ignored");
+#endif
 
 /**
  * Socket send and receive timeouts to use.
@@ -439,6 +445,14 @@ static bool prvAgentMessageReceive(MQTTAgentMessageContext_t *pxMsgCtx,
                                    MQTTAgentCommand_t **ppxReceivedCommand,
                                    uint32_t blockTimeMs)
 {
+    /* If this function was called by MQTTAgent_CommandLoop then blockTimeMs is MQTT_AGENT_MAX_EVENT_QUEUE_WAIT_TIME.
+     * In this case we ignore it and use the next MQTT work deadline instead.
+     * In other cases, we leave blockTimeMs unchanged */
+    if (MQTT_AGENT_TASK_USE_RX_CALLBACK && blockTimeMs == MQTT_AGENT_MAX_EVENT_QUEUE_WAIT_TIME)
+    {
+        blockTimeMs = mqtt_agent_task_powersave_next_deadline(&xDefaultInstanceHandle->mqttContext);
+    }
+
     bool bQueueStatus = false;
     if (pxMsgCtx && ppxReceivedCommand)
     {
@@ -814,6 +828,7 @@ void vMQTTAgentTask(void *pvParameters)
         xMQTTStatus = MQTTNoMemory;
         goto clean_network_context;
     }
+    memset(pxNetworkContext, 0, sizeof(*pxNetworkContext));
 
     xMQTTStatus = prvConfigureAgentTaskCtx(pxCtx, pxNetworkContext, pucNetworkBuffer, MQTT_AGENT_NETWORK_BUFFER_SIZE);
     if (xMQTTStatus != MQTTSuccess)
@@ -881,6 +896,7 @@ void vMQTTAgentTask(void *pvParameters)
             NetworkCredentials_t* creds = pxCtx->xBrokerEndpoint.secure ? &xCredentials : NULL;
             xTransportStatus = transport_connect(pxNetworkContext,
                                                     pxCtx->xBrokerEndpoint.pcMqttEndpoint,
+                                                    TRANSPORT_TCP,
                                                     (uint16_t)pxCtx->xBrokerEndpoint.ulMqttPort,
                                                     creds);
 
@@ -948,7 +964,7 @@ void vMQTTAgentTask(void *pvParameters)
                 xMQTTStatus = MQTTAgent_ResumeSession(&(pxCtx->xAgentContext), bSessionPresent);
 
                 /* Re-subscribe to all the previously subscribed topics */
-                if ((xMQTTStatus == MQTTSuccess))
+                if (xMQTTStatus == MQTTSuccess)
                 {
                     if (!bSessionPresent)
                     {
@@ -1008,12 +1024,16 @@ void vMQTTAgentTask(void *pvParameters)
                                                 RETRY_MAX_BACKOFF_DELAY,
                                                 BACKOFF_ALGORITHM_RETRY_FOREVER);
 
+            mqtt_agent_task_powersave_start_commandloop(pxNetworkContext, &pxCtx->xAgentContext);
+
             /* MQTTAgent_CommandLoop() is effectively the agent implementation.  It
              * will manage the MQTT protocol until such time that an error occurs,
              * which could be a disconnect.  If an error occurs the MQTT context on
              * which the error happened is returned so there can be an attempt to
              * clean up and reconnect however the application writer prefers. */
             xMQTTStatus = MQTTAgent_CommandLoop(&(pxCtx->xAgentContext));
+
+            mqtt_agent_task_powersave_stop_commandloop(pxNetworkContext);
 
             /* Broker disconnection event */
             if(xMQTTStatus != MQTTSuccess)

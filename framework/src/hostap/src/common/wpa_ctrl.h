@@ -119,6 +119,10 @@ extern "C" {
 #define WPA_EVENT_T2LM_UPDATE "CTRL-EVENT-T2LM-UPDATE "
 /** MLO link reconfiguration event */
 #define WPA_EVENT_LINK_RECONFIG "CTRL-EVENT-LINK-RECONFIG "
+/** MLO link STA removed through link reconfiguration */
+#define WPA_EVENT_LINK_STA_REMOVED "CTRL-EVENT-LINK-STA-REMOVED "
+/** MLO link STA added through link reconfiguration */
+#define WPA_EVENT_LINK_STA_ADDED "CTRL-EVENT-LINK-STA-ADDED "
 
 /** IP subnet status change notification
  *
@@ -344,7 +348,6 @@ extern "C" {
 /* parameters: <Venue Number> <Venue URL> */
 #define RX_VENUE_URL "RX-VENUE-URL "
 
-#define HS20_SUBSCRIPTION_REMEDIATION "HS20-SUBSCRIPTION-REMEDIATION "
 #define HS20_DEAUTH_IMMINENT_NOTICE "HS20-DEAUTH-IMMINENT-NOTICE "
 #define HS20_T_C_ACCEPTANCE "HS20-T-C-ACCEPTANCE "
 
@@ -457,12 +460,25 @@ extern "C" {
 /* Event triggered for received management frame */
 #define AP_MGMT_FRAME_RECEIVED "AP-MGMT-FRAME-RECEIVED "
 
+/* Event triggerred on AP receiving Wi-Fi Alliance Generational Capabilities
+ * indication.
+ * Parameters: <STA addr> <Generational Capabilities Indication body> */
+#define WFA_GEN_CAPAB_RX "WFA-GEN-CAPAB "
+
 #ifndef BIT
 #define BIT(x) (1U << (x))
 #endif
 
 /* PASN authentication status */
 #define PASN_AUTH_STATUS "PASN-AUTH-STATUS "
+
+/* Result of PASN performed for Proximity Ranging
+ * <result> role=<role> protocol=<protocol type> opclass=<op class> channel=<op channel> cc=<country>
+ */
+#define PR_PASN_RESULT "PR-PASN-RESULT "
+
+/* Proximity Ranging parameters to use in ranging */
+#define PR_RANGING_PARAMS "PR-RANGING-PARAMS "
 
 /* BSS command information masks */
 

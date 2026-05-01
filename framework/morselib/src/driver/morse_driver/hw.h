@@ -74,11 +74,6 @@
 #define MORSE_INT_BEACON_VIF_MASK_ALL                 (GENMASK(24, 17))
 #define MORSE_INT_BEACON_BASE_NUM                     (17)
 
-#define MORSE_INT_NDP_PROBE_REQ_PV0_NUM               (18)
-#define MORSE_INT_NDP_PROBE_REQ_PV0_MASK              (1 << MORSE_INT_NDP_PROBE_REQ_PV0_NUM)
-#define MORSE_INT_NDP_PROBE_REQ_PV1_NUM               (19)
-#define MORSE_INT_NDP_PROBE_REQ_PV1_MASK              (1 << MORSE_INT_NDP_PROBE_REQ_PV1_NUM)
-
 #define MORSE_WAKEPIN_RPI_GPIO_DEFAULT                (3)
 #define MORSE_ASYNC_WAKEUP_FROM_CHIP_RPI_GPIO_DEFAULT (7)
 #define MORSE_RESETPIN_RPI_GPIO_DEFAULT               (5)
@@ -229,8 +224,6 @@ struct mmhal_chip
 int morse_hw_irq_enable(struct driver_data *driverd, uint32_t irq, bool enable);
 
 int morse_hw_irq_handle(struct driver_data *driverd);
-
-int morse_hw_irq_clear(struct driver_data *driverd);
 
 
 void morse_hw_toggle_aon_latch(struct driver_data *driverd);

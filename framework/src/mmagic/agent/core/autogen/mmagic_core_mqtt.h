@@ -14,11 +14,13 @@ struct mmagic_data;
 
 struct mmagic_mqtt_config
 {
-    uint8_t reserved[0]; /* So that the struct is not empty */
+    /** The period at which keep-alive messages are sent by the client */
+    uint16_t keepalive_s;
 };
 
 struct mmagic_mqtt_data
 {
+    bool is_started;
     struct mmagic_mqtt_config config;
     /** Subsystem private data (to be allocated/managed by the subsystem implementation). */
     void *priv;
@@ -51,6 +53,14 @@ void mmagic_core_mqtt_save_all(struct mmagic_data *core);
  * @param core   Reference to to global mmagic context struct.
  */
 void mmagic_core_mqtt_start(struct mmagic_data *core);
+
+/**
+ * Function to check if the mqtt subsystem has been initialized.
+ *
+ * @param core   Reference to to global mmagic context struct.
+ * @return       True if mmagic_core_mqtt_init has been called, false otherwise.
+ */
+bool mmagic_core_mqtt_is_started(struct mmagic_data *core);
 
 /** Command arguments structure for mqtt_start_agent */
 struct MM_PACKED mmagic_core_mqtt_start_agent_cmd_args

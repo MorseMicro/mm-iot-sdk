@@ -58,7 +58,7 @@ enum mmagic_llc_packet_type
     /** This is an unsolicited event from Agent to Controller. */
     MMAGIC_LLC_PTYPE_EVENT                    = 2,
 
-    /** An unspecified error condition has occured */
+    /** An unspecified error condition has occurred */
     MMAGIC_LLC_PTYPE_ERROR                    = 3,
 
     /** Instructs the agent to reset itself */
@@ -82,6 +82,7 @@ enum mmagic_llc_packet_type
     MMAGIC_LLC_PTYPE_SYNC_RESP                = 11,
 };
 
+/** This is the header for a MMAGIC LLC packet */
 struct MM_PACKED mmagic_llc_header
 {
     /** Packet type and sequence number, cmd is upper nibble, seq is lower nibble */
@@ -92,15 +93,17 @@ struct MM_PACKED mmagic_llc_header
     uint16_t length;
 };
 
+/** Request to resynchronize MMAGIC communication */
 struct MM_PACKED mmagic_llc_sync_req
 {
-    /** Token to match respones to requests. */
+    /** Token to match responses to requests. */
     uint8_t token[4];
 };
 
+/** Response to a MMAGIC resynchronization request */
 struct MM_PACKED mmagic_llc_sync_rsp
 {
-    /** Token to match respones to requests. */
+    /** Token to match responses to requests. */
     uint8_t token[4];
     /** The last seen sequence number for Controller to Agent transmissions. */
     uint8_t last_seen_seq;
@@ -194,8 +197,13 @@ enum mmagic_m2m_event_id
 /** Maximum number of streams possible. */
 #define MMAGIC_LLC_MAX_STREAMS  (8)
 
+/** Context for the MMAGIC Controller.
+ *
+ * This maintains the state needed to interact with the agent.
+ */
 struct mmagic_controller
 {
+    /** Transport and synchronization context */
     struct
     {
         /** The HAL transport handle */
@@ -210,6 +218,7 @@ struct mmagic_controller
         volatile enum mmagic_status sync_status;
     } controller_llc;
 
+    /** Handlers registered to be called in response to agent events */
     struct
     {
 {%- for module in config.modules %}
@@ -220,7 +229,7 @@ struct mmagic_controller
 {%- endfor %}
     } event_handlers;
 
-
+    /** A queue for each stream */
     struct mmosal_queue *stream_queue[MMAGIC_LLC_MAX_STREAMS];
     /** The mutex to protect access to the streams @c mmbuf_list and TX path */
     struct mmosal_mutex *tx_mutex;
@@ -531,6 +540,11 @@ enum mmagic_status mmagic_controller_rx(struct mmagic_controller *controller, ui
     struct mmbuf *rx_buffer = NULL;
     struct mmagic_m2m_response_header *rx_header;
 
+    if (stream_id >= MMAGIC_LLC_MAX_STREAMS)
+    {
+        return MMAGIC_STATUS_INVALID_STREAM;
+    }
+
     if (!mmosal_queue_pop(controller->stream_queue[stream_id], &rx_buffer, timeout_ms))
     {
         return MMAGIC_STATUS_ERROR;
@@ -539,12 +553,6 @@ enum mmagic_status mmagic_controller_rx(struct mmagic_controller *controller, ui
     if (rx_buffer == NULL)
     {
         return MMAGIC_STATUS_ERROR;
-    }
-
-    if (stream_id >= MMAGIC_LLC_MAX_STREAMS)
-    {
-        mmbuf_release(rx_buffer);
-        return MMAGIC_STATUS_INVALID_STREAM;
     }
 
     rx_header = (struct mmagic_m2m_response_header *)mmbuf_remove_from_start(rx_buffer,

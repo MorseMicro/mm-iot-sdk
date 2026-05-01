@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.10.4</span>
+   &#160;<span id="projectnumber">2.11.2</span>
    </div>
   </td>
  </tr>
@@ -116,6 +116,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>mmhal_wlan_spi_cs_dea
 <tr class="memitem:gaf2b75b0c2e4e8e75f0690af9b3980d0a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMHAL__WLAN__SPI.html#gaf2b75b0c2e4e8e75f0690af9b3980d0a">mmhal_wlan_spi_write_buf</a> (const uint8_t *<a class="el" href="sslclient_8c.html#abdc8ea8147d82c962a7d88863ee32ee0">buf</a>, unsigned len)</td></tr>
 <tr class="memdesc:gaf2b75b0c2e4e8e75f0690af9b3980d0a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Transmit multiple octets of data to SPI bus.  <a href="group__MMHAL__WLAN__SPI.html#gaf2b75b0c2e4e8e75f0690af9b3980d0a">More...</a><br /></td></tr>
 <tr class="separator:gaf2b75b0c2e4e8e75f0690af9b3980d0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga3fb0ed468163fdfc415c0fe831579562"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMHAL__WLAN__SPI.html#ga3fb0ed468163fdfc415c0fe831579562">mmhal_wlan_assert_reset</a> (bool assert_reset)</td></tr>
+<tr class="memdesc:ga3fb0ed468163fdfc415c0fe831579562"><td class="mdescLeft">&#160;</td><td class="mdescRight">Put the WLAN transceiver into a reset state.  <a href="group__MMHAL__WLAN__SPI.html#ga3fb0ed468163fdfc415c0fe831579562">More...</a><br /></td></tr>
+<tr class="separator:ga3fb0ed468163fdfc415c0fe831579562"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaf816182d2816a9a447642fc77c4d9a2a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMHAL__WLAN__SPI.html#gaf816182d2816a9a447642fc77c4d9a2a">mmhal_wlan_hard_reset</a> (void)</td></tr>
 <tr class="memdesc:gaf816182d2816a9a447642fc77c4d9a2a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hard reset the chip by asserting and then releasing the reset pin.  <a href="group__MMHAL__WLAN__SPI.html#gaf816182d2816a9a447642fc77c4d9a2a">More...</a><br /></td></tr>
 <tr class="separator:gaf816182d2816a9a447642fc77c4d9a2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -139,6 +142,33 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>mmhal_wlan_spi_cs_dea
 <tr class="separator:ga8f248d785042a9fb4585dd75d286ceac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="ga3fb0ed468163fdfc415c0fe831579562" name="ga3fb0ed468163fdfc415c0fe831579562"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga3fb0ed468163fdfc415c0fe831579562">&#9670;&nbsp;</a></span>mmhal_wlan_assert_reset()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void mmhal_wlan_assert_reset </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>assert_reset</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Put the WLAN transceiver into a reset state. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">assert_reset</td><td><code>true</code> to put the transceiver in reset, <code>false</code> to allow normal operation</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section note"><dt>Note</dt><dd>This function should only drive the reset signal. </dd></dl>
+
+</div>
+</div>
 <a id="ga8f248d785042a9fb4585dd75d286ceac" name="ga8f248d785042a9fb4585dd75d286ceac"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga8f248d785042a9fb4585dd75d286ceac">&#9670;&nbsp;</a></span>mmhal_wlan_clear_spi_irq()</h2>
 
@@ -156,7 +186,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>mmhal_wlan_spi_cs_dea
 </div><div class="memdoc">
 
 <p>Clear the SPI IRQ. </p>
-<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000002">Deprecated:</a></b></dt><dd>Do not invoke this function because it is deprecated and will be removed from the mmhal API in a future release. This function need not be implemented as a weak stub is used in morselib. </dd></dl>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000001">Deprecated:</a></b></dt><dd>Do not invoke this function because it is deprecated and will be removed from the mmhal API in a future release. This function need not be implemented as a weak stub is used in morselib. </dd></dl>
 
 </div>
 </div>

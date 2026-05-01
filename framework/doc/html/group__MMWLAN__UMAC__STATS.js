@@ -4,6 +4,8 @@ var group__MMWLAN__UMAC__STATS =
       [ "connect_timestamp", "structmmwlan__stats__umac__data.html#ada5d8a8c8ecc9824a2292256266d959e", null ],
       [ "datapath_driver_rx_alloc_failures", "structmmwlan__stats__umac__data.html#ad7f090571106fd5fdeed842f71b08d29", null ],
       [ "datapath_driver_rx_read_failures", "structmmwlan__stats__umac__data.html#aec5a37dafc4449614b86c5eaba84cc0c", null ],
+      [ "datapath_driver_tx_pending_status_timeout", "structmmwlan__stats__umac__data.html#a4c8507739334a9d9270b79fad2a221a5", null ],
+      [ "datapath_driver_tx_skbq_timeout", "structmmwlan__stats__umac__data.html#aa6960aeafe429f98d96bc358a6c67a23", null ],
       [ "datapath_rx_ccmp_failures", "structmmwlan__stats__umac__data.html#acf3a52beb4d63ca415a457c687240acb", null ],
       [ "datapath_rx_mgmt_q_high_water_mark", "structmmwlan__stats__umac__data.html#a63fac3fa0edd348651a32f3664197279", null ],
       [ "datapath_rx_reorder_list_high_water_mark", "structmmwlan__stats__umac__data.html#a5dc4e4e772c92f30d7b2ee28f8a5daac", null ],

@@ -287,6 +287,15 @@ void mmhal_wlan_spi_read_buf(uint8_t *buf, unsigned len);
 void mmhal_wlan_spi_write_buf(const uint8_t *buf, unsigned len);
 
 /**
+ * Put the WLAN transceiver into a reset state.
+ *
+ * @param assert_reset @c true to put the transceiver in reset, @c false to allow normal operation
+ *
+ * @note This function should only drive the reset signal.
+ */
+void mmhal_wlan_assert_reset(bool assert_reset);
+
+/**
  * Hard reset the chip by asserting and then releasing the reset pin.
  *
  * @warning This function must return with the chip in a fully booted state. i.e only return once

@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.10.4</span>
+   &#160;<span id="projectnumber">2.11.2</span>
    </div>
   </td>
  </tr>
@@ -95,15 +95,15 @@ $(document).ready(function(){initNavTree('md__home_jenkins_agent_workspace_build
 <p >The CLI is separated into modules, which are described below. Each module has a set of commands and configuration variables.</p>
 <p >For a list of all commands type <code>help</code>. For example:</p>
 <div class="fragment"><div class="line">&gt; help</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md80"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md72"></a>
 Configuration variables</h1>
 <p >Configuration variables provide a means of configuring various aspects of the system. The commands <code>get</code> and <code>set</code> are provided to read and write the values of the variables. To list all the currently set configuration variables, invoke:</p>
 <div class="fragment"><div class="line">&gt; get all</div>
 </div><!-- fragment --><p >When a configuration variable is set the value is stored in volatile memory. The <code>commit</code> command can be used to commit these to non-volatile memory.</p>
 <p >Note that changes to configuration variables may not have an immediate effect. For example, the IP configuration variables will not take effect until the <code>ip-reload</code> command is invoked.</p>
-<h1><a class="anchor" id="autotoc_md81"></a>
+<h1><a class="anchor" id="autotoc_md73"></a>
 Module wlan: Wireless LAN management.</h1>
-<h2><a class="anchor" id="autotoc_md82"></a>
+<h2><a class="anchor" id="autotoc_md74"></a>
 Configuration variables</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -161,22 +161,24 @@ Configuration variables</h2>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><code>wlan.sta_evt_en</code>   </td><td class="markdownTableBodyNone">bool   </td><td class="markdownTableBodyNone">When set to true, STA event notifications will be provided. Setting this to false will suppress these notifications. Defaults to false.    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>wlan.duty_cycle_mode</code>   </td><td class="markdownTableBodyNone"><a class="el" href="md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#CLI_enum_duty_cycle_mode">Duty cycle mode</a>   </td><td class="markdownTableBodyNone">The duty cycle air time distribution mode. The duty cycle mode can be set to spread, where the air time is spread evenly across the window; or burst, where air time is available to be consumed immediately.   </td></tr>
+<td class="markdownTableBodyNone"><code>wlan.duty_cycle_mode</code>   </td><td class="markdownTableBodyNone"><a class="el" href="md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_os_mmagic_autogen_mmagic_cli.html#CLI_enum_duty_cycle_mode">Duty cycle mode</a>   </td><td class="markdownTableBodyNone">The duty cycle air time distribution mode. The duty cycle mode can be set to spread, where the air time is spread evenly across the window; or burst, where air time is available to be consumed immediately.    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>wlan.connect_on_boot</code>   </td><td class="markdownTableBodyNone">bool   </td><td class="markdownTableBodyNone">On boot attempt to connect immediately to the AP with the current parameters rather than waiting for a connect command on wlan. Defaults to false.   </td></tr>
 </table>
-<h2><a class="anchor" id="autotoc_md83"></a>
+<h2><a class="anchor" id="autotoc_md75"></a>
 Commands</h2>
-<h3><a class="anchor" id="autotoc_md84"></a>
+<h3><a class="anchor" id="autotoc_md76"></a>
 wlan-connect</h3>
 <p >Brings up the WLAN interface and connects to the AP with configured parameters.</p>
 <div class="fragment"><div class="line">&gt; wlan-connect &lt;timeout&gt; </div>
 </div><!-- fragment --><ul>
 <li><code>timeout</code>: Duration in milliseconds to wait for connection establish, if connection does not get established an explicit disconnect will be sent. 0 to return immediately without waiting.</li>
 </ul>
-<h3><a class="anchor" id="autotoc_md85"></a>
+<h3><a class="anchor" id="autotoc_md77"></a>
 wlan-disconnect</h3>
 <p >Disconnects and brings down the WLAN interface.</p>
 <div class="fragment"><div class="line">&gt; wlan-disconnect </div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md86"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md78"></a>
 wlan-scan</h3>
 <p >Starts an undirected scan for available networks.</p>
 <div class="fragment"><div class="line">&gt; wlan-scan &lt;ssid&gt; &lt;timeout&gt; </div>
@@ -184,76 +186,47 @@ wlan-scan</h3>
 <li><code>ssid</code>: Optional SSID to include in probe requests.</li>
 <li><code>timeout</code>: Optional duration in milliseconds to wait for scan to complete, if scan does not complete by the timeout any available results will be returned and the scan aborted.</li>
 </ul>
-<h3><a class="anchor" id="autotoc_md87"></a>
+<h3><a class="anchor" id="autotoc_md79"></a>
 wlan-get_rssi</h3>
 <p >Retrieves the RSSI if the WLAN interface is up, else 0.</p>
 <div class="fragment"><div class="line">&gt; wlan-get_rssi </div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md88"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md80"></a>
 wlan-get_mac_addr</h3>
 <p >Retrieves the MAC address if the WLAN interface is up.</p>
 <div class="fragment"><div class="line">&gt; wlan-get_mac_addr </div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md89"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md81"></a>
 wlan-wnm_sleep</h3>
 <p >Requests entry or exit from extended sleep (wnm sleep) if the WLAN interface is up.</p>
 <div class="fragment"><div class="line">&gt; wlan-wnm_sleep &lt;wnm_sleep_enabled&gt; </div>
 </div><!-- fragment --><ul>
 <li><code>wnm_sleep_enabled</code>: Boolean indicating whether WNM sleep is enabled.</li>
 </ul>
-<h3><a class="anchor" id="autotoc_md90"></a>
+<h3><a class="anchor" id="autotoc_md82"></a>
 wlan-beacon_monitor_enable</h3>
 <p >Enable beacon monitoring with the given filter settings. If beacon monitoring is already enabled it will be reconfigured with the given arguments.</p>
 <div class="fragment"><div class="line">&gt; wlan-beacon_monitor_enable &lt;oui_filter&gt; </div>
 </div><!-- fragment --><ul>
 <li><code>oui_filter</code>: OUIs to monitor.</li>
 </ul>
-<h3><a class="anchor" id="autotoc_md91"></a>
+<h3><a class="anchor" id="autotoc_md83"></a>
 wlan-beacon_monitor_disable</h3>
 <p >Disable beacon monitoring. If beacon monitor is not enabled then this has no effect.</p>
 <div class="fragment"><div class="line">&gt; wlan-beacon_monitor_disable </div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md92"></a>
-wlan-standby_enter</h3>
-<p >This puts the Morse chip into standby mode allowing the host processor to go to sleep while the Morse chip takes over certain functionality to keep the connection alive with the provision to wake up the host processor when certain conditions are met.</p>
-<div class="fragment"><div class="line">&gt; wlan-standby_enter </div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md93"></a>
-wlan-standby_exit</h3>
-<p >Forces the Morse chip to exit standby mode. There may be certain instances such as a timer expiry, which cause the host chip to wake up independant of the Morse chip. In such situations, the host calls this function to instruct the Morse chip to exit standby mode and return to normal operating mode.</p>
-<div class="fragment"><div class="line">&gt; wlan-standby_exit </div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md94"></a>
-wlan-standby_set_status_payload</h3>
-<p >Sets the user payload for the standby status packet. Once standby mode is enabled, the Morse chip will periodically emit a UDP standby status packet regardless of whether it is in standby or not. The UDP packet will also be sent immediately upon entering or exiting Standby mode. If this command is not executed then the standby status packet will contain no payload.</p>
-<div class="fragment"><div class="line">&gt; wlan-standby_set_status_payload &lt;payload&gt; </div>
-</div><!-- fragment --><ul>
-<li><code>payload</code>: Payload to append to standby status packets.</li>
-</ul>
-<h3><a class="anchor" id="autotoc_md95"></a>
-wlan-standby_set_wake_filter</h3>
-<p >Configures the standby mode UDP wake packet filter. The system can be woken up from standby mode by sending it a UDP wake packet. If a wake filter is set using this function then the wake packet will only wake up the system if the specified filter pattern matches the payload at the specified offset within the payload. If this command is not executed then any wake packet will wake up the system.</p>
-<div class="fragment"><div class="line">&gt; wlan-standby_set_wake_filter &lt;filter&gt; &lt;offset&gt; </div>
-</div><!-- fragment --><ul>
-<li><code>filter</code>: Filter to apply to wake packets to wake on match.</li>
-<li><code>offset</code>: Offset within wake packet payload to apply the filter.</li>
-</ul>
-<h3><a class="anchor" id="autotoc_md96"></a>
-wlan-standby_set_config</h3>
-<p >Sets the standby mode configuration parameters. If this command is not executed then the defaults are as specified.</p>
-<div class="fragment"><div class="line">&gt; wlan-standby_set_config &lt;notify_period_s&gt; &lt;src_ip&gt; &lt;dst_ip&gt; &lt;dst_port&gt; &lt;bss_inactivity_s&gt; &lt;snooze_period_s&gt; &lt;snooze_increment_s&gt; &lt;snooze_max_s&gt; </div>
-</div><!-- fragment --><ul>
-<li><code>notify_period_s</code>: Interval in seconds for transmitting Standby status packets (Default 15s).</li>
-<li><code>src_ip</code>: Source IP address to use for the standby status packets (Default 0.0.0.0).</li>
-<li><code>dst_ip</code>: Destination IP address for the standby status packets (Default 0.0.0.0).</li>
-<li><code>dst_port</code>: Destination UDP Port for the standby status packets, also used the source port for outgoing UDP port for outgoing UDP packets (Default 22000).</li>
-<li><code>bss_inactivity_s</code>: Deprecated. This parameter is no longer used and will be removed in a future release.</li>
-<li><code>snooze_period_s</code>: The interval in seconds to wake periodically from snooze mode and check for beacons. If no beacons are found then the Morse chip will re-enter snooze mode. If beacons are found then the Morse chip will exit standby mode so the host can reassociate (Default 60s).</li>
-<li><code>snooze_increment_s</code>: The amount in seconds to increase successive snooze intervals. This saves power by snoozing for longer before checking for beacons again if no beacons are found. (Default 0s).</li>
-<li><code>snooze_max_s</code>: The maximum time in seconds to snooze for after increments (Default unlimited).</li>
-</ul>
-<h3><a class="anchor" id="autotoc_md97"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md84"></a>
 wlan-get_sta_status</h3>
 <p >Retrieves the STA status of the WLAN interface.</p>
 <div class="fragment"><div class="line">&gt; wlan-get_sta_status </div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md98"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md85"></a>
+wlan-dpp_push_button_start</h3>
+<p >Instructs the WLAN device to start the Device Provisioning Protocol (DPP) Push Button (PB) provisioning process. SSID and password will be automatically copied to wlan.ssid and wlan.password and saved in the persistent config store.</p>
+<div class="fragment"><div class="line">&gt; wlan-dpp_push_button_start </div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md86"></a>
+wlan-dpp_stop</h3>
+<p >Instructs the WLAN device to abort the ongoing DPP session.</p>
+<div class="fragment"><div class="line">&gt; wlan-dpp_stop </div>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md87"></a>
 Module ip: IP Stack Management</h1>
-<h2><a class="anchor" id="autotoc_md99"></a>
+<h2><a class="anchor" id="autotoc_md88"></a>
 Configuration variables</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -271,57 +244,21 @@ Configuration variables</h2>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><code>ip.dhcp_enabled</code>   </td><td class="markdownTableBodyNone">bool   </td><td class="markdownTableBodyNone">True to enable DHCP for IP address configuration, or false to use the static configuration given by ip_addr, netmask, and gateway. This will take effect when the reload command is successfully executed.    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>ip.dhcp_offload</code>   </td><td class="markdownTableBodyNone">bool   </td><td class="markdownTableBodyNone">If true, enables DHCP offload which allows the Morse chip to directly handle DHCP discovery and leases without waking up the host processor. Note: this comes into effect only if ip.dhcp_enabled is also true.    </td></tr>
-<tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>ip.link_status_evt_en</code>   </td><td class="markdownTableBodyNone">bool   </td><td class="markdownTableBodyNone">When set to true, IP link status notifications will be provided. Setting this to false will suppress these notifications. Defaults to true.    </td></tr>
-<tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>ip.offload_arp_response</code>   </td><td class="markdownTableBodyNone">bool   </td><td class="markdownTableBodyNone">If true, enables ARP response offload which allows the Morse chip to directly respond to ARP requests without waking up the host processor.    </td></tr>
-<tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>ip.offload_arp_refresh_s</code>   </td><td class="markdownTableBodyNone">uint32_t   </td><td class="markdownTableBodyNone">If non zero, enables ARP refresh offload with the specified interval in seconds. Note: ARP response offload needs to be enabled for this feature to work.   </td></tr>
+<td class="markdownTableBodyNone"><code>ip.link_status_evt_en</code>   </td><td class="markdownTableBodyNone">bool   </td><td class="markdownTableBodyNone">When set to true, IP link status notifications will be provided. Setting this to false will suppress these notifications. Defaults to true.   </td></tr>
 </table>
-<h2><a class="anchor" id="autotoc_md100"></a>
+<h2><a class="anchor" id="autotoc_md89"></a>
 Commands</h2>
-<h3><a class="anchor" id="autotoc_md101"></a>
+<h3><a class="anchor" id="autotoc_md90"></a>
 ip-status</h3>
 <p >Gets the status of the IP stack.</p>
 <div class="fragment"><div class="line">&gt; ip-status </div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md102"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md91"></a>
 ip-reload</h3>
 <p >Reloads the IP stack network configuration based on the current values in the subsystem config.</p>
 <div class="fragment"><div class="line">&gt; ip-reload </div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md103"></a>
-ip-enable_tcp_keepalive_offload</h3>
-<p >Enables sending periodic TCP keep-alive packets by the morse chip allowing the TCP connection to be maintained without waking up the host processor. This needs to be enabled before opening a TCP connection. As of now, this feature will work only on the first TCP connection opened after this command.</p>
-<div class="fragment"><div class="line">&gt; ip-enable_tcp_keepalive_offload &lt;period_s&gt; &lt;retry_count&gt; &lt;retry_interval_s&gt; </div>
-</div><!-- fragment --><ul>
-<li><code>period_s</code>: Interval in seconds to send the keep-alive packets in.</li>
-<li><code>retry_count</code>: The number of times to retry before giving up.</li>
-<li><code>retry_interval_s</code>: The interval in seconds to wait between retries.</li>
-</ul>
-<h3><a class="anchor" id="autotoc_md104"></a>
-ip-disable_tcp_keepalive_offload</h3>
-<p >Disables sending of TCP keepalive packets.</p>
-<div class="fragment"><div class="line">&gt; ip-disable_tcp_keepalive_offload </div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md105"></a>
-ip-set_whitelist_filter</h3>
-<p >Sets the whitelist filter specifing which incoming packets can wake the system from standby mode.</p>
-<div class="fragment"><div class="line">&gt; ip-set_whitelist_filter &lt;src_ip&gt; &lt;dest_ip&gt; &lt;netmask&gt; &lt;src_port&gt; &lt;dest_port&gt; &lt;ip_protocol&gt; &lt;llc_protocol&gt; </div>
-</div><!-- fragment --><ul>
-<li><code>src_ip</code>: The IPv4 source address to match, 0.0.0.0 for any.</li>
-<li><code>dest_ip</code>: The IPv4 destination address to match, 0.0.0.0 for any (Usually our IP address).</li>
-<li><code>netmask</code>: The netmask to apply to the source or destination IP, 0.0.0.0 for any.</li>
-<li><code>src_port</code>: The source port to match, 0 for any.</li>
-<li><code>dest_port</code>: The destination port to match, 0 for any.</li>
-<li><code>ip_protocol</code>: The IPv4 protocol number to match - 6 for TCP, 17 for UDP, 0 for any.</li>
-<li><code>llc_protocol</code>: The LLC protocol (or EtherType) to match - 0x0800 for IPv4 and 0x86DD for IPv6, 0 for any.</li>
-</ul>
-<h3><a class="anchor" id="autotoc_md106"></a>
-ip-clear_whitelist_filter</h3>
-<p >Clears any applied whitelist filters.</p>
-<div class="fragment"><div class="line">&gt; ip-clear_whitelist_filter </div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md107"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md92"></a>
 Module ping: Ping application.</h1>
-<h2><a class="anchor" id="autotoc_md108"></a>
+<h2><a class="anchor" id="autotoc_md93"></a>
 Configuration variables</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -333,15 +270,15 @@ Configuration variables</h2>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><code>ping.count</code>   </td><td class="markdownTableBodyNone">uint32_t   </td><td class="markdownTableBodyNone">This specifies the number of ping requests to send before terminating the session. If this is zero or exceeds UINT16_MAX (65535) then it it will be set to UINT16_MAX.   </td></tr>
 </table>
-<h2><a class="anchor" id="autotoc_md109"></a>
+<h2><a class="anchor" id="autotoc_md94"></a>
 Commands</h2>
-<h3><a class="anchor" id="autotoc_md110"></a>
+<h3><a class="anchor" id="autotoc_md95"></a>
 ping-run</h3>
-<p >Commences a ping session using the current values in the the subsystem config.</p>
+<p >Commences a ping session using the current values in the subsystem config.</p>
 <div class="fragment"><div class="line">&gt; ping-run </div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md111"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md96"></a>
 Module iperf: Iperf application.</h1>
-<h2><a class="anchor" id="autotoc_md112"></a>
+<h2><a class="anchor" id="autotoc_md97"></a>
 Configuration variables</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -355,32 +292,40 @@ Configuration variables</h2>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><code>iperf.amount</code>   </td><td class="markdownTableBodyNone">int32_t   </td><td class="markdownTableBodyNone">This specifies the duration for client transfers specified either in seconds or bytes. If this is negative, it specifies a time in seconds; if positive, it specifies the number of bytes to transmit.   </td></tr>
 </table>
-<h2><a class="anchor" id="autotoc_md113"></a>
+<h2><a class="anchor" id="autotoc_md98"></a>
 Commands</h2>
-<h3><a class="anchor" id="autotoc_md114"></a>
+<h3><a class="anchor" id="autotoc_md99"></a>
 iperf-run</h3>
-<p >Starts an iperf session using the current values in the the subsystem config.</p>
+<p >Starts an iperf session using the current values in the subsystem config.</p>
 <div class="fragment"><div class="line">&gt; iperf-run </div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md115"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md100"></a>
 Module sys: System management.</h1>
-<h2><a class="anchor" id="autotoc_md116"></a>
+<h2><a class="anchor" id="autotoc_md101"></a>
 Commands</h2>
-<h3><a class="anchor" id="autotoc_md117"></a>
+<h3><a class="anchor" id="autotoc_md102"></a>
 sys-reset</h3>
 <p >Performs a soft reset.</p>
 <div class="fragment"><div class="line">&gt; sys-reset </div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md118"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md103"></a>
 sys-deep_sleep</h3>
 <p >Enters deep sleep mode.</p>
 <div class="fragment"><div class="line">&gt; sys-deep_sleep &lt;mode&gt; </div>
 </div><!-- fragment --><ul>
 <li><code>mode</code>: Deep sleep mode to enter.</li>
 </ul>
-<h3><a class="anchor" id="autotoc_md119"></a>
+<h3><a class="anchor" id="autotoc_md104"></a>
 sys-get_version</h3>
 <p >Gets the device firmware and hardware versions.</p>
 <div class="fragment"><div class="line">&gt; sys-get_version </div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md120"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md105"></a>
+sys-get_stats</h3>
+<p >Retrieve subsystem statistics</p>
+<div class="fragment"><div class="line">&gt; sys-get_stats &lt;subsystem&gt; &lt;reset&gt; </div>
+</div><!-- fragment --><ul>
+<li><code>subsystem</code>: Subsystem from which to retrieve statistics.</li>
+<li><code>reset</code>: Reset the statistics after retrieving them where applicable.</li>
+</ul>
+<h1><a class="anchor" id="autotoc_md106"></a>
 Enum definitions</h1>
 <h2><a class="anchor" id="CLI_enum_security_type"></a>
 Security type</h2>
@@ -475,7 +420,7 @@ Status</h2>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><code>not_supported</code>   </td><td class="markdownTableBodyNone">7   </td><td class="markdownTableBodyNone">Specified operation is not supported.    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>tx_error</code>   </td><td class="markdownTableBodyNone">8   </td><td class="markdownTableBodyNone">An error occured during transmission.    </td></tr>
+<td class="markdownTableBodyNone"><code>tx_error</code>   </td><td class="markdownTableBodyNone">8   </td><td class="markdownTableBodyNone">An error occurred during transmission.    </td></tr>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><code>no_mem</code>   </td><td class="markdownTableBodyNone">9   </td><td class="markdownTableBodyNone">Failed due to memory allocation failure.    </td></tr>
 <tr class="markdownTableRowOdd">
@@ -523,7 +468,11 @@ Status</h2>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><code>not_initialized</code>   </td><td class="markdownTableBodyNone">31   </td><td class="markdownTableBodyNone">Operation failed because the MMWLAN subsystem was not initialized.    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>bad_version</code>   </td><td class="markdownTableBodyNone">32   </td><td class="markdownTableBodyNone">Operation failed due to a version mismatch.   </td></tr>
+<td class="markdownTableBodyNone"><code>bad_version</code>   </td><td class="markdownTableBodyNone">32   </td><td class="markdownTableBodyNone">Operation failed due to a version mismatch.    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>dpp_pb_error</code>   </td><td class="markdownTableBodyNone">33   </td><td class="markdownTableBodyNone">An error occurred during the DPP push button process.    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>dpp_pb_session_overlap</code>   </td><td class="markdownTableBodyNone">34   </td><td class="markdownTableBodyNone">A session overlap occurred during the DPP push button process.   </td></tr>
 </table>
 <h2><a class="anchor" id="CLI_enum_iperf_mode"></a>
 Iperf mode</h2>
@@ -579,29 +528,6 @@ Deep sleep mode</h2>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><code>hardware</code>   </td><td class="markdownTableBodyNone">2   </td><td class="markdownTableBodyNone">The datalink layer is responsible for waking the agent.   </td></tr>
 </table>
-<h2><a class="anchor" id="CLI_enum_standby_mode_exit_reason"></a>
-Standby mode exit reason</h2>
-<p >Reasons for exiting standby mode.</p>
-<table class="markdownTable">
-<tr class="markdownTableHead">
-<th class="markdownTableHeadNone">Label   </th><th class="markdownTableHeadNone">Value   </th><th class="markdownTableHeadNone">Description    </th></tr>
-<tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>standby_exit_none</code>   </td><td class="markdownTableBodyNone">0   </td><td class="markdownTableBodyNone">Standby mode was exited manually through a call to standby_exit.    </td></tr>
-<tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>standby_exit_wakeup_frame</code>   </td><td class="markdownTableBodyNone">1   </td><td class="markdownTableBodyNone">We were woken up by a wakeup frame.    </td></tr>
-<tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>standby_exit_associate</code>   </td><td class="markdownTableBodyNone">2   </td><td class="markdownTableBodyNone">We just reassociated with the AP.    </td></tr>
-<tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>standby_exit_ext_input</code>   </td><td class="markdownTableBodyNone">3   </td><td class="markdownTableBodyNone">We were woken up by an external input trigger.    </td></tr>
-<tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>standby_exit_whitelist_pkt</code>   </td><td class="markdownTableBodyNone">4   </td><td class="markdownTableBodyNone">We received a packet from a whitelist source.    </td></tr>
-<tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>standby_exit_tcp_connection_lost</code>   </td><td class="markdownTableBodyNone">5   </td><td class="markdownTableBodyNone">An open TCP connection was lost.    </td></tr>
-<tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>standby_exit_hw_scan_not_enabled</code>   </td><td class="markdownTableBodyNone">6   </td><td class="markdownTableBodyNone">Hardware scan was not enabled.    </td></tr>
-<tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>standby_exit_hw_scan_failed_to_start</code>   </td><td class="markdownTableBodyNone">7   </td><td class="markdownTableBodyNone">Hardware scan failed to start.   </td></tr>
-</table>
 <h2><a class="anchor" id="CLI_enum_sta_state"></a>
 Sta state</h2>
 <p >Station states</p>
@@ -637,6 +563,32 @@ Sta event</h2>
 <td class="markdownTableBodyNone"><code>ctrl_port_open</code>   </td><td class="markdownTableBodyNone">6   </td><td class="markdownTableBodyNone">The Supplicant IEEE 802.1X Controlled Port is now open.    </td></tr>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><code>ctrl_port_closed</code>   </td><td class="markdownTableBodyNone">7   </td><td class="markdownTableBodyNone">The Supplicant IEEE 802.1X Controlled Port is now closed.   </td></tr>
+</table>
+<h2><a class="anchor" id="CLI_enum_socket_proto"></a>
+Socket proto</h2>
+<p >Enumeration of socket protocols.</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Label   </th><th class="markdownTableHeadNone">Value   </th><th class="markdownTableHeadNone">Description    </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>tcp</code>   </td><td class="markdownTableBodyNone">0   </td><td class="markdownTableBodyNone">TCP protocol (and TLS)    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>udp</code>   </td><td class="markdownTableBodyNone">1   </td><td class="markdownTableBodyNone">UDP protocol   </td></tr>
+</table>
+<h2><a class="anchor" id="CLI_enum_subsystem_id"></a>
+Subsystem id</h2>
+<p >Morse subsystem identifiers</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Label   </th><th class="markdownTableHeadNone">Value   </th><th class="markdownTableHeadNone">Description    </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>host</code>   </td><td class="markdownTableBodyNone">0   </td><td class="markdownTableBodyNone">Host core.    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>mac</code>   </td><td class="markdownTableBodyNone">1   </td><td class="markdownTableBodyNone">MAC core.    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>phy</code>   </td><td class="markdownTableBodyNone">2   </td><td class="markdownTableBodyNone">Phy core.    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>umac</code>   </td><td class="markdownTableBodyNone">3   </td><td class="markdownTableBodyNone">Upper MAC.   </td></tr>
 </table>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->

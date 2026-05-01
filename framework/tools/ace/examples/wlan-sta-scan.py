@@ -27,7 +27,9 @@ DEFAULT_POLL_TIMEOUT_SEC = 30
 
 
 def _print_results(rsp, extended=False):
-    headings = ["No#", "RSSI dBm", "BSSID", "SSID", "Beacon Interval", "Capabilities", "Noise dBm"]
+    headings = ["No#", "RSSI dBm", "BSSID", "SSID", "Beacon Interval", "Capabilities", "Noise dBm",
+                "Recieve Channel Frequency (MHz)", "Receive Bandwidth (MHz)",
+                "AP Operating Bandwidth (MHz)"]
     if extended:
         headings.append("Information Elements")
 
@@ -43,6 +45,9 @@ def _print_results(rsp, extended=False):
         result.append(f"{entry.beacon_interval}")
         result.append("".join([f"0x{entry.capability_info:04x}"]))
         result.append(f"{entry.noise_dbm}")
+        result.append(f"{entry.channel_freq_hz/1000000}")
+        result.append(f"{entry.bw_mhz}")
+        result.append(f"{entry.op_bw_mhz}")
 
         if extended:
             result.append("0x" + "".join([f"{octet:02x}" for octet in entry.ies]))

@@ -21,8 +21,12 @@
 #include "mm_app_loadconfig.h"
 #include "mmregdb.h"
 
+/* Default Country Code  */
 #ifndef COUNTRY_CODE
-#define COUNTRY_CODE "??"
+/** Country code. (Do not quote; it will be stringified, as it can be passed at build time.) */
+/* clang-format off */
+#define COUNTRY_CODE ??
+/* clang-format on */
 #endif
 
 /* Default SSID  */
@@ -111,18 +115,8 @@ void load_mmipal_init_args(struct mmipal_init_args *args)
     {
         if (boolval)
         {
-            boolval = false;
-            (void)mmconfig_read_bool("ip.dhcp_offload", &boolval);
-            if (boolval)
-            {
-                /* DHCP offload mode */
-                args->mode = MMIPAL_DHCP_OFFLOAD;
-            }
-            else
-            {
-                /* DHCP mode */
-                args->mode = MMIPAL_DHCP;
-            }
+            /* DHCP mode */
+            args->mode = MMIPAL_DHCP;
         }
         else
         {
@@ -134,18 +128,10 @@ void load_mmipal_init_args(struct mmipal_init_args *args)
     {
         printf("Initialize IPv4 using DHCP...\n");
     }
-    else if (args->mode == MMIPAL_DHCP_OFFLOAD)
-    {
-        printf("Initialize IPv4 using DHCP offload...\n");
-    }
     else
     {
         printf("Initialize IPv4 with static IP: %s...\n", args->ip_addr);
     }
-
-    /* Check if any offload features are enabled */
-    (void)mmconfig_read_bool("ip.offload_arp_response", &args->offload_arp_response);
-    (void)mmconfig_read_uint32("ip.offload_arp_refresh_s", &args->offload_arp_refresh_s);
 
 #if defined(MMIPAL_IPV6_ENABLED) && MMIPAL_IPV6_ENABLED
     /* Load default static IPv6 in case we don't find the key */

@@ -69,21 +69,20 @@ static const uint8_t LL_LPTIM_SHIFT_TAB_CCxSEL[] =
 
 static const uint8_t LL_LPTIM_SHIFT_TAB_CCxE[] =
 {
-  LPTIM_CCMR1_CC1E_Pos,            /* CC1E */
-  LPTIM_CCMR1_CC2E_Pos             /* CC2E */
+  (uint8_t)LPTIM_CCMR1_CC1E_Pos,            /* CC1E */
+  (uint8_t)LPTIM_CCMR1_CC2E_Pos             /* CC2E */
 };
 
 static const uint8_t LL_LPTIM_OFFSET_TAB_ICx[8][4] =
 {
-  {2, 7, 9, 13},
-  {3, 5, 6, 8},
-  {2, 3, 4, 5},
-  {2, 2, 3, 3},
-  {2, 2, 2, 2},
-  {2, 2, 2, 2},
-  {2, 2, 2, 2},
-  {2, 2, 2, 2}
-
+  {2U, 7U, 9U, 13U},
+  {3U, 5U, 6U, 8U},
+  {2U, 3U, 4U, 5U},
+  {2U, 2U, 3U, 3U},
+  {2U, 2U, 2U, 2U},
+  {2U, 2U, 2U, 2U},
+  {2U, 2U, 2U, 2U},
+  {2U, 2U, 2U, 2U}
 };
 
 /**
@@ -314,7 +313,9 @@ typedef struct
 #define LL_LPTIM_TRIG_SOURCE_RTCTAMP2         LPTIM_CFGR_TRIGSEL_2                                                 /*!<External input trigger is connected to RTC Tamper 2*/
 #define LL_LPTIM_TRIG_SOURCE_RTCTAMP3         (LPTIM_CFGR_TRIGSEL_2 | LPTIM_CFGR_TRIGSEL_0)                        /*!<External input trigger is connected to RTC Tamper 3*/
 #define LL_LPTIM_TRIG_SOURCE_COMP1            (LPTIM_CFGR_TRIGSEL_2 | LPTIM_CFGR_TRIGSEL_1)                        /*!<External input trigger is connected to COMP1 output*/
+#if defined(COMP2)
 #define LL_LPTIM_TRIG_SOURCE_COMP2            LPTIM_CFGR_TRIGSEL                                                   /*!<External input trigger is connected to COMP2 output*/
+#endif /* COMP2 */
 #define LL_LPTIM_TRIG_SOURCE_LPDMA_CH0_TCF    (LPTIM_CFGR_TRIGSEL_1 | LPTIM_CFGR_TRIGSEL_0)                        /*!<External input trigger is connected to LPDMA CH0 transfer complete */
 #define LL_LPTIM_TRIG_SOURCE_LPDMA_CH1_TCF    LPTIM_CFGR_TRIGSEL_2                                                 /*!<External input trigger is connected to LPDMA CH1 transfer complete */
 #define LL_LPTIM_TRIG_SOURCE_LPDMA_CH2_TCF    (LPTIM_CFGR_TRIGSEL_2 | LPTIM_CFGR_TRIGSEL_0)                        /*!<External input trigger is connected to LPDMA CH2 transfer complete */
@@ -390,7 +391,9 @@ typedef struct
   */
 #define LL_LPTIM_INPUT1_SRC_GPIO         0x00000000UL                 /*!< For LPTIM1, LPTIM2, LPTIM3 and LPTIM4 */
 #define LL_LPTIM_INPUT1_SRC_COMP1        LPTIM_CFGR2_IN1SEL_0         /*!< For LPTIM1, LPTIM2, LPTIM3 and LPTIM4 */
+#if defined(COMP2)
 #define LL_LPTIM_INPUT1_SRC_COMP2        LPTIM_CFGR2_IN1SEL_1         /*!< For LPTIM1 and LPTIM2 */
+#endif /* COMP2 */
 /**
   * @}
   */
@@ -399,7 +402,9 @@ typedef struct
   * @{
   */
 #define LL_LPTIM_INPUT2_SRC_GPIO         0x00000000UL                 /*!< For LPTIM1 and LPTIM2 */
+#if defined(COMP2)
 #define LL_LPTIM_INPUT2_SRC_COMP2        LPTIM_CFGR2_IN2SEL_0         /*!< For LPTIM1 and LPTIM2 */
+#endif /* COMP2 */
 /**
   * @}
   */
@@ -409,7 +414,9 @@ typedef struct
   */
 #define LL_LPTIM_LPTIM1_IC1_RMP_GPIO     0x00000000UL                 /*!< IC1 connected to GPIO */
 #define LL_LPTIM_LPTIM1_IC1_RMP_COMP1    LPTIM_CFGR2_IC1SEL_0         /*!< IC1 connected to COMP1 */
+#if defined(COMP2)
 #define LL_LPTIM_LPTIM1_IC1_RMP_COMP2    LPTIM_CFGR2_IC1SEL_1         /*!< IC1 connected to COMP2 */
+#endif /* COMP2 */
 /**
   * @}
   */
@@ -429,7 +436,9 @@ typedef struct
   */
 #define LL_LPTIM_LPTIM2_IC1_RMP_GPIO     0x00000000UL                 /*!< IC1 connected to GPIO */
 #define LL_LPTIM_LPTIM2_IC1_RMP_COMP1    LPTIM_CFGR2_IC1SEL_0         /*!< IC1 connected to COMP1 */
+#if defined(COMP2)
 #define LL_LPTIM_LPTIM2_IC1_RMP_COMP2    LPTIM_CFGR2_IC1SEL_1         /*!< IC1 connected to COMP2 */
+#endif /* COMP2 */
 /**
   * @}
   */
@@ -450,7 +459,9 @@ typedef struct
   */
 #define LL_LPTIM_LPTIM3_IC1_RMP_GPIO     0x00000000UL                                  /*!< IC1 connected to GPIO */
 #define LL_LPTIM_LPTIM3_IC1_RMP_COMP1    LPTIM_CFGR2_IC1SEL_0                          /*!< IC1 connected to COMP1 */
+#if defined(COMP2)
 #define LL_LPTIM_LPTIM3_IC1_RMP_COMP2    LPTIM_CFGR2_IC1SEL_1                          /*!< IC1 connected to COMP2 */
+#endif /* COMP2 */
 /**
   * @}
   */
@@ -1028,7 +1039,8 @@ __STATIC_INLINE void LL_LPTIM_SetInput1Src(LPTIM_TypeDef *LPTIMx, uint32_t Src)
   * @param  LPTIMx Low-Power Timer instance
   * @param  Src This parameter can be one of the following values:
   *         @arg @ref LL_LPTIM_INPUT2_SRC_GPIO
-  *         @arg @ref LL_LPTIM_INPUT2_SRC_COMP2
+  *         @arg @ref LL_LPTIM_INPUT2_SRC_COMP2 (*)
+  *         (*) Value not defined for all devices
   * @retval None
   */
 __STATIC_INLINE void LL_LPTIM_SetInput2Src(LPTIM_TypeDef *LPTIMx, uint32_t Src)
@@ -1044,20 +1056,23 @@ __STATIC_INLINE void LL_LPTIM_SetInput2Src(LPTIM_TypeDef *LPTIMx, uint32_t Src)
   * @param  Src This parameter can be one of the following values:
   *         @arg @ref LL_LPTIM_LPTIM1_IC1_RMP_GPIO
   *         @arg @ref LL_LPTIM_LPTIM1_IC1_RMP_COMP1
-  *         @arg @ref LL_LPTIM_LPTIM1_IC1_RMP_COMP2
+  *         @arg @ref LL_LPTIM_LPTIM1_IC1_RMP_COMP2 (*)
   *         @arg @ref LL_LPTIM_LPTIM1_IC2_RMP_GPIO
   *         @arg @ref LL_LPTIM_LPTIM1_IC2_RMP_LSI
   *         @arg @ref LL_LPTIM_LPTIM1_IC2_RMP_LSE
   *         @arg @ref LL_LPTIM_LPTIM2_IC1_RMP_GPIO
   *         @arg @ref LL_LPTIM_LPTIM2_IC1_RMP_COMP1
-  *         @arg @ref LL_LPTIM_LPTIM2_IC1_RMP_COMP2
+  *         @arg @ref LL_LPTIM_LPTIM2_IC1_RMP_COMP2 (*)
   *         @arg @ref LL_LPTIM_LPTIM2_IC2_RMP_GPIO
   *         @arg @ref LL_LPTIM_LPTIM2_IC2_RMP_HSI
   *         @arg @ref LL_LPTIM_LPTIM2_IC2_RMP_MSIS_1024
   *         @arg @ref LL_LPTIM_LPTIM2_IC2_RMP_MSIS_4
   *         @arg @ref LL_LPTIM_LPTIM3_IC1_RMP_GPIO
   *         @arg @ref LL_LPTIM_LPTIM3_IC1_RMP_COMP1
-  *         @arg @ref LL_LPTIM_LPTIM3_IC1_RMP_COMP2
+  *         @arg @ref LL_LPTIM_LPTIM3_IC1_RMP_COMP2 (*)
+  *
+  *         (*)  Value not defined in all devices. \n
+  *
   * @retval None
   */
 __STATIC_INLINE void LL_LPTIM_SetRemap(LPTIM_TypeDef *LPTIMx, uint32_t Src)
@@ -1202,7 +1217,8 @@ __STATIC_INLINE uint32_t LL_LPTIM_IC_GetPrescaler(const LPTIM_TypeDef *LPTIMx, u
   */
 __STATIC_INLINE void  LL_LPTIM_CC_SetChannelMode(LPTIM_TypeDef *LPTIMx, uint32_t Channel, uint32_t CCMode)
 {
-  SET_BIT(LPTIMx->CCMR1, CCMode << LL_LPTIM_SHIFT_TAB_CCxSEL[Channel]);
+  MODIFY_REG(LPTIMx->CCMR1, LPTIM_CCMR1_CC1SEL << LL_LPTIM_SHIFT_TAB_CCxSEL[Channel],
+             CCMode << LL_LPTIM_SHIFT_TAB_CCxSEL[Channel]);
 }
 
 /**
@@ -1330,12 +1346,15 @@ __STATIC_INLINE void LL_LPTIM_TrigSw(LPTIM_TypeDef *LPTIMx)
   *         @arg @ref LL_LPTIM_TRIG_SOURCE_RTCTAMP2
   *         @arg @ref LL_LPTIM_TRIG_SOURCE_RTCTAMP3
   *         @arg @ref LL_LPTIM_TRIG_SOURCE_COMP1
-  *         @arg @ref LL_LPTIM_TRIG_SOURCE_COMP2
+  *         @arg @ref LL_LPTIM_TRIG_SOURCE_COMP2 (*)
   *         @arg @ref LL_LPTIM_TRIG_SOURCE_LPDMA_CH0_TCF
   *         @arg @ref LL_LPTIM_TRIG_SOURCE_LPDMA_CH1_TCF
   *         @arg @ref LL_LPTIM_TRIG_SOURCE_LPDMA_CH2_TCF
   *         @arg @ref LL_LPTIM_TRIG_SOURCE_GPDMA_CH0_TCF
   *         @arg @ref LL_LPTIM_TRIG_SOURCE_GPDMA_CH4_TCF
+  *
+  *         (*)  Value not defined in all devices. \n
+  *
   * @param  Filter This parameter can be one of the following values:
   *         @arg @ref LL_LPTIM_TRIG_FILTER_NONE
   *         @arg @ref LL_LPTIM_TRIG_FILTER_2
@@ -1364,7 +1383,7 @@ __STATIC_INLINE void LL_LPTIM_ConfigTrigger(LPTIM_TypeDef *LPTIMx, uint32_t Sour
   *         @arg @ref LL_LPTIM_TRIG_SOURCE_RTCTAMP2
   *         @arg @ref LL_LPTIM_TRIG_SOURCE_RTCTAMP3
   *         @arg @ref LL_LPTIM_TRIG_SOURCE_COMP1
-  *         @arg @ref LL_LPTIM_TRIG_SOURCE_COMP2
+  *         @arg @ref LL_LPTIM_TRIG_SOURCE_COMP2 (*)
   *         @arg @ref LL_LPTIM_TRIG_SOURCE_LPDMA_CH0_TCF
   *         @arg @ref LL_LPTIM_TRIG_SOURCE_LPDMA_CH1_TCF
   *         @arg @ref LL_LPTIM_TRIG_SOURCE_LPDMA_CH2_TCF
@@ -1670,6 +1689,7 @@ __STATIC_INLINE uint32_t LL_LPTIM_IsActiveFlag_CC2O(const LPTIM_TypeDef *LPTIMx)
 {
   return (((READ_BIT(LPTIMx->ISR, LPTIM_ISR_CC2OF) == LPTIM_ISR_CC2OF) ? 1UL : 0UL));
 }
+
 /**
   * @brief  Clear the autoreload match flag (ARRMCF)
   * @rmtoll ICR          ARRMCF        LL_LPTIM_ClearFlag_ARRM

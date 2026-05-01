@@ -13,8 +13,6 @@ struct hw_scan_data
 
     struct hw_scan_fsm_instance fsm_inst;
 
-    uint16_t vif_id;
-
     bool abort_all;
 };
 

@@ -19,6 +19,7 @@
 #include "umac/twt/umac_twt.h"
 #include "umac/core/umac_core.h"
 #include "umac/supplicant_shim/umac_supp_shim.h"
+#include "umac/health_check/umac_health_check.h"
 #include "mmhal_wlan.h"
 
 
@@ -50,7 +51,11 @@ static inline const char *umac_interface_type_to_str(enum umac_interface_type ty
 
 void umac_interface_init(struct umac_data *umacd)
 {
-    MM_UNUSED(umacd);
+    struct umac_interface_vif_data *data;
+    data = umac_data_get_interface_vif(umacd, MMWLAN_VIF_STA);
+    data->vif_id = MMDRV_VIF_ID_INVALID;
+    data = umac_data_get_interface_vif(umacd, MMWLAN_VIF_AP);
+    data->vif_id = MMDRV_VIF_ID_INVALID;
 }
 
 static void umac_interface_populate_device_mac_addr(struct umac_interface_data *data,
@@ -82,22 +87,15 @@ static void umac_interface_populate_device_mac_addr(struct umac_interface_data *
     data->mac_addr[5] = rnd >> 0;
 }
 
-void umac_interface_configure_periodic_health_check(struct umac_data *umacd)
-{
-    uint32_t min_health_check_intvl_ms, max_health_check_intvl_ms;
-    umac_config_get_health_check_interval(umacd,
-                                          &min_health_check_intvl_ms,
-                                          &max_health_check_intvl_ms);
-    mmdrv_set_health_check_interval(min_health_check_intvl_ms, max_health_check_intvl_ms);
-}
 
-
-static void umac_interface_configure_control_response_out_1mhz(struct umac_data *umacd)
+static void umac_interface_configure_control_response_out_1mhz(
+    struct umac_data *umacd,
+    struct umac_interface_vif_data *vif_data)
 {
     struct umac_interface_data *data = umac_data_get_interface(umacd);
     bool enabled = umac_config_is_ctrl_resp_out_1mhz_enabled(umacd) &&
                    MORSE_CAP_SUPPORTED(&data->capabilities, 1MHZ_CONTROL_RESPONSE_PREAMBLE);
-    mmdrv_set_control_response_bw(data->vif_id, MMDRV_DIRECTION_OUTGOING, enabled);
+    mmdrv_set_control_response_bw(vif_data->vif_id, MMDRV_DIRECTION_OUTGOING, enabled);
 }
 
 bool umac_interface_get_control_response_bw_1mhz_out_enabled(struct umac_data *umacd)
@@ -108,78 +106,50 @@ bool umac_interface_get_control_response_bw_1mhz_out_enabled(struct umac_data *u
 }
 
 
-#define VIF_STA_INTERFACE_TYPES_MASK (UMAC_INTERFACE_SCAN | UMAC_INTERFACE_STA)
+#define VIF_STA_INTERFACE_TYPES_MASK \
+    (UMAC_INTERFACE_SCAN | UMAC_INTERFACE_STA | UMAC_INTERFACE_NONE)
 
 static void umac_interface_init_vif(struct umac_data *umacd,
-                                    enum umac_interface_type type,
-                                    uint16_t vif_id)
+                                    struct umac_interface_vif_data *vif_data)
 {
 
     umac_ps_update_mode(umacd);
 
 
-    mmdrv_set_param(vif_id,
+    mmdrv_set_param(vif_data->vif_id,
                     MORSE_PARAM_ID_TX_STATUS_FLUSH_WATERMARK,
                     MM_TX_STATUS_BUFFER_FLUSH_WATERMARK);
 
-    umac_interface_configure_periodic_health_check(umacd);
+    umac_health_check_start(umacd);
     mmdrv_set_dynamic_ps_timeout(umac_config_get_dynamic_ps_timeout(umacd));
 
-    if (type & UMAC_INTERFACE_SCAN)
+    if (vif_data->active_interface_types & UMAC_INTERFACE_SCAN)
     {
-        mmdrv_set_ndp_probe(vif_id, umac_config_is_ndp_probe_supported(umacd));
+        mmdrv_set_ndp_probe(vif_data->vif_id, umac_config_is_ndp_probe_supported(umacd));
     }
-    if (type & UMAC_INTERFACE_STA)
+    if (vif_data->active_interface_types & UMAC_INTERFACE_STA)
     {
-        mmdrv_set_listen_interval_sleep(vif_id, umac_config_get_listen_interval(umacd));
-        umac_twt_init_vif(umacd, &vif_id);
-        umac_interface_configure_control_response_out_1mhz(umacd);
+        mmdrv_set_listen_interval_sleep(vif_data->vif_id, umac_config_get_listen_interval(umacd));
+        umac_twt_init_vif(umacd, &vif_data->vif_id);
+        umac_interface_configure_control_response_out_1mhz(umacd, vif_data);
     }
-}
-
-bool umac_interface_type_is_compatible_with_active(struct umac_interface_data *data,
-                                                   enum umac_interface_type type)
-{
-
-    if ((data->active_interface_types & VIF_STA_INTERFACE_TYPES_MASK) && (type & UMAC_INTERFACE_AP))
-    {
-        return false;
-    }
-
-
-    if ((data->active_interface_types & UMAC_INTERFACE_AP) && (type & VIF_STA_INTERFACE_TYPES_MASK))
-    {
-        return false;
-    }
-
-    return true;
 }
 
 enum mmwlan_status umac_interface_add(struct umac_data *umacd,
                                       enum umac_interface_type type,
-                                      const uint8_t *mac_addr,
-                                      uint16_t *vif_id)
+                                      const struct umac_datapath_ops *datapath_ops,
+                                      const uint8_t *mac_addr)
 {
-    int ret = -1;
     enum mmwlan_status status = MMWLAN_ERROR;
     struct umac_interface_data *data = umac_data_get_interface(umacd);
-
-    if (!umac_interface_type_is_compatible_with_active(data, type))
-    {
-        MMLOG_WRN("Interface type %s not compatible with active interface(s) [active=%02x]\n",
-                  umac_interface_type_to_str(type),
-                  data->active_interface_types);
-        return MMWLAN_UNAVAILABLE;
-    }
+    struct umac_interface_vif_data *data_sta = umac_data_get_interface_vif(umacd, MMWLAN_VIF_STA);
+    struct umac_interface_vif_data *data_ap = umac_data_get_interface_vif(umacd, MMWLAN_VIF_AP);
+    struct umac_interface_vif_data *vif_data = NULL;
+    enum mmdrv_interface_type drv_if_type = MMDRV_INTERFACE_TYPE_STA;
+    MMOSAL_DEV_ASSERT(data_sta != NULL && data_ap != NULL);
 
 
-    if (mac_addr != NULL)
-    {
-        mac_addr_copy(data->mac_addr, mac_addr);
-    }
-
-
-    if (data->active_interface_types == 0)
+    if (data_ap->active_interface_types == 0 && data_sta->active_interface_types == 0)
     {
         MMLOG_DBG("Booting device\n");
 
@@ -192,11 +162,10 @@ enum mmwlan_status umac_interface_add(struct umac_data *umacd,
         }
 
         struct mmdrv_chip_info chip_info = { 0 };
-        ret = mmdrv_init(&chip_info, country_code);
-        if (ret)
+        status = mmdrv_init(&chip_info, country_code);
+        if (status != MMWLAN_SUCCESS)
         {
-            MMLOG_WRN("Driver init failed with %d\n", ret);
-            status = MMWLAN_ERROR;
+            MMLOG_WRN("Driver init failed (%u)\n", status);
             goto error;
         }
 
@@ -213,59 +182,83 @@ enum mmwlan_status umac_interface_add(struct umac_data *umacd,
             MMLOG_DBG("Device MAC address: " MM_MAC_ADDR_FMT "\n", MM_MAC_ADDR_VAL(data->mac_addr));
         }
 
-        enum mmdrv_interface_type drv_if_type =
-            (type == UMAC_INTERFACE_AP) ? MMDRV_INTERFACE_TYPE_AP : MMDRV_INTERFACE_TYPE_STA;
-        ret = mmdrv_add_if(&data->vif_id, data->mac_addr, drv_if_type);
-        MMOSAL_ASSERT(ret == 0);
-
-        MMLOG_DBG("Added IF type=%s, mac_addr=" MM_MAC_ADDR_FMT ", vif_id=%u\n",
-                  umac_interface_type_to_str(type),
-                  MM_MAC_ADDR_VAL(data->mac_addr),
-                  data->vif_id);
-
-        ret = mmdrv_get_capabilities(data->vif_id, &data->capabilities);
-        MMOSAL_ASSERT(ret == 0);
+        status = mmdrv_get_capabilities(MMDRV_VIF_ID_INVALID, &data->capabilities);
+        MMOSAL_ASSERT(status == MMWLAN_SUCCESS);
     }
-    else if (!(data->active_interface_types & VIF_STA_INTERFACE_TYPES_MASK) &&
-             (type & VIF_STA_INTERFACE_TYPES_MASK))
+
+    if (type & VIF_STA_INTERFACE_TYPES_MASK)
     {
-        MMOSAL_DEV_ASSERT(!(data->active_interface_types & MMDRV_INTERFACE_TYPE_AP));
-        ret = mmdrv_rm_if(data->vif_id);
-        MMOSAL_ASSERT(ret == 0);
-        data->vif_id = 0;
+        vif_data = data_sta;
+        drv_if_type = MMDRV_INTERFACE_TYPE_STA;
 
-
-        umac_ps_reset(umacd);
-
-        ret = mmdrv_add_if(&data->vif_id, data->mac_addr, MMDRV_INTERFACE_TYPE_STA);
-        MMOSAL_ASSERT(ret == 0);
+        if (vif_data->active_interface_types & type)
+        {
+            MMLOG_DBG("STA interface of type %s already exists (existing 0x%x)\n",
+                      umac_interface_type_to_str(type),
+                      vif_data->active_interface_types);
+        }
     }
-    else if (!(data->active_interface_types & UMAC_INTERFACE_AP) && (type == UMAC_INTERFACE_AP))
+    else if (type == UMAC_INTERFACE_AP)
     {
-        MMOSAL_DEV_ASSERT(!(data->active_interface_types & VIF_STA_INTERFACE_TYPES_MASK));
-        ret = mmdrv_rm_if(data->vif_id);
-        MMOSAL_ASSERT(ret == 0);
-        data->vif_id = 0;
+        vif_data = data_ap;
+        drv_if_type = MMDRV_INTERFACE_TYPE_AP;
 
-
-        umac_ps_reset(umacd);
-
-        ret = mmdrv_add_if(&data->vif_id, data->mac_addr, MMDRV_INTERFACE_TYPE_AP);
-        MMOSAL_ASSERT(ret == 0);
+        if (vif_data->vif_id != MMDRV_VIF_ID_INVALID)
+        {
+            MMLOG_WRN("AP VIF already exists (ID=%u)\n", vif_data->vif_id);
+            status = MMWLAN_UNAVAILABLE;
+            goto error;
+        }
     }
-
-    data->active_interface_types |= type;
-
-
-    umac_interface_init_vif(umacd, type, data->vif_id);
-    if (vif_id)
+    else
     {
-        *vif_id = data->vif_id;
+        MMOSAL_DEV_ASSERT(false);
+        status = MMWLAN_INVALID_ARGUMENT;
+        goto error;
     }
 
-    MMLOG_INF("%s interface added successfully (active=%x)\n",
+    MMOSAL_DEV_ASSERT(vif_data != NULL);
+
+    if (datapath_ops)
+    {
+        MMOSAL_DEV_ASSERT(vif_data->datapath_ops == datapath_ops || vif_data->datapath_ops == NULL);
+        vif_data->datapath_ops = datapath_ops;
+    }
+
+    if (vif_data->vif_id == MMDRV_VIF_ID_INVALID)
+    {
+        if (mac_addr == NULL)
+        {
+            mac_addr = data->mac_addr;
+        }
+        mac_addr_copy(vif_data->mac_addr, mac_addr);
+
+        status = mmdrv_add_if(&vif_data->vif_id, vif_data->mac_addr, drv_if_type);
+        MMOSAL_ASSERT(status == MMWLAN_SUCCESS);
+    }
+    else
+    {
+
+        if (mac_addr != NULL && !mm_mac_addr_is_equal(vif_data->mac_addr, mac_addr))
+        {
+            MMLOG_WRN("Trying to change MAC address of STA interface from " MM_MAC_ADDR_FMT
+                      " to " MM_MAC_ADDR_FMT "\n",
+                      MM_MAC_ADDR_VAL(vif_data->mac_addr),
+                      MM_MAC_ADDR_VAL(mac_addr));
+            MMOSAL_DEV_ASSERT(false);
+        }
+    }
+
+    vif_data->active_interface_types |= type;
+
+
+    umac_interface_init_vif(umacd, vif_data);
+
+    MMLOG_INF("%s interface added (active=%x), vif_id=%u, mac_addr=" MM_MAC_ADDR_FMT "\n",
               umac_interface_type_to_str(type),
-              data->active_interface_types);
+              vif_data->active_interface_types,
+              vif_data->vif_id,
+              MM_MAC_ADDR_VAL(vif_data->mac_addr));
 
     return MMWLAN_SUCCESS;
 error:
@@ -287,49 +280,74 @@ static void umac_interface_execute_inactive_cb(struct umac_interface_data *data)
 void umac_interface_remove(struct umac_data *umacd, enum umac_interface_type type)
 {
     struct umac_interface_data *data = umac_data_get_interface(umacd);
+    struct umac_interface_vif_data *vif_data_sta =
+        umac_data_get_interface_vif(umacd, MMWLAN_VIF_STA);
+    struct umac_interface_vif_data *vif_data_ap = umac_data_get_interface_vif(umacd, MMWLAN_VIF_AP);
+    struct umac_interface_vif_data *vif_data = NULL;
 
-    if ((data->active_interface_types & type) == 0)
+    if (type & VIF_STA_INTERFACE_TYPES_MASK)
     {
-        umac_interface_execute_inactive_cb(data);
+        vif_data = vif_data_sta;
+    }
+    else if (type == UMAC_INTERFACE_AP)
+    {
+        vif_data = vif_data_ap;
+    }
+
+    MMOSAL_ASSERT(vif_data != NULL);
+
+    uint16_t active_interface_types = vif_data_sta->active_interface_types |
+                                      vif_data_ap->active_interface_types;
+
+    if (vif_data->active_interface_types == 0)
+    {
+        MMLOG_DBG("%s interface is already inactive\n", umac_interface_type_to_str(type));
+        if (active_interface_types == 0)
+        {
+            umac_interface_execute_inactive_cb(data);
+        }
         return;
     }
 
     if (type & UMAC_INTERFACE_STA)
     {
 
-        umac_twt_deinit_vif(umacd, &data->vif_id);
+        umac_twt_deinit_vif(umacd, &vif_data->vif_id);
     }
 
-    data->active_interface_types &= ~((uint16_t)type);
+    vif_data->active_interface_types &= ~((uint16_t)type);
 
     MMLOG_DBG("Interface remove %s, active=%u\n",
               umac_interface_type_to_str(type),
-              data->active_interface_types);
+              vif_data->active_interface_types);
 
-    if (data->active_interface_types == 0)
+    if (vif_data->active_interface_types == 0)
     {
-        MMLOG_DBG("Shutting down\n");
+        MMLOG_DBG("Shutting down VIF %d\n", vif_data->vif_id);
 
-        int ret = mmdrv_rm_if(data->vif_id);
-        if (ret != 0)
+        enum mmwlan_status status = mmdrv_rm_if(vif_data->vif_id);
+        if (status != MMWLAN_SUCCESS)
         {
             if (umac_shutdown_is_in_progress(umacd))
             {
 
                 MMLOG_WRN("Failed to remove %s interface (%d); ignoring.\n",
                           umac_interface_type_to_str(type),
-                          ret);
+                          status);
             }
             else
             {
-                MMLOG_ERR("Failed to remove interface (%d)\n", ret);
-                MMOSAL_ASSERT(ret == 0);
+                MMLOG_ERR("Failed to remove interface (%u)\n", status);
+                MMOSAL_ASSERT(status == MMWLAN_SUCCESS);
             }
         }
 
-        data->vif_id = 0;
+        vif_data->vif_id = MMDRV_VIF_ID_INVALID;
+    }
 
-        mmdrv_set_health_check_interval(0, 0);
+    if ((vif_data_sta->active_interface_types | vif_data_ap->active_interface_types) == 0)
+    {
+        umac_health_check_stop(umacd);
 
         mmdrv_deinit();
 
@@ -355,62 +373,99 @@ void umac_interface_remove(struct umac_data *umacd, enum umac_interface_type typ
 
 bool umac_interface_is_active(struct umac_data *umacd)
 {
-    struct umac_interface_data *data = umac_data_get_interface(umacd);
-    return (data->active_interface_types != 0);
+    struct umac_interface_vif_data *vif_data = umac_data_get_interface_vif(umacd, MMWLAN_VIF_STA);
+    if (vif_data->active_interface_types != 0)
+    {
+        return true;
+    }
+
+    vif_data = umac_data_get_interface_vif(umacd, MMWLAN_VIF_AP);
+    if (vif_data->active_interface_types != 0)
+    {
+        return true;
+    }
+
+    return false;
 }
 
 uint16_t umac_interface_get_vif_id(struct umac_data *umacd, uint16_t type_mask)
 {
-    struct umac_interface_data *data = umac_data_get_interface(umacd);
-    if (type_mask & data->active_interface_types)
+    if (type_mask & VIF_STA_INTERFACE_TYPES_MASK)
     {
-        return data->vif_id;
+        struct umac_interface_vif_data *vif_data =
+            umac_data_get_interface_vif(umacd, MMWLAN_VIF_STA);
+        return vif_data->vif_id;
+    }
+    else if (type_mask & UMAC_INTERFACE_AP)
+    {
+        struct umac_interface_vif_data *vif_data =
+            umac_data_get_interface_vif(umacd, MMWLAN_VIF_AP);
+        return vif_data->vif_id;
     }
     else
     {
-        return UMAC_INTERFACE_VIF_ID_INVALID;
+        return MMDRV_VIF_ID_INVALID;
     }
 }
 
-uint16_t umac_interface_get_vif_type_mask(struct umac_data *umacd, uint16_t vif_id)
+enum mmwlan_vif umac_interface_get_vif_by_id(struct umac_data *umacd, uint16_t vif_id)
 {
-    struct umac_interface_data *data = umac_data_get_interface(umacd);
-    if (data->vif_id == vif_id)
+    if (vif_id == MMDRV_VIF_ID_INVALID)
     {
-        return data->active_interface_types;
+        return MMWLAN_VIF_UNSPECIFIED;
     }
-    else
+    struct umac_interface_vif_data *vif_data_sta =
+        umac_data_get_interface_vif(umacd, MMWLAN_VIF_STA);
+    if (vif_data_sta != NULL && vif_data_sta->vif_id == vif_id)
     {
-        return 0;
+        return MMWLAN_VIF_STA;
     }
+
+    struct umac_interface_vif_data *vif_data_ap = umac_data_get_interface_vif(umacd, MMWLAN_VIF_AP);
+    if (vif_data_ap != NULL && vif_data_ap->vif_id == vif_id)
+    {
+        return MMWLAN_VIF_AP;
+    }
+
+    return MMWLAN_VIF_UNSPECIFIED;
 }
 
-enum mmwlan_status umac_interface_reinstall_vif(struct umac_data *umacd,
-                                                enum umac_interface_type type,
-                                                uint16_t *vif_id)
+static struct umac_interface_vif_data *umac_interface_get_vif_data_by_vif_id(
+    struct umac_data *umacd,
+    uint16_t vif_id)
 {
-    struct umac_interface_data *data = umac_data_get_interface(umacd);
-
-    if (!(data->active_interface_types & type))
+    if (vif_id == MMDRV_VIF_ID_INVALID)
     {
-        MMLOG_WRN("Unable to reinstall VIF type %s: no active\n", umac_interface_type_to_str(type));
+        return NULL;
+    }
+    enum mmwlan_vif vif = umac_interface_get_vif_by_id(umacd, vif_id);
+    struct umac_interface_vif_data *data = umac_data_get_interface_vif(umacd, vif);
+    if (data == NULL)
+    {
+        MMLOG_WRN("Failed to get data for vif_id %u, vif %u\n", vif_id, vif);
+    }
+    return data;
+}
+
+enum mmwlan_status umac_interface_reinstall_vif(struct umac_data *umacd, enum mmwlan_vif vif)
+{
+    struct umac_interface_vif_data *vif_data = umac_data_get_interface_vif(umacd, vif);
+
+    if (vif_data->active_interface_types == 0)
+    {
+        MMLOG_WRN("Unable to reinstall VIF %u: not active\n", vif);
         return MMWLAN_UNAVAILABLE;
     }
 
-    enum mmdrv_interface_type drv_if_type = (type == UMAC_INTERFACE_AP) ? MMDRV_INTERFACE_TYPE_AP :
-                                                                          MMDRV_INTERFACE_TYPE_STA;
-    int ret = mmdrv_add_if(&data->vif_id, data->mac_addr, drv_if_type);
-    if (ret != 0)
+    enum mmdrv_interface_type drv_if_type = (vif == MMWLAN_VIF_AP) ? MMDRV_INTERFACE_TYPE_AP :
+                                                                     MMDRV_INTERFACE_TYPE_STA;
+    enum mmwlan_status status = mmdrv_add_if(&vif_data->vif_id, vif_data->mac_addr, drv_if_type);
+    if (status != MMWLAN_SUCCESS)
     {
-        return MMWLAN_ERROR;
+        return status;
     }
 
-    if (vif_id != NULL)
-    {
-        *vif_id = data->vif_id;
-    }
-
-    umac_interface_init_vif(umacd, type, data->vif_id);
+    umac_interface_init_vif(umacd, vif_data);
 
     return MMWLAN_SUCCESS;
 }
@@ -453,9 +508,9 @@ const char *umac_interface_get_chip_id_string(struct umac_data *umacd)
 enum mmwlan_status umac_interface_get_mac_addr(struct umac_sta_data *stad, uint8_t *mac_addr)
 {
     struct umac_data *umacd = umac_sta_data_get_umacd(stad);
-    struct umac_interface_data *data = umac_data_get_interface(umacd);
-
-    if (data->active_interface_types == 0)
+    struct umac_interface_vif_data *data =
+        umac_interface_get_vif_data_by_vif_id(umacd, umac_sta_data_get_vif_id(stad));
+    if (data == NULL)
     {
         memset(mac_addr, 0, MMWLAN_MAC_ADDR_LEN);
         MMLOG_INF("Failed: no interface\n");
@@ -469,9 +524,9 @@ enum mmwlan_status umac_interface_get_mac_addr(struct umac_sta_data *stad, uint8
 const uint8_t *umac_interface_peek_mac_addr(struct umac_sta_data *stad)
 {
     struct umac_data *umacd = umac_sta_data_get_umacd(stad);
-    struct umac_interface_data *data = umac_data_get_interface(umacd);
-
-    if (data->active_interface_types != 0)
+    struct umac_interface_vif_data *data =
+        umac_interface_get_vif_data_by_vif_id(umacd, umac_sta_data_get_vif_id(stad));
+    if (data != NULL)
     {
         return data->mac_addr;
     }
@@ -493,7 +548,7 @@ bool umac_interface_addr_matches_mac_addr(struct umac_sta_data *stad, const uint
 
 enum mmwlan_status umac_interface_set_scan(struct umac_data *umacd, bool enabled)
 {
-    struct umac_interface_data *data = umac_data_get_interface(umacd);
+    struct umac_interface_vif_data *data = umac_data_get_interface_vif(umacd, MMWLAN_VIF_STA);
 
     if (data->active_interface_types == 0)
     {
@@ -503,20 +558,19 @@ enum mmwlan_status umac_interface_set_scan(struct umac_data *umacd, bool enabled
 
     MMLOG_INF("Setting scan mode: enabled=%s\n", (enabled ? "true" : "false"));
 
-    int ret = mmdrv_cfg_scan(enabled);
-    if (ret != 0)
+    enum mmwlan_status status = mmdrv_cfg_scan(enabled);
+    if (status != MMWLAN_SUCCESS)
     {
-        MMLOG_WRN("Failed to set scan mode: %d\n", ret);
-        return MMWLAN_ERROR;
+        MMLOG_WRN("Failed to set scan mode (%u)\n", status);
+        return status;
     }
 
     return MMWLAN_SUCCESS;
 }
 
-
-static int umac_interface_calc_pri_1mhz_idx(struct umac_data *umacd,
-                                            const struct ie_s1g_operation *s1g_operation,
-                                            const struct mmwlan_s1g_channel *operating_chan)
+int umac_interface_calc_pri_1mhz_idx(struct umac_data *umacd,
+                                     const struct ie_s1g_operation *s1g_operation,
+                                     const struct mmwlan_s1g_channel *operating_chan)
 {
     const struct mmwlan_s1g_channel *primary_chan =
         umac_regdb_get_channel(umacd, s1g_operation->primary_channel_number);
@@ -578,13 +632,22 @@ static enum mmwlan_status umac_interface_set_channel_internal(
     bool is_off_channel)
 {
     struct umac_interface_data *data = umac_data_get_interface(umacd);
-    int ret = 0;
+    enum mmwlan_status status = MMWLAN_SUCCESS;
 
-    if (data->active_interface_types == 0)
+    if (!umac_interface_is_active(umacd))
     {
         MMLOG_INF("Failed: no interface\n");
         return MMWLAN_ERROR;
     }
+
+    MMLOG_INF(
+        "Setting channel %u: op freq=%lu Hz, pri ch=%u, pri 1M loc=%d, bw=%u MHz, pri bw=%u MHz\n",
+        s1g_operation->operating_channel_index,
+        s1g_channel_info->centre_freq_hz,
+        s1g_operation->primary_channel_number,
+        s1g_operation->primary_1mhz_channel_loc,
+        s1g_channel_info->bw_mhz,
+        s1g_operation->primary_channel_width_mhz);
 
 
     if (s1g_operation->primary_channel_width_mhz > 2 ||
@@ -624,39 +687,23 @@ static enum mmwlan_status umac_interface_set_channel_internal(
         return MMWLAN_CHANNEL_INVALID;
     }
 
-    MMLOG_INF(
-        "Setting channel %u: op freq=%lu Hz, pri ch=%u, pri 1M idx=%d, bw=%u MHz, pri bw=%u MHz\n",
-        s1g_operation->operating_channel_index,
-        s1g_channel_info->centre_freq_hz,
-        s1g_operation->primary_channel_number,
-        prim_1mhz_chan_idx,
-        s1g_channel_info->bw_mhz,
-        s1g_operation->primary_channel_width_mhz);
-
     if (ie_s1g_operation_is_equal(&data->current_s1g_operation, s1g_operation))
     {
         MMLOG_INF("Channel is the same, skipping set channel\n");
     }
     else
     {
-        ret = mmdrv_set_channel(s1g_channel_info->centre_freq_hz,
-                                prim_1mhz_chan_idx,
-                                s1g_channel_info->bw_mhz,
-                                s1g_operation->primary_channel_width_mhz,
-                                is_off_channel);
-        if (ret != 0)
+        status = mmdrv_set_channel(s1g_channel_info->centre_freq_hz,
+                                   prim_1mhz_chan_idx,
+                                   s1g_channel_info->bw_mhz,
+                                   s1g_operation->primary_channel_width_mhz,
+                                   is_off_channel);
+        if (status != MMWLAN_SUCCESS)
         {
-            MMLOG_WRN("Failed to set channel %u: %d\n",
+            MMLOG_WRN("Failed to set channel %u: %u\n",
                       s1g_operation->operating_channel_index,
-                      ret);
-            if (ret == MORSE_RET_EPERM)
-            {
-                return MMWLAN_CHANNEL_INVALID;
-            }
-            else
-            {
-                return MMWLAN_ERROR;
-            }
+                      status);
+            return status;
         }
         data->current_s1g_operation = *s1g_operation;
     }
@@ -669,30 +716,30 @@ static enum mmwlan_status umac_interface_set_channel_internal(
         new_txpower = tx_power_override;
     }
 
-    ret = mmdrv_set_txpower(&actual_txpower, new_txpower);
-    if (ret != 0)
+    status = mmdrv_set_txpower(&actual_txpower, new_txpower);
+    if (status != MMWLAN_SUCCESS)
     {
         MMLOG_WRN("Failed to set power level %d\n", new_txpower);
-        return MMWLAN_ERROR;
+        return status;
     }
 
     enum mmwlan_duty_cycle_mode duty_cycle_mode = umac_config_get_duty_cycle_mode(umacd);
-    ret = mmdrv_set_duty_cycle(s1g_channel_info->duty_cycle_sta,
-                               s1g_channel_info->duty_cycle_omit_ctrl_resp,
-                               duty_cycle_mode);
-    if (ret != 0)
+    status = mmdrv_set_duty_cycle(s1g_channel_info->duty_cycle_sta,
+                                  s1g_channel_info->duty_cycle_omit_ctrl_resp,
+                                  duty_cycle_mode);
+    if (status != MMWLAN_SUCCESS)
     {
         MMLOG_WRN("Failed to set duty cycle %d\n", s1g_channel_info->duty_cycle_sta);
-        return MMWLAN_ERROR;
+        return status;
     }
 
-    ret = mmdrv_cfg_mpsw(s1g_channel_info->airtime_min_us,
-                         s1g_channel_info->airtime_max_us,
-                         s1g_channel_info->pkt_spacing_us);
-    if (ret != 0)
+    status = mmdrv_cfg_mpsw(s1g_channel_info->airtime_min_us,
+                            s1g_channel_info->airtime_max_us,
+                            s1g_channel_info->pkt_spacing_us);
+    if (status != MMWLAN_SUCCESS)
     {
         MMLOG_WRN("Failed to configure mpsw.\n");
-        return MMWLAN_ERROR;
+        return status;
     }
 
     MMLOG_INF("Requested tx power %d, actual %ld; duty cycle %u.%02u %%, "
@@ -803,21 +850,20 @@ uint8_t umac_interface_max_supported_bw(struct umac_data *umacd)
 
 enum mmwlan_status umac_interface_set_ndp_probe_support(struct umac_data *umacd, bool enabled)
 {
-    struct umac_interface_data *data = umac_data_get_interface(umacd);
-
-    if (data->active_interface_types == 0)
+    uint16_t vif_id = umac_interface_get_vif_id(umacd, UMAC_INTERFACE_SCAN);
+    if (vif_id == MMDRV_VIF_ID_INVALID)
     {
-        MMLOG_INF("Failed: no interface\n");
+        MMLOG_INF("Failed: no STA/SCAN interface\n");
         return MMWLAN_UNAVAILABLE;
     }
 
     MMLOG_INF("Setting ndp probe support: enabled=%s\n", (enabled ? "true" : "false"));
 
-    int ret = mmdrv_set_ndp_probe(data->vif_id, enabled);
-    if (ret != 0)
+    enum mmwlan_status status = mmdrv_set_ndp_probe(vif_id, enabled);
+    if (status != MMWLAN_SUCCESS)
     {
-        MMLOG_WRN("Failed to set ndp probe support: %d\n", ret);
-        return MMWLAN_ERROR;
+        MMLOG_WRN("Failed to set ndp probe support (%u)\n", status);
+        return status;
     }
 
     return MMWLAN_SUCCESS;
@@ -830,6 +876,39 @@ void umac_interface_register_inactive_cb(struct umac_data *umacd,
     struct umac_interface_data *data = umac_data_get_interface(umacd);
     data->inactive_callback = callback;
     data->inactive_cb_arg = arg;
+}
+
+const struct umac_datapath_ops *umac_interface_get_datapath_ops(struct umac_data *umacd,
+                                                                enum mmwlan_vif vif)
+{
+    struct umac_interface_vif_data *data = umac_data_get_interface_vif(umacd, vif);
+    if (data != NULL && data->active_interface_types != 0)
+    {
+        MMOSAL_DEV_ASSERT(data->vif_id != MMDRV_VIF_ID_INVALID);
+        return data->datapath_ops;
+    }
+    else
+    {
+        if (data == NULL && vif != MMWLAN_VIF_UNSPECIFIED)
+        {
+            MMLOG_WRN("Invalid VIF %u\n", vif);
+        }
+        return NULL;
+    }
+}
+
+const struct umac_datapath_ops *umac_interface_get_datapath_ops_by_vif_id(struct umac_data *umacd,
+                                                                          uint16_t vif_id)
+{
+    struct umac_interface_vif_data *data = umac_interface_get_vif_data_by_vif_id(umacd, vif_id);
+    if (data != NULL)
+    {
+        return data->datapath_ops;
+    }
+    else
+    {
+        return NULL;
+    }
 }
 
 enum mmwlan_status umac_interface_register_vif_state_cb(struct umac_data *umacd,
@@ -887,26 +966,14 @@ enum mmwlan_status umac_interface_get_vif_mac_addr(struct umac_data *umacd,
                                                    enum mmwlan_vif vif,
                                                    uint8_t *mac_addr)
 {
-
-    struct umac_interface_data *data = umac_data_get_interface(umacd);
-    if (vif == MMWLAN_VIF_STA)
+    struct umac_interface_vif_data *data = umac_data_get_interface_vif(umacd, vif);
+    if (data != NULL && data->active_interface_types != 0)
     {
-        if (!(data->active_interface_types & UMAC_INTERFACE_AP) &&
-            (data->active_interface_types != 0))
-        {
-            mac_addr_copy(mac_addr, data->mac_addr);
-            return MMWLAN_SUCCESS;
-        }
-    }
-    else if (vif == MMWLAN_VIF_AP)
-    {
-        if (data->active_interface_types & UMAC_INTERFACE_AP)
-        {
-            mac_addr_copy(mac_addr, data->mac_addr);
-            return MMWLAN_SUCCESS;
-        }
+        mac_addr_copy(mac_addr, data->mac_addr);
+        return MMWLAN_SUCCESS;
     }
 
+    MMLOG_DBG("VIF not active\n");
     return MMWLAN_UNAVAILABLE;
 }
 
@@ -914,58 +981,15 @@ enum mmwlan_status umac_interface_borrow_vif_mac_addr(struct umac_data *umacd,
                                                       enum mmwlan_vif vif,
                                                       const uint8_t **mac_addr)
 {
-
-    struct umac_interface_data *data = umac_data_get_interface(umacd);
-
-    if (vif == MMWLAN_VIF_STA)
+    struct umac_interface_vif_data *data = umac_data_get_interface_vif(umacd, vif);
+    if (data != NULL && data->active_interface_types != 0)
     {
-        if (!(data->active_interface_types & UMAC_INTERFACE_AP) &&
-            (data->active_interface_types != 0))
-        {
-            *mac_addr = data->mac_addr;
-            return MMWLAN_SUCCESS;
-        }
-    }
-    else if (vif == MMWLAN_VIF_AP)
-    {
-        if (data->active_interface_types & UMAC_INTERFACE_AP)
-        {
-            *mac_addr = data->mac_addr;
-            return MMWLAN_SUCCESS;
-        }
+        *mac_addr = data->mac_addr;
+        return MMWLAN_SUCCESS;
     }
 
-    MMLOG_INF("Failed: no interface\n");
-    return MMWLAN_ERROR;
-}
-
-enum mmwlan_status umac_interface_set_vif_mac_addr(struct umac_data *umacd,
-                                                   enum mmwlan_vif vif,
-                                                   const uint8_t *mac_addr)
-{
-
-    struct umac_interface_data *data = umac_data_get_interface(umacd);
-
-    if (vif == MMWLAN_VIF_STA)
-    {
-        if (!(data->active_interface_types & UMAC_INTERFACE_AP) &&
-            (data->active_interface_types != 0))
-        {
-            mac_addr_copy(data->mac_addr, mac_addr);
-            return MMWLAN_SUCCESS;
-        }
-    }
-    else if (vif == MMWLAN_VIF_AP)
-    {
-        if (data->active_interface_types & UMAC_INTERFACE_AP)
-        {
-            mac_addr_copy(data->mac_addr, mac_addr);
-            return MMWLAN_SUCCESS;
-        }
-    }
-
-    MMLOG_INF("Failed: no interface\n");
-    return MMWLAN_ERROR;
+    MMLOG_DBG("VIF not active\n");
+    return MMWLAN_UNAVAILABLE;
 }
 
 enum mmwlan_status umac_interface_register_rx_pkt_ext_cb(struct umac_data *umacd,

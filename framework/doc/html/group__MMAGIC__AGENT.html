@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.10.4</span>
+   &#160;<span id="projectnumber">2.11.2</span>
    </div>
   </td>
  </tr>
@@ -106,6 +106,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ga0c7e0c69e10d9b0046cf7a8733a88cc8"><td class="memItemLeft" align="right" valign="top">struct mmagic_m2m_agent *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__AGENT.html#ga0c7e0c69e10d9b0046cf7a8733a88cc8">mmagic_m2m_agent_init</a> (const struct <a class="el" href="structmmagic__m2m__agent__init__args.html">mmagic_m2m_agent_init_args</a> *args)</td></tr>
 <tr class="memdesc:ga0c7e0c69e10d9b0046cf7a8733a88cc8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize the M2M agent.  <a href="group__MMAGIC__AGENT.html#ga0c7e0c69e10d9b0046cf7a8733a88cc8">More...</a><br /></td></tr>
 <tr class="separator:ga0c7e0c69e10d9b0046cf7a8733a88cc8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga2af7587e5aef6c62057bea8ce046768d"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga202c6db4afd9d9ff976b0e61267ab6bb">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__AGENT.html#ga2af7587e5aef6c62057bea8ce046768d">mmagic_m2m_agent_local_command</a> (struct mmagic_m2m_agent *agent, void(*cb)(struct mmagic_data *core, void *arg), void *cb_arg, uint32_t timeout)</td></tr>
+<tr class="memdesc:ga2af7587e5aef6c62057bea8ce046768d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Queue a callback to execute in the CONTROL_STREAM context.  <a href="group__MMAGIC__AGENT.html#ga2af7587e5aef6c62057bea8ce046768d">More...</a><br /></td></tr>
+<tr class="separator:ga2af7587e5aef6c62057bea8ce046768d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="ga0c7e0c69e10d9b0046cf7a8733a88cc8" name="ga0c7e0c69e10d9b0046cf7a8733a88cc8"></a>
@@ -133,6 +136,59 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A handle to the newly created Agent. NULL on error. </dd></dl>
+
+</div>
+</div>
+<a id="ga2af7587e5aef6c62057bea8ce046768d" name="ga2af7587e5aef6c62057bea8ce046768d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga2af7587e5aef6c62057bea8ce046768d">&#9670;&nbsp;</a></span>mmagic_m2m_agent_local_command()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga202c6db4afd9d9ff976b0e61267ab6bb">mmagic_status</a> mmagic_m2m_agent_local_command </td>
+          <td>(</td>
+          <td class="paramtype">struct mmagic_m2m_agent *&#160;</td>
+          <td class="paramname"><em>agent</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void(*)(struct mmagic_data *core, void *arg)&#160;</td>
+          <td class="paramname"><em>cb</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>cb_arg</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>timeout</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Queue a callback to execute in the CONTROL_STREAM context. </p>
+<p >This allows safe calling of mmagic_core_* functions outside of the MMAGIC stream. This may block on adding to the (single element) queue, and will return an error if the timeout is reached. It must only be called after mmagic_m2m_agent_init is run.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">agent</td><td>Agent handle returned by <a class="el" href="group__MMAGIC__AGENT.html#ga0c7e0c69e10d9b0046cf7a8733a88cc8">mmagic_m2m_agent_init</a>. </td></tr>
+    <tr><td class="paramname">cb</td><td>Callback function to execute. Receives MMAGIC core data and cb_arg. </td></tr>
+    <tr><td class="paramname">cb_arg</td><td>Argument to pass to callback. </td></tr>
+    <tr><td class="paramname">timeout</td><td>Timeout when enqueueing. UINT32_MAX to block.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><code>MMAGIC_STATUS_OK</code> on success, otherwise an error status. </dd></dl>
 
 </div>
 </div>

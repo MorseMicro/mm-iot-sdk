@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.10.4</span>
+   &#160;<span id="projectnumber">2.11.2</span>
    </div>
   </td>
  </tr>
@@ -101,6 +101,12 @@ Macros</h2></td></tr>
 <tr class="memitem:ga1da4459b12043d73361b6d798501e72d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMOSAL__MEMMGMT.html#ga1da4459b12043d73361b6d798501e72d">mmosal_malloc</a>(size)&#160;&#160;&#160;<a class="el" href="group__MMOSAL__MEMMGMT.html#gaa3413bea16adaf33ee4a74714a210cb1">mmosal_malloc_</a>(size)</td></tr>
 <tr class="memdesc:ga1da4459b12043d73361b6d798501e72d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate memory of the given size and return a pointer to it (malloc).  <a href="group__MMOSAL__MEMMGMT.html#ga1da4459b12043d73361b6d798501e72d">More...</a><br /></td></tr>
 <tr class="separator:ga1da4459b12043d73361b6d798501e72d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gacab3dd14f1fd869b4de79a75b12d8e1d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMOSAL__MEMMGMT.html#gacab3dd14f1fd869b4de79a75b12d8e1d">mmosal_calloc</a>(nitems,  size)&#160;&#160;&#160;<a class="el" href="group__MMOSAL__MEMMGMT.html#gafa189182be7a18be20e20c3ffce2d2f8">mmosal_calloc_</a>(nitems, size)</td></tr>
+<tr class="memdesc:gacab3dd14f1fd869b4de79a75b12d8e1d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Equivalent of standard library calloc().  <a href="group__MMOSAL__MEMMGMT.html#gacab3dd14f1fd869b4de79a75b12d8e1d">More...</a><br /></td></tr>
+<tr class="separator:gacab3dd14f1fd869b4de79a75b12d8e1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga5d48bd7374624194df98bd8bbb93f331"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMOSAL__MEMMGMT.html#ga5d48bd7374624194df98bd8bbb93f331">mmosal_realloc</a>(ptr,  size)&#160;&#160;&#160;<a class="el" href="group__MMOSAL__MEMMGMT.html#ga939f4739a1f8105f9a485a745f7296f7">mmosal_realloc_</a>(ptr, size)</td></tr>
+<tr class="memdesc:ga5d48bd7374624194df98bd8bbb93f331"><td class="mdescLeft">&#160;</td><td class="mdescRight">Equivalent of standard library realloc().  <a href="group__MMOSAL__MEMMGMT.html#ga5d48bd7374624194df98bd8bbb93f331">More...</a><br /></td></tr>
+<tr class="separator:ga5d48bd7374624194df98bd8bbb93f331"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -110,17 +116,63 @@ Functions</h2></td></tr>
 <tr class="memitem:ga3577a7ed7fb0151d69c45e156ffb22e8"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMOSAL__MEMMGMT.html#ga3577a7ed7fb0151d69c45e156ffb22e8">mmosal_malloc_dbg</a> (size_t size, const char *name, unsigned line_number)</td></tr>
 <tr class="memdesc:ga3577a7ed7fb0151d69c45e156ffb22e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate memory of the given size and return a pointer to it (malloc) &ndash; debug version.  <a href="group__MMOSAL__MEMMGMT.html#ga3577a7ed7fb0151d69c45e156ffb22e8">More...</a><br /></td></tr>
 <tr class="separator:ga3577a7ed7fb0151d69c45e156ffb22e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga13765de87e9aec23d07b430a3e4fac15"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMOSAL__MEMMGMT.html#ga13765de87e9aec23d07b430a3e4fac15">mmosal_calloc_dbg</a> (size_t nitems, size_t size, const char *name, unsigned line_number)</td></tr>
+<tr class="memdesc:ga13765de87e9aec23d07b430a3e4fac15"><td class="mdescLeft">&#160;</td><td class="mdescRight">Equivalent of standard library calloc().  <a href="group__MMOSAL__MEMMGMT.html#ga13765de87e9aec23d07b430a3e4fac15">More...</a><br /></td></tr>
+<tr class="separator:ga13765de87e9aec23d07b430a3e4fac15"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf06c0a646c63c0f10f7755bb5da966f0"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMOSAL__MEMMGMT.html#gaf06c0a646c63c0f10f7755bb5da966f0">mmosal_realloc_dbg</a> (void *ptr, size_t size, const char *name, unsigned line_number)</td></tr>
+<tr class="memdesc:gaf06c0a646c63c0f10f7755bb5da966f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Equivalent of standard library realloc().  <a href="group__MMOSAL__MEMMGMT.html#gaf06c0a646c63c0f10f7755bb5da966f0">More...</a><br /></td></tr>
+<tr class="separator:gaf06c0a646c63c0f10f7755bb5da966f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga9e490a376b93b19e7f8daacb74b9a534"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMOSAL__MEMMGMT.html#ga9e490a376b93b19e7f8daacb74b9a534">mmosal_free</a> (void *p)</td></tr>
 <tr class="memdesc:ga9e490a376b93b19e7f8daacb74b9a534"><td class="mdescLeft">&#160;</td><td class="mdescRight">Free the given memory allocation.  <a href="group__MMOSAL__MEMMGMT.html#ga9e490a376b93b19e7f8daacb74b9a534">More...</a><br /></td></tr>
 <tr class="separator:ga9e490a376b93b19e7f8daacb74b9a534"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gabd579e0a2924c88139b29ed66a9cf0fd"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMOSAL__MEMMGMT.html#gabd579e0a2924c88139b29ed66a9cf0fd">mmosal_realloc</a> (void *ptr, size_t size)</td></tr>
-<tr class="memdesc:gabd579e0a2924c88139b29ed66a9cf0fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Equivalent of standard library realloc().  <a href="group__MMOSAL__MEMMGMT.html#gabd579e0a2924c88139b29ed66a9cf0fd">More...</a><br /></td></tr>
-<tr class="separator:gabd579e0a2924c88139b29ed66a9cf0fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga022c5f3377a730207f7b709770f3201b"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMOSAL__MEMMGMT.html#ga022c5f3377a730207f7b709770f3201b">mmosal_calloc</a> (size_t nitems, size_t size)</td></tr>
-<tr class="memdesc:ga022c5f3377a730207f7b709770f3201b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Equivalent of standard library calloc().  <a href="group__MMOSAL__MEMMGMT.html#ga022c5f3377a730207f7b709770f3201b">More...</a><br /></td></tr>
-<tr class="separator:ga022c5f3377a730207f7b709770f3201b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga939f4739a1f8105f9a485a745f7296f7"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMOSAL__MEMMGMT.html#ga939f4739a1f8105f9a485a745f7296f7">mmosal_realloc_</a> (void *ptr, size_t size)</td></tr>
+<tr class="memdesc:ga939f4739a1f8105f9a485a745f7296f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Equivalent of standard library realloc().  <a href="group__MMOSAL__MEMMGMT.html#ga939f4739a1f8105f9a485a745f7296f7">More...</a><br /></td></tr>
+<tr class="separator:ga939f4739a1f8105f9a485a745f7296f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gafa189182be7a18be20e20c3ffce2d2f8"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMOSAL__MEMMGMT.html#gafa189182be7a18be20e20c3ffce2d2f8">mmosal_calloc_</a> (size_t nitems, size_t size)</td></tr>
+<tr class="memdesc:gafa189182be7a18be20e20c3ffce2d2f8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Equivalent of standard library calloc().  <a href="group__MMOSAL__MEMMGMT.html#gafa189182be7a18be20e20c3ffce2d2f8">More...</a><br /></td></tr>
+<tr class="separator:gafa189182be7a18be20e20c3ffce2d2f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="gacab3dd14f1fd869b4de79a75b12d8e1d" name="gacab3dd14f1fd869b4de79a75b12d8e1d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gacab3dd14f1fd869b4de79a75b12d8e1d">&#9670;&nbsp;</a></span>mmosal_calloc</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define mmosal_calloc</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">nitems, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">size&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;<a class="el" href="group__MMOSAL__MEMMGMT.html#gafa189182be7a18be20e20c3ffce2d2f8">mmosal_calloc_</a>(nitems, size)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Equivalent of standard library calloc(). </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">nitems</td><td>Number of blocks to allocate </td></tr>
+    <tr><td class="paramname">size</td><td>Size of each block.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>pointer to the allocated memory on success, or NULL on failure. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="mmosal_8h_source.html#l00180">180</a> of file <a class="el" href="mmosal_8h_source.html">mmosal.h</a>.</p>
+
+</div>
+</div>
 <a id="ga1da4459b12043d73361b6d798501e72d" name="ga1da4459b12043d73361b6d798501e72d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga1da4459b12043d73361b6d798501e72d">&#9670;&nbsp;</a></span>mmosal_malloc</h2>
 
@@ -147,19 +199,59 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>pointer to the allocated memory on success, or NULL on failure. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmosal_8h_source.html#l00138">138</a> of file <a class="el" href="mmosal_8h_source.html">mmosal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmosal_8h_source.html#l00170">170</a> of file <a class="el" href="mmosal_8h_source.html">mmosal.h</a>.</p>
 
 </div>
 </div>
-<h2 class="groupheader">Function Documentation</h2>
-<a id="ga022c5f3377a730207f7b709770f3201b" name="ga022c5f3377a730207f7b709770f3201b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga022c5f3377a730207f7b709770f3201b">&#9670;&nbsp;</a></span>mmosal_calloc()</h2>
+<a id="ga5d48bd7374624194df98bd8bbb93f331" name="ga5d48bd7374624194df98bd8bbb93f331"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga5d48bd7374624194df98bd8bbb93f331">&#9670;&nbsp;</a></span>mmosal_realloc</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void * mmosal_calloc </td>
+          <td class="memname">#define mmosal_realloc</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">ptr, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">size&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;<a class="el" href="group__MMOSAL__MEMMGMT.html#ga939f4739a1f8105f9a485a745f7296f7">mmosal_realloc_</a>(ptr, size)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Equivalent of standard library realloc(). </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ptr</td><td>Previously allocated memory block to resize. </td></tr>
+    <tr><td class="paramname">size</td><td>The new size.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>pointer to the resized block of memory, or <code>NULL</code>. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="mmosal_8h_source.html#l00190">190</a> of file <a class="el" href="mmosal_8h_source.html">mmosal.h</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="gafa189182be7a18be20e20c3ffce2d2f8" name="gafa189182be7a18be20e20c3ffce2d2f8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gafa189182be7a18be20e20c3ffce2d2f8">&#9670;&nbsp;</a></span>mmosal_calloc_()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void * mmosal_calloc_ </td>
           <td>(</td>
           <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>nitems</em>, </td>
@@ -179,6 +271,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Equivalent of standard library calloc(). </p>
+<dl class="section warning"><dt>Warning</dt><dd>This function should not be used directly. Instead use <code><a class="el" href="group__MMOSAL__MEMMGMT.html#gacab3dd14f1fd869b4de79a75b12d8e1d" title="Equivalent of standard library calloc().">mmosal_calloc()</a></code>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">nitems</td><td>Number of blocks to allocate </td></tr>
@@ -188,7 +281,58 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>pointer to the allocated memory on success, or NULL on failure. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmosal__shim__bootloader_8c_source.html#l00038">38</a> of file <a class="el" href="mmosal__shim__bootloader_8c_source.html">mmosal_shim_bootloader.c</a>.</p>
+</div>
+</div>
+<a id="ga13765de87e9aec23d07b430a3e4fac15" name="ga13765de87e9aec23d07b430a3e4fac15"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga13765de87e9aec23d07b430a3e4fac15">&#9670;&nbsp;</a></span>mmosal_calloc_dbg()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void * mmosal_calloc_dbg </td>
+          <td>(</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>nitems</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>line_number</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Equivalent of standard library calloc(). </p>
+<dl class="section warning"><dt>Warning</dt><dd>This function should not be used directly. Instead use <code><a class="el" href="group__MMOSAL__MEMMGMT.html#gacab3dd14f1fd869b4de79a75b12d8e1d" title="Equivalent of standard library calloc().">mmosal_calloc()</a></code>.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">nitems</td><td>Number of blocks to allocate </td></tr>
+    <tr><td class="paramname">size</td><td>Size of each block. </td></tr>
+    <tr><td class="paramname">name</td><td>Name of the function that allocated the memory. </td></tr>
+    <tr><td class="paramname">line_number</td><td>The line number at which the allocation happened.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>pointer to the allocated memory on success, or NULL on failure. </dd></dl>
 
 </div>
 </div>
@@ -216,8 +360,6 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="mmosal__shim__bootloader_8c_source.html#l00043">43</a> of file <a class="el" href="mmosal__shim__bootloader_8c_source.html">mmosal_shim_bootloader.c</a>.</p>
-
 </div>
 </div>
 <a id="gaa3413bea16adaf33ee4a74714a210cb1" name="gaa3413bea16adaf33ee4a74714a210cb1"></a>
@@ -238,7 +380,7 @@ Functions</h2></td></tr>
 
 <p>Allocate memory of the given size and return a pointer to it (malloc). </p>
 <p >No guarantees made about initialization.</p>
-<dl class="section warning"><dt>Warning</dt><dd>This function should not be used directly. Instead use <a class="el" href="group__MMOSAL__MEMMGMT.html#ga1da4459b12043d73361b6d798501e72d">mmosal_malloc()</a>.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>This function should not be used directly. Instead use <code><a class="el" href="group__MMOSAL__MEMMGMT.html#ga1da4459b12043d73361b6d798501e72d" title="Allocate memory of the given size and return a pointer to it (malloc).">mmosal_malloc()</a></code>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">size</td><td>The amount of memory to allocate (in bytes).</td></tr>
@@ -246,8 +388,6 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>pointer to the allocated memory on success, or NULL on failure. </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="mmosal__shim__bootloader_8c_source.html#l00026">26</a> of file <a class="el" href="mmosal__shim__bootloader_8c_source.html">mmosal_shim_bootloader.c</a>.</p>
 
 </div>
 </div>
@@ -296,18 +436,16 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>pointer to the allocated memory on success, or NULL on failure. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmosal__shim__bootloader_8c_source.html#l00031">31</a> of file <a class="el" href="mmosal__shim__bootloader_8c_source.html">mmosal_shim_bootloader.c</a>.</p>
-
 </div>
 </div>
-<a id="gabd579e0a2924c88139b29ed66a9cf0fd" name="gabd579e0a2924c88139b29ed66a9cf0fd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gabd579e0a2924c88139b29ed66a9cf0fd">&#9670;&nbsp;</a></span>mmosal_realloc()</h2>
+<a id="ga939f4739a1f8105f9a485a745f7296f7" name="ga939f4739a1f8105f9a485a745f7296f7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga939f4739a1f8105f9a485a745f7296f7">&#9670;&nbsp;</a></span>mmosal_realloc_()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void * mmosal_realloc </td>
+          <td class="memname">void * mmosal_realloc_ </td>
           <td>(</td>
           <td class="paramtype">void *&#160;</td>
           <td class="paramname"><em>ptr</em>, </td>
@@ -327,10 +465,64 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Equivalent of standard library realloc(). </p>
+<dl class="section warning"><dt>Warning</dt><dd>This function should not be used directly. Instead use <code><a class="el" href="group__MMOSAL__MEMMGMT.html#ga5d48bd7374624194df98bd8bbb93f331" title="Equivalent of standard library realloc().">mmosal_realloc()</a></code>.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">ptr</td><td>Previously allocated memory block to resize. </td></tr>
     <tr><td class="paramname">size</td><td>The new size.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>pointer to the resized block of memory, or <code>NULL</code>. </dd></dl>
+
+</div>
+</div>
+<a id="gaf06c0a646c63c0f10f7755bb5da966f0" name="gaf06c0a646c63c0f10f7755bb5da966f0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaf06c0a646c63c0f10f7755bb5da966f0">&#9670;&nbsp;</a></span>mmosal_realloc_dbg()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void * mmosal_realloc_dbg </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>ptr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>line_number</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Equivalent of standard library realloc(). </p>
+<dl class="section warning"><dt>Warning</dt><dd>This function should not be used directly. Instead use <code><a class="el" href="group__MMOSAL__MEMMGMT.html#ga5d48bd7374624194df98bd8bbb93f331" title="Equivalent of standard library realloc().">mmosal_realloc()</a></code>.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ptr</td><td>Previously allocated memory block to resize. </td></tr>
+    <tr><td class="paramname">size</td><td>The new size. </td></tr>
+    <tr><td class="paramname">name</td><td>Name of the function that allocated the memory. </td></tr>
+    <tr><td class="paramname">line_number</td><td>The line number at which the allocation happened.</td></tr>
   </table>
   </dd>
 </dl>

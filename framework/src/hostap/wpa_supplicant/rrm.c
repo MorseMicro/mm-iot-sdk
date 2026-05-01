@@ -165,6 +165,7 @@ int wpas_rrm_send_neighbor_rep_request(struct wpa_supplicant *wpa_s,
 	rrm_ie = wpa_bss_get_ie(wpa_s->current_bss,
 				WLAN_EID_RRM_ENABLED_CAPABILITIES);
 	if (!rrm_ie || !(wpa_s->current_bss->caps & IEEE80211_CAP_RRM) ||
+	    rrm_ie[1] < 1 ||
 	    !(rrm_ie[2] & WLAN_RRM_CAPS_NEIGHBOR_REPORT)) {
 		wpa_dbg(wpa_s, MSG_DEBUG,
 			"RRM: No network support for Neighbor Report.");
@@ -193,6 +194,24 @@ int wpas_rrm_send_neighbor_rep_request(struct wpa_supplicant *wpa_s,
 		(ssid ? wpa_ssid_txt(ssid->ssid, ssid->ssid_len) : ""),
 		wpa_s->rrm.next_neighbor_rep_token);
 
+	/*
+	 * According to IEEE Std 802.11-2024, 11.10.10.2 (Requesting a neighbor
+	 * report) LCI and civic requests depend on FTM responder support.
+	 */
+	if (lci || civic) {
+		const u8 *ext_capab;
+
+		ext_capab = wpa_bss_get_ie(wpa_s->current_bss,
+					   WLAN_EID_EXT_CAPAB);
+		if (!ieee802_11_ext_capab(ext_capab,
+					  WLAN_EXT_CAPAB_FTM_RESPONDER)) {
+			wpa_printf(MSG_DEBUG,
+				   "AP doesn't support FTM responder, can't request LCI and civic");
+			lci = 0;
+			civic = 0;
+		}
+	}
+
 	wpabuf_put_u8(buf, WLAN_ACTION_RADIO_MEASUREMENT);
 	wpabuf_put_u8(buf, WLAN_RRM_NEIGHBOR_REPORT_REQUEST);
 	wpabuf_put_u8(buf, wpa_s->rrm.next_neighbor_rep_token);
@@ -202,8 +221,10 @@ int wpas_rrm_send_neighbor_rep_request(struct wpa_supplicant *wpa_s,
 		wpabuf_put_data(buf, ssid->ssid, ssid->ssid_len);
 	}
 
-	if (lci) {
-		/* IEEE P802.11-REVmc/D5.0 9.4.2.21 */
+	if (lci && rrm_ie[1] >= 2 &&
+	    (rrm_ie[3] & WLAN_RRM_CAPS_LCI_MEASUREMENT)) {
+		/* IEEE Std 802.11-2024, 9.4.2.19 (Measurement Request element)
+		 */
 		wpabuf_put_u8(buf, WLAN_EID_MEASURE_REQUEST);
 		wpabuf_put_u8(buf, MEASURE_REQUEST_LCI_LEN);
 
@@ -220,13 +241,14 @@ int wpas_rrm_send_neighbor_rep_request(struct wpa_supplicant *wpa_s,
 		wpabuf_put_u8(buf, 0); /* Measurement Request Mode */
 		wpabuf_put_u8(buf, MEASURE_TYPE_LCI); /* Measurement Type */
 
-		/* IEEE P802.11-REVmc/D5.0 9.4.2.21.10 - LCI request */
+		/* IEEE Std 802.11-2024, 9.4.2.19.10 (LCI request) */
 		/* Location Subject */
 		wpabuf_put_u8(buf, LOCATION_SUBJECT_REMOTE);
 
 		/* Optional Subelements */
 		/*
-		 * IEEE P802.11-REVmc/D5.0 Figure 9-170
+		 * IEEE Std 802.11-2024, Figure 9-265 (Maximum Age subelement
+		 * format)
 		 * The Maximum Age subelement is required, otherwise the AP can
 		 * send only data that was determined after receiving the
 		 * request. Setting it here to unlimited age.
@@ -234,10 +256,14 @@ int wpas_rrm_send_neighbor_rep_request(struct wpa_supplicant *wpa_s,
 		wpabuf_put_u8(buf, LCI_REQ_SUBELEM_MAX_AGE);
 		wpabuf_put_u8(buf, 2);
 		wpabuf_put_le16(buf, 0xffff);
+	} else if (lci) {
+		wpa_printf(MSG_DEBUG, "RRM: LCI request isn't supported by AP");
 	}
 
-	if (civic) {
-		/* IEEE P802.11-REVmc/D5.0 9.4.2.21 */
+	if (civic && rrm_ie[1] >= 5 &&
+	    (rrm_ie[6] & WLAN_RRM_CAPS_CIVIC_LOCATION_MEASUREMENT)) {
+		/* IEEE Std 802.11-2024, 9.4.2.19 (Measurement Request element)
+		 */
 		wpabuf_put_u8(buf, WLAN_EID_MEASURE_REQUEST);
 		wpabuf_put_u8(buf, MEASURE_REQUEST_CIVIC_LEN);
 
@@ -255,8 +281,7 @@ int wpas_rrm_send_neighbor_rep_request(struct wpa_supplicant *wpa_s,
 		/* Measurement Type */
 		wpabuf_put_u8(buf, MEASURE_TYPE_LOCATION_CIVIC);
 
-		/* IEEE P802.11-REVmc/D5.0 9.4.2.21.14:
-		 * Location Civic request */
+		/* IEEE Std 802.11-2024, 9.4.2.19.14 (Location Civic request) */
 		/* Location Subject */
 		wpabuf_put_u8(buf, LOCATION_SUBJECT_REMOTE);
 		wpabuf_put_u8(buf, 0); /* Civic Location Type: IETF RFC 4776 */
@@ -266,6 +291,9 @@ int wpas_rrm_send_neighbor_rep_request(struct wpa_supplicant *wpa_s,
 		 */
 		wpabuf_put_le16(buf, 0);
 		/* No optional subelements */
+	} else if (civic) {
+		wpa_printf(MSG_DEBUG,
+			   "RRM: Civic request isn't supported by AP");
 	}
 
 	wpa_s->rrm.next_neighbor_rep_token++;
@@ -1715,7 +1743,7 @@ int wpas_beacon_rep_scan_process(struct wpa_supplicant *wpa_s,
 
 	/* If the measurement was aborted, don't report partial results */
 	if (info->aborted)
-		goto out;
+		goto out_refuse;
 
 	wpa_printf(MSG_DEBUG, "RRM: TSF BSSID: " MACSTR " current BSS: " MACSTR,
 		   MAC2STR(info->scan_start_tsf_bssid),
@@ -1724,7 +1752,7 @@ int wpas_beacon_rep_scan_process(struct wpa_supplicant *wpa_s,
 	    !wpas_beacon_rep_scan_match(wpa_s, info->scan_start_tsf_bssid)) {
 		wpa_printf(MSG_DEBUG,
 			   "RRM: Ignore scan results due to mismatching TSF BSSID");
-		goto out;
+		goto out_refuse;
 	}
 
 	for (i = 0; i < scan_res->num; i++) {
@@ -1794,6 +1822,10 @@ int wpas_beacon_rep_scan_process(struct wpa_supplicant *wpa_s,
 	wpas_rrm_send_msr_report(wpa_s, buf);
 	wpabuf_free(buf);
 
+	goto out;
+
+out_refuse:
+	wpas_rrm_refuse_request(wpa_s);
 out:
 	wpas_clear_beacon_rep_data(wpa_s);
 	return 1;

@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.10.4</span>
+   &#160;<span id="projectnumber">2.11.2</span>
    </div>
   </td>
  </tr>
@@ -102,29 +102,30 @@ $(document).ready(function(){initNavTree('m2m__agent_8c.html',''); initResizable
 <code>#include &quot;mmutils.h&quot;</code><br />
 <code>#include &quot;mmagic.h&quot;</code><br />
 <code>#include &quot;mmregdb.h&quot;</code><br />
+<code>#include &quot;mmwlan.h&quot;</code><br />
 <code>#include &quot;mbedtls/mbedtls_config.h&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for m2m_agent.c:</div>
 <div class="dyncontent">
 <div class="center"><img src="m2m__agent_8c__incl.png" border="0" usemap="#am2m__agent_8c" alt=""/></div>
 <map name="am2m__agent_8c" id="am2m__agent_8c">
-<area shape="rect" title="M2M Agent example application." alt="" coords="393,5,504,32"/>
-<area shape="rect" href="mmosal_8h_source.html" title=" " alt="" coords="669,162,756,189"/>
-<area shape="rect" href="mmutils_8h_source.html" title=" " alt="" coords="218,162,306,189"/>
-<area shape="rect" href="mmagic_8h_source.html" title=" " alt="" coords="324,80,411,107"/>
-<area shape="rect" title=" " alt="" coords="487,80,584,107"/>
-<area shape="rect" title=" " alt="" coords="608,80,799,107"/>
-<area shape="rect" title=" " alt="" coords="210,244,293,271"/>
-<area shape="rect" title=" " alt="" coords="545,244,616,271"/>
-<area shape="rect" title=" " alt="" coords="659,244,726,271"/>
-<area shape="rect" title=" " alt="" coords="412,244,483,271"/>
-<area shape="rect" title=" " alt="" coords="317,244,388,271"/>
-<area shape="rect" title=" " alt="" coords="751,244,837,271"/>
-<area shape="rect" title=" " alt="" coords="111,244,186,271"/>
-<area shape="rect" title=" " alt="" coords="330,162,405,189"/>
-<area shape="rect" title=" " alt="" coords="429,155,593,196"/>
-<area shape="rect" href="mmwlan_8h_source.html" title=" " alt="" coords="103,162,194,189"/>
-<area shape="rect" title=" " alt="" coords="5,244,87,271"/>
+<area shape="rect" title="M2M Agent example application." alt="" coords="759,5,869,32"/>
+<area shape="rect" href="mmosal_8h_source.html" title=" " alt="" coords="597,319,684,345"/>
+<area shape="rect" href="mmutils_8h_source.html" title=" " alt="" coords="759,319,847,345"/>
+<area shape="rect" href="mmagic_8h_source.html" title=" " alt="" coords="299,80,385,107"/>
+<area shape="rect" href="mmwlan_8h_source.html" title=" " alt="" coords="521,162,611,189"/>
+<area shape="rect" title=" " alt="" coords="1024,80,1121,107"/>
+<area shape="rect" title=" " alt="" coords="1145,80,1336,107"/>
+<area shape="rect" title=" " alt="" coords="326,393,409,420"/>
+<area shape="rect" title=" " alt="" coords="433,393,504,420"/>
+<area shape="rect" title=" " alt="" coords="529,393,595,420"/>
+<area shape="rect" title=" " alt="" coords="731,393,801,420"/>
+<area shape="rect" title=" " alt="" coords="825,393,896,420"/>
+<area shape="rect" title=" " alt="" coords="620,393,707,420"/>
+<area shape="rect" title=" " alt="" coords="921,393,995,420"/>
+<area shape="rect" title=" " alt="" coords="346,319,421,345"/>
+<area shape="rect" title=" " alt="" coords="5,155,169,196"/>
+<area shape="rect" href="mmpkt_8h_source.html" title=" " alt="" coords="440,244,521,271"/>
 </map>
 </div>
 </div>
@@ -132,6 +133,9 @@ Include dependency graph for m2m_agent.c:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:a85c08015804356c687d26bcc43147a63"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="m2m__agent_8c.html#a85c08015804356c687d26bcc43147a63">app_print_version_info</a> (void)</td></tr>
+<tr class="memdesc:a85c08015804356c687d26bcc43147a63"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prints various version information.  <a href="m2m__agent_8c.html#a85c08015804356c687d26bcc43147a63">More...</a><br /></td></tr>
+<tr class="separator:a85c08015804356c687d26bcc43147a63"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:add3190cf715f513666f4be42874d91e2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="m2m__agent_8c.html#add3190cf715f513666f4be42874d91e2">app_init</a> (void)</td></tr>
 <tr class="memdesc:add3190cf715f513666f4be42874d91e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Main entry point to the application.  <a href="m2m__agent_8c.html#add3190cf715f513666f4be42874d91e2">More...</a><br /></td></tr>
 <tr class="separator:add3190cf715f513666f4be42874d91e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -156,7 +160,37 @@ Functions</h2></td></tr>
 <p>Main entry point to the application. </p>
 <p >This will be invoked in a thread once operating system and hardware initialization has completed. It may return, but it does not have to. </p>
 
-<p class="definition">Definition at line <a class="el" href="m2m__agent_8c_source.html#l00041">41</a> of file <a class="el" href="m2m__agent_8c_source.html">m2m_agent.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="m2m__agent_8c_source.html#l00095">95</a> of file <a class="el" href="m2m__agent_8c_source.html">m2m_agent.c</a>.</p>
+
+</div>
+</div>
+<a id="a85c08015804356c687d26bcc43147a63" name="a85c08015804356c687d26bcc43147a63"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a85c08015804356c687d26bcc43147a63">&#9670;&nbsp;</a></span>app_print_version_info()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void app_print_version_info </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Prints various version information. </p>
+
+<p class="definition">Definition at line <a class="el" href="m2m__agent_8c_source.html#l00039">39</a> of file <a class="el" href="m2m__agent_8c_source.html">m2m_agent.c</a>.</p>
 
 </div>
 </div>
@@ -166,7 +200,7 @@ Functions</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_53f24dd26f9743fa303a83f37b3ec939.html">applications</a></li><li class="navelem"><a class="el" href="dir_903dc44de6aba89209c1231ba3dbceaa.html">mm-ekh08-u575</a></li><li class="navelem"><a class="el" href="dir_7e415e744e0af70d8ea81b7b0a29d162.html">m2m_agent</a></li><li class="navelem"><a class="el" href="dir_909ff23781a840407d9dcd160a4bcfdf.html">src</a></li><li class="navelem"><a class="el" href="m2m__agent_8c.html">m2m_agent.c</a></li>
+    <li class="navelem"><a class="el" href="dir_2271e79b5286dc6f86ff0018a58db5d1.html">applications</a></li><li class="navelem"><a class="el" href="dir_30998d3c2d0e794661365b9b7cc51676.html">mm-ekh08-u575</a></li><li class="navelem"><a class="el" href="dir_b5700e6714c2d025c79c9e95fd240cec.html">m2m_agent</a></li><li class="navelem"><a class="el" href="dir_f17ac1b3a74c8f408855309fcbb8812d.html">src</a></li><li class="navelem"><a class="el" href="m2m__agent_8c.html">m2m_agent.c</a></li>
     <li class="footer">Copyright 2021-2025 Morse Micro </li>
   </ul>
 </div>

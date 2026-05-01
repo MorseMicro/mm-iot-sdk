@@ -26,6 +26,8 @@
 
 #include "porting_assistant.h"
 #include "mmhal_core.h"
+#include "mmhal_app.h"
+#include "mmversion.h"
 
 #if defined(ENABLE_EXT_XTAL_INIT) && ENABLE_EXT_XTAL_INIT
 /* The crystal initialization requires chip specific configuration which we do not have access
@@ -179,8 +181,20 @@ void app_init(void)
     struct test_counters ctrs = { 0 };
     unsigned num_tests = sizeof(test_steps) / sizeof(test_steps[0]);
 
+    char hw_version_string[32] = { 0 };
+
+    bool ok = mmhal_get_hardware_version(hw_version_string, sizeof(hw_version_string));
+    if (!ok)
+    {
+        snprintf(hw_version_string, sizeof(hw_version_string), "%s", "Unknown");
+    }
+
     LOG_WRITE(F_BOLD("\n\nMM-IoT-SDK Porting Assistant\n"));
+    LOG_WRITE("----------------------------\n");
+    LOG_PRINTF("  HW Version:              %s\n", hw_version_string);
+    LOG_PRINTF("  Morselib version:        %s\n", MM_VERSION_BUILDID);
     LOG_WRITE("----------------------------\n\n");
+
     run_test_steps(test_steps, num_tests, &ctrs);
 
     LOG_PRINTF("\n\n%u total test steps. %u passed, %u failed, %u no result, %u skipped\n",

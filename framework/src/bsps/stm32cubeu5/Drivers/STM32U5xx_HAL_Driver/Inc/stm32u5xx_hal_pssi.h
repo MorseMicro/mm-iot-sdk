@@ -53,12 +53,18 @@ extern "C" {
   */
 typedef struct
 {
-  uint32_t  DataWidth;          /* !< Configures the parallel bus width 8 lines or 16 lines */
-  uint32_t  BusWidth;           /* !< Configures the parallel bus width 8 lines or 16 lines */
-  uint32_t  ControlSignal;      /* !< Configures Data enable and Data ready */
-  uint32_t  ClockPolarity;      /* !< Configures the PSSI Input Clock polarity */
-  uint32_t  DataEnablePolarity; /* !< Configures the PSSI Data Enable polarity */
-  uint32_t  ReadyPolarity;      /* !< Configures the PSSI Ready polarity */
+  uint32_t  DataWidth;          /* !< Configures the data width.
+                                      This parameter can be a value of @ref PSSI_DATA_WIDTH. */
+  uint32_t  BusWidth;           /* !< Configures the parallel bus width.
+                                      This parameter can be a value of @ref PSSI_BUS_WIDTH. */
+  uint32_t  ControlSignal;      /* !< Configures Data enable and Data ready.
+                                      This parameter can be a value of @ref ControlSignal_Configuration. */
+  uint32_t  ClockPolarity;      /* !< Configures the PSSI Input Clock polarity.
+                                      This parameter can be a value of @ref Clock_Polarity. */
+  uint32_t  DataEnablePolarity; /* !< Configures the PSSI Data Enable polarity.
+                                      This parameter can be a value of @ref Data_Enable_Polarity. */
+  uint32_t  ReadyPolarity;      /* !< Configures the PSSI Ready polarity.
+                                      This parameter can be a value of @ref Ready_Polarity. */
 
 } PSSI_InitTypeDef;
 
@@ -194,14 +200,14 @@ typedef enum
 /** @defgroup ControlSignal_Configuration ControlSignal Configuration
   * @{
   */
-#define HAL_PSSI_DE_RDY_DISABLE           (0x0U << PSSI_CR_DERDYCFG_Pos) /*!< Neither DE nor RDY are enabled */
-#define HAL_PSSI_RDY_ENABLE               (0x1U << PSSI_CR_DERDYCFG_Pos) /*!< Only RDY enabled */
-#define HAL_PSSI_DE_ENABLE                (0x2U << PSSI_CR_DERDYCFG_Pos) /*!< Only DE enabled */
-#define HAL_PSSI_DE_RDY_ALT_ENABLE        (0x3U << PSSI_CR_DERDYCFG_Pos) /*!< Both RDY and DE alternate functions enabled */
-#define HAL_PSSI_MAP_RDY_BIDIR_ENABLE     (0x4U << PSSI_CR_DERDYCFG_Pos) /*!< Bi-directional on RDY pin */
-#define HAL_PSSI_RDY_MAP_ENABLE           (0x5U << PSSI_CR_DERDYCFG_Pos) /*!< Only RDY enabled, mapped to DE pin */
-#define HAL_PSSI_DE_MAP_ENABLE            (0x6U << PSSI_CR_DERDYCFG_Pos) /*!< Only DE enabled, mapped to RDY pin */
-#define HAL_PSSI_MAP_DE_BIDIR_ENABLE      (0x7U << PSSI_CR_DERDYCFG_Pos) /*!< Bi-directional on DE pin */
+#define HAL_PSSI_DE_RDY_DISABLE           (0x0UL << PSSI_CR_DERDYCFG_Pos) /*!< Neither DE nor RDY are enabled */
+#define HAL_PSSI_RDY_ENABLE               (0x1UL << PSSI_CR_DERDYCFG_Pos) /*!< Only RDY enabled */
+#define HAL_PSSI_DE_ENABLE                (0x2UL << PSSI_CR_DERDYCFG_Pos) /*!< Only DE enabled */
+#define HAL_PSSI_DE_RDY_ALT_ENABLE        (0x3UL << PSSI_CR_DERDYCFG_Pos) /*!< Both RDY and DE alternate functions enabled */
+#define HAL_PSSI_MAP_RDY_BIDIR_ENABLE     (0x4UL << PSSI_CR_DERDYCFG_Pos) /*!< Bi-directional on RDY pin */
+#define HAL_PSSI_RDY_MAP_ENABLE           (0x5UL << PSSI_CR_DERDYCFG_Pos) /*!< Only RDY enabled, mapped to DE pin */
+#define HAL_PSSI_DE_MAP_ENABLE            (0x6UL << PSSI_CR_DERDYCFG_Pos) /*!< Only DE enabled, mapped to RDY pin */
+#define HAL_PSSI_MAP_DE_BIDIR_ENABLE      (0x7UL << PSSI_CR_DERDYCFG_Pos) /*!< Bi-directional on DE pin */
 
 /**
   * @}
@@ -216,7 +222,7 @@ typedef enum
 /**
   * @}
   */
-/** @defgroup Reday_Polarity Reday Polarity
+/** @defgroup Ready_Polarity Ready Polarity
   * @{
   */
 #define HAL_PSSI_RDYPOL_ACTIVE_LOW        0x0U            /*!< Active Low */
@@ -230,8 +236,6 @@ typedef enum
   */
 #define HAL_PSSI_FALLING_EDGE             0x0U            /*!< Fallling Edge */
 #define HAL_PSSI_RISING_EDGE              0x1U            /*!< Rising Edge */
-
-
 /**
   * @}
   */
@@ -257,7 +261,6 @@ typedef enum
 #define PSSI_FLAG_RTT4B             PSSI_SR_RTT4B    /*!< 4 Bytes Fifo Flag*/
 
 
-
 /**
   * @}
   */
@@ -272,7 +275,6 @@ typedef enum
 /**
   * @}
   */
-
 
 
 /**
@@ -323,7 +325,6 @@ typedef enum
   */
 
 #define HAL_PSSI_GET_STATUS(__HANDLE__, __FLAG__) ((__HANDLE__)->Instance->SR & (__FLAG__))
-
 
 
 /* Interrupt & Flag management */
@@ -394,7 +395,6 @@ typedef enum
                                              ((__CONTROL__) == HAL_PSSI_MAP_DE_BIDIR_ENABLE   ))
 
 
-
 /**
   * @brief  Check whether the PSSI Bus Width is valid.
   * @param  __BUSWIDTH__ PSSI Bush width
@@ -432,6 +432,7 @@ typedef enum
 
 #define IS_PSSI_RDY_POLARITY(__RDYPOL__) (((__RDYPOL__) == HAL_PSSI_RDYPOL_ACTIVE_LOW   ) || \
                                           ((__RDYPOL__) == HAL_PSSI_RDYPOL_ACTIVE_HIGH   ))
+
 /**
   * @}
   */
@@ -486,7 +487,7 @@ HAL_StatusTypeDef HAL_PSSI_Abort_DMA(PSSI_HandleTypeDef *hpssi);
 
 /* Peripheral State functions ***************************************************/
 HAL_PSSI_StateTypeDef HAL_PSSI_GetState(const PSSI_HandleTypeDef *hpssi);
-uint32_t               HAL_PSSI_GetError(const PSSI_HandleTypeDef *hpssi);
+uint32_t              HAL_PSSI_GetError(const PSSI_HandleTypeDef *hpssi);
 
 /**
   * @}
@@ -505,7 +506,6 @@ void HAL_PSSI_AbortCpltCallback(PSSI_HandleTypeDef *hpssi);
 /**
   * @}
   */
-
 
 
 /**

@@ -16,6 +16,11 @@
  */
 #define MAX_VAL_LEN 101
 
+bool mmagic_core_tls_is_started(struct mmagic_data *core)
+{
+    return core->tls_data.is_started;
+}
+
 void mmagic_core_tls_load_all(struct mmagic_data *core)
 {
     struct mmagic_tls_data *data = &core->tls_data;

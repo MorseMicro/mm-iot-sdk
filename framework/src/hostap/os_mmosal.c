@@ -47,7 +47,7 @@ int os_get_reltime(struct os_reltime *t)
 
 /*
  * SPDX-SnippetBegin
- * SPDX-License-Identifier: BSD
+ * SPDX-License-Identifier: BSD-3-Clause
  * SPDX-SnippetCopyrightText: Copyright (c) 2005-2006, Jouni Malinen <j@w1.fi>
  * SDPX—SnippetName: Functions from os_internal.c
  */

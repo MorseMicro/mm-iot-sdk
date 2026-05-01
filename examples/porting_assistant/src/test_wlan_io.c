@@ -247,7 +247,6 @@ bool process_sdio_spi_multi_byte_return(int ret, char *log_buf, size_t log_buf_l
     {
         case 0:
             return true;
-            break;
 
         case MMHAL_SDIO_CMD_TIMEOUT:
             /* We shouldn't get this error code in this test, since it should have caused the
@@ -275,9 +274,10 @@ bool process_sdio_spi_multi_byte_return(int ret, char *log_buf, size_t log_buf_l
 
         default:
             TEST_LOG_APPEND("Failed multi byte operation due to an unknown error\n\n");
+            break;
     }
 
-    return TEST_FAILED;
+    return false;
 }
 
 /**

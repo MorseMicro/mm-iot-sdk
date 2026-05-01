@@ -306,7 +306,15 @@ int mmwpas_set_key_ap(void *priv, struct wpa_driver_set_key_params *params)
     struct umac_sta_data *stad = NULL;
     uint16_t vif_id;
 
-    vif_id = umac_ap_get_vif_id(umacd);
+#if !(defined(MM810XB2_HOSTAP_ROM_COMPAT_ENABLED) && MM810XB2_HOSTAP_ROM_COMPAT_ENABLED)
+    if (params->key_flag & KEY_FLAG_NEXT)
+    {
+        MMLOG_DBG("Set_key for next TK ignored\n");
+        return -EOPNOTSUPP;
+    }
+#endif
+
+    vif_id = umac_interface_get_vif_id(umacd, UMAC_INTERFACE_AP);
     if (params->key_flag & KEY_FLAG_PAIRWISE)
     {
         stad = umac_ap_lookup_sta_by_addr(umacd, params->addr);
@@ -532,6 +540,44 @@ static int mmwpas_sta_remove(void *priv, const u8 *addr)
     return 0;
 }
 
+static int mmwpas_sta_deauth(void *priv,
+                             const uint8_t *own_addr,
+                             const uint8_t *addr,
+                             uint16_t reason,
+                             int link_id)
+{
+    MM_UNUSED(link_id);
+
+    struct umac_data *umacd = (struct umac_data *)priv;
+    MMLOG_DBG("Send deauth: " MM_MAC_ADDR_FMT " -> " MM_MAC_ADDR_FMT ", reason=%u\n",
+              MM_MAC_ADDR_VAL(own_addr),
+              MM_MAC_ADDR_VAL(addr),
+              reason);
+
+    struct umac_sta_data *stad = umac_ap_lookup_sta_by_addr(umacd, addr);
+    struct frame_data_deauth_ap deauth_params = {
+        .own_address = own_addr,
+        .sta_address = addr,
+        .reason_code = reason,
+
+        .bip_stad = mm_mac_addr_is_multicast(addr) ? stad : NULL,
+    };
+
+    enum mmwlan_status status =
+        umac_datapath_build_and_tx_mgmt_frame(stad,
+                                              frame_deauthentication_from_ap_build,
+                                              &deauth_params);
+    if (status != MMWLAN_SUCCESS)
+    {
+        MMLOG_WRN("Failed to tx deauth to " MM_MAC_ADDR_FMT ", status %u\n",
+                  MM_MAC_ADDR_VAL(addr),
+                  status);
+        return -1;
+    }
+
+    return 0;
+}
+
 static int mmwpas_hapd_send_eapol(void *priv,
                                   const uint8_t *addr,
                                   const uint8_t *data,
@@ -555,6 +601,10 @@ static int mmwpas_hapd_send_eapol(void *priv,
         return -1;
     }
 
+    MMLOG_DBG("EAPOL addr=" MM_MAC_ADDR_FMT ", bssid=" MM_MAC_ADDR_FMT "\n",
+              MM_MAC_ADDR_VAL(addr),
+              MM_MAC_ADDR_VAL(umac_sta_data_peek_bssid(stad)));
+
 
     struct mmpkt *txbuf =
         umac_datapath_alloc_mmpkt_for_qos_data_tx(sizeof(header) + data_len, MMDRV_PKT_CLASS_MGMT);
@@ -571,7 +621,9 @@ static int mmwpas_hapd_send_eapol(void *priv,
     mmpkt_append_data(txbufview, (uint8_t *)&header, sizeof(header));
     mmpkt_append_data(txbufview, data, data_len);
     mmpkt_close(&txbufview);
-    mmdrv_get_tx_metadata(txbuf)->tid = 7;
+    struct mmdrv_tx_metadata *metadata = mmdrv_get_tx_metadata(txbuf);
+    metadata->tid = MMWLAN_MAX_QOS_TID;
+    metadata->vif_id = umac_interface_get_vif_id(umacd, UMAC_INTERFACE_AP);
 
     enum mmwlan_status status =
         umac_datapath_tx_frame(umacd,
@@ -615,6 +667,24 @@ int mmwpas_get_seq_num(const char *ifname,
 }
 
 
+static int mmwpas_get_inact_sec_ap(void *priv, const u8 *addr)
+{
+    struct umac_data *umacd = (struct umac_data *)priv;
+    struct umac_sta_data *stad = umac_ap_lookup_sta_by_addr(umacd, addr);
+    if (stad == NULL)
+    {
+        return -1;
+    }
+
+    uint32_t last_active_ms = umac_ap_get_stad_last_active(stad);
+    uint32_t now_ms = mmosal_get_time_ms();
+
+    int inact_sec = (now_ms - last_active_ms) / 1000;
+    MMLOG_VRB(MM_MAC_ADDR_FMT " inactive for %d sec\n", MM_MAC_ADDR_VAL(addr), inact_sec);
+    return inact_sec;
+}
+
+
 const struct wpa_driver_ops mmwlan_wpas_ops_ap = {
     .name = UMAC_SUPP_AP_DRIVER_NAME,
     .desc = "",
@@ -635,6 +705,8 @@ const struct wpa_driver_ops mmwlan_wpas_ops_ap = {
     .get_country = mmwpas_get_country,
     .sta_add = mmwpas_sta_add,
     .sta_remove = mmwpas_sta_remove,
+    .sta_deauth = mmwpas_sta_deauth,
     .hapd_send_eapol = mmwpas_hapd_send_eapol,
     .get_seqnum = mmwpas_get_seq_num,
+    .get_inact_sec = mmwpas_get_inact_sec_ap,
 };

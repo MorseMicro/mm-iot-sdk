@@ -106,6 +106,7 @@ struct wpa_sm_ctx {
 	void (*notify_pmksa_cache_entry)(void *ctx,
 					 struct rsn_pmksa_cache_entry *entry);
 	void (*ssid_verified)(void *ctx);
+	void (*sae_pw_id_change)(void *ctx, struct wpabuf_array *wa);
 };
 
 
@@ -140,6 +141,11 @@ enum wpa_sm_conf_params {
 	WPA_PARAM_SSID_PROTECTION,
 	WPA_PARAM_RSN_OVERRIDE,
 	WPA_PARAM_RSN_OVERRIDE_SUPPORT,
+	WPA_PARAM_EAPOL_2_KEY_INFO_SET_MASK,
+	WPA_PARAM_SPP_AMSDU,
+	WPA_PARAM_URNM_MFPR,
+	WPA_PARAM_URNM_MFPR_X20,
+	WPA_PARAM_SAE_PW_ID_CHANGE,
 };
 
 enum wpa_rsn_override {
@@ -257,6 +263,8 @@ struct rsn_pmksa_cache_entry * wpa_sm_pmksa_cache_get(struct wpa_sm *sm,
 						      const u8 *pmkid,
 						      const void *network_ctx,
 						      int akmp);
+int wpa_sm_pmksa_get_pmk(struct wpa_sm *sm, const u8 *aa, const u8 **pmk,
+			 size_t *pmk_len, const u8 **pmkid);
 void wpa_sm_pmksa_cache_remove(struct wpa_sm *sm,
 			       struct rsn_pmksa_cache_entry *entry);
 bool wpa_sm_has_ft_keys(struct wpa_sm *sm, const u8 *md);
@@ -276,6 +284,9 @@ void wpa_sm_set_ptk_kck_kek(struct wpa_sm *sm,
 int wpa_fils_is_completed(struct wpa_sm *sm);
 void wpa_sm_pmksa_cache_reconfig(struct wpa_sm *sm);
 int wpa_sm_set_mlo_params(struct wpa_sm *sm, const struct wpa_sm_mlo *mlo);
+void wpa_sm_set_driver_bss_selection(struct wpa_sm *sm,
+				     bool driver_bss_selection);
+bool wpa_sm_uses_spp_amsdu(struct wpa_sm *sm);
 
 #else /* CONFIG_NO_WPA */
 
@@ -316,6 +327,11 @@ static inline void wpa_sm_set_scard_ctx(struct wpa_sm *sm, void *scard_ctx)
 
 static inline void wpa_sm_set_config(struct wpa_sm *sm,
 				     struct rsn_supp_config *config)
+{
+}
+
+static inline void wpa_sm_set_ssid(struct wpa_sm *sm, const u8 *ssid,
+				   size_t ssid_len)
 {
 }
 
@@ -468,7 +484,7 @@ wpa_sm_pmksa_cache_get(struct wpa_sm *sm, const u8 *aa, const u8 *pmkid,
 	return NULL;
 }
 
-static inline int wpa_sm_has_ptk(struct wpa_sm *sm)
+static inline int wpa_sm_has_ptk_installed(struct wpa_sm *sm)
 {
 	return 0;
 }
@@ -512,6 +528,16 @@ static inline int wpa_sm_set_mlo_params(struct wpa_sm *sm,
 					const struct wpa_sm_mlo *mlo)
 {
 	return 0;
+}
+
+static inline void wpa_sm_set_driver_bss_selection(struct wpa_sm *sm,
+						   bool driver_bss_selection)
+{
+}
+
+static inline bool wpa_sm_uses_spp_amsdu(struct wpa_sm *sm)
+{
+	return false;
 }
 
 #endif /* CONFIG_NO_WPA */
@@ -627,6 +653,8 @@ void wpa_sm_set_test_assoc_ie(struct wpa_sm *sm, struct wpabuf *buf);
 void wpa_sm_set_test_eapol_m2_elems(struct wpa_sm *sm, struct wpabuf *buf);
 void wpa_sm_set_test_eapol_m4_elems(struct wpa_sm *sm, struct wpabuf *buf);
 const u8 * wpa_sm_get_anonce(struct wpa_sm *sm);
+int wpa_sm_set_test_rsnxe_data(struct wpa_sm *sm, struct wpabuf *data,
+			       struct wpabuf *mask);
 unsigned int wpa_sm_get_key_mgmt(struct wpa_sm *sm);
 
 struct wpabuf * fils_build_auth(struct wpa_sm *sm, int dh_group, const u8 *md);
@@ -652,7 +680,9 @@ struct rsn_pmksa_cache * wpa_sm_get_pmksa_cache(struct wpa_sm *sm);
 void wpa_sm_set_cur_pmksa(struct wpa_sm *sm,
 			  struct rsn_pmksa_cache_entry *entry);
 const u8 * wpa_sm_get_auth_addr(struct wpa_sm *sm);
-void wpa_sm_set_driver_bss_selection(struct wpa_sm *sm,
-				     bool driver_bss_selection);
+struct wpabuf * wpa_sm_known_sta_identification(struct wpa_sm *sm, const u8 *aa,
+						u64 timestamp);
+int wpa_sm_install_mlo_group_keys(struct wpa_sm *sm, const u8 *key_data,
+				  size_t key_data_len, u16 added_links_bitmap);
 
 #endif /* WPA_H */

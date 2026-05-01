@@ -1,6 +1,6 @@
 # STM32CubeH7 HAL Driver MCU Component
 
-![latest tag](https://img.shields.io/github/v/tag/STMicroelectronics/stm32h7xx_hal_driver.svg?color=brightgreen)
+![tag](https://img.shields.io/badge/tag-v1.11.6-brightgreen.svg)
 
 ## Overview
 
@@ -33,6 +33,4 @@ The full **STM32CubeH7** MCU package is available [here](https://github.com/STMi
 
 ## Troubleshooting
 
-If you have any issue with the **software content** of this repository, you can file an issue [here](https://github.com/STMicroelectronics/stm32h7xx_hal_driver/issues/new/choose).
-
-For any other question related to the product, the tools, the environment, you can submit a topic on the [ST Community/STM32 MCUs forum](https://community.st.com/s/group/0F90X000000AXsASAW/stm32-mcus).
+Please refer to the [CONTRIBUTING.md](CONTRIBUTING.md) guide.

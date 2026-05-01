@@ -1242,6 +1242,13 @@ static int hostapd_cli_cmd_notify_cw_change(struct wpa_ctrl *ctrl,
 }
 
 
+static int hostapd_cli_cmd_set_bw(struct wpa_ctrl *ctrl,
+				  int argc, char *argv[])
+{
+	return hostapd_cli_cmd(ctrl, "SET_BW", 0, argc, argv);
+}
+
+
 static int hostapd_cli_cmd_enable(struct wpa_ctrl *ctrl, int argc,
 				  char *argv[])
 {
@@ -1832,6 +1839,10 @@ static const struct hostapd_cli_cmd hostapd_cli_commands[] = {
 #endif /* CONFIG_IEEE80211AX */
 	{ "notify_cw_change", hostapd_cli_cmd_notify_cw_change, NULL,
 	  "<channel_width> = 0 - 20 MHz, 1 - 40 MHz, 2 - 80 MHz, 3 - 160 MHz" },
+	{ "set_bw", hostapd_cli_cmd_set_bw, NULL,
+	  "[sec_channel_offset=] [center_freq1=]\n"
+	  "  [center_freq2=] [bandwidth=] [ht|vht]\n"
+	  "  = change channel bandwidth" },
 	{ "hs20_wnm_notif", hostapd_cli_cmd_hs20_wnm_notif, NULL,
 	  "<addr> <url>\n"
 	  "  = send WNM-Notification Subscription Remediation Request" },
@@ -2260,9 +2271,13 @@ static void hostapd_cli_action_ping(void *eloop_ctx, void *timeout_ctx)
 	if (wpa_ctrl_request(ctrl, "PING", 4, buf, &len,
 			     hostapd_cli_action_cb) < 0 ||
 	    len < 4 || os_memcmp(buf, "PONG", 4) != 0) {
-		printf("hostapd did not reply to PING command - exiting\n");
-		eloop_terminate();
-		return;
+		printf("hostapd did not reply to PING command - open a new connection\n");
+		hostapd_cli_close_connection();
+		if (hostapd_cli_reconnect(ctrl_ifname)) {
+			printf("Failed to establish new connection - exit\n");
+			eloop_terminate();
+			return;
+		}
 	}
 	eloop_register_timeout(ping_interval, 0, hostapd_cli_action_ping,
 			       ctrl, NULL);

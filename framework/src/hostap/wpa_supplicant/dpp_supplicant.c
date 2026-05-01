@@ -60,8 +60,9 @@ static int wpas_dpp_process_conf_obj(void *ctx,
 static bool wpas_dpp_tcp_msg_sent(void *ctx, struct dpp_authentication *auth);
 #endif /* CONFIG_DPP2 */
 #ifdef CONFIG_DPP3
+static void wpas_dpp_pb_next(void *eloop_ctx, void *timeout_ctx);
 static void wpas_dpp_pb_discovery_t2e(void *eloop_ctx, void *timeout_ctx);
-#endif /* CONFIG_DPP3*/
+#endif /* CONFIG_DPP3 */
 
 static const u8 broadcast[ETH_ALEN] = { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
 
@@ -1350,6 +1351,16 @@ void wpas_dpp_tx_wait_expire(struct wpa_supplicant *wpa_s)
 	struct dpp_authentication *auth = wpa_s->dpp_auth;
 	int freq;
 
+#ifdef CONFIG_DPP3
+	if (wpa_s->dpp_pb_announcement && wpa_s->dpp_pb_discovery_done) {
+		wpa_printf(MSG_DEBUG,
+			   "DPP: Failed to send push button announcement");
+		if (eloop_register_timeout(0, 0, wpas_dpp_pb_next,
+					   wpa_s, NULL) < 0)
+			wpas_dpp_push_button_stop(wpa_s);
+	}
+#endif /* CONFIG_DPP3 */
+
 	if (wpa_s->dpp_listen_on_tx_expire && auth && auth->neg_freq) {
 		wpa_printf(MSG_DEBUG,
 			   "DPP: Start listen on neg_freq %u MHz based on TX wait expiration on the previous channel",
@@ -1411,7 +1422,8 @@ static struct wpa_ssid * wpas_dpp_add_network(struct wpa_supplicant *wpa_s,
 		if (res == 0 &&
 		    !(capa.key_mgmt_iftype[WPA_IF_STATION] &
 		      WPA_DRIVER_CAPA_KEY_MGMT_SAE) &&
-		    !(wpa_s->drv_flags & WPA_DRIVER_FLAGS_SAE)) {
+		    !(wpa_s->drv_flags & WPA_DRIVER_FLAGS_SAE) &&
+		    !(wpa_s->drv_flags2 & WPA_DRIVER_FLAGS2_SAE_OFFLOAD_STA)) {
 			wpa_printf(MSG_DEBUG,
 				   "DPP: SAE not supported by the driver");
 			return NULL;
@@ -1428,6 +1440,21 @@ static struct wpa_ssid * wpas_dpp_add_network(struct wpa_supplicant *wpa_s,
 		return NULL;
 	wpas_notify_network_added(wpa_s, ssid);
 	wpa_config_set_network_defaults(ssid);
+	if (wpa_s->drv_capa_known &&
+	    (wpa_s->drv_enc & WPA_DRIVER_CAPA_ENC_GCMP)) {
+		ssid->pairwise_cipher |= WPA_CIPHER_GCMP;
+		ssid->group_cipher |= WPA_CIPHER_GCMP;
+	}
+	if (wpa_s->drv_capa_known &&
+	    (wpa_s->drv_enc & WPA_DRIVER_CAPA_ENC_GCMP_256)) {
+		ssid->pairwise_cipher |= WPA_CIPHER_GCMP_256;
+		ssid->group_cipher |= WPA_CIPHER_GCMP_256;
+	}
+	if (wpa_s->drv_capa_known &&
+	    (wpa_s->drv_enc & WPA_DRIVER_CAPA_ENC_CCMP_256)) {
+		ssid->pairwise_cipher |= WPA_CIPHER_CCMP_256;
+		ssid->group_cipher |= WPA_CIPHER_CCMP_256;
+	}
 	ssid->disabled = 1;
 
 	ssid->ssid = os_malloc(conf->ssid_len);
@@ -5671,17 +5698,6 @@ int wpas_dpp_ca_set(struct wpa_supplicant *wpa_s, const char *cmd)
 #define DPP_PB_ANNOUNCE_PER_CHAN 3
 
 static int wpas_dpp_pb_announce(struct wpa_supplicant *wpa_s, int freq);
-static void wpas_dpp_pb_next(void *eloop_ctx, void *timeout_ctx);
-
-void wpas_dpp_push_button_tx_wait_expire(struct wpa_supplicant *wpa_s)
-{
-	if (!wpa_s->dpp_pb_announcement || wpa_s->dpp_pb_discovery_done)
-		return;
-
-	wpa_printf(MSG_DEBUG, "DPP: Failed to send push button announcement");
-	if (eloop_register_timeout(0, 0, wpas_dpp_pb_next, wpa_s, NULL) < 0)
-		wpas_dpp_push_button_stop(wpa_s);
-}
 
 
 static void wpas_dpp_pb_tx_status(struct wpa_supplicant *wpa_s,

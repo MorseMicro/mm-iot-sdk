@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['binary_20semaphores_0',['Binary semaphores',['../group__MMOSAL__SEMB.html',1,'']]]
+  ['counting_20semaphores_0',['Counting semaphores',['../group__MMOSAL__SEM.html',1,'']]]
 ];

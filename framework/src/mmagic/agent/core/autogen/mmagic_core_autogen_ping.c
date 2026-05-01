@@ -16,6 +16,11 @@
  */
 #define MAX_VAL_LEN 101
 
+bool mmagic_core_ping_is_started(struct mmagic_data *core)
+{
+    return core->ping_data.is_started;
+}
+
 void mmagic_core_ping_load_all(struct mmagic_data *core)
 {
     struct mmagic_ping_data *data = &core->ping_data;

@@ -21,6 +21,7 @@
 #include "mmipal.h"
 #include "mmconfig.h"
 #include "mmhal_app.h"
+#include "mmutils.h"
 #include "mm_app_loadconfig.h"
 #include "mm_app_common.h"
 
@@ -30,7 +31,8 @@
 #endif
 
 /** Binary semaphore used to start user_main() once the link comes up. */
-static struct mmosal_semb *link_established = NULL;
+static struct mmosal_semb *attempting_link = NULL;
+static bool link_success = false;
 
 /**
  * WLAN station status callback, invoked when WLAN STA state changes.
@@ -130,13 +132,30 @@ static void link_status_callback(const struct mmipal_link_status *link_status)
             }
         }
         printf("\n");
-
-        mmosal_semb_give(link_established);
+        /* Indicate to app_wlan_start that link up was successful */
+        link_success = true;
     }
     else
     {
         printf("Link is down. Time: %lu ms\n", time_ms);
+        /* Indicate to app_wlan_start that link up was unsuccessful */
+        link_success = false;
     }
+
+    mmosal_semb_give(attempting_link);
+}
+
+static void fatal_error_handler(struct mmwlan_fatal_error_args *args)
+{
+    MM_UNUSED(args);
+    /* This function is invoked when an MMWLAN error occurs that cannot be automatically recovered
+     * from. This function is just a placeholder – application-specific handling of such errors
+     * should be added here. For further information, see the documentation for
+     * mmwlan_register_fatal_error_handler(). */
+    MMOSAL_DEV_ASSERT(true);
+    /* Indicate to app_wlan_start that link up was unsuccessful */
+    link_success = false;
+    mmosal_semb_give(attempting_link);
 }
 
 void app_print_version_info(void)
@@ -193,8 +212,8 @@ void app_print_version_info(void)
 void app_wlan_init(void)
 {
     /* Ensure we don't call twice */
-    MMOSAL_ASSERT(link_established == NULL);
-    link_established = mmosal_semb_create("link_established");
+    MMOSAL_ASSERT(attempting_link == NULL);
+    attempting_link = mmosal_semb_create("attempting_link");
 
     /* Initialize mbedTLS threading (required if MBEDTLS_THREADING_ALT is defined) */
 #ifdef MBEDTLS_THREADING_ALT
@@ -203,6 +222,8 @@ void app_wlan_init(void)
 
     /* Initialize MMWLAN interface */
     mmwlan_init();
+    struct mmwlan_fatal_error_args arg;
+    mmwlan_register_fatal_error_handler(fatal_error_handler, &arg);
     mmwlan_set_channel_list(load_channel_list());
 
     /* Boot the WLAN interface so that we can retrieve the firmware version. */
@@ -248,8 +269,7 @@ void app_wlan_start(void)
     /* Wait for link status callback.
      * Use a binary semaphore to block us until Link is up.
      */
-    mmosal_semb_wait(link_established, UINT32_MAX);
-
+    mmosal_semb_wait(attempting_link, UINT32_MAX);
     /* Wi-Fi link is now established, return to caller */
 }
 

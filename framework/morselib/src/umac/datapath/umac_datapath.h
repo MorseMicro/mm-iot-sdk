@@ -21,19 +21,18 @@
 #endif
 
 
+struct umac_datapath_ops;
+
+
+extern const struct umac_datapath_ops *const umac_datapath_ops_ap;
+
+extern const struct umac_datapath_ops *const umac_datapath_ops_sta;
+
+
 void umac_datapath_init(struct umac_data *umacd);
 
 
 void umac_datapath_deinit(struct umac_data *umacd);
-
-
-void umac_datapath_configure_sta_mode(struct umac_data *umacd);
-
-
-void umac_datapath_configure_ap_mode(struct umac_data *umacd);
-
-
-void umac_datapath_configure_scan_mode(struct umac_data *umacd);
 
 
 void umac_datapath_stad_init(struct umac_sta_data *stad);
@@ -164,5 +163,25 @@ enum mmwlan_status umac_datapath_register_rx_frame_cb(struct umac_data *umacd,
 
 
 void umac_datapath_set_filter_all_beacons(struct umac_data *umacd, bool filter);
+
+
+struct MM_PACKED umac_8023_hdr
+{
+    struct
+    {
+
+        uint8_t dest_addr[DOT11_MAC_ADDR_LEN];
+
+        uint8_t src_addr[DOT11_MAC_ADDR_LEN];
+
+        uint16_t ethertype_be;
+    };
+};
+
+
+void umac_datapath_generate_8023_header(const uint8_t *dest_addr,
+                                        const uint8_t *src_addr,
+                                        uint16_t ethertype,
+                                        struct umac_8023_hdr *header);
 
 

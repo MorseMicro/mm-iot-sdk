@@ -71,7 +71,7 @@ enum mmagic_llc_packet_type
     /** This is an unsolicited event from Agent to Controller. */
     MMAGIC_LLC_PTYPE_EVENT = 2,
 
-    /** An unspecified error condition has occured */
+    /** An unspecified error condition has occurred */
     MMAGIC_LLC_PTYPE_ERROR = 3,
 
     /** Instructs the agent to reset itself */
@@ -107,13 +107,13 @@ struct MM_PACKED mmagic_llc_header
 
 struct MM_PACKED mmagic_llc_sync_req
 {
-    /** Token to match respones to requests. */
+    /** Token to match responses to requests. */
     uint8_t token[4];
 };
 
 struct MM_PACKED mmagic_llc_sync_rsp
 {
-    /** Token to match respones to requests. */
+    /** Token to match responses to requests. */
     uint8_t token[4];
     /** The last seen sequence number for Controller to Agent transmissions. */
     uint8_t last_seen_seq;
@@ -186,7 +186,7 @@ void mmagic_llc_agent_deinit(struct mmagic_llc_agent *agent_llc);
 
 /**
  * This function will construct and transmit a packet to notify the controller that the agent has
- * started. The main purpose of this start notication packet is to allow the controller to detect
+ * started. The main purpose of this start notification packet is to allow the controller to detect
  * when the agent has been reset.
  *
  * @note This will block until the start notification packet has been transmitted.

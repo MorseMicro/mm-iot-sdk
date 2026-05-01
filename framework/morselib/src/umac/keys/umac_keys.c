@@ -34,10 +34,10 @@ static enum mmwlan_status umac_keys_mmdrv_install_key(uint16_t vif_id,
 
         MMLOG_DBG("Installing key (type=%u)\n", key->key_type);
 
-        int ret = mmdrv_install_key(vif_id, aid, &key_conf);
-        if (ret != 0)
+        enum mmwlan_status status = mmdrv_install_key(vif_id, aid, &key_conf);
+        if (status != MMWLAN_SUCCESS)
         {
-            return MMWLAN_ERROR;
+            return status;
         }
     }
     else
@@ -63,7 +63,7 @@ enum mmwlan_status umac_keys_install_key(struct umac_sta_data *stad,
         return MMWLAN_ERROR;
     }
 
-    MMLOG_DBG("Installing key %u\n", key->key_id);
+    MMLOG_DBG("Installing key %u of type %u\n", key->key_id, key->key_type);
 
     return umac_keys_mmdrv_install_key(vif_id, aid, key);
 }
@@ -85,15 +85,16 @@ enum mmwlan_status umac_keys_uninstall_key(struct umac_sta_data *stad,
 
     if ((key_type == UMAC_KEY_TYPE_PAIRWISE) || (key_type == UMAC_KEY_TYPE_GROUP))
     {
-        int ret = mmdrv_disable_key(vif_id, aid, key_id, (key_type == UMAC_KEY_TYPE_PAIRWISE));
-        if (ret != 0)
+        enum mmwlan_status status =
+            mmdrv_disable_key(vif_id, aid, key_id, (key_type == UMAC_KEY_TYPE_PAIRWISE));
+        if (status != MMWLAN_SUCCESS)
         {
             MMLOG_DBG("Failed to disable key id: %d\n", key_id);
-            return MMWLAN_ERROR;
+            return status;
         }
     }
 
-    MMLOG_DBG("Successfully uninstalled key %u\n", key_id);
+    MMLOG_DBG("Successfully uninstalled key %u (type %u)\n", key_id, key_type);
 
     return MMWLAN_SUCCESS;
 }
@@ -159,4 +160,10 @@ void umac_keys_increment_tx_seq(struct umac_sta_data *stad, uint8_t key_id)
 {
     struct umac_keys_sta_data *sta_data = umac_sta_data_get_keys(stad);
     connection_keys_increment_tx_seq(&sta_data->keys, key_id);
+}
+
+uint64_t umac_keys_get_tx_seq(struct umac_sta_data *stad, uint8_t key_id)
+{
+    struct umac_keys_sta_data *sta_data = umac_sta_data_get_keys(stad);
+    return connection_keys_get_tx_seq(&sta_data->keys, key_id);
 }

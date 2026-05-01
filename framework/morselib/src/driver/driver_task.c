@@ -91,6 +91,7 @@ void driver_task_schedule_notification_at(struct driver_data *driverd,
                                           uint32_t timeout_at_ms)
 {
     uint32_t ii;
+    bool signal_driver = true;
 
     MMOSAL_TASK_ENTER_CRITICAL();
 
@@ -98,12 +99,13 @@ void driver_task_schedule_notification_at(struct driver_data *driverd,
     {
         if (driverd->driver_task.scheduled_evts[ii].evt == evt)
         {
+            if (driverd->driver_task.scheduled_evts[ii].timeout_at_ms == timeout_at_ms)
+            {
+
+                signal_driver = false;
+                goto exit;
+            }
             driverd->driver_task.scheduled_evts[ii].timeout_at_ms = timeout_at_ms;
-
-
-            mmosal_semb_give(driverd->driver_task.pending_semb);
-
-            DRV_TASK_TRACE("reschd %u", evt);
             goto exit;
         }
     }
@@ -114,11 +116,6 @@ void driver_task_schedule_notification_at(struct driver_data *driverd,
         {
             driverd->driver_task.scheduled_evts[ii].evt = evt;
             driverd->driver_task.scheduled_evts[ii].timeout_at_ms = timeout_at_ms;
-
-
-            mmosal_semb_give(driverd->driver_task.pending_semb);
-
-            DRV_TASK_TRACE("schd %u", evt);
             goto exit;
         }
     }
@@ -128,6 +125,14 @@ void driver_task_schedule_notification_at(struct driver_data *driverd,
 
 exit:
     MMOSAL_TASK_EXIT_CRITICAL();
+
+    if (signal_driver)
+    {
+
+        mmosal_semb_give(driverd->driver_task.pending_semb);
+        DRV_TASK_TRACE("schd %u", evt);
+    }
+    MMLOG_INF("Scheduled evt %u at timeout %u", evt, timeout_at_ms);
 }
 
 void driver_task_main(void *arg)
@@ -147,6 +152,15 @@ void driver_task_main(void *arg)
         {
             MMLOG_DBG("Pending evts: %08lx\n", driverd->driver_task.pending_evts);
             DRV_TASK_TRACE("Pending evts: %x", driverd->driver_task.pending_evts);
+
+            if (driver_task_notification_check_and_clear(driverd, DRV_EVT_STOP_NOTICATION))
+            {
+                coredump_log_assert_info(driverd);
+
+
+                mmdrv_host_hw_restart_required();
+            }
+
             if (driver_task_notification_check(driverd, DRV_EVT_SHUTDOWN))
             {
                 MMLOG_INF("Driver task shutting down\n");
@@ -285,4 +299,22 @@ bool driver_task_notification_check(struct driver_data *driverd, enum driver_tas
               driverd->driver_task.pending_evts,
               driverd->driver_task.pending_evts & mask);
     return (driverd->driver_task.pending_evts & mask) != 0;
+}
+
+bool driver_task_drop_scheduled_event(struct driver_data *driverd, enum driver_task_event evt)
+{
+    bool ret = false;
+    MMOSAL_TASK_ENTER_CRITICAL();
+    for (int i = 0; i < MAX_SCHEDULED_EVTS; i++)
+    {
+        if (evt == driverd->driver_task.scheduled_evts[i].evt)
+        {
+            driverd->driver_task.scheduled_evts[i].evt = DRV_EVT_NONE;
+            driverd->driver_task.scheduled_evts[i].timeout_at_ms = 0;
+            ret = true;
+            break;
+        }
+    }
+    MMOSAL_TASK_EXIT_CRITICAL();
+    return ret;
 }

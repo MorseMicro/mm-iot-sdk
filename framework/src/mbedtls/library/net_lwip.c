@@ -33,6 +33,7 @@
 #include "lwip/sys.h"
 #include "lwip/netdb.h"
 
+#include "mmosal.h"
 #define IS_EINTR(ret) ((ret) == EINTR)
 
 /*
@@ -456,7 +457,8 @@ int mbedtls_net_recv(void *ctx, unsigned char *buf, size_t len)
     }
 
     /* Clear RX ready prior to reading from the socket. */
-    atomic_store(&((mbedtls_net_context *)ctx)->rx_data_ready, 0);
+    ((mbedtls_net_context *)ctx)->rx_data_ready = false;
+    MMPORT_MEM_SYNC();
 
     ret = (int)lwip_read(fd, buf, len);
 
@@ -601,7 +603,9 @@ void mbedtls_net_free(mbedtls_net_context *ctx)
 static void mbedtls_net_rx_cb(void *arg)
 {
     struct mbedtls_net_context *ctx = (struct mbedtls_net_context *)arg;
-    atomic_store(&ctx->rx_data_ready, 1);
+
+    ctx->rx_data_ready = true;
+
     if (ctx->rx_callback != NULL)
     {
         ctx->rx_callback(ctx, ctx->rx_callback_arg);
@@ -626,7 +630,10 @@ int mbedtls_net_register_rx_callback(struct mbedtls_net_context *ctx,
 
 int mbedtls_net_check_and_clear_rx_ready(mbedtls_net_context *ctx)
 {
-    bool ready = atomic_exchange(&(ctx->rx_data_ready), 0);
+    MMOSAL_TASK_ENTER_CRITICAL();
+    bool ready = ctx->rx_data_ready;
+    ctx->rx_data_ready = false;
+    MMOSAL_TASK_EXIT_CRITICAL();
     return ready;
 }
 

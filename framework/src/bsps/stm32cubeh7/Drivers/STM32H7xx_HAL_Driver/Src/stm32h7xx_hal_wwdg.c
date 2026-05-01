@@ -51,17 +51,17 @@
         (++) max time (mS) = 1000 * (Counter - 0x40) / WWDG clock
     (+) Typical values (case of STM32H74x/5x devices):
         (++) Counter min (T[5;0] = 0x00) @100MHz (PCLK1) with zero prescaler:
-             max timeout before reset: approximately 40.96us
+             max timeout before reset: approximately 40.96µs
         (++) Counter max (T[5;0] = 0x3F) @100MHz (PCLK1) with prescaler dividing by 128:
              max timeout before reset: approximately 335.54ms
     (+) Typical values (case of STM32H7Ax/Bx devices):
         (++) Counter min (T[5;0] = 0x00) @140MHz (PCLK1) with zero prescaler:
-             max timeout before reset: approximately 29.25us
+             max timeout before reset: approximately 29.25µs
         (++) Counter max (T[5;0] = 0x3F) @140MHz (PCLK1) with prescaler dividing by 128:
              max timeout before reset: approximately 239.67ms
     (+) Typical values (case of STM32H72x/3x devices):
         (++) Counter min (T[5;0] = 0x00) @125MHz (PCLK1) with zero prescaler:
-             max timeout before reset: approximately 32.76us
+             max timeout before reset: approximately 32.76µs
         (++) Counter max (T[5;0] = 0x3F) @125MHz (PCLK1) with prescaler dividing by 128:
              max timeout before reset: approximately 268.43ms
 
@@ -104,7 +104,7 @@
     and a pointer to the user callback function.
 
     (+) Use function HAL_WWDG_UnRegisterCallback() to reset a callback to
-    the default weak (surcharged) function. HAL_WWDG_UnRegisterCallback()
+    the default weak function. HAL_WWDG_UnRegisterCallback()
     takes as parameters the HAL peripheral handle and the Callback ID.
     This function allows to reset following callbacks:
         (++) EwiCallback : callback for  Early WakeUp Interrupt.
@@ -112,14 +112,14 @@
 
     [..]
     When calling HAL_WWDG_Init function, callbacks are reset to the
-    corresponding legacy weak (surcharged) functions:
+    corresponding legacy weak functions:
     HAL_WWDG_EarlyWakeupCallback() and HAL_WWDG_MspInit() only if they have
     not been registered before.
 
     [..]
     When compilation define USE_HAL_WWDG_REGISTER_CALLBACKS is set to 0 or
     not defined, the callback registering feature is not available
-    and weak (surcharged) callbacks are used.
+    and weak (overridden) callbacks are used.
 
     *** WWDG HAL driver macros list ***
     ===================================
@@ -131,7 +131,6 @@
       (+) __HAL_WWDG_ENABLE_IT: Enable the WWDG early wakeup interrupt
 
   @endverbatim
-  ******************************************************************************
   */
 
 /* Includes ------------------------------------------------------------------*/
@@ -250,7 +249,7 @@ __weak void HAL_WWDG_MspInit(WWDG_HandleTypeDef *hwwdg)
 #if (USE_HAL_WWDG_REGISTER_CALLBACKS == 1)
 /**
   * @brief  Register a User WWDG Callback
-  *         To be used instead of the weak (surcharged) predefined callback
+  *         To be used instead of the weak (overridden) predefined callback
   * @param  hwwdg WWDG handle
   * @param  CallbackID ID of the callback to be registered
   *         This parameter can be one of the following values:
@@ -292,7 +291,7 @@ HAL_StatusTypeDef HAL_WWDG_RegisterCallback(WWDG_HandleTypeDef *hwwdg, HAL_WWDG_
 
 /**
   * @brief  Unregister a WWDG Callback
-  *         WWDG Callback is redirected to the weak (surcharged) predefined callback
+  *         WWDG Callback is redirected to the weak (overridden) predefined callback
   * @param  hwwdg WWDG handle
   * @param  CallbackID ID of the callback to be registered
   *         This parameter can be one of the following values:
@@ -427,3 +426,4 @@ __weak void HAL_WWDG_EarlyWakeupCallback(WWDG_HandleTypeDef *hwwdg)
 /**
   * @}
   */
+

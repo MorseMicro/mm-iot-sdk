@@ -13,7 +13,7 @@
 
 #include "mmutils.h"
 
-enum mmagic_subsystems
+enum MM_PACKED mmagic_subsystems
 {
     mmagic_subsystem_reserved = 0,
     mmagic_wlan = 1,
@@ -21,13 +21,13 @@ enum mmagic_subsystems
     mmagic_ping = 3,
     mmagic_iperf = 4,
     mmagic_sys = 5,
-    mmagic_tcp = 6,
+    mmagic_socket = 6,
     mmagic_tls = 7,
     mmagic_ntp = 8,
     mmagic_mqtt = 9,
 };
 
-enum mmagic_wlan_cmds
+enum MM_PACKED mmagic_wlan_cmds
 {
     mmagic_wlan_cmd_get = 0,
     mmagic_wlan_cmd_set = 1,
@@ -41,22 +41,18 @@ enum mmagic_wlan_cmds
     mmagic_wlan_cmd_wnm_sleep = 13,
     mmagic_wlan_cmd_beacon_monitor_enable = 14,
     mmagic_wlan_cmd_beacon_monitor_disable = 15,
-    mmagic_wlan_cmd_standby_enter = 16,
-    mmagic_wlan_cmd_standby_exit = 17,
-    mmagic_wlan_cmd_standby_set_status_payload = 18,
-    mmagic_wlan_cmd_standby_set_wake_filter = 19,
-    mmagic_wlan_cmd_standby_set_config = 20,
     mmagic_wlan_cmd_get_sta_status = 21,
+    mmagic_wlan_cmd_dpp_push_button_start = 22,
+    mmagic_wlan_cmd_dpp_stop = 23,
 };
 
-enum mmagic_wlan_events
+enum MM_PACKED mmagic_wlan_events
 {
     mmagic_wlan_event_beacon_rx = 1,
-    mmagic_wlan_event_standby_exit = 2,
     mmagic_wlan_event_sta_event = 3,
 };
 
-enum mmagic_ip_cmds
+enum MM_PACKED mmagic_ip_cmds
 {
     mmagic_ip_cmd_get = 0,
     mmagic_ip_cmd_set = 1,
@@ -64,18 +60,14 @@ enum mmagic_ip_cmds
     mmagic_ip_cmd_commit = 3,
     mmagic_ip_cmd_status = 8,
     mmagic_ip_cmd_reload = 9,
-    mmagic_ip_cmd_enable_tcp_keepalive_offload = 10,
-    mmagic_ip_cmd_disable_tcp_keepalive_offload = 11,
-    mmagic_ip_cmd_set_whitelist_filter = 12,
-    mmagic_ip_cmd_clear_whitelist_filter = 13,
 };
 
-enum mmagic_ip_events
+enum MM_PACKED mmagic_ip_events
 {
     mmagic_ip_event_link_status = 4,
 };
 
-enum mmagic_ping_cmds
+enum MM_PACKED mmagic_ping_cmds
 {
     mmagic_ping_cmd_get = 0,
     mmagic_ping_cmd_set = 1,
@@ -84,7 +76,7 @@ enum mmagic_ping_cmds
     mmagic_ping_cmd_run = 8,
 };
 
-enum mmagic_iperf_cmds
+enum MM_PACKED mmagic_iperf_cmds
 {
     mmagic_iperf_cmd_get = 0,
     mmagic_iperf_cmd_set = 1,
@@ -93,7 +85,7 @@ enum mmagic_iperf_cmds
     mmagic_iperf_cmd_run = 8,
 };
 
-enum mmagic_sys_cmds
+enum MM_PACKED mmagic_sys_cmds
 {
     mmagic_sys_cmd_get = 0,
     mmagic_sys_cmd_set = 1,
@@ -102,31 +94,32 @@ enum mmagic_sys_cmds
     mmagic_sys_cmd_reset = 8,
     mmagic_sys_cmd_deep_sleep = 9,
     mmagic_sys_cmd_get_version = 10,
+    mmagic_sys_cmd_get_stats = 11,
 };
 
-enum mmagic_tcp_cmds
+enum MM_PACKED mmagic_socket_cmds
 {
-    mmagic_tcp_cmd_get = 0,
-    mmagic_tcp_cmd_set = 1,
-    mmagic_tcp_cmd_load = 2,
-    mmagic_tcp_cmd_commit = 3,
-    mmagic_tcp_cmd_connect = 8,
-    mmagic_tcp_cmd_bind = 9,
-    mmagic_tcp_cmd_recv = 10,
-    mmagic_tcp_cmd_send = 11,
-    mmagic_tcp_cmd_read_poll = 12,
-    mmagic_tcp_cmd_write_poll = 13,
-    mmagic_tcp_cmd_accept = 14,
-    mmagic_tcp_cmd_close = 15,
-    mmagic_tcp_cmd_set_rx_ready_evt_enabled = 16,
+    mmagic_socket_cmd_get = 0,
+    mmagic_socket_cmd_set = 1,
+    mmagic_socket_cmd_load = 2,
+    mmagic_socket_cmd_commit = 3,
+    mmagic_socket_cmd_connect = 8,
+    mmagic_socket_cmd_bind = 9,
+    mmagic_socket_cmd_recv = 10,
+    mmagic_socket_cmd_send = 11,
+    mmagic_socket_cmd_read_poll = 12,
+    mmagic_socket_cmd_write_poll = 13,
+    mmagic_socket_cmd_accept = 14,
+    mmagic_socket_cmd_close = 15,
+    mmagic_socket_cmd_set_rx_ready_evt_enabled = 16,
 };
 
-enum mmagic_tcp_events
+enum MM_PACKED mmagic_socket_events
 {
-    mmagic_tcp_event_rx_ready = 1,
+    mmagic_socket_event_rx_ready = 1,
 };
 
-enum mmagic_tls_cmds
+enum MM_PACKED mmagic_tls_cmds
 {
     mmagic_tls_cmd_get = 0,
     mmagic_tls_cmd_set = 1,
@@ -134,7 +127,7 @@ enum mmagic_tls_cmds
     mmagic_tls_cmd_commit = 3,
 };
 
-enum mmagic_ntp_cmds
+enum MM_PACKED mmagic_ntp_cmds
 {
     mmagic_ntp_cmd_get = 0,
     mmagic_ntp_cmd_set = 1,
@@ -144,7 +137,7 @@ enum mmagic_ntp_cmds
     mmagic_ntp_cmd_get_time = 9,
 };
 
-enum mmagic_mqtt_cmds
+enum MM_PACKED mmagic_mqtt_cmds
 {
     mmagic_mqtt_cmd_get = 0,
     mmagic_mqtt_cmd_set = 1,
@@ -156,14 +149,14 @@ enum mmagic_mqtt_cmds
     mmagic_mqtt_cmd_stop_agent = 11,
 };
 
-enum mmagic_mqtt_events
+enum MM_PACKED mmagic_mqtt_events
 {
     mmagic_mqtt_event_message_received = 5,
     mmagic_mqtt_event_broker_connection = 6,
 };
 
 /** Connection security type. */
-enum mmagic_security_type
+enum MM_PACKED mmagic_security_type
 {
     /** Simultaneous Authentication of Equals (password-based authentication). */
     MMAGIC_SECURITY_TYPE_SAE = 0,
@@ -174,7 +167,7 @@ enum mmagic_security_type
 };
 
 /** Protected management frame mode. */
-enum mmagic_pmf_mode
+enum MM_PACKED mmagic_pmf_mode
 {
     /** Protected management frames must be used. */
     MMAGIC_PMF_MODE_REQUIRED = 0,
@@ -183,7 +176,7 @@ enum mmagic_pmf_mode
 };
 
 /** Enumeration of supported 802.11 power save modes. */
-enum mmagic_power_save_mode
+enum MM_PACKED mmagic_power_save_mode
 {
     /** Power save disabled. */
     MMAGIC_POWER_SAVE_MODE_DISABLED = 0,
@@ -192,7 +185,7 @@ enum mmagic_power_save_mode
 };
 
 /** Enumeration of MCS10 modes. */
-enum mmagic_mcs10_mode
+enum MM_PACKED mmagic_mcs10_mode
 {
     /** MCS10 is not used. */
     MMAGIC_MCS10_MODE_DISABLED = 0,
@@ -203,7 +196,7 @@ enum mmagic_mcs10_mode
 };
 
 /** Enumeration of duty cycle modes. */
-enum mmagic_duty_cycle_mode
+enum MM_PACKED mmagic_duty_cycle_mode
 {
     /** Duty cycle air time is evenly spread. */
     MMAGIC_DUTY_CYCLE_MODE_SPREAD = 0,
@@ -212,7 +205,7 @@ enum mmagic_duty_cycle_mode
 };
 
 /** Enumeration of S1G non-AP STA types. */
-enum mmagic_station_type
+enum MM_PACKED mmagic_station_type
 {
     /** Sensor type. */
     MMAGIC_STATION_TYPE_SENSOR = 0,
@@ -221,7 +214,7 @@ enum mmagic_station_type
 };
 
 /** Enumeration of return status codes. */
-enum mmagic_status
+enum MM_PACKED mmagic_status
 {
     /** Operation was successful. */
     MMAGIC_STATUS_OK = 0,
@@ -239,7 +232,7 @@ enum mmagic_status
     MMAGIC_STATUS_NOT_FOUND = 6,
     /** Specified operation is not supported. */
     MMAGIC_STATUS_NOT_SUPPORTED = 7,
-    /** An error occured during transmission. */
+    /** An error occurred during transmission. */
     MMAGIC_STATUS_TX_ERROR = 8,
     /** Failed due to memory allocation failure. */
     MMAGIC_STATUS_NO_MEM = 9,
@@ -292,10 +285,14 @@ enum mmagic_status
     MMAGIC_STATUS_NOT_INITIALIZED = 31,
     /** Operation failed due to a version mismatch. */
     MMAGIC_STATUS_BAD_VERSION = 32,
+    /** An error occurred during the DPP push button process. */
+    MMAGIC_STATUS_DPP_PB_ERROR = 33,
+    /** A session overlap occurred during the DPP push button process. */
+    MMAGIC_STATUS_DPP_PB_SESSION_OVERLAP = 34,
 };
 
 /** Mode to use when running the iperf. */
-enum mmagic_iperf_mode
+enum MM_PACKED mmagic_iperf_mode
 {
     /** Iperf UDP server (RX). */
     MMAGIC_IPERF_MODE_UDP_SERVER = 0,
@@ -308,7 +305,7 @@ enum mmagic_iperf_mode
 };
 
 /** Current state of iperf session. */
-enum mmagic_iperf_state
+enum MM_PACKED mmagic_iperf_state
 {
     /** Iperf session not started. */
     MMAGIC_IPERF_STATE_NOT_STARTED = 0,
@@ -321,7 +318,7 @@ enum mmagic_iperf_state
 };
 
 /** Status of the IP link. */
-enum mmagic_ip_link_state
+enum MM_PACKED mmagic_ip_link_state
 {
     /** Link is down because the interface is down or DHCP has not yet completed. */
     MMAGIC_IP_LINK_STATE_DOWN = 0,
@@ -330,7 +327,7 @@ enum mmagic_ip_link_state
 };
 
 /** Deep sleep modes for the agent MCU. */
-enum mmagic_deep_sleep_mode
+enum MM_PACKED mmagic_deep_sleep_mode
 {
     /** Deep sleep is disabled. */
     MMAGIC_DEEP_SLEEP_MODE_DISABLED = 0,
@@ -340,29 +337,8 @@ enum mmagic_deep_sleep_mode
     MMAGIC_DEEP_SLEEP_MODE_HARDWARE = 2,
 };
 
-/** Reasons for exiting standby mode. */
-enum mmagic_standby_mode_exit_reason
-{
-    /** Standby mode was exited manually through a call to standby_exit. */
-    MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_NONE = 0,
-    /** We were woken up by a wakeup frame. */
-    MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_WAKEUP_FRAME = 1,
-    /** We just reassociated with the AP. */
-    MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_ASSOCIATE = 2,
-    /** We were woken up by an external input trigger. */
-    MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_EXT_INPUT = 3,
-    /** We received a packet from a whitelist source. */
-    MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_WHITELIST_PKT = 4,
-    /** An open TCP connection was lost. */
-    MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_TCP_CONNECTION_LOST = 5,
-    /** Hardware scan was not enabled. */
-    MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_HW_SCAN_NOT_ENABLED = 6,
-    /** Hardware scan failed to start. */
-    MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_HW_SCAN_FAILED_TO_START = 7,
-};
-
 /** Station states */
-enum mmagic_sta_state
+enum MM_PACKED mmagic_sta_state
 {
     /** Disconnected from the AP. */
     MMAGIC_STA_STATE_DISCONNECTED = 1,
@@ -373,7 +349,7 @@ enum mmagic_sta_state
 };
 
 /** Station connection events. */
-enum mmagic_sta_event
+enum MM_PACKED mmagic_sta_event
 {
     /** The STA is starting a scan. */
     MMAGIC_STA_EVENT_SCAN_REQUEST = 0,
@@ -391,6 +367,28 @@ enum mmagic_sta_event
     MMAGIC_STA_EVENT_CTRL_PORT_OPEN = 6,
     /** The Supplicant IEEE 802.1X Controlled Port is now closed. */
     MMAGIC_STA_EVENT_CTRL_PORT_CLOSED = 7,
+};
+
+/** Enumeration of socket protocols. */
+enum MM_PACKED mmagic_socket_proto
+{
+    /** TCP protocol (and TLS) */
+    MMAGIC_SOCKET_PROTO_TCP = 0,
+    /** UDP protocol */
+    MMAGIC_SOCKET_PROTO_UDP = 1,
+};
+
+/** Morse subsystem identifiers */
+enum MM_PACKED mmagic_subsystem_id
+{
+    /** Host core. */
+    MMAGIC_SUBSYSTEM_ID_HOST = 0,
+    /** MAC core. */
+    MMAGIC_SUBSYSTEM_ID_MAC = 1,
+    /** Phy core. */
+    MMAGIC_SUBSYSTEM_ID_PHY = 2,
+    /** Upper MAC. */
+    MMAGIC_SUBSYSTEM_ID_UMAC = 3,
 };
 
 /** String type with maximum length of 32 (excluding null terminator). */
@@ -441,6 +439,16 @@ struct MM_PACKED raw1536
 
     /** The actual data buffer. */
     uint8_t data[1536];
+};
+
+/** Raw octet string type with maximum length of 1600. */
+struct MM_PACKED raw1600
+{
+    /** Length of @c data. */
+    uint16_t len;
+
+    /** The actual data buffer. */
+    uint8_t data[1600];
 };
 
 /** Data type to contain mac address byte array. */
@@ -616,7 +624,7 @@ struct MM_PACKED struct_buffer64
  *         value of @c len or more means that the output was truncated. On error a negative value is
  *         returned.
  *
- * @note The behaviour is the same as @c snprintf(). This will not write more than @c len in bytes
+ * @note The behavior is the same as @c snprintf(). This will not write more than @c len in bytes
  *       (including the terminating null byte). If the output was truncated due to this limit, then
  *       the return value is the number of characters (excluding the terminating null byte) which
  *       would have been written to the final string if enough space had been available.
@@ -634,6 +642,20 @@ int mmagic_uint8_t_to_string(uint8_t value, char *buf, size_t len);
 int mmagic_string_to_uint8_t(uint8_t *value, const char *buf);
 
 /**
+ * Convert from an arbitrary-length array of @c uint8_t to a hexadecimal string.
+ *
+ * @param array     Reference to the array of @c uint8_t.
+ * @param array_len Length of the array in bytes.
+ * @param buf       Reference to the buffer where string is to be placed.
+ * @param buf_len   Length of the buffer provided in bytes.
+ *
+ * @return          The number of array entries converted to a null-terminated hexadecimal string.
+ *                  If this is less than array_len then the output string is not a full
+ *                  representation of the array.
+ */
+int mmagic_uint8_t_to_hexstring(const uint8_t *array, size_t array_len, char *buf, size_t buf_len);
+
+/**
  * Convert from @c uint16_t to a string.
  *
  * @param value Reference to the @c uint16_t.
@@ -644,7 +666,7 @@ int mmagic_string_to_uint8_t(uint8_t *value, const char *buf);
  *         value of @c len or more means that the output was truncated. On error a negative value is
  *         returned.
  *
- * @note The behaviour is the same as @c snprintf(). This will not write more than @c len in bytes
+ * @note The behavior is the same as @c snprintf(). This will not write more than @c len in bytes
  *       (including the terminating null byte). If the output was truncated due to this limit, then
  *       the return value is the number of characters (excluding the terminating null byte) which
  *       would have been written to the final string if enough space had been available.
@@ -662,6 +684,23 @@ int mmagic_uint16_t_to_string(uint16_t value, char *buf, size_t len);
 int mmagic_string_to_uint16_t(uint16_t *value, const char *buf);
 
 /**
+ * Convert from an arbitrary-length array of @c uint16_t to a hexadecimal string.
+ *
+ * @param array     Reference to the array of @c uint16_t.
+ * @param array_len Length of the array in bytes.
+ * @param buf       Reference to the buffer where string is to be placed.
+ * @param buf_len   Length of the buffer provided in bytes.
+ *
+ * @return          The number of array entries converted to a null-terminated hexadecimal string.
+ *                  If this is less than array_len then the output string is not a full
+ *                  representation of the array.
+ */
+int mmagic_uint16_t_to_hexstring(const uint16_t *array,
+                                 size_t array_len,
+                                 char *buf,
+                                 size_t buf_len);
+
+/**
  * Convert from @c uint32_t to a string.
  *
  * @param value Reference to the @c uint32_t.
@@ -672,7 +711,7 @@ int mmagic_string_to_uint16_t(uint16_t *value, const char *buf);
  *         value of @c len or more means that the output was truncated. On error a negative value is
  *         returned.
  *
- * @note The behaviour is the same as @c snprintf(). This will not write more than @c len in bytes
+ * @note The behavior is the same as @c snprintf(). This will not write more than @c len in bytes
  *       (including the terminating null byte). If the output was truncated due to this limit, then
  *       the return value is the number of characters (excluding the terminating null byte) which
  *       would have been written to the final string if enough space had been available.
@@ -690,6 +729,23 @@ int mmagic_uint32_t_to_string(uint32_t value, char *buf, size_t len);
 int mmagic_string_to_uint32_t(uint32_t *value, const char *buf);
 
 /**
+ * Convert from an arbitrary-length array of @c uint32_t to a hexadecimal string.
+ *
+ * @param array     Reference to the array of @c uint32_t.
+ * @param array_len Length of the array in bytes.
+ * @param buf       Reference to the buffer where string is to be placed.
+ * @param buf_len   Length of the buffer provided in bytes.
+ *
+ * @return          The number of array entries converted to a null-terminated hexadecimal string.
+ *                  If this is less than array_len then the output string is not a full
+ *                  representation of the array.
+ */
+int mmagic_uint32_t_to_hexstring(const uint32_t *array,
+                                 size_t array_len,
+                                 char *buf,
+                                 size_t buf_len);
+
+/**
  * Convert from @c uint64_t to a string.
  *
  * @param value Reference to the @c uint64_t.
@@ -700,7 +756,7 @@ int mmagic_string_to_uint32_t(uint32_t *value, const char *buf);
  *         value of @c len or more means that the output was truncated. On error a negative value is
  *         returned.
  *
- * @note The behaviour is the same as @c snprintf(). This will not write more than @c len in bytes
+ * @note The behavior is the same as @c snprintf(). This will not write more than @c len in bytes
  *       (including the terminating null byte). If the output was truncated due to this limit, then
  *       the return value is the number of characters (excluding the terminating null byte) which
  *       would have been written to the final string if enough space had been available.
@@ -718,6 +774,23 @@ int mmagic_uint64_t_to_string(uint64_t value, char *buf, size_t len);
 int mmagic_string_to_uint64_t(uint64_t *value, const char *buf);
 
 /**
+ * Convert from an arbitrary-length array of @c uint64_t to a hexadecimal string.
+ *
+ * @param array     Reference to the array of @c uint64_t.
+ * @param array_len Length of the array in bytes.
+ * @param buf       Reference to the buffer where string is to be placed.
+ * @param buf_len   Length of the buffer provided in bytes.
+ *
+ * @return          The number of array entries converted to a null-terminated hexadecimal string.
+ *                  If this is less than array_len then the output string is not a full
+ *                  representation of the array.
+ */
+int mmagic_uint64_t_to_hexstring(const uint64_t *array,
+                                 size_t array_len,
+                                 char *buf,
+                                 size_t buf_len);
+
+/**
  * Convert from @c int16_t to a string.
  *
  * @param value Reference to the @c int16_t.
@@ -728,7 +801,7 @@ int mmagic_string_to_uint64_t(uint64_t *value, const char *buf);
  *         value of @c len or more means that the output was truncated. On error a negative value is
  *         returned.
  *
- * @note The behaviour is the same as @c snprintf(). This will not write more than @c len in bytes
+ * @note The behavior is the same as @c snprintf(). This will not write more than @c len in bytes
  *       (including the terminating null byte). If the output was truncated due to this limit, then
  *       the return value is the number of characters (excluding the terminating null byte) which
  *       would have been written to the final string if enough space had been available.
@@ -746,6 +819,20 @@ int mmagic_int16_t_to_string(int16_t value, char *buf, size_t len);
 int mmagic_string_to_int16_t(int16_t *value, const char *buf);
 
 /**
+ * Convert from an arbitrary-length array of @c int16_t to a hexadecimal string.
+ *
+ * @param array     Reference to the array of @c int16_t.
+ * @param array_len Length of the array in bytes.
+ * @param buf       Reference to the buffer where string is to be placed.
+ * @param buf_len   Length of the buffer provided in bytes.
+ *
+ * @return          The number of array entries converted to a null-terminated hexadecimal string.
+ *                  If this is less than array_len then the output string is not a full
+ *                  representation of the array.
+ */
+int mmagic_int16_t_to_hexstring(const int16_t *array, size_t array_len, char *buf, size_t buf_len);
+
+/**
  * Convert from @c bool to a string.
  *
  * @param value Reference to the @c bool.
@@ -756,7 +843,7 @@ int mmagic_string_to_int16_t(int16_t *value, const char *buf);
  *         value of @c len or more means that the output was truncated. On error a negative value is
  *         returned.
  *
- * @note The behaviour is the same as @c snprintf(). This will not write more than @c len in bytes
+ * @note The behavior is the same as @c snprintf(). This will not write more than @c len in bytes
  *       (including the terminating null byte). If the output was truncated due to this limit, then
  *       the return value is the number of characters (excluding the terminating null byte) which
  *       would have been written to the final string if enough space had been available.
@@ -774,6 +861,20 @@ int mmagic_bool_to_string(bool value, char *buf, size_t len);
 int mmagic_string_to_bool(bool *value, const char *buf);
 
 /**
+ * Convert from an arbitrary-length array of @c bool to a hexadecimal string.
+ *
+ * @param array     Reference to the array of @c bool.
+ * @param array_len Length of the array in bytes.
+ * @param buf       Reference to the buffer where string is to be placed.
+ * @param buf_len   Length of the buffer provided in bytes.
+ *
+ * @return          The number of array entries converted to a null-terminated hexadecimal string.
+ *                  If this is less than array_len then the output string is not a full
+ *                  representation of the array.
+ */
+int mmagic_bool_to_hexstring(const bool *array, size_t array_len, char *buf, size_t buf_len);
+
+/**
  * Convert from @c char to a string.
  *
  * @param value Reference to the @c char.
@@ -784,7 +885,7 @@ int mmagic_string_to_bool(bool *value, const char *buf);
  *         value of @c len or more means that the output was truncated. On error a negative value is
  *         returned.
  *
- * @note The behaviour is the same as @c snprintf(). This will not write more than @c len in bytes
+ * @note The behavior is the same as @c snprintf(). This will not write more than @c len in bytes
  *       (including the terminating null byte). If the output was truncated due to this limit, then
  *       the return value is the number of characters (excluding the terminating null byte) which
  *       would have been written to the final string if enough space had been available.
@@ -802,6 +903,20 @@ int mmagic_char_to_string(char value, char *buf, size_t len);
 int mmagic_string_to_char(char *value, const char *buf);
 
 /**
+ * Convert from an arbitrary-length array of @c char to a hexadecimal string.
+ *
+ * @param array     Reference to the array of @c char.
+ * @param array_len Length of the array in bytes.
+ * @param buf       Reference to the buffer where string is to be placed.
+ * @param buf_len   Length of the buffer provided in bytes.
+ *
+ * @return          The number of array entries converted to a null-terminated hexadecimal string.
+ *                  If this is less than array_len then the output string is not a full
+ *                  representation of the array.
+ */
+int mmagic_char_to_hexstring(const char *array, size_t array_len, char *buf, size_t buf_len);
+
+/**
  * Convert from @c int32_t to a string.
  *
  * @param value Reference to the @c int32_t.
@@ -812,7 +927,7 @@ int mmagic_string_to_char(char *value, const char *buf);
  *         value of @c len or more means that the output was truncated. On error a negative value is
  *         returned.
  *
- * @note The behaviour is the same as @c snprintf(). This will not write more than @c len in bytes
+ * @note The behavior is the same as @c snprintf(). This will not write more than @c len in bytes
  *       (including the terminating null byte). If the output was truncated due to this limit, then
  *       the return value is the number of characters (excluding the terminating null byte) which
  *       would have been written to the final string if enough space had been available.
@@ -830,6 +945,20 @@ int mmagic_int32_t_to_string(int32_t value, char *buf, size_t len);
 int mmagic_string_to_int32_t(int32_t *value, const char *buf);
 
 /**
+ * Convert from an arbitrary-length array of @c int32_t to a hexadecimal string.
+ *
+ * @param array     Reference to the array of @c int32_t.
+ * @param array_len Length of the array in bytes.
+ * @param buf       Reference to the buffer where string is to be placed.
+ * @param buf_len   Length of the buffer provided in bytes.
+ *
+ * @return          The number of array entries converted to a null-terminated hexadecimal string.
+ *                  If this is less than array_len then the output string is not a full
+ *                  representation of the array.
+ */
+int mmagic_int32_t_to_hexstring(const int32_t *array, size_t array_len, char *buf, size_t buf_len);
+
+/**
  * Convert from @c struct_country_code to a string.
  *
  * @param  value Reference to the @c struct_country_code.
@@ -840,7 +969,7 @@ int mmagic_string_to_int32_t(int32_t *value, const char *buf);
  *               A return value of @c len or more means that the output was truncated. On error
  *               a negative value is returned.
  *
- * @note The behaviour is the same as @c snprintf(). This will not write more than @c len in bytes
+ * @note The behavior is the same as @c snprintf(). This will not write more than @c len in bytes
  *       (including the terminating null byte). If the output was truncated due to this limit, then
  *       the return value is the number of characters (excluding the terminating null byte) which
  *       would have been written to the final string if enough space had been available.
@@ -870,7 +999,7 @@ int mmagic_string_to_struct_country_code(struct struct_country_code *value, cons
  *               A return value of @c len or more means that the output was truncated. On error
  *               a negative value is returned.
  *
- * @note The behaviour is the same as @c snprintf(). This will not write more than @c len in bytes
+ * @note The behavior is the same as @c snprintf(). This will not write more than @c len in bytes
  *       (including the terminating null byte). If the output was truncated due to this limit, then
  *       the return value is the number of characters (excluding the terminating null byte) which
  *       would have been written to the final string if enough space had been available.
@@ -898,7 +1027,7 @@ int mmagic_string_to_struct_ip_addr(struct struct_ip_addr *value, const char *bu
  *               A return value of @c len or more means that the output was truncated. On error
  *               a negative value is returned.
  *
- * @note The behaviour is the same as @c snprintf(). This will not write more than @c len in bytes
+ * @note The behavior is the same as @c snprintf(). This will not write more than @c len in bytes
  *       (including the terminating null byte). If the output was truncated due to this limit, then
  *       the return value is the number of characters (excluding the terminating null byte) which
  *       would have been written to the final string if enough space had been available.
@@ -926,7 +1055,7 @@ int mmagic_string_to_struct_mac_addr(struct struct_mac_addr *value, const char *
  *               A return value of @c len or more means that the output was truncated. On error
  *               a negative value is returned.
  *
- * @note The behaviour is the same as @c snprintf(). This will not write more than @c len in bytes
+ * @note The behavior is the same as @c snprintf(). This will not write more than @c len in bytes
  *       (including the terminating null byte). If the output was truncated due to this limit, then
  *       the return value is the number of characters (excluding the terminating null byte) which
  *       would have been written to the final string if enough space had been available.
@@ -954,7 +1083,7 @@ int mmagic_string_to_string32(struct string32 *value, const char *buf);
  *               A return value of @c len or more means that the output was truncated. On error
  *               a negative value is returned.
  *
- * @note The behaviour is the same as @c snprintf(). This will not write more than @c len in bytes
+ * @note The behavior is the same as @c snprintf(). This will not write more than @c len in bytes
  *       (including the terminating null byte). If the output was truncated due to this limit, then
  *       the return value is the number of characters (excluding the terminating null byte) which
  *       would have been written to the final string if enough space had been available.
@@ -982,7 +1111,7 @@ int mmagic_string_to_string100(struct string100 *value, const char *buf);
  *               A return value of @c len or more means that the output was truncated. On error
  *               a negative value is returned.
  *
- * @note The behaviour is the same as @c snprintf(). This will not write more than @c len in bytes
+ * @note The behavior is the same as @c snprintf(). This will not write more than @c len in bytes
  *       (including the terminating null byte). If the output was truncated due to this limit, then
  *       the return value is the number of characters (excluding the terminating null byte) which
  *       would have been written to the final string if enough space had been available.
@@ -1010,7 +1139,7 @@ int mmagic_string_to_string254(struct string254 *value, const char *buf);
  *               null byte). A return value of @c len or more means that the output was
  *               truncated. On error a negative value is returned.
  *
- * @note The behaviour is the same as @c snprintf(). This will not write more than @c len in bytes
+ * @note The behavior is the same as @c snprintf(). This will not write more than @c len in bytes
  *       (including the terminating null byte). If the output was truncated due to this limit, then
  *       the return value is the number of characters (excluding the terminating null byte) which
  *       would have been written to the final string if enough space had been available.
@@ -1039,7 +1168,7 @@ int mmagic_string_to_enum_security_type(enum mmagic_security_type *value, const 
  *               null byte). A return value of @c len or more means that the output was
  *               truncated. On error a negative value is returned.
  *
- * @note The behaviour is the same as @c snprintf(). This will not write more than @c len in bytes
+ * @note The behavior is the same as @c snprintf(). This will not write more than @c len in bytes
  *       (including the terminating null byte). If the output was truncated due to this limit, then
  *       the return value is the number of characters (excluding the terminating null byte) which
  *       would have been written to the final string if enough space had been available.
@@ -1068,7 +1197,7 @@ int mmagic_string_to_enum_pmf_mode(enum mmagic_pmf_mode *value, const char *buf)
  *               null byte). A return value of @c len or more means that the output was
  *               truncated. On error a negative value is returned.
  *
- * @note The behaviour is the same as @c snprintf(). This will not write more than @c len in bytes
+ * @note The behavior is the same as @c snprintf(). This will not write more than @c len in bytes
  *       (including the terminating null byte). If the output was truncated due to this limit, then
  *       the return value is the number of characters (excluding the terminating null byte) which
  *       would have been written to the final string if enough space had been available.
@@ -1097,7 +1226,7 @@ int mmagic_string_to_enum_power_save_mode(enum mmagic_power_save_mode *value, co
  *               null byte). A return value of @c len or more means that the output was
  *               truncated. On error a negative value is returned.
  *
- * @note The behaviour is the same as @c snprintf(). This will not write more than @c len in bytes
+ * @note The behavior is the same as @c snprintf(). This will not write more than @c len in bytes
  *       (including the terminating null byte). If the output was truncated due to this limit, then
  *       the return value is the number of characters (excluding the terminating null byte) which
  *       would have been written to the final string if enough space had been available.
@@ -1126,7 +1255,7 @@ int mmagic_string_to_enum_mcs10_mode(enum mmagic_mcs10_mode *value, const char *
  *               null byte). A return value of @c len or more means that the output was
  *               truncated. On error a negative value is returned.
  *
- * @note The behaviour is the same as @c snprintf(). This will not write more than @c len in bytes
+ * @note The behavior is the same as @c snprintf(). This will not write more than @c len in bytes
  *       (including the terminating null byte). If the output was truncated due to this limit, then
  *       the return value is the number of characters (excluding the terminating null byte) which
  *       would have been written to the final string if enough space had been available.
@@ -1155,7 +1284,7 @@ int mmagic_string_to_enum_duty_cycle_mode(enum mmagic_duty_cycle_mode *value, co
  *               null byte). A return value of @c len or more means that the output was
  *               truncated. On error a negative value is returned.
  *
- * @note The behaviour is the same as @c snprintf(). This will not write more than @c len in bytes
+ * @note The behavior is the same as @c snprintf(). This will not write more than @c len in bytes
  *       (including the terminating null byte). If the output was truncated due to this limit, then
  *       the return value is the number of characters (excluding the terminating null byte) which
  *       would have been written to the final string if enough space had been available.
@@ -1184,7 +1313,7 @@ int mmagic_string_to_enum_station_type(enum mmagic_station_type *value, const ch
  *               null byte). A return value of @c len or more means that the output was
  *               truncated. On error a negative value is returned.
  *
- * @note The behaviour is the same as @c snprintf(). This will not write more than @c len in bytes
+ * @note The behavior is the same as @c snprintf(). This will not write more than @c len in bytes
  *       (including the terminating null byte). If the output was truncated due to this limit, then
  *       the return value is the number of characters (excluding the terminating null byte) which
  *       would have been written to the final string if enough space had been available.
@@ -1213,7 +1342,7 @@ int mmagic_string_to_enum_status(enum mmagic_status *value, const char *buf);
  *               null byte). A return value of @c len or more means that the output was
  *               truncated. On error a negative value is returned.
  *
- * @note The behaviour is the same as @c snprintf(). This will not write more than @c len in bytes
+ * @note The behavior is the same as @c snprintf(). This will not write more than @c len in bytes
  *       (including the terminating null byte). If the output was truncated due to this limit, then
  *       the return value is the number of characters (excluding the terminating null byte) which
  *       would have been written to the final string if enough space had been available.
@@ -1242,7 +1371,7 @@ int mmagic_string_to_enum_iperf_mode(enum mmagic_iperf_mode *value, const char *
  *               null byte). A return value of @c len or more means that the output was
  *               truncated. On error a negative value is returned.
  *
- * @note The behaviour is the same as @c snprintf(). This will not write more than @c len in bytes
+ * @note The behavior is the same as @c snprintf(). This will not write more than @c len in bytes
  *       (including the terminating null byte). If the output was truncated due to this limit, then
  *       the return value is the number of characters (excluding the terminating null byte) which
  *       would have been written to the final string if enough space had been available.
@@ -1271,7 +1400,7 @@ int mmagic_string_to_enum_iperf_state(enum mmagic_iperf_state *value, const char
  *               null byte). A return value of @c len or more means that the output was
  *               truncated. On error a negative value is returned.
  *
- * @note The behaviour is the same as @c snprintf(). This will not write more than @c len in bytes
+ * @note The behavior is the same as @c snprintf(). This will not write more than @c len in bytes
  *       (including the terminating null byte). If the output was truncated due to this limit, then
  *       the return value is the number of characters (excluding the terminating null byte) which
  *       would have been written to the final string if enough space had been available.
@@ -1300,7 +1429,7 @@ int mmagic_string_to_enum_ip_link_state(enum mmagic_ip_link_state *value, const 
  *               null byte). A return value of @c len or more means that the output was
  *               truncated. On error a negative value is returned.
  *
- * @note The behaviour is the same as @c snprintf(). This will not write more than @c len in bytes
+ * @note The behavior is the same as @c snprintf(). This will not write more than @c len in bytes
  *       (including the terminating null byte). If the output was truncated due to this limit, then
  *       the return value is the number of characters (excluding the terminating null byte) which
  *       would have been written to the final string if enough space had been available.
@@ -1319,38 +1448,6 @@ int mmagic_enum_deep_sleep_mode_to_string(enum mmagic_deep_sleep_mode value, cha
 int mmagic_string_to_enum_deep_sleep_mode(enum mmagic_deep_sleep_mode *value, const char *buf);
 
 /**
- * Convert from @c enum_standby_mode_exit_reason to a string.
- *
- * @param  value Enum value to convert.
- * @param  buf   Reference to the buffer where string is to be placed.
- * @param  len   Length of the buffer provided in bytes.
- *
- * @return       On success the number of bytes characters written (excluding the
- *               null byte). A return value of @c len or more means that the output was
- *               truncated. On error a negative value is returned.
- *
- * @note The behaviour is the same as @c snprintf(). This will not write more than @c len in bytes
- *       (including the terminating null byte). If the output was truncated due to this limit, then
- *       the return value is the number of characters (excluding the terminating null byte) which
- *       would have been written to the final string if enough space had been available.
- */
-int mmagic_enum_standby_mode_exit_reason_to_string(enum mmagic_standby_mode_exit_reason value,
-                                                   char *buf,
-                                                   size_t len);
-
-/**
- * Convert from a string to @c enum_standby_mode_exit_reason.
- *
- * @param value Reference to the @c enum mmagic_standby_mode_exit_reason that will be set to the
- * parsed value on success.
- * @param buf   Reference to a null terminated string to parse
- *
- * @return On success 0. On error a negative value is returned.
- */
-int mmagic_string_to_enum_standby_mode_exit_reason(enum mmagic_standby_mode_exit_reason *value,
-                                                   const char *buf);
-
-/**
  * Convert from @c enum_sta_state to a string.
  *
  * @param  value Enum value to convert.
@@ -1361,7 +1458,7 @@ int mmagic_string_to_enum_standby_mode_exit_reason(enum mmagic_standby_mode_exit
  *               null byte). A return value of @c len or more means that the output was
  *               truncated. On error a negative value is returned.
  *
- * @note The behaviour is the same as @c snprintf(). This will not write more than @c len in bytes
+ * @note The behavior is the same as @c snprintf(). This will not write more than @c len in bytes
  *       (including the terminating null byte). If the output was truncated due to this limit, then
  *       the return value is the number of characters (excluding the terminating null byte) which
  *       would have been written to the final string if enough space had been available.
@@ -1390,7 +1487,7 @@ int mmagic_string_to_enum_sta_state(enum mmagic_sta_state *value, const char *bu
  *               null byte). A return value of @c len or more means that the output was
  *               truncated. On error a negative value is returned.
  *
- * @note The behaviour is the same as @c snprintf(). This will not write more than @c len in bytes
+ * @note The behavior is the same as @c snprintf(). This will not write more than @c len in bytes
  *       (including the terminating null byte). If the output was truncated due to this limit, then
  *       the return value is the number of characters (excluding the terminating null byte) which
  *       would have been written to the final string if enough space had been available.
@@ -1408,15 +1505,68 @@ int mmagic_enum_sta_event_to_string(enum mmagic_sta_event value, char *buf, size
  */
 int mmagic_string_to_enum_sta_event(enum mmagic_sta_event *value, const char *buf);
 
+/**
+ * Convert from @c enum_socket_proto to a string.
+ *
+ * @param  value Enum value to convert.
+ * @param  buf   Reference to the buffer where string is to be placed.
+ * @param  len   Length of the buffer provided in bytes.
+ *
+ * @return       On success the number of bytes characters written (excluding the
+ *               null byte). A return value of @c len or more means that the output was
+ *               truncated. On error a negative value is returned.
+ *
+ * @note The behavior is the same as @c snprintf(). This will not write more than @c len in bytes
+ *       (including the terminating null byte). If the output was truncated due to this limit, then
+ *       the return value is the number of characters (excluding the terminating null byte) which
+ *       would have been written to the final string if enough space had been available.
+ */
+int mmagic_enum_socket_proto_to_string(enum mmagic_socket_proto value, char *buf, size_t len);
+
+/**
+ * Convert from a string to @c enum_socket_proto.
+ *
+ * @param value Reference to the @c enum mmagic_socket_proto that will be set to the parsed value on
+ * success.
+ * @param buf   Reference to a null terminated string to parse
+ *
+ * @return On success 0. On error a negative value is returned.
+ */
+int mmagic_string_to_enum_socket_proto(enum mmagic_socket_proto *value, const char *buf);
+
+/**
+ * Convert from @c enum_subsystem_id to a string.
+ *
+ * @param  value Enum value to convert.
+ * @param  buf   Reference to the buffer where string is to be placed.
+ * @param  len   Length of the buffer provided in bytes.
+ *
+ * @return       On success the number of bytes characters written (excluding the
+ *               null byte). A return value of @c len or more means that the output was
+ *               truncated. On error a negative value is returned.
+ *
+ * @note The behavior is the same as @c snprintf(). This will not write more than @c len in bytes
+ *       (including the terminating null byte). If the output was truncated due to this limit, then
+ *       the return value is the number of characters (excluding the terminating null byte) which
+ *       would have been written to the final string if enough space had been available.
+ */
+int mmagic_enum_subsystem_id_to_string(enum mmagic_subsystem_id value, char *buf, size_t len);
+
+/**
+ * Convert from a string to @c enum_subsystem_id.
+ *
+ * @param value Reference to the @c enum mmagic_subsystem_id that will be set to the parsed value on
+ * success.
+ * @param buf   Reference to a null terminated string to parse
+ *
+ * @return On success 0. On error a negative value is returned.
+ */
+int mmagic_string_to_enum_subsystem_id(enum mmagic_subsystem_id *value, const char *buf);
+
 /** Event arguments structure for wlan_beacon_rx */
 struct MM_PACKED mmagic_core_event_wlan_beacon_rx_args
 {
     struct raw1536 vendor_ies;
-}; /** Event arguments structure for wlan_standby_exit */
-
-struct MM_PACKED mmagic_core_event_wlan_standby_exit_args
-{
-    enum mmagic_standby_mode_exit_reason reason;
 }; /** Event arguments structure for wlan_sta_event */
 
 struct MM_PACKED mmagic_core_event_wlan_sta_event_args
@@ -1430,8 +1580,8 @@ struct MM_PACKED mmagic_core_event_ip_link_status_args
     struct struct_ip_status ip_link_status;
 };
 
-/** Event arguments structure for tcp_rx_ready */
-struct MM_PACKED mmagic_core_event_tcp_rx_ready_args
+/** Event arguments structure for socket_rx_ready */
+struct MM_PACKED mmagic_core_event_socket_rx_ready_args
 {
     uint8_t stream_id;
 };

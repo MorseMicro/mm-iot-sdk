@@ -23,6 +23,7 @@
 enum mbin_tlv_types
 {
     FIELD_TYPE_FW_TLV_BCF_ADDR = 0x0001,
+    FIELD_TYPE_COREDUMP_MEM_REGION = 0x0002,
     FIELD_TYPE_MAGIC = 0x8000,
     FIELD_TYPE_FW_SEGMENT = 0x8001,
     FIELD_TYPE_FW_SEGMENT_DEFLATED = 0x8002,
@@ -34,6 +35,13 @@ enum mbin_tlv_types
     FIELD_TYPE_SW_SEGMENT_DEFLATED = 0x8202,
     FIELD_TYPE_EOF = 0x8f00,
     FIELD_TYPE_EOF_WITH_SIGNATURE = 0x8f01,
+};
+
+/** Enumeration of core dump memory region types */
+enum mbin_coredump_region_types
+{
+    COREDUMP_MEM_REGION_GENERAL = 0x0001,
+    COREDUMP_MEM_REGION_ASSERT_INFO = 0x0002,
 };
 
 /** TLV header data structure. */

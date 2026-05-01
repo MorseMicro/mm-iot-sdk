@@ -16,6 +16,11 @@
  */
 #define MAX_VAL_LEN 101
 
+bool mmagic_core_ntp_is_started(struct mmagic_data *core)
+{
+    return core->ntp_data.is_started;
+}
+
 void mmagic_core_ntp_load_all(struct mmagic_data *core)
 {
     struct mmagic_ntp_data *data = &core->ntp_data;

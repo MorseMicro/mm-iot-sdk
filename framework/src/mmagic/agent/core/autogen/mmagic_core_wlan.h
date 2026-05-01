@@ -110,10 +110,14 @@ struct mmagic_wlan_config
      * spread, where the air time is spread evenly across the window; or burst, where
      * air time is available to be consumed immediately. */
     enum mmagic_duty_cycle_mode duty_cycle_mode;
+    /** On boot attempt to connect immediately to the AP with the current parameters
+     * rather than waiting for a connect command on wlan. Defaults to false. */
+    bool connect_on_boot;
 };
 
 struct mmagic_wlan_data
 {
+    bool is_started;
     struct mmagic_wlan_config config;
     /** Subsystem private data (to be allocated/managed by the subsystem implementation). */
     void *priv;
@@ -146,6 +150,14 @@ void mmagic_core_wlan_save_all(struct mmagic_data *core);
  * @param core   Reference to to global mmagic context struct.
  */
 void mmagic_core_wlan_start(struct mmagic_data *core);
+
+/**
+ * Function to check if the wlan subsystem has been initialized.
+ *
+ * @param core   Reference to to global mmagic context struct.
+ * @return       True if mmagic_core_wlan_init has been called, false otherwise.
+ */
+bool mmagic_core_wlan_is_started(struct mmagic_data *core);
 
 /** Command arguments structure for wlan_connect */
 struct MM_PACKED mmagic_core_wlan_connect_cmd_args
@@ -217,48 +229,6 @@ enum mmagic_status mmagic_core_wlan_beacon_monitor_enable(
 
 enum mmagic_status mmagic_core_wlan_beacon_monitor_disable(struct mmagic_data *core);
 
-enum mmagic_status mmagic_core_wlan_standby_enter(struct mmagic_data *core);
-
-enum mmagic_status mmagic_core_wlan_standby_exit(struct mmagic_data *core);
-
-/** Command arguments structure for wlan_standby_set_status_payload */
-struct MM_PACKED mmagic_core_wlan_standby_set_status_payload_cmd_args
-{
-    struct struct_buffer64 payload;
-};
-
-enum mmagic_status mmagic_core_wlan_standby_set_status_payload(
-    struct mmagic_data *core,
-    const struct mmagic_core_wlan_standby_set_status_payload_cmd_args *cmd_args);
-
-/** Command arguments structure for wlan_standby_set_wake_filter */
-struct MM_PACKED mmagic_core_wlan_standby_set_wake_filter_cmd_args
-{
-    struct struct_buffer64 filter;
-    uint32_t offset;
-};
-
-enum mmagic_status mmagic_core_wlan_standby_set_wake_filter(
-    struct mmagic_data *core,
-    const struct mmagic_core_wlan_standby_set_wake_filter_cmd_args *cmd_args);
-
-/** Command arguments structure for wlan_standby_set_config */
-struct MM_PACKED mmagic_core_wlan_standby_set_config_cmd_args
-{
-    uint32_t notify_period_s;
-    struct struct_ip_addr src_ip;
-    struct struct_ip_addr dst_ip;
-    uint16_t dst_port;
-    uint32_t bss_inactivity_s;
-    uint32_t snooze_period_s;
-    uint32_t snooze_increment_s;
-    uint32_t snooze_max_s;
-};
-
-enum mmagic_status mmagic_core_wlan_standby_set_config(
-    struct mmagic_data *core,
-    const struct mmagic_core_wlan_standby_set_config_cmd_args *cmd_args);
-
 /** Response arguments structure for wlan_get_sta_status */
 struct MM_PACKED mmagic_core_wlan_get_sta_status_rsp_args
 {
@@ -269,6 +239,10 @@ enum mmagic_status mmagic_core_wlan_get_sta_status(
     struct mmagic_data *core,
     struct mmagic_core_wlan_get_sta_status_rsp_args *rsp_args);
 
+enum mmagic_status mmagic_core_wlan_dpp_push_button_start(struct mmagic_data *core);
+
+enum mmagic_status mmagic_core_wlan_dpp_stop(struct mmagic_data *core);
+
 /*
  * ---------------------------------------------------------------------------------------------
  * Internal API: to be used by the implementation C file only.
@@ -278,10 +252,6 @@ enum mmagic_status mmagic_core_wlan_get_sta_status(
 enum mmagic_status mmagic_core_event_wlan_beacon_rx(
     struct mmagic_data *core,
     const struct mmagic_core_event_wlan_beacon_rx_args *args);
-
-enum mmagic_status mmagic_core_event_wlan_standby_exit(
-    struct mmagic_data *core,
-    const struct mmagic_core_event_wlan_standby_exit_args *args);
 
 enum mmagic_status mmagic_core_event_wlan_sta_event(
     struct mmagic_data *core,

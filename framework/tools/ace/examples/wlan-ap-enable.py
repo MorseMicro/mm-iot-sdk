@@ -58,8 +58,6 @@ def _main():
                         help="Primary channel index to use on AP")
     parser.add_argument("--beacon_int", default=100, help="Beacon interval TUs to use for AP")
     parser.add_argument("--dtim_period", default=1, help="DTIM period to use for AP")
-    parser.add_argument("--halow_ip", default="192.168.1.1",
-                        help="IP address to use on halow interface of AP")
     parser.add_argument("--max_stas", default="4",
                         help="Maximum number of stations that can connect to the AP")
 

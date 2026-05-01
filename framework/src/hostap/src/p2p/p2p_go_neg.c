@@ -260,6 +260,8 @@ int p2p_connect_send(struct p2p_data *p2p, struct p2p_device *dev)
 			return -1;
 		return p2p_prov_disc_req(p2p, dev->info.p2p_device_addr,
 					 NULL, config_method, 0, 0, 1);
+	} else if (dev->p2p2) {
+		return 0;
 	}
 
 	freq = dev->listen_freq > 0 ? dev->listen_freq : dev->oper_freq;
@@ -732,12 +734,12 @@ void p2p_check_pref_chan(struct p2p_data *p2p, int go,
 		return;
 
 	/* Obtain our preferred frequency list from driver based on P2P role. */
-	size = P2P_MAX_PREF_CHANNELS;
+	size = ARRAY_SIZE(p2p->pref_freq_list);
 	if (p2p->cfg->get_pref_freq_list(p2p->cfg->cb_ctx, go,
-					 &p2p->num_pref_freq,
+					 &size,
 					 p2p->pref_freq_list))
 		return;
-	size = p2p->num_pref_freq;
+	p2p->num_pref_freq = size;
 	if (!size)
 		return;
 	/* Filter out frequencies that are not acceptable for P2P use */

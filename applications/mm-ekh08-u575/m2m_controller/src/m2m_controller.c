@@ -456,12 +456,13 @@ static void tcp_client_example(struct mmagic_controller *controller,
     printf("\n\n#### Example TCP Client using MMAGIC Controller ####\n\n");
     enum mmagic_status status;
 
-    struct mmagic_core_tcp_connect_cmd_args tcp_connect_args = {
+    struct mmagic_core_socket_connect_cmd_args tcp_connect_args = {
         .url = {.data = "google.com", .len = strlen("google.com")},
-        .port = 80
+        .port = 80,
+        .protocol = MMAGIC_SOCKET_PROTO_TCP,
     };
-    struct mmagic_core_tcp_connect_rsp_args tcp_rsp_args = {};
-    status = mmagic_controller_tcp_connect(controller, &tcp_connect_args, &tcp_rsp_args);
+    struct mmagic_core_socket_connect_rsp_args tcp_rsp_args = {};
+    status = mmagic_controller_socket_connect(controller, &tcp_connect_args, &tcp_rsp_args);
     if (status != MMAGIC_STATUS_OK)
     {
         printf("Error %d establishing TCP connection\n", status);
@@ -470,11 +471,11 @@ static void tcp_client_example(struct mmagic_controller *controller,
     uint8_t tcp_stream_id = tcp_rsp_args.stream_id;
     printf("Opened TCP socket on stream_id %u\n", tcp_stream_id);
 
-    struct mmagic_core_tcp_set_rx_ready_evt_enabled_cmd_args args = {
+    struct mmagic_core_socket_set_rx_ready_evt_enabled_cmd_args args = {
         .stream_id = tcp_stream_id,
         .enabled = true,
     };
-    status = mmagic_controller_tcp_set_rx_ready_evt_enabled(controller, &args);
+    status = mmagic_controller_socket_set_rx_ready_evt_enabled(controller, &args);
     bool rx_ready_event_enabled = false;
     if (status == MMAGIC_STATUS_OK)
     {
@@ -489,11 +490,11 @@ static void tcp_client_example(struct mmagic_controller *controller,
         printf("Error %d enabling rx ready event\n", status);
     }
 
-    struct mmagic_core_tcp_send_cmd_args tcp_send_cmd_args = {
+    struct mmagic_core_socket_send_cmd_args tcp_send_cmd_args = {
         .stream_id = tcp_stream_id,
         .buffer = {.data = "GET /\n\n", .len = strlen("GET /\n\n")}
     };
-    status = mmagic_controller_tcp_send(controller, &tcp_send_cmd_args);
+    status = mmagic_controller_socket_send(controller, &tcp_send_cmd_args);
     if (status != MMAGIC_STATUS_OK)
     {
         printf("Error %d whilst sending data\n", status);
@@ -507,13 +508,13 @@ static void tcp_client_example(struct mmagic_controller *controller,
         mmosal_semb_wait(rx_ready_semb, UINT32_MAX);
     }
 
-    struct mmagic_core_tcp_recv_cmd_args tcp_recv_cmd_args = {
+    struct mmagic_core_socket_recv_cmd_args tcp_recv_cmd_args = {
         .stream_id = tcp_stream_id,
         .len = 1536,
         .timeout = 5000,
     };
-    struct mmagic_core_tcp_recv_rsp_args tcp_recv_rsp_args = {};
-    status = mmagic_controller_tcp_recv(controller, &tcp_recv_cmd_args, &tcp_recv_rsp_args);
+    struct mmagic_core_socket_recv_rsp_args tcp_recv_rsp_args = {};
+    status = mmagic_controller_socket_recv(controller, &tcp_recv_cmd_args, &tcp_recv_rsp_args);
     if (status != MMAGIC_STATUS_OK)
     {
         printf("Error %d whilst receiving data\n", status);
@@ -524,8 +525,8 @@ static void tcp_client_example(struct mmagic_controller *controller,
                tcp_recv_rsp_args.buffer.len);
     }
 
-    struct mmagic_core_tcp_close_cmd_args tcp_close_cmd_args = {.stream_id = tcp_stream_id};
-    status = mmagic_controller_tcp_close(controller, &tcp_close_cmd_args);
+    struct mmagic_core_socket_close_cmd_args tcp_close_cmd_args = {.stream_id = tcp_stream_id};
+    status = mmagic_controller_socket_close(controller, &tcp_close_cmd_args);
     if (status != MMAGIC_STATUS_OK)
     {
         printf("Error %d whilst closing tcp socket\n", status);
@@ -560,20 +561,20 @@ static void tcp_echo_server_task(void *args)
 
     printf("Accepted a TCP connection on stream_id %u\n", stream_id);
 
-    struct mmagic_core_tcp_recv_cmd_args tcp_recv_cmd_args = {
+    struct mmagic_core_socket_recv_cmd_args tcp_recv_cmd_args = {
         .stream_id = stream_id,
         .len = 1536,
         .timeout = 1000,
     };
-    struct mmagic_core_tcp_recv_rsp_args tcp_recv_rsp_args = {};
-    struct mmagic_core_tcp_send_cmd_args tcp_send_cmd_args =
+    struct mmagic_core_socket_recv_rsp_args tcp_recv_rsp_args = {};
+    struct mmagic_core_socket_send_cmd_args tcp_send_cmd_args =
     {
         .stream_id = stream_id
     };
 
     while (true)
     {
-        status = mmagic_controller_tcp_recv(controller, &tcp_recv_cmd_args, &tcp_recv_rsp_args);
+        status = mmagic_controller_socket_recv(controller, &tcp_recv_cmd_args, &tcp_recv_rsp_args);
         if (status == MMAGIC_STATUS_TIMEOUT)
         {
             continue;
@@ -593,7 +594,7 @@ static void tcp_echo_server_task(void *args)
         memcpy(tcp_send_cmd_args.buffer.data, tcp_recv_rsp_args.buffer.data,
                tcp_recv_rsp_args.buffer.len);
         tcp_send_cmd_args.buffer.len = tcp_recv_rsp_args.buffer.len;
-        status = mmagic_controller_tcp_send(controller, &tcp_send_cmd_args);
+        status = mmagic_controller_socket_send(controller, &tcp_send_cmd_args);
         if (status != MMAGIC_STATUS_OK)
         {
             printf("Error %d whilst sending data\n", status);
@@ -601,11 +602,11 @@ static void tcp_echo_server_task(void *args)
         }
     }
 
-    struct mmagic_core_tcp_close_cmd_args tcp_close_cmd_args =
+    struct mmagic_core_socket_close_cmd_args tcp_close_cmd_args =
     {
         .stream_id = stream_id
     };
-    status = mmagic_controller_tcp_close(controller, &tcp_close_cmd_args);
+    status = mmagic_controller_socket_close(controller, &tcp_close_cmd_args);
     if (status != MMAGIC_STATUS_OK)
     {
         printf("Error %u whilst trying to close the TCP socket on stream_id %u\n",
@@ -621,7 +622,7 @@ static void tcp_echo_server_task(void *args)
  * @param  controller Reference to the controller structure to use.
  * @param  port       The TCP port to bind to.
  *
- * @return            @ref MMAGIC_STATUS_OK else an appropriate error code.
+ * @return            @c MMAGIC_STATUS_OK else an appropriate error code.
  */
 static enum mmagic_status tcp_echo_server_start(struct mmagic_controller *controller, uint16_t port)
 {
@@ -629,9 +630,9 @@ static enum mmagic_status tcp_echo_server_start(struct mmagic_controller *contro
     enum mmagic_status status;
     static struct tcp_echo_server_thread_args thread_args;
 
-    struct mmagic_core_tcp_bind_cmd_args tcp_bind_cmd_args = {.port = port};
-    struct mmagic_core_tcp_bind_rsp_args tcp_bind_rsp_args = {};
-    status = mmagic_controller_tcp_bind(controller, &tcp_bind_cmd_args, &tcp_bind_rsp_args);
+    struct mmagic_core_socket_bind_cmd_args tcp_bind_cmd_args = {.port = port, .protocol = MMAGIC_SOCKET_PROTO_TCP};
+    struct mmagic_core_socket_bind_rsp_args tcp_bind_rsp_args = {};
+    status = mmagic_controller_socket_bind(controller, &tcp_bind_cmd_args, &tcp_bind_rsp_args);
     if (status != MMAGIC_STATUS_OK)
     {
         printf("Error %u whilst opening the tcp socket\n", status);
@@ -641,13 +642,13 @@ static enum mmagic_status tcp_echo_server_start(struct mmagic_controller *contro
     printf("Opened listening socket (Port %u) on stream_id %u\n",
            tcp_bind_cmd_args.port, tcp_socket_stream_id);
 
-    struct mmagic_core_tcp_accept_cmd_args tcp_accept_cmd_args = {
+    struct mmagic_core_socket_accept_cmd_args tcp_accept_cmd_args = {
         .stream_id = tcp_socket_stream_id
     };
-    struct mmagic_core_tcp_accept_rsp_args tcp_accept_rsp_args = {};
+    struct mmagic_core_socket_accept_rsp_args tcp_accept_rsp_args = {};
     while (true)
     {
-        status = mmagic_controller_tcp_accept(controller,
+        status = mmagic_controller_socket_accept(controller,
                                               &tcp_accept_cmd_args,
                                               &tcp_accept_rsp_args);
         if (status != MMAGIC_STATUS_OK)
@@ -663,11 +664,11 @@ static enum mmagic_status tcp_echo_server_start(struct mmagic_controller *contro
                            MMOSAL_TASK_PRI_LOW, 2048, "tcp_echo_server_task");
     }
 
-    struct mmagic_core_tcp_close_cmd_args tcp_close_cmd_args =
+    struct mmagic_core_socket_close_cmd_args tcp_close_cmd_args =
     {
         .stream_id = tcp_socket_stream_id
     };
-    status = mmagic_controller_tcp_close(controller, &tcp_close_cmd_args);
+    status = mmagic_controller_socket_close(controller, &tcp_close_cmd_args);
     if (status != MMAGIC_STATUS_OK)
     {
         printf("Error %u whilst trying to close the listening socket on stream_id %u\n",
@@ -681,17 +682,17 @@ static enum mmagic_status tcp_echo_server_start(struct mmagic_controller *contro
 }
 
 /**
- * Handler for TCP receive ready event callback.
+ * Handler for data receive ready event callback.
  *
  * @param event_args    Event arguments.
  * @param arg           Opaque argument that was passed in when the callback was registered.
  */
-static void tcp_rx_ready_event_handler(
-    const struct mmagic_tcp_rx_ready_event_args *event_args,
+static void socket_rx_ready_event_handler(
+    const struct mmagic_socket_rx_ready_event_args *event_args,
     void *arg)
 {
     MM_UNUSED(event_args);
-    printf("TCP RX ready event\n");
+    printf("Socket RX ready event\n");
     struct mmosal_semb *rx_ready_semb = (struct mmosal_semb *)arg;
     mmosal_semb_give(rx_ready_semb);
 }
@@ -750,6 +751,22 @@ static void run_examples_task(void *args)
     mmosal_semb_wait(agent_started_semb, UINT32_MAX);
 
 agent_started:
+    struct mmagic_core_sys_get_version_rsp_args version_rsp = {};
+    status = mmagic_controller_sys_get_version(controller, &version_rsp);
+    if (status != MMAGIC_STATUS_OK)
+    {
+        printf("Get version failed with status %d\n", status);
+        return;
+    }
+
+    printf("-----------------------------------\n");
+    printf("Morselib version:        %s\n", version_rsp.results.morselib_version.data);
+    printf("Morse firmware version:  %s\n", version_rsp.results.morse_firmware_version.data);
+    printf("Application version:     %s\n", version_rsp.results.application_version.data);
+    printf("User Hardware version:   %s\n", version_rsp.results.user_hardware_version.data);
+    printf("Morse HW version:        %s\n", version_rsp.results.morse_hardware_version.data);
+    printf("-----------------------------------\n");
+
     if (!wlan_connect(controller))
     {
         printf("Failed to connect\n");
@@ -762,7 +779,7 @@ agent_connected:
 
     struct mmosal_semb *rx_ready_semb = mmosal_semb_create("rxready");
     MMOSAL_ASSERT(rx_ready_semb != NULL);
-    mmagic_controller_register_tcp_rx_ready_handler(controller, tcp_rx_ready_event_handler, rx_ready_semb);
+    mmagic_controller_register_socket_rx_ready_handler(controller, socket_rx_ready_event_handler, rx_ready_semb);
 
     tcp_client_example(controller, rx_ready_semb);
 

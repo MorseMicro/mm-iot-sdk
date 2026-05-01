@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.10.4</span>
+   &#160;<span id="projectnumber">2.11.2</span>
    </div>
   </td>
  </tr>
@@ -435,110 +435,111 @@ $(document).ready(function(){initNavTree('mqttdemo_8c_source.html',''); initResi
 <div class="line"><a id="l00503" name="l00503"></a><span class="lineno">  503</span><span class="comment">     * the network context structure. We set NetworkCredentials to NULL to connect in the clear.</span></div>
 <div class="line"><a id="l00504" name="l00504"></a><span class="lineno">  504</span><span class="comment">     * Set this parameter if you wish to connect with TLS */</span></div>
 <div class="line"><a id="l00505" name="l00505"></a><span class="lineno">  505</span>    printf(<span class="stringliteral">&quot;Connecting to server socket on %s:%ld...&quot;</span>, server, port);</div>
-<div class="line"><a id="l00506" name="l00506"></a><span class="lineno">  506</span>    xNetworkStatus = transport_connect(&amp;xNetworkContext, server, (uint16_t)port, NULL);</div>
-<div class="line"><a id="l00507" name="l00507"></a><span class="lineno">  507</span>    <span class="keywordflow">if</span> (xNetworkStatus != TRANSPORT_SUCCESS)</div>
-<div class="line"><a id="l00508" name="l00508"></a><span class="lineno">  508</span>    {</div>
-<div class="line"><a id="l00509" name="l00509"></a><span class="lineno">  509</span>        printf(<span class="stringliteral">&quot;failed with code %d\n&quot;</span>, xNetworkStatus);</div>
-<div class="line"><a id="l00510" name="l00510"></a><span class="lineno">  510</span>        <span class="keywordflow">return</span>;</div>
-<div class="line"><a id="l00511" name="l00511"></a><span class="lineno">  511</span>    }</div>
-<div class="line"><a id="l00512" name="l00512"></a><span class="lineno">  512</span>    printf(<span class="stringliteral">&quot;ok\n&quot;</span>);</div>
-<div class="line"><a id="l00513" name="l00513"></a><span class="lineno">  513</span> </div>
-<div class="line"><a id="l00514" name="l00514"></a><span class="lineno">  514</span>    <span class="comment">/* Connect to the MQTT broker using the already connected TCP socket. */</span></div>
-<div class="line"><a id="l00515" name="l00515"></a><span class="lineno">  515</span>    printf(<span class="stringliteral">&quot;Client %s Creating MQTT connection with broker....&quot;</span>, client_id);</div>
-<div class="line"><a id="l00516" name="l00516"></a><span class="lineno">  516</span>    xMQTTStatus = <a class="code hl_function" href="mqttdemo_8c.html#a878a48c8612c146c8075936f6523e00a">CreateMQTTConnectionToBroker</a>(&amp;xMQTTContext, &amp;xNetworkContext, client_id);</div>
-<div class="line"><a id="l00517" name="l00517"></a><span class="lineno">  517</span>    <span class="keywordflow">if</span> (xMQTTStatus != MQTTSuccess)</div>
-<div class="line"><a id="l00518" name="l00518"></a><span class="lineno">  518</span>    {</div>
-<div class="line"><a id="l00519" name="l00519"></a><span class="lineno">  519</span>        printf(<span class="stringliteral">&quot;failed with code %d\n&quot;</span>, xMQTTStatus);</div>
-<div class="line"><a id="l00520" name="l00520"></a><span class="lineno">  520</span>        transport_disconnect(&amp;xNetworkContext);</div>
-<div class="line"><a id="l00521" name="l00521"></a><span class="lineno">  521</span>        <span class="keywordflow">return</span>;</div>
-<div class="line"><a id="l00522" name="l00522"></a><span class="lineno">  522</span>    }</div>
-<div class="line"><a id="l00523" name="l00523"></a><span class="lineno">  523</span>    printf(<span class="stringliteral">&quot;ok\n&quot;</span>);</div>
-<div class="line"><a id="l00524" name="l00524"></a><span class="lineno">  524</span> </div>
-<div class="line"><a id="l00525" name="l00525"></a><span class="lineno">  525</span><span class="comment">    /**************************** Subscribe. ******************************/</span></div>
-<div class="line"><a id="l00526" name="l00526"></a><span class="lineno">  526</span> </div>
-<div class="line"><a id="l00527" name="l00527"></a><span class="lineno">  527</span>    <span class="comment">/* Subscribe to the test topic. */</span></div>
-<div class="line"><a id="l00528" name="l00528"></a><span class="lineno">  528</span>    printf(<span class="stringliteral">&quot;Subscribing to topic %s...&quot;</span>, topic);</div>
-<div class="line"><a id="l00529" name="l00529"></a><span class="lineno">  529</span>    xMQTTStatus = <a class="code hl_function" href="mqttdemo_8c.html#a3ce127c156403e783731b7de90b01b6a">MQTTSubscribe</a>(&amp;xMQTTContext, topic);</div>
-<div class="line"><a id="l00530" name="l00530"></a><span class="lineno">  530</span>    <span class="keywordflow">if</span> (xMQTTStatus != MQTTSuccess)</div>
-<div class="line"><a id="l00531" name="l00531"></a><span class="lineno">  531</span>    {</div>
-<div class="line"><a id="l00532" name="l00532"></a><span class="lineno">  532</span>        printf(<span class="stringliteral">&quot;failed with code %d\n&quot;</span>, xMQTTStatus);</div>
-<div class="line"><a id="l00533" name="l00533"></a><span class="lineno">  533</span>        <span class="keywordflow">goto</span> quit;</div>
-<div class="line"><a id="l00534" name="l00534"></a><span class="lineno">  534</span>    }</div>
-<div class="line"><a id="l00535" name="l00535"></a><span class="lineno">  535</span>    printf(<span class="stringliteral">&quot;ok\n&quot;</span>);</div>
-<div class="line"><a id="l00536" name="l00536"></a><span class="lineno">  536</span> </div>
-<div class="line"><a id="l00537" name="l00537"></a><span class="lineno">  537</span><span class="comment">    /******************* Publish and Keep Alive Loop. *********************/</span></div>
-<div class="line"><a id="l00538" name="l00538"></a><span class="lineno">  538</span> </div>
-<div class="line"><a id="l00539" name="l00539"></a><span class="lineno">  539</span>    <span class="comment">/* Publish messages with QoS0, then send and process Keep Alive messages. */</span></div>
-<div class="line"><a id="l00540" name="l00540"></a><span class="lineno">  540</span>    <span class="keywordflow">for</span> (ulPublishCount = 0; ulPublishCount &lt; ulMaxPublishCount; ulPublishCount++)</div>
-<div class="line"><a id="l00541" name="l00541"></a><span class="lineno">  541</span>    {</div>
-<div class="line"><a id="l00542" name="l00542"></a><span class="lineno">  542</span>        printf(<span class="stringliteral">&quot;Publishing to topic %s...&quot;</span>, topic);</div>
-<div class="line"><a id="l00543" name="l00543"></a><span class="lineno">  543</span>        xMQTTStatus = <a class="code hl_function" href="mqttdemo_8c.html#a67fc2838808735917ce9bf3b516ff850">MQTTPublishToTopic</a>(&amp;xMQTTContext, topic, message, strlen(message));</div>
-<div class="line"><a id="l00544" name="l00544"></a><span class="lineno">  544</span>        <span class="keywordflow">if</span> (xMQTTStatus != MQTTSuccess)</div>
-<div class="line"><a id="l00545" name="l00545"></a><span class="lineno">  545</span>        {</div>
-<div class="line"><a id="l00546" name="l00546"></a><span class="lineno">  546</span>            printf(<span class="stringliteral">&quot;failed with code %d\n&quot;</span>, xMQTTStatus);</div>
-<div class="line"><a id="l00547" name="l00547"></a><span class="lineno">  547</span>            <span class="keywordflow">goto</span> quit;</div>
-<div class="line"><a id="l00548" name="l00548"></a><span class="lineno">  548</span>        }</div>
-<div class="line"><a id="l00549" name="l00549"></a><span class="lineno">  549</span>        printf(<span class="stringliteral">&quot;ok\n&quot;</span>);</div>
-<div class="line"><a id="l00550" name="l00550"></a><span class="lineno">  550</span> </div>
-<div class="line"><a id="l00551" name="l00551"></a><span class="lineno">  551</span>        <span class="comment">/* Process the incoming publish echo. Since the application subscribed</span></div>
-<div class="line"><a id="l00552" name="l00552"></a><span class="lineno">  552</span><span class="comment">         * to the same topic, the broker will send the same publish message</span></div>
-<div class="line"><a id="l00553" name="l00553"></a><span class="lineno">  553</span><span class="comment">         * back to the application.  Note there is a separate demo that</span></div>
-<div class="line"><a id="l00554" name="l00554"></a><span class="lineno">  554</span><span class="comment">         * shows how to use coreMQTT in a thread safe way - in which case the</span></div>
-<div class="line"><a id="l00555" name="l00555"></a><span class="lineno">  555</span><span class="comment">         * MQTT protocol runs in the background and this call is not</span></div>
-<div class="line"><a id="l00556" name="l00556"></a><span class="lineno">  556</span><span class="comment">         * required. */</span></div>
-<div class="line"><a id="l00557" name="l00557"></a><span class="lineno">  557</span>        xMQTTStatus = MQTT_ProcessLoop(&amp;xMQTTContext);</div>
-<div class="line"><a id="l00558" name="l00558"></a><span class="lineno">  558</span>        <span class="keywordflow">if</span> (xMQTTStatus != MQTTSuccess)</div>
-<div class="line"><a id="l00559" name="l00559"></a><span class="lineno">  559</span>        {</div>
-<div class="line"><a id="l00560" name="l00560"></a><span class="lineno">  560</span>            printf(<span class="stringliteral">&quot;MQTT_ProcessLoop() failed with code %d\n&quot;</span>, xMQTTStatus);</div>
-<div class="line"><a id="l00561" name="l00561"></a><span class="lineno">  561</span>            <span class="keywordflow">goto</span> quit;</div>
-<div class="line"><a id="l00562" name="l00562"></a><span class="lineno">  562</span>        }</div>
-<div class="line"><a id="l00563" name="l00563"></a><span class="lineno">  563</span> </div>
-<div class="line"><a id="l00564" name="l00564"></a><span class="lineno">  564</span>        <span class="comment">/* Leave the connection idle for some time. */</span></div>
-<div class="line"><a id="l00565" name="l00565"></a><span class="lineno">  565</span>        <a class="code hl_function" href="group__MMOSAL__TASKS.html#ga62710c8923b3dbfc3de33e11ffd49bd4">mmosal_task_sleep</a>(publish_delay);</div>
-<div class="line"><a id="l00566" name="l00566"></a><span class="lineno">  566</span>    }</div>
-<div class="line"><a id="l00567" name="l00567"></a><span class="lineno">  567</span> </div>
-<div class="line"><a id="l00568" name="l00568"></a><span class="lineno">  568</span><span class="comment">    /******************** Unsubscribe from the topic. *********************/</span></div>
-<div class="line"><a id="l00569" name="l00569"></a><span class="lineno">  569</span> </div>
-<div class="line"><a id="l00570" name="l00570"></a><span class="lineno">  570</span>    xMQTTStatus = <a class="code hl_function" href="mqttdemo_8c.html#a56c439cd6b0ba7b66c7502a26ed10ea0">MQTTUnsubscribeFromTopic</a>(&amp;xMQTTContext, topic);</div>
-<div class="line"><a id="l00571" name="l00571"></a><span class="lineno">  571</span>    <span class="keywordflow">if</span> (xMQTTStatus != MQTTSuccess)</div>
-<div class="line"><a id="l00572" name="l00572"></a><span class="lineno">  572</span>    {</div>
-<div class="line"><a id="l00573" name="l00573"></a><span class="lineno">  573</span>        printf(<span class="stringliteral">&quot;MQTTUnsubscribeFromTopic() failed with code %d\n&quot;</span>, xMQTTStatus);</div>
-<div class="line"><a id="l00574" name="l00574"></a><span class="lineno">  574</span>        <span class="keywordflow">goto</span> quit;</div>
-<div class="line"><a id="l00575" name="l00575"></a><span class="lineno">  575</span>    }</div>
-<div class="line"><a id="l00576" name="l00576"></a><span class="lineno">  576</span> </div>
-<div class="line"><a id="l00577" name="l00577"></a><span class="lineno">  577</span>    <span class="comment">/* Process the incoming packet from the broker.  Note there is a separate</span></div>
-<div class="line"><a id="l00578" name="l00578"></a><span class="lineno">  578</span><span class="comment">     * demo that shows how to use coreMQTT in a thread safe way - in which case</span></div>
-<div class="line"><a id="l00579" name="l00579"></a><span class="lineno">  579</span><span class="comment">     * the MQTT protocol runs in the background and this call is not required. */</span></div>
-<div class="line"><a id="l00580" name="l00580"></a><span class="lineno">  580</span>    xMQTTStatus = MQTT_ProcessLoop(&amp;xMQTTContext);</div>
-<div class="line"><a id="l00581" name="l00581"></a><span class="lineno">  581</span>    <span class="keywordflow">if</span> (xMQTTStatus != MQTTSuccess)</div>
-<div class="line"><a id="l00582" name="l00582"></a><span class="lineno">  582</span>    {</div>
-<div class="line"><a id="l00583" name="l00583"></a><span class="lineno">  583</span>        printf(<span class="stringliteral">&quot;MQTT_ProcessLoop() failed with code %d\n&quot;</span>, xMQTTStatus);</div>
-<div class="line"><a id="l00584" name="l00584"></a><span class="lineno">  584</span>        <span class="keywordflow">goto</span> quit;</div>
-<div class="line"><a id="l00585" name="l00585"></a><span class="lineno">  585</span>    }</div>
-<div class="line"><a id="l00586" name="l00586"></a><span class="lineno">  586</span> </div>
-<div class="line"><a id="l00587" name="l00587"></a><span class="lineno">  587</span><span class="comment">    /**************************** Disconnect. *****************************/</span></div>
-<div class="line"><a id="l00588" name="l00588"></a><span class="lineno">  588</span> </div>
-<div class="line"><a id="l00589" name="l00589"></a><span class="lineno">  589</span>quit:</div>
-<div class="line"><a id="l00590" name="l00590"></a><span class="lineno">  590</span>    <span class="comment">/* Disconnect from broker. */</span></div>
-<div class="line"><a id="l00591" name="l00591"></a><span class="lineno">  591</span>    printf(<span class="stringliteral">&quot;Disconnecting from server and closing socket.\n&quot;</span>);</div>
-<div class="line"><a id="l00592" name="l00592"></a><span class="lineno">  592</span>    xMQTTStatus = MQTT_Disconnect(&amp;xMQTTContext);</div>
-<div class="line"><a id="l00593" name="l00593"></a><span class="lineno">  593</span>    <span class="keywordflow">if</span> (xMQTTStatus != MQTTSuccess)</div>
-<div class="line"><a id="l00594" name="l00594"></a><span class="lineno">  594</span>    {</div>
-<div class="line"><a id="l00595" name="l00595"></a><span class="lineno">  595</span>        printf(<span class="stringliteral">&quot;MQTT_Disconnect() failed with code %d\n&quot;</span>, xMQTTStatus);</div>
-<div class="line"><a id="l00596" name="l00596"></a><span class="lineno">  596</span>    }</div>
-<div class="line"><a id="l00597" name="l00597"></a><span class="lineno">  597</span> </div>
-<div class="line"><a id="l00598" name="l00598"></a><span class="lineno">  598</span>    <span class="comment">/* Close the network connection. */</span></div>
-<div class="line"><a id="l00599" name="l00599"></a><span class="lineno">  599</span>    transport_disconnect(&amp;xNetworkContext);</div>
-<div class="line"><a id="l00600" name="l00600"></a><span class="lineno">  600</span>}</div>
+<div class="line"><a id="l00506" name="l00506"></a><span class="lineno">  506</span>    xNetworkStatus =</div>
+<div class="line"><a id="l00507" name="l00507"></a><span class="lineno">  507</span>        transport_connect(&amp;xNetworkContext, server, TRANSPORT_TCP, (uint16_t)port, NULL);</div>
+<div class="line"><a id="l00508" name="l00508"></a><span class="lineno">  508</span>    <span class="keywordflow">if</span> (xNetworkStatus != TRANSPORT_SUCCESS)</div>
+<div class="line"><a id="l00509" name="l00509"></a><span class="lineno">  509</span>    {</div>
+<div class="line"><a id="l00510" name="l00510"></a><span class="lineno">  510</span>        printf(<span class="stringliteral">&quot;failed with code %d\n&quot;</span>, xNetworkStatus);</div>
+<div class="line"><a id="l00511" name="l00511"></a><span class="lineno">  511</span>        <span class="keywordflow">return</span>;</div>
+<div class="line"><a id="l00512" name="l00512"></a><span class="lineno">  512</span>    }</div>
+<div class="line"><a id="l00513" name="l00513"></a><span class="lineno">  513</span>    printf(<span class="stringliteral">&quot;ok\n&quot;</span>);</div>
+<div class="line"><a id="l00514" name="l00514"></a><span class="lineno">  514</span> </div>
+<div class="line"><a id="l00515" name="l00515"></a><span class="lineno">  515</span>    <span class="comment">/* Connect to the MQTT broker using the already connected TCP socket. */</span></div>
+<div class="line"><a id="l00516" name="l00516"></a><span class="lineno">  516</span>    printf(<span class="stringliteral">&quot;Client %s Creating MQTT connection with broker....&quot;</span>, client_id);</div>
+<div class="line"><a id="l00517" name="l00517"></a><span class="lineno">  517</span>    xMQTTStatus = <a class="code hl_function" href="mqttdemo_8c.html#a878a48c8612c146c8075936f6523e00a">CreateMQTTConnectionToBroker</a>(&amp;xMQTTContext, &amp;xNetworkContext, client_id);</div>
+<div class="line"><a id="l00518" name="l00518"></a><span class="lineno">  518</span>    <span class="keywordflow">if</span> (xMQTTStatus != MQTTSuccess)</div>
+<div class="line"><a id="l00519" name="l00519"></a><span class="lineno">  519</span>    {</div>
+<div class="line"><a id="l00520" name="l00520"></a><span class="lineno">  520</span>        printf(<span class="stringliteral">&quot;failed with code %d\n&quot;</span>, xMQTTStatus);</div>
+<div class="line"><a id="l00521" name="l00521"></a><span class="lineno">  521</span>        transport_disconnect(&amp;xNetworkContext);</div>
+<div class="line"><a id="l00522" name="l00522"></a><span class="lineno">  522</span>        <span class="keywordflow">return</span>;</div>
+<div class="line"><a id="l00523" name="l00523"></a><span class="lineno">  523</span>    }</div>
+<div class="line"><a id="l00524" name="l00524"></a><span class="lineno">  524</span>    printf(<span class="stringliteral">&quot;ok\n&quot;</span>);</div>
+<div class="line"><a id="l00525" name="l00525"></a><span class="lineno">  525</span> </div>
+<div class="line"><a id="l00526" name="l00526"></a><span class="lineno">  526</span><span class="comment">    /**************************** Subscribe. ******************************/</span></div>
+<div class="line"><a id="l00527" name="l00527"></a><span class="lineno">  527</span> </div>
+<div class="line"><a id="l00528" name="l00528"></a><span class="lineno">  528</span>    <span class="comment">/* Subscribe to the test topic. */</span></div>
+<div class="line"><a id="l00529" name="l00529"></a><span class="lineno">  529</span>    printf(<span class="stringliteral">&quot;Subscribing to topic %s...&quot;</span>, topic);</div>
+<div class="line"><a id="l00530" name="l00530"></a><span class="lineno">  530</span>    xMQTTStatus = <a class="code hl_function" href="mqttdemo_8c.html#a3ce127c156403e783731b7de90b01b6a">MQTTSubscribe</a>(&amp;xMQTTContext, topic);</div>
+<div class="line"><a id="l00531" name="l00531"></a><span class="lineno">  531</span>    <span class="keywordflow">if</span> (xMQTTStatus != MQTTSuccess)</div>
+<div class="line"><a id="l00532" name="l00532"></a><span class="lineno">  532</span>    {</div>
+<div class="line"><a id="l00533" name="l00533"></a><span class="lineno">  533</span>        printf(<span class="stringliteral">&quot;failed with code %d\n&quot;</span>, xMQTTStatus);</div>
+<div class="line"><a id="l00534" name="l00534"></a><span class="lineno">  534</span>        <span class="keywordflow">goto</span> quit;</div>
+<div class="line"><a id="l00535" name="l00535"></a><span class="lineno">  535</span>    }</div>
+<div class="line"><a id="l00536" name="l00536"></a><span class="lineno">  536</span>    printf(<span class="stringliteral">&quot;ok\n&quot;</span>);</div>
+<div class="line"><a id="l00537" name="l00537"></a><span class="lineno">  537</span> </div>
+<div class="line"><a id="l00538" name="l00538"></a><span class="lineno">  538</span><span class="comment">    /******************* Publish and Keep Alive Loop. *********************/</span></div>
+<div class="line"><a id="l00539" name="l00539"></a><span class="lineno">  539</span> </div>
+<div class="line"><a id="l00540" name="l00540"></a><span class="lineno">  540</span>    <span class="comment">/* Publish messages with QoS0, then send and process Keep Alive messages. */</span></div>
+<div class="line"><a id="l00541" name="l00541"></a><span class="lineno">  541</span>    <span class="keywordflow">for</span> (ulPublishCount = 0; ulPublishCount &lt; ulMaxPublishCount; ulPublishCount++)</div>
+<div class="line"><a id="l00542" name="l00542"></a><span class="lineno">  542</span>    {</div>
+<div class="line"><a id="l00543" name="l00543"></a><span class="lineno">  543</span>        printf(<span class="stringliteral">&quot;Publishing to topic %s...&quot;</span>, topic);</div>
+<div class="line"><a id="l00544" name="l00544"></a><span class="lineno">  544</span>        xMQTTStatus = <a class="code hl_function" href="mqttdemo_8c.html#a67fc2838808735917ce9bf3b516ff850">MQTTPublishToTopic</a>(&amp;xMQTTContext, topic, message, strlen(message));</div>
+<div class="line"><a id="l00545" name="l00545"></a><span class="lineno">  545</span>        <span class="keywordflow">if</span> (xMQTTStatus != MQTTSuccess)</div>
+<div class="line"><a id="l00546" name="l00546"></a><span class="lineno">  546</span>        {</div>
+<div class="line"><a id="l00547" name="l00547"></a><span class="lineno">  547</span>            printf(<span class="stringliteral">&quot;failed with code %d\n&quot;</span>, xMQTTStatus);</div>
+<div class="line"><a id="l00548" name="l00548"></a><span class="lineno">  548</span>            <span class="keywordflow">goto</span> quit;</div>
+<div class="line"><a id="l00549" name="l00549"></a><span class="lineno">  549</span>        }</div>
+<div class="line"><a id="l00550" name="l00550"></a><span class="lineno">  550</span>        printf(<span class="stringliteral">&quot;ok\n&quot;</span>);</div>
+<div class="line"><a id="l00551" name="l00551"></a><span class="lineno">  551</span> </div>
+<div class="line"><a id="l00552" name="l00552"></a><span class="lineno">  552</span>        <span class="comment">/* Process the incoming publish echo. Since the application subscribed</span></div>
+<div class="line"><a id="l00553" name="l00553"></a><span class="lineno">  553</span><span class="comment">         * to the same topic, the broker will send the same publish message</span></div>
+<div class="line"><a id="l00554" name="l00554"></a><span class="lineno">  554</span><span class="comment">         * back to the application.  Note there is a separate demo that</span></div>
+<div class="line"><a id="l00555" name="l00555"></a><span class="lineno">  555</span><span class="comment">         * shows how to use coreMQTT in a thread safe way - in which case the</span></div>
+<div class="line"><a id="l00556" name="l00556"></a><span class="lineno">  556</span><span class="comment">         * MQTT protocol runs in the background and this call is not</span></div>
+<div class="line"><a id="l00557" name="l00557"></a><span class="lineno">  557</span><span class="comment">         * required. */</span></div>
+<div class="line"><a id="l00558" name="l00558"></a><span class="lineno">  558</span>        xMQTTStatus = MQTT_ProcessLoop(&amp;xMQTTContext);</div>
+<div class="line"><a id="l00559" name="l00559"></a><span class="lineno">  559</span>        <span class="keywordflow">if</span> (xMQTTStatus != MQTTSuccess)</div>
+<div class="line"><a id="l00560" name="l00560"></a><span class="lineno">  560</span>        {</div>
+<div class="line"><a id="l00561" name="l00561"></a><span class="lineno">  561</span>            printf(<span class="stringliteral">&quot;MQTT_ProcessLoop() failed with code %d\n&quot;</span>, xMQTTStatus);</div>
+<div class="line"><a id="l00562" name="l00562"></a><span class="lineno">  562</span>            <span class="keywordflow">goto</span> quit;</div>
+<div class="line"><a id="l00563" name="l00563"></a><span class="lineno">  563</span>        }</div>
+<div class="line"><a id="l00564" name="l00564"></a><span class="lineno">  564</span> </div>
+<div class="line"><a id="l00565" name="l00565"></a><span class="lineno">  565</span>        <span class="comment">/* Leave the connection idle for some time. */</span></div>
+<div class="line"><a id="l00566" name="l00566"></a><span class="lineno">  566</span>        <a class="code hl_function" href="group__MMOSAL__TASKS.html#ga62710c8923b3dbfc3de33e11ffd49bd4">mmosal_task_sleep</a>(publish_delay);</div>
+<div class="line"><a id="l00567" name="l00567"></a><span class="lineno">  567</span>    }</div>
+<div class="line"><a id="l00568" name="l00568"></a><span class="lineno">  568</span> </div>
+<div class="line"><a id="l00569" name="l00569"></a><span class="lineno">  569</span><span class="comment">    /******************** Unsubscribe from the topic. *********************/</span></div>
+<div class="line"><a id="l00570" name="l00570"></a><span class="lineno">  570</span> </div>
+<div class="line"><a id="l00571" name="l00571"></a><span class="lineno">  571</span>    xMQTTStatus = <a class="code hl_function" href="mqttdemo_8c.html#a56c439cd6b0ba7b66c7502a26ed10ea0">MQTTUnsubscribeFromTopic</a>(&amp;xMQTTContext, topic);</div>
+<div class="line"><a id="l00572" name="l00572"></a><span class="lineno">  572</span>    <span class="keywordflow">if</span> (xMQTTStatus != MQTTSuccess)</div>
+<div class="line"><a id="l00573" name="l00573"></a><span class="lineno">  573</span>    {</div>
+<div class="line"><a id="l00574" name="l00574"></a><span class="lineno">  574</span>        printf(<span class="stringliteral">&quot;MQTTUnsubscribeFromTopic() failed with code %d\n&quot;</span>, xMQTTStatus);</div>
+<div class="line"><a id="l00575" name="l00575"></a><span class="lineno">  575</span>        <span class="keywordflow">goto</span> quit;</div>
+<div class="line"><a id="l00576" name="l00576"></a><span class="lineno">  576</span>    }</div>
+<div class="line"><a id="l00577" name="l00577"></a><span class="lineno">  577</span> </div>
+<div class="line"><a id="l00578" name="l00578"></a><span class="lineno">  578</span>    <span class="comment">/* Process the incoming packet from the broker.  Note there is a separate</span></div>
+<div class="line"><a id="l00579" name="l00579"></a><span class="lineno">  579</span><span class="comment">     * demo that shows how to use coreMQTT in a thread safe way - in which case</span></div>
+<div class="line"><a id="l00580" name="l00580"></a><span class="lineno">  580</span><span class="comment">     * the MQTT protocol runs in the background and this call is not required. */</span></div>
+<div class="line"><a id="l00581" name="l00581"></a><span class="lineno">  581</span>    xMQTTStatus = MQTT_ProcessLoop(&amp;xMQTTContext);</div>
+<div class="line"><a id="l00582" name="l00582"></a><span class="lineno">  582</span>    <span class="keywordflow">if</span> (xMQTTStatus != MQTTSuccess)</div>
+<div class="line"><a id="l00583" name="l00583"></a><span class="lineno">  583</span>    {</div>
+<div class="line"><a id="l00584" name="l00584"></a><span class="lineno">  584</span>        printf(<span class="stringliteral">&quot;MQTT_ProcessLoop() failed with code %d\n&quot;</span>, xMQTTStatus);</div>
+<div class="line"><a id="l00585" name="l00585"></a><span class="lineno">  585</span>        <span class="keywordflow">goto</span> quit;</div>
+<div class="line"><a id="l00586" name="l00586"></a><span class="lineno">  586</span>    }</div>
+<div class="line"><a id="l00587" name="l00587"></a><span class="lineno">  587</span> </div>
+<div class="line"><a id="l00588" name="l00588"></a><span class="lineno">  588</span><span class="comment">    /**************************** Disconnect. *****************************/</span></div>
+<div class="line"><a id="l00589" name="l00589"></a><span class="lineno">  589</span> </div>
+<div class="line"><a id="l00590" name="l00590"></a><span class="lineno">  590</span>quit:</div>
+<div class="line"><a id="l00591" name="l00591"></a><span class="lineno">  591</span>    <span class="comment">/* Disconnect from broker. */</span></div>
+<div class="line"><a id="l00592" name="l00592"></a><span class="lineno">  592</span>    printf(<span class="stringliteral">&quot;Disconnecting from server and closing socket.\n&quot;</span>);</div>
+<div class="line"><a id="l00593" name="l00593"></a><span class="lineno">  593</span>    xMQTTStatus = MQTT_Disconnect(&amp;xMQTTContext);</div>
+<div class="line"><a id="l00594" name="l00594"></a><span class="lineno">  594</span>    <span class="keywordflow">if</span> (xMQTTStatus != MQTTSuccess)</div>
+<div class="line"><a id="l00595" name="l00595"></a><span class="lineno">  595</span>    {</div>
+<div class="line"><a id="l00596" name="l00596"></a><span class="lineno">  596</span>        printf(<span class="stringliteral">&quot;MQTT_Disconnect() failed with code %d\n&quot;</span>, xMQTTStatus);</div>
+<div class="line"><a id="l00597" name="l00597"></a><span class="lineno">  597</span>    }</div>
+<div class="line"><a id="l00598" name="l00598"></a><span class="lineno">  598</span> </div>
+<div class="line"><a id="l00599" name="l00599"></a><span class="lineno">  599</span>    <span class="comment">/* Close the network connection. */</span></div>
+<div class="line"><a id="l00600" name="l00600"></a><span class="lineno">  600</span>    transport_disconnect(&amp;xNetworkContext);</div>
+<div class="line"><a id="l00601" name="l00601"></a><span class="lineno">  601</span>}</div>
 <div class="ttc" id="agroup__MMCONFIG__API_html_ga49a03e759500ae9d9395a22d3846c11e"><div class="ttname"><a href="group__MMCONFIG__API.html#ga49a03e759500ae9d9395a22d3846c11e">mmconfig_read_string</a></div><div class="ttdeci">int mmconfig_read_string(const char *key, char *buffer, int bufsize)</div><div class="ttdoc">Returns the persistent store string value identified by the key.</div></div>
 <div class="ttc" id="agroup__MMCONFIG__API_html_gae93df8026b038c5b216f7dc16a65ce91"><div class="ttname"><a href="group__MMCONFIG__API.html#gae93df8026b038c5b216f7dc16a65ce91">mmconfig_read_uint32</a></div><div class="ttdeci">int mmconfig_read_uint32(const char *key, uint32_t *value)</div><div class="ttdoc">Returns the unsigned integer stored in persistent store identified by the key.</div></div>
-<div class="ttc" id="agroup__MMOSAL__ASSERT_html_ga9bae87b1059a31f390403d647b73e4b9"><div class="ttname"><a href="group__MMOSAL__ASSERT.html#ga9bae87b1059a31f390403d647b73e4b9">MMOSAL_ASSERT</a></div><div class="ttdeci">#define MMOSAL_ASSERT(expr)</div><div class="ttdoc">Assert that the given expression evaluates to true and abort execution if not.</div><div class="ttdef"><b>Definition:</b> <a href="mmosal_8h_source.html#l00934">mmosal.h:934</a></div></div>
+<div class="ttc" id="agroup__MMOSAL__ASSERT_html_ga9bae87b1059a31f390403d647b73e4b9"><div class="ttname"><a href="group__MMOSAL__ASSERT.html#ga9bae87b1059a31f390403d647b73e4b9">MMOSAL_ASSERT</a></div><div class="ttdeci">#define MMOSAL_ASSERT(expr)</div><div class="ttdoc">Assert that the given expression evaluates to true and abort execution if not.</div><div class="ttdef"><b>Definition:</b> <a href="mmosal_8h_source.html#l01006">mmosal.h:1006</a></div></div>
 <div class="ttc" id="agroup__MMOSAL__TASKS_html_ga62710c8923b3dbfc3de33e11ffd49bd4"><div class="ttname"><a href="group__MMOSAL__TASKS.html#ga62710c8923b3dbfc3de33e11ffd49bd4">mmosal_task_sleep</a></div><div class="ttdeci">void mmosal_task_sleep(uint32_t duration_ms)</div><div class="ttdoc">Sleep for a period of time, yielding during that time.</div></div>
-<div class="ttc" id="agroup__MMOSAL__TIME_html_ga0945c6dc143fad47ee6798192e34cbbd"><div class="ttname"><a href="group__MMOSAL__TIME.html#ga0945c6dc143fad47ee6798192e34cbbd">mmosal_get_time_ms</a></div><div class="ttdeci">uint32_t mmosal_get_time_ms(void)</div><div class="ttdoc">Get the system time in milliseconds.</div><div class="ttdef"><b>Definition:</b> <a href="mmosal__shim__bootloader_8c_source.html#l00122">mmosal_shim_bootloader.c:122</a></div></div>
-<div class="ttc" id="agroup__MMWLAN__CTRL_html_ga173e223d50d73ffd7fafa04651e8fbff"><div class="ttname"><a href="group__MMWLAN__CTRL.html#ga173e223d50d73ffd7fafa04651e8fbff">mmwlan_get_mac_addr</a></div><div class="ttdeci">static enum mmwlan_status mmwlan_get_mac_addr(uint8_t *mac_addr)</div><div class="ttdoc">Gets the MAC address of the STA interface.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00681">mmwlan.h:681</a></div></div>
-<div class="ttc" id="agroup__MMWLAN_html_ga0039072000d47e5c3712686bf1e43086"><div class="ttname"><a href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a></div><div class="ttdeci">mmwlan_status</div><div class="ttdoc">Enumeration of status return codes.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00050">mmwlan.h:51</a></div></div>
-<div class="ttc" id="agroup__MMWLAN_html_gad1f02bb330d9d2f4c831a1cf9d44ff1a"><div class="ttname"><a href="group__MMWLAN.html#gad1f02bb330d9d2f4c831a1cf9d44ff1a">MMWLAN_MAC_ADDR_LEN</a></div><div class="ttdeci">#define MMWLAN_MAC_ADDR_LEN</div><div class="ttdoc">Length of a WLAN MAC address.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00092">mmwlan.h:92</a></div></div>
-<div class="ttc" id="agroup__MMWLAN_html_gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c"><div class="ttname"><a href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a></div><div class="ttdeci">@ MMWLAN_SUCCESS</div><div class="ttdoc">The operation was successful.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00053">mmwlan.h:53</a></div></div>
+<div class="ttc" id="agroup__MMOSAL__TIME_html_ga0945c6dc143fad47ee6798192e34cbbd"><div class="ttname"><a href="group__MMOSAL__TIME.html#ga0945c6dc143fad47ee6798192e34cbbd">mmosal_get_time_ms</a></div><div class="ttdeci">uint32_t mmosal_get_time_ms(void)</div><div class="ttdoc">Get the system time in milliseconds.</div></div>
+<div class="ttc" id="agroup__MMWLAN__CTRL_html_ga173e223d50d73ffd7fafa04651e8fbff"><div class="ttname"><a href="group__MMWLAN__CTRL.html#ga173e223d50d73ffd7fafa04651e8fbff">mmwlan_get_mac_addr</a></div><div class="ttdeci">static enum mmwlan_status mmwlan_get_mac_addr(uint8_t *mac_addr)</div><div class="ttdoc">Gets the MAC address of the STA interface.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00688">mmwlan.h:688</a></div></div>
+<div class="ttc" id="agroup__MMWLAN_html_ga0039072000d47e5c3712686bf1e43086"><div class="ttname"><a href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a></div><div class="ttdeci">mmwlan_status</div><div class="ttdoc">Enumeration of status return codes.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00049">mmwlan.h:50</a></div></div>
+<div class="ttc" id="agroup__MMWLAN_html_gad1f02bb330d9d2f4c831a1cf9d44ff1a"><div class="ttname"><a href="group__MMWLAN.html#gad1f02bb330d9d2f4c831a1cf9d44ff1a">MMWLAN_MAC_ADDR_LEN</a></div><div class="ttdeci">#define MMWLAN_MAC_ADDR_LEN</div><div class="ttdoc">Length of a WLAN MAC address.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00096">mmwlan.h:96</a></div></div>
+<div class="ttc" id="agroup__MMWLAN_html_gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c"><div class="ttname"><a href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a></div><div class="ttdeci">@ MMWLAN_SUCCESS</div><div class="ttdoc">The operation was successful.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00052">mmwlan.h:52</a></div></div>
 <div class="ttc" id="amm__app__common_8h_html"><div class="ttname"><a href="mm__app__common_8h.html">mm_app_common.h</a></div><div class="ttdoc">Morse Micro application helper routines for initializing/de-initializing the Wireless LAN interface a...</div></div>
 <div class="ttc" id="amm__app__common_8h_html_ac74a7d993e4fd372d18ee5d2f2570fb9"><div class="ttname"><a href="mm__app__common_8h.html#ac74a7d993e4fd372d18ee5d2f2570fb9">app_wlan_init</a></div><div class="ttdeci">void app_wlan_init(void)</div><div class="ttdoc">Initializes the WLAN interface (and dependencies) using settings specified in the config store.</div></div>
 <div class="ttc" id="amm__app__common_8h_html_aeda94efa10a45cefab39a3459374c074"><div class="ttname"><a href="mm__app__common_8h.html#aeda94efa10a45cefab39a3459374c074">app_wlan_start</a></div><div class="ttdeci">void app_wlan_start(void)</div><div class="ttdoc">Starts the WLAN interface and connects to Wi-Fi using settings specified in the config store.</div></div>
@@ -567,7 +568,7 @@ $(document).ready(function(){initNavTree('mqttdemo_8c_source.html',''); initResi
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_c5388b8f7c63864c1129967aadb7f145.html">examples</a></li><li class="navelem"><a class="el" href="dir_4eba25d8f59ae5271b629c8ae59ec03f.html">mqttdemo</a></li><li class="navelem"><a class="el" href="dir_133c550e72116f2f7d4f09784ad65604.html">src</a></li><li class="navelem"><a class="el" href="mqttdemo_8c.html">mqttdemo.c</a></li>
+    <li class="navelem"><a class="el" href="dir_4a117e60a3f8308259f4d16395856081.html">examples</a></li><li class="navelem"><a class="el" href="dir_715630db387b4527f62b243f7cfede83.html">mqttdemo</a></li><li class="navelem"><a class="el" href="dir_1969060df554593ccadbd34024b1ca80.html">src</a></li><li class="navelem"><a class="el" href="mqttdemo_8c.html">mqttdemo.c</a></li>
     <li class="footer">Copyright 2021-2025 Morse Micro </li>
   </ul>
 </div>

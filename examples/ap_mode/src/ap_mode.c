@@ -20,6 +20,7 @@
 #include "mmutils.h"
 #include "mm_app_common.h"
 #include "mm_app_loadconfig.h"
+#include "mmlog.h"
 
 /*
  * --
@@ -105,7 +106,7 @@
 
 #ifndef PRIMARY_1MHZ_CHANNEL_INDEX
 /** Primary 1 MHz Channel Index to use for AP */
-#define PRIMARY_1MHZ_CHANNEL_INDEX (0)
+#define PRIMARY_1MHZ_CHANNEL_INDEX (3)
 #endif
 
 #ifndef MAX_STAS
@@ -125,6 +126,33 @@
 uint32_t opaque_argument_value;
 
 /**
+ * Function to convert @c mmwlan_ap_sta_state enumeration to a human readable string.
+ *
+ * @param state State enum to convert
+ *
+ * @return sting representation of the enumeration.
+ */
+static char *mmwlan_ap_sta_state_to_str(enum mmwlan_ap_sta_state state)
+{
+    switch (state)
+    {
+        case MMWLAN_AP_STA_UNKNOWN:
+            return "Unknown (disconnected)";
+
+        case MMWLAN_AP_STA_AUTHENTICATED:
+            return "Authenticated";
+
+        case MMWLAN_AP_STA_ASSOCIATED:
+            return "Associated";
+
+        case MMWLAN_AP_STA_AUTHORIZED:
+            return "Authorized";
+    }
+
+    return "Unrecognized";
+}
+
+/**
  * Handler for AP STA Status callback.
  *
  * @param sta_status    STA status information.
@@ -132,13 +160,14 @@ uint32_t opaque_argument_value;
  */
 static void handle_ap_sta_status(const struct mmwlan_ap_sta_status *sta_status, void *arg)
 {
-    MM_UNUSED(sta_status);
-
     /* Validate that the opaque argument received matches the value passed in. This is just for
      * testing purposes. */
     MMOSAL_ASSERT(arg == &opaque_argument_value);
 
-    printf("STA status updated\n");
+    MMLOG_APP("AP STA " MM_MAC_ADDR_FMT " State: %s, AID: %u\n",
+              MM_MAC_ADDR_VAL(sta_status->mac_addr),
+              mmwlan_ap_sta_state_to_str(sta_status->state),
+              sta_status->aid);
 }
 
 /**
@@ -183,19 +212,21 @@ void load_mmwlan_ap_args(struct mmwlan_ap_args *ap_args)
 
     /* Load SSID */
     (void)mmosal_safer_strcpy((char *)ap_args->ssid, STRINGIFY(AP_SSID), sizeof(ap_args->ssid));
-    (void)mmconfig_read_string("wlan.ssid", (char *)ap_args->ssid, sizeof(ap_args->ssid));
+    (void)mmconfig_read_string("wlan.ap_ssid", (char *)ap_args->ssid, sizeof(ap_args->ssid));
     ap_args->ssid_len = strlen((char *)ap_args->ssid);
 
     /* Load password */
     (void)mmosal_safer_strcpy(ap_args->passphrase,
                               STRINGIFY(SAE_PASSPHRASE),
                               sizeof(ap_args->passphrase));
-    (void)mmconfig_read_string("wlan.password", ap_args->passphrase, sizeof(ap_args->passphrase));
+    (void)mmconfig_read_string("wlan.ap_password",
+                               ap_args->passphrase,
+                               sizeof(ap_args->passphrase));
     ap_args->passphrase_len = strlen(ap_args->passphrase);
 
     /* Load security type */
     ap_args->security_type = SECURITY_TYPE;
-    if (mmconfig_read_string("wlan.security", strval, sizeof(strval)) > 0)
+    if (mmconfig_read_string("wlan.ap_security", strval, sizeof(strval)) > 0)
     {
         if (strncmp("sae", strval, sizeof(strval)) == 0)
         {
@@ -211,17 +242,19 @@ void load_mmwlan_ap_args(struct mmwlan_ap_args *ap_args)
         }
         else
         {
-            printf("Invalid value of %s read from config store: %s\n", "wlan.security", strval);
+            MMLOG_APP("Invalid value of %s read from config store: %s\n",
+                      "wlan.ap_security",
+                      strval);
         }
     }
 
     /* Load PMF mode */
     ap_args->pmf_mode = PMF_MODE;
-    if (mmconfig_read_string("wlan.pmf_mode", strval, sizeof(strval)) > 0)
+    if (mmconfig_read_string("wlan.ap_pmf_mode", strval, sizeof(strval)) > 0)
     {
         if (strncmp("disabled", strval, sizeof(strval)) == 0)
         {
-            printf("PMF disabled\n");
+            MMLOG_APP("PMF disabled\n");
             ap_args->pmf_mode = MMWLAN_PMF_DISABLED;
         }
         else if (strncmp("required", strval, sizeof(strval)) == 0)
@@ -230,12 +263,14 @@ void load_mmwlan_ap_args(struct mmwlan_ap_args *ap_args)
         }
         else
         {
-            printf("Invalid value of %s read from config store: %s\n", "wlan.pmf_mode", strval);
+            MMLOG_APP("Invalid value of %s read from config store: %s\n",
+                      "wlan.ap_pmf_mode",
+                      strval);
         }
     }
 
     /* Load BSSID */
-    if (mmconfig_read_string("wlan.bssid", strval, sizeof(strval)) > 0)
+    if (mmconfig_read_string("wlan.ap_bssid", strval, sizeof(strval)) > 0)
     {
         int temp[6];
         int i;
@@ -265,7 +300,7 @@ void load_mmwlan_ap_args(struct mmwlan_ap_args *ap_args)
     }
 
     ap_args->op_class = OP_CLASS;
-    if (mmconfig_read_uint32("wlan.op_class", &uint32val) == MMCONFIG_OK)
+    if (mmconfig_read_uint32("wlan.ap_op_class", &uint32val) == MMCONFIG_OK)
     {
         if (uint32val <= UINT8_MAX)
         {
@@ -273,12 +308,12 @@ void load_mmwlan_ap_args(struct mmwlan_ap_args *ap_args)
         }
         else
         {
-            printf("%s out of range\n", "wlan.op_class");
+            MMLOG_APP("%s out of range\n", "wlan.ap_op_class");
         }
     }
 
     ap_args->s1g_chan_num = S1G_CHANNEL;
-    if (mmconfig_read_uint32("wlan.s1g_chan_num", &uint32val) == MMCONFIG_OK)
+    if (mmconfig_read_uint32("wlan.ap_s1g_chan_num", &uint32val) == MMCONFIG_OK)
     {
         if (uint32val <= UINT8_MAX)
         {
@@ -286,12 +321,12 @@ void load_mmwlan_ap_args(struct mmwlan_ap_args *ap_args)
         }
         else
         {
-            printf("%s out of range\n", "wlan.s1g_chan_num");
+            MMLOG_APP("%s out of range\n", "wlan.ap_s1g_chan_num");
         }
     }
 
     ap_args->pri_bw_mhz = PRIMARY_BW_MHZ;
-    if (mmconfig_read_uint32("wlan.pri_bw_mhz", &uint32val) == MMCONFIG_OK)
+    if (mmconfig_read_uint32("wlan.ap_pri_bw_mhz", &uint32val) == MMCONFIG_OK)
     {
         if (uint32val <= UINT8_MAX)
         {
@@ -299,12 +334,12 @@ void load_mmwlan_ap_args(struct mmwlan_ap_args *ap_args)
         }
         else
         {
-            printf("%s out of range\n", "wlan.pri_bw_mhz");
+            MMLOG_APP("%s out of range\n", "wlan.ap_pri_bw_mhz");
         }
     }
 
     ap_args->pri_1mhz_chan_idx = PRIMARY_1MHZ_CHANNEL_INDEX;
-    if (mmconfig_read_uint32("wlan.pri_1mhz_chan_idx", &uint32val) == MMCONFIG_OK)
+    if (mmconfig_read_uint32("wlan.ap_pri_1mhz_chan_idx", &uint32val) == MMCONFIG_OK)
     {
         if (uint32val <= UINT8_MAX)
         {
@@ -312,7 +347,7 @@ void load_mmwlan_ap_args(struct mmwlan_ap_args *ap_args)
         }
         else
         {
-            printf("%s out of range\n", "wlan.pri_1mhz_chan_idx");
+            MMLOG_APP("%s out of range\n", "wlan.ap_pri_1mhz_chan_idx");
         }
     }
 }
@@ -381,14 +416,14 @@ static void link_status_callback(const struct mmipal_link_status *link_status)
     uint32_t time_ms = mmosal_get_time_ms();
     if (link_status->link_state == MMIPAL_LINK_UP)
     {
-        printf("Link is up. Time: %lu ms", time_ms);
-        printf(", IP: %s", link_status->ip_addr);
-        printf(", Netmask: %s", link_status->netmask);
-        printf(", Gateway: %s\n", link_status->gateway);
+        MMLOG_PRINTF("Link is up. Time: %lu ms", time_ms);
+        MMLOG_PRINTF(", IP: %s", link_status->ip_addr);
+        MMLOG_PRINTF(", Netmask: %s", link_status->netmask);
+        MMLOG_PRINTF(", Gateway: %s\n", link_status->gateway);
     }
     else
     {
-        printf("Link is down. Time: %lu ms\n", time_ms);
+        MMLOG_PRINTF("Link is down. Time: %lu ms\n", time_ms);
     }
 }
 
@@ -398,7 +433,7 @@ static void link_status_callback(const struct mmipal_link_status *link_status)
  */
 void app_init(void)
 {
-    printf("\n\nAP Mode Example (Built " __DATE__ " " __TIME__ ")\n\n");
+    MMLOG_PRINTF("\n\nAP Mode Example (Built " __DATE__ " " __TIME__ ")\n\n");
     mmwlan_init();
     mmwlan_set_channel_list(load_channel_list());
     mmwlan_boot(NULL);
@@ -415,7 +450,7 @@ void app_init(void)
     /* Initialize IP stack. */
     if (mmipal_init(&mmipal_init_args) != MMIPAL_SUCCESS)
     {
-        printf("Error initializing network interface.\n");
+        MMLOG_APP("Error initializing network interface.\n");
         MMOSAL_ASSERT(false);
     }
 
@@ -432,13 +467,14 @@ void app_init(void)
 
     ap_args.max_stas = MAX_STAS;
 
+    MMLOG_APP("Starting AP mode...\n");
     enum mmwlan_status status = mmwlan_ap_enable(&ap_args);
     if (status == MMWLAN_SUCCESS)
     {
-        printf("AP started successfully\n");
+        MMLOG_APP("AP started successfully\n");
     }
     else
     {
-        printf("Failed to start AP (status %d)\n", status);
+        MMLOG_APP("Failed to start AP (status %d)\n", status);
     }
 }

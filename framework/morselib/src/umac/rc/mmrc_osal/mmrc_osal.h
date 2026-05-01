@@ -10,6 +10,7 @@
 
 #include "mmosal.h"
 #include "mmlog.h"
+#include "mmutils.h"
 
 typedef uint8_t u8;
 typedef int8_t s8;
@@ -28,9 +29,11 @@ typedef int32_t s32;
 #define max(a, b) ((a) > (b) ? (a) : (b))
 #endif
 
-#define MMRC_OSAL_ASSERT MMOSAL_ASSERT
+#define MMRC_OSAL_ASSERT            MMOSAL_ASSERT
 
-#define MMRC_OSAL_PR_ERR MMLOG_ERR
+#define MMRC_OSAL_STATIC_ASSERT(_x) MM_STATIC_ASSERT(_x, "MMRC build assertion failed")
+
+#define MMRC_OSAL_PR_ERR            MMLOG_ERR
 
 
 void osal_mmrc_seed_random(void);

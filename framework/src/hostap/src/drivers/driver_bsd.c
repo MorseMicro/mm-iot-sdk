@@ -325,6 +325,9 @@ bsd_set_key(void *priv, struct wpa_driver_set_key_params *params)
 	const u8 *key = params->key;
 	size_t key_len = params->key_len;
 
+	if (params->key_flag & KEY_FLAG_NEXT)
+		return -1;
+
 	wpa_printf(MSG_DEBUG, "%s: alg=%d addr=%p key_idx=%d set_tx=%d "
 		   "seq_len=%zu key_len=%zu", __func__, alg, addr, key_idx,
 		   set_tx, seq_len, key_len);
@@ -984,7 +987,7 @@ bsd_sta_deauth(void *priv, const u8 *own_addr, const u8 *addr, u16 reason_code,
 
 static int
 bsd_sta_disassoc(void *priv, const u8 *own_addr, const u8 *addr,
-		 u16 reason_code)
+		 u16 reason_code, int link_id)
 {
 	return bsd_send_mlme_param(priv, IEEE80211_MLME_DISASSOC, reason_code,
 				   addr);
@@ -998,7 +1001,8 @@ handle_read(void *ctx, const u8 *src_addr, const u8 *buf, size_t len)
 }
 
 static void *
-bsd_init(struct hostapd_data *hapd, struct wpa_init_params *params)
+bsd_init(struct hostapd_data *hapd, struct wpa_init_params *params,
+	 enum wpa_p2p_mode p2p_mode)
 {
 	struct bsd_driver_data *drv;
 
@@ -1680,9 +1684,22 @@ bsd_global_init(void *ctx)
 
 	global->sock = socket(PF_INET, SOCK_DGRAM | SOCK_CLOEXEC, 0);
 	if (global->sock < 0) {
-		wpa_printf(MSG_ERROR, "socket[PF_INET,SOCK_DGRAM]: %s",
-			   strerror(errno));
-		goto fail1;
+		if (errno == EAFNOSUPPORT) {
+			wpa_printf(MSG_DEBUG,
+				   "INET not supported, trying INET6...");
+			global->sock = socket(PF_INET6,
+					      SOCK_DGRAM | SOCK_CLOEXEC, 0);
+			if (global->sock < 0) {
+				wpa_printf(MSG_ERROR,
+					   "socket[PF_INET6,SOCK_DGRAM]: %s",
+					   strerror(errno));
+				goto fail1;
+			}
+		} else {
+			wpa_printf(MSG_ERROR, "socket[PF_INET,SOCK_DGRAM]: %s",
+				   strerror(errno));
+			goto fail1;
+		}
 	}
 
 	global->route = socket(PF_ROUTE,

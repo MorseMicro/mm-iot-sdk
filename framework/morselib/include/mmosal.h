@@ -75,7 +75,7 @@ int mmosal_main(mmosal_app_init_cb_t app_init_cb);
  *
  * No guarantees made about initialization.
  *
- * @warning This function should not be used directly. Instead use @ref mmosal_malloc().
+ * @warning This function should not be used directly. Instead use @c mmosal_malloc().
  *
  * @param size  The amount of memory to allocate (in bytes).
  *
@@ -99,6 +99,34 @@ void *mmosal_malloc_(size_t size);
 void *mmosal_malloc_dbg(size_t size, const char *name, unsigned line_number);
 
 /**
+ * Equivalent of standard library calloc().
+ *
+ * @warning This function should not be used directly. Instead use @c mmosal_calloc().
+ *
+ * @param nitems   Number of blocks to allocate
+ * @param size     Size of each block.
+ * @param name  Name of the function that allocated the memory.
+ * @param line_number   The line number at which the allocation happened.
+ *
+ * @returns pointer to the allocated memory on success, or NULL on failure.
+ */
+void *mmosal_calloc_dbg(size_t nitems, size_t size, const char *name, unsigned line_number);
+
+/**
+ * Equivalent of standard library realloc().
+ *
+ * @warning This function should not be used directly. Instead use @c mmosal_realloc().
+ *
+ * @param ptr   Previously allocated memory block to resize.
+ * @param size  The new size.
+ * @param name  Name of the function that allocated the memory.
+ * @param line_number   The line number at which the allocation happened.
+ *
+ * @returns pointer to the resized block of memory, or @c NULL.
+ */
+void *mmosal_realloc_dbg(void *ptr, size_t size, const char *name, unsigned line_number);
+
+/**
  * Free the given memory allocation.
  *
  * @param p     The memory to free.
@@ -108,22 +136,26 @@ void mmosal_free(void *p);
 /**
  * Equivalent of standard library realloc().
  *
+ * @warning This function should not be used directly. Instead use @c mmosal_realloc().
+ *
  * @param ptr   Previously allocated memory block to resize.
  * @param size  The new size.
  *
  * @returns pointer to the resized block of memory, or @c NULL.
  */
-void *mmosal_realloc(void *ptr, size_t size);
+void *mmosal_realloc_(void *ptr, size_t size);
 
 /**
  * Equivalent of standard library calloc().
+ *
+ * @warning This function should not be used directly. Instead use @c mmosal_calloc().
  *
  * @param nitems   Number of blocks to allocate
  * @param size     Size of each block.
  *
  * @returns pointer to the allocated memory on success, or NULL on failure.
  */
-void *mmosal_calloc(size_t nitems, size_t size);
+void *mmosal_calloc_(size_t nitems, size_t size);
 
 #ifndef MMOSAL_TRACK_ALLOCATIONS
 /**
@@ -136,6 +168,26 @@ void *mmosal_calloc(size_t nitems, size_t size);
  * @returns pointer to the allocated memory on success, or NULL on failure.
  */
 #define mmosal_malloc(size) mmosal_malloc_(size)
+
+/**
+ * Equivalent of standard library calloc().
+ *
+ * @param nitems   Number of blocks to allocate
+ * @param size     Size of each block.
+ *
+ * @returns pointer to the allocated memory on success, or NULL on failure.
+ */
+#define mmosal_calloc(nitems, size) mmosal_calloc_(nitems, size)
+
+/**
+ * Equivalent of standard library realloc().
+ *
+ * @param ptr   Previously allocated memory block to resize.
+ * @param size  The new size.
+ *
+ * @returns pointer to the resized block of memory, or @c NULL.
+ */
+#define mmosal_realloc(ptr, size) mmosal_realloc_(ptr, size)
 #else
 /* Note: we use function name because it should be shorter than the full filename path. */
 /**
@@ -147,7 +199,27 @@ void *mmosal_calloc(size_t nitems, size_t size);
  *
  * @returns pointer to the allocated memory on success, or NULL on failure.
  */
-#define mmosal_malloc(size) mmosal_malloc_dbg(size, __func__, __LINE__)
+#define mmosal_malloc(size)         mmosal_malloc_dbg(size, __func__, __LINE__)
+
+/**
+ * Equivalent of standard library calloc().
+ *
+ * @param nitems   Number of blocks to allocate
+ * @param size     Size of each block.
+ *
+ * @returns pointer to the allocated memory on success, or NULL on failure.
+ */
+#define mmosal_calloc(nitems, size) mmosal_calloc_dbg(nitems, size, __func__, __LINE__)
+
+/**
+ * Equivalent of standard library realloc().
+ *
+ * @param ptr   Previously allocated memory block to resize.
+ * @param size  The new size.
+ *
+ * @returns pointer to the resized block of memory, or @c NULL.
+ */
+#define mmosal_realloc(ptr, size)   mmosal_realloc_dbg(ptr, size, __func__, __LINE__)
 #endif
 
 /**
@@ -910,7 +982,7 @@ void mmosal_log_failure_info(const struct mmosal_failure_info *info);
             .platform_info = { __VA_ARGS__ }, \
         };                                    \
         MMPORT_GET_PC(pc);                    \
-        info.pc = (uint32_t)pc;               \
+        info.pc = (uint32_t)(uintptr_t)pc;    \
         mmosal_log_failure_info(&info);       \
     } while (0)
 #endif

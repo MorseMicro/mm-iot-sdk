@@ -25,5 +25,14 @@ void mmagic_core_init_modules(struct mmagic_data *core)
 {%- endfor %}
 {% for module in config.modules %}
     mmagic_core_{{module.name}}_start(core);
+{%- if module.name == "wlan" %}
+    if (!mmagic_core_wlan_is_started(core))
+    {
+        mmosal_printf("WLAN not started. Check configuration.\n");
+        /* Start just the sys module to allow access to the reset command */
+        mmagic_core_sys_start(core);
+        return;
+    }
+{%- endif %}
 {%- endfor %}
 };

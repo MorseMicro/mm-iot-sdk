@@ -9,6 +9,7 @@
 #include "mmosal.h"
 #include "mmhal_core.h"
 #include "mmipal.h"
+#include "mmlog.h"
 #include "arch/sys_arch.h"
 
 /*
@@ -568,7 +569,7 @@
  *  -----------------------------------
  */
 
-#ifndef LWIP_PROVIDE_ERRNO
+#if !defined(LWIP_ERRNO_STDINCLUDE) && !defined(LWIP_PROVIDE_ERRNO)
 #define LWIP_PROVIDE_ERRNO (1)
 #endif
 
@@ -577,7 +578,11 @@
 #endif
 
 #ifndef LWIP_PLATFORM_ASSERT
-#define LWIP_PLATFORM_ASSERT(x) MMOSAL_ASSERT(false)
+#define LWIP_PLATFORM_ASSERT(x)                 \
+    do {                                        \
+        MMLOG_ERR("Failed assertion: %s\n", x); \
+        MMOSAL_ASSERT(false);                   \
+    } while (0)
 #endif
 
 #ifndef SO_REUSE

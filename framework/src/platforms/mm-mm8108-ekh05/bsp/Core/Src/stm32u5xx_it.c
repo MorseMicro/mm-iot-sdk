@@ -23,6 +23,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "mmhal_os.h"
+#include "mmhal_wlan.h"
 #include "mmosal.h"
 /* USER CODE END Includes */
 
@@ -86,6 +87,12 @@ void NMI_Handler(void)
   /* USER CODE BEGIN NonMaskableInt_IRQn 1 */
     MMOSAL_LOG_FAILURE_INFO(FAILURE_NMI);
 #ifdef HALT_ON_ASSERT
+#ifdef RESET_MM_ON_HALT
+    /* mmhal_wlan_x functions are not for application use, they are for use by Morselib.
+     * Exception made here as host is halted and no futher code runs, we assert the reset line on
+     * the MM chip to stop the transciever from ACKing frames as host cannot service traffic. */
+    mmhal_wlan_assert_reset(true);
+#endif
     while (1)
     {
         MMPORT_BREAKPOINT();
@@ -117,6 +124,12 @@ void HardFault_Handler(void)
 
   MMOSAL_LOG_FAILURE_INFO(FAILURE_HARDFAULT, SCB->HFSR, SCB->CFSR, fault_pc);
 #ifdef HALT_ON_ASSERT
+#ifdef RESET_MM_ON_HALT
+    /* mmhal_wlan_x functions are not for application use, they are for use by Morselib.
+     * Exception made here as host is halted and no futher code runs, we assert the reset line on
+     * the MM chip to stop the transciever from ACKing frames as host cannot service traffic. */
+    mmhal_wlan_assert_reset(true);
+#endif
   while (1)
   {
     MMPORT_BREAKPOINT();
@@ -140,6 +153,12 @@ void MemManage_Handler(void)
   /* USER CODE BEGIN MemoryManagement_IRQn 0 */
     MMOSAL_LOG_FAILURE_INFO(FAILURE_MEMMANAGE, SCB->CFSR, SCB->MMFAR);
 #ifdef HALT_ON_ASSERT
+#ifdef RESET_MM_ON_HALT
+    /* mmhal_wlan_x functions are not for application use, they are for use by Morselib.
+     * Exception made here as host is halted and no futher code runs, we assert the reset line on
+     * the MM chip to stop the transciever from ACKing frames as host cannot service traffic. */
+    mmhal_wlan_assert_reset(true);
+#endif
     while (1)
     {
         MMPORT_BREAKPOINT();

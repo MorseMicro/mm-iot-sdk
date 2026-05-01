@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.10.4</span>
+   &#160;<span id="projectnumber">2.11.2</span>
    </div>
   </td>
  </tr>
@@ -131,23 +131,30 @@ Macros</h2></td></tr>
 Enumerations</h2></td></tr>
 <tr class="memitem:gab0d3f4ede88ad76c355d75fef726ba43"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MBIN.html#gab0d3f4ede88ad76c355d75fef726ba43">mbin_tlv_types</a> { <br />
 &#160;&#160;<b>FIELD_TYPE_FW_TLV_BCF_ADDR</b> = 0x0001
+, <b>FIELD_TYPE_COREDUMP_MEM_REGION</b> = 0x0002
 , <b>FIELD_TYPE_MAGIC</b> = 0x8000
 , <b>FIELD_TYPE_FW_SEGMENT</b> = 0x8001
-, <b>FIELD_TYPE_FW_SEGMENT_DEFLATED</b> = 0x8002
 , <br />
-&#160;&#160;<b>FIELD_TYPE_BCF_BOARD_CONFIG</b> = 0x8100
+&#160;&#160;<b>FIELD_TYPE_FW_SEGMENT_DEFLATED</b> = 0x8002
+, <b>FIELD_TYPE_BCF_BOARD_CONFIG</b> = 0x8100
 , <b>FIELD_TYPE_BCF_REGDOM</b> = 0x8101
 , <b>FIELD_TYPE_BCF_BOARD_DESC</b> = 0x8102
-, <b>FIELD_TYPE_BCF_BUILD_VER</b> = 0x8103
 , <br />
-&#160;&#160;<b>FIELD_TYPE_SW_SEGMENT</b> = 0x8201
+&#160;&#160;<b>FIELD_TYPE_BCF_BUILD_VER</b> = 0x8103
+, <b>FIELD_TYPE_SW_SEGMENT</b> = 0x8201
 , <b>FIELD_TYPE_SW_SEGMENT_DEFLATED</b> = 0x8202
 , <b>FIELD_TYPE_EOF</b> = 0x8f00
-, <b>FIELD_TYPE_EOF_WITH_SIGNATURE</b> = 0x8f01
+, <br />
+&#160;&#160;<b>FIELD_TYPE_EOF_WITH_SIGNATURE</b> = 0x8f01
 <br />
  }</td></tr>
 <tr class="memdesc:gab0d3f4ede88ad76c355d75fef726ba43"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enumeration of TLV field types.  <a href="group__MBIN.html#gab0d3f4ede88ad76c355d75fef726ba43">More...</a><br /></td></tr>
 <tr class="separator:gab0d3f4ede88ad76c355d75fef726ba43"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga89cc722539e219664eb444fa8dd1160d"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MBIN.html#ga89cc722539e219664eb444fa8dd1160d">mbin_coredump_region_types</a> { <b>COREDUMP_MEM_REGION_GENERAL</b> = 0x0001
+, <b>COREDUMP_MEM_REGION_ASSERT_INFO</b> = 0x0002
+ }</td></tr>
+<tr class="memdesc:ga89cc722539e219664eb444fa8dd1160d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enumeration of core dump memory region types.  <a href="group__MBIN.html#ga89cc722539e219664eb444fa8dd1160d">More...</a><br /></td></tr>
+<tr class="separator:ga89cc722539e219664eb444fa8dd1160d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="gaf8500f1e9eadc1323f4f0d971d9a6b91" name="gaf8500f1e9eadc1323f4f0d971d9a6b91"></a>
@@ -164,7 +171,7 @@ Enumerations</h2></td></tr>
 
 <p>Expected value of the magic field for a BCF <code>MMBC</code>. </p>
 
-<p class="definition">Definition at line <a class="el" href="mbin_8h_source.html#l00080">80</a> of file <a class="el" href="mbin_8h_source.html">mbin.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mbin_8h_source.html#l00088">88</a> of file <a class="el" href="mbin_8h_source.html">mbin.h</a>.</p>
 
 </div>
 </div>
@@ -182,7 +189,7 @@ Enumerations</h2></td></tr>
 
 <p>Expected value of the magic field for a firmware image <code>MMFW</code>. </p>
 
-<p class="definition">Definition at line <a class="el" href="mbin_8h_source.html#l00078">78</a> of file <a class="el" href="mbin_8h_source.html">mbin.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mbin_8h_source.html#l00086">86</a> of file <a class="el" href="mbin_8h_source.html">mbin.h</a>.</p>
 
 </div>
 </div>
@@ -200,7 +207,7 @@ Enumerations</h2></td></tr>
 
 <p>Expected value of the magic field for a SW image <code>MMSW</code>. </p>
 
-<p class="definition">Definition at line <a class="el" href="mbin_8h_source.html#l00076">76</a> of file <a class="el" href="mbin_8h_source.html">mbin.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mbin_8h_source.html#l00084">84</a> of file <a class="el" href="mbin_8h_source.html">mbin.h</a>.</p>
 
 </div>
 </div>
@@ -223,6 +230,24 @@ Enumerations</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="ga89cc722539e219664eb444fa8dd1160d" name="ga89cc722539e219664eb444fa8dd1160d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga89cc722539e219664eb444fa8dd1160d">&#9670;&nbsp;</a></span>mbin_coredump_region_types</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__MBIN.html#ga89cc722539e219664eb444fa8dd1160d">mbin_coredump_region_types</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Enumeration of core dump memory region types. </p>
+
+<p class="definition">Definition at line <a class="el" href="mbin_8h_source.html#l00041">41</a> of file <a class="el" href="mbin_8h_source.html">mbin.h</a>.</p>
+
+</div>
+</div>
 <a id="gab0d3f4ede88ad76c355d75fef726ba43" name="gab0d3f4ede88ad76c355d75fef726ba43"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#gab0d3f4ede88ad76c355d75fef726ba43">&#9670;&nbsp;</a></span>mbin_tlv_types</h2>
 

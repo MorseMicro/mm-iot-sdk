@@ -6,6 +6,7 @@ var group__MMWLAN__AP =
       [ "state", "structmmwlan__ap__sta__status.html#a4e5c6a5daa5fbd3850a9fa2641043788", null ]
     ] ],
     [ "mmwlan_ap_args", "structmmwlan__ap__args.html", [
+      [ "async_start", "structmmwlan__ap__args.html#a69607f4be5d5168749aecc6c9573412a", null ],
       [ "beacon_interval_tus", "structmmwlan__ap__args.html#a0ec1ec773b861e823fc4c20d0777e862", null ],
       [ "bssid", "structmmwlan__ap__args.html#a8c6f7cd1ccb4233566698bc54966138f", null ],
       [ "dtim_period", "structmmwlan__ap__args.html#aff9b412cd2d164200d644ef47444da5c", null ],
@@ -32,11 +33,12 @@ var group__MMWLAN__AP =
     [ "mmwlan_ap_sta_status_cb_t", "group__MMWLAN__AP.html#gad6376e7e09577fc3f95c0aedef964e50", null ],
     [ "mmwlan_ap_sta_state", "group__MMWLAN__AP.html#ga03b994d1e0ad93b3449e0d2687dd9929", [
       [ "MMWLAN_AP_STA_UNKNOWN", "group__MMWLAN__AP.html#gga03b994d1e0ad93b3449e0d2687dd9929ad4e28299d3fa5fd33f8c82bb797abc9d", null ],
+      [ "MMWLAN_AP_STA_AUTHENTICATED", "group__MMWLAN__AP.html#gga03b994d1e0ad93b3449e0d2687dd9929af0b9fdd47ec072a27ad31ecb30e1a931", null ],
       [ "MMWLAN_AP_STA_ASSOCIATED", "group__MMWLAN__AP.html#gga03b994d1e0ad93b3449e0d2687dd9929aa330105e26ff914939217973fed82124", null ],
       [ "MMWLAN_AP_STA_AUTHORIZED", "group__MMWLAN__AP.html#gga03b994d1e0ad93b3449e0d2687dd9929a728acedd2fe1ee0b8b35e6af585b975f", null ]
     ] ],
     [ "mmwlan_ap_disable", "group__MMWLAN__AP.html#ga471c74789c1c8649a7ce91065c1eb206", null ],
     [ "mmwlan_ap_enable", "group__MMWLAN__AP.html#gacce06602f53a434834463df53d7ff942", null ],
-    [ "mmwlan_ap_get_bssid", "group__MMWLAN__AP.html#gaf15144a48c67b3e4510060e098e73279", null ],
+    [ "mmwlan_ap_get_bssid", "group__MMWLAN__AP.html#gade015bdc0a6893e2799c4b654679eb1e", null ],
     [ "mmwlan_ap_get_sta_status", "group__MMWLAN__AP.html#ga54268e54bedb92520fabf596313fa474", null ]
 ];

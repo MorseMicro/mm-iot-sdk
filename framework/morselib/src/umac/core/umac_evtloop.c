@@ -83,6 +83,7 @@ static void evtloop_main(void *arg)
     mmosal_semb_delete(core->evtloop_semb);
     core->evtloop_semb = NULL;
     core->evtloop_has_finished = true;
+    umac_last_will_and_testament(umacd);
 }
 
 #endif
@@ -134,9 +135,13 @@ void umac_core_stop(struct umac_data *umacd)
             MMLOG_DBG("Waiting for event loop to finish\n");
             invoke_sleep_callback(core, MMWLAN_SLEEP_STATE_BUSY, 0);
             mmosal_semb_give(core->evtloop_semb);
-            while (!core->evtloop_has_finished)
+
+            if (!umac_core_evtloop_is_active(umacd))
             {
-                mmosal_task_sleep(1);
+                while (!core->evtloop_has_finished)
+                {
+                    mmosal_task_sleep(1);
+                }
             }
             core->evtloop_task = NULL;
         }

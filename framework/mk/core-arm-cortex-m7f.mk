@@ -5,17 +5,14 @@
 #
 
 # Configure the toolchain
-TOOLCHAIN_VERSION ?= 10.3-2021.07
+TOOLCHAIN_VERSION ?= 14.2.1-1.1
 
 # Try to find the toolchain if not already specified
 ifeq ($(TOOLCHAIN_DIR),)
     directory_exists = $(shell [ -d $(1) ] && echo "exists")
-    TOOLCHAIN_DIR := /opt/morse/gcc-arm-none-eabi-$(TOOLCHAIN_VERSION)
+    TOOLCHAIN_DIR := /opt/morse/xpack-arm-none-eabi-gcc-$(TOOLCHAIN_VERSION)
     ifeq ($(call directory_exists,$(TOOLCHAIN_DIR)),)
-        TOOLCHAIN_DIR := /opt/gcc-arm-none-eabi-$(TOOLCHAIN_VERSION)
-        ifeq ($(call directory_exists,$(TOOLCHAIN_DIR)),)
-            $(error Unable to find arm-none-eabi-$(TOOLCHAIN_VERSION) toolchain)
-        endif
+        $(error Unable to find arm-none-eabi-$(TOOLCHAIN_VERSION) toolchain)
     endif
 else
 	TOOLCHAIN_DIR := $(TOOLCHAIN_DIR)

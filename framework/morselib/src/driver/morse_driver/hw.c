@@ -8,9 +8,9 @@
 
 #include "morse.h"
 #include "hw.h"
+#include "driver/driver.h"
 #include "driver/morse_driver/mm6108/pager_if.h"
 #include "driver/beacon/beacon.h"
-#include "driver/health/driver_health.h"
 #include "driver/transport/morse_transport.h"
 #include "mmhal_wlan.h"
 
@@ -72,7 +72,7 @@ int morse_hw_irq_handle(struct driver_data *driverd)
 
     if (status1 & MORSE_INT_HW_STOP_NOTIFICATION)
     {
-        driver_health_demand_check(driverd);
+        driver_task_notify_event(driverd, DRV_EVT_STOP_NOTICATION);
     }
 
     if (status1 != 0)
@@ -88,15 +88,6 @@ int morse_hw_irq_handle(struct driver_data *driverd)
 
 exit:
     return ret;
-}
-
-int morse_hw_irq_clear(struct driver_data *driverd)
-{
-    morse_trns_claim(driverd);
-    morse_trns_write_le32(driverd, MORSE_REG_INT1_CLR(driverd), 0xFFFFFFFF);
-    morse_trns_write_le32(driverd, MORSE_REG_INT2_CLR(driverd), 0xFFFFFFFF);
-    morse_trns_release(driverd);
-    return 0;
 }
 
 void morse_hw_toggle_aon_latch(struct driver_data *driverd)
@@ -195,7 +186,7 @@ void morse_hw_pager_update_consec_failure_cnt(struct driver_data *driverd, int r
         if (driverd->pageset_consec_failure_cnt > MAX_CONSEC_FAILURES)
         {
             driverd->pageset_consec_failure_cnt = 0;
-            driver_health_demand_check(driverd);
+            mmdrv_host_health_check_required();
         }
     }
 }

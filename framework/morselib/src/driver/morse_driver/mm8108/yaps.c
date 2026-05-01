@@ -19,6 +19,23 @@
 #include "driver/morse_driver/skbq.h"
 #include "driver/transport/morse_transport.h"
 
+#ifdef ENABLE_YAPS_TRACE
+#include "mmtrace.h"
+static mmtrace_channel yaps_channel_handle;
+#define YAPS_TRACE_INIT()                                       \
+    do {                                                        \
+        yaps_channel_handle = mmtrace_register_channel("yaps"); \
+    } while (0)
+#define YAPS_TRACE(_fmt, ...) mmtrace_printf(yaps_channel_handle, _fmt, ##__VA_ARGS__)
+#else
+#define YAPS_TRACE_INIT() \
+    do {                  \
+    } while (0)
+#define YAPS_TRACE(_fmt, ...) \
+    do {                      \
+    } while (0)
+#endif
+
 #define BENCHMARK_PKT_LEN (1496)
 #define BENCHMARK_WAIT_MS (5000)
 
@@ -45,19 +62,6 @@ static struct morse_skbq *skbq_yaps_tc_q_from_aci(struct driver_data *driverd, i
         return NULL;
     }
     return &yaps->data_tx_qs[aci];
-}
-
-static void skbq_yaps_close(struct morse_skbq *mq)
-{
-
-
-    MM_UNUSED(mq);
-}
-
-static void skbq_yaps_get_tx_qs(struct driver_data *driverd, struct morse_skbq **qs, int *num_qs)
-{
-    *qs = driverd->chip_if->yaps.data_tx_qs;
-    *num_qs = YAPS_TX_SKBQ_MAX;
 }
 
 static struct morse_skbq *skbq_yaps_bcn_q(struct driver_data *driverd)
@@ -92,11 +96,8 @@ static int yaps_irq_handler(struct driver_data *driverd, uint32_t status)
 
 const struct chip_if_ops morse_yaps_ops = {
     .init = morse_yaps_hw_init,
-    .flush_tx_data = morse_yaps_hw_yaps_flush_tx_data,
     .skbq_get_tx_buffered_count = morse_yaps_get_tx_buffered_count,
     .finish = morse_yaps_hw_finish,
-    .skbq_get_tx_qs = skbq_yaps_get_tx_qs,
-    .skbq_close = skbq_yaps_close,
     .skbq_bcn_tc_q = skbq_yaps_bcn_q,
     .skbq_mgmt_tc_q = skbq_yaps_mgmt_q,
     .skbq_cmd_tc_q = skbq_yaps_cmd_q,
@@ -110,28 +111,25 @@ const struct chip_if_ops morse_yaps_ops = {
 static bool yaps_read_pkt(struct morse_yaps *yaps)
 {
     struct driver_data *driverd = yaps->driverd;
-    struct mmpkt_list skbq = MMPKT_LIST_INIT;
-    struct morse_skbq *mq = NULL;
     struct morse_buff_skb_header *hdr;
-    int skb_bytes_remaining;
-    int skb_len;
+    int mmpkt_len;
     int ret = 0;
     bool more_packets = true;
     struct mmpkt *mmpkt = NULL;
 
-    ret = yaps->ops->read_pkt(yaps, &mmpkt);
+    ret = morse_yaps_hw_read_pkt(yaps, &mmpkt);
 
     if (!mmpkt && !ret)
     {
 
         more_packets = false;
-        goto exit_return_page;
+        goto exit;
     }
 
     if (ret)
     {
         more_packets = true;
-        goto exit_return_page;
+        goto exit;
     }
 
     struct mmpktview *view = mmpkt_open(mmpkt);
@@ -146,7 +144,7 @@ static bool yaps_read_pkt(struct morse_yaps *yaps)
         MMLOG_ERR("Sync value error [0xAA:%d], hdr.len %d\n", hdr->sync, hdr->len);
         ret = -EIO;
         more_packets = false;
-        goto exit_return_page;
+        goto exit;
     }
 
     if (yaps->driverd->chip_if->validate_skb_checksum && !morse_validate_skb_checksum(mmpkt->buf))
@@ -163,6 +161,8 @@ static bool yaps_read_pkt(struct morse_yaps *yaps)
             more_packets = false;
             goto exit;
         }
+
+        MMLOG_INF("Ignoring invalid SKB checksum for TX status\n");
     }
 
 
@@ -175,57 +175,26 @@ static bool yaps_read_pkt(struct morse_yaps *yaps)
         case MORSE_SKB_CHAN_BEACON:
         case MORSE_SKB_CHAN_MGMT:
         case MORSE_SKB_CHAN_LOOPBACK:
-            mq = &yaps->data_rx_q;
-            break;
-
         case MORSE_SKB_CHAN_COMMAND:
-            mq = &yaps->cmd_resp_q;
             break;
 
         default:
             MMLOG_ERR("channel value error [%d]\n", hdr->channel);
             ret = -EIO;
             more_packets = false;
-            goto exit_return_page;
+            goto exit;
     }
 
 
-    skb_len = sizeof(*hdr) + le16toh(hdr->len) + le16toh(hdr->offset);
-    skb_bytes_remaining = morse_skbq_space(mq);
-
-
-    if (skb_len > skb_bytes_remaining)
-    {
-        MMLOG_ERR("Page will not fit in SKBQ, dropping - len %d remain %d\n",
-                  skb_len,
-                  skb_bytes_remaining);
-        ret = -ENOMEM;
-        more_packets = true;
-
-        morse_skbq_process_rx(driverd, mmpkt);
-        goto exit_return_page;
-    }
-
-
-    mmpkt_truncate(mmpkt, skb_len);
+    mmpkt_len = sizeof(*hdr) + le16toh(hdr->offset) + le16toh(hdr->len);
+    mmpkt_truncate(mmpkt, mmpkt_len);
 
     morse_skbq_process_rx(driverd, mmpkt);
     mmpkt = NULL;
     goto exit;
 
-exit_return_page:
-    if (ret && mq != NULL)
-    {
-        MMLOG_ERR("Failed %d\n", ret);
-        morse_skbq_purge(mq, &skbq);
-        goto exit;
-    }
-
 exit:
-    if (ret && mmpkt)
-    {
-        mmpkt_release(mmpkt);
-    }
+    mmpkt_release(mmpkt);
 
     morse_hw_pager_update_consec_failure_cnt(yaps->driverd, ret);
     return more_packets;
@@ -260,13 +229,6 @@ static int morse_yaps_tx(struct morse_yaps *yaps, struct morse_skbq *mq)
         }
     }
 
-    ret = yaps->ops->update_status(yaps);
-    if (ret)
-    {
-        morse_hw_pager_update_consec_failure_cnt(yaps->driverd, ret);
-        return ret;
-    }
-
     struct mmpktview *view = mmpkt_open(mmpkt);
     hdr = (struct morse_buff_skb_header *)mmpkt_get_data_start(view);
     enum morse_yaps_to_chip_q tc_queue;
@@ -288,24 +250,40 @@ static int morse_yaps_tx(struct morse_yaps *yaps, struct morse_skbq *mq)
             tc_queue = MORSE_YAPS_TX_Q;
             break;
     }
-    uint32_t queue_packet_space = morse_yaps_hw_get_tc_queue_space(yaps, tc_queue);
-    num_items = morse_skbq_deq_num_items(mq, &skbq_to_send, queue_packet_space);
     mmpkt_close(&view);
+
+
+    morse_skbq_drop_stale_pkts(mq);
+
+    spin_lock(&mq->lock);
+    num_items = morse_yaps_hw_get_num_pkts(yaps, tc_queue, &mq->skbq);
+    int count = mmpkt_list_dequeue_multiple(&mq->skbq, &skbq_to_send, num_items);
+
+    MMOSAL_DEV_ASSERT(count == num_items);
+    spin_unlock(&mq->lock);
 
     MMPKT_LIST_WALK(&skbq_to_send, pfirst, pnext)
     {
-        ret = yaps->ops->write_pkt(yaps, pfirst, tc_queue, pnext);
+        ret = morse_yaps_hw_write_pkt(yaps, pfirst, tc_queue, pnext);
         morse_hw_pager_update_consec_failure_cnt(yaps->driverd, ret);
 
+        if (ret == -ENOMEM)
+        {
+            MMLOG_ERR("Insufficient memory for skb TX (TC_Q: %d)\n", tc_queue);
+            mmpkt_list_append_list(&skbq_failed, &skbq_to_send);
+
+            MMOSAL_DEV_ASSERT(false);
+            break;
+        }
+
+        mmpkt_list_remove(&skbq_to_send, pfirst);
         if (ret == 0)
         {
-            mmpkt_list_remove(&skbq_to_send, pfirst);
             mmpkt_list_append(&skbq_sent, pfirst);
         }
         else
         {
             MMLOG_ERR("TX skb failed for queue %d with err %d\n", tc_queue, ret);
-            mmpkt_list_remove(&skbq_to_send, pfirst);
             mmpkt_list_append(&skbq_failed, pfirst);
         }
     }
@@ -313,14 +291,7 @@ static int morse_yaps_tx(struct morse_yaps *yaps, struct morse_skbq *mq)
     if (skbq_failed.len > 0)
     {
         MMLOG_ERR("Failed to write %lu pkts - rc=%d items=%d\n", skbq_failed.len, ret, num_items);
-        if (mq == &yaps->cmd_q)
-        {
-            morse_skbq_purge(mq, &skbq_failed);
-        }
-        else
-        {
-            morse_skbq_tx_failed(mq, &skbq_failed);
-        }
+        mmpkt_list_clear(&skbq_failed);
     }
 
     if (skbq_sent.len > 0)
@@ -427,7 +398,7 @@ void morse_yaps_stale_tx_work(struct driver_data *driverd)
 
     if (flushed)
     {
-        MMLOG_DBG("Flushed %d stale TX SKBs\n", flushed);
+        MMLOG_WRN("Flushed %d stale TX SKBs\n", flushed);
 
         if (!driverd->ps.suspended && (morse_yaps_get_tx_buffered_count(driverd) == 0))
         {
@@ -467,16 +438,23 @@ void morse_yaps_work(struct driver_data *driverd)
 
     if (driver_task_notification_check_and_clear(driverd, DRV_EVT_RX_PEND))
     {
-        uint32_t buffered = yaps->data_rx_q.skbq.len;
-
         if (morse_yaps_rx_handler(yaps))
         {
             driver_task_notify_event(driverd, DRV_EVT_RX_PEND);
         }
 
-        if (yaps->data_rx_q.skbq.len > buffered)
+        network_activity = true;
+    }
+
+
+    if (driver_task_notification_is_pending(yaps->driverd, DRV_EVT_TX_MASK))
+    {
+        int update_stat_rc = morse_yaps_hw_update_status(yaps);
+        morse_hw_pager_update_consec_failure_cnt(yaps->driverd, update_stat_rc);
+        if (update_stat_rc)
         {
-            network_activity = true;
+            MMLOG_WRN("YAPS HW update status failed with code %d\n", update_stat_rc);
+            goto exit_no_eval;
         }
     }
 
@@ -514,22 +492,20 @@ void morse_yaps_work(struct driver_data *driverd)
 
     if (driver_task_notification_check_and_clear(driverd, DRV_EVT_TRAFFIC_PAUSE_PEND))
     {
-        if (driver_task_notification_check(driverd, DRV_EVT_TRAFFIC_PAUSE_PEND))
-        {
-            MMLOG_ERR("Latency to handle twt traffic pause is too great\n");
-        }
-
         morse_skbq_data_traffic_pause(driverd);
+    }
+
+
+    if (driver_task_notification_check_and_clear(driverd, DRV_EVT_TRAFFIC_PAUSE_TIMEOUT))
+    {
+        mmdrv_host_set_tx_paused(MMDRV_PAUSE_SOURCE_MASK_TRAFFIC_CTRL, false);
+        driver_task_notify_event(driverd, DRV_EVT_TRAFFIC_RESUME_PEND);
+        MMLOG_WRN("Traffic pause override event fired\n");
     }
 
 
     if (driver_task_notification_check_and_clear(driverd, DRV_EVT_TRAFFIC_RESUME_PEND))
     {
-        if (driver_task_notification_check(driverd, DRV_EVT_TRAFFIC_RESUME_PEND))
-        {
-            MMLOG_ERR("Latency to handle twt traffic resume is too great\n");
-        }
-
         morse_skbq_data_traffic_resume(driverd);
     }
 
@@ -562,6 +538,7 @@ exit:
         morse_ps_network_activity(driverd);
     }
 
+exit_no_eval:
     morse_trns_release(driverd);
     morse_ps_enable(driverd, PS_WAKER_PAGESET);
 }
@@ -614,26 +591,11 @@ int morse_yaps_get_tx_buffered_count(struct driver_data *driverd)
     return count;
 }
 
-static int morse_tx_chip_full_timer_init(struct morse_yaps *yaps)
-{
-    yaps->chip_queue_full.enabled = true;
-    return 0;
-}
-
-static int morse_tx_chip_full_timer_finish(struct morse_yaps *yaps)
-{
-    if (!yaps->chip_queue_full.enabled)
-    {
-        return 0;
-    }
-
-    yaps->chip_queue_full.enabled = false;
-    return 0;
-}
-
 int morse_yaps_init(struct driver_data *driverd, struct morse_yaps *yaps, uint8_t flags)
 {
     size_t i;
+
+    YAPS_TRACE_INIT();
 
     yaps->driverd = driverd;
     yaps->flags = flags;
@@ -642,7 +604,6 @@ int morse_yaps_init(struct driver_data *driverd, struct morse_yaps *yaps, uint8_
     if (yaps->flags & MORSE_CHIP_IF_FLAGS_DATA)
     {
 
-        morse_skbq_init(driverd, true, &yaps->data_rx_q, MORSE_CHIP_IF_FLAGS_DATA);
         morse_skbq_init(driverd, true, &yaps->beacon_q, MORSE_CHIP_IF_FLAGS_DATA);
         morse_skbq_init(driverd, true, &yaps->mgmt_q, MORSE_CHIP_IF_FLAGS_DATA);
         for (i = 0; i < ARRAY_SIZE(yaps->data_tx_qs); i++)
@@ -655,10 +616,7 @@ int morse_yaps_init(struct driver_data *driverd, struct morse_yaps *yaps, uint8_
     {
 
         morse_skbq_init(driverd, false, &yaps->cmd_q, MORSE_CHIP_IF_FLAGS_COMMAND);
-        morse_skbq_init(driverd, true, &yaps->cmd_resp_q, MORSE_CHIP_IF_FLAGS_COMMAND);
     }
-
-    morse_tx_chip_full_timer_init(yaps);
 
     return 0;
 }
@@ -669,7 +627,6 @@ void morse_yaps_finish(struct morse_yaps *yaps)
 
     if (yaps->flags & MORSE_CHIP_IF_FLAGS_DATA)
     {
-        morse_skbq_finish(&yaps->data_rx_q);
         morse_skbq_finish(&yaps->beacon_q);
         morse_skbq_finish(&yaps->mgmt_q);
         for (i = 0; i < ARRAY_SIZE(yaps->data_tx_qs); i++)
@@ -681,20 +638,5 @@ void morse_yaps_finish(struct morse_yaps *yaps)
     if (yaps->flags & MORSE_CHIP_IF_FLAGS_COMMAND)
     {
         morse_skbq_finish(&yaps->cmd_q);
-        morse_skbq_finish(&yaps->cmd_resp_q);
-    }
-
-    morse_tx_chip_full_timer_finish(yaps);
-}
-
-void morse_yaps_flush_tx_data(struct morse_yaps *yaps)
-{
-    size_t i;
-
-    morse_skbq_tx_flush(&yaps->beacon_q);
-    morse_skbq_tx_flush(&yaps->mgmt_q);
-    for (i = 0; i < ARRAY_SIZE(yaps->data_tx_qs); i++)
-    {
-        morse_skbq_tx_flush(&yaps->data_tx_qs[i]);
     }
 }

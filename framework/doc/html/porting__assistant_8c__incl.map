@@ -1,17 +1,20 @@
 <map id="porting_assistant.c" name="porting_assistant.c">
-<area shape="rect" id="node1" title="Porting assistant self test tool to validate hardware and HALs." alt="" coords="141,5,287,32"/>
-<area shape="rect" id="node2" href="$porting__assistant_8h_source.html" title=" " alt="" coords="253,80,399,107"/>
-<area shape="rect" id="node15" href="$mmhal__core_8h_source.html" title=" " alt="" coords="133,229,247,256"/>
-<area shape="rect" id="node3" title=" " alt="" coords="629,304,700,331"/>
-<area shape="rect" id="node4" title=" " alt="" coords="237,304,308,331"/>
-<area shape="rect" id="node5" href="$mmosal_8h_source.html" title=" " alt="" coords="472,229,559,256"/>
-<area shape="rect" id="node10" href="$config_8h_source.html" title=" " alt="" coords="177,155,251,181"/>
-<area shape="rect" id="node11" href="$log_8h_source.html" title=" " alt="" coords="355,155,409,181"/>
-<area shape="rect" id="node6" title=" " alt="" coords="130,304,213,331"/>
-<area shape="rect" id="node7" title=" " alt="" coords="443,304,510,331"/>
-<area shape="rect" id="node8" title=" " alt="" coords="535,304,605,331"/>
-<area shape="rect" id="node9" title=" " alt="" coords="332,304,419,331"/>
-<area shape="rect" id="node12" title=" " alt="" coords="322,229,397,256"/>
-<area shape="rect" id="node13" href="$mmhal__os_8h_source.html" title=" " alt="" coords="5,229,108,256"/>
-<area shape="rect" id="node14" title=" " alt="" coords="19,304,94,331"/>
+<area shape="rect" id="node1" title="Porting assistant self test tool to validate hardware and HALs." alt="" coords="416,5,561,32"/>
+<area shape="rect" id="node2" href="$porting__assistant_8h_source.html" title=" " alt="" coords="191,80,338,107"/>
+<area shape="rect" id="node15" href="$mmhal__core_8h_source.html" title=" " alt="" coords="481,229,595,256"/>
+<area shape="rect" id="node16" href="$mmhal__app_8h_source.html" title=" " alt="" coords="747,229,857,256"/>
+<area shape="rect" id="node18" href="$mmversion_8h_source.html" title=" " alt="" coords="389,80,497,107"/>
+<area shape="rect" id="node3" title=" " alt="" coords="5,304,76,331"/>
+<area shape="rect" id="node4" title=" " alt="" coords="408,304,479,331"/>
+<area shape="rect" id="node5" href="$mmosal_8h_source.html" title=" " alt="" coords="119,229,205,256"/>
+<area shape="rect" id="node10" href="$config_8h_source.html" title=" " alt="" coords="200,155,273,181"/>
+<area shape="rect" id="node11" href="$log_8h_source.html" title=" " alt="" coords="297,155,352,181"/>
+<area shape="rect" id="node6" title=" " alt="" coords="534,304,617,331"/>
+<area shape="rect" id="node7" title=" " alt="" coords="101,304,167,331"/>
+<area shape="rect" id="node8" title=" " alt="" coords="192,304,263,331"/>
+<area shape="rect" id="node9" title=" " alt="" coords="287,304,373,331"/>
+<area shape="rect" id="node12" title=" " alt="" coords="230,229,305,256"/>
+<area shape="rect" id="node13" href="$mmhal__os_8h_source.html" title=" " alt="" coords="620,229,723,256"/>
+<area shape="rect" id="node14" title=" " alt="" coords="653,304,727,331"/>
+<area shape="rect" id="node17" title=" " alt="" coords="770,304,834,331"/>
 </map>

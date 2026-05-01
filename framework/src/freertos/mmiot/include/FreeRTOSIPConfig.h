@@ -327,9 +327,6 @@
 
 #define portINLINE                            __inline
 
-// This is a temporary workaround as it is not provided by our current version of FreeRTOS
-#define pdFREERTOS_ERRNO_EAFNOSUPPORT (97)
-
 /* Significantly increase gratuitous ARP period to reduce idle power consumption. */
 #ifndef arpGRATUITOUS_ARP_PERIOD
 #define arpGRATUITOUS_ARP_PERIOD (0x7fffffff)

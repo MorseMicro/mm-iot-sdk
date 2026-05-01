@@ -43,7 +43,7 @@
 #define DEFAULT_MESH_HOLDING_TIMEOUT 40
 #endif
 
-#define DEFAULT_MESH_RSSI_THRESHOLD 1 /* no change */
+#define DEFAULT_MESH_RSSI_THRESHOLD -80
 #define DEFAULT_DISABLE_HT 0
 #define DEFAULT_DISABLE_HT40 0
 #define DEFAULT_DISABLE_SGI 0
@@ -94,6 +94,20 @@ enum wpas_mac_addr_style {
 	WPAS_MAC_ADDR_STYLE_RANDOM = 1,
 	WPAS_MAC_ADDR_STYLE_RANDOM_SAME_OUI = 2,
 	WPAS_MAC_ADDR_STYLE_DEDICATED_PER_ESS = 3,
+};
+
+/**
+ * rsn_overriding - RSN overriding
+ *
+ * 0 = Disabled
+ * 1 = Enabled automatically if the driver indicates support
+ * 2 = Forced to be enabled even without driver capability indication
+ */
+enum wpas_rsn_overriding {
+	RSN_OVERRIDING_NOT_SET = -1,
+	RSN_OVERRIDING_DISABLED = 0,
+	RSN_OVERRIDING_AUTO = 1,
+	RSN_OVERRIDING_ENABLED = 2,
 };
 
 /**
@@ -250,6 +264,11 @@ struct wpa_ssid {
 	char *passphrase;
 
 	/**
+	 * pmk_valid - Whether PMK is valid in case of P2P2 derived from PASN
+	 */
+	bool pmk_valid;
+
+	/**
 	 * sae_password - SAE password
 	 *
 	 * This parameter can be used to set a password for SAE. By default, the
@@ -266,6 +285,10 @@ struct wpa_ssid {
 	 * not included, the default SAE password is used instead.
 	 */
 	char *sae_password_id;
+
+	struct wpabuf_array *alt_sae_password_ids;
+	unsigned int alt_sae_passwords_ids_idx;
+	bool alt_sae_passwords_ids_used;
 
 	struct sae_pt *pt;
 
@@ -716,6 +739,15 @@ struct wpa_ssid {
 	 */
 	size_t num_p2p_clients;
 
+	/**
+	 * p2p2_client_list - Array of P2P2 Clients in a persistent group (GO)
+	 *
+	 * This is an int_array of P2P2 Clients (ID of device Identity block)
+	 * that have joined the persistent group. This is maintained on the GO
+	 *for persistent group entries (disabled == 2).
+	 */
+	int *p2p2_client_list;
+
 #ifndef P2P_MAX_STORED_CLIENTS
 #define P2P_MAX_STORED_CLIENTS 100
 #endif /* P2P_MAX_STORED_CLIENTS */
@@ -1001,6 +1033,14 @@ struct wpa_ssid {
 	 * Range: 0-1 (default: 0)
 	 */
 	int macsec_csindex;
+
+	/**
+	 * macsec_icv_indicator - Always include ICV Indicator
+	 * (for compatibility with older MACsec switches)
+	 *
+	 * Range: 0-1 (default: 0)
+	 */
+	int macsec_icv_indicator;
 
 	/**
 	 * mka_ckn - MKA pre-shared CKN
@@ -1323,6 +1363,27 @@ struct wpa_ssid {
 	 */
 	bool ssid_protection;
 
+	/**
+	 * rsn_overriding - RSN overriding (per-network override for the global
+	 *	parameter with the same name)
+	 */
+	enum wpas_rsn_overriding rsn_overriding;
+
+	/**
+	 * p2p_mode - P2P R1 only, P2P R2 only, or PCC mode
+	 */
+	enum wpa_p2p_mode p2p_mode;
+
+	/**
+	 * go_dik_id - ID of Device Identity block of group owner
+	 */
+	int go_dik_id;
+
+	/**
+	 * sae_password_id_change - Whether to use changing SAE password IDs
+	 */
+	bool sae_password_id_change;
+
 #ifdef CONFIG_IEEE80211AH
 	/**
 	 * raw_sta_priority - piority used by the AP to assign a STA to RAW
@@ -1437,6 +1498,14 @@ struct wpa_ssid {
 	 */
 	int *auth_retry_backoff;
 
+	/**
+	 * max_away_duration - BSS max away duration
+	 *
+	 * The Max Away Duration field indicates the maximum duration that the
+	 * AP can be out of reach for the STA (operating in other channels, enter
+	 * power save mode, or operating in other RAWs).
+	 */
+	int max_away_duration;
 #endif /* CONFIG_IEEE80211AH */
 };
 

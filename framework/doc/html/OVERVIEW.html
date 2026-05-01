@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.10.4</span>
+   &#160;<span id="projectnumber">2.11.2</span>
    </div>
   </td>
  </tr>
@@ -92,9 +92,9 @@ $(document).ready(function(){initNavTree('OVERVIEW.html',''); initResizable(); }
 <div class="contents">
 <div class="textblock"><p ><a class="anchor" id="md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_res_doc_overview"></a></p>
 <p >This overview expands on some of the files and tools used as part of the MM-IoT-SDK.</p>
-<h2><a class="anchor" id="autotoc_md70"></a>
+<h2><a class="anchor" id="autotoc_md63"></a>
 Package Structure</h2>
-<p >The following is a brief overview of the contents of the MM-IoT-SDK package as it relates to using the Makefile based framework. Note that there are additional files that are used for PlatformIO that are not covered here.</p>
+<p >The following is a brief overview of the contents of the MM-IoT-SDK package as it relates to using the Makefile based framework.</p>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone">Path   </th><th class="markdownTableHeadNone">Description    </th></tr>
@@ -121,9 +121,9 @@ Package Structure</h2>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><code>examples/</code>   </td><td class="markdownTableBodyNone">Example applications in source form. Note not all platforms support all examples due to memory constraints   </td></tr>
 </table>
-<h2><a class="anchor" id="autotoc_md71"></a>
+<h2><a class="anchor" id="autotoc_md64"></a>
 Example Application Structure</h2>
-<p >This SDK includes several example applications, source code for which can be found in the <code>mm-iot-sdk-2.10.4/examples/&lt;example&gt;</code> directory. For more detail about each of the example applications see the <a class="el" href="MMAPPS.html">Example Applications</a> page.</p>
+<p >This SDK includes several example applications, source code for which can be found in the <code>mm-iot-sdk-2.11.2/examples/&lt;example&gt;</code> directory. For more detail about each of the example applications see the <a class="el" href="MMAPPS.html">Example Applications</a> page.</p>
 <p >Below is a quick overview of some key files in the <code>ping</code> example application directory. It is not a substitute for reading the source code.</p>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -137,12 +137,12 @@ Example Application Structure</h2>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><code>targets/&lt;platform&gt;/Makefile</code>   </td><td class="markdownTableBodyNone">Makefile to build the example application for the supported platforms   </td></tr>
 </table>
-<h2><a class="anchor" id="autotoc_md72"></a>
+<h2><a class="anchor" id="autotoc_md65"></a>
 Python environment</h2>
 <blockquote class="doxtable">
 <p >&zwj;All the Python scripts in the Morse Micro IoT SDK use <b>Python3.10</b> (default for <b>Ubuntu 22.04</b>). </p>
 </blockquote>
-<p>As part of the SDK there are a number of Python scripts used as tools (<a class="el" href="GETTING_STARTED.html#SET_APP_CONFIGURATION">Setting Config Store</a>) or to drive example applications (<a class="el" href="emmet_8c.html#EMMET_APP_HOWTO">How to use the Emmet example application</a>). In order to maximise the chances of these scripts working seamlessly on your machine we utilise a tool called <a href="https://pipenv.pypa.io/">Pipenv</a>. It is a tool used to automatically create and manage a virtualenv. The virtualenv used for the SDK is defined by the Pipfile located in the root of the <code>mm-iot-sdk-2.10.4</code> directory.</p>
+<p>As part of the SDK there are a number of Python scripts used as tools (<a class="el" href="GETTING_STARTED.html#SET_APP_CONFIGURATION">Setting Config Store</a>) or to drive example applications (<a class="el" href="emmet_8c.html#EMMET_APP_HOWTO">How to use the Emmet example application</a>). In order to maximise the chances of these scripts working seamlessly on your machine we utilise a tool called <a href="https://pipenv.pypa.io/">Pipenv</a>. It is a tool used to automatically create and manage a virtualenv. The virtualenv used for the SDK is defined by the Pipfile located in the root of the <code>mm-iot-sdk-2.11.2</code> directory.</p>
 <p >You can run Python scripts from the virtualenv in two ways:</p><ol type="1">
 <li><code>pipenv shell</code>. This will drop you into a shell in the virtual env from which you can run your Python scripts as normal.</li>
 <li><code>pipenv run ./tools/your-script.py</code> . This will run the script in the virtual env and then exit.</li>
@@ -177,12 +177,12 @@ Application Configuration</h1>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><code>bcf_file</code>   </td><td class="markdownTableBodyNone">Board configuration .mbin file to use.   </td></tr>
 </table>
-<p >The full list of configurations can be view in <code>mm-iot-sdk-2.10.4/examples/&lt;application&gt;/config.hjson</code>.</p>
+<p >The full list of configurations can be view in <code>mm-iot-sdk-2.11.2/examples/&lt;application&gt;/config.hjson</code>.</p>
 <p >Fields can be modified individually using: </p><pre class="fragment">pipenv run ./tools/platform/program-configstore.py -H localhost write-string wlan.ssid &lt;new_ssid&gt;
 </pre><p> This also works for integers and boolean values such as <code>ping.size</code> and <code>ip.dhcp_enabled</code>, as they are parsed from strings to their respective types.</p>
-<h2><a class="anchor" id="autotoc_md73"></a>
+<h2><a class="anchor" id="ABOUT_BCF"></a>
 Board Configuration File</h2>
-<p >The Board Configuration File (BCF) is a configuration file for the Morse Micro chip that provides board-specific information and is required for the system to function properly. BCFs for Morse Micro modules are included in the MM-IoT-SDK package under the <code>mm-iot-sdk-2.10.4/framework/morsefirmware</code> directory. The BCF needed can be identified by inspecting the Morse Micro module on the board you are using, which will have a part number printed on the label in the form MM6108-MFxxxxxx. </p>
+<p >The Board Configuration File (BCF) is a configuration file for the Morse Micro chip that provides module-specific information and is required for the system to function properly. BCFs are included in the MM-IoT-SDK package under the <code>mm-iot-sdk-2.11.2/framework/morsefirmware</code> directory. The BCF needed can be identified by inspecting the module on the board you are using, which will have a part number printed on the label that corresponds to a BCF file in the format <code>bcf_&lt;part number&gt;.mbin</code>. </p>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->
 </div><!-- doc-content -->

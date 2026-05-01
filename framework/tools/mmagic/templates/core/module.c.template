@@ -16,6 +16,11 @@
  */
 #define MAX_VAL_LEN     101
 
+bool mmagic_core_{{data.name}}_is_started(struct mmagic_data *core)
+{
+    return core->{{data.name}}_data.is_started;
+}
+
 {% if data.configs -%}
 void mmagic_core_{{data.name}}_load_all(struct mmagic_data *core)
 {

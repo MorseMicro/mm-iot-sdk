@@ -16,7 +16,7 @@
 #include "mmagic_core_ping.h"
 #include "mmagic_core_iperf.h"
 #include "mmagic_core_sys.h"
-#include "mmagic_core_tcp.h"
+#include "mmagic_core_socket.h"
 #include "mmagic_core_tls.h"
 #include "mmagic_core_ntp.h"
 #include "mmagic_core_mqtt.h"
@@ -48,7 +48,7 @@ struct mmagic_data
     struct mmagic_ping_data ping_data;
     struct mmagic_iperf_data iperf_data;
     struct mmagic_sys_data sys_data;
-    struct mmagic_tcp_data tcp_data;
+    struct mmagic_socket_data socket_data;
     struct mmagic_tls_data tls_data;
     struct mmagic_ntp_data ntp_data;
     struct mmagic_mqtt_data mqtt_data;
@@ -98,9 +98,9 @@ static inline struct mmagic_sys_data *mmagic_data_get_sys(struct mmagic_data *co
     return &core->sys_data;
 }
 
-static inline struct mmagic_tcp_data *mmagic_data_get_tcp(struct mmagic_data *core)
+static inline struct mmagic_socket_data *mmagic_data_get_socket(struct mmagic_data *core)
 {
-    return &core->tcp_data;
+    return &core->socket_data;
 }
 
 static inline struct mmagic_tls_data *mmagic_data_get_tls(struct mmagic_data *core)

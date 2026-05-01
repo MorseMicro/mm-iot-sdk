@@ -6,6 +6,7 @@
 
 #include <errno.h>
 
+#include "common/common.h"
 #include "command.h"
 #include "common/morse_command_utils.h"
 #include "skbq.h"
@@ -13,6 +14,7 @@
 #include "skb_header.h"
 #include "ps.h"
 #include "common/morse_error.h"
+#include "mmwlan.h"
 
 #define MM_BA_TIMEOUT        (5000)
 #define MM_MAX_COMMAND_RETRY 3
@@ -42,31 +44,33 @@ struct mmdrv_cmd_metadata
     uint32_t resp_maxlen;
 };
 
-int morse_cmd_tx(struct driver_data *driverd,
-                 struct morse_cmd_resp *resp,
-                 struct morse_cmd_req *cmd,
-                 uint32_t resp_maxlen,
-                 uint32_t timeout)
+enum mmwlan_status morse_cmd_tx(struct driver_data *driverd,
+                                struct morse_cmd_resp *resp,
+                                struct morse_cmd_req *cmd,
+                                uint32_t resp_maxlen,
+                                uint32_t timeout,
+                                bool skip_errlog)
 {
-    int cmd_len, ret = 0;
+    int cmd_len, ret, fw_ret = 0;
     uint16_t cmd_seq;
     int retry = 0;
     struct mmpkt *mmpkt;
     struct mmpktview *view;
+    enum mmwlan_status status;
 
     DRVCMD_TRACE("cmd req %x", le16toh(cmd->hdr.message_id));
 
     if (driverd->cfg == NULL || driverd->cfg->ops == NULL)
     {
 
-        return -ENODEV;
+        return MMWLAN_NOT_RUNNING;
     }
 
     struct morse_skbq *cmd_q = driverd->cfg->ops->skbq_cmd_tc_q(driverd);
     if (cmd_q == NULL)
     {
 
-        return -ENODEV;
+        return MMWLAN_NOT_RUNNING;
     }
 
     cmd_len = sizeof(*cmd) + le16toh(cmd->hdr.len);
@@ -74,14 +78,14 @@ int morse_cmd_tx(struct driver_data *driverd,
 
     if (!mmosal_mutex_get(driverd->cmd.wait, UINT32_MAX))
     {
-        return -ESTALE;
+        return MMWLAN_UNAVAILABLE;
     }
 
 
     if (!driverd->started)
     {
         mmosal_mutex_release(driverd->cmd.wait);
-        return -ESTALE;
+        return MMWLAN_NOT_RUNNING;
     }
 
     mmhal_set_deep_sleep_veto(MORSELIB_VETO_COMMAND);
@@ -183,13 +187,13 @@ int morse_cmd_tx(struct driver_data *driverd,
                 }
                 else if ((resp_maxlen >= sizeof(struct morse_cmd_resp)) && resp != NULL)
                 {
-                    ret = 0;
+                    fw_ret = (int)le32toh(rxrsp->status);
                     uint32_t copy_length = MM_MIN(rxrsp_len, resp_maxlen);
                     memcpy(resp, rxrsp, copy_length);
                 }
                 else
                 {
-                    ret = (int)le32toh(rxrsp->status);
+                    fw_ret = (int)le32toh(rxrsp->status);
                 }
             }
 
@@ -219,11 +223,32 @@ int morse_cmd_tx(struct driver_data *driverd,
 
         retry++;
 
-    } while ((ret == -ETIMEDOUT || ret == -EBADMSG) && retry < MM_MAX_COMMAND_RETRY);
+    } while (((ret == -ETIMEDOUT) || (ret == -EBADMSG)) &&
+             (fw_ret == 0) &&
+             (retry < MM_MAX_COMMAND_RETRY));
 
     morse_ps_enable_async(driverd, PS_WAKER_COMMAND);
     mmhal_clear_deep_sleep_veto(MORSELIB_VETO_COMMAND);
     MMOSAL_MUTEX_RELEASE(driverd->cmd.wait);
+
+    DRVCMD_TRACE("cmd done %d", ret);
+
+    if (ret < 0)
+    {
+
+        status = errno_to_status(ret);
+    }
+    else
+    {
+
+        status = (fw_ret == 0) ? MMWLAN_SUCCESS : MMWLAN_COMMAND_ERROR;
+    }
+
+    if (skip_errlog)
+    {
+
+        return status;
+    }
 
     if (ret == -ETIMEDOUT)
     {
@@ -233,19 +258,14 @@ int morse_cmd_tx(struct driver_data *driverd,
     }
     else if (ret != 0)
     {
-
-        if (!(ret == MORSE_RET_EPERM && le16toh(cmd->hdr.message_id) == MORSE_CMD_ID_SET_CHANNEL))
-        {
-            MMLOG_ERR("Command %02x:%02x failed with rc %d (0x%x)\n",
-                      le16toh(cmd->hdr.message_id),
-                      le16toh(cmd->hdr.host_id),
-                      ret,
-                      (unsigned)ret);
-        }
+        MMLOG_ERR("Command %02x:%02x failed with rc %d (0x%x)\n",
+                  le16toh(cmd->hdr.message_id),
+                  le16toh(cmd->hdr.host_id),
+                  ret,
+                  (unsigned)ret);
     }
-    DRVCMD_TRACE("cmd done %d", ret);
 
-    return ret;
+    return status;
 }
 
 int morse_cmd_resp_process(struct driver_data *driverd, struct mmpkt *mmpkt, uint8_t channel)
@@ -396,15 +416,4 @@ void morse_cmd_deinit(struct driver_data *driverd)
     {
         mmosal_semb_delete(driverd->cmd.semb);
     }
-}
-
-int morse_cmd_health_check(struct driver_data *driverd)
-{
-    int ret;
-    struct morse_cmd_req_health_check cmd =
-        MORSE_COMMAND_INIT(cmd, MORSE_CMD_ID_HEALTH_CHECK, UNKNOWN_VIF_ID);
-
-    ret = morse_cmd_tx(driverd, NULL, (struct morse_cmd_req *)&cmd, 0, MM_CMD_TIMEOUT_HEALTH_CHECK);
-
-    return ret;
 }

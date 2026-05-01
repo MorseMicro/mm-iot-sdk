@@ -88,7 +88,7 @@ static void rf_test_handle_command(struct mmbuf *cmd_buf)
                                         mmbuf_append(rsp_buf, 0),
                                         &response_len);
 
-    if (status == MMWLAN_SUCCESS)
+    if ((status == MMWLAN_SUCCESS) || (status == MMWLAN_COMMAND_ERROR))
     {
         (void)mmbuf_append(rsp_buf, response_len);
         printf("Command executed successfully. Sending response...\n");

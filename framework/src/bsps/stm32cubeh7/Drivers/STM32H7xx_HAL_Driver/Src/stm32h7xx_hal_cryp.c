@@ -74,7 +74,7 @@
          the CRYP peripheral is configured and processes the buffer in input.
          At second call, no need to Initialize the CRYP, user have to get current configuration via
          HAL_CRYP_GetConfig() API, then only  HAL_CRYP_SetConfig() is requested to set
-         new parametres, finally user can  start encryption/decryption.
+         new parameters, finally user can  start encryption/decryption.
 
        (#)Call HAL_CRYP_DeInit() to deinitialize the CRYP peripheral.
 
@@ -331,7 +331,7 @@
 /* Private struct -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
-/** @addtogroup CRYP_Private_Functions_prototypes
+/** @addtogroup CRYP_Private_Functions_Prototypes
   * @{
   */
 
@@ -782,7 +782,7 @@ HAL_StatusTypeDef HAL_CRYP_RegisterCallback(CRYP_HandleTypeDef *hcryp, HAL_CRYP_
 
 /**
   * @brief  Unregister an CRYP Callback
-  *         CRYP callabck is redirected to the weak predefined callback
+  *         CRYP callback is redirected to the weak predefined callback
   * @param hcryp cryp handle
   * @param CallbackID ID of the callback to be unregistered
   *        This parameter can be one of the following values:
@@ -1741,7 +1741,7 @@ void HAL_CRYP_IRQHandler(CRYP_HandleTypeDef *hcryp)
   *                 the configuration information for the  CRYP IP
   * @retval CRYP error code
   */
-uint32_t HAL_CRYP_GetError(CRYP_HandleTypeDef *hcryp)
+uint32_t HAL_CRYP_GetError(const CRYP_HandleTypeDef *hcryp)
 {
   return hcryp->ErrorCode;
 }
@@ -1752,7 +1752,7 @@ uint32_t HAL_CRYP_GetError(CRYP_HandleTypeDef *hcryp)
   *         the configuration information for CRYP module.
   * @retval HAL state
   */
-HAL_CRYP_STATETypeDef HAL_CRYP_GetState(CRYP_HandleTypeDef *hcryp)
+HAL_CRYP_STATETypeDef HAL_CRYP_GetState(const CRYP_HandleTypeDef *hcryp)
 {
   return hcryp->State;
 }
@@ -1804,6 +1804,9 @@ __weak void HAL_CRYP_ErrorCallback(CRYP_HandleTypeDef *hcryp)
             the HAL_CRYP_ErrorCallback could be implemented in the user file
    */
 }
+/**
+  * @}
+  */
 /**
   * @}
   */
@@ -2679,7 +2682,7 @@ static void CRYP_SetDMAConfig(CRYP_HandleTypeDef *hcryp, uint32_t inputaddr, uin
 static void CRYP_AES_ProcessData(CRYP_HandleTypeDef *hcryp, uint32_t Timeout)
 {
 
-  uint32_t temp[4];  /* Temporary CrypOutBuff */
+  uint32_t temp[4] = {0};  /* Temporary CrypOutBuff */
   uint16_t incount;  /* Temporary CrypInCount Value */
   uint16_t outcount;  /* Temporary CrypOutCount Value */
   uint32_t i;
@@ -2751,7 +2754,7 @@ static void CRYP_AES_ProcessData(CRYP_HandleTypeDef *hcryp, uint32_t Timeout)
   */
 static void CRYP_AES_IT(CRYP_HandleTypeDef *hcryp)
 {
-  uint32_t temp[4];  /* Temporary CrypOutBuff */
+  uint32_t temp[4] = {0};  /* Temporary CrypOutBuff */
   uint16_t incount; /* Temporary CrypInCount Value */
   uint16_t outcount;  /* Temporary CrypOutCount Value */
   uint32_t i;
@@ -2900,11 +2903,20 @@ static HAL_StatusTypeDef CRYP_AESGCM_Process(CRYP_HandleTypeDef *hcryp, uint32_t
   uint32_t tickstart;
   uint32_t wordsize = (uint32_t)(hcryp->Size) / 4U;
   uint32_t npblb ;
-  uint32_t temp[4];  /* Temporary CrypOutBuff */
+  uint32_t temp[4] = {0};  /* Temporary CrypOutBuff */
   uint32_t index ;
+  uint32_t tmp;
   uint32_t lastwordsize ;
+  uint32_t lastoutputwordsize;
+  uint32_t nolastpaddingbytes;
+  uint8_t *pval;
   uint16_t outcount;  /* Temporary CrypOutCount Value */
   uint32_t DoKeyIVConfig = 1U; /* By default, carry out peripheral Key and IV configuration */
+  const uint32_t mask[16] = {0x0U, 0xFF000000U, 0xFFFF0000U, 0xFFFFFF00U,  /* 32- bit data type */
+                             0x0U, 0x0000FF00U, 0x0000FFFFU, 0xFF00FFFFU,  /* 16- bit data type */
+                             0x0U, 0x000000FFU, 0x0000FFFFU, 0x00FFFFFFU,  /* 8- bit data type */
+                             0x0U, 0x000000FFU, 0x0000FFFFU, 0x00FFFFFFU,  /* 1- bit data type */
+                            };
 
   if (hcryp->Init.KeyIVConfigSkip == CRYP_KEYIVCONFIG_ONCE)
   {
@@ -3067,20 +3079,22 @@ static HAL_StatusTypeDef CRYP_AESGCM_Process(CRYP_HandleTypeDef *hcryp, uint32_t
         __HAL_CRYP_ENABLE(hcryp);
       }
       /* Number of valid words (lastwordsize) in last block */
-      if ((npblb % 4U) == 0U)
-      {
-        lastwordsize = (16U - npblb) / 4U;
-      }
-      else
-      {
-        lastwordsize = ((16U - npblb) / 4U) + 1U;
-      }
+      lastwordsize = (16U - npblb) / 4U;
 
       /* Write the last input block in the IN FIFO */
       for (index = 0U; index < lastwordsize; index ++)
       {
         hcryp->Instance->DIN  = *(uint32_t *)(hcryp->pCrypInBuffPtr + hcryp->CrypInCount);
         hcryp->CrypInCount++;
+      }
+
+      if ((npblb % 4U) != 0U)
+      {
+        /* Enter last bytes, padded with zeros */
+        tmp =  *(uint32_t *)(hcryp->pCrypInBuffPtr + hcryp->CrypInCount);
+        tmp &= mask[((hcryp->Init.DataType >> 5) * 2U) + ((16U - npblb) % 4U)];
+        hcryp->Instance->DIN = tmp;
+        index++;
       }
 
       /* Pad the data with zeros to have a complete block */
@@ -3111,6 +3125,16 @@ static HAL_StatusTypeDef CRYP_AESGCM_Process(CRYP_HandleTypeDef *hcryp, uint32_t
 #endif /* USE_HAL_CRYP_REGISTER_CALLBACKS */
       }
 
+      /* Number of words in last block to read from DOUT*/
+      if ((npblb % 4U) == 0U)
+      {
+        lastoutputwordsize = (16U - npblb) / 4U;
+      }
+      else
+      {
+        lastoutputwordsize = ((16U - npblb) / 4U) + 1U;
+      }
+
       /*Read the output block from the output FIFO */
       if ((hcryp->Instance->SR & CRYP_FLAG_OFNE) != 0x0U)
       {
@@ -3120,9 +3144,48 @@ static HAL_StatusTypeDef CRYP_AESGCM_Process(CRYP_HandleTypeDef *hcryp, uint32_t
           then get CrypOutBuff from temporary buffer */
           temp[index] = hcryp->Instance->DOUT;
         }
-        for (index = 0; index < lastwordsize; index++)
+
+        for (index = 0U; index < lastoutputwordsize; index++)
         {
-          *(uint32_t *)(hcryp->pCrypOutBuffPtr + (hcryp->CrypOutCount)) = temp[index];
+          pval = (uint8_t *)(hcryp->pCrypOutBuffPtr + (hcryp->CrypOutCount));
+
+          if (index == (lastoutputwordsize - 1U))
+          {
+            nolastpaddingbytes = npblb % 4U;
+
+            switch (nolastpaddingbytes)
+            {
+              case 1:
+                *(pval) = (uint8_t)(temp[index]);
+                pval++;
+                *(pval) = (uint8_t)(temp[index] >> 8U);
+                pval++;
+                *(pval) = (uint8_t)(temp[index] >> 16U);
+                break;
+              case 2:
+                *(pval) = (uint8_t)(temp[index]);
+                pval++;
+                *(pval) = (uint8_t)(temp[index] >> 8U);
+                break;
+              case 3:
+                *(pval) = (uint8_t)(temp[index]);
+                break;
+              default:
+                *(pval) = (uint8_t)(temp[index]);
+                pval++;
+                *(pval) = (uint8_t)(temp[index] >> 8U);
+                pval++;
+                *(pval) = (uint8_t)(temp[index] >> 16U);
+                pval++;
+                *(pval) = (uint8_t)(temp[index] >> 24U);
+                break;
+            }
+          }
+          else
+          {
+            *(uint32_t *)(hcryp->pCrypOutBuffPtr + (hcryp->CrypOutCount)) = temp[index];
+          }
+
           hcryp->CrypOutCount++;
         }
       }
@@ -3246,7 +3309,7 @@ static HAL_StatusTypeDef CRYP_AESGCM_Process_DMA(CRYP_HandleTypeDef *hcryp)
   uint32_t index;
   uint32_t npblb;
   uint32_t lastwordsize;
-  uint32_t temp[4];  /* Temporary CrypOutBuff */
+  uint32_t temp[4] = {0};  /* Temporary CrypOutBuff */
   uint32_t DoKeyIVConfig = 1U; /* By default, carry out peripheral Key and IV configuration */
 
   if (hcryp->Init.KeyIVConfigSkip == CRYP_KEYIVCONFIG_ONCE)
@@ -3469,7 +3532,7 @@ static HAL_StatusTypeDef CRYP_AESCCM_Process(CRYP_HandleTypeDef *hcryp, uint32_t
   uint32_t wordsize = (uint32_t)(hcryp->Size) / 4U;
   uint32_t npblb ;
   uint32_t lastwordsize ;
-  uint32_t temp[4] ;  /* Temporary CrypOutBuff */
+  uint32_t temp[4] = {0};  /* Temporary CrypOutBuff */
   uint32_t index ;
   uint16_t outcount;  /* Temporary CrypOutCount Value */
   uint32_t DoKeyIVConfig = 1U; /* By default, carry out peripheral Key and IV configuration */
@@ -3904,7 +3967,7 @@ static HAL_StatusTypeDef CRYP_AESCCM_Process_DMA(CRYP_HandleTypeDef *hcryp)
   uint32_t index;
   uint32_t npblb;
   uint32_t lastwordsize;
-  uint32_t temp[4];  /* Temporary CrypOutBuff */
+  uint32_t temp[4] = {0};  /* Temporary CrypOutBuff */
   uint32_t DoKeyIVConfig = 1U; /* By default, carry out peripheral Key and IV configuration */
 
   if (hcryp->Init.KeyIVConfigSkip == CRYP_KEYIVCONFIG_ONCE)
@@ -4162,7 +4225,7 @@ static HAL_StatusTypeDef CRYP_AESCCM_Process_DMA(CRYP_HandleTypeDef *hcryp)
 static void CRYP_GCMCCM_SetPayloadPhase_IT(CRYP_HandleTypeDef *hcryp)
 {
   uint32_t loopcounter;
-  uint32_t temp[4];  /* Temporary CrypOutBuff */
+  uint32_t temp[4] = {0};  /* Temporary CrypOutBuff */
   uint32_t lastwordsize;
   uint32_t npblb;
   uint32_t temp_cr_algodir;
@@ -4381,7 +4444,7 @@ static HAL_StatusTypeDef CRYP_GCMCCM_SetHeaderPhase(CRYP_HandleTypeDef *hcryp, u
   uint32_t loopcounter;
   uint32_t size_in_bytes;
   uint32_t tmp;
-  uint32_t mask[4] = {0x0U, 0x0FFU, 0x0FFFFU, 0x0FFFFFFU};
+  const uint32_t mask[4] = {0x0U, 0x0FFU, 0x0FFFFU, 0x0FFFFFFU};
 
   /***************************** Header phase for GCM/GMAC or CCM *********************************/
 
@@ -5181,11 +5244,6 @@ static HAL_StatusTypeDef CRYP_WaitOnOFNEFlag(const CRYP_HandleTypeDef  *hcryp, u
   * @}
   */
 
-
-
-/**
-  * @}
-  */
 
 /**
   * @}

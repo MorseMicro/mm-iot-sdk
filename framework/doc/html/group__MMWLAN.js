@@ -6,6 +6,7 @@ var group__MMWLAN =
     [ "WLAN Control API for Station (STA) mode", "group__MMWLAN__STA.html", "group__MMWLAN__STA" ],
     [ "WLAN Control API for Device Provisioning Protocol (DPP)", "group__MMWLAN__DPP.html", "group__MMWLAN__DPP" ],
     [ "WLAN Control API for Access Point (AP) mode", "group__MMWLAN__AP.html", "group__MMWLAN__AP" ],
+    [ "WLAN Control API for S1G Relay functionality", "group__MMWLAN__RELAY.html", "group__MMWLAN__RELAY" ],
     [ "WLAN Beacon Vendor Specific IE Filter API", "group__MMWLAN__BEACON__VENDOR__IE__FILTER__API.html", "group__MMWLAN__BEACON__VENDOR__IE__FILTER__API" ],
     [ "WLAN Initialization/Deinitialization API", "group__MMWLAN__INIT.html", "group__MMWLAN__INIT" ],
     [ "WLAN Datapath API", "group__MMWLAN__DATA.html", "group__MMWLAN__DATA" ],
@@ -38,7 +39,9 @@ var group__MMWLAN =
       [ "MMWLAN_NOT_FOUND", "group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086afad19641afc5f570e9c05e71a5e65f88", null ],
       [ "MMWLAN_NOT_RUNNING", "group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a2761ad68b977a39b97cf9bbb33c9dd95", null ],
       [ "MMWLAN_NOT_INITIALIZED", "group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086ae80a6534257abb138e7b8358cb32a9a1", null ],
-      [ "MMWLAN_VIF_ERROR", "group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a6a00e38023a9b0b6b447747fda1c1fe7", null ]
+      [ "MMWLAN_VIF_ERROR", "group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a6a00e38023a9b0b6b447747fda1c1fe7", null ],
+      [ "MMWLAN_NOT_SUPPORTED", "group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a60d52826fdd3673f9d560a6a74e69144", null ],
+      [ "MMWLAN_COMMAND_ERROR", "group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a625ac6e5b04783940c583a8dbc7f70aa", null ]
     ] ],
     [ "mmwlan_vif", "group__MMWLAN.html#gaf098b35ce27e6c06e1a3b6d11b45d34b", [
       [ "MMWLAN_VIF_UNSPECIFIED", "group__MMWLAN.html#ggaf098b35ce27e6c06e1a3b6d11b45d34ba9c193082d79ffd7b268de40260e00b02", null ],

@@ -130,7 +130,7 @@ void app_init(void)
     /* Get the target IP */
     struct mmipal_ip_config ip_config = MMIPAL_IP_CONFIG_DEFAULT;
     enum mmipal_status status = mmipal_get_ip_config(&ip_config);
-    if (status == MMIPAL_SUCCESS)
+    if (status == MMIPAL_SUCCESS && ip_config.mode != MMIPAL_DISABLED)
     {
         memcpy(args.ping_target, ip_config.gateway_addr, sizeof(ip_config.gateway_addr));
     }

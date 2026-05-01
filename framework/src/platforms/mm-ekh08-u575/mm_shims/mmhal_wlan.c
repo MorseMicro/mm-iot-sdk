@@ -36,10 +36,22 @@ static mmhal_irq_handler_t busy_irq_handler = NULL;
 
 void mmhal_wlan_hard_reset(void)
 {
-    LL_GPIO_ResetOutputPin(RESET_N_GPIO_Port, RESET_N_Pin);
+    mmhal_wlan_assert_reset(true);
     mmosal_task_sleep(5);
-    LL_GPIO_SetOutputPin(RESET_N_GPIO_Port, RESET_N_Pin);
+    mmhal_wlan_assert_reset(false);
     mmosal_task_sleep(20);
+}
+
+void mmhal_wlan_assert_reset(bool assert_reset)
+{
+    if (assert_reset)
+    {
+        LL_GPIO_ResetOutputPin(RESET_N_GPIO_Port, RESET_N_Pin);
+    }
+    else
+    {
+        LL_GPIO_SetOutputPin(RESET_N_GPIO_Port, RESET_N_Pin);
+    }
 }
 
 #if defined(ENABLE_EXT_XTAL_INIT) && ENABLE_EXT_XTAL_INIT
@@ -251,7 +263,6 @@ void mmhal_wlan_set_spi_irq_enabled(bool enabled)
     if (enabled)
     {
         LL_EXTI_EnableIT_0_31(SPI_IRQ_LINE);
-        LL_EXTI_EnableEvent_0_31(SPI_IRQ_LINE);
 
         /* The transiver will hold the IRQ line low if there is additional information
          * to be retrived. Ideally the interrupt pin would be configured as a low level
@@ -271,23 +282,19 @@ void mmhal_wlan_set_spi_irq_enabled(bool enabled)
         NVIC_DisableIRQ(SPI_IRQn);
 
         LL_EXTI_DisableIT_0_31(SPI_IRQ_LINE);
-        LL_EXTI_DisableEvent_0_31(SPI_IRQ_LINE);
     }
 }
 
 void mmhal_wlan_init(void)
 {
     dma_semb_handle = mmosal_semb_create("dma_semb_handle");
-    /* Raise the RESET_N line to enable the WLAN transceiver. */
-    LL_GPIO_SetOutputPin(RESET_N_GPIO_Port, RESET_N_Pin);
+    mmhal_wlan_assert_reset(false);
 }
 
 void mmhal_wlan_deinit(void)
 {
     mmosal_semb_delete(dma_semb_handle);
-    /* Lower the RESET_N line to disable the WLAN transceiver. This will put the transceiver in its
-     * lowest power state. */
-    LL_GPIO_ResetOutputPin(RESET_N_GPIO_Port, RESET_N_Pin);
+    mmhal_wlan_assert_reset(true);
 }
 
 void mmhal_wlan_wake_assert(void)

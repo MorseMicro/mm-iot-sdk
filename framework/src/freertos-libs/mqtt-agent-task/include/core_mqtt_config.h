@@ -42,12 +42,20 @@
  * macro sets the limit on how many simultaneous PUBLISH states an MQTT
  * context maintains.
  */
+#ifndef MQTT_STATE_ARRAY_MAX_COUNT
 #define MQTT_STATE_ARRAY_MAX_COUNT                   (20U)
+#endif
+#ifndef MQTT_RECV_POLLING_TIMEOUT_MS
 #define MQTT_RECV_POLLING_TIMEOUT_MS                 (250)
+#endif
 
 /*_RB_ To document and add to the mqtt config defaults header file. */
+#ifndef MQTT_AGENT_COMMAND_QUEUE_LENGTH
 #define MQTT_AGENT_COMMAND_QUEUE_LENGTH              (32)
+#endif
+#ifndef MQTT_COMMAND_CONTEXTS_POOL_SIZE
 #define MQTT_COMMAND_CONTEXTS_POOL_SIZE              (32)
+#endif
 
 /**
  * @brief The maximum number of subscriptions to track for a single connection.
@@ -57,7 +65,9 @@
  * subscriptions records that can be maintained at one time.  The higher this
  * number is the greater the agent's RAM consumption will be.
  */
+#ifndef MQTT_AGENT_MAX_SIMULTANEOUS_SUBSCRIPTIONS
 #define MQTT_AGENT_MAX_SIMULTANEOUS_SUBSCRIPTIONS    (10)
+#endif
 
 /**
  * @brief Size of statically allocated buffers for holding subscription filters.
@@ -67,7 +77,9 @@
  * characters. The higher this number is the greater the agent's RAM consumption
  * will be.
  */
+#ifndef MQTT_AGENT_MAX_SUBSCRIPTION_FILTER_LENGTH
 #define MQTT_AGENT_MAX_SUBSCRIPTION_FILTER_LENGTH    (100)
+#endif
 
 /**
  * @brief Dimensions the buffer used to serialize and deserialize MQTT packets.
@@ -78,7 +90,18 @@
 #define MQTT_AGENT_NETWORK_BUFFER_SIZE               (6 * 1024)
 #endif
 
+#ifndef MQTT_AGENT_TASK_USE_RX_CALLBACK
+#define MQTT_AGENT_TASK_USE_RX_CALLBACK 1
+#endif
+
+#ifndef MQTT_AGENT_MAX_EVENT_QUEUE_WAIT_TIME
+#if MQTT_AGENT_TASK_USE_RX_CALLBACK
+/* This value is ignored. It is dynamically calculated in prvAgentMessageReceive */
+#define MQTT_AGENT_MAX_EVENT_QUEUE_WAIT_TIME         (UINT32_MAX)
+#else /* MQTT_AGENT_TASK_USE_RX_CALLBACK */
 #define MQTT_AGENT_MAX_EVENT_QUEUE_WAIT_TIME         (1)
+#endif /* MQTT_AGENT_TASK_USE_RX_CALLBACK */
+#endif
 
 /**
  * @brief MQTT agent task stack size in 32-bit word.

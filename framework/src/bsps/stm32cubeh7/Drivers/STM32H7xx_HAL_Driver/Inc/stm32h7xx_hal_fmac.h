@@ -243,10 +243,7 @@ typedef struct
   * @}
   */
 
-
 /* Exported constants --------------------------------------------------------*/
-
-
 /** @defgroup FMAC_Exported_Constants FMAC Exported Constants
   * @{
   */
@@ -356,7 +353,6 @@ typedef struct
 /**
   * @}
   */
-
 
 /* Exported variables --------------------------------------------------------*/
 /** @defgroup FMAC_Exported_variables FMAC Exported variables
@@ -483,7 +479,23 @@ typedef struct
   * @}
   */
 
-/* Private Macros-----------------------------------------------------------*/
+/* Private defines -----------------------------------------------------------*/
+/** @addtogroup  FMAC_Private_Constants
+  * @{
+  */
+
+#define FMAC_PARAM_P_MAX_IIR  64U /*!< Maximum value of P parameter with IIR */
+#define FMAC_PARAM_P_MAX_FIR 127U /*!< Maximum value of P parameter with FIR */
+#define FMAC_PARAM_P_MIN       2U /*!< Minimum value of P parameter */
+#define FMAC_PARAM_Q_MAX      63U /*!< Maximum value of Q parameter */
+#define FMAC_PARAM_Q_MIN       1U /*!< Minimum value of Q parameter */
+#define FMAC_PARAM_R_MAX       7U /*!< Maximum value of R parameter */
+
+/**
+  * @}
+  */
+
+/* Private Macros-------------------------------------------------------------*/
 /** @addtogroup  FMAC_Private_Macros FMAC Private Macros
   * @{
   */
@@ -549,10 +561,12 @@ typedef struct
   * @param  __FUNCTION__ ID of the filter function.
   * @retval SET (__P__ is a valid value) or RESET (__P__ is invalid)
   */
-#define IS_FMAC_PARAM_P(__FUNCTION__, __P__) ( (((__FUNCTION__) == FMAC_FUNC_CONVO_FIR)               && \
-                                                (((__P__) >= 2U) && ((__P__) <= 127U)))               || \
-                                               (((__FUNCTION__) == FMAC_FUNC_IIR_DIRECT_FORM_1)       && \
-                                                (((__P__) >= 2U) && ((__P__) <= 64U))) )
+#define IS_FMAC_PARAM_P(__FUNCTION__, __P__) ((((__FUNCTION__) == FMAC_FUNC_CONVO_FIR)               && \
+                                               (((__P__) >= FMAC_PARAM_P_MIN) && \
+                                                ((__P__) <= FMAC_PARAM_P_MAX_FIR))) || \
+                                              (((__FUNCTION__) == FMAC_FUNC_IIR_DIRECT_FORM_1)       && \
+                                               (((__P__) >= FMAC_PARAM_P_MIN) && \
+                                                ((__P__) <= FMAC_PARAM_P_MAX_IIR))))
 
 /**
   * @brief  Verify the FMAC filter parameter Q.
@@ -560,9 +574,9 @@ typedef struct
   * @param  __FUNCTION__ ID of the filter function.
   * @retval SET (__Q__ is a valid value) or RESET (__Q__ is invalid)
   */
-#define IS_FMAC_PARAM_Q(__FUNCTION__, __Q__) ( ((__FUNCTION__) == FMAC_FUNC_CONVO_FIR)                || \
-                                               (((__FUNCTION__) == FMAC_FUNC_IIR_DIRECT_FORM_1)       && \
-                                                (((__Q__) >= 1U) && ((__Q__) <= 63U))) )
+#define IS_FMAC_PARAM_Q(__FUNCTION__, __Q__) (((__FUNCTION__) == FMAC_FUNC_CONVO_FIR)                || \
+                                              (((__FUNCTION__) == FMAC_FUNC_IIR_DIRECT_FORM_1)       && \
+                                               (((__Q__) >= FMAC_PARAM_Q_MIN) && ((__Q__) <= FMAC_PARAM_Q_MAX))))
 
 /**
   * @brief  Verify the FMAC filter parameter R.
@@ -572,7 +586,7 @@ typedef struct
   */
 #define IS_FMAC_PARAM_R(__FUNCTION__, __R__) ( (((__FUNCTION__) == FMAC_FUNC_CONVO_FIR)               || \
                                                 ((__FUNCTION__) == FMAC_FUNC_IIR_DIRECT_FORM_1))      && \
-                                               ((__R__) <= 7U))
+                                               ((__R__) <= FMAC_PARAM_R_MAX))
 
 /**
   * @brief  Verify the FMAC buffer access.
@@ -682,8 +696,8 @@ void HAL_FMAC_IRQHandler(FMAC_HandleTypeDef *hfmac);
   * @{
   */
 /* Peripheral State functions *************************************************/
-HAL_FMAC_StateTypeDef HAL_FMAC_GetState(FMAC_HandleTypeDef *hfmac);
-uint32_t HAL_FMAC_GetError(FMAC_HandleTypeDef *hfmac);
+HAL_FMAC_StateTypeDef HAL_FMAC_GetState(const FMAC_HandleTypeDef *hfmac);
+uint32_t HAL_FMAC_GetError(const FMAC_HandleTypeDef *hfmac);
 /**
   * @}
   */

@@ -50,6 +50,9 @@ struct nan_callbacks {
 	void (*subscribe_terminated)(void *ctx, int subscribe_id,
 				     enum nan_de_reason reason);
 
+	void (*offload_cancel_publish)(void *ctx, int publish_id);
+	void (*offload_cancel_subscribe)(void *ctx, int subscribe_id);
+
 	void (*receive)(void *ctx, int id, int peer_instance_id,
 			const u8 *ssi, size_t ssi_len,
 			const u8 *peer_addr);
@@ -57,10 +60,16 @@ struct nan_callbacks {
 	void (*process_p2p_usd_elems)(void *ctx, const u8 *buf,
 				      u16 buf_len, const u8 *peer_addr,
 				      unsigned int freq);
+
+	void (*process_pr_usd_elems)(void *ctx, const u8 *buf,
+				     u16 buf_len, const u8 *peer_addr,
+				     unsigned int freq);
 };
 
 bool nan_de_is_nan_network_id(const u8 *addr);
+bool nan_de_is_p2p_network_id(const u8 *addr);
 struct nan_de * nan_de_init(const u8 *nmi, bool offload, bool ap,
+			    unsigned int max_listen,
 			    const struct nan_callbacks *cb);
 void nan_de_flush(struct nan_de *de);
 void nan_de_deinit(struct nan_de *de);
@@ -68,6 +77,7 @@ void nan_de_deinit(struct nan_de *de);
 void nan_de_listen_started(struct nan_de *de, unsigned int freq,
 			   unsigned int duration);
 void nan_de_listen_ended(struct nan_de *de, unsigned int freq);
+void nan_de_update_nmi(struct nan_de *de, const u8 *nmi);
 void nan_de_tx_status(struct nan_de *de, unsigned int freq, const u8 *dst);
 void nan_de_tx_wait_ended(struct nan_de *de);
 
@@ -105,6 +115,9 @@ struct nan_publish_params {
 
 	/* Announcement period in ms; 0 = use default */
 	unsigned int announcement_period;
+
+	/* Proximity ranging flag */
+	bool proximity_ranging;
 };
 
 /* Returns -1 on failure or >0 publish_id */
@@ -117,6 +130,9 @@ void nan_de_cancel_publish(struct nan_de *de, int publish_id);
 
 int nan_de_update_publish(struct nan_de *de, int publish_id,
 			  const struct wpabuf *ssi);
+
+int nan_de_unpause_publish(struct nan_de *de, int publish_id,
+			   u8 peer_instance_id, const u8 *peer_addr);
 
 struct nan_subscribe_params {
 	/* configuration_parameters */
@@ -135,6 +151,9 @@ struct nan_subscribe_params {
 
 	/* Query period in ms; 0 = use default */
 	unsigned int query_period;
+
+	/* Proximity ranging flag */
+	bool proximity_ranging;
 };
 
 /* Returns -1 on failure or >0 subscribe_id */
@@ -150,5 +169,7 @@ void nan_de_cancel_subscribe(struct nan_de *de, int subscribe_id);
 int nan_de_transmit(struct nan_de *de, int handle,
 		    const struct wpabuf *ssi, const struct wpabuf *elems,
 		    const u8 *peer_addr, u8 req_instance_id);
+
+int nan_de_stop_listen(struct nan_de *de, int handle);
 
 #endif /* NAN_DE_H */

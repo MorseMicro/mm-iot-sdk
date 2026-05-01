@@ -179,7 +179,7 @@ static char *mmconfig_int_to_str(char *buf, size_t bufsize, int32_t val)
  * @param  val The unsigned integer to return the value in, unchanged on error
  * @return     MMCONFIG_OK on success or an error code on failure
  */
-static int mmconfig_str_to_uint(char *str, uint32_t *val)
+static int mmconfig_str_to_uint(const char *str, uint32_t *val)
 {
     uint64_t num = 0;
     int ii;
@@ -241,7 +241,7 @@ static int mmconfig_str_to_uint(char *str, uint32_t *val)
  * @param  val The signed integer to return the value in, unchanged on error
  * @return     MMCONFIG_OK on success or an error code on failure
  */
-static int mmconfig_str_to_int(char *str, int *val)
+static int mmconfig_str_to_int(const char *str, int *val)
 {
     uint32_t num = 0;
     int sign = 1;
@@ -1023,7 +1023,7 @@ int mmconfig_eraseall(void)
  *                          @c MMCONFIG_ERR_NOT_FOUND if the specified key was not found
  *                          Other negative number for other errors.
  */
-static int mmconfig_read_data(const char *key, void **data)
+static int mmconfig_read_data(const char *key, const void **data)
 {
     /* Ensure MMCONFIG subsystem is initialized */
     if (mmconfig_init() == MMCONFIG_ERR_NOT_SUPPORTED)
@@ -1077,7 +1077,7 @@ static int mmconfig_read_data(const char *key, void **data)
 int mmconfig_alloc_and_load(const char *key, void **data)
 {
     int length;
-    void *livedata;
+    const void *livedata;
 
     /* So we return NULL on error */
     *data = NULL;
@@ -1116,7 +1116,7 @@ mmconfig_alloc_and_load_cleanup:
 
 int mmconfig_write_data(const char *key, const void *data, size_t size)
 {
-    void *currvalue = NULL;
+    const void *currvalue = NULL;
 
     /* Ensure MMCONFIG subsystem is initialized */
     if (mmconfig_init() == MMCONFIG_ERR_NOT_SUPPORTED)
@@ -1209,7 +1209,7 @@ int mmconfig_write_update_node_list(const struct mmconfig_update_node *node_list
 int mmconfig_read_bytes(const char *key, void *buffer, uint32_t buffsize, uint32_t offset)
 {
     int length;
-    uint8_t *data;
+    const uint8_t *data;
     int result;
     int copied;
 
@@ -1222,7 +1222,7 @@ int mmconfig_read_bytes(const char *key, void *buffer, uint32_t buffsize, uint32
     mmosal_mutex_get(mmconfig_mutex, UINT32_MAX);
 
     /* Look for the key in config store */
-    length = mmconfig_read_data(key, (void **)&data);
+    length = mmconfig_read_data(key, (const void **)&data);
 
     if (length < 0)
     {
@@ -1262,7 +1262,7 @@ int mmconfig_write_string(const char *key, const char *value)
 
 int mmconfig_read_string(const char *key, char *buffer, int bufsize)
 {
-    char *value;
+    const char *value;
 
     if (mmconfig_init() == MMCONFIG_ERR_NOT_SUPPORTED)
     {
@@ -1270,7 +1270,7 @@ int mmconfig_read_string(const char *key, char *buffer, int bufsize)
     }
 
     mmosal_mutex_get(mmconfig_mutex, UINT32_MAX);
-    int retval = mmconfig_read_data(key, (void **)&value);
+    int retval = mmconfig_read_data(key, (const void **)&value);
 
     /* Check for error */
     if (retval < 0)
@@ -1323,7 +1323,7 @@ int mmconfig_write_int(const char *key, int value)
 int mmconfig_read_int(const char *key, int *value)
 {
     /* For maximum compatibility, we are going to represent the integer as a string */
-    char *data;
+    const char *data;
 
     if (mmconfig_init() == MMCONFIG_ERR_NOT_SUPPORTED)
     {
@@ -1331,7 +1331,7 @@ int mmconfig_read_int(const char *key, int *value)
     }
 
     mmosal_mutex_get(mmconfig_mutex, UINT32_MAX);
-    int retval = mmconfig_read_data(key, (void **)&data);
+    int retval = mmconfig_read_data(key, (const void **)&data);
 
     /* Check for error */
     if (retval < 0)
@@ -1379,7 +1379,7 @@ int mmconfig_write_uint32(const char *key, uint32_t value)
 int mmconfig_read_uint32(const char *key, uint32_t *value)
 {
     /* For maximum compatibility, we are going to represent the value as a string */
-    char *data;
+    const char *data;
 
     if (mmconfig_init() == MMCONFIG_ERR_NOT_SUPPORTED)
     {
@@ -1388,7 +1388,7 @@ int mmconfig_read_uint32(const char *key, uint32_t *value)
 
     mmosal_mutex_get(mmconfig_mutex, UINT32_MAX);
 
-    int retval = mmconfig_read_data(key, (void **)&data);
+    int retval = mmconfig_read_data(key, (const void **)&data);
 
     /* Check for error */
     if (retval < 0)
@@ -1441,7 +1441,7 @@ int mmconfig_write_bool(const char *key, bool value)
 int mmconfig_read_bool(const char *key, bool *value)
 {
     /* For maximum compatibility, we are going to represent the integer as a string */
-    char *data;
+    const char *data;
 
     if (mmconfig_init() == MMCONFIG_ERR_NOT_SUPPORTED)
     {
@@ -1450,7 +1450,7 @@ int mmconfig_read_bool(const char *key, bool *value)
 
     mmosal_mutex_get(mmconfig_mutex, UINT32_MAX);
 
-    int retval = mmconfig_read_data(key, (void **)&data);
+    int retval = mmconfig_read_data(key, (const void **)&data);
 
     /* Check for error */
     if (retval < 0)

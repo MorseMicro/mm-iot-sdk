@@ -20,7 +20,6 @@ var group__MMCONFIG__API =
       [ "MMCONFIG_ERR_NOT_SUPPORTED", "group__MMCONFIG__API.html#gga3f0ca3ae6640a9e5436d2b7c89d36f17a001e24f95fa5b2a7647e02e3870b2329", null ],
       [ "MMCONFIG_ERR_WILDCARD_KEY", "group__MMCONFIG__API.html#gga3f0ca3ae6640a9e5436d2b7c89d36f17ae51358eb11318a13715b767f9fcd2bf5", null ]
     ] ],
-    [ "load_mmwlan_settings", "group__MMCONFIG__API.html#ga908514f26d5872bf4b86b8f3dc012411", null ],
     [ "mmconfig_alloc_and_load", "group__MMCONFIG__API.html#gaed5b0b985172bf514b863064b84f5228", null ],
     [ "mmconfig_check_usage", "group__MMCONFIG__API.html#ga8da661777231d2aaaa2c8b327c707471", null ],
     [ "mmconfig_delete_key", "group__MMCONFIG__API.html#ga116bd92e4bd372a3964ff66dce82a657", null ],

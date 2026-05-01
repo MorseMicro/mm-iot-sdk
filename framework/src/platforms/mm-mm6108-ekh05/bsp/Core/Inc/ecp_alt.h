@@ -39,12 +39,12 @@
 #define MBEDTLS_ECP_ALT_H
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
-#if defined (MBEDTLS_ECP_ALT)
+#if defined(MBEDTLS_ECP_ALT)
 #include "mbedtls/platform.h"
-#include "stm32u5xx_hal.h"
 
 /*
  * default mbed TLS elliptic curve arithmetic implementation
@@ -89,40 +89,39 @@ extern "C" {
  */
 typedef struct mbedtls_ecp_group
 {
-    mbedtls_ecp_group_id id;    /*!< An internal group identifier. */
-    mbedtls_mpi P;              /*!< The prime modulus of the base field. */
-    mbedtls_mpi A;              /*!< For Short Weierstrass: \p A in the equation. For
-                                     Montgomery curves: <code>(A + 2) / 4</code>. */
-    mbedtls_mpi B;              /*!< For Short Weierstrass: \p B in the equation.
-                                     For Montgomery curves: unused. */
-    mbedtls_ecp_point G;        /*!< The generator of the subgroup used. */
-    mbedtls_mpi N;              /*!< The order of \p G. */
-    size_t pbits;               /*!< The number of bits in \p P.*/
-    size_t nbits;               /*!< For Short Weierstrass: The number of bits in \p P.
-                                     For Montgomery curves: the number of bits in the
-                                     private keys. */
-    unsigned int h;             /*!< \internal 1 if the constants are static. */
+    mbedtls_ecp_group_id id; /*!< An internal group identifier. */
+    mbedtls_mpi P; /*!< The prime modulus of the base field. */
+    mbedtls_mpi A; /*!< For Short Weierstrass: \p A in the equation. For
+                        Montgomery curves: <code>(A + 2) / 4</code>. */
+    mbedtls_mpi B; /*!< For Short Weierstrass: \p B in the equation.
+                        For Montgomery curves: unused. */
+    mbedtls_ecp_point G; /*!< The generator of the subgroup used. */
+    mbedtls_mpi N; /*!< The order of \p G. */
+    size_t pbits; /*!< The number of bits in \p P.*/
+    size_t nbits; /*!< For Short Weierstrass: The number of bits in \p P.
+                       For Montgomery curves: the number of bits in the
+                       private keys. */
+    unsigned int h; /*!< \internal 1 if the constants are static. */
     int (*modp)(mbedtls_mpi *); /*!< The function for fast pseudo-reduction
                                      mod \p P (see above).*/
-    int (*t_pre)(mbedtls_ecp_point *, void *);  /*!< Unused. */
+    int (*t_pre)(mbedtls_ecp_point *, void *); /*!< Unused. */
     int (*t_post)(mbedtls_ecp_point *, void *); /*!< Unused. */
-    void *t_data;               /*!< Unused. */
-    mbedtls_ecp_point *T;       /*!< Pre-computed points for ecp_mul_comb(). */
-    size_t T_size;              /*!< The number of pre-computed points. */
+    void *t_data; /*!< Unused. */
+    mbedtls_ecp_point *T; /*!< Pre-computed points for ecp_mul_comb(). */
+    size_t T_size; /*!< The number of pre-computed points. */
 
-                                /*!< Below, for Short Weierstrass: curve coefs in ST HW
-                                     expected format. For Montogomery curves: unused */
-    uint32_t st_modulus_size;   /*!< Number of bytes in prime modulus */
-    uint32_t st_order_size;     /*!< Number of bytes in prime order */
-    uint8_t *st_p;              /*!< Prime modulus p */
-    uint32_t st_a_sign;         /*!< Sign of A coef */
-    uint8_t *st_a_abs;          /*!< abs(A) coef */
-    uint8_t *st_b;              /*!< B coef */
-    uint8_t *st_gx;             /*!< Gx basepoint */
-    uint8_t *st_gy;             /*!< Gy basepoint */
-    uint8_t *st_n;              /*!< Prime Order n */
-}
-mbedtls_ecp_group;
+    /*!< Below, for Short Weierstrass: curve coefs in ST HW
+         expected format. For Montogomery curves: unused */
+    uint32_t st_modulus_size; /*!< Number of bytes in prime modulus */
+    uint32_t st_order_size; /*!< Number of bytes in prime order */
+    uint8_t *st_p; /*!< Prime modulus p */
+    uint32_t st_a_sign; /*!< Sign of A coef */
+    uint8_t *st_a_abs; /*!< abs(A) coef */
+    uint8_t *st_b; /*!< B coef */
+    uint8_t *st_gx; /*!< Gx basepoint */
+    uint8_t *st_gy; /*!< Gy basepoint */
+    uint8_t *st_n; /*!< Prime Order n */
+} mbedtls_ecp_group;
 
 /**
  * \name SECTION: Module settings
@@ -136,7 +135,7 @@ mbedtls_ecp_group;
 /**
  * The maximum size of the groups, that is, of \c N and \c P.
  */
-#define MBEDTLS_ECP_MAX_BITS     521   /**< The maximum size of groups, in bits. */
+#define MBEDTLS_ECP_MAX_BITS 521 /**< The maximum size of groups, in bits. */
 #endif
 
 #if !defined(MBEDTLS_ECP_WINDOW_SIZE)
@@ -159,7 +158,7 @@ mbedtls_ecp_group;
  *      224       475     475     453     398     342
  *      192       640     640     633     587     476
  */
-#define MBEDTLS_ECP_WINDOW_SIZE    6   /**< The maximum window size used. */
+#define MBEDTLS_ECP_WINDOW_SIZE 6 /**< The maximum window size used. */
 #endif /* MBEDTLS_ECP_WINDOW_SIZE */
 
 #if !defined(MBEDTLS_ECP_FIXED_POINT_OPTIM)
@@ -174,7 +173,7 @@ mbedtls_ecp_group;
  *
  * Change this value to 0 to reduce peak memory usage.
  */
-#define MBEDTLS_ECP_FIXED_POINT_OPTIM  1   /**< Enable fixed-point speed-up. */
+#define MBEDTLS_ECP_FIXED_POINT_OPTIM 1 /**< Enable fixed-point speed-up. */
 #endif /* MBEDTLS_ECP_FIXED_POINT_OPTIM */
 
 /* \} name SECTION: Module settings */

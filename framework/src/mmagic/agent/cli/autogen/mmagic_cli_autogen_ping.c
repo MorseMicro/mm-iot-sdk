@@ -299,11 +299,18 @@ void mmagic_cli_ping_run(EmbeddedCli *cli, char *args, void *context);
 /********* Register bindings function definition **********/
 void mmagic_cli_ping_register_bindings(EmbeddedCli *cli, struct mmagic_data *core)
 {
+    if (!mmagic_core_ping_is_started(core))
+    {
+        embeddedCliPrint(cli, "PING not started.");
+        /* Module is not started so withhold commands for it from the user */
+        return;
+    }
+
     embeddedCliAddBinding(
         cli,
         (CliCommandBinding){
             "ping-run",
-            "Commences a ping session using the current values in the the subsystem config.",
+            "Commences a ping session using the current values in the subsystem config.",
             true,
             core,
             mmagic_cli_ping_run });

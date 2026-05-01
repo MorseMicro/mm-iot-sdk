@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.10.4</span>
+   &#160;<span id="projectnumber">2.11.2</span>
    </div>
   </td>
  </tr>
@@ -96,6 +96,7 @@ $(document).ready(function(){initNavTree('group__MMWLAN__DPP.html',''); initResi
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p >API for executing Device Provisioning Protocol (DPP), also known as Wi-Fi Easy Connect. </p>
+<dl class="section warning"><dt>Warning</dt><dd>BETA NOTICE: This is a beta API that is under development; breaking changes may be introduced in future releases. </dd></dl>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Data Structures</h2></td></tr>
@@ -142,12 +143,13 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Enumeration of DPP events. </p>
+<dl class="section warning"><dt>Warning</dt><dd>BETA NOTICE: This is a beta API that is under development; breaking changes may be introduced in future releases. </dd></dl>
 <table class="fieldtable">
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ggaff0a5b52c6328bf4d24644c68b723ed3ab755a188de15bd0c296e58dfe3e623c3" name="ggaff0a5b52c6328bf4d24644c68b723ed3ab755a188de15bd0c296e58dfe3e623c3"></a>MMWLAN_DPP_EVT_PB_RESULT&#160;</td><td class="fielddoc"><p >DPP push button result. </p>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02133">2133</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01587">1587</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -164,6 +166,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Enumeration of results for <code>MMWLAN_DPP_EVT_PB_RESULT</code>. </p>
+<dl class="section warning"><dt>Warning</dt><dd>BETA NOTICE: This is a beta API that is under development; breaking changes may be introduced in future releases. </dd></dl>
 <table class="fieldtable">
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ggade954a79247b07a1737c72f34e2697eaa0cc32fc88b8249ed3b0a824fa7f7232e" name="ggade954a79247b07a1737c72f34e2697eaa0cc32fc88b8249ed3b0a824fa7f7232e"></a>MMWLAN_DPP_PB_RESULT_SUCCESS&#160;</td><td class="fielddoc"><p >DPP push button process was successful. </p>
 </td></tr>
@@ -173,7 +176,7 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02140">2140</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01598">1598</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -195,16 +198,16 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Function to start the Device Provisioning Protocol (DPP) process. </p>
-<p >This will return once DPP has successfully started. Feedback will be provided via the <code>dpp_event_cb</code>.</p>
-<dl class="section warning"><dt>Warning</dt><dd>If this has been called <code><a class="el" href="group__MMWLAN__DPP.html#gaca7bb00acaa9e290af98110f36f7990d" title="Function to stop the DPP process.">mmwlan_dpp_stop()</a></code> MUST be called before <code><a class="el" href="group__MMWLAN__CTRL.html#ga83480307a380060f5a1e03eaaf634081" title="Perform a clean shutdown of the Morse Micro transceiver, including cleanly disconnecting from a conne...">mmwlan_shutdown()</a></code> is called.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>BETA NOTICE: This is a beta API that is under development; breaking changes may be introduced in future releases.</dd></dl>
+<p>This function will return once DPP has successfully started. Feedback will be provided via the <code>dpp_event_cb</code>.</p>
+<dl class="section warning"><dt>Warning</dt><dd>If this function has been called, <code><a class="el" href="group__MMWLAN__DPP.html#gaca7bb00acaa9e290af98110f36f7990d" title="Function to stop the DPP process.">mmwlan_dpp_stop()</a></code> MUST be called before <code><a class="el" href="group__MMWLAN__CTRL.html#ga83480307a380060f5a1e03eaaf634081" title="Perform a clean shutdown of the Morse Micro transceiver, including cleanly disconnecting from a conne...">mmwlan_shutdown()</a></code> is called.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">args</td><td>Reference to the dpp arguments to use.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><code>MMWLAN_SUCCESS</code> on success, else an appropriate error code.</dd></dl>
-<dl class="section warning"><dt>Warning</dt><dd>BETA NOTICE: This is beta API that is under development; breaking changes may be introduced in future releases. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><code>MMWLAN_SUCCESS</code> on success, else an appropriate error code. </dd></dl>
 
 </div>
 </div>
@@ -225,8 +228,8 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Function to stop the DPP process. </p>
-<dl class="section return"><dt>Returns</dt><dd><code>MMWLAN_SUCCESS</code> on success, else an appropriate error code.</dd></dl>
-<dl class="section warning"><dt>Warning</dt><dd>BETA NOTICE: This is beta API that is under development; breaking changes may be introduced in future releases. </dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>BETA NOTICE: This is a beta API that is under development; breaking changes may be introduced in future releases.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><code>MMWLAN_SUCCESS</code> on success, else an appropriate error code. </dd></dl>
 
 </div>
 </div>

@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.10.4</span>
+   &#160;<span id="projectnumber">2.11.2</span>
    </div>
   </td>
  </tr>
@@ -134,7 +134,7 @@ Macros</h2></td></tr>
 <tr class="memitem:ga322ce65396a4e2670eebb1dc13364289"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMIPAL.html#ga322ce65396a4e2670eebb1dc13364289">MMIPAL_IP6_CONFIG_DEFAULT</a>&#160;&#160;&#160;{ <a class="el" href="group__MMIPAL.html#gga766bcb2fa9bef02bbc17203399c84f55a683a4ac6879fb3d4e0eafbc749ef7980">MMIPAL_IP6_AUTOCONFIG</a> }</td></tr>
 <tr class="memdesc:ga322ce65396a4e2670eebb1dc13364289"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializer for <a class="el" href="structmmipal__ip6__config.html">mmipal_ip6_config</a>.  <a href="group__MMIPAL.html#ga322ce65396a4e2670eebb1dc13364289">More...</a><br /></td></tr>
 <tr class="separator:ga322ce65396a4e2670eebb1dc13364289"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga58358044d2adb0b796443b3987c455ec"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMIPAL.html#ga58358044d2adb0b796443b3987c455ec">MMIPAL_INIT_ARGS_DEFAULT</a>&#160;&#160;&#160;    { <a class="el" href="group__MMIPAL.html#ggafc9d0260b07ca329e4fc2393a769c3cda7af3e1dc0c8e2336742f2852c0a799c7">MMIPAL_DHCP</a>, { 0 }, { 0 }, { 0 }, <a class="el" href="group__MMIPAL.html#gga766bcb2fa9bef02bbc17203399c84f55a816ac2c6e768f2afe87c6058d46429e5">MMIPAL_IP6_DISABLED</a>, { 0 }, false, 0 }</td></tr>
+<tr class="memitem:ga58358044d2adb0b796443b3987c455ec"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMIPAL.html#ga58358044d2adb0b796443b3987c455ec">MMIPAL_INIT_ARGS_DEFAULT</a>&#160;&#160;&#160;{ <a class="el" href="group__MMIPAL.html#ggafc9d0260b07ca329e4fc2393a769c3cda7af3e1dc0c8e2336742f2852c0a799c7">MMIPAL_DHCP</a>, { 0 }, { 0 }, { 0 }, <a class="el" href="group__MMIPAL.html#gga766bcb2fa9bef02bbc17203399c84f55a816ac2c6e768f2afe87c6058d46429e5">MMIPAL_IP6_DISABLED</a>, { 0 } }</td></tr>
 <tr class="memdesc:ga58358044d2adb0b796443b3987c455ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default values for <a class="el" href="structmmipal__init__args.html">mmipal_init_args</a>.  <a href="group__MMIPAL.html#ga58358044d2adb0b796443b3987c455ec">More...</a><br /></td></tr>
 <tr class="separator:ga58358044d2adb0b796443b3987c455ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -171,14 +171,10 @@ Enumerations</h2></td></tr>
  }</td></tr>
 <tr class="memdesc:ga616703e1880d1f6bf67b65a445304619"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enumeration of link states.  <a href="group__MMIPAL.html#ga616703e1880d1f6bf67b65a445304619">More...</a><br /></td></tr>
 <tr class="separator:ga616703e1880d1f6bf67b65a445304619"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gafc9d0260b07ca329e4fc2393a769c3cd"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMIPAL.html#gafc9d0260b07ca329e4fc2393a769c3cd">mmipal_addr_mode</a> { <br />
-&#160;&#160;<a class="el" href="group__MMIPAL.html#ggafc9d0260b07ca329e4fc2393a769c3cda1daa5bbd662049fcc18526b4ae2f96b5">MMIPAL_DISABLED</a>
+<tr class="memitem:gafc9d0260b07ca329e4fc2393a769c3cd"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMIPAL.html#gafc9d0260b07ca329e4fc2393a769c3cd">mmipal_addr_mode</a> { <a class="el" href="group__MMIPAL.html#ggafc9d0260b07ca329e4fc2393a769c3cda1daa5bbd662049fcc18526b4ae2f96b5">MMIPAL_DISABLED</a>
 , <a class="el" href="group__MMIPAL.html#ggafc9d0260b07ca329e4fc2393a769c3cda94fc853f6c5c0d4e4bbc722c9e77e9dc">MMIPAL_STATIC</a>
 , <a class="el" href="group__MMIPAL.html#ggafc9d0260b07ca329e4fc2393a769c3cda7af3e1dc0c8e2336742f2852c0a799c7">MMIPAL_DHCP</a>
 , <a class="el" href="group__MMIPAL.html#ggafc9d0260b07ca329e4fc2393a769c3cda0d6e8956e62814fd570cdb9fc87124f6">MMIPAL_AUTOIP</a>
-, <br />
-&#160;&#160;<a class="el" href="group__MMIPAL.html#ggafc9d0260b07ca329e4fc2393a769c3cda8890eac1c09ea4ce42edc972a6e9d1e4">MMIPAL_DHCP_OFFLOAD</a>
-<br />
  }</td></tr>
 <tr class="memdesc:gafc9d0260b07ca329e4fc2393a769c3cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enumeration of IP address allocation modes.  <a href="group__MMIPAL.html#gafc9d0260b07ca329e4fc2393a769c3cd">More...</a><br /></td></tr>
 <tr class="separator:gafc9d0260b07ca329e4fc2393a769c3cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -249,7 +245,7 @@ Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define MMIPAL_INIT_ARGS_DEFAULT&#160;&#160;&#160;    { <a class="el" href="group__MMIPAL.html#ggafc9d0260b07ca329e4fc2393a769c3cda7af3e1dc0c8e2336742f2852c0a799c7">MMIPAL_DHCP</a>, { 0 }, { 0 }, { 0 }, <a class="el" href="group__MMIPAL.html#gga766bcb2fa9bef02bbc17203399c84f55a816ac2c6e768f2afe87c6058d46429e5">MMIPAL_IP6_DISABLED</a>, { 0 }, false, 0 }</td>
+          <td class="memname">#define MMIPAL_INIT_ARGS_DEFAULT&#160;&#160;&#160;{ <a class="el" href="group__MMIPAL.html#ggafc9d0260b07ca329e4fc2393a769c3cda7af3e1dc0c8e2336742f2852c0a799c7">MMIPAL_DHCP</a>, { 0 }, { 0 }, { 0 }, <a class="el" href="group__MMIPAL.html#gga766bcb2fa9bef02bbc17203399c84f55a816ac2c6e768f2afe87c6058d46429e5">MMIPAL_IP6_DISABLED</a>, { 0 } }</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -257,7 +253,7 @@ Functions</h2></td></tr>
 <p>Default values for <a class="el" href="structmmipal__init__args.html">mmipal_init_args</a>. </p>
 <p >This should be used when initializing the <a class="el" href="structmmipal__init__args.html">mmipal_init_args</a> structure. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmipal_8h_source.html#l00199">199</a> of file <a class="el" href="mmipal_8h_source.html">mmipal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmipal_8h_source.html#l00193">193</a> of file <a class="el" href="mmipal_8h_source.html">mmipal.h</a>.</p>
 
 </div>
 </div>
@@ -275,7 +271,7 @@ Functions</h2></td></tr>
 
 <p>Initializer for <a class="el" href="structmmipal__ip6__config.html">mmipal_ip6_config</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmipal_8h_source.html#l00151">151</a> of file <a class="el" href="mmipal_8h_source.html">mmipal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmipal_8h_source.html#l00149">149</a> of file <a class="el" href="mmipal_8h_source.html">mmipal.h</a>.</p>
 
 </div>
 </div>
@@ -299,7 +295,7 @@ Functions</h2></td></tr>
 </div><!-- fragment -->
 <p>Initializer for <a class="el" href="structmmipal__ip__config.html">mmipal_ip_config</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmipal_8h_source.html#l00109">109</a> of file <a class="el" href="mmipal_8h_source.html">mmipal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmipal_8h_source.html#l00107">107</a> of file <a class="el" href="mmipal_8h_source.html">mmipal.h</a>.</p>
 
 </div>
 </div>
@@ -380,7 +376,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="mmipal_8h_source.html#l00263">263</a> of file <a class="el" href="mmipal_8h_source.html">mmipal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmipal_8h_source.html#l00256">256</a> of file <a class="el" href="mmipal_8h_source.html">mmipal.h</a>.</p>
 
 </div>
 </div>
@@ -398,7 +394,7 @@ Functions</h2></td></tr>
 
 <p>IP address string type. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmipal_8h_source.html#l00081">81</a> of file <a class="el" href="mmipal_8h_source.html">mmipal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmipal_8h_source.html#l00079">79</a> of file <a class="el" href="mmipal_8h_source.html">mmipal.h</a>.</p>
 
 </div>
 </div>
@@ -422,7 +418,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="mmipal_8h_source.html#l00239">239</a> of file <a class="el" href="mmipal_8h_source.html">mmipal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmipal_8h_source.html#l00232">232</a> of file <a class="el" href="mmipal_8h_source.html">mmipal.h</a>.</p>
 
 </div>
 </div>
@@ -440,7 +436,7 @@ Functions</h2></td></tr>
 
 <p>MAC address string type. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmipal_8h_source.html#l00084">84</a> of file <a class="el" href="mmipal_8h_source.html">mmipal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmipal_8h_source.html#l00082">82</a> of file <a class="el" href="mmipal_8h_source.html">mmipal.h</a>.</p>
 
 </div>
 </div>
@@ -468,8 +464,6 @@ Functions</h2></td></tr>
 </td></tr>
 <tr><td class="fieldname"><a id="ggafc9d0260b07ca329e4fc2393a769c3cda0d6e8956e62814fd570cdb9fc87124f6" name="ggafc9d0260b07ca329e4fc2393a769c3cda0d6e8956e62814fd570cdb9fc87124f6"></a>MMIPAL_AUTOIP&#160;</td><td class="fielddoc"><p >IP address allocated via AutoIP. </p>
 <p ><code>LWIP_DHCP</code> must be set to 1 if using LWIP. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggafc9d0260b07ca329e4fc2393a769c3cda8890eac1c09ea4ce42edc972a6e9d1e4" name="ggafc9d0260b07ca329e4fc2393a769c3cda8890eac1c09ea4ce42edc972a6e9d1e4"></a>MMIPAL_DHCP_OFFLOAD&#160;</td><td class="fielddoc"><p >DHCP offloaded to chip. </p>
 </td></tr>
 </table>
 
@@ -503,7 +497,7 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmipal_8h_source.html#l00118">118</a> of file <a class="el" href="mmipal_8h_source.html">mmipal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmipal_8h_source.html#l00116">116</a> of file <a class="el" href="mmipal_8h_source.html">mmipal.h</a>.</p>
 
 </div>
 </div>

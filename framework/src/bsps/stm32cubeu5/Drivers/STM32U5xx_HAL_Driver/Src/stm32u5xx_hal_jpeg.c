@@ -353,6 +353,7 @@ typedef struct
   * @{
   */
 
+/* The following Huffman tables, are based on the JPEG standard as defined by the ITU-T Recommendation T.81. */
 static const JPEG_DCHuffTableTypeDef JPEG_DCLUM_HuffTable =
 {
   { 0, 1, 5, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0 },   /*Bits*/
@@ -452,12 +453,12 @@ static HAL_StatusTypeDef JPEG_DCHuff_BitsVals_To_SizeCodes(JPEG_DCHuffTableTypeD
                                                            JPEG_DC_HuffCodeTableTypeDef *DC_SizeCodesTable);
 static HAL_StatusTypeDef JPEG_ACHuff_BitsVals_To_SizeCodes(JPEG_ACHuffTableTypeDef *AC_BitsValsTable,
                                                            JPEG_AC_HuffCodeTableTypeDef *AC_SizeCodesTable);
-static HAL_StatusTypeDef JPEG_Set_HuffDC_Mem(JPEG_HandleTypeDef *hjpeg, JPEG_DCHuffTableTypeDef *HuffTableDC,
+static HAL_StatusTypeDef JPEG_Set_HuffDC_Mem(const JPEG_HandleTypeDef *hjpeg, JPEG_DCHuffTableTypeDef *HuffTableDC,
                                              const __IO uint32_t *DCTableAddress);
-static HAL_StatusTypeDef JPEG_Set_HuffAC_Mem(JPEG_HandleTypeDef *hjpeg, JPEG_ACHuffTableTypeDef *HuffTableAC,
+static HAL_StatusTypeDef JPEG_Set_HuffAC_Mem(const JPEG_HandleTypeDef *hjpeg, JPEG_ACHuffTableTypeDef *HuffTableAC,
                                              const __IO uint32_t *ACTableAddress);
 static HAL_StatusTypeDef JPEG_Set_HuffEnc_Mem(JPEG_HandleTypeDef *hjpeg);
-static void JPEG_Set_Huff_DHTMem(JPEG_HandleTypeDef *hjpeg);
+static void JPEG_Set_Huff_DHTMem(const JPEG_HandleTypeDef *hjpeg);
 static uint32_t  JPEG_Set_Quantization_Mem(const JPEG_HandleTypeDef *hjpeg, const uint8_t *QTable,
                                            __IO uint32_t *QTableAddress);
 static void JPEG_SetColorYCBCR(JPEG_HandleTypeDef *hjpeg);
@@ -1126,7 +1127,7 @@ HAL_StatusTypeDef HAL_JPEG_UnRegisterDataReadyCallback(JPEG_HandleTypeDef *hjpeg
   *         the encoding configuration
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_JPEG_ConfigEncoding(JPEG_HandleTypeDef *hjpeg, JPEG_ConfTypeDef *pConf)
+HAL_StatusTypeDef HAL_JPEG_ConfigEncoding(JPEG_HandleTypeDef *hjpeg, const JPEG_ConfTypeDef *pConf)
 {
   uint32_t error;
   uint32_t numberMCU;
@@ -2713,7 +2714,7 @@ static HAL_StatusTypeDef JPEG_DCHuff_BitsVals_To_SizeCodes(JPEG_DCHuffTableTypeD
   * @param  DCTableAddress Encoder DC huffman table address it could be HUFFENC_DC0 or HUFFENC_DC1.
   * @retval HAL status
   */
-static HAL_StatusTypeDef JPEG_Set_HuffDC_Mem(JPEG_HandleTypeDef *hjpeg, JPEG_DCHuffTableTypeDef *HuffTableDC,
+static HAL_StatusTypeDef JPEG_Set_HuffDC_Mem(const JPEG_HandleTypeDef *hjpeg, JPEG_DCHuffTableTypeDef *HuffTableDC,
                                              const __IO uint32_t *DCTableAddress)
 {
   HAL_StatusTypeDef error;
@@ -2776,7 +2777,7 @@ static HAL_StatusTypeDef JPEG_Set_HuffDC_Mem(JPEG_HandleTypeDef *hjpeg, JPEG_DCH
   * @param  ACTableAddress Encoder AC huffman table address it could be HUFFENC_AC0 or HUFFENC_AC1.
   * @retval HAL status
   */
-static HAL_StatusTypeDef JPEG_Set_HuffAC_Mem(JPEG_HandleTypeDef *hjpeg, JPEG_ACHuffTableTypeDef *HuffTableAC,
+static HAL_StatusTypeDef JPEG_Set_HuffAC_Mem(const JPEG_HandleTypeDef *hjpeg, JPEG_ACHuffTableTypeDef *HuffTableAC,
                                              const __IO uint32_t *ACTableAddress)
 {
   HAL_StatusTypeDef error;
@@ -2895,12 +2896,12 @@ static HAL_StatusTypeDef JPEG_Set_HuffEnc_Mem(JPEG_HandleTypeDef *hjpeg)
   *         the configuration information for JPEG module
   * @retval None
   */
-static void JPEG_Set_Huff_DHTMem(JPEG_HandleTypeDef *hjpeg)
+static void JPEG_Set_Huff_DHTMem(const JPEG_HandleTypeDef *hjpeg)
 {
-  JPEG_ACHuffTableTypeDef *HuffTableAC0 = (JPEG_ACHuffTableTypeDef *)(uint32_t)&JPEG_ACLUM_HuffTable;
-  JPEG_ACHuffTableTypeDef *HuffTableAC1 = (JPEG_ACHuffTableTypeDef *)(uint32_t)&JPEG_ACCHROM_HuffTable;
-  JPEG_DCHuffTableTypeDef *HuffTableDC0 = (JPEG_DCHuffTableTypeDef *)(uint32_t)&JPEG_DCLUM_HuffTable;
-  JPEG_DCHuffTableTypeDef *HuffTableDC1 = (JPEG_DCHuffTableTypeDef *)(uint32_t)&JPEG_DCCHROM_HuffTable;
+  const JPEG_ACHuffTableTypeDef *HuffTableAC0 = (JPEG_ACHuffTableTypeDef *)(uint32_t)&JPEG_ACLUM_HuffTable;
+  const JPEG_ACHuffTableTypeDef *HuffTableAC1 = (JPEG_ACHuffTableTypeDef *)(uint32_t)&JPEG_ACCHROM_HuffTable;
+  const JPEG_DCHuffTableTypeDef *HuffTableDC0 = (JPEG_DCHuffTableTypeDef *)(uint32_t)&JPEG_DCLUM_HuffTable;
+  const JPEG_DCHuffTableTypeDef *HuffTableDC1 = (JPEG_DCHuffTableTypeDef *)(uint32_t)&JPEG_DCCHROM_HuffTable;
   uint32_t value;
   uint32_t index;
   __IO uint32_t *address;
@@ -3368,11 +3369,12 @@ static void JPEG_Init_Process(JPEG_HandleTypeDef *hjpeg)
 static uint32_t JPEG_Process(JPEG_HandleTypeDef *hjpeg)
 {
   uint32_t tmpContext;
+  uint32_t itflag = hjpeg->Instance->SR;
 
   /*End of header processing flag */
   if ((hjpeg->Context & JPEG_CONTEXT_OPERATION_MASK) == JPEG_CONTEXT_DECODE)
   {
-    if (__HAL_JPEG_GET_FLAG(hjpeg, JPEG_FLAG_HPDF) != 0UL)
+    if ((itflag & JPEG_FLAG_HPDF) != 0UL)
     {
       /*Call Header parsing complete callback */
       (void) HAL_JPEG_GetInfo(hjpeg, &hjpeg->Conf);
@@ -3398,13 +3400,13 @@ static uint32_t JPEG_Process(JPEG_HandleTypeDef *hjpeg)
   /*Input FIFO status handling*/
   if ((hjpeg->Context &  JPEG_CONTEXT_PAUSE_INPUT) == 0UL)
   {
-    if (__HAL_JPEG_GET_FLAG(hjpeg, JPEG_FLAG_IFTF) != 0UL)
+    if ((itflag & JPEG_FLAG_IFTF) != 0UL)
     {
       /*Input FIFO threshold flag */
       /*JPEG_FIFO_TH_SIZE words can be written in */
       JPEG_ReadInputData(hjpeg, JPEG_FIFO_TH_SIZE);
     }
-    else if (__HAL_JPEG_GET_FLAG(hjpeg, JPEG_FLAG_IFNFF) != 0UL)
+    else if ((itflag & JPEG_FLAG_IFNFF) != 0UL)
     {
       /*Input FIFO Not Full flag */
       /*32-bit value can be written in */
@@ -3416,17 +3418,16 @@ static uint32_t JPEG_Process(JPEG_HandleTypeDef *hjpeg)
     }
   }
 
-
   /*Output FIFO flag handling*/
   if ((hjpeg->Context &  JPEG_CONTEXT_PAUSE_OUTPUT) == 0UL)
   {
-    if (__HAL_JPEG_GET_FLAG(hjpeg, JPEG_FLAG_OFTF) != 0UL)
+    if ((itflag & JPEG_FLAG_OFTF) != 0UL)
     {
       /*Output FIFO threshold flag */
       /*JPEG_FIFO_TH_SIZE words can be read out */
       JPEG_StoreOutputData(hjpeg, JPEG_FIFO_TH_SIZE);
     }
-    else if (__HAL_JPEG_GET_FLAG(hjpeg, JPEG_FLAG_OFNEF) != 0UL)
+    else if ((itflag & JPEG_FLAG_OFNEF) != 0UL)
     {
       /*Output FIFO Not Empty flag */
       /*32-bit value can be read out */
@@ -3439,7 +3440,7 @@ static uint32_t JPEG_Process(JPEG_HandleTypeDef *hjpeg)
   }
 
   /*End of Conversion handling :i.e EOC flag is high and OFTF low and OFNEF low*/
-  if (__HAL_JPEG_GET_FLAG(hjpeg, JPEG_FLAG_EOCF | JPEG_FLAG_OFTF | JPEG_FLAG_OFNEF) == JPEG_FLAG_EOCF)
+  if ((itflag & (JPEG_FLAG_EOCF | JPEG_FLAG_OFTF | JPEG_FLAG_OFNEF)) == JPEG_FLAG_EOCF)
   {
     /*Stop Encoding/Decoding*/
     hjpeg->Instance->CONFR0 &=  ~JPEG_CONFR0_START;
@@ -3497,7 +3498,6 @@ static uint32_t JPEG_Process(JPEG_HandleTypeDef *hjpeg)
 
     return JPEG_PROCESS_DONE;
   }
-
 
   return JPEG_PROCESS_ONGOING;
 }
@@ -3690,6 +3690,9 @@ static void JPEG_ReadInputData(JPEG_HandleTypeDef *hjpeg, uint32_t nbRequestWord
 
 /**
   * @brief  Start the JPEG DMA process (encoding/decoding)
+  * @note   The DMA interrupt must have a higher priority than the JPEG 
+  *         interrupt to prevent the JPEG interrupt from preempting the DMA interrupt
+  *         before the DMA state is updated to ready.
   * @param  hjpeg pointer to a JPEG_HandleTypeDef structure that contains
   *         the configuration information for JPEG module
   * @retval JPEG_PROCESS_DONE if process ends else JPEG_PROCESS_ONGOING
@@ -3824,10 +3827,12 @@ static HAL_StatusTypeDef JPEG_DMA_StartProcess(JPEG_HandleTypeDef *hjpeg)
   */
 static void JPEG_DMA_ContinueProcess(JPEG_HandleTypeDef *hjpeg)
 {
+  uint32_t itflag = hjpeg->Instance->SR;
+
   /*End of header processing flag rises*/
   if ((hjpeg->Context & JPEG_CONTEXT_OPERATION_MASK) == JPEG_CONTEXT_DECODE)
   {
-    if (__HAL_JPEG_GET_FLAG(hjpeg, JPEG_FLAG_HPDF) != 0UL)
+    if ((itflag & JPEG_FLAG_HPDF) != 0UL)
     {
       /*Call Header parsing complete callback */
       (void) HAL_JPEG_GetInfo(hjpeg, &hjpeg->Conf);
@@ -3852,9 +3857,9 @@ static void JPEG_DMA_ContinueProcess(JPEG_HandleTypeDef *hjpeg)
   }
 
   /*End of Conversion handling*/
-  if (__HAL_JPEG_GET_FLAG(hjpeg, JPEG_FLAG_EOCF) != 0UL)
+  if ((itflag & JPEG_FLAG_EOCF) != 0UL)
   {
-    /*Disabkle JPEG In/Out DMA Requests*/
+    /*Disable JPEG In/Out DMA Requests*/
     JPEG_DISABLE_DMA(hjpeg, JPEG_DMA_ODMA | JPEG_DMA_IDMA);
 
     hjpeg->Context |= JPEG_CONTEXT_ENDING_DMA;
@@ -3870,19 +3875,19 @@ static void JPEG_DMA_ContinueProcess(JPEG_HandleTypeDef *hjpeg)
     if (hjpeg->hdmain->State == HAL_DMA_STATE_BUSY)
     {
       /* Stop the DMA In Xfer*/
-      (void) HAL_DMA_Abort(hjpeg->hdmain);
+      (void) HAL_DMA_Abort_IT(hjpeg->hdmain);
     }
 
     if (hjpeg->hdmaout->State == HAL_DMA_STATE_BUSY)
     {
       /* Stop the DMA out Xfer*/
-      (void) HAL_DMA_Abort(hjpeg->hdmaout);
+      (void) HAL_DMA_Abort_IT(hjpeg->hdmaout);
     }
-
-    JPEG_DMA_EndProcess(hjpeg);
+    else
+    {
+      JPEG_DMA_EndProcess(hjpeg);
+    }
   }
-
-
 }
 
 /**

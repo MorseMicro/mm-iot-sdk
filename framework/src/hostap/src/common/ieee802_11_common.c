@@ -112,11 +112,6 @@ static int ieee802_11_parse_vendor_specific(const u8 *pos, size_t elen,
 			elems->hs20 = pos;
 			elems->hs20_len = elen;
 			break;
-		case HS20_OSEN_OUI_TYPE:
-			/* Hotspot 2.0 OSEN */
-			elems->osen = pos;
-			elems->osen_len = elen;
-			break;
 		case MBO_OUI_TYPE:
 			/* MBO-OCE */
 			elems->mbo = pos;
@@ -141,6 +136,10 @@ static int ieee802_11_parse_vendor_specific(const u8 *pos, size_t elen,
 			elems->sae_pk = pos + 4;
 			elems->sae_pk_len = elen - 4;
 			break;
+		case WFA_CAPA_OUI_TYPE:
+			elems->wfa_capab = pos + 4;
+			elems->wfa_capab_len = elen - 4;
+			break;
 		case WFA_RSNE_OVERRIDE_OUI_TYPE:
 			elems->rsne_override = pos;
 			elems->rsne_override_len = elen;
@@ -148,6 +147,10 @@ static int ieee802_11_parse_vendor_specific(const u8 *pos, size_t elen,
 		case WFA_RSNE_OVERRIDE_2_OUI_TYPE:
 			elems->rsne_override_2 = pos;
 			elems->rsne_override_2_len = elen;
+			break;
+		case WFA_RSNXE_OVERRIDE_OUI_TYPE:
+			elems->rsnxe_override = pos;
+			elems->rsnxe_override_len = elen;
 			break;
 		case WFA_RSN_SELECTION_OUI_TYPE:
 			if (elen < 4 + 1) {
@@ -162,6 +165,11 @@ static int ieee802_11_parse_vendor_specific(const u8 *pos, size_t elen,
 			/* Wi-Fi Alliance - P2P2 IE */
 			elems->p2p2_ie = pos;
 			elems->p2p2_ie_len = elen;
+			break;
+		case PR_OUI_TYPE:
+			/* Wi-Fi Alliance - Proximity Ranging element */
+			elems->proximity_ranging = pos;
+			elems->proximity_ranging_len = elen;
 			break;
 		default:
 			wpa_printf(MSG_MSGDUMP, "Unknown WFA "
@@ -675,6 +683,11 @@ static ParseRes __ieee802_11_parse_elems(const u8 *start, size_t len,
 				break;
 			elems->aid = pos;
 			break;
+		case WLAN_EID_S1G_MAX_AWAY_DURATION:
+			if (elen < 2)
+				break;
+			elems->max_away_duration = pos;
+			break;
 		case WLAN_EID_FRAGMENT:
 			wpa_printf(MSG_MSGDUMP,
 				   "Fragment without a valid last element - skip");
@@ -865,6 +878,9 @@ void ieee802_11_elems_clear_ids(struct ieee802_11_elems *elems,
 			elems->rrm_enabled = NULL;
 			elems->rrm_enabled_len = 0;
 			break;
+		case WLAN_EID_S1G_MAX_AWAY_DURATION:
+			elems->max_away_duration = 0;
+			break;
 		case WLAN_EID_CAG_NUMBER:
 			elems->cag_number = NULL;
 			elems->cag_number_len = 0;
@@ -995,14 +1011,14 @@ void ieee802_11_elems_clear_ext_ids(struct ieee802_11_elems *elems,
 }
 
 
-ParseRes ieee802_11_parse_link_assoc_req(const u8 *start, size_t len,
-					 struct ieee802_11_elems *elems,
+ParseRes ieee802_11_parse_link_assoc_req(struct ieee802_11_elems *elems,
 					 struct wpabuf *mlbuf,
 					 u8 link_id, bool show_errors)
 {
 	const struct ieee80211_eht_ml *ml;
 	const u8 *pos;
 	ParseRes res = ParseFailed;
+	size_t len;
 
 	pos = wpabuf_head(mlbuf);
 	len = wpabuf_len(mlbuf);
@@ -1023,14 +1039,25 @@ ParseRes ieee802_11_parse_link_assoc_req(const u8 *start, size_t len,
 	pos += sizeof(*ml) + pos[sizeof(*ml)];
 
 	while (len > 2) {
-		size_t sub_elem_len = *(pos + 1);
-		size_t sta_info_len;
+		size_t sub_elem_len, sta_info_len;
 		u16 link_info_control;
 		const u8 *non_inherit;
+		int num_frag_subelems;
+
+		num_frag_subelems =
+			ieee802_11_defrag_mle_subelem(mlbuf, pos,
+						      &sub_elem_len);
+		if (num_frag_subelems < 0) {
+			wpa_printf(MSG_DEBUG,
+				   "MLD: Failed to parse MLE subelem");
+			goto out;
+		}
+
+		len -= num_frag_subelems * 2;
 
 		wpa_printf(MSG_DEBUG,
-			   "MLD: sub element: len=%zu, sub_elem_len=%zu",
-			   len, sub_elem_len);
+			   "MLD: sub element: len=%zu, sub_elem_len=%zu, Fragment subelems=%u",
+			   len, sub_elem_len, num_frag_subelems);
 
 		if (2 + sub_elem_len > len) {
 			if (show_errors)
@@ -2620,6 +2647,9 @@ const u8 * get_vendor_ie(const u8 *ies, size_t len, u32 vendor_type)
 {
 	const struct element *elem;
 
+	if (!ies)
+		return NULL;
+
 	for_each_element_id(elem, WLAN_EID_VENDOR_SPECIFIC, ies, len) {
 		if (elem->datalen >= 4 &&
 		    vendor_type == WPA_GET_BE32(elem->data))
@@ -2964,6 +2994,18 @@ int oper_class_bw_to_int(const struct oper_class_map *map)
 }
 
 
+bool is_24ghz_freq(int freq)
+{
+	return freq >= 2400 && freq <= 2484;
+}
+
+
+bool is_5ghz_freq(int freq)
+{
+	return freq >= 5150 && freq <= 5885;
+}
+
+
 int center_idx_to_bw_6ghz(u8 idx)
 {
 	/* Channel: 2 */
@@ -3226,7 +3268,7 @@ bool ieee802_11_rsnx_capab_len(const u8 *rsnxe, size_t rsnxe_len,
 	if (flen > 4)
 		flen = 4;
 	for (i = 0; i < flen; i++)
-		capabs |= rsnxe[i] << (8 * i);
+		capabs |= (u32) rsnxe[i] << (8 * i);
 
 	return !!(capabs & BIT(capab));
 }
@@ -3567,7 +3609,7 @@ int chwidth_freq2_to_ch_width(int chwidth, int freq2)
 struct wpabuf * ieee802_11_defrag(const u8 *data, size_t len, bool ext_elem)
 {
 	struct wpabuf *buf;
-	const u8 *pos, *end = data + len;
+	const u8 *pos, *end;
 	size_t min_defrag_len = ext_elem ? 255 : 256;
 
 	if (!data || !len)
@@ -3581,6 +3623,7 @@ struct wpabuf * ieee802_11_defrag(const u8 *data, size_t len, bool ext_elem)
 		return NULL;
 
 	pos = &data[min_defrag_len - 1];
+	end = data + len;
 	len -= min_defrag_len - 1;
 	while (len > 2 && pos[0] == WLAN_EID_FRAGMENT && pos[1]) {
 		int ret;
@@ -3601,6 +3644,70 @@ struct wpabuf * ieee802_11_defrag(const u8 *data, size_t len, bool ext_elem)
 	}
 
 	return buf;
+}
+
+
+/**
+ * ieee802_11_defrag_mle_subelem - Defragment Multi-Link element subelements
+ * @mlbuf: Defragmented mlbuf (defragmented using ieee802_11_defrag())
+ * @parent_subelem: Pointer to the subelement which may be fragmented
+ * @defrag_len: Defragmented length of the subelement
+ * Returns: Number of Fragment subelements parsed on success, -1 otherwise
+ *
+ * This function defragments a subelement present inside an Multi-Link element.
+ * It should be called individually for each subelement.
+ *
+ * Subelements can use the Fragment subelement if they pack more than 255 bytes
+ * of data, see IEEE P802.11be/D7.0 Figure 35-4 - Per-STA Profile subelement
+ * fragmentation within a fragmented Multi-Link element.
+ */
+size_t ieee802_11_defrag_mle_subelem(struct wpabuf *mlbuf,
+				     const u8 *parent_subelem,
+				     size_t *defrag_len)
+{
+	u8 *buf, *pos, *end;
+	size_t len, subelem_len;
+	const size_t min_defrag_len = 255;
+	int num_frag_subelems = 0;
+
+	if (!mlbuf || !parent_subelem)
+		return -1;
+
+	buf = wpabuf_mhead_u8(mlbuf);
+	len = wpabuf_len(mlbuf);
+	end = buf + len;
+
+	*defrag_len = parent_subelem[1];
+	if (parent_subelem[1] < min_defrag_len)
+		return 0;
+
+	pos = (u8 *) parent_subelem;
+	if (2 + parent_subelem[1] > end - pos)
+		return -1;
+	pos += 2 + parent_subelem[1];
+	subelem_len = parent_subelem[1];
+
+	while (end - pos > 2 &&
+	       pos[0] == MULTI_LINK_SUB_ELEM_ID_FRAGMENT && pos[1]) {
+		size_t elen = 2 + pos[1];
+
+		/* This Multi-Link parent subelement has more data and is
+		 * fragmented. */
+		num_frag_subelems++;
+
+		if (elen > (size_t) (end - pos))
+			return -1;
+
+		os_memmove(pos, pos + 2, end - (pos + 2));
+		pos += elen - 2;
+		subelem_len += elen - 2;
+
+		/* Deduct Fragment subelement header */
+		len -= 2;
+	}
+
+	*defrag_len = subelem_len;
+	return num_frag_subelems;
 }
 
 

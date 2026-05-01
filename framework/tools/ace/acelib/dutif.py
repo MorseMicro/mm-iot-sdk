@@ -136,9 +136,7 @@ class DutIf:
         self.cmd_lock = Lock()
         self.commands = parse_commands()
 
-    def exec(self, cmd, exec_dry_run=False, **kwargs):  # noqa: A003
-        logger.debug(f"Exec: {cmd}: {kwargs}")
-
+    def encode(self, cmd, **kwargs):
         try:
             cmdgrp, subcmd = cmd.split("/")
             cmdinfo = self.commands[cmdgrp][subcmd]
@@ -185,12 +183,19 @@ class DutIf:
                 getattr(cmdmsg, param).extend(arg)
             else:
                 setattr(cmdmsg, param, _fix_arg_type(arg))
+        return (cmdgrp, subcmd, dutcmd)
+
+    def exec(self, cmd, exec_dry_run=False, transport=None, **kwargs):  # noqa: A003
+        logger.debug(f"Exec: {cmd}: {kwargs}")
+
+        cmdgrp, subcmd, dutcmd = self.encode(cmd, **kwargs)
 
         if exec_dry_run:
             return Response(cmdgrp, subcmd, None)
 
         with self.cmd_lock:
-            rsp_data = self.transport.exec(dutcmd.SerializeToString())
+            transport = transport or self.transport
+            rsp_data = transport.exec(dutcmd.SerializeToString())
             rsp = emmet_api_pb2.DutRsp()
             rsp.ParseFromString(rsp_data)
             if rsp.HasField("basic"):
@@ -214,20 +219,20 @@ class DutIf:
         logger.debug(f'GDB Exec: {" ".join([shlex.quote(x) for x in cmdline])}')
         completed_proc = None
         try:
-            completed_proc = subprocess.run(cmdline, capture_output=True,
+            completed_proc = subprocess.run(cmdline, capture_output=True, text=True,
                                             timeout=self.gdb_command_timeout, check=False)
         except subprocess.TimeoutExpired:
             logger.error("Timed out waiting for GDB to complete")
             raise GdbError("Timed out waiting for GDB to complete", completed_proc)
 
         if completed_proc.returncode != 0:
-            logger.error(completed_proc.stderr.decode("utf-8"))
+            logger.error(completed_proc.stderr)
             raise GdbError(f'Failed to execute commands: {" ".join(commands)}', completed_proc)
 
-        logger.debug("GDB stdout:")
+        logger.debug(f"GDB {self.debug_host}:{self.gdb_port} stdout:")
         for line in completed_proc.stdout.splitlines(keepends=False):
             logger.debug(f"    {line}")
-        logger.debug("GDB stderr:")
+        logger.debug(f"GDB {self.debug_host}:{self.gdb_port} stderr:")
         for line in completed_proc.stderr.splitlines(keepends=False):
             logger.debug(f"    {line}")
 

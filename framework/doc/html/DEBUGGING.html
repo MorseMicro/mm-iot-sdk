@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.10.4</span>
+   &#160;<span id="projectnumber">2.11.2</span>
    </div>
   </td>
  </tr>
@@ -91,8 +91,8 @@ $(document).ready(function(){initNavTree('DEBUGGING.html',''); initResizable(); 
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p ><a class="anchor" id="md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_res_doc_debugging"></a></p>
-<h2><a class="anchor" id="autotoc_md74"></a>
-Launching OpenOCD with MM_PROGRAM=0</h2>
+<h2><a class="anchor" id="autotoc_md66"></a>
+Launching OpenOCD without reset</h2>
 <p >In <a class="el" href="GETTING_STARTED.html#GETTING_STARTED_OPENOCD">Launching OpenOCD</a> we launched OpenOCD with the <code>CONNECT_ASSERT_SRST</code> flag set to 1. This causes OpenOCD to reset the application on attaching to the target. The GNU Debugger (GDB) is used for debugging, with OpenOCD providing the interface between the GDB and the hardware, as shown in the diagram below. The ST-link is on board the Nucleo, or on the Morse Micro evaluation kit for standalone Platforms. See <a class="el" href="MMPLATFORMS.html">Morse Micro IoT Reference Platforms</a> for which USB port to connect to.</p>
 <div class="image">
 <object type="image/svg+xml" data="stlink-stackup.svg" style="pointer-events: none;"></object>
@@ -100,13 +100,13 @@ Launching OpenOCD with MM_PROGRAM=0</h2>
 Block diagram of debugging hardware/software stack</div></div>
  <p >By launching without this flag, we can attach to a running program without restarting: </p><pre class="fragment">openocd -f src/platforms/mm-mm6108-ekh05/openocd.cfg
 </pre><p> Note that GDB requires OpenOCD open for the duration of debugging.</p>
-<h2><a class="anchor" id="autotoc_md75"></a>
+<h2><a class="anchor" id="autotoc_md67"></a>
 Launching GDB</h2>
-<p >The GNU Project debugger (GDB) is an application allows us to program and debug an application. We will just be using it to program and run the application.</p>
+<p >The GNU Project Debugger (GDB) is a tool that allows us to program, debug, and run embedded applications. We will use it to load and run the embedded application.</p>
 <p >To verify that the correct ARM toolchain is in the path, execute the following command: </p><pre class="fragment">which arm-none-eabi-gdb
 </pre><p> We should expect: </p><pre class="fragment">/opt/morse/gcc-arm-none-eabi-10.3-2021.07/bin/arm-none-eabi-gdb
 </pre><p> Once OpenOCD and Miniterm are running, as described in the previous sections, it is possible to then launch GDB to program the device.</p>
-<p >Navigate to the example directory (where we ran the <code>make</code> command) and run gdb on the built '.elf' file: </p><pre class="fragment">cd mm-iot-sdk-2.10.4/examples/ping/targets/mm-mm6108-ekh05
+<p >Navigate to the example directory (where we ran the <code>make</code> command) and run gdb on the built '.elf' file: </p><pre class="fragment">cd mm-iot-sdk-2.11.2/examples/ping/targets/mm-mm6108-ekh05
 arm-none-eabi-gdb build/ping.elf -ex 'target extended-remote :3333'
 </pre><p> This will start GDB and connect to the local OpenOCD instance started above.</p>
 <p >From the GDB terminal first reset and halt the device by executing: </p><pre class="fragment">monitor reset halt

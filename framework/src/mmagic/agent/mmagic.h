@@ -86,7 +86,7 @@ extern "C"
  *
  * Actual communication between the Controller and the Agent is the responsibility of the
  * data link layer. This layer provides a semi-reliable transport for communicating packets
- * asychronously between the Controller and Agent. Because the data link implementation is
+ * asynchronously between the Controller and Agent. Because the data link implementation is
  * platform and hardware dependent it needs to be implemented on a per-platform basis.
  * Protocols are currently defined for SPI and UART transports (see
  * @ref MMAGIC_M2M_PROTOCOL_SPI_DATALINK and @ref MMAGIC_M2M_PROTOCOL_UART_DATALINK respectively).
@@ -134,7 +134,7 @@ extern "C"
  *    (see @ref MMAGIC_M2M_PROTOCOL_SPI_DATALINK_STRUCTS).
  * -# The Controller deasserts the Wake pin by driving it low.
  *
- * @include{doc} agent/m2m_datalink/mmagic_datlaink_spi_write.puml
+ * @include{doc} agent/m2m_datalink/mmagic_datalink_spi_write.puml
  *
  * @subsection MMAGIC_M2M_PROTOCOL_SPI_DATALINK_READ SPI packet read transfers
  *
@@ -153,7 +153,7 @@ extern "C"
  * -# The Controller performs a SPI read transaction to read the packet.
  * -# The Controller deasserts the Wake pin by driving it low.
  *
- * @include{doc} agent/m2m_datalink/mmagic_datlaink_spi_read.puml
+ * @include{doc} agent/m2m_datalink/mmagic_datalink_spi_read.puml
  *
  * @subsection MMAGIC_M2M_PROTOCOL_SPI_DATALINK_IRQ Interrupt requests
  *
@@ -173,8 +173,8 @@ extern "C"
  * is defined in the sections above.
  *
  * The `Ack Trailer` is read by the Controller at the end of a packet write transfer. It comprises
- * a single octet indicating positive acknowledgement (CRC was valid) or negative
- * acknowledgement (CRC or other failure).
+ * a single octet indicating positive acknowledgment (CRC was valid) or negative
+ * acknowledgment (CRC or other failure).
  *
  * The `Length` field is read during a packet read transfer and is a two octet field.
  *
@@ -196,7 +196,7 @@ extern "C"
  * Packet reception mirrors transmission.
  *
  * For an example implementation see `mmagic/agent/m2m_datalink/mmagic_datalink_uart.c`. This
- * data link can be enabled when using the @ref cli.c examaple application by setting the
+ * data link can be enabled when using the @ref cli.c example application by setting the
  * @ref MMCONFIG variable `cli.mode` to `m2m`.
  *
  * @section MMAGIC_M2M_PROTOCOL_PACKETS M2M Packet Structure
@@ -308,6 +308,28 @@ struct mmagic_m2m_agent_init_args
  * @return      A handle to the newly created Agent. NULL on error.
  */
 struct mmagic_m2m_agent *mmagic_m2m_agent_init(const struct mmagic_m2m_agent_init_args *args);
+
+struct mmagic_data;
+
+/**
+ * Queue a callback to execute in the CONTROL_STREAM context.
+ *
+ * This allows safe calling of mmagic_core_* functions outside of the MMAGIC
+ * stream. This may block on adding to the (single element) queue, and
+ * will return an error if the timeout is reached. It must only be called
+ * after mmagic_m2m_agent_init is run.
+ *
+ * @param  agent   Agent handle returned by @ref mmagic_m2m_agent_init.
+ * @param  cb      Callback function to execute. Receives MMAGIC core data and cb_arg.
+ * @param  cb_arg  Argument to pass to callback.
+ * @param  timeout Timeout when enqueueing. UINT32_MAX to block.
+ *
+ * @return @c MMAGIC_STATUS_OK on success, otherwise an error status.
+ */
+enum mmagic_status mmagic_m2m_agent_local_command(struct mmagic_m2m_agent *agent,
+                                                  void (*cb)(struct mmagic_data *core, void *arg),
+                                                  void *cb_arg,
+                                                  uint32_t timeout);
 
 /** @} */
 

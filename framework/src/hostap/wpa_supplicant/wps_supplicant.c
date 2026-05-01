@@ -148,7 +148,7 @@ int wpas_wps_eapol_cb(struct wpa_supplicant *wpa_s)
 
 		wpa_printf(MSG_DEBUG, "WPS: Checking whether fast association "
 			   "without a new scan can be used");
-		bss = wpa_supplicant_pick_network(wpa_s, &ssid);
+		bss = wpa_supplicant_pick_network(wpa_s, &ssid, true);
 		if (bss) {
 			struct wpabuf *wps;
 			struct wps_parse_attr attr;
@@ -1375,7 +1375,7 @@ int wpas_wps_cancel(struct wpa_supplicant *wpa_s)
 		wpa_printf(MSG_DEBUG, "WPS: Cancel operation - cancel scan");
 		wpa_supplicant_cancel_scan(wpa_s);
 		wpas_clear_wps(wpa_s);
-	} else if (wpa_s->wpa_state >= WPA_ASSOCIATED) {
+	} else if (wpa_s->wpa_state >= WPA_ASSOCIATING) {
 		wpa_printf(MSG_DEBUG, "WPS: Cancel operation - "
 			   "deauthenticate");
 		wpa_s->own_disconnect_req = 1;
@@ -1709,6 +1709,7 @@ void wpas_wps_deinit(struct wpa_supplicant *wpa_s)
 #endif /* CONFIG_WPS_ER */
 
 	wps_registrar_deinit(wpa_s->wps->registrar);
+	dh5_free(wpa_s->wps->dh_ctx);
 	wpabuf_free(wpa_s->wps->dh_pubkey);
 	wpabuf_free(wpa_s->wps->dh_privkey);
 	wpabuf_free(wpa_s->wps->dev.vendor_ext_m1);
@@ -2324,7 +2325,7 @@ void wpas_wps_update_mac_addr(struct wpa_supplicant *wpa_s)
 #ifdef CONFIG_WPS_NFC
 
 #ifdef CONFIG_WPS_ER
-static struct wpabuf *
+struct wpabuf *
 wpas_wps_network_config_token(struct wpa_supplicant *wpa_s, int ndef,
 			      struct wpa_ssid *ssid)
 {

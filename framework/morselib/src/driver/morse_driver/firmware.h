@@ -29,6 +29,16 @@ enum morse_fw_info_tlv_type
     MORSE_FW_INFO_TLV_BCF_ADDR = 1
 };
 
+struct MM_PACKED morse_fw_info_tlv_cordump_mem
+{
+
+    uint32_t region_type;
+
+    uint32_t start;
+
+    uint32_t len;
+};
+
 struct MM_PACKED morse_fw_info_tlv
 {
     uint16_t type;

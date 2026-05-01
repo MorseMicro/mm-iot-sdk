@@ -20,5 +20,6 @@ var ap__mode_8c =
     [ "load_ap_mmipal_init_args", "ap__mode_8c.html#a2c0ab374eb2a40c8abb7cb098aca230b", null ],
     [ "load_mmwlan_ap_args", "ap__mode_8c.html#a196de1fb40365cca3f77bee08065c6ee", null ],
     [ "load_mmwlan_settings_ap", "ap__mode_8c.html#a4e4f7f93fa39c756aba391837c623201", null ],
+    [ "mmwlan_ap_sta_state_to_str", "ap__mode_8c.html#ab0708e6d11c31f9ea43201d6237799b8", null ],
     [ "opaque_argument_value", "ap__mode_8c.html#ae28ad90e7b7d10c49a756acf122557a9", null ]
 ];

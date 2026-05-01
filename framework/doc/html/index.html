@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.10.4</span>
+   &#160;<span id="projectnumber">2.11.2</span>
    </div>
   </td>
  </tr>
@@ -113,7 +113,7 @@ Morse Micro IoT Reference Platform Overview</div></div>
 <img src="hl_block_diagram.png" alt=""/>
 <div class="caption">
 High-level block diagram of the SDK software components</div></div>
- <h1><a class="anchor" id="autotoc_md54"></a>
+ <h1><a class="anchor" id="autotoc_md46"></a>
 Morselib Overview</h1>
 <p >The Morse Micro host software included in morselib provides the driver interface for communicating with the transceiver and the upper layers of the Wireless LAN MAC, as well as additional application-layer network protocols. APIs provided by morselib include:</p>
 <ul>
@@ -126,7 +126,7 @@ Morselib Overview</h1>
 </ul>
 </li>
 <li><a class="el" href="group__EMMET.html">Morse Micro Embedded Test Engine (Emmet)</a> API for test automation.</li>
-<li>A <a class="el" href="group__MMWLAN__DATA.html">WLAN Datapath API</a>, <a class="el" href="group__MMOSAL.html">Morse Micro Operating System Abstraction Layer (mmosal) API</a>, and <a class="el" href="group__MMHAL.html">Morse Micro Hardware Abstraction Layer (mmhal) API</a>, which provide abstract interfaces to the IP stack, RTOS, and MCU BSP respectively. Shim layers provide the mapping between these morselib APIs and the corresonding lwIP/FreeRTOS/BSP API.</li>
+<li>A <a class="el" href="group__MMWLAN__DATA.html">WLAN Datapath API</a>, <a class="el" href="group__MMOSAL.html">Morse Micro Operating System Abstraction Layer (mmosal) API</a>, and <a class="el" href="group__MMHAL.html">Morse Micro Hardware Abstraction Layer (mmhal) API</a>, which provide abstract interfaces to the IP stack, RTOS, and MCU BSP respectively. Shim layers provide the mapping between these morselib APIs and the corresponding lwIP/FreeRTOS/BSP API.</li>
 </ul>
 <p >In addition to the APIs provided by morselib, supporting infrastructure includes:</p>
 <ul>
@@ -134,7 +134,13 @@ Morselib Overview</h1>
 <li><a class="el" href="group__MMAPP.html">Application Layer Protocol APIs</a> for Morse Micro implementations of protocols including ping and iperf.</li>
 <li><a class="el" href="group__MMCONFIG.html">Morse Micro Persistent Configuration Store</a> APIs for storing configuration data, etc.</li>
 </ul>
-<p >The <a class="el" href="GETTING_STARTED.html">Getting Started</a> Guide provides step-by-step instructions for getting up and running with this SDK using a Makefile-based workflow. </p>
+<p >The <a class="el" href="GETTING_STARTED.html">Getting Started</a> Guide provides step-by-step instructions for getting up and running with this SDK using a Makefile-based workflow.</p>
+<h2><a class="anchor" id="autotoc_md47"></a>
+API production readiness annotations</h2>
+<p >When a morselib feature is under development, and is not yet ready for production deployment, the associated APIs will be annotated to indicate the level of feature maturity.</p>
+<p >Alpha — Suitable for initial evaluation only, not for production use. The API is incomplete, likely to change, and bugs are expected.</p>
+<p >Beta — Suitable for evaluation and prototyping, but not recommended for production. The API is feature complete but may still change. Known issues are documented.</p>
+<p >In general, unmarked APIs can be considered production ready with a stable interface. </p>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
 </div><!-- doc-content -->

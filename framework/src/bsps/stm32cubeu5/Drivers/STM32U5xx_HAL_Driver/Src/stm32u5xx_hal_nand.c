@@ -109,6 +109,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32u5xx_hal.h"
 
+#if defined(FMC_BANK3)
 
 /** @addtogroup STM32U5xx_HAL_Driver
   * @{
@@ -494,7 +495,7 @@ HAL_StatusTypeDef HAL_NAND_Reset(NAND_HandleTypeDef *hnand)
   * @param  pDeviceConfig  pointer to NAND_DeviceConfigTypeDef structure
   * @retval HAL status
   */
-HAL_StatusTypeDef  HAL_NAND_ConfigDevice(NAND_HandleTypeDef *hnand, NAND_DeviceConfigTypeDef *pDeviceConfig)
+HAL_StatusTypeDef  HAL_NAND_ConfigDevice(NAND_HandleTypeDef *hnand, const NAND_DeviceConfigTypeDef *pDeviceConfig)
 {
   hnand->Config.PageSize           = pDeviceConfig->PageSize;
   hnand->Config.SpareAreaSize      = pDeviceConfig->SpareAreaSize;
@@ -637,7 +638,7 @@ HAL_StatusTypeDef HAL_NAND_Read_Page_8b(NAND_HandleTypeDef *hnand, const NAND_Ad
       /* Get Data into Buffer */
       for (index = 0U; index < hnand->Config.PageSize; index++)
       {
-        *buff = *(uint8_t *)deviceaddress;
+        *buff = *(__IO uint8_t *)deviceaddress;
         buff++;
       }
 
@@ -805,7 +806,7 @@ HAL_StatusTypeDef HAL_NAND_Read_Page_16b(NAND_HandleTypeDef *hnand, const NAND_A
       /* Get Data into Buffer */
       for (index = 0U; index < hnand->Config.PageSize; index++)
       {
-        *buff = *(uint16_t *)deviceaddress;
+        *buff = *(__IO uint16_t *)deviceaddress;
         buff++;
       }
 
@@ -1287,7 +1288,7 @@ HAL_StatusTypeDef HAL_NAND_Read_SpareArea_8b(NAND_HandleTypeDef *hnand, const NA
       /* Get Data into Buffer */
       for (index = 0U; index < hnand->Config.SpareAreaSize; index++)
       {
-        *buff = *(uint8_t *)deviceaddress;
+        *buff = *(__IO uint8_t *)deviceaddress;
         buff++;
       }
 
@@ -1452,7 +1453,7 @@ HAL_StatusTypeDef HAL_NAND_Read_SpareArea_16b(NAND_HandleTypeDef *hnand, const N
       /* Get Data into Buffer */
       for (index = 0U; index < hnand->Config.SpareAreaSize; index++)
       {
-        *buff = *(uint16_t *)deviceaddress;
+        *buff = *(__IO uint16_t *)deviceaddress;
         buff++;
       }
 
@@ -2229,3 +2230,4 @@ uint32_t HAL_NAND_Read_Status(const NAND_HandleTypeDef *hnand)
   * @}
   */
 
+#endif /* FMC_BANK3 */

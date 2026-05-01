@@ -540,10 +540,10 @@ void * os_memdup(const void *src, size_t len)
 #ifdef WPA_TRACE
 
 #if defined(WPA_TRACE_BFD) && defined(CONFIG_TESTING_OPTIONS)
-struct wpa_trace_test_fail {
+static struct wpa_trace_test_fail {
 	unsigned int fail_after;
 	char pattern[256];
-} wpa_trace_test_fail[5][2];
+} wpa_trace_test_fail[5][4];
 
 int testing_test_fail(const char *tag, bool is_alloc)
 {
@@ -714,15 +714,7 @@ int testing_get_fail_pattern(bool is_alloc, char *buf, size_t buflen)
 	return -1;
 #endif /* WPA_TRACE_BFD */
 }
-
-#else /* defined(WPA_TRACE_BFD) && defined(CONFIG_TESTING_OPTIONS) */
-
-static inline int testing_test_fail(const char *tag, bool is_alloc)
-{
-	return 0;
-}
-
-#endif
+#endif /* defined(WPA_TRACE_BFD) && defined(CONFIG_TESTING_OPTIONS) */
 
 void * os_malloc(size_t size)
 {

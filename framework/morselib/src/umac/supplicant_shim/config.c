@@ -102,13 +102,16 @@ static bool config_add_network(struct wpa_config *config, bool ro, struct umac_d
 
     ssid->ro = ro;
 
-    ssid->ssid = (u8 *)os_malloc(args->ssid_len);
-    if (ssid->ssid == NULL)
+    if (args->ssid_len > 0)
     {
-        MMLOG_ERR("Failed to allocate SSID buffer for config\n");
-        goto cleanup;
+        ssid->ssid = (u8 *)os_malloc(args->ssid_len);
+        if (ssid->ssid == NULL)
+        {
+            MMLOG_ERR("Failed to allocate SSID buffer for config\n");
+            goto cleanup;
+        }
+        memcpy(config->ssid->ssid, args->ssid, args->ssid_len);
     }
-    memcpy(config->ssid->ssid, args->ssid, args->ssid_len);
     config->ssid->ssid_len = args->ssid_len;
 
     if (!mm_mac_addr_is_zero(args->bssid))
@@ -245,6 +248,9 @@ static bool wpa_config_read_sta(struct wpa_config *config, bool ro)
 
     config->sae_pwe = SAE_PWE_HASH_TO_ELEMENT;
 
+
+    config->filter_ssids = 1;
+
     ok = config_populate_sae_groups(config,
                                     args->sae_owe_ec_groups,
                                     MM_ARRAY_COUNT(args->sae_owe_ec_groups));
@@ -286,6 +292,7 @@ const struct mmwlan_supp_config_entry mmwlan_wpa_config_dpp = {
     wpa_config_read_dpp,
 };
 
+#if !(defined(MMWLAN_AP_DISABLED) && MMWLAN_AP_DISABLED)
 
 static bool wpa_config_read_ap(struct wpa_config *config, bool ro)
 {
@@ -312,11 +319,8 @@ static bool wpa_config_read_ap(struct wpa_config *config, bool ro)
     memcpy(config->ssid->ssid, args->ssid, args->ssid_len);
     config->ssid->ssid_len = args->ssid_len;
 
-    if (!mm_mac_addr_is_zero(args->bssid))
-    {
-        memcpy(config->ssid->bssid, args->bssid, MMWLAN_MAC_ADDR_LEN);
-        config->ssid->bssid_set = 1;
-    }
+    umac_ap_get_bssid(umacd, config->ssid->bssid);
+    config->ssid->bssid_set = true;
 
     const struct mmwlan_s1g_channel_list *chan_list = umac_config_get_channel_list(umacd);
     memcpy(config->country, chan_list->country_code, 2);
@@ -386,6 +390,7 @@ const struct mmwlan_supp_config_entry mmwlan_wpa_config_ap = {
     wpa_config_read_ap,
 };
 
+#endif
 
 
 extern const struct mmwlan_supp_config_entry *const mmwlan_wpa_configs[];
@@ -412,8 +417,16 @@ static bool find_and_read_config(const char *name, struct wpa_config *config, bo
 }
 
 
-struct wpa_config *wpa_config_read(const char *name, struct wpa_config *cfgp, bool ro)
+struct wpa_config *
+#if !(defined(MM810XB2_HOSTAP_ROM_COMPAT_ENABLED) && MM810XB2_HOSTAP_ROM_COMPAT_ENABLED)
+wpa_config_read(const char *name, struct wpa_config *cfgp, bool ro, bool show_details)
+#else
+wpa_config_read(const char *name, struct wpa_config *cfgp, bool ro)
+#endif
 {
+#if !(defined(MM810XB2_HOSTAP_ROM_COMPAT_ENABLED) && MM810XB2_HOSTAP_ROM_COMPAT_ENABLED)
+    MM_UNUSED(show_details);
+#endif
     MMLOG_INF("Reading WPA Supplicant config: %s\n", name);
 
     struct wpa_config *config = cfgp;

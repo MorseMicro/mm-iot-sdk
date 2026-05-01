@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.10.4</span>
+   &#160;<span id="projectnumber">2.11.2</span>
    </div>
   </td>
  </tr>
@@ -125,23 +125,11 @@ Data Structures</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmagic__core__wlan__beacon__monitor__enable__cmd__args.html">mmagic_core_wlan_beacon_monitor_enable_cmd_args</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Command arguments structure for wlan_beacon_monitor_enable.  <a href="structmmagic__core__wlan__beacon__monitor__enable__cmd__args.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmagic__core__wlan__standby__set__status__payload__cmd__args.html">mmagic_core_wlan_standby_set_status_payload_cmd_args</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Command arguments structure for wlan_standby_set_status_payload.  <a href="structmmagic__core__wlan__standby__set__status__payload__cmd__args.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmagic__core__wlan__standby__set__wake__filter__cmd__args.html">mmagic_core_wlan_standby_set_wake_filter_cmd_args</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Command arguments structure for wlan_standby_set_wake_filter.  <a href="structmmagic__core__wlan__standby__set__wake__filter__cmd__args.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmagic__core__wlan__standby__set__config__cmd__args.html">mmagic_core_wlan_standby_set_config_cmd_args</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Command arguments structure for wlan_standby_set_config.  <a href="structmmagic__core__wlan__standby__set__config__cmd__args.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmagic__core__wlan__get__sta__status__rsp__args.html">mmagic_core_wlan_get_sta_status_rsp_args</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Response arguments structure for wlan_get_sta_status.  <a href="structmmagic__core__wlan__get__sta__status__rsp__args.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmagic__wlan__beacon__rx__event__args.html">mmagic_wlan_beacon_rx_event_args</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Event arguments structure for wlan_beacon_rx.  <a href="structmmagic__wlan__beacon__rx__event__args.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmagic__wlan__standby__exit__event__args.html">mmagic_wlan_standby_exit_event_args</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Event arguments structure for wlan_standby_exit.  <a href="structmmagic__wlan__standby__exit__event__args.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmagic__wlan__sta__event__event__args.html">mmagic_wlan_sta_event_event_args</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Event arguments structure for wlan_sta_event.  <a href="structmmagic__wlan__sta__event__event__args.html#details">More...</a><br /></td></tr>
@@ -152,63 +140,48 @@ Typedefs</h2></td></tr>
 <tr class="memitem:gad80e59f2d4499d2d5d701e346d7d1ca1"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#gad80e59f2d4499d2d5d701e346d7d1ca1">mmagic_wlan_beacon_rx_event_handler_t</a>) (const struct <a class="el" href="structmmagic__wlan__beacon__rx__event__args.html">mmagic_wlan_beacon_rx_event_args</a> *event_args, void *arg)</td></tr>
 <tr class="memdesc:gad80e59f2d4499d2d5d701e346d7d1ca1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handler for the wlan-beacon_rx event.  <a href="group__MMAGIC__CONTROLLER__WLAN.html#gad80e59f2d4499d2d5d701e346d7d1ca1">More...</a><br /></td></tr>
 <tr class="separator:gad80e59f2d4499d2d5d701e346d7d1ca1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga28e204fbe55bed14f6c96d63e7f9bb22"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#ga28e204fbe55bed14f6c96d63e7f9bb22">mmagic_wlan_standby_exit_event_handler_t</a>) (const struct <a class="el" href="structmmagic__wlan__standby__exit__event__args.html">mmagic_wlan_standby_exit_event_args</a> *event_args, void *arg)</td></tr>
-<tr class="memdesc:ga28e204fbe55bed14f6c96d63e7f9bb22"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handler for the wlan-standby_exit event.  <a href="group__MMAGIC__CONTROLLER__WLAN.html#ga28e204fbe55bed14f6c96d63e7f9bb22">More...</a><br /></td></tr>
-<tr class="separator:ga28e204fbe55bed14f6c96d63e7f9bb22"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gac5f8553d9e9524d938edf44ccf0fadb6"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#gac5f8553d9e9524d938edf44ccf0fadb6">mmagic_wlan_sta_event_event_handler_t</a>) (const struct <a class="el" href="structmmagic__wlan__sta__event__event__args.html">mmagic_wlan_sta_event_event_args</a> *event_args, void *arg)</td></tr>
 <tr class="memdesc:gac5f8553d9e9524d938edf44ccf0fadb6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handler for the wlan-sta_event event.  <a href="group__MMAGIC__CONTROLLER__WLAN.html#gac5f8553d9e9524d938edf44ccf0fadb6">More...</a><br /></td></tr>
 <tr class="separator:gac5f8553d9e9524d938edf44ccf0fadb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ga84b1e37d8223497d832f27af1fcc19e2"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#ga84b1e37d8223497d832f27af1fcc19e2">mmagic_controller_wlan_connect</a> (struct mmagic_controller *controller, struct <a class="el" href="structmmagic__core__wlan__connect__cmd__args.html">mmagic_core_wlan_connect_cmd_args</a> *cmd_args)</td></tr>
+<tr class="memitem:ga84b1e37d8223497d832f27af1fcc19e2"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga202c6db4afd9d9ff976b0e61267ab6bb">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#ga84b1e37d8223497d832f27af1fcc19e2">mmagic_controller_wlan_connect</a> (struct mmagic_controller *controller, struct <a class="el" href="structmmagic__core__wlan__connect__cmd__args.html">mmagic_core_wlan_connect_cmd_args</a> *cmd_args)</td></tr>
 <tr class="memdesc:ga84b1e37d8223497d832f27af1fcc19e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Brings up the WLAN interface and connects to the AP with configured parameters.  <a href="group__MMAGIC__CONTROLLER__WLAN.html#ga84b1e37d8223497d832f27af1fcc19e2">More...</a><br /></td></tr>
 <tr class="separator:ga84b1e37d8223497d832f27af1fcc19e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga34d5debc340690c5632c29c108f6d73a"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#ga34d5debc340690c5632c29c108f6d73a">mmagic_controller_wlan_disconnect</a> (struct mmagic_controller *controller)</td></tr>
+<tr class="memitem:ga34d5debc340690c5632c29c108f6d73a"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga202c6db4afd9d9ff976b0e61267ab6bb">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#ga34d5debc340690c5632c29c108f6d73a">mmagic_controller_wlan_disconnect</a> (struct mmagic_controller *controller)</td></tr>
 <tr class="memdesc:ga34d5debc340690c5632c29c108f6d73a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Disconnects and brings down the WLAN interface.  <a href="group__MMAGIC__CONTROLLER__WLAN.html#ga34d5debc340690c5632c29c108f6d73a">More...</a><br /></td></tr>
 <tr class="separator:ga34d5debc340690c5632c29c108f6d73a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga9577da447e646511dd89eff2af4a969f"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#ga9577da447e646511dd89eff2af4a969f">mmagic_controller_wlan_scan</a> (struct mmagic_controller *controller, struct <a class="el" href="structmmagic__core__wlan__scan__cmd__args.html">mmagic_core_wlan_scan_cmd_args</a> *cmd_args, struct <a class="el" href="structmmagic__core__wlan__scan__rsp__args.html">mmagic_core_wlan_scan_rsp_args</a> *rsp_args)</td></tr>
+<tr class="memitem:ga9577da447e646511dd89eff2af4a969f"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga202c6db4afd9d9ff976b0e61267ab6bb">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#ga9577da447e646511dd89eff2af4a969f">mmagic_controller_wlan_scan</a> (struct mmagic_controller *controller, struct <a class="el" href="structmmagic__core__wlan__scan__cmd__args.html">mmagic_core_wlan_scan_cmd_args</a> *cmd_args, struct <a class="el" href="structmmagic__core__wlan__scan__rsp__args.html">mmagic_core_wlan_scan_rsp_args</a> *rsp_args)</td></tr>
 <tr class="memdesc:ga9577da447e646511dd89eff2af4a969f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Starts an undirected scan for available networks.  <a href="group__MMAGIC__CONTROLLER__WLAN.html#ga9577da447e646511dd89eff2af4a969f">More...</a><br /></td></tr>
 <tr class="separator:ga9577da447e646511dd89eff2af4a969f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga31e4e91f3980525141a6a195c6699414"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#ga31e4e91f3980525141a6a195c6699414">mmagic_controller_wlan_get_rssi</a> (struct mmagic_controller *controller, struct <a class="el" href="structmmagic__core__wlan__get__rssi__rsp__args.html">mmagic_core_wlan_get_rssi_rsp_args</a> *rsp_args)</td></tr>
+<tr class="memitem:ga31e4e91f3980525141a6a195c6699414"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga202c6db4afd9d9ff976b0e61267ab6bb">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#ga31e4e91f3980525141a6a195c6699414">mmagic_controller_wlan_get_rssi</a> (struct mmagic_controller *controller, struct <a class="el" href="structmmagic__core__wlan__get__rssi__rsp__args.html">mmagic_core_wlan_get_rssi_rsp_args</a> *rsp_args)</td></tr>
 <tr class="memdesc:ga31e4e91f3980525141a6a195c6699414"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the RSSI if the WLAN interface is up, else 0.  <a href="group__MMAGIC__CONTROLLER__WLAN.html#ga31e4e91f3980525141a6a195c6699414">More...</a><br /></td></tr>
 <tr class="separator:ga31e4e91f3980525141a6a195c6699414"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga726515dccff0e202821ce192aa226ea7"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#ga726515dccff0e202821ce192aa226ea7">mmagic_controller_wlan_get_mac_addr</a> (struct mmagic_controller *controller, struct <a class="el" href="structmmagic__core__wlan__get__mac__addr__rsp__args.html">mmagic_core_wlan_get_mac_addr_rsp_args</a> *rsp_args)</td></tr>
+<tr class="memitem:ga726515dccff0e202821ce192aa226ea7"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga202c6db4afd9d9ff976b0e61267ab6bb">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#ga726515dccff0e202821ce192aa226ea7">mmagic_controller_wlan_get_mac_addr</a> (struct mmagic_controller *controller, struct <a class="el" href="structmmagic__core__wlan__get__mac__addr__rsp__args.html">mmagic_core_wlan_get_mac_addr_rsp_args</a> *rsp_args)</td></tr>
 <tr class="memdesc:ga726515dccff0e202821ce192aa226ea7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the MAC address if the WLAN interface is up.  <a href="group__MMAGIC__CONTROLLER__WLAN.html#ga726515dccff0e202821ce192aa226ea7">More...</a><br /></td></tr>
 <tr class="separator:ga726515dccff0e202821ce192aa226ea7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga52480bba27fab3ea43da7dc96fc8bc5d"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#ga52480bba27fab3ea43da7dc96fc8bc5d">mmagic_controller_wlan_wnm_sleep</a> (struct mmagic_controller *controller, struct <a class="el" href="structmmagic__core__wlan__wnm__sleep__cmd__args.html">mmagic_core_wlan_wnm_sleep_cmd_args</a> *cmd_args)</td></tr>
+<tr class="memitem:ga52480bba27fab3ea43da7dc96fc8bc5d"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga202c6db4afd9d9ff976b0e61267ab6bb">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#ga52480bba27fab3ea43da7dc96fc8bc5d">mmagic_controller_wlan_wnm_sleep</a> (struct mmagic_controller *controller, struct <a class="el" href="structmmagic__core__wlan__wnm__sleep__cmd__args.html">mmagic_core_wlan_wnm_sleep_cmd_args</a> *cmd_args)</td></tr>
 <tr class="memdesc:ga52480bba27fab3ea43da7dc96fc8bc5d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Requests entry or exit from extended sleep (wnm sleep) if the WLAN interface is up.  <a href="group__MMAGIC__CONTROLLER__WLAN.html#ga52480bba27fab3ea43da7dc96fc8bc5d">More...</a><br /></td></tr>
 <tr class="separator:ga52480bba27fab3ea43da7dc96fc8bc5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga02e16ff1c68e7ad4cb8194a032d30cb6"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#ga02e16ff1c68e7ad4cb8194a032d30cb6">mmagic_controller_wlan_beacon_monitor_enable</a> (struct mmagic_controller *controller, struct <a class="el" href="structmmagic__core__wlan__beacon__monitor__enable__cmd__args.html">mmagic_core_wlan_beacon_monitor_enable_cmd_args</a> *cmd_args)</td></tr>
+<tr class="memitem:ga02e16ff1c68e7ad4cb8194a032d30cb6"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga202c6db4afd9d9ff976b0e61267ab6bb">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#ga02e16ff1c68e7ad4cb8194a032d30cb6">mmagic_controller_wlan_beacon_monitor_enable</a> (struct mmagic_controller *controller, struct <a class="el" href="structmmagic__core__wlan__beacon__monitor__enable__cmd__args.html">mmagic_core_wlan_beacon_monitor_enable_cmd_args</a> *cmd_args)</td></tr>
 <tr class="memdesc:ga02e16ff1c68e7ad4cb8194a032d30cb6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable beacon monitoring with the given filter settings.  <a href="group__MMAGIC__CONTROLLER__WLAN.html#ga02e16ff1c68e7ad4cb8194a032d30cb6">More...</a><br /></td></tr>
 <tr class="separator:ga02e16ff1c68e7ad4cb8194a032d30cb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga7df5b1d97a5ac812a50da2f39137d8b3"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#ga7df5b1d97a5ac812a50da2f39137d8b3">mmagic_controller_wlan_beacon_monitor_disable</a> (struct mmagic_controller *controller)</td></tr>
+<tr class="memitem:ga7df5b1d97a5ac812a50da2f39137d8b3"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga202c6db4afd9d9ff976b0e61267ab6bb">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#ga7df5b1d97a5ac812a50da2f39137d8b3">mmagic_controller_wlan_beacon_monitor_disable</a> (struct mmagic_controller *controller)</td></tr>
 <tr class="memdesc:ga7df5b1d97a5ac812a50da2f39137d8b3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Disable beacon monitoring.  <a href="group__MMAGIC__CONTROLLER__WLAN.html#ga7df5b1d97a5ac812a50da2f39137d8b3">More...</a><br /></td></tr>
 <tr class="separator:ga7df5b1d97a5ac812a50da2f39137d8b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga1816a65393d562e9b5a10f8918b3b49c"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#ga1816a65393d562e9b5a10f8918b3b49c">mmagic_controller_wlan_standby_enter</a> (struct mmagic_controller *controller)</td></tr>
-<tr class="memdesc:ga1816a65393d562e9b5a10f8918b3b49c"><td class="mdescLeft">&#160;</td><td class="mdescRight">This puts the Morse chip into standby mode allowing the host processor to go to sleep while the Morse chip takes over certain functionality to keep the connection alive with the provision to wake up the host processor when certain conditions are met.  <a href="group__MMAGIC__CONTROLLER__WLAN.html#ga1816a65393d562e9b5a10f8918b3b49c">More...</a><br /></td></tr>
-<tr class="separator:ga1816a65393d562e9b5a10f8918b3b49c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga3243a83982b2e8993012ee09d8e2211f"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#ga3243a83982b2e8993012ee09d8e2211f">mmagic_controller_wlan_standby_exit</a> (struct mmagic_controller *controller)</td></tr>
-<tr class="memdesc:ga3243a83982b2e8993012ee09d8e2211f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Forces the Morse chip to exit standby mode.  <a href="group__MMAGIC__CONTROLLER__WLAN.html#ga3243a83982b2e8993012ee09d8e2211f">More...</a><br /></td></tr>
-<tr class="separator:ga3243a83982b2e8993012ee09d8e2211f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga86f5645896f37b697c5cc7aca8c91015"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#ga86f5645896f37b697c5cc7aca8c91015">mmagic_controller_wlan_standby_set_status_payload</a> (struct mmagic_controller *controller, struct <a class="el" href="structmmagic__core__wlan__standby__set__status__payload__cmd__args.html">mmagic_core_wlan_standby_set_status_payload_cmd_args</a> *cmd_args)</td></tr>
-<tr class="memdesc:ga86f5645896f37b697c5cc7aca8c91015"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the user payload for the standby status packet.  <a href="group__MMAGIC__CONTROLLER__WLAN.html#ga86f5645896f37b697c5cc7aca8c91015">More...</a><br /></td></tr>
-<tr class="separator:ga86f5645896f37b697c5cc7aca8c91015"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga9d54c58b4156c44276400191f1d01683"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#ga9d54c58b4156c44276400191f1d01683">mmagic_controller_wlan_standby_set_wake_filter</a> (struct mmagic_controller *controller, struct <a class="el" href="structmmagic__core__wlan__standby__set__wake__filter__cmd__args.html">mmagic_core_wlan_standby_set_wake_filter_cmd_args</a> *cmd_args)</td></tr>
-<tr class="memdesc:ga9d54c58b4156c44276400191f1d01683"><td class="mdescLeft">&#160;</td><td class="mdescRight">Configures the standby mode UDP wake packet filter.  <a href="group__MMAGIC__CONTROLLER__WLAN.html#ga9d54c58b4156c44276400191f1d01683">More...</a><br /></td></tr>
-<tr class="separator:ga9d54c58b4156c44276400191f1d01683"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga3dcd99633029d9eb0963a6686302d63a"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#ga3dcd99633029d9eb0963a6686302d63a">mmagic_controller_wlan_standby_set_config</a> (struct mmagic_controller *controller, struct <a class="el" href="structmmagic__core__wlan__standby__set__config__cmd__args.html">mmagic_core_wlan_standby_set_config_cmd_args</a> *cmd_args)</td></tr>
-<tr class="memdesc:ga3dcd99633029d9eb0963a6686302d63a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the standby mode configuration parameters.  <a href="group__MMAGIC__CONTROLLER__WLAN.html#ga3dcd99633029d9eb0963a6686302d63a">More...</a><br /></td></tr>
-<tr class="separator:ga3dcd99633029d9eb0963a6686302d63a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga44dcd0e8a14955b6c2e018abd8a3cf77"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#ga44dcd0e8a14955b6c2e018abd8a3cf77">mmagic_controller_wlan_get_sta_status</a> (struct mmagic_controller *controller, struct <a class="el" href="structmmagic__core__wlan__get__sta__status__rsp__args.html">mmagic_core_wlan_get_sta_status_rsp_args</a> *rsp_args)</td></tr>
+<tr class="memitem:ga44dcd0e8a14955b6c2e018abd8a3cf77"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga202c6db4afd9d9ff976b0e61267ab6bb">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#ga44dcd0e8a14955b6c2e018abd8a3cf77">mmagic_controller_wlan_get_sta_status</a> (struct mmagic_controller *controller, struct <a class="el" href="structmmagic__core__wlan__get__sta__status__rsp__args.html">mmagic_core_wlan_get_sta_status_rsp_args</a> *rsp_args)</td></tr>
 <tr class="memdesc:ga44dcd0e8a14955b6c2e018abd8a3cf77"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the STA status of the WLAN interface.  <a href="group__MMAGIC__CONTROLLER__WLAN.html#ga44dcd0e8a14955b6c2e018abd8a3cf77">More...</a><br /></td></tr>
 <tr class="separator:ga44dcd0e8a14955b6c2e018abd8a3cf77"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga1a2d00610956d6f335420b5475210404"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga202c6db4afd9d9ff976b0e61267ab6bb">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#ga1a2d00610956d6f335420b5475210404">mmagic_controller_wlan_dpp_push_button_start</a> (struct mmagic_controller *controller)</td></tr>
+<tr class="memdesc:ga1a2d00610956d6f335420b5475210404"><td class="mdescLeft">&#160;</td><td class="mdescRight">Instructs the WLAN device to start the Device Provisioning Protocol (DPP) Push Button (PB) provisioning process.  <a href="group__MMAGIC__CONTROLLER__WLAN.html#ga1a2d00610956d6f335420b5475210404">More...</a><br /></td></tr>
+<tr class="separator:ga1a2d00610956d6f335420b5475210404"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaab22425bbde6656791a3099bc25fc7c2"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga202c6db4afd9d9ff976b0e61267ab6bb">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#gaab22425bbde6656791a3099bc25fc7c2">mmagic_controller_wlan_dpp_stop</a> (struct mmagic_controller *controller)</td></tr>
+<tr class="memdesc:gaab22425bbde6656791a3099bc25fc7c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Instructs the WLAN device to abort the ongoing DPP session.  <a href="group__MMAGIC__CONTROLLER__WLAN.html#gaab22425bbde6656791a3099bc25fc7c2">More...</a><br /></td></tr>
+<tr class="separator:gaab22425bbde6656791a3099bc25fc7c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga5c30986dc797fd7af634a8c2c160d3cf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#ga5c30986dc797fd7af634a8c2c160d3cf">mmagic_controller_register_wlan_beacon_rx_handler</a> (struct mmagic_controller *controller, <a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#gad80e59f2d4499d2d5d701e346d7d1ca1">mmagic_wlan_beacon_rx_event_handler_t</a> handler, void *arg)</td></tr>
 <tr class="memdesc:ga5c30986dc797fd7af634a8c2c160d3cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register a handler for the wlan-beacon_rx event.  <a href="group__MMAGIC__CONTROLLER__WLAN.html#ga5c30986dc797fd7af634a8c2c160d3cf">More...</a><br /></td></tr>
 <tr class="separator:ga5c30986dc797fd7af634a8c2c160d3cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gabfb9028d058933f693fad067019558ce"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#gabfb9028d058933f693fad067019558ce">mmagic_controller_register_wlan_standby_exit_handler</a> (struct mmagic_controller *controller, <a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#ga28e204fbe55bed14f6c96d63e7f9bb22">mmagic_wlan_standby_exit_event_handler_t</a> handler, void *arg)</td></tr>
-<tr class="memdesc:gabfb9028d058933f693fad067019558ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register a handler for the wlan-standby_exit event.  <a href="group__MMAGIC__CONTROLLER__WLAN.html#gabfb9028d058933f693fad067019558ce">More...</a><br /></td></tr>
-<tr class="separator:gabfb9028d058933f693fad067019558ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga78fffc772cda305a0751522416637255"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#ga78fffc772cda305a0751522416637255">mmagic_controller_register_wlan_sta_event_handler</a> (struct mmagic_controller *controller, <a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#gac5f8553d9e9524d938edf44ccf0fadb6">mmagic_wlan_sta_event_event_handler_t</a> handler, void *arg)</td></tr>
 <tr class="memdesc:ga78fffc772cda305a0751522416637255"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register a handler for the wlan-sta_event event.  <a href="group__MMAGIC__CONTROLLER__WLAN.html#ga78fffc772cda305a0751522416637255">More...</a><br /></td></tr>
 <tr class="separator:ga78fffc772cda305a0751522416637255"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -232,13 +205,13 @@ Functions</h2></td></tr>
 <dl class="section warning"><dt>Warning</dt><dd>This function must not invoke any mmagic API functions.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">event_args</td><td>Notication arguments received from the agent. </td></tr>
+    <tr><td class="paramname">event_args</td><td>Notification arguments received from the agent. </td></tr>
     <tr><td class="paramname">arg</td><td>Opaque argument that was provided when the callback was registered. </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03932">3932</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03833">3833</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -260,41 +233,13 @@ Functions</h2></td></tr>
 <dl class="section warning"><dt>Warning</dt><dd>This function must not invoke any mmagic API functions.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">event_args</td><td>Notication arguments received from the agent. </td></tr>
+    <tr><td class="paramname">event_args</td><td>Notification arguments received from the agent. </td></tr>
     <tr><td class="paramname">arg</td><td>Opaque argument that was provided when the callback was registered. </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l04019">4019</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
-
-</div>
-</div>
-<a id="ga28e204fbe55bed14f6c96d63e7f9bb22" name="ga28e204fbe55bed14f6c96d63e7f9bb22"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga28e204fbe55bed14f6c96d63e7f9bb22">&#9670;&nbsp;</a></span>mmagic_wlan_standby_exit_event_handler_t</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef void(* mmagic_wlan_standby_exit_event_handler_t) (const struct <a class="el" href="structmmagic__wlan__standby__exit__event__args.html">mmagic_wlan_standby_exit_event_args</a> *event_args, void *arg)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Handler for the wlan-standby_exit event. </p>
-<p >Triggered when chip exits standby mode either manually or through an event.</p>
-<dl class="section note"><dt>Note</dt><dd>This function will be invoked in the context of the controller data link thread and should perform minimal processing.</dd></dl>
-<dl class="section warning"><dt>Warning</dt><dd>This function must not invoke any mmagic API functions.</dd></dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">event_args</td><td>Notication arguments received from the agent. </td></tr>
-    <tr><td class="paramname">arg</td><td>Opaque argument that was provided when the callback was registered. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03976">3976</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03876">3876</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -393,53 +338,6 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="gabfb9028d058933f693fad067019558ce" name="gabfb9028d058933f693fad067019558ce"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gabfb9028d058933f693fad067019558ce">&#9670;&nbsp;</a></span>mmagic_controller_register_wlan_standby_exit_handler()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void mmagic_controller_register_wlan_standby_exit_handler </td>
-          <td>(</td>
-          <td class="paramtype">struct mmagic_controller *&#160;</td>
-          <td class="paramname"><em>controller</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="group__MMAGIC__CONTROLLER__WLAN.html#ga28e204fbe55bed14f6c96d63e7f9bb22">mmagic_wlan_standby_exit_event_handler_t</a>&#160;</td>
-          <td class="paramname"><em>handler</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">void *&#160;</td>
-          <td class="paramname"><em>arg</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Register a handler for the wlan-standby_exit event. </p>
-<p >Triggered when chip exits standby mode either manually or through an event.</p>
-<dl class="section note"><dt>Note</dt><dd>The handler callbacks will be invoked in the context of the controller data link thread. The handler should perform minimal processing.</dd></dl>
-<dl class="section warning"><dt>Warning</dt><dd>The handler callback must not invoke any mmagic API functions.</dd></dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">controller</td><td>Reference to the the controller handle. </td></tr>
-    <tr><td class="paramname">handler</td><td>The handler function to register. </td></tr>
-    <tr><td class="paramname">arg</td><td>Opaque argument to be passed to the handler when it is invoked. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
 <a id="ga7df5b1d97a5ac812a50da2f39137d8b3" name="ga7df5b1d97a5ac812a50da2f39137d8b3"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga7df5b1d97a5ac812a50da2f39137d8b3">&#9670;&nbsp;</a></span>mmagic_controller_wlan_beacon_monitor_disable()</h2>
 
@@ -450,7 +348,7 @@ Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a> mmagic_controller_wlan_beacon_monitor_disable </td>
+          <td class="memname">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga202c6db4afd9d9ff976b0e61267ab6bb">mmagic_status</a> mmagic_controller_wlan_beacon_monitor_disable </td>
           <td>(</td>
           <td class="paramtype">struct mmagic_controller *&#160;</td>
           <td class="paramname"><em>controller</em></td><td>)</td>
@@ -472,9 +370,9 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><code>MMAGIC_STATUS_OK</code> else an appropriate error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03592">3592</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03659">3659</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -488,7 +386,7 @@ Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a> mmagic_controller_wlan_beacon_monitor_enable </td>
+          <td class="memname">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga202c6db4afd9d9ff976b0e61267ab6bb">mmagic_status</a> mmagic_controller_wlan_beacon_monitor_enable </td>
           <td>(</td>
           <td class="paramtype">struct mmagic_controller *&#160;</td>
           <td class="paramname"><em>controller</em>, </td>
@@ -521,9 +419,9 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><code>MMAGIC_STATUS_OK</code> else an appropriate error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03555">3555</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03622">3622</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -537,7 +435,7 @@ Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a> mmagic_controller_wlan_connect </td>
+          <td class="memname">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga202c6db4afd9d9ff976b0e61267ab6bb">mmagic_status</a> mmagic_controller_wlan_connect </td>
           <td>(</td>
           <td class="paramtype">struct mmagic_controller *&#160;</td>
           <td class="paramname"><em>controller</em>, </td>
@@ -569,9 +467,9 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><code>MMAGIC_STATUS_OK</code> else an appropriate error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03255">3255</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03322">3322</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -585,7 +483,7 @@ Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a> mmagic_controller_wlan_disconnect </td>
+          <td class="memname">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga202c6db4afd9d9ff976b0e61267ab6bb">mmagic_status</a> mmagic_controller_wlan_disconnect </td>
           <td>(</td>
           <td class="paramtype">struct mmagic_controller *&#160;</td>
           <td class="paramname"><em>controller</em></td><td>)</td>
@@ -606,9 +504,84 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><code>MMAGIC_STATUS_OK</code> else an appropriate error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03302">3302</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03369">3369</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+
+</div>
+</div>
+<a id="ga1a2d00610956d6f335420b5475210404" name="ga1a2d00610956d6f335420b5475210404"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga1a2d00610956d6f335420b5475210404">&#9670;&nbsp;</a></span>mmagic_controller_wlan_dpp_push_button_start()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga202c6db4afd9d9ff976b0e61267ab6bb">mmagic_status</a> mmagic_controller_wlan_dpp_push_button_start </td>
+          <td>(</td>
+          <td class="paramtype">struct mmagic_controller *&#160;</td>
+          <td class="paramname"><em>controller</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Instructs the WLAN device to start the Device Provisioning Protocol (DPP) Push Button (PB) provisioning process. </p>
+<p >SSID and password will be automatically copied to wlan.ssid and wlan.password and saved in the persistent config store.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">controller</td><td>Reference to the controller handle.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><code>MMAGIC_STATUS_OK</code> else an appropriate error code. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03744">3744</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+
+</div>
+</div>
+<a id="gaab22425bbde6656791a3099bc25fc7c2" name="gaab22425bbde6656791a3099bc25fc7c2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaab22425bbde6656791a3099bc25fc7c2">&#9670;&nbsp;</a></span>mmagic_controller_wlan_dpp_stop()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga202c6db4afd9d9ff976b0e61267ab6bb">mmagic_status</a> mmagic_controller_wlan_dpp_stop </td>
+          <td>(</td>
+          <td class="paramtype">struct mmagic_controller *&#160;</td>
+          <td class="paramname"><em>controller</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Instructs the WLAN device to abort the ongoing DPP session. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">controller</td><td>Reference to the controller handle.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><code>MMAGIC_STATUS_OK</code> else an appropriate error code. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03780">3780</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -622,7 +595,7 @@ Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a> mmagic_controller_wlan_get_mac_addr </td>
+          <td class="memname">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga202c6db4afd9d9ff976b0e61267ab6bb">mmagic_status</a> mmagic_controller_wlan_get_mac_addr </td>
           <td>(</td>
           <td class="paramtype">struct mmagic_controller *&#160;</td>
           <td class="paramname"><em>controller</em>, </td>
@@ -650,13 +623,13 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir"></td><td class="paramname">controller</td><td>Reference to the controller handle. </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">rsp_args</td><td>Pointer to the data structure to be filled out with the result. If the return code is not <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> then the contents of this structure will be undefined.</td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">rsp_args</td><td>Pointer to the data structure to be filled out with the result. If the return code is not <code>MMAGIC_STATUS_OK</code> then the contents of this structure will be undefined.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><code>MMAGIC_STATUS_OK</code> else an appropriate error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03464">3464</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03531">3531</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -670,7 +643,7 @@ Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a> mmagic_controller_wlan_get_rssi </td>
+          <td class="memname">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga202c6db4afd9d9ff976b0e61267ab6bb">mmagic_status</a> mmagic_controller_wlan_get_rssi </td>
           <td>(</td>
           <td class="paramtype">struct mmagic_controller *&#160;</td>
           <td class="paramname"><em>controller</em>, </td>
@@ -698,13 +671,13 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir"></td><td class="paramname">controller</td><td>Reference to the controller handle. </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">rsp_args</td><td>Pointer to the data structure to be filled out with the result. If the return code is not <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> then the contents of this structure will be undefined.</td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">rsp_args</td><td>Pointer to the data structure to be filled out with the result. If the return code is not <code>MMAGIC_STATUS_OK</code> then the contents of this structure will be undefined.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><code>MMAGIC_STATUS_OK</code> else an appropriate error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03417">3417</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03484">3484</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -718,7 +691,7 @@ Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a> mmagic_controller_wlan_get_sta_status </td>
+          <td class="memname">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga202c6db4afd9d9ff976b0e61267ab6bb">mmagic_status</a> mmagic_controller_wlan_get_sta_status </td>
           <td>(</td>
           <td class="paramtype">struct mmagic_controller *&#160;</td>
           <td class="paramname"><em>controller</em>, </td>
@@ -746,13 +719,13 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir"></td><td class="paramname">controller</td><td>Reference to the controller handle. </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">rsp_args</td><td>Pointer to the data structure to be filled out with the result. If the return code is not <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> then the contents of this structure will be undefined.</td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">rsp_args</td><td>Pointer to the data structure to be filled out with the result. If the return code is not <code>MMAGIC_STATUS_OK</code> then the contents of this structure will be undefined.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><code>MMAGIC_STATUS_OK</code> else an appropriate error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03878">3878</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03705">3705</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -766,7 +739,7 @@ Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a> mmagic_controller_wlan_scan </td>
+          <td class="memname">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga202c6db4afd9d9ff976b0e61267ab6bb">mmagic_status</a> mmagic_controller_wlan_scan </td>
           <td>(</td>
           <td class="paramtype">struct mmagic_controller *&#160;</td>
           <td class="paramname"><em>controller</em>, </td>
@@ -801,235 +774,13 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramdir"></td><td class="paramname">controller</td><td>Reference to the controller handle. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">cmd_args</td><td>Command arguments </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">rsp_args</td><td>Pointer to the data structure to be filled out with the result. If the return code is not <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> then the contents of this structure will be undefined.</td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">rsp_args</td><td>Pointer to the data structure to be filled out with the result. If the return code is not <code>MMAGIC_STATUS_OK</code> then the contents of this structure will be undefined.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><code>MMAGIC_STATUS_OK</code> else an appropriate error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03359">3359</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
-
-</div>
-</div>
-<a id="ga1816a65393d562e9b5a10f8918b3b49c" name="ga1816a65393d562e9b5a10f8918b3b49c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga1816a65393d562e9b5a10f8918b3b49c">&#9670;&nbsp;</a></span>mmagic_controller_wlan_standby_enter()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a> mmagic_controller_wlan_standby_enter </td>
-          <td>(</td>
-          <td class="paramtype">struct mmagic_controller *&#160;</td>
-          <td class="paramname"><em>controller</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>This puts the Morse chip into standby mode allowing the host processor to go to sleep while the Morse chip takes over certain functionality to keep the connection alive with the provision to wake up the host processor when certain conditions are met. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">controller</td><td>Reference to the controller handle.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03630">3630</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
-
-</div>
-</div>
-<a id="ga3243a83982b2e8993012ee09d8e2211f" name="ga3243a83982b2e8993012ee09d8e2211f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga3243a83982b2e8993012ee09d8e2211f">&#9670;&nbsp;</a></span>mmagic_controller_wlan_standby_exit()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a> mmagic_controller_wlan_standby_exit </td>
-          <td>(</td>
-          <td class="paramtype">struct mmagic_controller *&#160;</td>
-          <td class="paramname"><em>controller</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Forces the Morse chip to exit standby mode. </p>
-<p >There may be certain instances such as a timer expiry, which cause the host chip to wake up independant of the Morse chip. In such situations, the host calls this function to instruct the Morse chip to exit standby mode and return to normal operating mode.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">controller</td><td>Reference to the controller handle.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03669">3669</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
-
-</div>
-</div>
-<a id="ga3dcd99633029d9eb0963a6686302d63a" name="ga3dcd99633029d9eb0963a6686302d63a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga3dcd99633029d9eb0963a6686302d63a">&#9670;&nbsp;</a></span>mmagic_controller_wlan_standby_set_config()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a> mmagic_controller_wlan_standby_set_config </td>
-          <td>(</td>
-          <td class="paramtype">struct mmagic_controller *&#160;</td>
-          <td class="paramname"><em>controller</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">struct <a class="el" href="structmmagic__core__wlan__standby__set__config__cmd__args.html">mmagic_core_wlan_standby_set_config_cmd_args</a> *&#160;</td>
-          <td class="paramname"><em>cmd_args</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Sets the standby mode configuration parameters. </p>
-<p >If this command is not executed then the defaults are as specified.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir"></td><td class="paramname">controller</td><td>Reference to the controller handle. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">cmd_args</td><td>Command arguments</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03831">3831</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
-
-</div>
-</div>
-<a id="ga86f5645896f37b697c5cc7aca8c91015" name="ga86f5645896f37b697c5cc7aca8c91015"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga86f5645896f37b697c5cc7aca8c91015">&#9670;&nbsp;</a></span>mmagic_controller_wlan_standby_set_status_payload()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a> mmagic_controller_wlan_standby_set_status_payload </td>
-          <td>(</td>
-          <td class="paramtype">struct mmagic_controller *&#160;</td>
-          <td class="paramname"><em>controller</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">struct <a class="el" href="structmmagic__core__wlan__standby__set__status__payload__cmd__args.html">mmagic_core_wlan_standby_set_status_payload_cmd_args</a> *&#160;</td>
-          <td class="paramname"><em>cmd_args</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Sets the user payload for the standby status packet. </p>
-<p >Once standby mode is enabled, the Morse chip will periodically emit a UDP standby status packet regardless of whether it is in standby or not. The UDP packet will also be sent immediately upon entering or exiting Standby mode. If this command is not executed then the standby status packet will contain no payload.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir"></td><td class="paramname">controller</td><td>Reference to the controller handle. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">cmd_args</td><td>Command arguments</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03716">3716</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
-
-</div>
-</div>
-<a id="ga9d54c58b4156c44276400191f1d01683" name="ga9d54c58b4156c44276400191f1d01683"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga9d54c58b4156c44276400191f1d01683">&#9670;&nbsp;</a></span>mmagic_controller_wlan_standby_set_wake_filter()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a> mmagic_controller_wlan_standby_set_wake_filter </td>
-          <td>(</td>
-          <td class="paramtype">struct mmagic_controller *&#160;</td>
-          <td class="paramname"><em>controller</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">struct <a class="el" href="structmmagic__core__wlan__standby__set__wake__filter__cmd__args.html">mmagic_core_wlan_standby_set_wake_filter_cmd_args</a> *&#160;</td>
-          <td class="paramname"><em>cmd_args</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Configures the standby mode UDP wake packet filter. </p>
-<p >The system can be woken up from standby mode by sending it a UDP wake packet. If a wake filter is set using this function then the wake packet will only wake up the system if the specified filter pattern matches the payload at the specified offset within the payload. If this command is not executed then any wake packet will wake up the system.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir"></td><td class="paramname">controller</td><td>Reference to the controller handle. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">cmd_args</td><td>Command arguments</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03767">3767</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03426">3426</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>
@@ -1043,7 +794,7 @@ Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a> mmagic_controller_wlan_wnm_sleep </td>
+          <td class="memname">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga202c6db4afd9d9ff976b0e61267ab6bb">mmagic_status</a> mmagic_controller_wlan_wnm_sleep </td>
           <td>(</td>
           <td class="paramtype">struct mmagic_controller *&#160;</td>
           <td class="paramname"><em>controller</em>, </td>
@@ -1075,9 +826,9 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><code>MMAGIC_STATUS_OK</code> else an appropriate error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03509">3509</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmagic__controller_8h_source.html#l03576">3576</a> of file <a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a>.</p>
 
 </div>
 </div>

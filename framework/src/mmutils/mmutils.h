@@ -34,12 +34,12 @@ extern "C"
  * * There are no explicit constraints on types, so be careful of comparing different integer
  *   types, etc.
  *
- * @param _x The first value to compare.
- * @param _y The second value to compare.
+ * @param x The first value to compare.
+ * @param y The second value to compare.
  *
- * @returns the minimum of @p _x and @p _y.
+ * @returns the minimum of @p x and @p y.
  */
-#define MM_MIN(_x, _y) (((_x) < (_y)) ? (_x) : (_y))
+#define MM_MIN(x, y) (((x) < (y)) ? (x) : (y))
 
 /**
  * Get the maximum of 2 values.
@@ -50,12 +50,12 @@ extern "C"
  * * There are no explicit constraints on types, so be careful of comparing different integer
  *   types, etc.
  *
- * @param _x The first value to compare.
- * @param _y The second value to compare.
+ * @param x The first value to compare.
+ * @param y The second value to compare.
  *
- * @returns the maximum of @p _x and @p _y.
+ * @returns the maximum of @p x and @p y.
  */
-#define MM_MAX(_x, _y) (((_x) > (_y)) ? (_x) : (_y))
+#define MM_MAX(x, y) (((x) > (y)) ? (x) : (y))
 
 /**
  * Round @p x up to the next multiple of @p m (where @p m is a power of 2).
@@ -84,6 +84,11 @@ extern "C"
 #define MM_FALLTHROUGH __attribute__((fallthrough))
 #endif
 
+/** Forces the compiler to always inline the function, not emit a separate copy. */
+#ifndef MM_ALWAYS_INLINE
+#define MM_ALWAYS_INLINE __attribute__((always_inline))
+#endif
+
 #ifndef MM_STATIC_ASSERT
 /**
  * Assertion check that is evaluated at compile time.
@@ -102,13 +107,13 @@ extern "C"
 /**
  * Return the number of elements in the given array.
  *
- * @param _a The array to get the element count for. Note that this must be an _array_
+ * @param a The array to get the element count for. Note that this must be an _array_
  *              and not a pointer. Beware that array-type function arguments are
  *              actually treated as pointers by the compiler. Must not be NULL.
  *
  * @returns the count of elements in the given array.
  */
-#define MM_ARRAY_COUNT(_a) (sizeof(_a) / sizeof((_a)[0]))
+#define MM_ARRAY_COUNT(a) (sizeof(a) / sizeof((a)[0]))
 
 /**
  * Return the size of a structs member.
@@ -369,7 +374,7 @@ int mm_parse_s1g_operation(const uint8_t *ies, uint32_t ies_len, struct mm_s1g_o
  *
  * @return          @c true if all bytes in the given MAC address are zero, else @c false
  */
-static inline bool mm_mac_addr_is_zero(const uint8_t *mac_addr)
+inline bool mm_mac_addr_is_zero(const uint8_t *mac_addr)
 {
     return (mac_addr[0] | mac_addr[1] | mac_addr[2] | mac_addr[3] | mac_addr[4] | mac_addr[5]) ==
            0x00;
@@ -394,7 +399,7 @@ static inline bool mm_mac_addr_is_multicast(const uint8_t *mac_addr)
  *
  * @return          @c true if the given MAC address is the broadcast address, else @c false
  */
-static inline bool mm_mac_addr_is_broadcast(const uint8_t *mac_addr)
+inline bool mm_mac_addr_is_broadcast(const uint8_t *mac_addr)
 {
     return (mac_addr[0] & mac_addr[1] & mac_addr[2] & mac_addr[3] & mac_addr[4] & mac_addr[5]) ==
            0xff;

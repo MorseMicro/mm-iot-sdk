@@ -59,7 +59,8 @@ var group__MMIPERF =
       [ "MMIPERF_TCP_ABORTED_REMOTE", "group__MMIPERF.html#gga7b67e7f7ee9517307f9037835fc7f2eea43d3dd076f296d508c8ba2f9006a3b01", null ],
       [ "MMIPERF_UDP_DONE_SERVER", "group__MMIPERF.html#gga7b67e7f7ee9517307f9037835fc7f2eeab5b6fd297fd7a50f6861e91709553aa8", null ],
       [ "MMIPERF_UDP_DONE_CLIENT", "group__MMIPERF.html#gga7b67e7f7ee9517307f9037835fc7f2eea08e59155cc22da9449201ea737be1761", null ],
-      [ "MMIPERF_INTERRIM_REPORT", "group__MMIPERF.html#gga7b67e7f7ee9517307f9037835fc7f2eea26634f39378587f549478c26d13a4375", null ]
+      [ "MMIPERF_INTERRIM_REPORT", "group__MMIPERF.html#gga7b67e7f7ee9517307f9037835fc7f2eea26634f39378587f549478c26d13a4375", null ],
+      [ "MMIPERF_STOPPED", "group__MMIPERF.html#gga7b67e7f7ee9517307f9037835fc7f2eeac82886d638e56d617896dc774803af40", null ]
     ] ],
     [ "traffic_agent_state", "group__MMIPERF.html#ga509c8a42171b7e6ece4d791e75e3c927", [
       [ "TRAFFIC_AGENT_NOT_STARTED", "group__MMIPERF.html#gga509c8a42171b7e6ece4d791e75e3c927a628c91ae4a589fe68d95d9092a010b10", null ],
@@ -70,5 +71,6 @@ var group__MMIPERF =
     [ "mmiperf_start_tcp_client", "group__MMIPERF.html#ga2d61d0df53429bab16d1aab5f702f2aa", null ],
     [ "mmiperf_start_tcp_server", "group__MMIPERF.html#gae78d2b5ebd73d3f43ce854b2cd21caff", null ],
     [ "mmiperf_start_udp_client", "group__MMIPERF.html#ga61d51224cc9d3c26ecf297bb0062a82d", null ],
-    [ "mmiperf_start_udp_server", "group__MMIPERF.html#ga9debf8f97dddeac14878b87ac70f542f", null ]
+    [ "mmiperf_start_udp_server", "group__MMIPERF.html#ga9debf8f97dddeac14878b87ac70f542f", null ],
+    [ "mmiperf_stop", "group__MMIPERF.html#ga35b1509518cb5051857a49df8393e07c", null ]
 ];

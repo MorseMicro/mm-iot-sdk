@@ -32,7 +32,9 @@ ifneq ($(BUILD_WITH_MBEDTLS_ECC_HW_CRYPTO),)
 BUILD_DEFINES += MBEDTLS_ECP_ALT=1
 
 BSP_SRCS_C += Core/Src/ecp_alt.c
+BSP_SRCS_C += Core/Src/ecp_hal.c
 BSP_SRCS_C += Core/Src/ecp_curves_alt.c
+BSP_SRCS_H += Core/Inc/ecp_alt.h
 endif
 
 

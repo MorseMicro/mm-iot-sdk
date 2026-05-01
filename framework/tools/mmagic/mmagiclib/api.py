@@ -9,13 +9,25 @@ import logging
 import os
 import re
 import yaml
-from typing import List, Optional
+from typing import Iterable, List, Optional
 from datetime import datetime
 from dataclasses import dataclass, field
 from dacite import from_dict
 
 STD_C_TYPES = ['uint8_t', 'uint16_t', 'uint32_t', 'uint64_t',
                'int16_t', 'bool', 'char', 'int32_t']
+
+STD_C_TYPES_TO_CTYPES = {
+     'uint8_t': 'ctypes.c_uint8',
+     'uint16_t': 'ctypes.c_uint16',
+     'uint32_t': 'ctypes.c_uint32',
+     'uint64_t': 'ctypes.c_uint64',
+     'int16_t': 'ctypes.c_int16',
+     'bool': 'ctypes.c_bool',
+     # Map char to ctypes.c_uint8 to avoid type conversion errors on ctypes
+     'char': 'ctypes.c_uint8',
+     'int32_t' : 'ctypes.c_int32'
+}
 
 ''' Maximum allowed length of any config name, this includes the newline character '''
 MAX_CONFIG_NAME_LEN = 32
@@ -68,6 +80,9 @@ class Enum:
     def __post_init__(self):
         object.__setattr__(self, 'stripped_name', re.sub('enum_(?P<name>.*)', '\\g<name>', self.name))
         object.__setattr__(self, 'datatype', f'enum mmagic_{self.stripped_name}')
+        object.__setattr__(self, 'ctypes_datatype', f'enum_mmagic_{self.stripped_name}')
+        object.__setattr__(self, 'decl_datatype', f'enum MM_PACKED mmagic_{self.stripped_name}')
+        object.__setattr__(self, 'decl_ctypes_datatype', f'enum_mmagic_{self.stripped_name}')
         validate_name(self.name, ENUM_NAME_REGEX)
 
 
@@ -87,7 +102,9 @@ class Struct:
 
     def __post_init__(self):
         object.__setattr__(self, 'datatype', f'struct {self.name}')
+        object.__setattr__(self, 'ctypes_datatype', f'{self.name}')
         object.__setattr__(self, 'decl_datatype', f'struct MM_PACKED {self.name}')
+        object.__setattr__(self, 'decl_ctypes_datatype', f'class {self.name}(ctypes.Structure)')
         validate_name(self.name, STRUCT_NAME_REGEX)
 
 
@@ -116,10 +133,13 @@ class Command:
     stream_type: bool = False
     command_args: List[Argument] = field(default_factory=list)
     response_args: List[Argument] = field(default_factory=list)
+    reserved: bool = False
 
     def __post_init__(self):
-        if self.id < NUM_RESERVED_COMMAND_IDS:
+        if self.id < NUM_RESERVED_COMMAND_IDS and not self.reserved:
             raise Exception(f"Command {self.name} uses reserved ID {self.id} (must be >= {NUM_RESERVED_COMMAND_IDS})")
+        if self.id >= NUM_RESERVED_COMMAND_IDS and self.reserved:
+            raise Exception(f"Command {self.name} is reserved without reserved ID {self.id} (must be < {NUM_RESERVED_COMMAND_IDS})")
 
 
 @dataclass(frozen=True)
@@ -128,6 +148,17 @@ class Event:
     id: int
     description: str
     event_args: List[Argument] = field(default_factory=list)
+
+
+CMD_GET = Command(id=0, name="get", reserved=True, response_timeout_ms=None,
+                  description="Retrieve the value of a configuration variable")
+CMD_SET = Command(id=1, name="set", reserved=True, response_timeout_ms=None,
+                  description="Set the value of a configuration variable")
+CMD_LOAD = Command(id=2, name="load", reserved=True, response_timeout_ms=None,
+                   description="Load the current configuration from flash (NB will automatically load on boot)")
+CMD_COMMIT = Command(id=3, name="commit", reserved=True, response_timeout_ms=None,
+                     description="Commit the current configuration to flash")
+
 
 @dataclass(frozen=False)
 class Module:
@@ -152,6 +183,13 @@ class Module:
             if object.id in seen_ids:
                 raise Exception(f"Multiple {object_type_name}s with ID {object.id} in {self.name}")
             seen_ids.add(object.id)
+
+    @property
+    def all_commands(self) -> Iterable[Command]:
+        for c in (CMD_GET, CMD_SET, CMD_LOAD, CMD_COMMIT):
+            yield c
+        for c in self.commands:
+            yield c
 
     def __post_init__(self):
         if self.configs is not None:
@@ -185,7 +223,7 @@ class Configuration:
         for module in self.modules:
             for var in module.configs:
                 all_types.add(var.type)
-            for cmd in module.commands:
+            for cmd in module.all_commands:
                 for arg in cmd.command_args:
                     all_types.add(arg.type)
                 for arg in cmd.response_args:
@@ -230,6 +268,11 @@ class Configuration:
         if match:
             return f"struct {name}"
 
+    def _find_ctypes_varlen(self, name: str):
+        match = VARLEN_TYPE_REGEX.match(name)
+        if match:
+            return f"{name}"
+
     def find_datatype(self, name: str):
         # If this is an array, then extract the name of the data type from the full name
         match = TYPE_ARRAY_REGEX.match(name)
@@ -253,11 +296,83 @@ class Configuration:
 
         raise Exception(f'Invalid type, {name}')
 
+    def find_ctypes_datatype(self, name: str):
+        # If this is an array, then extract the name of the data type from the full name
+        match = TYPE_ARRAY_REGEX.match(name)
+        if match:
+            name = match.group("type")
+
+        if name in STD_C_TYPES:
+            return STD_C_TYPES_TO_CTYPES[name]
+
+        varlen_type = self._find_ctypes_varlen(name)
+        if varlen_type:
+            return varlen_type
+
+        struct = self._find_struct(name)
+        if struct:
+            return struct.ctypes_datatype
+
+        enum = self._find_enum(name)
+        if enum:
+            return enum.ctypes_datatype
+
+        raise Exception(f'Invalid type, {name}')
+
+    def find_ctypes_get_argtype(self, name: str):
+        # If this is an array, then extract the name of the data type from the full name
+        match = TYPE_ARRAY_REGEX.match(name)
+        if match:
+            name = match.group("type")
+
+        if name in STD_C_TYPES:
+            return f'ctypes.POINTER({STD_C_TYPES_TO_CTYPES[name]})'
+
+        varlen_type = self._find_ctypes_varlen(name)
+        if varlen_type:
+            return f'ctypes.POINTER(m2msdktypes.{varlen_type})'
+
+        struct = self._find_struct(name)
+        if struct:
+            return f'ctypes.POINTER(m2msdktypes.{struct.ctypes_datatype})'
+
+        enum = self._find_enum(name)
+        if enum:
+            return f'ctypes.POINTER(m2msdktypes.{enum.ctypes_datatype})'
+
+        raise Exception(f'Invalid type, {name}')
+
+    def find_ctypes_set_argtype(self, name: str):
+        # If this is an array, then extract the name of the data type from the full name
+        match = TYPE_ARRAY_REGEX.match(name)
+        if match:
+            name = match.group("type")
+
+        if name in STD_C_TYPES:
+            return STD_C_TYPES_TO_CTYPES[name]
+
+        varlen_type = self._find_ctypes_varlen(name)
+        if varlen_type:
+            if self.datatype_is_string(varlen_type):
+                return 'ctypes.c_char_p'
+            else:
+                return f'ctypes.POINTER(m2msdktypes.{varlen_type})'
+
+        struct = self._find_struct(name)
+        if struct:
+            return f'ctypes.POINTER(m2msdktypes.{struct.ctypes_datatype})'
+
+        enum = self._find_enum(name)
+        if enum:
+            return f'm2msdktypes.{enum.ctypes_datatype}'
+
+        raise Exception(f'Invalid type, {name}')
+
     def find_command(self, full_name: str):
         module_name, command_name = full_name.split("-", maxsplit=1)
         for module in self.modules:
             if module.name == module_name:
-                for command in module.commands:
+                for command in module.all_commands:
                     if command.name == command_name:
                         return module, command
                 raise Exception(f"Command {command_name} not found in module {module_name}")
@@ -304,6 +419,13 @@ class Configuration:
         if match:
             groups = match.groupdict()
             return f'[{groups["num"]}]'
+        return ''
+
+    def get_ctypes_array_element(self, name: str):
+        match = TYPE_ARRAY_REGEX.match(name)
+        if match:
+            groups = match.groupdict()
+            return f'{groups["num"]}'
         return ''
 
     def load(yamlfile):

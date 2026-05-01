@@ -13,7 +13,7 @@
 
 #include "mmutils.h"
 
-enum mmagic_subsystems
+enum MM_PACKED mmagic_subsystems
 {
     mmagic_subsystem_reserved = 0,
     {%- for module in config.modules %}
@@ -22,19 +22,15 @@ enum mmagic_subsystems
 };
 
 {% for module in config.modules -%}
-enum mmagic_{{module.name}}_cmds
+enum MM_PACKED mmagic_{{module.name}}_cmds
 {
-    mmagic_{{module.name}}_cmd_get = 0,
-    mmagic_{{module.name}}_cmd_set = 1,
-    mmagic_{{module.name}}_cmd_load = 2,
-    mmagic_{{module.name}}_cmd_commit = 3,
-    {%- for command in module.commands %}
+    {%- for command in module.all_commands %}
     mmagic_{{module.name}}_cmd_{{command.name}} = {{command.id}},
     {%- endfor %}
 };
 
 {% if module.events %}
-enum mmagic_{{module.name}}_events
+enum MM_PACKED mmagic_{{module.name}}_events
 {
     {%- for event in module.events %}
     mmagic_{{module.name}}_event_{{event.name}} = {{event.id}},
@@ -45,7 +41,7 @@ enum mmagic_{{module.name}}_events
 
 {% for enum in config.enums %}
 /** {{enum.description}} */
-{{enum.datatype}}
+{{enum.decl_datatype}}
 {
     {%- for value in enum.values %}
     /** {{value.description}} */
@@ -114,7 +110,7 @@ struct MM_PACKED raw{{maxlen}}
  *         value of @c len or more means that the output was truncated. On error a negative value is
  *         returned.
  *
- * @note The behaviour is the same as @c snprintf(). This will not write more than @c len in bytes
+ * @note The behavior is the same as @c snprintf(). This will not write more than @c len in bytes
  *       (including the terminating null byte). If the output was truncated due to this limit, then
  *       the return value is the number of characters (excluding the terminating null byte) which
  *       would have been written to the final string if enough space had been available.
@@ -130,6 +126,21 @@ int mmagic_{{type}}_to_string({{config.find_datatype(type)}} value, char *buf, s
  * @return On success 0. On error a negative value is returned.
  */
 int mmagic_string_to_{{type}}({{config.find_datatype(type)}} *value, const char *buf);
+
+/**
+ * Convert from an arbitrary-length array of @c {{type}} to a hexadecimal string.
+ *
+ * @param array     Reference to the array of @c {{type}}.
+ * @param array_len Length of the array in bytes.
+ * @param buf       Reference to the buffer where string is to be placed.
+ * @param buf_len   Length of the buffer provided in bytes.
+ *
+ * @return          The number of array entries converted to a null-terminated hexadecimal string.
+ *                  If this is less than array_len then the output string is not a full
+ *                  representation of the array.
+ */
+int mmagic_{{type}}_to_hexstring(const {{config.find_datatype(type)}} *array, size_t array_len, char *buf, size_t buf_len);
+
 {% endfor %}
 
 {% for type in config.struct_types_used %}
@@ -144,7 +155,7 @@ int mmagic_string_to_{{type}}({{config.find_datatype(type)}} *value, const char 
  *               A return value of @c len or more means that the output was truncated. On error
  *               a negative value is returned.
  *
- * @note The behaviour is the same as @c snprintf(). This will not write more than @c len in bytes
+ * @note The behavior is the same as @c snprintf(). This will not write more than @c len in bytes
  *       (including the terminating null byte). If the output was truncated due to this limit, then
  *       the return value is the number of characters (excluding the terminating null byte) which
  *       would have been written to the final string if enough space had been available.
@@ -174,7 +185,7 @@ int mmagic_string_to_{{type}}({{config.find_datatype(type)}} *value, const char 
  *               A return value of @c len or more means that the output was truncated. On error
  *               a negative value is returned.
  *
- * @note The behaviour is the same as @c snprintf(). This will not write more than @c len in bytes
+ * @note The behavior is the same as @c snprintf(). This will not write more than @c len in bytes
  *       (including the terminating null byte). If the output was truncated due to this limit, then
  *       the return value is the number of characters (excluding the terminating null byte) which
  *       would have been written to the final string if enough space had been available.
@@ -204,7 +215,7 @@ int mmagic_string_to_string{{maxlen}}(struct string{{maxlen}} *value, const char
  *               null byte). A return value of @c len or more means that the output was
  *               truncated. On error a negative value is returned.
  *
- * @note The behaviour is the same as @c snprintf(). This will not write more than @c len in bytes
+ * @note The behavior is the same as @c snprintf(). This will not write more than @c len in bytes
  *       (including the terminating null byte). If the output was truncated due to this limit, then
  *       the return value is the number of characters (excluding the terminating null byte) which
  *       would have been written to the final string if enough space had been available.

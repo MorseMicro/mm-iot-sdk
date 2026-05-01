@@ -97,8 +97,6 @@ int morse_pageset_init(struct driver_data *driverd,
 
 void morse_pageset_finish(struct morse_pageset *pageset);
 
-void morse_pageset_flush_tx_data(struct morse_pageset *pageset);
-
 
 void morse_pagesets_stale_tx_work(struct driver_data *driverd);
 

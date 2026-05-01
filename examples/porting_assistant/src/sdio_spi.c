@@ -485,7 +485,11 @@ int sdio_spi_read_multi_byte(uint32_t address, uint8_t *data, uint32_t len)
             size = next_boundary - address;
         }
 
-        morse_cmd53_read(function, address, data, size);
+        result = morse_cmd53_read(function, address, data, size);
+        if (result != 0)
+        {
+            goto exit;
+        }
 
         /*
          * Observed sometimes that SDIO read repeats the first 4-bytes word twice,
@@ -497,7 +501,11 @@ int sdio_spi_read_multi_byte(uint32_t address, uint8_t *data, uint32_t len)
         {
             /* Lets try one more time before passing up */
             printf("Corrupt Payload. Re-Read first 8 bytes\n");
-            morse_cmd53_read(function, address, data, 8);
+            result = morse_cmd53_read(function, address, data, 8);
+            if (result != 0)
+            {
+                goto exit;
+            }
         }
 
         address += size;

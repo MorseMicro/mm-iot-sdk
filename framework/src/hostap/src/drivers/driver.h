@@ -29,6 +29,11 @@
 #include "pae/ieee802_1x_kay.h"
 #endif /* CONFIG_MACSEC */
 #include "utils/list.h"
+#if defined(CONFIG_DRIVER_NL80211_MORSE) || defined(MM_IOT)
+enum morse_cmd_param_action;
+enum morse_cmd_param_id;
+struct morse_twt;
+#endif /* CONFIG_IEEE80211AH || MM_IOT */
 
 struct nan_subscribe_params;
 struct nan_publish_params;
@@ -53,6 +58,7 @@ struct nan_publish_params;
 
 #define HOSTAPD_CHAN_INDOOR_ONLY 0x00010000
 #define HOSTAPD_CHAN_GO_CONCURRENT 0x00020000
+#define HOSTAPD_CHAN_AUTO_BW 0x00040000
 
 /* Allowed bandwidth mask */
 enum hostapd_chan_width_attr {
@@ -171,6 +177,12 @@ struct hostapd_channel_data {
 	 * need to set this)
 	 */
 	long double interference_factor;
+
+	/**
+	 * interference_bss_based - Indicates whether the interference was
+	 * calculated from number of BSSs
+	 */
+	bool interference_bss_based;
 #endif /* CONFIG_ACS */
 
 	/**
@@ -767,6 +779,12 @@ struct wpa_driver_scan_params {
 	 */
 	s8 link_id;
 
+	/**
+	 * min_scan_timeout - The minimum time to wait before cancelling a scan (seconds). 0 to use
+	 * defaults.
+	 */
+	u32 min_scan_timeout;
+
 	/*
 	 * NOTE: Whenever adding new parameters here, please make sure
 	 * wpa_scan_clone_params() and wpa_scan_free_params() get updated with
@@ -980,6 +998,14 @@ struct hostapd_freq_params {
 	 * eht_enabled - Whether EHT is enabled
 	 */
 	bool eht_enabled;
+
+	/**
+	 * punct_bitmap - Preamble puncturing bitmap
+	 * Each bit corresponds to a 20 MHz subchannel, the lowest bit for the
+	 * channel with the lowest frequency. A bit set to 1 indicates that the
+	 * subchannel is punctured, otherwise active.
+	 */
+	u16 punct_bitmap;
 
 	/**
 	 * link_id: If >=0 indicates the link of the AP MLD to configure
@@ -1479,11 +1505,30 @@ struct wpa_driver_associate_params {
 	 */
 	struct wpa_driver_mld_params mld_params;
 
-
 	/**
 	 * rsn_overriding - wpa_supplicant RSN overriding support
 	 */
 	bool rsn_overriding;
+
+	/**
+	 * spp_amsdu - SPP A-MSDU used on this connection
+	 */
+	bool spp_amsdu;
+
+	/**
+	 * bssid_filter - Allowed BSSIDs for the current association
+	 * This can be %NULL to indicate no constraint. */
+	const u8 *bssid_filter;
+
+	/**
+	 * bssid_filter_count - Number of allowed BSSIDs
+	 */
+	unsigned int bssid_filter_count;
+
+	/**
+	 * p2p_mode - P2P R1 only, P2P R2 only, or PCC mode
+	 */
+	enum wpa_p2p_mode p2p_mode;
 };
 
 enum hide_ssid {
@@ -1522,6 +1567,72 @@ struct unsol_bcast_probe_resp {
 	 * Unsolicited broadcast Probe Response template length
 	 */
 	size_t unsol_bcast_probe_resp_tmpl_len;
+};
+
+struct mbssid_data {
+	/**
+	 * mbssid_tx_iface - Transmitting interface of the MBSSID set
+	 */
+	const char *mbssid_tx_iface;
+
+	/**
+	 * mbssid_tx_iface_linkid - Link ID of the transmitting interface if
+	 * it is part of an MLD. Otherwise, -1.
+	 */
+	int mbssid_tx_iface_linkid;
+
+	/**
+	 * mbssid_index - The index of this BSS in the MBSSID set
+	 */
+	unsigned int mbssid_index;
+
+	/**
+	 * mbssid_elem - Buffer containing all MBSSID elements
+	 */
+	u8 *mbssid_elem;
+
+	/**
+	 * mbssid_elem_len - Total length of all MBSSID elements
+	 */
+	size_t mbssid_elem_len;
+
+	/**
+	 * mbssid_elem_count - The number of MBSSID elements
+	 */
+	u8 mbssid_elem_count;
+
+	/**
+	 * mbssid_elem_offset - Offsets to elements in mbssid_elem.
+	 * Kernel will use these offsets to generate multiple BSSID beacons.
+	 */
+	u8 **mbssid_elem_offset;
+
+	/**
+	 * ema - Enhanced MBSSID advertisements support.
+	 */
+	bool ema;
+
+	/**
+	 * rnr_elem - This buffer contains all of reduced neighbor report (RNR)
+	 * elements
+	 */
+	u8 *rnr_elem;
+
+	/**
+	 * rnr_elem_len - Length of rnr_elem buffer
+	 */
+	size_t rnr_elem_len;
+
+	/**
+	 * rnr_elem_count - Number of RNR elements
+	 */
+	u8 rnr_elem_count;
+
+	/**
+	 * rnr_elem_offset - The offsets to the elements in rnr_elem.
+	 * The driver will use these to include RNR elements in EMA beacons.
+	 */
+	u8 **rnr_elem_offset;
 };
 
 struct wpa_driver_ap_params {
@@ -1733,11 +1844,6 @@ struct wpa_driver_ap_params {
 	int disable_dgaf;
 
 	/**
-	 * osen - Whether OSEN security is enabled
-	 */
-	int osen;
-
-	/**
 	 * freq - Channel parameters for dynamic bandwidth changes
 	 */
 	struct hostapd_freq_params *freq;
@@ -1872,40 +1978,11 @@ struct wpa_driver_ap_params {
 	size_t fd_frame_tmpl_len;
 
 	/**
-	 * mbssid_tx_iface - Transmitting interface of the MBSSID set
+	 * mbssid - MBSSID element related params for Beacon frames
+	 *
+	 * This is used to add MBSSID element in beacon data.
 	 */
-	const char *mbssid_tx_iface;
-
-	/**
-	 * mbssid_index - The index of this BSS in the MBSSID set
-	 */
-	unsigned int mbssid_index;
-
-	/**
-	 * mbssid_elem - Buffer containing all MBSSID elements
-	 */
-	u8 *mbssid_elem;
-
-	/**
-	 * mbssid_elem_len - Total length of all MBSSID elements
-	 */
-	size_t mbssid_elem_len;
-
-	/**
-	 * mbssid_elem_count - The number of MBSSID elements
-	 */
-	u8 mbssid_elem_count;
-
-	/**
-	 * mbssid_elem_offset - Offsets to elements in mbssid_elem.
-	 * Kernel will use these offsets to generate multiple BSSID beacons.
-	 */
-	u8 **mbssid_elem_offset;
-
-	/**
-	 * ema - Enhanced MBSSID advertisements support.
-	 */
-	bool ema;
+	struct mbssid_data mbssid;
 
 	/**
 	 * punct_bitmap - Preamble puncturing bitmap
@@ -1915,27 +1992,6 @@ struct wpa_driver_ap_params {
 	 */
 	u16 punct_bitmap;
 
-	/**
-	 * rnr_elem - This buffer contains all of reduced neighbor report (RNR)
-	 * elements
-	 */
-	u8 *rnr_elem;
-
-	/**
-	 * rnr_elem_len - Length of rnr_elem buffer
-	 */
-	size_t rnr_elem_len;
-
-	/**
-	 * rnr_elem_count - Number of RNR elements
-	 */
-	unsigned int rnr_elem_count;
-
-	/**
-	 * rnr_elem_offset - The offsets to the elements in rnr_elem.
-	 * The driver will use these to include RNR elements in EMA beacons.
-	 */
-	u8 **rnr_elem_offset;
 
 	/* Unsolicited broadcast Probe Response data */
 	struct unsol_bcast_probe_resp ubpr;
@@ -2120,10 +2176,17 @@ struct wpa_driver_set_key_params {
 	 * %KEY_FLAG_GROUP_TX_DEFAULT
 	 *  GTK key valid for TX only, immediately taking over TX.
 	 * %KEY_FLAG_PAIRWISE_RX_TX
-	 *  Pairwise key immediately becoming the active pairwise key.
+	 *  Pairwise key immediately becoming the active pairwise key. If this
+	 *  key was previously set as an alternative RX-only key with
+	 *  %KEY_FLAG_PAIRWISE_RX | %KEY_FLAG_NEXT, the alternative RX-only key
+	 *  is taken into use for both TX and RX without changing the RX counter
+	 *  values.
 	 * %KEY_FLAG_PAIRWISE_RX
 	 *  Pairwise key not yet valid for TX. (Only usable when Extended
-	 *  Key ID is supported by the driver.)
+	 *  Key ID is supported by the driver or when configuring the next TK
+	 *  for RX-only with %KEY_FLAG_NEXT in which case the new TK can be used
+	 *  as an alternative key for decrypting received frames without
+	 *  replacing the possibly already configured old TK.)
 	 * %KEY_FLAG_PAIRWISE_RX_TX_MODIFY
 	 *  Enable TX for a pairwise key installed with
 	 *  KEY_FLAG_PAIRWISE_RX.
@@ -2235,7 +2298,6 @@ struct wpa_driver_capa {
 #define WPA_DRIVER_CAPA_KEY_MGMT_FT_SAE		0x00100000
 #define WPA_DRIVER_CAPA_KEY_MGMT_FT_802_1X_SHA384	0x00200000
 #define WPA_DRIVER_CAPA_KEY_MGMT_CCKM		0x00400000
-#define WPA_DRIVER_CAPA_KEY_MGMT_OSEN		0x00800000
 #define WPA_DRIVER_CAPA_KEY_MGMT_SAE_EXT_KEY	0x01000000
 #define WPA_DRIVER_CAPA_KEY_MGMT_FT_SAE_EXT_KEY	0x02000000
 	/** Bitfield of supported key management suites */
@@ -2466,6 +2528,21 @@ struct wpa_driver_capa {
 #define WPA_DRIVER_FLAGS2_RSN_OVERRIDE_STA	0x0000000000400000ULL
 /** Driver supports NAN offload */
 #define WPA_DRIVER_FLAGS2_NAN_OFFLOAD		0x0000000000800000ULL
+/** Driver/device supports SPP A-MSDUs */
+#define WPA_DRIVER_FLAGS2_SPP_AMSDU		0x0000000001000000ULL
+/** Driver supports P2P V2 */
+#define WPA_DRIVER_FLAGS2_P2P_FEATURE_V2	0x0000000002000000ULL
+/** Driver supports P2P PCC mode */
+#define WPA_DRIVER_FLAGS2_P2P_FEATURE_PCC_MODE	0x0000000004000000ULL
+/** Driver supports arbitrary channel width changes in AP mode */
+#define WPA_DRIVER_FLAGS2_AP_CHANWIDTH_CHANGE	0x0000000008000000ULL
+/** Driver supports FTM initiator functionality */
+#define WPA_DRIVER_FLAGS2_FTM_INITIATOR		0x0000000010000000ULL
+/** Driver supports non-trigger based ranging responder functionality */
+#define WPA_DRIVER_FLAGS2_NON_TRIGGER_BASED_RESPONDER   0x0000000020000000ULL
+/** Driver supports non-trigger based ranging initiator functionality */
+#define WPA_DRIVER_FLAGS2_NON_TRIGGER_BASED_INITIATOR	0x0000000040000000ULL
+
 	u64 flags2;
 
 #define FULL_AP_CLIENT_STATE_SUPP(drv_flags) \
@@ -2586,6 +2663,26 @@ struct wpa_driver_capa {
 	unsigned int mbssid_max_interfaces;
 	/* Maximum profile periodicity for enhanced MBSSID advertisement */
 	unsigned int ema_max_periodicity;
+
+	/* Maximum number of bytes of extra IE(s) that can be added to Probe
+	 * Request frames */
+	size_t max_probe_req_ie_len;
+
+	/* EDCA based ranging capabilities */
+	u8 edca_format_and_bw;
+	u8 max_tx_antenna;
+	u8 max_rx_antenna;
+
+	/* NTB based ranging capabilities */
+	u8 ntb_format_and_bw;
+	u8 max_tx_ltf_repetations;
+	u8 max_rx_ltf_repetations;
+	u8 max_tx_ltf_total;
+	u8 max_rx_ltf_total;
+	u8 max_rx_sts_le_80;
+	u8 max_rx_sts_gt_80;
+	u8 max_tx_sts_le_80;
+	u8 max_tx_sts_gt_80;
 };
 
 
@@ -2692,6 +2789,7 @@ struct hostapd_sta_add_params {
 	bool mld_link_sta;
 	s8 mld_link_id;
 	const u8 *mld_link_addr;
+	u16 eml_cap;
 };
 
 struct mac_address {
@@ -2739,6 +2837,7 @@ struct wpa_bss_params {
 #define WPA_STA_TDLS_PEER BIT(4)
 #define WPA_STA_AUTHENTICATED BIT(5)
 #define WPA_STA_ASSOCIATED BIT(6)
+#define WPA_STA_SPP_AMSDU BIT(7)
 
 enum tdls_oper {
 	TDLS_DISCOVERY_REQ,
@@ -2807,6 +2906,22 @@ struct wpa_mlo_signal_info {
 };
 
 /**
+ * struct wpa_mlo_reconfig_info - Information about user-requested add and/or
+ * remove setup links for the current MLO association.
+ *
+ * @add_links: Bitmask of links to be added
+ * @add_link_bssid: Array of BSSIDs for the links to be added
+ * @add_link_freq: Array of frequencies for the links to be added
+ * @delete_links: Bitmask of links to be removed
+ */
+struct wpa_mlo_reconfig_info {
+	u16 add_links;
+	u8 add_link_bssid[MAX_NUM_MLD_LINKS][ETH_ALEN];
+	int add_link_freq[MAX_NUM_MLD_LINKS];
+	u16 delete_links;
+};
+
+/**
  * struct wpa_channel_info - Information about the current channel
  * @frequency: Center frequency of the primary 20 MHz channel
  * @chanwidth: Width of the current operating channel
@@ -2842,6 +2957,7 @@ struct wpa_channel_info {
  * @proberesp_ies_len: Length of proberesp_ies in octets
  * @proberesp_ies_len: Length of proberesp_ies in octets
  * @probe_resp_len: Length of probe response template (@probe_resp)
+ * @mbssid: MBSSID element(s) to add into Beacon frames
  */
 struct beacon_data {
 	u8 *head, *tail;
@@ -2855,6 +2971,8 @@ struct beacon_data {
 	size_t proberesp_ies_len;
 	size_t assocresp_ies_len;
 	size_t probe_resp_len;
+
+	struct mbssid_data mbssid;
 };
 
 /**
@@ -2866,7 +2984,6 @@ struct beacon_data {
  * @beacon_after: Next beacon/probe resp/asooc resp info
  * @counter_offset_beacon: Offset to the count field in beacon's tail
  * @counter_offset_presp: Offset to the count field in probe resp.
- * @punct_bitmap - Preamble puncturing bitmap
  * @link_id: Link ID to determine the link for MLD; -1 for non-MLD
  * @ubpr: Unsolicited broadcast Probe Response frame data
  */
@@ -2884,7 +3001,6 @@ struct csa_settings {
 	u16 counter_offset_beacon[2];
 	u16 counter_offset_presp[2];
 
-	u16 punct_bitmap;
 	int link_id;
 
 	struct unsol_bcast_probe_resp ubpr;
@@ -3082,6 +3198,14 @@ enum pasn_status {
  * @akmp: Authentication key management protocol type supported.
  * @cipher: Cipher suite.
  * @group: Finite cyclic group. Default group used is 19 (ECC).
+ * @temporary_network: Indicates if a temporary network was created to perform
+ *	PASN authentication.
+ * @password: Password of user requested network.
+ * @comeback_len: Length of the comeback cookie data.
+ * @comeback: Comeback cookie data that may be present in case a temporary
+ * rejection is received from the AP.
+ * @comeback_after: The time after which the STA can try for PASN handshake in
+ * case of temporary rejection.
  * @ltf_keyseed_required: Indicates whether LTF keyseed generation is required
  * @status: PASN response status, %PASN_STATUS_SUCCESS for successful
  *	authentication, use %PASN_STATUS_FAILURE if PASN authentication
@@ -3095,6 +3219,11 @@ struct pasn_peer {
 	int akmp;
 	int cipher;
 	int group;
+	bool temporary_network;
+	char *password;
+	size_t comeback_len;
+	u8 *comeback;
+	u16 comeback_after;
 	bool ltf_keyseed_required;
 	enum pasn_status status;
 };
@@ -3239,6 +3368,53 @@ struct wpa_driver_ops {
 	 * key indexes. In most cases, WPA uses only key indexes 1 and 2 for
 	 * broadcast keys, so key index 0 is available for this kind of
 	 * configuration.
+	 *
+	 * For pairwise keys, there are potential race conditions between
+	 * enabling a new TK on each end of the connection and sending the first
+	 * protected frame. Drivers have multiple options on which style of key
+	 * configuration to support with the simplest option not providing any
+	 * protection for the race condition while the more complex options do
+	 * provide partial or full protection.
+	 *
+	 * Option 1: Do not support extended key IDs (i.e., use only Key ID 0
+	 * for pairwise keys) and do not support configuration of the next TK
+	 * as an alternative RX key. This provides no protection, but is simple
+	 * to support. The driver needs to ignore set_key() calls with
+	 * KEY_FLAG_NEXT.
+	 *
+	 * Option 2: Do not support extended key IDs (i.e., use only Key ID 0
+	 * for pairwise keys), but support configuration of the next TK as an
+	 * alternative RX key for the initial 4-way handshake. This provides
+	 * protection for the initial key setup at the beginning of an
+	 * association. The driver needs to configure the initial TK for RX-only
+	 * when receiving a set_key() call with KEY_FLAG_NEXT. This RX-only key
+	 * is ready for receiving protected Data frames from the peer before the
+	 * local device has enabled the key for TX. Unprotected EAPOL frames
+	 * need to be allowed even when this next TK is configured as RX-only
+	 * key. The same key is then set with KEY_FLAG_PAIRWISE_RX_TX to enable
+	 * its use for both TX and RX. The driver ignores set_key() calls with
+	 * KEY_FLAG_NEXT when a TK has been configured. When fully enabling the
+	 * TK for TX and RX, the RX counters associated with the TK must not be
+	 * cleared.
+	 *
+	 * Option 3: Same as option 2, but the driver supports multiple RX keys
+	 * in parallel during PTK rekeying. The driver processed set_key() calls
+	 * with KEY_FLAG_NEXT also when a TK has been configured. At that point
+	 * in the rekeying sequence the driver uses the previously configured TK
+	 * for TX and decrypts received frames with either the previously
+	 * configured TK or the next TK (RX-only).
+	 *
+	 * Option 4: The driver supports extended Key IDs and they are used for
+	 * an association but does not support KEY_FLAG_NEXT (options 2 and 3).
+	 * The next TK is configured as RX-only with KEY_FLAG_PAIRWISE_RX and
+	 * it is enabled for TX and RX with KEY_FLAG_PAIRWISE_RX_TX_MODIFY. When
+	 * extended key ID is not used for an association, the driver behaves
+	 * like in option 1.
+	 *
+	 * Option 5 and 6: Like option 4 but with support for KEY_FLAG_NEXT as
+	 * described above for options 2 and 3, respectively. Option 4 is used
+	 * for cases where extended key IDs are used for an association. Option
+	 * 2 or 3 is used for cases where extended key IDs are not used.
 	 *
 	 * Please note that TKIP keys include separate TX and RX MIC keys and
 	 * some drivers may expect them in different order than wpa_supplicant
@@ -3597,12 +3773,15 @@ struct wpa_driver_ops {
 	 * e.g., wpa_supplicant_event()
 	 * @ifname: interface name, e.g., wlan0
 	 * @global_priv: private driver global data from global_init()
+	 * @p2p_mode: P2P mode for a GO (not applicable for other interface
+	 *	types)
 	 * Returns: Pointer to private data, %NULL on failure
 	 *
 	 * This function can be used instead of init() if the driver wrapper
 	 * uses global data.
 	 */
-	void * (*init2)(void *ctx, const char *ifname, void *global_priv);
+	void * (*init2)(void *ctx, const char *ifname, void *global_priv,
+			enum wpa_p2p_mode p2p_mode);
 
 	/**
 	 * get_interfaces - Get information about available interfaces
@@ -3843,13 +4022,14 @@ struct wpa_driver_ops {
 	 * @own_addr: Source address and BSSID for the Disassociation frame
 	 * @addr: MAC address of the station to disassociate
 	 * @reason: Reason code for the Disassociation frame
+	 * @link_id: Link ID to use for Disassociation frame, or -1 if not set
 	 * Returns: 0 on success, -1 on failure
 	 *
 	 * This function requests a specific station to be disassociated and
 	 * a Disassociation frame to be sent to it.
 	 */
 	int (*sta_disassoc)(void *priv, const u8 *own_addr, const u8 *addr,
-			    u16 reason);
+			    u16 reason, int link_id);
 
 	/**
 	 * sta_remove - Remove a station entry (AP only)
@@ -4138,7 +4318,10 @@ struct wpa_driver_ops {
 	 * @bssid: BSSID (Address 3)
 	 * @data: Frame body
 	 * @data_len: data length in octets
-	 @ @no_cck: Whether CCK rates must not be used to transmit this frame
+	 * @no_cck: Whether CCK rates must not be used to transmit this frame
+	 * @link_id: Link ID of the specified link; -1 for non-MLO cases and for
+	 *	frames that target the MLD instead of a specific link in MLO
+	 *	cases
 	 * Returns: 0 on success, -1 on failure
 	 *
 	 * This command can be used to request the driver to transmit an action
@@ -4159,7 +4342,8 @@ struct wpa_driver_ops {
 	 */
 	int (*send_action)(void *priv, unsigned int freq, unsigned int wait,
 			   const u8 *dst, const u8 *src, const u8 *bssid,
-			   const u8 *data, size_t data_len, int no_cck);
+			   const u8 *data, size_t data_len, int no_cck,
+			   int link_id);
 
 	/**
 	 * send_action_cancel_wait - Cancel action frame TX wait
@@ -4457,6 +4641,15 @@ struct wpa_driver_ops {
 	 */
 	int (*mlo_signal_poll)(void *priv,
 			       struct wpa_mlo_signal_info *mlo_signal_info);
+
+	/**
+	 * setup_link_reconfig - Used to initiate Link Reconfiguration request
+	 * for the current MLO association.
+	 * @priv: Private driver interface data
+	 * @info: Link reconfiguration request info
+	 */
+	int (*setup_link_reconfig)(void *priv,
+				   struct wpa_mlo_reconfig_info *info);
 
 	/**
 	 * channel_info - Get parameters of the current operating channel
@@ -5427,6 +5620,25 @@ struct wpa_driver_ops {
 	 */
 	int (*nan_cancel_subscribe)(void *priv, int subscribe_id);
 
+	/**
+	 * can_share_drv - Check whether driver interface can be shared
+	 * @ctx: Pointer to hostapd context
+	 * @params: Configuration for the driver wrapper
+	 * @hapd: Pointer for overwriting the hapd context or %NULL
+	 * 	if can't find a shared drv
+	 *
+	 * Checks whether the driver interface with same phy name is
+	 * already present under the global driver which can be shared
+	 * instead of creating a new driver interface instance. If present,
+	 * @hapd will be overwritten with the hapd pointer which this shared
+	 * drv's first BSS is using. This will help the caller to later call
+	 * if_add().
+	 *
+	 * Returns: true if it can be shared or else false.
+	 */
+	bool (*can_share_drv)(void *ctx, struct wpa_init_params *params,
+			      void **hapd);
+
 #ifdef CONFIG_TESTING_OPTIONS
 	int (*register_frame)(void *priv, u16 type,
 			      const u8 *match, size_t match_len,
@@ -5444,6 +5656,166 @@ struct wpa_driver_ops {
 	 */
 	struct hostapd_multi_hw_info *
 	(*get_multi_hw_info)(void *priv, unsigned int *num_multi_hws);
+
+#if defined(CONFIG_DRIVER_NL80211_MORSE) || defined(MM_IOT)
+	/**
+	 * set_bss_color - Configure the BSS color for the network
+	 * @priv: Private driver interface data
+	 * @s1g_bss_color: The BSS color to be assigned to the network
+	 * Returns 0 on success, -1 on failure
+	 */
+	int (*set_bss_color)(void *priv, u8 s1g_bss_color);
+
+	/**
+	 * set_s1g_op_class - Set S1G operating class
+	 * @priv: Private driver interface data
+	 * @opclass: The S1G operating class
+	 * @prim_opclass: Primary operating class
+	 * Returns 0 on success, -1 on failure
+	 */
+	int (*set_s1g_op_class)(void *priv, u8 opclass, u8 prim_opclass);
+
+	/**
+	 * set_channel - Set channel parameters
+	 * @priv: Private driver interface data
+	 * @oper_freq: Operating center frequency in kHz
+	 * @oper_chwidth: Operating bandwidth in MHz
+	 * @prim_chwidth: Primary channel width in MHz
+	 * @prim_1mhz_ch_idx: Primary 1MHz channel index
+	 * Returns 0 on success, -1 on failure
+	 */
+	int (*set_s1g_channel)(void *priv, int oper_freq, int oper_chwidth, u8 prim_chwidth,
+			u8 prim_1mhz_ch_idx);
+
+	/**
+	 * set_ecsa_parameters - Set ECSA parameters
+	 * @priv: Private driver interface data
+	 * @global_oper_class: Global operating class for the operating country
+	 * @prim_chwidth: Primary channel width in MHz (1, 2)
+	 * @oper_chwidth: Operating channel width in MHz (1, 2, 4, 8)
+	 * @oper_freq: Frequency of operating channel in kHz
+	 * @prim_1mhz_ch_idx: 1MHz channel index of primary channel
+	 * @prim_global_op_class: Global operating class for primary channel
+	 * @s1g_capab: User configured S1G capabilities
+	 * Returns 0 on success, -1 on failure
+	 */
+	int (*set_ecsa_parameters)(void *priv, u8 global_oper_class, u8 prim_chwidth,
+				int oper_chwidth, int oper_freq, u8 prim_1mhz_ch_idx,
+				u8 prim_global_op_class, u32 s1g_capab);
+
+	/**
+	 * set_bssid_info - Set BSSID information
+	 * @priv: Private driver interface data
+	 * @tx_iface: Transmitting-interface index
+	 * @max_bss_index: Highest BSSID index
+	 * Returns 0 on success, -1 on failure
+	 */
+	int (*set_mbssid_info)(void *priv, const char *tx_iface, u8 max_bss_index);
+
+	/**
+	 * set_keep_alive - Set/Offload the BSS keep-alive frames
+	 * @priv: Private driver interface data
+	 * @bss_max_idle_period: The BSS max idle period as derived directly
+	 *				from the WLAN_EID_BSS_MAX_IDLE_PERIOD
+	 * @as_11ah: Intepret BSS max idle period as per the 11ah spec.
+	 * Returns 0 on success, -1 on failure
+	 */
+	int (*set_keep_alive)(void *priv, u16 bss_max_idle_period, bool as_11ah);
+
+	/**
+	 * twt_conf - Set up parameters for TWT
+	 * @priv: Private driver interface data
+	 * @twt_config: TWT config structure
+	 * Returns 0 on success, -1 on failure
+	 */
+	int (*twt_conf)(void *priv, struct morse_twt *twt_config);
+
+	/**
+	 * cac_conf - Enable or disable CAC
+	 * @priv: Private driver interface data
+	 * @enable: True to enable CAC, false to disable
+	 * Returns 0 on success, -1 on failure
+	 */
+	int (*cac_conf)(void *priv, bool enable);
+
+	/**
+	 * set_mesh_config - Pass mesh configuration to driver
+	 * @priv: Private driver interface data
+	 * @mesh_id: Mesh ID for the mesh interface
+	 * @mesh_id_len: Length of Mesh ID
+	 * @beaconless_mode: Beaconless mode
+	 * @max_plinks: Maximum number of peer links
+	 * Returns 0 on success, -1 on failure
+	 */
+	int (*set_mesh_config)(void *priv, u8 *mesh_id, u8 mesh_id_len,
+		u8 beaconless_mode, u8 max_plinks);
+
+	/**
+	 * mbca_conf - Configure MBCA parameters
+	 * @priv: Private driver interface data
+	 * @mbca_config: MBCA Configuration
+	 * @min_beacon_gap: Minimum gap between our's and neighbor beacon.
+	 * @tbtt_adj_interval: TBTT adjustment interval.
+	 * @beacon_timing_report_int: Beacon Timing report interval.
+	 * @mbss_start_scan_duration: Initial scan duration to find other peers in MBSS
+	 * Returns 0 on success, -1 on failure
+	 */
+	int (*mbca_conf)(void *priv, u8 mbca_config, u8 min_beacon_gap, u8 tbtt_adj_interval,
+		u8 beacon_timing_report_interval, u16 mbss_start_scan_duration);
+
+	/**
+	 * set_mesh_dynamic_peering - Enable/Disable and configure mesh dynamic peering
+	 * @priv: Private driver interface data
+	 * @enabled: True to enable dynamic peering, false to disable dynamic peering
+	 * @rssi_margin: RSSI margin to consider while selecting a peer to kickout.
+	 * @blacklist_timeout: Duration in seconds, a kicked out peer is blacklisted.
+	 * Returns 0 on success, -1 on failure
+	 */
+	int (*set_mesh_dynamic_peering)(void *priv, bool enabled, u8 rssi_margin,
+		u32 blacklist_timeout);
+
+	/**
+	 * raw_global_enable - Enable or disable RAW global
+	 * @priv: Private driver interface data
+	 * @enable: Enable or disable raw
+	 * Returns 0 on success, -1 on failure
+	 */
+	int (*raw_global_enable)(void *priv, bool enable);
+
+	/**
+	 * raw_priority_enable - Enable/Disable and configure RAW priority
+	 * @priv: Private driver interface data
+	 * @enable: True to enable the priority, false to disable
+	 * @prio: Index of the priority
+	 * @start_time_us: Start time from last beacon or RAW
+	 * @duration_us: RAW duration time
+	 * @num_slots: Number of slots
+	 * @cross_slot: Cross slot boundary bleed allowed
+	 * @max_bcn_spread: Maximum beacons to spread over (0 for no limit)
+	 * @nom_stas_per_bcn: Nominal number of STAs per beacon (0 for no spreading)
+	 * @praw_period: The period of the PRAW in beacons (0 for PRAW disabled)
+	 * @praw_start_offset: The beacon offset of the PRAW within the period
+	 * Returns 0 on success, -1 on failure
+	 */
+	int (*raw_priority_enable)(void *priv, bool enable, u8 prio,
+		u32 start_time_us, u32 duration_us, u8 num_slots,
+		bool cross_slot, u16 max_bcn_spread, u16 nom_stas_per_bcn,
+		u8 praw_period, u8 praw_start_offset);
+
+	/**
+	 * param_get_set - Get and set parameters
+	 * @priv: Private driver interface data
+	 * @param_id: Parameter ID
+	 * @action: Get or set
+	 * @value_in: Value to be set
+	 * @value_out: Pointer to variable for value to get
+	 * Returns 0 on success, -1 on failure
+	 */
+	int (*param_get_set)(void *priv, enum morse_cmd_param_id param_id,
+				   enum morse_cmd_param_action action,
+				   u32 value_in,
+				   u32 *value_out);
+#endif /* CONFIG_DRIVER_NL80211_MORSE || MM_IOT */
 };
 
 /**
@@ -6076,6 +6448,11 @@ enum wpa_event_type {
 	 * EVENT_MLD_INTERFACE_FREED - Notification of AP MLD interface removal
 	 */
 	EVENT_MLD_INTERFACE_FREED,
+
+	/**
+	 * EVENT_SETUP_LINK_RECONFIG - Notification that new AP links added
+	 */
+	EVENT_SETUP_LINK_RECONFIG,
 };
 
 
@@ -6585,6 +6962,7 @@ union wpa_event_data {
 		const u8 *bssid;
 		const u8 *addr;
 		int wds;
+		int link_id;
 	} rx_from_unknown;
 
 	/**
@@ -7066,6 +7444,17 @@ union wpa_event_data {
 		u8 valid_links;
 		struct t2lm_mapping t2lmap[MAX_NUM_MLD_LINKS];
 	} t2l_map_info;
+
+	/**
+	 * struct reconfig_info - Data for EVENT_SETUP_LINK_RECONFIG
+	 */
+	struct reconfig_info {
+		u16 added_links;
+		u8 count;
+		const u8 *status_list;
+		const u8 *resp_ie; /* Starting from Group Key Data */
+		size_t resp_ie_len;
+	} reconfig_info;
 };
 
 /**
@@ -7198,9 +7587,6 @@ extern const struct wpa_driver_ops wpa_driver_wext_ops; /* driver_wext.c */
 /* driver_nl80211.c */
 extern const struct wpa_driver_ops wpa_driver_nl80211_ops;
 #endif /* CONFIG_DRIVER_NL80211 */
-#ifdef CONFIG_DRIVER_HOSTAP
-extern const struct wpa_driver_ops wpa_driver_hostap_ops; /* driver_hostap.c */
-#endif /* CONFIG_DRIVER_HOSTAP */
 #ifdef CONFIG_DRIVER_BSD
 extern const struct wpa_driver_ops wpa_driver_bsd_ops; /* driver_bsd.c */
 #endif /* CONFIG_DRIVER_BSD */

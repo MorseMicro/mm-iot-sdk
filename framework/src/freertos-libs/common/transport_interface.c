@@ -27,11 +27,13 @@
  */
 
 /* Standard includes. */
+#include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 
 /* FreeRTOS includes. */
 #include "FreeRTOS.h"
+#include "mbedtls/net.h"
 #include "task.h"
 
 /* TLS transport header. */
@@ -39,7 +41,9 @@
 #include "mmosal.h"
 
 /* Default timeout for transport layer reads */
-#define TRANSPORT_TIMEOUT       1000
+#ifndef TRANSPORT_TIMEOUT_MS
+#define TRANSPORT_TIMEOUT_MS 1000
+#endif
 
 /**
  * @brief Initialize the mbed TLS structures in a network connection.
@@ -141,7 +145,7 @@ static TransportStatus_t tlsSetup( NetworkContext_t * pNetworkContext,
                                       const NetworkCredentials_t * pNetworkCredentials );
 
 /**
- * @brief Perform the TLS handshake on a TCP connection.
+ * @brief Perform the TLS handshake on a connection.
  *
  * @param[in] pNetworkContext Network context.
  * @param[in] pNetworkCredentials TLS setup parameters.
@@ -371,8 +375,11 @@ static void setOptionalConfigurations( SSLContext_t * pSslContext,
         }
     }
 
-    /* Set Maximum Fragment Length if enabled. */
-    #ifdef MBEDTLS_SSL_MAX_FRAGMENT_LENGTH
+    /* Set Maximum Fragment Length if enabled, and TLS1.3 is not enabled.
+     * This extension is deprecated in TLS1.3 (replaced with RECORD_SIZE_LIMIT)
+     * and can cause the TLS1.3 handshake to fail with certain servers.
+     */
+    #if defined(MBEDTLS_SSL_MAX_FRAGMENT_LENGTH) && !defined(MBEDTLS_SSL_PROTO_TLS1_3)
 
         /* Enable the max fragment extension. 4096 bytes is currently the largest fragment size permitted.
          * See RFC 8449 https://tools.ietf.org/html/rfc8449 for more information.
@@ -393,6 +400,13 @@ static TransportStatus_t tlsSetup( NetworkContext_t * pNetworkContext,
                                       const char * pHostName,
                                       const NetworkCredentials_t * pNetworkCredentials )
 {
+#if !defined(MBEDTLS_SSL_PROTO_DTLS)
+    if (pNetworkContext->proto == TRANSPORT_UDP)
+    {
+        return TRANSPORT_NOT_SUPPORTED;
+    }
+#endif
+
     TransportStatus_t returnStatus = TRANSPORT_SUCCESS;
     int32_t mbedtlsError = 0;
 
@@ -404,12 +418,23 @@ static TransportStatus_t tlsSetup( NetworkContext_t * pNetworkContext,
     /* Initialize the mbed TLS context structures. */
     sslContextInit( &( pNetworkContext->sslContext ) );
 
+
     mbedtlsError = mbedtls_ssl_config_defaults( &( pNetworkContext->sslContext.config ),
                                                 MBEDTLS_SSL_IS_CLIENT,
-                                                MBEDTLS_SSL_TRANSPORT_STREAM,
+                                                pNetworkContext->proto == TRANSPORT_TCP ?
+                                                    MBEDTLS_SSL_TRANSPORT_STREAM : MBEDTLS_SSL_TRANSPORT_DATAGRAM,
                                                 MBEDTLS_SSL_PRESET_DEFAULT );
     /* Set SSL timeout */
-    mbedtls_ssl_conf_read_timeout(&( pNetworkContext->sslContext.config ), TRANSPORT_TIMEOUT);
+    mbedtls_ssl_conf_read_timeout(&( pNetworkContext->sslContext.config ), TRANSPORT_TIMEOUT_MS);
+
+#if defined(MBEDTLS_SSL_PROTO_DTLS)
+    /* Setup a timer for DTLS handshake retries */
+    if (pNetworkContext->proto == TRANSPORT_UDP)
+    {
+        mbedtls_ssl_set_timer_cb(&pNetworkContext->sslContext.context, &pNetworkContext->sslContext.timer,
+                                 mbedtls_timing_set_delay, mbedtls_timing_get_delay);
+    }
+#endif
 
     if( mbedtlsError != 0 )
     {
@@ -449,9 +474,12 @@ static TransportStatus_t tlsHandshake( NetworkContext_t * pNetworkContext,
     configASSERT( pNetworkCredentials != NULL );
 
 #if defined(MBEDTLS_SSL_PROTO_TLS1_3)
-    /* Set min and max versions to TLS 1.2 and 1.3 respectively. Client will negotiate with server which version to use */
-    mbedtls_ssl_conf_min_tls_version( &( pNetworkContext->sslContext.config ), MBEDTLS_SSL_VERSION_TLS1_2);
-    mbedtls_ssl_conf_max_tls_version( &( pNetworkContext->sslContext.config ), MBEDTLS_SSL_VERSION_TLS1_3);
+    if (pNetworkContext->proto == TRANSPORT_TCP)
+    {
+        /* Set min and max versions to TLS 1.2 and 1.3 respectively. Client will negotiate with server which version to use */
+        mbedtls_ssl_conf_min_tls_version( &( pNetworkContext->sslContext.config ), MBEDTLS_SSL_VERSION_TLS1_2);
+        mbedtls_ssl_conf_max_tls_version( &( pNetworkContext->sslContext.config ), MBEDTLS_SSL_VERSION_TLS1_3);
+    }
 #endif
 
     /* Initialize the mbed TLS secured connection context. */
@@ -472,7 +500,7 @@ static TransportStatus_t tlsHandshake( NetworkContext_t * pNetworkContext,
          */
         /* coverity[misra_c_2012_rule_11_2_violation] */
         mbedtls_ssl_set_bio(&(pNetworkContext->sslContext.context),
-                            &(pNetworkContext->tcpSocket),
+                            &(pNetworkContext->socket),
                             mbedtls_net_send,
                             NULL,
                             mbedtls_net_recv_timeout);
@@ -517,6 +545,7 @@ static TransportStatus_t tlsHandshake( NetworkContext_t * pNetworkContext,
 
 TransportStatus_t transport_connect( NetworkContext_t * pNetworkContext,
                                            const char * pHostName,
+                                           TransportProtocol_t proto,
                                            uint16_t port,
                                            const NetworkCredentials_t * pNetworkCredentials)
 {
@@ -524,18 +553,21 @@ TransportStatus_t transport_connect( NetworkContext_t * pNetworkContext,
     int socketStatus = 0;
     char portstr[8];
 
-    if((pNetworkContext == NULL) || (pHostName == NULL))
+    if((pNetworkContext == NULL) || (pHostName == NULL) || (proto != TRANSPORT_TCP && proto != TRANSPORT_UDP))
     {
         returnStatus = TRANSPORT_INVALID_PARAMETER;
     }
 
-    /* Establish a TCP connection with the server. */
+    /* Establish a connection with the server. */
     if (returnStatus == TRANSPORT_SUCCESS)
     {
-        mbedtls_net_init( &(pNetworkContext->tcpSocket) );
+        mbedtls_net_init( &(pNetworkContext->socket) );
+        pNetworkContext->proto = proto;
+        pNetworkContext->receiveTimeoutMs = TRANSPORT_TIMEOUT_MS;
 
         snprintf(portstr, sizeof(portstr), "%7d", port);
-        socketStatus = mbedtls_net_connect(&(pNetworkContext->tcpSocket), pHostName, portstr, MBEDTLS_NET_PROTO_TCP);
+        socketStatus = mbedtls_net_connect(&(pNetworkContext->socket), pHostName, portstr,
+                                            proto == TRANSPORT_TCP ? MBEDTLS_NET_PROTO_TCP : MBEDTLS_NET_PROTO_UDP);
         if (socketStatus != 0)
         {
             returnStatus = TRANSPORT_CONNECT_FAILURE;
@@ -587,7 +619,7 @@ TransportStatus_t transport_connect( NetworkContext_t * pNetworkContext,
         {
             if (socketStatus == 0)
             {
-                mbedtls_net_free(&(pNetworkContext->tcpSocket));
+                mbedtls_net_free(&(pNetworkContext->socket));
             }
         }
     }
@@ -609,25 +641,28 @@ void transport_disconnect( NetworkContext_t * pNetworkContext )
         }
 
         /* Call socket shutdown function to close connection - note: does not use mbedtls */
-        mbedtls_net_free(&(pNetworkContext->tcpSocket));
+        mbedtls_net_free(&(pNetworkContext->socket));
     }
 }
 /*-----------------------------------------------------------*/
 
-int32_t transport_recv( NetworkContext_t * pNetworkContext,
-                           void * pBuffer,
-                           size_t bytesToRecv )
+int32_t transport_recv_with_timeout(NetworkContext_t * pNetworkContext,
+                                    void * pBuffer,
+                                    size_t bytesToRecv,
+                                    uint32_t timeoutMs)
 {
     int32_t readStatus = 0;
 
     if (pNetworkContext->sslContext.useTLS)
     {
         /* Read with TLS */
+        uint32_t old_timeout = pNetworkContext->sslContext.config.MBEDTLS_PRIVATE(read_timeout);
+        mbedtls_ssl_conf_read_timeout(&pNetworkContext->sslContext.config, timeoutMs);
         do
         {
-            readStatus = ( int32_t ) mbedtls_ssl_read( &( pNetworkContext->sslContext.context ),
-                                                pBuffer,
-                                                bytesToRecv );
+            readStatus = ( int32_t ) mbedtls_ssl_read(&( pNetworkContext->sslContext.context ),
+                                                      pBuffer,
+                                                      bytesToRecv );
         }
 #if defined(MBEDTLS_SSL_PROTO_TLS1_3) && !defined(MBEDTLS_SSL_SESSION_TICKETS)
         /* In TLS 1.3, a new session ticket is issued by the server after the handshake is successfully completed.
@@ -638,14 +673,25 @@ int32_t transport_recv( NetworkContext_t * pNetworkContext,
 #else
         while (0);
 #endif
+        mbedtls_ssl_conf_read_timeout(&pNetworkContext->sslContext.config, old_timeout);
     }
     else
     {
         /* Read in the clear */
-        readStatus = (int32_t) mbedtls_net_recv_timeout(&(pNetworkContext->tcpSocket),
-                                              pBuffer,
-                                              bytesToRecv, TRANSPORT_TIMEOUT);
+        readStatus = (int32_t) mbedtls_net_recv_timeout(&(pNetworkContext->socket),
+                                                        pBuffer,
+                                                        bytesToRecv,
+                                                        timeoutMs);
     }
+
+    return readStatus;
+}
+
+int32_t transport_recv( NetworkContext_t * pNetworkContext,
+                        void * pBuffer,
+                        size_t bytesToRecv )
+{
+    int32_t readStatus = transport_recv_with_timeout(pNetworkContext, pBuffer, bytesToRecv, pNetworkContext->receiveTimeoutMs);
 
     /* Timeout implies 0 bytes read */
     if (readStatus == MBEDTLS_ERR_SSL_TIMEOUT)
@@ -673,10 +719,27 @@ int32_t transport_send( NetworkContext_t * pNetworkContext,
     else
     {
         /* Send in the clear */
-        sendStatus = ( int32_t ) mbedtls_net_send( &( pNetworkContext->tcpSocket ),
+        sendStatus = ( int32_t ) mbedtls_net_send( &( pNetworkContext->socket ),
                                                pBuffer,
                                                bytesToSend );
     }
 
     return sendStatus;
+}
+/*-----------------------------------------------------------*/
+
+static void transport_recv_callback( struct mbedtls_net_context * mbedtlsCtx, void *arg )
+{
+    (void)(mbedtlsCtx);
+    NetworkContext_t *ctx = (NetworkContext_t*)arg;
+    ctx->recv_callback(ctx, ctx->recv_callback_arg);
+}
+
+int32_t transport_register_recv_callback( NetworkContext_t * pNetworkContext,
+                                          TransportRecvCallback_t recvCallback,
+                                          void *arg )
+{
+    pNetworkContext->recv_callback = recvCallback;
+    pNetworkContext->recv_callback_arg = arg;
+    return mbedtls_net_register_rx_callback(&pNetworkContext->socket, transport_recv_callback, pNetworkContext);
 }

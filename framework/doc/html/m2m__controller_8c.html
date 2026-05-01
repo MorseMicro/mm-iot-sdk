@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.10.4</span>
+   &#160;<span id="projectnumber">2.11.2</span>
    </div>
   </td>
  </tr>
@@ -101,7 +101,7 @@ $(document).ready(function(){initNavTree('m2m__controller_8c.html',''); initResi
 <p>The <a class="el" href="m2m__agent_8c.html">m2m_agent.c</a> and <a class="el" href="m2m__controller_8c.html">m2m_controller.c</a> example applications demonstrate how to use the MMAGIC M2M interface.</p>
 <h1><a class="anchor" id="M2M_GETTING_STARTED"></a>
 Getting Started</h1>
-<h2><a class="anchor" id="autotoc_md33"></a>
+<h2><a class="anchor" id="autotoc_md25"></a>
 Setup</h2>
 <p >To setup this demonstration you will need the following:</p><ul>
 <li>One <code>mm-ekh08-u575</code> reference platform (See <a class="el" href="MMPLATFORMS.html">Morse Micro IoT Reference Platforms</a>) - this includes a ST <code>NUCLEO-U575ZI-Q</code> board as the motherboard.</li>
@@ -124,10 +124,10 @@ Setup</h2>
 <td class="markdownTableBodyNone"><code>GND</code>   </td><td class="markdownTableBodyNone">Any convenient <code>GND</code> pin   </td><td class="markdownTableBodyNone">Any convenient <code>GND</code> pin   </td></tr>
 </table>
 <p >For an example of M2M communications over UART, see the <a class="el" href="cli_8c.html">cli.c</a> application which has an M2M mode.</p>
-<h2><a class="anchor" id="autotoc_md34"></a>
+<h2><a class="anchor" id="autotoc_md26"></a>
 Building</h2>
 <p >The <code>Wi-Fi</code> SSID and password are hard coded in <a class="el" href="m2m__controller_8c.html">m2m_controller.c</a> as this application is very basic and does not support saving settings using persistent store. The controller application is kept simple to allow easy porting of the controller to any platform. Update <code>SSID</code> and <code>SAE_PASSPHRASE</code> as appropriate for your test setup and build the <code>m2m_agent</code> and the <code>m2m_controller</code> applications as shown in <a class="el" href="GETTING_STARTED.html#BUILDING_FIRMWARE">Building Firmware</a>.</p>
-<h2><a class="anchor" id="autotoc_md35"></a>
+<h2><a class="anchor" id="autotoc_md27"></a>
 Running</h2>
 <ul>
 <li>Load the built <code>m2m_agent.elf</code> firmware into the <code>mm-ekh08-u575</code> device as explained in <a class="el" href="GETTING_STARTED.html#PROGRAMMING_FIRMWARE">Programming</a>. Ensure you have loaded the Board Configuration File (BCF) and set the 2 letter country code in the <code>wlan.country_code</code> setting in persistent storage as described in <a class="el" href="GETTING_STARTED.html#SET_APP_CONFIGURATION">Setting Config Store</a>.</li>
@@ -163,10 +163,10 @@ Running</h2>
 </div><!-- fragment --></li>
 </ul>
 </dd></dl>
-<h2><a class="anchor" id="autotoc_md36"></a>
+<h2><a class="anchor" id="autotoc_md28"></a>
 Testing the TCP Echo Server</h2>
 <p >In addition to an example TCP client that connects to a web server and the beacon monitor example, the <code>m2m_controller</code> also demonstrates how to use TCP server sockets to serve multiple incoming TCP client connections.</p>
-<h3><a class="anchor" id="autotoc_md37"></a>
+<h3><a class="anchor" id="autotoc_md29"></a>
 Using Telnet</h3>
 <ul>
 <li>Note the IP address assigned to the system (Agent + Controller is the system) in the Link Up message displayed by the controller.</li>
@@ -186,7 +186,7 @@ Using Telnet</h3>
 <li>Every time you close a telnet session, you should see the following message on the controller: <div class="fragment"><div class="line">Closed TCP socket</div>
 </div><!-- fragment --></li>
 </ul>
-<h3><a class="anchor" id="autotoc_md38"></a>
+<h3><a class="anchor" id="autotoc_md30"></a>
 Using a Python script</h3>
 <p >For stress testing the TCP echo server, we provide you a <code>tcp_echo_client.py</code> file that you can run to open multiple connections to the TCP echo server on the controller and rapidly send and receive data from it. This script can also open multiple TCP connections in parallel if requested.</p>
 <p >If your AP is configured in bridge mode, then you can run this script from any computer in the network. If not, you will need to copy this script to the access point and run it from a terminal session in the access point.</p>
@@ -280,12 +280,12 @@ Functions</h2></td></tr>
 <tr class="memitem:a07fee81f3de7a7d8cdaf86ec4e69ba79"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="m2m__controller_8c.html#a07fee81f3de7a7d8cdaf86ec4e69ba79">tcp_echo_server_task</a> (void *args)</td></tr>
 <tr class="memdesc:a07fee81f3de7a7d8cdaf86ec4e69ba79"><td class="mdescLeft">&#160;</td><td class="mdescRight">This task handles a single incoming TCP connection.  <a href="m2m__controller_8c.html#a07fee81f3de7a7d8cdaf86ec4e69ba79">More...</a><br /></td></tr>
 <tr class="separator:a07fee81f3de7a7d8cdaf86ec4e69ba79"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5afdc579172347833b456810f819744e"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="m2m__controller_8c.html#a5afdc579172347833b456810f819744e">tcp_echo_server_start</a> (struct mmagic_controller *controller, uint16_t port)</td></tr>
+<tr class="memitem:a5afdc579172347833b456810f819744e"><td class="memItemLeft" align="right" valign="top">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga202c6db4afd9d9ff976b0e61267ab6bb">mmagic_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="m2m__controller_8c.html#a5afdc579172347833b456810f819744e">tcp_echo_server_start</a> (struct mmagic_controller *controller, uint16_t port)</td></tr>
 <tr class="memdesc:a5afdc579172347833b456810f819744e"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function illustrates how to start a TCP server and listen for a connection.  <a href="m2m__controller_8c.html#a5afdc579172347833b456810f819744e">More...</a><br /></td></tr>
 <tr class="separator:a5afdc579172347833b456810f819744e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a832de5b9d26714d3f06323d881fd2093"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="m2m__controller_8c.html#a832de5b9d26714d3f06323d881fd2093">tcp_rx_ready_event_handler</a> (const struct <a class="el" href="structmmagic__tcp__rx__ready__event__args.html">mmagic_tcp_rx_ready_event_args</a> *event_args, void *arg)</td></tr>
-<tr class="memdesc:a832de5b9d26714d3f06323d881fd2093"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handler for TCP receive ready event callback.  <a href="m2m__controller_8c.html#a832de5b9d26714d3f06323d881fd2093">More...</a><br /></td></tr>
-<tr class="separator:a832de5b9d26714d3f06323d881fd2093"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adb48bd225c95cd5b0eb3fd8db8baf981"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="m2m__controller_8c.html#adb48bd225c95cd5b0eb3fd8db8baf981">socket_rx_ready_event_handler</a> (const struct <a class="el" href="structmmagic__socket__rx__ready__event__args.html">mmagic_socket_rx_ready_event_args</a> *event_args, void *arg)</td></tr>
+<tr class="memdesc:adb48bd225c95cd5b0eb3fd8db8baf981"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handler for data receive ready event callback.  <a href="m2m__controller_8c.html#adb48bd225c95cd5b0eb3fd8db8baf981">More...</a><br /></td></tr>
+<tr class="separator:adb48bd225c95cd5b0eb3fd8db8baf981"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0e6036372ca4894444a7fdec035929ca"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="m2m__controller_8c.html#a0e6036372ca4894444a7fdec035929ca">run_examples_task</a> (void *args)</td></tr>
 <tr class="memdesc:a0e6036372ca4894444a7fdec035929ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Runs the examples.  <a href="m2m__controller_8c.html#a0e6036372ca4894444a7fdec035929ca">More...</a><br /></td></tr>
 <tr class="separator:a0e6036372ca4894444a7fdec035929ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -478,7 +478,7 @@ Variables</h2></td></tr>
 <p>Main entry point to the application. </p>
 <p >This will be invoked in a thread once operating system and hardware initialization has completed. It may return, but it does not have to. </p>
 
-<p class="definition">Definition at line <a class="el" href="m2m__controller_8c_source.html#l00782">782</a> of file <a class="el" href="m2m__controller_8c_source.html">m2m_controller.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="m2m__controller_8c_source.html#l00799">799</a> of file <a class="el" href="m2m__controller_8c_source.html">m2m_controller.c</a>.</p>
 
 </div>
 </div>
@@ -628,7 +628,54 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="m2m__controller_8c_source.html#l00704">704</a> of file <a class="el" href="m2m__controller_8c_source.html">m2m_controller.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="m2m__controller_8c_source.html#l00705">705</a> of file <a class="el" href="m2m__controller_8c_source.html">m2m_controller.c</a>.</p>
+
+</div>
+</div>
+<a id="adb48bd225c95cd5b0eb3fd8db8baf981" name="adb48bd225c95cd5b0eb3fd8db8baf981"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adb48bd225c95cd5b0eb3fd8db8baf981">&#9670;&nbsp;</a></span>socket_rx_ready_event_handler()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void socket_rx_ready_event_handler </td>
+          <td>(</td>
+          <td class="paramtype">const struct <a class="el" href="structmmagic__socket__rx__ready__event__args.html">mmagic_socket_rx_ready_event_args</a> *&#160;</td>
+          <td class="paramname"><em>event_args</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>arg</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Handler for data receive ready event callback. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">event_args</td><td>Event arguments. </td></tr>
+    <tr><td class="paramname">arg</td><td>Opaque argument that was passed in when the callback was registered. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="m2m__controller_8c_source.html#l00690">690</a> of file <a class="el" href="m2m__controller_8c_source.html">m2m_controller.c</a>.</p>
 
 </div>
 </div>
@@ -690,7 +737,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#gad2f6cd96ec8731a96031b0b5614f9f92">mmagic_status</a> tcp_echo_server_start </td>
+          <td class="memname">static enum <a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ga202c6db4afd9d9ff976b0e61267ab6bb">mmagic_status</a> tcp_echo_server_start </td>
           <td>(</td>
           <td class="paramtype">struct mmagic_controller *&#160;</td>
           <td class="paramname"><em>controller</em>, </td>
@@ -723,9 +770,9 @@ Variables</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMAGIC__CONTROLLER__DATA__TYPES.html#ggad2f6cd96ec8731a96031b0b5614f9f92a264721ca9a0fee67500a999090f98ce0">MMAGIC_STATUS_OK</a> else an appropriate error code. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><code>MMAGIC_STATUS_OK</code> else an appropriate error code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="m2m__controller_8c_source.html#l00626">626</a> of file <a class="el" href="m2m__controller_8c_source.html">m2m_controller.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="m2m__controller_8c_source.html#l00627">627</a> of file <a class="el" href="m2m__controller_8c_source.html">m2m_controller.c</a>.</p>
 
 </div>
 </div>
@@ -761,54 +808,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="m2m__controller_8c_source.html#l00553">553</a> of file <a class="el" href="m2m__controller_8c_source.html">m2m_controller.c</a>.</p>
-
-</div>
-</div>
-<a id="a832de5b9d26714d3f06323d881fd2093" name="a832de5b9d26714d3f06323d881fd2093"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a832de5b9d26714d3f06323d881fd2093">&#9670;&nbsp;</a></span>tcp_rx_ready_event_handler()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static void tcp_rx_ready_event_handler </td>
-          <td>(</td>
-          <td class="paramtype">const struct <a class="el" href="structmmagic__tcp__rx__ready__event__args.html">mmagic_tcp_rx_ready_event_args</a> *&#160;</td>
-          <td class="paramname"><em>event_args</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">void *&#160;</td>
-          <td class="paramname"><em>arg</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Handler for TCP receive ready event callback. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">event_args</td><td>Event arguments. </td></tr>
-    <tr><td class="paramname">arg</td><td>Opaque argument that was passed in when the callback was registered. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p class="definition">Definition at line <a class="el" href="m2m__controller_8c_source.html#l00689">689</a> of file <a class="el" href="m2m__controller_8c_source.html">m2m_controller.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="m2m__controller_8c_source.html#l00554">554</a> of file <a class="el" href="m2m__controller_8c_source.html">m2m_controller.c</a>.</p>
 
 </div>
 </div>
@@ -882,7 +882,7 @@ Variables</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_53f24dd26f9743fa303a83f37b3ec939.html">applications</a></li><li class="navelem"><a class="el" href="dir_903dc44de6aba89209c1231ba3dbceaa.html">mm-ekh08-u575</a></li><li class="navelem"><a class="el" href="dir_8858bb27c61b3862c6b087759be9e333.html">m2m_controller</a></li><li class="navelem"><a class="el" href="dir_c04b2fecd497b3298e55846422e13dfb.html">src</a></li><li class="navelem"><a class="el" href="m2m__controller_8c.html">m2m_controller.c</a></li>
+    <li class="navelem"><a class="el" href="dir_2271e79b5286dc6f86ff0018a58db5d1.html">applications</a></li><li class="navelem"><a class="el" href="dir_30998d3c2d0e794661365b9b7cc51676.html">mm-ekh08-u575</a></li><li class="navelem"><a class="el" href="dir_d46121361d9090470240e4bf1d494f68.html">m2m_controller</a></li><li class="navelem"><a class="el" href="dir_1aed993d7103f869daae86c7bd78ff7c.html">src</a></li><li class="navelem"><a class="el" href="m2m__controller_8c.html">m2m_controller.c</a></li>
     <li class="footer">Copyright 2021-2025 Morse Micro </li>
   </ul>
 </div>

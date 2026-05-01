@@ -561,6 +561,17 @@ struct hostapd_mld {
 #define HOSTAPD_MLD_MAX_REF_COUNT      0xFF
 #endif /* CONFIG_IEEE80211BE */
 
+enum hostapd_iface_state {
+	HAPD_IFACE_UNINITIALIZED,
+	HAPD_IFACE_DISABLED,
+	HAPD_IFACE_COUNTRY_UPDATE,
+	HAPD_IFACE_ACS,
+	HAPD_IFACE_HT_SCAN,
+	HAPD_IFACE_DFS,
+	HAPD_IFACE_NO_IR,
+	HAPD_IFACE_ENABLED
+};
+
 /**
  * struct hostapd_iface - hostapd per-interface data structure
  */
@@ -570,17 +581,7 @@ struct hostapd_iface {
 	char *config_fname;
 	struct hostapd_config *conf;
 	char phy[16]; /* Name of the PHY (radio) */
-
-	enum hostapd_iface_state {
-		HAPD_IFACE_UNINITIALIZED,
-		HAPD_IFACE_DISABLED,
-		HAPD_IFACE_COUNTRY_UPDATE,
-		HAPD_IFACE_ACS,
-		HAPD_IFACE_HT_SCAN,
-		HAPD_IFACE_DFS,
-		HAPD_IFACE_NO_IR,
-		HAPD_IFACE_ENABLED
-	} state;
+	enum hostapd_iface_state state;
 
 #ifdef CONFIG_MESH
 	struct mesh_conf *mconf;
@@ -776,6 +777,8 @@ struct hostapd_iface * hostapd_init(struct hapd_interfaces *interfaces,
 struct hostapd_iface *
 hostapd_interface_init_bss(struct hapd_interfaces *interfaces, const char *phy,
 			   const char *config_fname, int debug);
+void hostapd_bss_setup_multi_link(struct hostapd_data *hapd,
+				  struct hapd_interfaces *interfaces);
 void hostapd_new_assoc_sta(struct hostapd_data *hapd, struct sta_info *sta,
 			   int reassoc);
 void hostapd_interface_deinit_free(struct hostapd_iface *iface);
@@ -826,6 +829,8 @@ int hostapd_notif_assoc(struct hostapd_data *hapd, const u8 *addr,
 			const u8 *req_ie, size_t req_ielen, const u8 *resp_ie,
 			size_t resp_ielen, const u8 *link_addr, int reassoc);
 void hostapd_notif_disassoc(struct hostapd_data *hapd, const u8 *addr);
+void hostapd_notif_disassoc_mld(struct hostapd_data *assoc_hapd,
+				struct sta_info *sta, const u8 *addr);
 void hostapd_event_sta_low_ack(struct hostapd_data *hapd, const u8 *addr);
 void hostapd_event_connect_failed_reason(struct hostapd_data *hapd,
 					 const u8 *addr, int reason_code);
@@ -851,6 +856,10 @@ void hostapd_event_sta_opmode_changed(struct hostapd_data *hapd, const u8 *addr,
 				      enum smps_mode smps_mode,
 				      enum chan_width chan_width, u8 rx_nss);
 
+int hostapd_change_config_freq(struct hostapd_data *hapd,
+			       struct hostapd_config *conf,
+			       struct hostapd_freq_params *params,
+			       struct hostapd_freq_params *old_params);
 #ifdef CONFIG_FST
 void fst_hostapd_fill_iface_obj(struct hostapd_data *hapd,
 				struct fst_wpa_obj *iface_obj);
@@ -867,8 +876,11 @@ bool hostapd_is_ml_partner(struct hostapd_data *hapd1,
 u8 hostapd_get_mld_id(struct hostapd_data *hapd);
 int hostapd_mld_add_link(struct hostapd_data *hapd);
 int hostapd_mld_remove_link(struct hostapd_data *hapd);
+u8 hostapd_get_active_links(struct hostapd_data *hapd);
 struct hostapd_data * hostapd_mld_get_first_bss(struct hostapd_data *hapd);
 
+int hostapd_build_beacon_data(struct hostapd_data *hapd,
+			      struct beacon_data *beacon);
 void free_beacon_data(struct beacon_data *beacon);
 int hostapd_fill_cca_settings(struct hostapd_data *hapd,
 			      struct cca_settings *settings);
@@ -894,5 +906,18 @@ static inline bool hostapd_mld_is_first_bss(struct hostapd_data *hapd)
 #endif /* CONFIG_IEEE80211BE */
 
 u16 hostapd_get_punct_bitmap(struct hostapd_data *hapd);
+
+static inline bool ap_pmf_enabled(struct hostapd_bss_config *conf)
+{
+	return conf->ieee80211w != NO_MGMT_FRAME_PROTECTION ||
+		conf->rsn_override_mfp != NO_MGMT_FRAME_PROTECTION ||
+		conf->rsn_override_mfp_2 != NO_MGMT_FRAME_PROTECTION;
+}
+
+enum oper_chan_width
+hostapd_chan_width_from_freq_params(struct hostapd_freq_params *freq_params);
+
+struct hostapd_data *
+hostapd_get_mbssid_bss_by_idx(struct hostapd_data *hapd, size_t idx);
 
 #endif /* HOSTAPD_H */

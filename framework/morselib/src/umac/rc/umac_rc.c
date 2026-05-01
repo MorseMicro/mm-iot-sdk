@@ -478,7 +478,7 @@ void umac_rc_feedback(struct umac_sta_data *stad, struct mmdrv_tx_metadata *tx_m
               rate_table,
               attempts_count,
               frame_acked ? " " : "not ");
-    RC_TRACE("FB %x %x", (uint32_t)rate_table, (ack_received ? 0x8000 : 0) | attempts_count);
+    RC_TRACE("FB %x %x", (uint32_t)rate_table, (frame_acked ? 0x8000 : 0) | attempts_count);
 
     if (attempts_count == 0)
     {
@@ -489,7 +489,7 @@ void umac_rc_feedback(struct umac_sta_data *stad, struct mmdrv_tx_metadata *tx_m
     if (sta_data->reference_table != NULL)
     {
 
-        mmrc_feedback(sta_data->reference_table, rate_table, attempts_count, was_aggregated);
+        mmrc_feedback(sta_data->reference_table, rate_table, was_aggregated, frame_acked);
     }
 
 

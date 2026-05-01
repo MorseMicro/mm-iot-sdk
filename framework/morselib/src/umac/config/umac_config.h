@@ -159,16 +159,6 @@ const struct mmwlan_beacon_vendor_ie_filter *umac_config_get_beacon_vendor_ie_fi
     struct umac_data *umacd);
 
 
-void umac_config_set_health_check_interval(struct umac_data *umacd,
-                                           uint32_t min_health_check_intvl_ms,
-                                           uint32_t max_health_check_intvl_ms);
-
-
-void umac_config_get_health_check_interval(struct umac_data *umacd,
-                                           uint32_t *min_health_check_intvl_ms,
-                                           uint32_t *max_health_check_intvl_ms);
-
-
 void umac_config_set_datapath_rx_reorder_list_maxlen(struct umac_data *umacd,
                                                      uint32_t rx_reorder_list_maxlen);
 

@@ -73,8 +73,6 @@ enum mmipal_addr_mode
     MMIPAL_DHCP,
     /** IP address allocated via AutoIP. @c LWIP_DHCP must be set to 1 if using LWIP. */
     MMIPAL_AUTOIP,
-    /** DHCP offloaded to chip. */
-    MMIPAL_DHCP_OFFLOAD,
 };
 
 /** IP address string type. */
@@ -186,18 +184,13 @@ struct mmipal_init_args
     enum mmipal_ip6_addr_mode ip6_mode;
     /** IPv6 address to use (if @c ip6_mode is @c MMIPAL_IP6_STATIC). */
     mmipal_ip_addr_t ip6_addr;
-    /** Flag requesting ARP response offload feature */
-    bool offload_arp_response;
-    /** ARP refresh offload interval in seconds */
-    uint32_t offload_arp_refresh_s;
 };
 
 /**
  * Default values for @ref mmipal_init_args. This should be used when initializing the
  * @ref mmipal_init_args structure.
  */
-#define MMIPAL_INIT_ARGS_DEFAULT \
-    { MMIPAL_DHCP, { 0 }, { 0 }, { 0 }, MMIPAL_IP6_DISABLED, { 0 }, false, 0 }
+#define MMIPAL_INIT_ARGS_DEFAULT { MMIPAL_DHCP, { 0 }, { 0 }, { 0 }, MMIPAL_IP6_DISABLED, { 0 } }
 
 /**
  * Initialize the IP stack and enable the MMWLAN interface.

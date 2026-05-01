@@ -67,8 +67,10 @@ struct umac_root_data *umac_data_get_root(struct umac_data *umacd);
 
 struct umac_wnm_sleep_data *umac_data_get_wnm_sleep(struct umac_data *umacd);
 
+#if !(defined(DISABLE_MMWLAN_HEALTH_CHECK) && DISABLE_MMWLAN_HEALTH_CHECK)
 
-struct umac_offload_data *umac_data_get_offload(struct umac_data *umacd);
+struct umac_health_check_data *umac_data_get_health_check(struct umac_data *umacd);
+#endif
 
 
 struct umac_ap_data *umac_data_get_ap(struct umac_data *umacd);
@@ -78,6 +80,15 @@ struct umac_ap_data *umac_data_alloc_ap(struct umac_data *umacd);
 
 
 void umac_data_dealloc_ap(struct umac_data *umacd);
+
+
+struct umac_relay_data *umac_data_get_relay(struct umac_data *umacd);
+
+
+struct umac_relay_data *umac_data_alloc_relay(struct umac_data *umacd, size_t size);
+
+
+void umac_data_dealloc_relay(struct umac_data *umacd);
 
 
 
@@ -168,5 +179,8 @@ uint32_t umac_sta_data_get_queued_len(struct umac_sta_data *stad);
 
 
 bool umac_sta_data_is_paused(struct umac_sta_data *stad);
+
+
+bool umac_sta_data_is_associated(struct umac_sta_data *stad);
 
 

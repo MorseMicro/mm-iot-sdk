@@ -20,7 +20,7 @@
 #define HW_SCAN_FSM_LOG(format_str, ...) MMLOG_DBG(format_str, __VA_ARGS__)
 
 #include "hw_scan_fsm.h"
-#include "hw_scan_fsm.def"
+#include "hw_scan_fsm_def.h"
 
 
 struct MM_PACKED hw_scan_tlv_hdr
@@ -320,14 +320,10 @@ static void hw_scan_construct_probe_req_tlv(struct umac_data *umacd,
     }
 }
 
-static struct morse_cmd_req_hw_scan *hw_scan_construct_base_request(
-    struct umac_data *umacd,
-    struct consbuf *cbuf,
-    const struct mmwlan_scan_args *scan_args)
+static void hw_scan_add_request_tlvs_to_cbuf(struct umac_data *umacd,
+                                             struct consbuf *cbuf,
+                                             const struct mmwlan_scan_args *scan_args)
 {
-    struct morse_cmd_req_hw_scan *hw_scan_req =
-        (struct morse_cmd_req_hw_scan *)consbuf_reserve(cbuf, sizeof(struct morse_cmd_req_hw_scan));
-
     hw_scan_construct_channel_list_tlv(umacd, cbuf);
     hw_scan_construct_power_list_tlv(umacd, cbuf);
 
@@ -337,8 +333,6 @@ static struct morse_cmd_req_hw_scan *hw_scan_construct_base_request(
     }
 
     hw_scan_construct_probe_req_tlv(umacd, cbuf, scan_args);
-
-    return hw_scan_req;
 }
 
 static enum mmwlan_status hw_scan_start(struct umac_data *umacd)
@@ -347,29 +341,36 @@ static enum mmwlan_status hw_scan_start(struct umac_data *umacd)
     struct umac_scan_data *data = umac_data_get_scan(umacd);
     struct consbuf cbuf = CONSBUF_INIT_WITHOUT_BUF;
 
-    (void)hw_scan_construct_base_request(umacd, &cbuf, &data->active_scan_req->args);
+    hw_scan_add_request_tlvs_to_cbuf(umacd, &cbuf, &data->active_scan_req->args);
 
     uint8_t *buf = (uint8_t *)mmosal_malloc(cbuf.offset);
     MMOSAL_ASSERT(buf);
     consbuf_reinit(&cbuf, buf, cbuf.offset);
 
-    struct morse_cmd_req_hw_scan *hw_scan_req =
-        hw_scan_construct_base_request(umacd, &cbuf, &data->active_scan_req->args);
-    MMOSAL_ASSERT(hw_scan_req);
+    hw_scan_add_request_tlvs_to_cbuf(umacd, &cbuf, &data->active_scan_req->args);
 
+    uint16_t vif_id = umac_interface_get_vif_id(umacd, UMAC_INTERFACE_SCAN);
+    if (vif_id == MMDRV_VIF_ID_INVALID)
+    {
+        MMLOG_WRN("HW scan failure: no VIF\n");
+        status = MMWLAN_ERROR;
+        goto cleanup;
+    }
 
-    morse_command_reinit_header(&hw_scan_req->hdr,
-                                (cbuf.offset - sizeof(hw_scan_req->hdr)),
-                                MORSE_CMD_ID_HW_SCAN,
-                                data->hw_scan_data.vif_id);
-    hw_scan_req->flags = MORSE_CMD_HW_SCAN_FLAGS_START;
-    hw_scan_req->dwell_time_ms = data->active_scan_req->args.dwell_time_ms;
+    struct mmdrv_hw_scan_params params = {
+        .flags = MORSE_CMD_HW_SCAN_FLAGS_START,
+        .dwell_time_ms = data->active_scan_req->args.dwell_time_ms,
+        .tlvs = cbuf.buf,
+        .tlvs_len = cbuf.offset,
+    };
 
-    if (mmdrv_execute_command(buf, NULL, 0))
+    if (mmdrv_hw_scan(vif_id, &params))
     {
         MMLOG_ERR("Failed to execute %s HW_SCAN command\n", "START");
         status = MMWLAN_ERROR;
     }
+
+cleanup:
     mmosal_free(buf);
 
     return status;
@@ -379,49 +380,61 @@ enum mmwlan_status hw_scan_store_scan_config(struct umac_data *umacd,
                                              struct mmwlan_scan_args *scan_args)
 {
     enum mmwlan_status status = MMWLAN_SUCCESS;
-    struct umac_scan_data *data = umac_data_get_scan(umacd);
     struct consbuf cbuf = CONSBUF_INIT_WITHOUT_BUF;
 
-    (void)hw_scan_construct_base_request(umacd, &cbuf, scan_args);
+    hw_scan_add_request_tlvs_to_cbuf(umacd, &cbuf, scan_args);
 
     uint8_t *buf = (uint8_t *)mmosal_malloc(cbuf.offset);
     MMOSAL_ASSERT(buf);
     consbuf_reinit(&cbuf, buf, cbuf.offset);
 
-    struct morse_cmd_req_hw_scan *hw_scan_req =
-        hw_scan_construct_base_request(umacd, &cbuf, scan_args);
-    MMOSAL_ASSERT(hw_scan_req);
+    hw_scan_add_request_tlvs_to_cbuf(umacd, &cbuf, scan_args);
 
+    uint16_t vif_id = umac_interface_get_vif_id(umacd, UMAC_INTERFACE_SCAN);
+    if (vif_id == MMDRV_VIF_ID_INVALID)
+    {
+        MMLOG_WRN("HW scan failure: no VIF\n");
+        status = MMWLAN_ERROR;
+        goto cleanup;
+    }
 
-    morse_command_reinit_header(&hw_scan_req->hdr,
-                                (cbuf.offset - sizeof(hw_scan_req->hdr)),
-                                MORSE_CMD_ID_HW_SCAN,
-                                data->hw_scan_data.vif_id);
-    hw_scan_req->flags = MORSE_CMD_HW_SCAN_FLAGS_STORE;
-    hw_scan_req->dwell_time_ms = scan_args->dwell_time_ms;
+    struct mmdrv_hw_scan_params params = {
+        .flags = MORSE_CMD_HW_SCAN_FLAGS_STORE,
+        .dwell_time_ms = scan_args->dwell_time_ms,
+        .tlvs = cbuf.buf,
+        .tlvs_len = cbuf.offset,
+    };
 
-    if (mmdrv_execute_command(buf, NULL, 0))
+    if (mmdrv_hw_scan(vif_id, &params))
     {
         MMLOG_ERR("Failed to execute %s HW_SCAN command\n", "STORE");
         status = MMWLAN_ERROR;
     }
-    mmosal_free(buf);
 
+cleanup:
+    mmosal_free(buf);
     return status;
 }
 
 static enum mmwlan_status hw_scan_abort_scan(struct umac_data *umacd)
 {
     enum mmwlan_status status = MMWLAN_SUCCESS;
-    struct umac_scan_data *data = umac_data_get_scan(umacd);
 
-    struct morse_cmd_req_hw_scan req =
-        MORSE_COMMAND_INIT(req,
-                           MORSE_CMD_ID_HW_SCAN,
-                           data->hw_scan_data.vif_id,
-                           .flags = htole32(MORSE_CMD_HW_SCAN_FLAGS_ABORT));
+    uint16_t vif_id = umac_interface_get_vif_id(umacd, UMAC_INTERFACE_SCAN);
+    if (vif_id == MMDRV_VIF_ID_INVALID)
+    {
+        MMLOG_WRN("HW scan failure: no VIF\n");
+        return MMWLAN_ERROR;
+    }
 
-    if (mmdrv_execute_command((uint8_t *)&req, NULL, 0))
+    struct mmdrv_hw_scan_params params = {
+        .flags = MORSE_CMD_HW_SCAN_FLAGS_ABORT,
+        .dwell_time_ms = 0,
+        .tlvs = NULL,
+        .tlvs_len = 0,
+    };
+
+    if (mmdrv_hw_scan(vif_id, &params))
     {
         MMLOG_ERR("Failed to execute %s HW_SCAN command\n", "ABORT");
         status = MMWLAN_ERROR;
@@ -451,8 +464,9 @@ static void hw_scan_fsm_in_progress_entry(struct hw_scan_fsm_instance *inst,
     {
         umac_datapath_pause(umacd, UMAC_DATAPATH_PAUSE_SOURCE_SCAN);
     }
+
     enum mmwlan_status status =
-        umac_interface_add(umacd, UMAC_INTERFACE_SCAN, NULL, &data->hw_scan_data.vif_id);
+        umac_interface_add(umacd, UMAC_INTERFACE_SCAN, umac_datapath_ops_sta, NULL);
     if (status != MMWLAN_SUCCESS)
     {
         hw_scan_fsm_handle_event(inst, HW_SCAN_FSM_EVENT_ABORT);

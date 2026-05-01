@@ -105,7 +105,7 @@ enum mmwlan_status umac_supp_add_sta_interface(struct umac_data *umacd, const ch
     data->sta_wpa_s = wpa_supplicant_add_iface(data->global, &iface, NULL);
     if (data->sta_wpa_s == NULL)
     {
-        MMLOG_WRN("WPAS: %s interface addition failed\n", iface);
+        MMLOG_WRN("WPAS: %s interface addition failed\n", iface.confname);
         return MMWLAN_ERROR;
     }
     else
@@ -261,6 +261,22 @@ void umac_supp_l2_sock_receive(struct umac_data *umacd,
     data->l2.rx_callback(data->l2.rx_callback_ctx, src_addr, payload, payload_len);
 }
 
+void umac_supp_l2_sock_receive_ap(struct umac_data *umacd,
+                                  const uint8_t *payload,
+                                  size_t payload_len,
+                                  const uint8_t *src_addr)
+{
+    struct umac_supp_shim_data *data = umac_data_get_supp_shim(umacd);
+
+    if (data->l2_ap.rx_callback == NULL)
+    {
+        MMLOG_ERR("L2 socket callback not initialised\n");
+        return;
+    }
+
+    data->l2_ap.rx_callback(data->l2_ap.rx_callback_ctx, src_addr, payload, payload_len);
+}
+
 void umac_supp_process_deauth(struct umac_data *umacd)
 {
     struct umac_supp_shim_data *data = umac_data_get_supp_shim(umacd);
@@ -375,7 +391,9 @@ void umac_supp_process_unprotected_disassoc(struct umac_data *umacd,
     umac_supp_event(data->sta_driver_ctx, EVENT_UNPROT_DISASSOC, &wpa_event_data);
 }
 
-void umac_supp_process_mgmt_frame(struct umac_data *umacd, struct mmpktview *rxbufview)
+void umac_supp_process_mgmt_frame(struct umac_data *umacd,
+                                  struct mmpktview *rxbufview,
+                                  enum mmwlan_vif vif)
 {
     struct mmpkt *mmpkt = mmpkt_from_view(rxbufview);
     struct umac_supp_shim_data *data = umac_data_get_supp_shim(umacd);
@@ -384,17 +402,22 @@ void umac_supp_process_mgmt_frame(struct umac_data *umacd, struct mmpktview *rxb
     wpa_event_data.rx_mgmt.frame = mmpkt_get_data_start(rxbufview);
     wpa_event_data.rx_mgmt.frame_len = mmpkt_get_data_length(rxbufview);
 
+
     wpa_event_data.rx_mgmt.freq = (mmpkt_get_metadata(mmpkt).rx->freq_100khz * 100);
 
-
-    MMOSAL_DEV_ASSERT(!(data->ap_driver_ctx && data->sta_driver_ctx));
-    if (data->ap_driver_ctx != NULL)
+    if (vif == MMWLAN_VIF_STA)
     {
-        umac_supp_event(data->ap_driver_ctx, EVENT_RX_MGMT, &wpa_event_data);
+        if (data->sta_driver_ctx != NULL)
+        {
+            umac_supp_event(data->sta_driver_ctx, EVENT_RX_MGMT, &wpa_event_data);
+        }
     }
-    if (data->sta_driver_ctx != NULL)
+    else if (vif == MMWLAN_VIF_AP)
     {
-        umac_supp_event(data->sta_driver_ctx, EVENT_RX_MGMT, &wpa_event_data);
+        if (data->ap_driver_ctx != NULL)
+        {
+            umac_supp_event(data->ap_driver_ctx, EVENT_RX_MGMT, &wpa_event_data);
+        }
     }
 }
 
@@ -454,15 +477,19 @@ void umac_supp_tx_status(struct umac_data *umacd, struct mmpkt *pkt, bool acked)
     }
 
     void *driver_ctx = NULL;
-    uint16_t vif_types =
-        umac_interface_get_vif_type_mask(umacd, mmpkt_get_metadata(pkt).tx->vif_id);
-    if (vif_types & UMAC_INTERFACE_AP)
+    enum mmwlan_vif vif = umac_interface_get_vif_by_id(umacd, mmpkt_get_metadata(pkt).tx->vif_id);
+    if (vif == MMWLAN_VIF_STA)
+    {
+        driver_ctx = data->sta_driver_ctx;
+    }
+    else if (vif == MMWLAN_VIF_AP)
     {
         driver_ctx = data->ap_driver_ctx;
     }
-    else if (vif_types & UMAC_INTERFACE_STA)
+    else
     {
-        driver_ctx = data->sta_driver_ctx;
+
+        MMOSAL_DEV_ASSERT(false);
     }
 
     struct dot11_hdr *hdr = (struct dot11_hdr *)mmpkt_get_data_start(view);
@@ -470,7 +497,7 @@ void umac_supp_tx_status(struct umac_data *umacd, struct mmpkt *pkt, bool acked)
 
     if (dot11_frame_control_get_type(hdr->frame_control) == DOT11_FC_TYPE_MGMT)
     {
-        MMLOG_DBG("TX status mgmt pkt: %08lx\n", (uint32_t)pkt);
+        MMLOG_DBG("TX status mgmt pkt: %p\n", pkt);
         union wpa_event_data wpa_event_data = { .tx_status = {
                                                     .type = dot11_frame_control_get_type(
                                                         hdr->frame_control),
@@ -512,6 +539,18 @@ struct l2_packet_data *l2_packet_init(
 
     struct umac_data *umacd = umac_data_get_umacd();
     struct umac_supp_shim_data *data = umac_data_get_supp_shim(umacd);
+
+    if (strcmp(ifname, UMAC_SUPP_AP_CONFIG_NAME) == 0)
+    {
+        data->l2_ap.umacd = umacd;
+        data->l2_ap.rx_callback = rx_callback;
+        data->l2_ap.rx_callback_ctx = rx_callback_ctx;
+        data->l2_ap.l2_hdr = l2_hdr;
+        data->l2_ap.vif_id = umac_interface_get_vif_id(umacd, UMAC_INTERFACE_AP);
+        memcpy(data->l2_ap.own_addr, own_addr, sizeof(data->l2_ap.own_addr));
+        return &data->l2_ap;
+    }
+    data->l2_ap.vif_id = umac_interface_get_vif_id(umacd, UMAC_INTERFACE_STA);
 
     data->l2.umacd = umacd;
     data->l2.rx_callback = rx_callback;
@@ -592,6 +631,7 @@ int l2_packet_send(struct l2_packet_data *l2,
     mmpkt_append_data(txbufview, buf, len);
     mmpkt_close(&txbufview);
     mmdrv_get_tx_metadata(txbuf)->tid = 0;
+    mmdrv_get_tx_metadata(txbuf)->vif_id = l2->vif_id;
 
     umac_datapath_tx_frame(l2->umacd, txbuf, ENCRYPTION_AUTO, NULL);
     ret = 0;
@@ -610,45 +650,4 @@ int l2_packet_set_packet_filter(struct l2_packet_data *l2, enum l2_packet_filter
     MM_UNUSED(type);
 
     return -1;
-}
-
-int morse_twt_conf(const char *ifname, struct morse_twt *twt_config)
-{
-    MM_UNUSED(ifname);
-
-    MMLOG_INF("TWT: wake_interval_us=0x" MM_X64_FMT ", wake_duration_us=%lu, setup_command=%lu\n",
-              MM_X64_VAL(twt_config->wake_interval_us),
-              twt_config->wake_duration_us,
-              twt_config->setup_command);
-
-    struct umac_data *umacd = umac_data_get_umacd();
-
-    struct umac_twt_command cmd = {
-        .type = UMAC_TWT_CMD_TYPE_CONFIGURE,
-        .wake_interval_us = twt_config->wake_interval_us,
-        .min_wake_duration_us = twt_config->wake_duration_us,
-        .twt_setup_command = twt_config->setup_command,
-    };
-
-    const struct mmwlan_twt_config_args *twt_config_args = umac_twt_get_config(umacd);
-    if (twt_config_args->twt_wake_interval_mantissa || twt_config_args->twt_wake_interval_exponent)
-    {
-        cmd.type = UMAC_TWT_CMD_TYPE_CONFIGURE_EXPLICIT;
-        cmd.expl.wake_interval_mantissa = twt_config_args->twt_wake_interval_mantissa;
-        cmd.expl.wake_interval_exponent = twt_config_args->twt_wake_interval_exponent;
-    }
-
-    enum mmwlan_status status = umac_twt_handle_command(umacd, &cmd);
-
-    return (status == MMWLAN_SUCCESS) ? 0 : -1;
-}
-
-int morse_cac_conf(const char *ifname, bool enable)
-{
-    MM_UNUSED(ifname);
-    MM_UNUSED(enable);
-
-
-
-    return 0;
 }

@@ -74,10 +74,6 @@ void mmagic_cli_wlan_handle_event_beacon_rx(
     struct mmagic_cli *ctx,
     const struct mmagic_core_event_wlan_beacon_rx_args *args);
 
-void mmagic_cli_wlan_handle_event_standby_exit(
-    struct mmagic_cli *ctx,
-    const struct mmagic_core_event_wlan_standby_exit_args *args);
-
 void mmagic_cli_wlan_handle_event_sta_event(
     struct mmagic_cli *ctx,
     const struct mmagic_core_event_wlan_sta_event_args *args);

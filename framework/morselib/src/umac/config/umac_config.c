@@ -75,8 +75,6 @@ void umac_config_init(struct umac_data *umacd)
     data->ps_mode = MMWLAN_PS_ENABLED;
     data->supp_scan_dwell_time_ms = MMWLAN_SCAN_DEFAULT_DWELL_TIME_MS;
     data->beacon_vendor_ie_filter = NULL;
-    data->min_health_check_intvl_ms = MMWLAN_DEFAULT_MIN_HEALTH_CHECK_INTERVAL_MS;
-    data->max_health_check_intvl_ms = MMWLAN_DEFAULT_MAX_HEALTH_CHECK_INTERVAL_MS;
     data->datapath_rx_reorder_list_maxlen = UMAC_DATAPATH_DEFAULT_RXREORDERQ_MAXLEN;
     populate_default_qos_queue_params(data->default_qos_queue_params);
     data->mcs10_mode = MMWLAN_MCS10_MODE_DISABLED;
@@ -351,24 +349,6 @@ const struct mmwlan_beacon_vendor_ie_filter *umac_config_get_beacon_vendor_ie_fi
 {
     struct umac_config_data *data = umac_data_get_config(umacd);
     return data->beacon_vendor_ie_filter;
-}
-
-void umac_config_set_health_check_interval(struct umac_data *umacd,
-                                           uint32_t min_health_check_intvl_ms,
-                                           uint32_t max_health_check_intvl_ms)
-{
-    struct umac_config_data *config = umac_data_get_config(umacd);
-    config->min_health_check_intvl_ms = min_health_check_intvl_ms;
-    config->max_health_check_intvl_ms = max_health_check_intvl_ms;
-}
-
-void umac_config_get_health_check_interval(struct umac_data *umacd,
-                                           uint32_t *min_health_check_intvl_ms,
-                                           uint32_t *max_health_check_intvl_ms)
-{
-    struct umac_config_data *config = umac_data_get_config(umacd);
-    *min_health_check_intvl_ms = config->min_health_check_intvl_ms;
-    *max_health_check_intvl_ms = config->max_health_check_intvl_ms;
 }
 
 void umac_config_set_datapath_rx_reorder_list_maxlen(struct umac_data *umacd,

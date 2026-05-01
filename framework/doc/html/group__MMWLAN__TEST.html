@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.10.4</span>
+   &#160;<span id="projectnumber">2.11.2</span>
    </div>
   </td>
  </tr>
@@ -175,7 +175,7 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l03147">3147</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02765">2765</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -203,7 +203,7 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l03158">3158</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02776">2776</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -247,7 +247,7 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l03130">3130</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02748">2748</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -296,12 +296,12 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">command</td><td>Buffer containing the command to be executed. Note that buffer contents may be modified by this function. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">command_len</td><td>Length of the command to be executed. </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">response</td><td>Buffer to received the response to the command. May be NULL, in which case <code>response_len</code> should also be NULL. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">response</td><td>Buffer to receive the response to the command. On transport errors, if a response buffer is provided, a minimal synthesized response will be provided. May be NULL, in which case <code>response_len</code> must also be NULL. </td></tr>
     <tr><td class="paramdir">[in,out]</td><td class="paramname">response_len</td><td>Pointer to a <code>uint32_t</code> that is initialized to the length of the response buffer. On success, the value will be updated to the length of data that was put into the response buffer. May be NULL, in which case <code>response</code> must also be NULL.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><code>MMWLAN_SUCCESS</code> on success, else an appropriate error code. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086a559d87849add57871ea032a5a1a35c4c">MMWLAN_SUCCESS</a> on success, else an appropriate error code. </dd></dl>
 
 </div>
 </div>

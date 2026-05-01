@@ -444,6 +444,113 @@ void wnm_btm_reset(struct wpa_supplicant *wpa_s)
 }
 
 
+static void wnm_parse_neighbor_report_multi_link(struct neighbor_report *rep,
+						 u8 id, u8 elen, const u8 *pos)
+{
+	const struct ieee80211_eht_ml *ml =
+		(const struct ieee80211_eht_ml *) pos;
+	bool has_link_id;
+	u8 common_info_len;
+
+	/* The Basic Multi-Link subelement has the same body as the Basic MLE.
+	 * It includes at least the 2 octet Multi-Link Control field, 1 octet
+	 * Common Info Length, and the 6 oxtet MLD MAC Address fields. */
+	if (elen < sizeof(*ml) + 1 + ETH_ALEN) {
+		wpa_printf(MSG_DEBUG, "WNM: Too short ML element");
+		return;
+	}
+
+	/* The ML control should be all zeroes except for the Link ID Info
+	 * Present field. */
+	if ((le_to_host16(ml->ml_control) &
+	     ~BASIC_MULTI_LINK_CTRL_PRES_LINK_ID))
+		wpa_printf(MSG_DEBUG,
+			   "WNM: Ignore unsupported ML Control field bits: 0x%04x",
+			   le_to_host16(ml->ml_control) &
+			   ~BASIC_MULTI_LINK_CTRL_PRES_LINK_ID);
+
+	has_link_id = !!(le_to_host16(ml->ml_control) &
+			 BASIC_MULTI_LINK_CTRL_PRES_LINK_ID);
+
+	/* Followed by the Common Info Length and the MLD MAC Address fields */
+	common_info_len = pos[2];
+	if (common_info_len < 1 + ETH_ALEN) {
+		wpa_printf(MSG_DEBUG, "WNM: Too short ML Common Info: %u < 7",
+			   common_info_len);
+		return;
+	}
+
+	/* MLD MAC Address */
+	os_memcpy(rep->mld_addr, &pos[3], ETH_ALEN);
+
+	if (!has_link_id)
+		return;
+
+	if (common_info_len < 1 + ETH_ALEN + 1 || common_info_len + 2 > elen) {
+		wpa_printf(MSG_DEBUG,
+			   "WNM: ML Common Info too short or does not fit: %u (elen: %u)",
+			   common_info_len, elen);
+		return;
+	}
+
+	/* Link ID Info */
+	if ((pos[9] & EHT_ML_LINK_ID_MSK) >= MAX_NUM_MLD_LINKS) {
+		wpa_printf(MSG_DEBUG,
+			   "WNM: ML common info contains invalid link ID");
+		return;
+	}
+
+	rep->mld_links = BIT(pos[9] & EHT_ML_LINK_ID_MSK);
+
+	elen -= common_info_len + 2;
+	pos += common_info_len + 2;
+
+	/* Parse out per-STA information */
+	while (elen >= 2) {
+		u8 sub_elem_len = pos[1];
+
+		if (2 + sub_elem_len > elen) {
+			wpa_printf(MSG_DEBUG,
+				   "WNM: Invalid sub-element length: %u %u",
+				   2 + sub_elem_len, elen);
+			rep->mld_links = 0;
+			break;
+		}
+
+		if  (*pos == EHT_ML_SUB_ELEM_PER_STA_PROFILE) {
+			const struct ieee80211_eht_per_sta_profile *sta_prof =
+				(const struct ieee80211_eht_per_sta_profile *)
+				(pos + 2);
+			u16 control;
+			u8 link_id;
+
+			if (sub_elem_len < sizeof(*sta_prof)) {
+				wpa_printf(MSG_DEBUG,
+					   "WNM: Invalid STA-profile length: %u",
+					   sub_elem_len);
+				rep->mld_links = 0;
+				break;
+			}
+
+			control = le_to_host16(sta_prof->sta_control);
+
+			link_id = control & EHT_PER_STA_RECONF_CTRL_LINK_ID_MSK;
+			rep->mld_links |= BIT(link_id);
+		}
+
+		pos += 2 + sub_elem_len;
+		elen -= 2 + sub_elem_len;
+	}
+
+	if (elen != 0) {
+		wpa_printf(MSG_DEBUG,
+			   "WNM: Data left at end of multi-link element: %u",
+			   elen);
+		rep->mld_links = 0;
+	}
+}
+
+
 static void wnm_parse_neighbor_report_elem(struct neighbor_report *rep,
 					   u8 id, u8 elen, const u8 *pos)
 {
@@ -532,6 +639,9 @@ static void wnm_parse_neighbor_report_elem(struct neighbor_report *rep,
 		rep->mul_bssid->subelem_len = elen - 1;
 		os_memcpy(rep->mul_bssid->subelems, pos + 1, elen - 1);
 		break;
+	case WNM_NEIGHBOR_MULTI_LINK:
+		wnm_parse_neighbor_report_multi_link(rep, id, elen, pos);
+		break;
 	default:
 		wpa_printf(MSG_DEBUG,
 			   "WNM: Unsupported neighbor report subelement id %u",
@@ -614,38 +724,37 @@ static void wnm_parse_neighbor_report(struct wpa_supplicant *wpa_s,
 }
 
 
-static void wnm_clear_acceptable(struct wpa_supplicant *wpa_s)
-{
-	unsigned int i;
-
-	for (i = 0; i < wpa_s->wnm_num_neighbor_report; i++)
-		wpa_s->wnm_neighbor_report_elements[i].acceptable = 0;
-}
-
-#ifdef CONFIG_MBO
-static struct wpa_bss *
-get_mbo_transition_candidate(struct wpa_supplicant *wpa_s,
+static void
+fetch_drv_mbo_candidate_info(struct wpa_supplicant *wpa_s,
 			     enum mbo_transition_reject_reason *reason)
 {
-	struct wpa_bss *target = NULL;
+#ifdef CONFIG_MBO
 	struct wpa_bss_trans_info params;
 	struct wpa_bss_candidate_info *info = NULL;
-	struct neighbor_report *nei = wpa_s->wnm_neighbor_report_elements;
-	u8 *first_candidate_bssid = NULL, *pos;
+	struct neighbor_report *nei;
+	u8 *pos;
 	unsigned int i;
+
+	if (!wpa_s->wnm_mbo_trans_reason_present)
+		return;
 
 	params.mbo_transition_reason = wpa_s->wnm_mbo_transition_reason;
 	params.n_candidates = 0;
 	params.bssid = os_calloc(wpa_s->wnm_num_neighbor_report, ETH_ALEN);
 	if (!params.bssid)
-		return NULL;
+		return;
 
 	pos = params.bssid;
-	for (i = 0; i < wpa_s->wnm_num_neighbor_report; nei++, i++) {
-		if (nei->is_first)
-			first_candidate_bssid = nei->bssid;
-		if (!nei->acceptable)
+	for (i = 0; i < wpa_s->wnm_num_neighbor_report; i++) {
+		nei = &wpa_s->wnm_neighbor_report_elements[i];
+
+		nei->drv_mbo_reject = 0;
+
+		if (nei->preference_present && nei->preference == 0)
 			continue;
+
+		/* Should we query BSSIDs that we reject for other reasons? */
+
 		os_memcpy(pos, nei->bssid, ETH_ALEN);
 		pos += ETH_ALEN;
 		params.n_candidates++;
@@ -655,54 +764,28 @@ get_mbo_transition_candidate(struct wpa_supplicant *wpa_s,
 		goto end;
 
 	info = wpa_drv_get_bss_trans_status(wpa_s, &params);
-	if (!info) {
-		/* If failed to get candidate BSS transition status from driver,
-		 * get the first acceptable candidate from wpa_supplicant.
-		 */
-		target = wpa_bss_get_bssid(wpa_s, params.bssid);
+	if (!info)
 		goto end;
-	}
 
-	/* Get the first acceptable candidate from driver */
 	for (i = 0; i < info->num; i++) {
-		if (info->candidates[i].is_accept) {
-			target = wpa_bss_get_bssid(wpa_s,
-						   info->candidates[i].bssid);
-			goto end;
-		}
-	}
+		int j;
 
-	/* If Disassociation Imminent is set and driver rejects all the
-	 * candidate select first acceptable candidate which has
-	 * rssi > disassoc_imminent_rssi_threshold
-	 */
-	if (wpa_s->wnm_mode & WNM_BSS_TM_REQ_DISASSOC_IMMINENT) {
-		for (i = 0; i < info->num; i++) {
-			target = wpa_bss_get_bssid(wpa_s,
-						   info->candidates[i].bssid);
-			if (target &&
-			    (target->level <
-			     wpa_s->conf->disassoc_imminent_rssi_threshold))
+		for (j = 0; j < wpa_s->wnm_num_neighbor_report; j++) {
+			nei = &wpa_s->wnm_neighbor_report_elements[j];
+
+			if (!ether_addr_equal(info->candidates[i].bssid,
+					      nei->bssid))
 				continue;
-			goto end;
-		}
-	}
 
-	/* While sending BTM reject use reason code of the first candidate
-	 * received in BTM request frame
-	 */
-	if (reason) {
-		for (i = 0; i < info->num; i++) {
-			if (first_candidate_bssid &&
-			    ether_addr_equal(first_candidate_bssid,
-					     info->candidates[i].bssid)) {
+			nei->drv_mbo_reject = !info->candidates[i].is_accept;
+
+			/* Use the reject reason from the first candidate */
+			if (i == 0 && nei->drv_mbo_reject)
 				*reason = info->candidates[i].reject_reason;
-				break;
-			}
+
+			break;
 		}
 	}
-
-	target = NULL;
 
 end:
 	os_free(params.bssid);
@@ -710,130 +793,7 @@ end:
 		os_free(info->candidates);
 		os_free(info);
 	}
-	return target;
-}
 #endif /* CONFIG_MBO */
-
-
-static struct wpa_bss * find_better_target(struct wpa_bss *a,
-					   struct wpa_bss *b)
-{
-	if (!a)
-		return b;
-	if (!b)
-		return a;
-
-	if (a->est_throughput > b->est_throughput) {
-		wpa_printf(MSG_DEBUG, "WNM: A is better: " MACSTR
-			   " est-tput: %d  B: " MACSTR " est-tput: %d",
-			   MAC2STR(a->bssid), a->est_throughput,
-			   MAC2STR(b->bssid), b->est_throughput);
-		return a;
-	}
-
-	wpa_printf(MSG_DEBUG, "WNM: B is better, A: " MACSTR
-		   " est-tput: %d  B: " MACSTR " est-tput: %d",
-		   MAC2STR(a->bssid), a->est_throughput,
-		   MAC2STR(b->bssid), b->est_throughput);
-	return b;
-}
-
-static struct wpa_bss *
-compare_scan_neighbor_results(struct wpa_supplicant *wpa_s,
-			      enum mbo_transition_reject_reason *reason)
-{
-	u8 i;
-	struct wpa_bss *bss = wpa_s->current_bss;
-	struct wpa_bss *target;
-	struct wpa_bss *best_target = NULL;
-	struct wpa_bss *bss_in_list = NULL;
-
-	if (!bss)
-		return NULL;
-
-	wpa_printf(MSG_DEBUG, "WNM: Current BSS " MACSTR " RSSI %d",
-		   MAC2STR(wpa_s->bssid), bss->level);
-
-	wnm_clear_acceptable(wpa_s);
-
-	for (i = 0; i < wpa_s->wnm_num_neighbor_report; i++) {
-		struct neighbor_report *nei;
-
-		nei = &wpa_s->wnm_neighbor_report_elements[i];
-
-		target = wpa_bss_get_bssid(wpa_s, nei->bssid);
-		if (!target) {
-			wpa_printf(MSG_DEBUG, "Candidate BSS " MACSTR
-				   " (pref %d) not found in scan results",
-				   MAC2STR(nei->bssid),
-				   nei->preference_present ? nei->preference :
-				   -1);
-			continue;
-		}
-
-		/*
-		 * TODO: Could consider allowing transition to another ESS if
-		 * PMF was enabled for the association.
-		 */
-		if (!wpa_scan_res_match(wpa_s, 0, target, wpa_s->current_ssid,
-					1, 0)) {
-			wpa_printf(MSG_DEBUG, "Candidate BSS " MACSTR
-				   " (pref %d) does not match the current network profile",
-				   MAC2STR(nei->bssid),
-				   nei->preference_present ? nei->preference :
-				   -1);
-			continue;
-		}
-
-		if (target->level < bss->level && target->level < -80) {
-			wpa_printf(MSG_DEBUG, "Candidate BSS " MACSTR
-				   " (pref %d) does not have sufficient signal level (%d)",
-				   MAC2STR(nei->bssid),
-				   nei->preference_present ? nei->preference :
-				   -1,
-				   target->level);
-			continue;
-		}
-
-		nei->acceptable = 1;
-
-		best_target = find_better_target(target, best_target);
-		if (target == bss)
-			bss_in_list = bss;
-	}
-
-#ifdef CONFIG_MBO
-	if (wpa_s->wnm_mbo_trans_reason_present)
-		target = get_mbo_transition_candidate(wpa_s, reason);
-	else
-		target = best_target;
-#else /* CONFIG_MBO */
-	target = best_target;
-#endif /* CONFIG_MBO */
-
-	if (!target)
-		return NULL;
-
-	wpa_printf(MSG_DEBUG,
-		   "WNM: Found an acceptable preferred transition candidate BSS "
-		   MACSTR " (RSSI %d, tput: %d  bss-tput: %d)",
-		   MAC2STR(target->bssid), target->level,
-		   target->est_throughput, bss->est_throughput);
-
-	if (!bss_in_list)
-		return target;
-
-	if ((!target->est_throughput && !bss_in_list->est_throughput) ||
-	    (target->est_throughput > bss_in_list->est_throughput &&
-	     target->est_throughput - bss_in_list->est_throughput >
-	     bss_in_list->est_throughput >> 4)) {
-		/* It is more than 100/16 percent better, so switch. */
-		return target;
-	}
-
-	wpa_printf(MSG_DEBUG,
-		   "WNM: Stay with our current BSS, not enough change in estimated throughput to switch");
-	return bss_in_list;
 }
 
 
@@ -873,10 +833,6 @@ static u32 wnm_get_bss_info(struct wpa_supplicant *wpa_s, struct wpa_bss *bss)
 		info |= NEI_REP_BSSID_INFO_APSD;
 	if (bss->caps & WLAN_CAPABILITY_RADIO_MEASUREMENT)
 		info |= NEI_REP_BSSID_INFO_RM;
-	if (bss->caps & WLAN_CAPABILITY_DELAYED_BLOCK_ACK)
-		info |= NEI_REP_BSSID_INFO_DELAYED_BA;
-	if (bss->caps & WLAN_CAPABILITY_IMM_BLOCK_ACK)
-		info |= NEI_REP_BSSID_INFO_IMM_BA;
 	if (wpa_bss_ies_eq(bss, wpa_s->current_bss, WLAN_EID_MOBILITY_DOMAIN))
 		info |= NEI_REP_BSSID_INFO_MOBILITY_DOMAIN;
 	if (wpa_bss_ies_eq(bss, wpa_s->current_bss, WLAN_EID_HT_CAP))
@@ -998,7 +954,7 @@ static void wnm_add_cand_list(struct wpa_supplicant *wpa_s, struct wpabuf **buf)
 		struct wpa_bss *bss = wpa_s->last_scan_res[i];
 		int res;
 
-		if (wpa_scan_res_match(wpa_s, i, bss, ssid, 1, 0)) {
+		if (wpa_scan_res_match(wpa_s, i, bss, ssid, 1, 0, false)) {
 			res = wnm_nei_rep_add_bss(wpa_s, bss, buf, pref--);
 			if (res == -2)
 				continue; /* could not build entry for BSS */
@@ -1058,9 +1014,10 @@ static int wnm_send_bss_transition_mgmt_resp(
 		wpabuf_put_data(buf, target_bssid, ETH_ALEN);
 	} else if (status == WNM_BSS_TM_ACCEPT) {
 		/*
-		 * P802.11-REVmc clarifies that the Target BSSID field is always
-		 * present when status code is zero, so use a fake value here if
-		 * no BSSID is yet known.
+		 * IEEE Std 802.11-2024, 9.6.13.10 (BSS Transition Management
+		 * Response frame format) clarifies that the Target BSSID field
+		 * is always present when status code is zero, so use a fake
+		 * value here if no BSSID is yet known.
 		 */
 		wpabuf_put_data(buf, "\0\0\0\0\0\0", ETH_ALEN);
 	}
@@ -1157,13 +1114,14 @@ static void wnm_bss_tm_connect(struct wpa_supplicant *wpa_s,
 int wnm_scan_process(struct wpa_supplicant *wpa_s, bool pre_scan_check)
 {
 #ifndef CONFIG_NO_BSS_TRANS_MGMT
-	struct wpa_bss *bss;
+	struct wpa_bss *bss, *current_bss = wpa_s->current_bss;
 	struct wpa_ssid *ssid = wpa_s->current_ssid;
 	enum bss_trans_mgmt_status_code status = WNM_BSS_TM_REJECT_UNSPECIFIED;
 	enum mbo_transition_reject_reason reason =
 		MBO_TRANSITION_REJECT_REASON_UNSPECIFIED;
+	struct wpa_ssid *selected_ssid = NULL;
 
-	if (!wpa_s->wnm_dialog_token)
+	if (!ssid || !wpa_s->wnm_dialog_token)
 		return 0;
 
 	wpa_dbg(wpa_s, MSG_DEBUG,
@@ -1181,8 +1139,45 @@ int wnm_scan_process(struct wpa_supplicant *wpa_s, bool pre_scan_check)
 
 	wpa_s->wnm_transition_scan = false;
 
+	/* Fetch MBO transition candidate rejection information from driver */
+	fetch_drv_mbo_candidate_info(wpa_s, &reason);
+
 	/* Compare the Neighbor Report and scan results */
-	bss = compare_scan_neighbor_results(wpa_s, &reason);
+	bss = wpa_supplicant_select_bss(wpa_s, ssid, &selected_ssid, 1);
+#ifdef CONFIG_MBO
+	if (!bss && wpa_s->wnm_mbo_trans_reason_present &&
+	    (wpa_s->wnm_mode & WNM_BSS_TM_REQ_DISASSOC_IMMINENT)) {
+		int i;
+		bool changed = false;
+
+		/*
+		 * We didn't find any candidate, the driver had a say about
+		 * which targets to reject and disassociation is immiment.
+		 *
+		 * We should still try to roam, so retry after ignoring the
+		 * driver reject for any BSS that has an RSSI better than
+		 * disassoc_imminent_rssi_threshold.
+		 */
+		for (i = 0; i < wpa_s->wnm_num_neighbor_report; i++) {
+			struct neighbor_report *nei;
+
+			nei = &wpa_s->wnm_neighbor_report_elements[i];
+			bss = wpa_bss_get_bssid(wpa_s, nei->bssid);
+			if (bss && bss->level >
+			    wpa_s->conf->disassoc_imminent_rssi_threshold) {
+				nei->drv_mbo_reject = 0;
+				changed = true;
+			}
+		}
+
+		if (changed) {
+			wpa_printf(MSG_DEBUG,
+				   "WNM: Ignore driver rejection due to imminent disassociation and acceptable RSSI");
+			bss = wpa_supplicant_select_bss(wpa_s, ssid,
+							&selected_ssid, 1);
+		}
+	}
+#endif /* CONFIG_MBO */
 
 	/*
 	 * If this is a pre-scan check, returning 0 will trigger a scan and
@@ -1205,19 +1200,34 @@ int wnm_scan_process(struct wpa_supplicant *wpa_s, bool pre_scan_check)
 			return 0;
 
 #ifndef CONFIG_NO_ROAMING
-		if (wpa_s->current_bss && bss != wpa_s->current_bss &&
-		    wpa_supplicant_need_to_roam_within_ess(wpa_s,
-							   wpa_s->current_bss,
-							   bss))
+		if (current_bss && bss != current_bss &&
+		    wpa_supplicant_need_to_roam_within_ess(wpa_s, bss,
+							   current_bss, false))
 			return 0;
 #endif /* CONFIG_NO_ROAMING */
 	}
+
+#ifndef CONFIG_NO_ROAMING
+	/* Apply normal roaming rules if we can stay with the current BSS */
+	if (current_bss && bss != current_bss &&
+	    wpa_scan_res_match(wpa_s, 0, current_bss, wpa_s->current_ssid,
+			       1, 0, false) &&
+	    !wpa_supplicant_need_to_roam_within_ess(wpa_s, current_bss, bss,
+						    true))
+		bss = current_bss;
+#endif /* CONFIG_NO_ROAMING */
 
 	if (!bss) {
 		wpa_printf(MSG_DEBUG, "WNM: No BSS transition candidate match found");
 		status = WNM_BSS_TM_REJECT_NO_SUITABLE_CANDIDATES;
 		goto send_bss_resp_fail;
 	}
+
+	wpa_printf(MSG_DEBUG,
+		   "WNM: Found an acceptable preferred transition candidate BSS "
+		   MACSTR " (RSSI %d, tput: %d  bss-tput: %d)",
+		   MAC2STR(bss->bssid), bss->level, bss->est_throughput,
+		   current_bss ? (int) current_bss->est_throughput : -1);
 
 	/* Associate to the network */
 	wnm_bss_tm_connect(wpa_s, bss, ssid, 1);
@@ -1239,9 +1249,11 @@ send_bss_resp_fail:
 	}
 
 	wnm_btm_reset(wpa_s);
-#endif /* CONFIG_NO_BSS_TRANS_MGMT */
 
+	return 1;
+#else /* CONFIG_NO_BSS_TRANS_MGMT */
 	return 0;
+#endif
 }
 
 
@@ -1289,15 +1301,22 @@ static void wnm_dump_cand_list(struct wpa_supplicant *wpa_s)
 		return;
 	for (i = 0; i < wpa_s->wnm_num_neighbor_report; i++) {
 		struct neighbor_report *nei;
+		char mld_info[42] = "";
 
 		nei = &wpa_s->wnm_neighbor_report_elements[i];
+
+		if (!is_zero_ether_addr(nei->mld_addr))
+			os_snprintf(mld_info, sizeof(mld_info) - 1,
+				    " mld_addr=" MACSTR " links=0x%02x",
+				    MAC2STR(nei->mld_addr), nei->mld_links);
+
 		wpa_printf(MSG_DEBUG, "%u: " MACSTR
-			   " info=0x%x op_class=%u chan=%u phy=%u pref=%d freq=%d",
+			   " info=0x%x op_class=%u chan=%u phy=%u pref=%d freq=%d%s",
 			   i, MAC2STR(nei->bssid), nei->bssid_info,
 			   nei->regulatory_class,
 			   nei->channel_number, nei->phy_type,
 			   nei->preference_present ? nei->preference : -1,
-			   nei->freq);
+			   nei->freq, mld_info);
 	}
 }
 
@@ -1326,9 +1345,8 @@ static int chan_supported(struct wpa_supplicant *wpa_s, int freq)
 
 static void wnm_set_scan_freqs(struct wpa_supplicant *wpa_s)
 {
-	int *freqs;
-	int num_freqs = 0;
 	unsigned int i;
+	bool has_6ghz = false;
 
 	if (!wpa_s->wnm_neighbor_report_elements)
 		return;
@@ -1338,10 +1356,6 @@ static void wnm_set_scan_freqs(struct wpa_supplicant *wpa_s)
 
 	os_free(wpa_s->next_scan_freqs);
 	wpa_s->next_scan_freqs = NULL;
-
-	freqs = os_calloc(wpa_s->wnm_num_neighbor_report + 1, sizeof(int));
-	if (freqs == NULL)
-		return;
 
 	for (i = 0; i < wpa_s->wnm_num_neighbor_report; i++) {
 		struct neighbor_report *nei;
@@ -1356,22 +1370,86 @@ static void wnm_set_scan_freqs(struct wpa_supplicant *wpa_s)
 				   "WNM: Unknown neighbor operating frequency for "
 				   MACSTR " - scan all channels",
 				   MAC2STR(nei->bssid));
-			os_free(freqs);
+			os_free(wpa_s->next_scan_freqs);
+			wpa_s->next_scan_freqs = NULL;
 			return;
 		}
 		if (chan_supported(wpa_s, nei->freq))
-			add_freq(freqs, &num_freqs, nei->freq);
+			int_array_add_unique(&wpa_s->next_scan_freqs,
+					     nei->freq);
+		has_6ghz |= is_6ghz_freq(nei->freq);
 	}
 
-	if (num_freqs == 0) {
-		os_free(freqs);
+	if (!wpa_s->next_scan_freqs)
 		return;
-	}
 
 	wpa_printf(MSG_DEBUG,
-		   "WNM: Scan %d frequencies based on transition candidate list",
-		   num_freqs);
-	wpa_s->next_scan_freqs = freqs;
+		   "WNM: Scan %zu frequencies based on transition candidate list",
+		   int_array_len(wpa_s->next_scan_freqs));
+
+	/*
+	 * Candidates on 6 GHz channels might be collocated ones, and thus, in
+	 * order to discover them need to include the frequencies on the 2.4
+	 * and 5 GHz bands. Since the scan time can be long, optimize the case
+	 * of a single channel by forcing passive scan instead of doing a
+	 * collocated scan.
+	 */
+	if (has_6ghz) {
+		struct hostapd_channel_data *chan;
+		struct os_reltime now;
+
+		/* In case the candidate validity time is too short, force it
+		 * to be long enough to account for the longer scan time.
+		 */
+		os_get_reltime(&now);
+		now.sec += 5;
+
+		if (os_reltime_initialized(&wpa_s->wnm_cand_valid_until) &&
+		    !os_reltime_before(&wpa_s->wnm_cand_valid_until, &now)) {
+			wpa_printf(MSG_DEBUG,
+				   "WNM: Scan: 6 GHz: update validity time");
+
+			os_memcpy(&wpa_s->wnm_cand_valid_until, &now,
+				  sizeof(now));
+		}
+
+		if (int_array_len(wpa_s->next_scan_freqs) == 1) {
+			wpa_printf(MSG_DEBUG,
+				   "WNM: Scan: Single 6 GHz channel: passive");
+
+			wpa_s->scan_req = MANUAL_SCAN_REQ;
+			wpa_s->manual_scan_passive = 1;
+			return;
+		}
+
+		wpa_printf(MSG_DEBUG,
+			   "WNM: Scan: Add 2.4/5 GHz channels as well for 6 GHz discovery");
+
+		for (i = 0; i < wpa_s->hw.num_modes; i++) {
+			struct hostapd_hw_modes *mode = &wpa_s->hw.modes[i];
+			int j;
+
+			/* skip all the irrelevant modes */
+			if ((mode->mode != HOSTAPD_MODE_IEEE80211B &&
+			     mode->mode != HOSTAPD_MODE_IEEE80211G &&
+			     mode->mode != HOSTAPD_MODE_IEEE80211A) ||
+			    mode->is_6ghz)
+				continue;
+
+			for (j = 0; j < mode->num_channels; j++) {
+				chan = &mode->channels[j];
+				if (chan->flag & HOSTAPD_CHAN_DISABLED)
+					continue;
+
+				int_array_add_unique(&wpa_s->next_scan_freqs,
+						     chan->freq);
+			}
+		}
+
+		wpa_printf(MSG_DEBUG,
+			   "WNM: Scan %zu frequencies (including collocated)",
+			   int_array_len(wpa_s->next_scan_freqs));
+	}
 }
 
 
@@ -1414,15 +1492,6 @@ static int wnm_parse_candidate_list(struct wpa_supplicant *wpa_s,
 				*num_valid_candidates += 1;
 
 			wpa_s->wnm_num_neighbor_report++;
-#ifdef CONFIG_MBO
-			if (wpa_s->wnm_mbo_trans_reason_present &&
-			    wpa_s->wnm_num_neighbor_report == 1) {
-				rep->is_first = 1;
-				wpa_printf(MSG_DEBUG,
-					   "WNM: First transition candidate is "
-					   MACSTR, MAC2STR(rep->bssid));
-			}
-#endif /* CONFIG_MBO */
 		}
 
 		pos += len;
@@ -1797,45 +1866,6 @@ static void ieee802_11_rx_wnm_notif_req_wfa(struct wpa_supplicant *wpa_s,
 			   WPA_GET_BE24(pos), pos[3]);
 
 #ifdef CONFIG_HS20
-		if (ie == WLAN_EID_VENDOR_SPECIFIC && ie_len >= 5 &&
-		    WPA_GET_BE24(pos) == OUI_WFA &&
-		    pos[3] == HS20_WNM_SUB_REM_NEEDED) {
-			/* Subscription Remediation subelement */
-			const u8 *ie_end;
-			u8 url_len;
-			char *url;
-			u8 osu_method;
-
-			wpa_printf(MSG_DEBUG, "WNM: Subscription Remediation "
-				   "subelement");
-			ie_end = pos + ie_len;
-			pos += 4;
-			url_len = *pos++;
-			if (url_len == 0) {
-				wpa_printf(MSG_DEBUG, "WNM: No Server URL included");
-				url = NULL;
-				osu_method = 1;
-			} else {
-				if (url_len + 1 > ie_end - pos) {
-					wpa_printf(MSG_DEBUG, "WNM: Not enough room for Server URL (len=%u) and Server Method (left %d)",
-						   url_len,
-						   (int) (ie_end - pos));
-					break;
-				}
-				url = os_malloc(url_len + 1);
-				if (url == NULL)
-					break;
-				os_memcpy(url, pos, url_len);
-				url[url_len] = '\0';
-				osu_method = pos[url_len];
-			}
-			hs20_rx_subscription_remediation(wpa_s, url,
-							 osu_method);
-			os_free(url);
-			pos = next;
-			continue;
-		}
-
 		if (ie == WLAN_EID_VENDOR_SPECIFIC && ie_len >= 8 &&
 		    WPA_GET_BE24(pos) == OUI_WFA &&
 		    pos[3] == HS20_WNM_DEAUTH_IMMINENT_NOTICE) {
@@ -2120,11 +2150,29 @@ bool wnm_is_bss_excluded(struct wpa_supplicant *wpa_s, struct wpa_bss *bss)
 		struct neighbor_report *nei;
 
 		nei = &wpa_s->wnm_neighbor_report_elements[i];
-		if (!ether_addr_equal(nei->bssid, bss->bssid))
+		if (!ether_addr_equal(nei->bssid, bss->bssid) &&
+		    (is_zero_ether_addr(bss->mld_addr) ||
+		     !ether_addr_equal(nei->mld_addr, bss->mld_addr)))
 			continue;
 
 		if (nei->preference_present && nei->preference == 0)
 			return true;
+
+#ifdef CONFIG_MBO
+		if (nei->drv_mbo_reject)
+			return true;
+#endif /* CONFIG_MBO */
+
+		/*
+		 * NOTE: We should select one entry and stick with it, but to
+		 * do that we need to refactor the BSS selection to be MLD
+		 * aware from the beginning. Instead we just check whether the
+		 * link is permitted in any possible configuration. We are not
+		 * supposed to do that, however the AP is able to reject a
+		 * subset of the requested links.
+		 */
+		if (nei->mld_links && !(nei->mld_links & BIT(bss->mld_link_id)))
+			continue;
 
 		break;
 	}

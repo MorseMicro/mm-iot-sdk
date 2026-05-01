@@ -345,7 +345,10 @@ static void wpa_supplicant_eapol_cb(struct eapol_sm *eapol,
 			   "driver-based 4-way hs and FT");
 		res = eapol_sm_get_key(eapol, buf, 2 * PMK_LEN);
 		if (res == 0) {
-			os_memcpy(pmk, buf + PMK_LEN, PMK_LEN);
+			if (wpa_key_mgmt_sha384(wpa_s->key_mgmt))
+				os_memcpy(pmk, buf, pmk_len);
+			else
+				os_memcpy(pmk, buf + PMK_LEN, PMK_LEN);
 			os_memset(buf, 0, sizeof(buf));
 		}
 #else /* CONFIG_IEEE80211R */
@@ -1418,8 +1421,6 @@ static void wpa_supplicant_store_ptk(void *ctx, const u8 *addr, int cipher,
 			ptk, NULL, NULL, 0);
 }
 
-#endif /* CONFIG_NO_WPA */
-
 
 #ifdef CONFIG_PASN
 static int wpa_supplicant_set_ltf_keyseed(void *_wpa_s, const u8 *own_addr,
@@ -1453,6 +1454,32 @@ static void wpa_supplicant_ssid_verified(void *_wpa_s)
 	wpa_s->ssid_verified = true;
 	wpa_msg(wpa_s, MSG_INFO, "RSN: SSID matched expected value");
 }
+
+
+static void wpa_supplicant_sae_pw_id_change(void *_wpa_s,
+					    struct wpabuf_array *wa)
+{
+	struct wpa_supplicant *wpa_s = _wpa_s;
+	struct wpa_ssid *ssid = wpa_s->current_ssid;
+
+	wpa_msg(wpa_s, MSG_INFO, "RSN: Received %u SAE Password Identifier(s)",
+		wa->num);
+	if (!ssid) {
+		wpabuf_array_free(wa);
+		return;
+	}
+
+	wpabuf_array_free(ssid->alt_sae_password_ids);
+	ssid->alt_sae_password_ids = wa;
+
+#ifndef CONFIG_NO_CONFIG_WRITE
+	if (wpa_s->conf->update_config &&
+	    wpa_config_write(wpa_s->confname, wpa_s->conf))
+		wpa_printf(MSG_DEBUG, "SAE: Failed to update configuration");
+#endif /* CONFIG_NO_CONFIG_WRITE */
+}
+
+#endif /* CONFIG_NO_WPA */
 
 
 int wpa_supplicant_init_wpa(struct wpa_supplicant *wpa_s)
@@ -1522,6 +1549,7 @@ int wpa_supplicant_init_wpa(struct wpa_supplicant *wpa_s)
 #endif /* CONFIG_PASN */
 	ctx->notify_pmksa_cache_entry = wpa_supplicant_notify_pmksa_cache_entry;
 	ctx->ssid_verified = wpa_supplicant_ssid_verified;
+	ctx->sae_pw_id_change = wpa_supplicant_sae_pw_id_change;
 
 	wpa_s->wpa = wpa_sm_init(ctx);
 	if (wpa_s->wpa == NULL) {

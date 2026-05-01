@@ -30,8 +30,8 @@ struct mmbuf *mmagic_m2m_process(struct mmagic_m2m_agent *agent,
         case mmagic_sys:
             return mmagic_m2m_sys_process(agent, sid, header, cmd_buf);
 
-        case mmagic_tcp:
-            return mmagic_m2m_tcp_process(agent, sid, header, cmd_buf);
+        case mmagic_socket:
+            return mmagic_m2m_socket_process(agent, sid, header, cmd_buf);
 
         case mmagic_tls:
             return mmagic_m2m_tls_process(agent, sid, header, cmd_buf);

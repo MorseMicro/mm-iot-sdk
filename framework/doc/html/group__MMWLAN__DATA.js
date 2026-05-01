@@ -4,6 +4,12 @@ var group__MMWLAN__DATA =
       [ "link_state", "structmmwlan__vif__state.html#a73e4525a1a068d7383a3eb1d9dbbdeed", null ],
       [ "vif", "structmmwlan__vif__state.html#a69f2b9c849b5f34b07d52e65687839d9", null ]
     ] ],
+    [ "mmwlan_vif_channel_info", "structmmwlan__vif__channel__info.html", [
+      [ "op_class", "structmmwlan__vif__channel__info.html#a8057fffc5f3417b82f65f38aa86fcb00", null ],
+      [ "pri_1mhz_chan_idx", "structmmwlan__vif__channel__info.html#ad8fb4eaa946511d19d6922d4e67ee822", null ],
+      [ "pri_bw_mhz", "structmmwlan__vif__channel__info.html#a2f4d49a2673ea7db0c4b7355c5375852", null ],
+      [ "s1g_chan_num", "structmmwlan__vif__channel__info.html#a948255f2d5100192c7e964c1b27dae0b", null ]
+    ] ],
     [ "mmwlan_rx_metadata", "structmmwlan__rx__metadata.html", [
       [ "ta", "structmmwlan__rx__metadata.html#ac64656a203a83a86b6d59c38fc635590", null ],
       [ "tid", "structmmwlan__rx__metadata.html#a1f7a68e1861c661e23fd79e7a4440428", null ],
@@ -14,10 +20,16 @@ var group__MMWLAN__DATA =
       [ "tid", "structmmwlan__tx__metadata.html#ad48abf0465bccb7088e0bbf5aad17059", null ],
       [ "vif", "structmmwlan__tx__metadata.html#a4aee3531d3e5f58f39f60a7f17e08bbb", null ]
     ] ],
+    [ "mmwlan_fatal_error_args", "structmmwlan__fatal__error__args.html", [
+      [ "arg", "structmmwlan__fatal__error__args.html#a08b8a08b894c3d7c10df4e6da83d1f03", null ],
+      [ "fileid", "structmmwlan__fatal__error__args.html#a4aee86759db10cf20b6e3eabb80c2022", null ],
+      [ "line", "structmmwlan__fatal__error__args.html#a988137c1218b0e5564c67582753cc75b", null ]
+    ] ],
     [ "MMWLAN_MAX_QOS_TID", "group__MMWLAN__DATA.html#gad9f43607aa66574ab80c278096a41576", null ],
     [ "MMWLAN_TX_DEFAULT_QOS_TID", "group__MMWLAN__DATA.html#ga883e1f4d9dcbbd02586187f52bbd3af6", null ],
     [ "MMWLAN_TX_DEFAULT_TIMEOUT_MS", "group__MMWLAN__DATA.html#gafbbaf6ee8bd4ea7f712512d0a7770d31", null ],
     [ "MMWLAN_TX_METADATA_INIT", "group__MMWLAN__DATA.html#gaea2485f837f11664455b410d83c1c9bc", null ],
+    [ "mmwlan_fatal_error_handler_t", "group__MMWLAN__DATA.html#ga742b2c509a9f94b7634d69d773d0cb36", null ],
     [ "mmwlan_link_state_cb_t", "group__MMWLAN__DATA.html#ga6cc7ccec4d0fb93de1648c19487df6bb", null ],
     [ "mmwlan_rx_cb_t", "group__MMWLAN__DATA.html#gabd26309390e6939f003c4ca44128cce0", null ],
     [ "mmwlan_rx_pkt_cb_t", "group__MMWLAN__DATA.html#gaf0b978677dad54e133d595dee5d4df71", null ],
@@ -33,6 +45,8 @@ var group__MMWLAN__DATA =
       [ "MMWLAN_TX_PAUSED", "group__MMWLAN__DATA.html#gga95367ed3c4c32b60401e48504396410ead3c7c1e9394df4afb0d44917261d4901", null ]
     ] ],
     [ "mmwlan_alloc_mmpkt_for_tx", "group__MMWLAN__DATA.html#gab28967004268ca16bb1477a76c164de7", null ],
+    [ "mmwlan_get_vif_channel_info", "group__MMWLAN__DATA.html#ga0b7965fa3bd3b0ddc5e8fb2941fecb36", null ],
+    [ "mmwlan_register_fatal_error_handler", "group__MMWLAN__DATA.html#ga1fea78c8e20d735522fa60c878a37f9f", null ],
     [ "mmwlan_register_link_state_cb", "group__MMWLAN__DATA.html#ga8bdba37cf15c47965007f27c97eff5f0", null ],
     [ "mmwlan_register_rx_cb", "group__MMWLAN__DATA.html#ga07e4f93f5563a05beee49e3a8731c194", null ],
     [ "mmwlan_register_rx_pkt_cb", "group__MMWLAN__DATA.html#ga6501ac548a4ed7860471238854f269ed", null ],

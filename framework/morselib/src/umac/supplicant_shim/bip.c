@@ -39,15 +39,20 @@ static int bip_generate_mic(const uint8_t *key,
                             uint8_t *mic)
 {
     uint8_t *buf = (uint8_t *)mmosal_calloc(AAD_LENGTH + data_len, sizeof(uint8_t));
+    if (buf == NULL)
+    {
+        return -ENOMEM;
+    }
     bip_aad(buf, header);
     memcpy(buf + AAD_LENGTH, data, data_len);
     memset(buf + data_len + AAD_LENGTH - MIC_LENGTH, 0, MIC_LENGTH);
 
 
-    if (omac1_aes_128(key, buf, data_len + AAD_LENGTH, mic) < 0)
+    int ret = omac1_aes_128(key, buf, data_len + AAD_LENGTH, mic);
+    if (ret < 0)
     {
         mmosal_free(buf);
-        MMLOG_DBG("encryption error\n");
+        MMLOG_WRN("Encryption error %d\n", ret);
         return -1;
     }
     mmosal_free(buf);
@@ -65,6 +70,16 @@ static uint64_t parse_mmie_packet_number(const uint8_t *array)
            (((uint64_t)(*(array + 5)) << 40));
 }
 
+static void write_mmie_packet_number(uint8_t *array, uint64_t packet_num)
+{
+    array[0] = packet_num;
+    array[1] = packet_num >> 8;
+    array[2] = packet_num >> 16;
+    array[3] = packet_num >> 24;
+    array[4] = packet_num >> 32;
+    array[5] = packet_num >> 40;
+}
+
 bool bip_is_valid(struct umac_sta_data *stad,
                   const struct dot11_hdr *header,
                   const uint8_t *data,
@@ -72,26 +87,34 @@ bool bip_is_valid(struct umac_sta_data *stad,
 {
     uint8_t mic[AES128_BLOCK_SIZE];
 
+    MMLOG_VRB("Validate BIP MIC\n");
+
     const struct dot11_ie_mmie *mmie = ie_mmie_find(data, data_len);
     if (mmie == NULL)
     {
+        MMLOG_DBG("Failed to find BIP\n");
         return false;
     }
 
-    if (umac_keys_get_key_type(stad, mmie->key_id) != UMAC_KEY_TYPE_IGTK)
+    if (umac_keys_get_key_type(stad, le16toh(mmie->key_id)) != UMAC_KEY_TYPE_IGTK)
     {
         MMLOG_INF("Unsupported key type for BIP.");
         return false;
     }
 
-    if (umac_keys_get_key_len(stad, mmie->key_id) > MAX_SUPPORTED_KEY_LEN)
+    if (umac_keys_get_key_len(stad, le16toh(mmie->key_id)) > MAX_SUPPORTED_KEY_LEN)
     {
         MMLOG_WRN("Unsupported Key length given.");
         return false;
     }
 
-    if (bip_generate_mic(umac_keys_get_key_data(stad, mmie->key_id), header, data, data_len, mic))
+    if (bip_generate_mic(umac_keys_get_key_data(stad, le16toh(mmie->key_id)),
+                         header,
+                         data,
+                         data_len,
+                         mic))
     {
+        MMLOG_DBG("Failed to generate BIP MIC\n");
         return false;
     }
 
@@ -99,6 +122,7 @@ bool bip_is_valid(struct umac_sta_data *stad,
     if (memcmp(mmie->mic, mic, MIC_LENGTH))
     {
         MMLOG_DBG("Invalid MIC received\n");
+
         return false;
     }
     MMLOG_DBG("Valid MIC received\n");
@@ -109,6 +133,70 @@ bool bip_is_valid(struct umac_sta_data *stad,
                                              mmie->key_id,
                                              packet_number,
                                              UMAC_KEY_RX_COUNTER_SPACE_DEFAULT);
+    if (status != MMWLAN_SUCCESS)
+    {
+        MMLOG_DBG("BIP Invalid RX replay counter\n");
+        return false;
+    }
+    return true;
+}
 
-    return (status == MMWLAN_SUCCESS);
+bool bip_generate_mmie(struct umac_sta_data *stad, uint8_t *data, size_t data_len)
+{
+    const struct dot11_hdr *header = (const struct dot11_hdr *)data;
+    struct dot11_ie_mmie *mmie = (struct dot11_ie_mmie *)(data + data_len - sizeof(*mmie));
+    if (data_len < sizeof(*header) + sizeof(*mmie))
+    {
+        MMLOG_WRN("Data too short\n");
+        return false;
+    }
+    data += sizeof(*header);
+    data_len -= sizeof(*header);
+
+    memset(mmie, 0, sizeof(*mmie));
+
+    int key_id = umac_keys_get_active_key_id(stad, UMAC_KEY_TYPE_IGTK);
+    if (key_id < 0)
+    {
+        MMLOG_INF("IGTK key not available for BIP.\n");
+        return false;
+    }
+
+    MMLOG_DBG("Generate MMIE: key_id=%d, data_len (exc hdr): %u\n", key_id, data_len);
+    MMOSAL_DEV_ASSERT(key_id <= UINT8_MAX);
+
+    mmie->key_id = htole16(key_id);
+
+    size_t key_len = umac_keys_get_key_len(stad, key_id);
+    if (key_len > MAX_SUPPORTED_KEY_LEN)
+    {
+        MMLOG_WRN("Unsupported Key length given (%u > %u)\n", key_len, MAX_SUPPORTED_KEY_LEN);
+        return false;
+    }
+
+    uint8_t mic[AES128_BLOCK_SIZE];
+    const uint8_t *key_data = umac_keys_get_key_data(stad, key_id);
+    if (key_data == NULL)
+    {
+        MMLOG_WRN("Failed to get key data for key_id %u\n", key_id);
+        return false;
+    }
+
+    umac_keys_increment_tx_seq(stad, key_id);
+    uint64_t tx_seq = umac_keys_get_tx_seq(stad, key_id);
+    write_mmie_packet_number(mmie->sequence_number, tx_seq);
+
+    mmie->header.element_id = DOT11_IE_MANAGEMENT_MIC;
+    mmie->header.length = sizeof(*mmie) - sizeof(mmie->header);
+
+    int ret = bip_generate_mic(key_data, header, data, data_len, mic);
+    if (ret != 0)
+    {
+        MMLOG_WRN("Failed to generate BIP MIC.\n");
+        return false;
+    }
+
+    memcpy(mmie->mic, mic, MIC_LENGTH);
+
+    return true;
 }

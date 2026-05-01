@@ -231,7 +231,8 @@
 
 #define IS_LL_DMA_CHANNEL_DEST_SEC(__VALUE__)             (((__VALUE__) == LL_DMA_CHANNEL_DEST_NSEC) || \
                                                            ((__VALUE__) == LL_DMA_CHANNEL_DEST_SEC))
-#endif /* defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U) */
+
+#endif /* (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U) */
 /**
   * @}
   */
@@ -356,7 +357,7 @@ uint32_t LL_DMA_DeInit(DMA_TypeDef *DMAx, uint32_t Channel)
 
 #if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
     LL_DMA_DisableChannelSecure(DMAx, Channel);
-#endif /* defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U) */
+#endif /* (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U) */
   }
 
   return (uint32_t)status;
@@ -784,7 +785,7 @@ void LL_DMA_NodeStructInit(LL_DMA_InitNodeTypeDef *DMA_InitNodeStruct)
   /* Set DMA_InitNodeStruct fields to default values */
 #if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
   DMA_InitNodeStruct->DestSecure               = LL_DMA_CHANNEL_DEST_NSEC;
-#endif /* defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U) */
+#endif /* (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U) */
   DMA_InitNodeStruct->DestAllocatedPort        = LL_DMA_DEST_ALLOCATED_PORT0;
   DMA_InitNodeStruct->DestHWordExchange        = LL_DMA_DEST_HALFWORD_PRESERVE;
   DMA_InitNodeStruct->DestByteExchange         = LL_DMA_DEST_BYTE_PRESERVE;
@@ -793,7 +794,7 @@ void LL_DMA_NodeStructInit(LL_DMA_InitNodeTypeDef *DMA_InitNodeStruct)
   DMA_InitNodeStruct->DestDataWidth            = LL_DMA_DEST_DATAWIDTH_BYTE;
 #if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
   DMA_InitNodeStruct->SrcSecure                = LL_DMA_CHANNEL_SRC_NSEC;
-#endif /* defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U) */
+#endif /* (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U) */
   DMA_InitNodeStruct->SrcAllocatedPort         = LL_DMA_SRC_ALLOCATED_PORT0;
   DMA_InitNodeStruct->SrcByteExchange          = LL_DMA_SRC_BYTE_PRESERVE;
   DMA_InitNodeStruct->DataAlignment            = LL_DMA_DATA_ALIGN_ZEROPADD;
@@ -836,7 +837,7 @@ void LL_DMA_NodeStructInit(LL_DMA_InitNodeTypeDef *DMA_InitNodeStruct)
   *         LL_DMA_LinkNodeTypeDef parameters.
   * @retval None
   */
-uint32_t LL_DMA_CreateLinkNode(LL_DMA_InitNodeTypeDef *DMA_InitNodeStruct, LL_DMA_LinkNodeTypeDef *pNode)
+uint32_t LL_DMA_CreateLinkNode(const LL_DMA_InitNodeTypeDef *DMA_InitNodeStruct, LL_DMA_LinkNodeTypeDef *pNode)
 {
   uint32_t reg_counter = 0U;
 
@@ -866,7 +867,7 @@ uint32_t LL_DMA_CreateLinkNode(LL_DMA_InitNodeTypeDef *DMA_InitNodeStruct, LL_DM
 #if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
   assert_param(IS_LL_DMA_CHANNEL_SRC_SEC(DMA_InitNodeStruct->SrcSecure));
   assert_param(IS_LL_DMA_CHANNEL_DEST_SEC(DMA_InitNodeStruct->DestSecure));
-#endif /* defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U) */
+#endif /* (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U) */
 
   /* Check trigger polarity */
   if (DMA_InitNodeStruct->TriggerPolarity != LL_DMA_TRIG_POLARITY_MASKED)
@@ -875,8 +876,8 @@ uint32_t LL_DMA_CreateLinkNode(LL_DMA_InitNodeTypeDef *DMA_InitNodeStruct, LL_DM
     assert_param(IS_LL_DMA_TRIGGER_SELECTION(DMA_InitNodeStruct->TriggerSelection));
   }
 
-  /* Check node type */
-  if (DMA_InitNodeStruct->NodeType == LL_DMA_GPDMA_LINEAR_NODE)
+  /* Check non 2D addressing settings */
+  if (DMA_InitNodeStruct->NodeType != LL_DMA_LPDMA_LINEAR_NODE)
   {
     assert_param(IS_LL_DMA_BURST_LENGTH(DMA_InitNodeStruct->SrcBurstLength));
     assert_param(IS_LL_DMA_BURST_LENGTH(DMA_InitNodeStruct->DestBurstLength));
@@ -937,7 +938,7 @@ uint32_t LL_DMA_CreateLinkNode(LL_DMA_InitNodeTypeDef *DMA_InitNodeStruct, LL_DM
 #if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
     pNode->LinkRegisters[reg_counter] |= (DMA_InitNodeStruct->DestSecure | \
                                           DMA_InitNodeStruct->SrcSecure);
-#endif /* defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U) */
+#endif /* (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U) */
 
     /* Update CTR1 register fields for not LPDMA channels */
     if (DMA_InitNodeStruct->NodeType != LL_DMA_LPDMA_LINEAR_NODE)
@@ -1061,7 +1062,6 @@ uint32_t LL_DMA_CreateLinkNode(LL_DMA_InitNodeTypeDef *DMA_InitNodeStruct, LL_DM
     reg_counter++;
   }
 
-
   /* Update CTR3 register fields for 2D addressing channels */
   if (DMA_InitNodeStruct->NodeType == LL_DMA_GPDMA_2D_NODE)
   {
@@ -1132,6 +1132,11 @@ uint32_t LL_DMA_CreateLinkNode(LL_DMA_InitNodeTypeDef *DMA_InitNodeStruct, LL_DM
       pNode->LinkRegisters[reg_counter] |= (DMA_InitNodeStruct->UpdateRegisters & (DMA_CLLR_UT3 | DMA_CLLR_UB2));
     }
   }
+  else
+  {
+    /* Reset of the CLLR of the node being created */
+    pNode->LinkRegisters[reg_counter] = 0U;
+  }
 
   return (uint32_t)SUCCESS;
 }
@@ -1178,11 +1183,11 @@ void LL_DMA_DisconnectNextLinkNode(LL_DMA_LinkNodeTypeDef *pLinkNode, uint32_t L
   * @}
   */
 
-#endif /* (defined (GPDMA1) || defined (LPDMA1)) */
+#endif /* GPDMA1 || LPDMA1 */
 
 /**
   * @}
   */
 
-#endif /* defined (USE_FULL_LL_DRIVER) */
+#endif /* USE_FULL_LL_DRIVER */
 

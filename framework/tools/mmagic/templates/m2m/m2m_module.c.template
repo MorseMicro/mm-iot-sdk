@@ -124,39 +124,53 @@ static struct mmbuf* mmagic_m2m_{{data.name}}_{{command.name}}(struct mmagic_m2m
 struct mmbuf* mmagic_m2m_{{data.name}}_process(struct mmagic_m2m_agent *agent, uint8_t sid,
     struct mmagic_m2m_command_header* header, struct mmbuf* cmd_buf)
 {
-    if (header)
-    {
-        switch (header->command)
-        {
-{%- if data.configs %}
-        case mmagic_{{data.name}}_cmd_get:
-            return mmagic_m2m_{{data.name}}_get(agent, sid, header->subcommand, cmd_buf);
-            break;
-
-        case mmagic_{{data.name}}_cmd_set:
-            return mmagic_m2m_{{data.name}}_set(agent, sid, header->subcommand, cmd_buf);
-            break;
-
-        case mmagic_{{data.name}}_cmd_load:
-            return mmagic_m2m_{{data.name}}_load(agent, sid, header->subcommand, cmd_buf);
-            break;
-
-        case mmagic_{{data.name}}_cmd_commit:
-            return mmagic_m2m_{{data.name}}_commit(agent, sid, header->subcommand, cmd_buf);
-            break;
-{% endif %}
-{%- for command in data.commands %}
-        case mmagic_{{data.name}}_cmd_{{command.name}}:
-            return mmagic_m2m_{{data.name}}_{{command.name}}(agent, sid, header->subcommand, cmd_buf);
-            break;
-{% endfor %}
-        default:
-            return mmagic_m2m_create_response(header->subsystem, header->command,
-                header->subcommand, MMAGIC_STATUS_NOT_SUPPORTED, NULL, 0);
-        }
-    }
-    else
+    if (!header)
     {
         return mmagic_m2m_create_response(0, 0, 0, MMAGIC_STATUS_ERROR, NULL, 0);
     }
+
+{% if data.configs %}
+{% if data.commands %}
+    /* Configuration can always be get and set */
+{%- endif %}
+    switch (header->command)
+    {
+    case mmagic_{{data.name}}_cmd_get:
+        return mmagic_m2m_{{data.name}}_get(agent, sid, header->subcommand, cmd_buf);
+
+    case mmagic_{{data.name}}_cmd_set:
+        return mmagic_m2m_{{data.name}}_set(agent, sid, header->subcommand, cmd_buf);
+
+    case mmagic_{{data.name}}_cmd_load:
+        return mmagic_m2m_{{data.name}}_load(agent, sid, header->subcommand, cmd_buf);
+
+    case mmagic_{{data.name}}_cmd_commit:
+        return mmagic_m2m_{{data.name}}_commit(agent, sid, header->subcommand, cmd_buf);
+
+    default:
+        break;
+    }
+{%- endif %}
+
+{% if data.commands %}
+    /* Commands rely on already being initialised and started */
+    if (!mmagic_core_{{data.name}}_is_started(&agent->core))
+    {
+        return mmagic_m2m_create_response(header->subsystem, header->command,
+            header->subcommand, MMAGIC_STATUS_UNAVAILABLE, NULL, 0);
+    }
+
+    switch (header->command)
+    {
+{%- for command in data.commands %}
+    case mmagic_{{data.name}}_cmd_{{command.name}}:
+        return mmagic_m2m_{{data.name}}_{{command.name}}(agent, sid, header->subcommand, cmd_buf);
+{% endfor %}
+    default:
+        break;
+    }
+{%- endif %}
+
+    return mmagic_m2m_create_response(header->subsystem, header->command,
+        header->subcommand, MMAGIC_STATUS_NOT_SUPPORTED, NULL, 0);
 }

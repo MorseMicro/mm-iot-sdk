@@ -17,6 +17,7 @@
 
 #include "mmhal_core.h"
 #include "mmosal.h"
+#include "mmwlan.h"
 #include "mmutils.h"
 
 #ifndef NULL
@@ -45,11 +46,6 @@
 #define QDBM_TO_DBM(gain) ((gain) >> 2)
 
 #define DBM_TO_QDBM(gain) ((gain) << 2)
-
-#ifndef UNKNOWN_VIF_ID
-
-#define UNKNOWN_VIF_ID (0xffff)
-#endif
 
 
 #define MHZ_TO_HZ(x) ((x) * 1000000)
@@ -169,6 +165,9 @@ static inline bool mac_addr_to_bytes(char *mac_addr_str, uint8_t *mac_addr)
     }
     return true;
 }
+
+
+enum mmwlan_status errno_to_status(int result);
 
 
 

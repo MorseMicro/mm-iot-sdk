@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.10.4</span>
+   &#160;<span id="projectnumber">2.11.2</span>
    </div>
   </td>
  </tr>
@@ -184,9 +184,6 @@ Functions</h2></td></tr>
 <tr class="memitem:ga8da661777231d2aaaa2c8b327c707471"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMCONFIG__API.html#ga8da661777231d2aaaa2c8b327c707471">mmconfig_check_usage</a> (const struct <a class="el" href="structmmconfig__update__node.html">mmconfig_update_node</a> *node_list, uint32_t *bytes_used, int32_t *bytes_remaining)</td></tr>
 <tr class="memdesc:ga8da661777231d2aaaa2c8b327c707471"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates the number of bytes that would be needed to write the given updates (if not NULL) and the number of bytes that would remain free in the persistent store afterwards.  <a href="group__MMCONFIG__API.html#ga8da661777231d2aaaa2c8b327c707471">More...</a><br /></td></tr>
 <tr class="separator:ga8da661777231d2aaaa2c8b327c707471"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga908514f26d5872bf4b86b8f3dc012411"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMCONFIG__API.html#ga908514f26d5872bf4b86b8f3dc012411">load_mmwlan_settings</a> (void)</td></tr>
-<tr class="memdesc:ga908514f26d5872bf4b86b8f3dc012411"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads and applies any other <code>mmwlan</code> settings specified in config store.  <a href="group__MMCONFIG__API.html#ga908514f26d5872bf4b86b8f3dc012411">More...</a><br /></td></tr>
-<tr class="separator:ga908514f26d5872bf4b86b8f3dc012411"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="gab3cffa2dca70681dbe466bfef906c681" name="gab3cffa2dca70681dbe466bfef906c681"></a>
@@ -251,27 +248,6 @@ Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="ga908514f26d5872bf4b86b8f3dc012411" name="ga908514f26d5872bf4b86b8f3dc012411"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga908514f26d5872bf4b86b8f3dc012411">&#9670;&nbsp;</a></span>load_mmwlan_settings()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void load_mmwlan_settings </td>
-          <td>(</td>
-          <td class="paramtype">void&#160;</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Loads and applies any other <code>mmwlan</code> settings specified in config store. </p>
-<p >Specifically looks for <code>wlan.subbands_enabled</code>, <code>wlan.sgi_enabled</code>, <code>wlan.ampdu_enabled</code>, <code>wlan.fragment_threshold</code> and <code>wlan.rts_threshold</code>. </p>
-
-</div>
-</div>
 <a id="gaed5b0b985172bf514b863064b84f5228" name="gaed5b0b985172bf514b863064b84f5228"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#gaed5b0b985172bf514b863064b84f5228">&#9670;&nbsp;</a></span>mmconfig_alloc_and_load()</h2>
 

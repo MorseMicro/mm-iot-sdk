@@ -34,14 +34,5 @@
         "configstore_base_address": "0x8004000",
         "configstore_size": "0x4000",
         "supported_platforms": ["mm-ekh08-wb55", "mm-ekh08-wb55-ble", "mm-mmecs02v2", "mm-ekh18-wb55"]
-    },
-    "stm32f7x.cpu":
-    {
-        "configstore_bank": 0,
-        "configstore_first_sector": 1,
-        "configstore_last_sector": 2,
-        "configstore_base_address": "0x08008000",
-        "configstore_size": "0x10000",
-        "supported_platforms": ["mm-ekh08-f769"]
     }
 }

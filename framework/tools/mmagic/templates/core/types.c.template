@@ -74,6 +74,23 @@ int mmagic_string_to_bool(bool *value, const char *buf)
     return -1;
 }
 
+int mmagic_uint8_t_to_hexstring(const uint8_t *array, size_t array_len, char *buf, size_t buf_len)
+{
+    /* Each uint8_t converts to two hexadecimal digits e.g. 'ab'.
+     * The generated string will not split the digits from a single uint8_t - it must all fit
+     * including a terminator
+     */
+#define UINT8_T_HEX_LEN 2
+    size_t idx = 0;
+    while ((idx < array_len) && (((idx + 1) * UINT8_T_HEX_LEN) < buf_len))
+    {
+        snprintf(&buf[idx * 2], UINT8_T_HEX_LEN + 1, "%02x", array[idx]);
+        idx++;
+    }
+
+    return idx;
+}
+
 int mmagic_uint16_t_to_string(uint16_t value, char *buf, size_t len)
 {
     return snprintf(buf, len, "%u", value);

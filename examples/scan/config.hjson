@@ -9,9 +9,9 @@
  * To load the settings on to a device, do the following from the `framework` directory:
  *
  *   - Ensure the MMIOT_ROOT environment variable is set to the path to the framework directory
- *     of the MM-IoT-SDK package. This will be set automatically if using Platform IO and is
- *     set by the environment setup script (`tools/setupscripts/env.sh`) if building
- *     using command line make -- for more information see the Getting Started Guide.
+ *     of the MM-IoT-SDK package. This is set by the environment setup script
+ *     (`tools/setupscripts/env.sh`) if building using command line make -- for more information
+ *     see the Getting Started Guide.
  *
  *   - If this is the first time using the config store programmer ensure the pipenv is
  *     synchronised by running the following command in the framework directory:
@@ -70,12 +70,6 @@
         // "wlan.ampdu_enabled": "true"
         // "wlan.fragment_threshold": "0"
         // "wlan.rts_threshold": "0"
-        /* If true, enables ARP response offload which allows the Morse chip to directly
-         * respond to ARP requests without waking up the host processor. */
-        // "wlan.offload_arp_response": "true"
-        /* If non zero, enables ARP refresh offload with the specified interval in
-         * milliseconds. */
-        // "wlan.offload_arp_refresh_s": "60"
         /* The minimum interval to wait after the last health check before triggering
          * another. If this parameter is 0 then health checks will always happen at the
          * max_interval_ms value. min_interval_ms must always be less than or equal to
@@ -100,10 +94,6 @@
          * ignored otherwise. If set to 0, the device will not return to the home channel
          * during the scan. */
         // "wlan.home_chan_dwell_time_ms": "200"
-        /* If true, enables DHCP offload which allows the Morse chip to directly handle
-         * DHCP discovery and leases without waking up the host processor. Note: this comes
-         * into effect only if ip.dhcp_enabled is also true. */
-        // "ip.dhcp_offload": "true"
         /* Protected Management Frame mode to use (802.11w). Valid values are required and
          * disabled */
         // "wlan.pmf_mode": "required"

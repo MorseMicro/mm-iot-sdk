@@ -134,7 +134,7 @@ static void start_tcp_client(void)
     /* Get the Server IP */
     struct mmipal_ip_config ip_config = MMIPAL_IP_CONFIG_DEFAULT;
     enum mmipal_status status = mmipal_get_ip_config(&ip_config);
-    if (status == MMIPAL_SUCCESS)
+    if (status == MMIPAL_SUCCESS && ip_config.mode != MMIPAL_DISABLED)
     {
         memcpy(args.server_addr, ip_config.gateway_addr, sizeof(ip_config.gateway_addr));
     }
@@ -175,7 +175,7 @@ static void start_udp_client(void)
     /* Get the Server IP */
     struct mmipal_ip_config ip_config = MMIPAL_IP_CONFIG_DEFAULT;
     enum mmipal_status status = mmipal_get_ip_config(&ip_config);
-    if (status == MMIPAL_SUCCESS)
+    if (status == MMIPAL_SUCCESS && ip_config.mode != MMIPAL_DISABLED)
     {
         memcpy(args.server_addr, ip_config.gateway_addr, sizeof(ip_config.gateway_addr));
     }
@@ -228,7 +228,7 @@ static void start_tcp_server(void)
     struct mmipal_ip_config ip_config;
     enum mmipal_status status;
     status = mmipal_get_ip_config(&ip_config);
-    if (status == MMIPAL_SUCCESS)
+    if (status == MMIPAL_SUCCESS && ip_config.mode != MMIPAL_DISABLED)
     {
         printf("Execute cmd on AP 'iperf -c %s -p %u -i 1' for IPv4\n",
                ip_config.ip_addr,
@@ -237,7 +237,7 @@ static void start_tcp_server(void)
 
     struct mmipal_ip6_config ip6_config;
     status = mmipal_get_ip6_config(&ip6_config);
-    if (status == MMIPAL_SUCCESS)
+    if (status == MMIPAL_SUCCESS && ip6_config.ip6_mode != MMIPAL_IP6_DISABLED)
     {
         printf("Execute cmd on AP 'iperf -c %s%%wlan0 -p %u -i 1 -V' for IPv6\n",
                ip6_config.ip6_addr[0],
@@ -267,7 +267,7 @@ static void start_udp_server(void)
     struct mmipal_ip_config ip_config;
     enum mmipal_status status;
     status = mmipal_get_ip_config(&ip_config);
-    if (status == MMIPAL_SUCCESS)
+    if (status == MMIPAL_SUCCESS && ip_config.mode != MMIPAL_DISABLED)
     {
         printf("Execute cmd on AP 'iperf -c %s -p %u -i 1 -u -b 20M' for IPv4\n",
                ip_config.ip_addr,
@@ -276,7 +276,7 @@ static void start_udp_server(void)
 
     struct mmipal_ip6_config ip6_config;
     status = mmipal_get_ip6_config(&ip6_config);
-    if (status == MMIPAL_SUCCESS)
+    if (status == MMIPAL_SUCCESS && ip6_config.ip6_mode != MMIPAL_IP6_DISABLED)
     {
         printf("Execute cmd on AP 'iperf -c %s%%wlan0 -p %u -i 1 -V -u -b 20M' for IPv6\n",
                ip6_config.ip6_addr[0],

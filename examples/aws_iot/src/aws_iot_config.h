@@ -83,12 +83,6 @@
  */
 #define AWS_KEY_PROVISIONING_TEMPLATE "aws.provisioningtemplate"
 
-/**
- * The config store key storing the OTA certificate for validating OTA images.
- * This is mandatory if OTA update is used.
- */
-#define AWS_KEY_OTA_CERTIFICATE "aws.ota_cert"
-
 /** Macro to log error messages */
 #if defined(AWS_LOG_LEVEL) && (AWS_LOG_LEVEL >= 1)
 #define LogError(message)  \

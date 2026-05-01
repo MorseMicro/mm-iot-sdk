@@ -503,7 +503,8 @@ void app_init(void)
      * the network context structure. We set NetworkCredentials to NULL to connect in the clear.
      * Set this parameter if you wish to connect with TLS */
     printf("Connecting to server socket on %s:%ld...", server, port);
-    xNetworkStatus = transport_connect(&xNetworkContext, server, (uint16_t)port, NULL);
+    xNetworkStatus =
+        transport_connect(&xNetworkContext, server, TRANSPORT_TCP, (uint16_t)port, NULL);
     if (xNetworkStatus != TRANSPORT_SUCCESS)
     {
         printf("failed with code %d\n", xNetworkStatus);

@@ -24,6 +24,7 @@
 extern "C" {
 #endif
 
+#if defined(FMC_BANK3)
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32u5xx_ll_fmc.h"
@@ -193,7 +194,7 @@ HAL_StatusTypeDef  HAL_NAND_Init(NAND_HandleTypeDef *hnand, FMC_NAND_PCC_TimingT
                                  FMC_NAND_PCC_TimingTypeDef *AttSpace_Timing);
 HAL_StatusTypeDef  HAL_NAND_DeInit(NAND_HandleTypeDef *hnand);
 
-HAL_StatusTypeDef  HAL_NAND_ConfigDevice(NAND_HandleTypeDef *hnand, NAND_DeviceConfigTypeDef *pDeviceConfig);
+HAL_StatusTypeDef  HAL_NAND_ConfigDevice(NAND_HandleTypeDef *hnand, const NAND_DeviceConfigTypeDef *pDeviceConfig);
 
 HAL_StatusTypeDef  HAL_NAND_Read_ID(NAND_HandleTypeDef *hnand, NAND_IDTypeDef *pNAND_ID);
 
@@ -368,6 +369,7 @@ uint32_t              HAL_NAND_Read_Status(const NAND_HandleTypeDef *hnand);
   * @}
   */
 
+#endif /* FMC_BANK3 */
 
 #ifdef __cplusplus
 }

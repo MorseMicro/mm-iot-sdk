@@ -56,7 +56,7 @@ static void umac_datapath_process_rx_mgmt_frame_ap(struct umac_data *umacd,
         }
         else
         {
-            umac_supp_process_mgmt_frame(umacd, rxbufview);
+            umac_supp_process_mgmt_frame(umacd, rxbufview, MMWLAN_VIF_AP);
         }
     }
 }
@@ -119,7 +119,7 @@ enum mmwlan_status umac_datapath_tx_mgmt_frame_ap(struct umac_data *umacd,
     int key_id = -1;
 
 
-    struct umac_sta_data *stad = data->ops->lookup_stad_by_peer_addr(umacd, NULL);
+    struct umac_sta_data *stad = umac_ap_lookup_sta_by_addr(umacd, NULL);
     MMOSAL_DEV_ASSERT(stad != NULL);
     if (stad == NULL)
     {
@@ -145,6 +145,19 @@ enum mmwlan_status umac_datapath_tx_mgmt_frame_ap(struct umac_data *umacd,
         tx_metadata->key_idx = key_id;
     }
 
+    tx_metadata->aid = umac_sta_data_get_aid(stad);
+    uint16_t vif_id = umac_interface_get_vif_id(umacd, UMAC_INTERFACE_AP);
+    if (vif_id == MMDRV_VIF_ID_INVALID)
+    {
+        MMLOG_WRN("Dropping TX MGMT frame because AP VIF is not active\n");
+        mmpkt_close(&txbufview);
+        mmpkt_release(txbuf);
+        umac_stats_increment_datapath_txq_frames_dropped(umacd);
+        return MMWLAN_UNAVAILABLE;
+    }
+
+    MMOSAL_DEV_ASSERT(vif_id < UINT8_MAX);
+    tx_metadata->vif_id = vif_id;
     tx_metadata->tid = MMWLAN_MAX_QOS_TID;
 
     if (mmrc_rate_override == NULL)
@@ -176,13 +189,79 @@ enum mmwlan_status umac_datapath_tx_mgmt_frame_ap(struct umac_data *umacd,
     umac_stats_update_last_tx_time(umacd);
 
     mmpkt_close(&txbufview);
-    if (mmdrv_tx_frame(txbuf, true) < 0)
+    enum mmwlan_status tx_status = mmdrv_tx_frame(txbuf, true);
+    if (tx_status != MMWLAN_SUCCESS)
     {
         MMLOG_WRN("Tx Error\n");
-        return MMWLAN_ERROR;
+        return tx_status;
     }
 
     return MMWLAN_SUCCESS;
+}
+
+static bool umac_datapath_ap_update_stad_state_rx(struct umac_sta_data *stad,
+                                                  const struct mmdrv_rx_metadata *metadata,
+                                                  uint16_t frame_control_le)
+{
+    if (!stad || !metadata)
+    {
+        MMOSAL_DEV_ASSERT(0);
+        return false;
+    }
+
+    uint16_t frame_ver_type_subtype = dot11_frame_control_get_ver_type_subtype(frame_control_le);
+    uint16_t frame_type = dot11_frame_control_get_type(frame_control_le);
+    bool frame_is_data_mgmt = frame_type == DOT11_FC_TYPE_DATA || frame_type == DOT11_FC_TYPE_MGMT;
+
+    bool ok = true;
+
+
+    if (frame_is_data_mgmt)
+    {
+        bool asleep = dot11_frame_control_get_power_mgmt(frame_control_le);
+        ok = umac_ap_set_stad_sleep_state(stad, asleep);
+        MMOSAL_DEV_ASSERT(ok);
+    }
+
+
+    if (frame_is_data_mgmt || frame_ver_type_subtype == (DOT11_VER_TYPE_SUBTYPE(0, CTRL, PS_POLL)))
+    {
+        umac_ap_update_stad_last_active(stad, metadata->read_timestamp_ms);
+    }
+
+    return ok;
+}
+
+static void umac_datapath_ap_handle_frame_unknown_sta(struct umac_data *umacd, const uint8_t *ta)
+{
+    struct umac_sta_data *stad = umac_ap_lookup_sta_by_aid(umacd, 0);
+    struct frame_data_deauth_ap deauth_params = {
+        .own_address = umac_sta_data_peek_bssid(stad),
+        .sta_address = ta,
+        .reason_code = DOT11_REASON_INVALID_CLASS3_FRAME,
+        .bip_stad = NULL,
+    };
+
+    struct mmpkt *txbuf =
+        build_mgmt_frame(umacd, frame_deauthentication_from_ap_build, &deauth_params);
+    if (txbuf == NULL)
+    {
+        MMLOG_WRN("Failed to tx deauth to " MM_MAC_ADDR_FMT " (%u)\n",
+                  MM_MAC_ADDR_VAL(ta),
+                  MMWLAN_NO_MEM);
+        return;
+    }
+
+
+    struct mmdrv_tx_metadata *tx_metadata = mmdrv_get_tx_metadata(txbuf);
+    tx_metadata->enc = ENCRYPTION_DISABLED;
+
+    enum mmwlan_status status = umac_datapath_tx_mgmt_frame(stad, txbuf);
+    if (status != MMWLAN_SUCCESS)
+    {
+        MMLOG_WRN("Failed to tx deauth to " MM_MAC_ADDR_FMT " (%u)\n", MM_MAC_ADDR_VAL(ta), status);
+        return;
+    }
 }
 
 
@@ -194,24 +273,21 @@ const uint16_t frames_allowed_pre_association_ap_mode[] = {
 };
 
 
-const struct umac_datapath_ops datapath_ops_ap = {
+static const struct umac_datapath_ops datapath_ops_ap = {
     .process_rx_mgmt_frame = umac_datapath_process_rx_mgmt_frame_ap,
     .lookup_stad_by_peer_addr = umac_ap_lookup_sta_by_addr,
-    .lookup_stad_by_tx_dest_addr = umac_ap_lookup_sta_by_dest_addr,
+    .lookup_stad_by_tx_dest_addr = umac_ap_lookup_sta_by_addr,
     .lookup_stad_by_aid = umac_ap_lookup_sta_by_aid,
-    .set_stad_sleep_state = umac_ap_set_stad_sleep_state,
+    .update_stad_state_rx = umac_datapath_ap_update_stad_state_rx,
     .is_stad_tx_paused = umac_ap_is_stad_paused,
     .enqueue_tx_frame = umac_ap_queue_pkt,
     .dequeue_tx_frame = umac_ap_tx_dequeue_frame,
     .construct_80211_data_header = umac_datapath_construct_80211_data_header_ap,
-    .get_sta_state = umac_ap_get_state,
+    .get_sta_state = umac_ap_get_sta_state,
+    .supp_l2_sock_receive = umac_supp_l2_sock_receive_ap,
+    .handle_frame_unknown_sta = umac_datapath_ap_handle_frame_unknown_sta,
     .frames_allowed_pre_association = frames_allowed_pre_association_ap_mode,
+    .type = "AP",
 };
 
-void umac_datapath_configure_ap_mode(struct umac_data *umacd)
-{
-    struct umac_datapath_data *data = umac_data_get_datapath(umacd);
-
-    data->ops = &datapath_ops_ap;
-    MMLOG_INF("Datapath configured for AP mode\n");
-}
+const struct umac_datapath_ops *const umac_datapath_ops_ap = &datapath_ops_ap;

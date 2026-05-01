@@ -18,9 +18,17 @@ BSP_DIR = $(PLATFORM_PATH)/bsp
 BSP_SRCS_MAIN_C ?= Core/Src/main.c
 BSP_SRCS_C += $(BSP_SRCS_MAIN_C)
 BSP_SRCS_C += Core/Src/stm32wbxx_hal_msp.c
-BSP_SRCS_C += Core/Src/stm32wbxx_hal_timebase_tim.c
 BSP_SRCS_C += Core/Src/stm32wbxx_it.c
 BSP_SRCS_C += Core/Src/system_stm32wbxx.c
+ifneq ($(BUILD_WITH_MBEDTLS_ECC_HW_CRYPTO),)
+# Enable STM32WB55 PKA hardware acceleration for ECC (mbedTLS ECP alternative implementation)
+BUILD_DEFINES += MBEDTLS_ECP_ALT=1
+
+BSP_SRCS_C += Core/Src/ecp_alt.c
+BSP_SRCS_C += Core/Src/ecp_hal.c
+BSP_SRCS_C += Core/Src/ecp_curves_alt.c
+BSP_SRCS_H += Core/Inc/ecp_alt.h
+endif
 
 BSP_SRCS_H += Core/Inc/main.h
 BSP_SRCS_H += Core/Inc/stm32_assert.h
@@ -55,7 +63,7 @@ BSP_DRIVERS_SRCS_C += Drivers/STM32WBxx_HAL_Driver/Src/stm32wbxx_hal.c
 BSP_DRIVERS_SRCS_C += Drivers/STM32WBxx_HAL_Driver/Src/stm32wbxx_hal_exti.c
 BSP_DRIVERS_SRCS_C += Drivers/STM32WBxx_HAL_Driver/Src/stm32wbxx_hal_tim.c
 BSP_DRIVERS_SRCS_C += Drivers/STM32WBxx_HAL_Driver/Src/stm32wbxx_hal_tim_ex.c
-
+BSP_DRIVERS_SRCS_C += Drivers/STM32WBxx_HAL_Driver/Src/stm32wbxx_hal_pka.c
 
 BSP_DRIVERS_SRCS_H += Drivers/CMSIS/Device/ST/STM32WBxx/Include/stm32wb55xx.h
 BSP_DRIVERS_SRCS_H += Drivers/CMSIS/Device/ST/STM32WBxx/Include/stm32wbxx.h
@@ -81,6 +89,9 @@ BSP_DRIVERS_SRCS_H += Drivers/STM32WBxx_HAL_Driver/Inc/stm32wbxx_ll_usart.h
 BSP_DRIVERS_SRCS_H += Drivers/STM32WBxx_HAL_Driver/Inc/stm32wbxx_ll_gpio.h
 BSP_DRIVERS_SRCS_H += Drivers/STM32WBxx_HAL_Driver/Inc/stm32wbxx_ll_rng.h
 BSP_DRIVERS_SRCS_H += Drivers/STM32WBxx_HAL_Driver/Inc/stm32wbxx_ll_lptim.h
+BSP_DRIVERS_SRCS_H += Drivers/STM32WBxx_HAL_Driver/Inc/stm32wbxx_hal_pka.h
+BSP_DRIVERS_SRCS_H += Drivers/STM32WBxx_HAL_Driver/Inc/stm32wbxx_hal_tim_ex.h
+BSP_DRIVERS_SRCS_H += Drivers/STM32WBxx_HAL_Driver/Inc/stm32wbxx_hal_tim.h
 
 BSP_SRCS_S += startup_stm32wb55xx_cm4.s
 BSP_LD_PREFIX = stm32wb55xx_flash_cm4

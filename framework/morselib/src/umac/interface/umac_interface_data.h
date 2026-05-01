@@ -11,6 +11,15 @@
 struct umac_interface_vif_data
 {
 
+    uint16_t active_interface_types;
+
+    uint16_t vif_id;
+
+    uint8_t mac_addr[DOT11_MAC_ADDR_LEN];
+
+    const struct umac_datapath_ops *datapath_ops;
+
+
     mmwlan_vif_state_cb_t vif_state_cb;
 
     void *vif_state_cb_arg;
@@ -23,10 +32,6 @@ struct umac_interface_vif_data
 
 struct umac_interface_data
 {
-
-    uint16_t active_interface_types;
-
-    uint16_t vif_id;
 
     uint8_t mac_addr[DOT11_MAC_ADDR_LEN];
 

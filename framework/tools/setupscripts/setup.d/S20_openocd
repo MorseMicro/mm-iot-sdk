@@ -6,9 +6,21 @@
 
 source $SCRIPT_DIR/config.sh
 
+MORSE_OPENOCD_VERSION=0.12.0-2
+MORSE_OPENOCD_DESTINATION_DIRECTORY=$MORSE_TOOLS_DIR
+MORSE_OPENOCD_DIR=$MORSE_OPENOCD_DESTINATION_DIRECTORY/xpack-openocd-$MORSE_OPENOCD_VERSION
+MORSE_OPENOCD_TAR=xpack-openocd-$MORSE_OPENOCD_VERSION-linux-$MORSE_ARCH2.tar.gz
+declare -A OPENOCD_TAR_SHA256=(
+    ["x86_64"]=1dc8e63694204b73107fe5b23267238af2c6ce14726e4aa244a2123a98805335
+    ["aarch64"]=d4fad1505ef299f511eb2324c6e2c7bbef1101a22155b70478d89428c3fb515b
+)
+MORSE_OPENOCD_TAR_SHA256=${OPENOCD_TAR_SHA256[$MORSE_ARCH]}
+
+[[ "${VARS_ONLY:-0}" == "1" ]] && return
+
 if [[ -d "$MORSE_OPENOCD_DIR" ]]
 then
-    echo -e "\u001b[36mOpenOCD already directory $MORSE_OPENOCD_DIR exits. Skipping installation.\u001b[0m"
+    echo -e "\u001b[36mOpenOCD directory $MORSE_OPENOCD_DIR already exists. Skipping installation.\u001b[0m"
 else
     echo -e "\u001b[32mDownloading and extracting OpenOCD.\u001b[0m"
     $DRYRUNCMD wget -q --show-progress https://github.com/xpack-dev-tools/openocd-xpack/releases/download/v$MORSE_OPENOCD_VERSION/$MORSE_OPENOCD_TAR -O $MORSE_OPENOCD_TAR

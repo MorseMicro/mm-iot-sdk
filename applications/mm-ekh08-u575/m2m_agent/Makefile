@@ -5,7 +5,7 @@
 #
 
 #
-# This file is not used by PlatformIO. It is only used for building using make.
+# This file is only used for building with make.
 #
 
 APP_NAME = m2m_agent
@@ -65,36 +65,14 @@ BUILD_WITH_MBEDTLS_ECC_HW_CRYPTO?=y
 # Additional memory increase is indicative only.
 #ENABLE_AP_MODE=y
 
-# Example source files
-APP_DIR = .
-SRCS_C = $(wildcard $(APP_DIR)/src/*.c)
-SRCS_CPP = $(wildcard $(APP_DIR)/src/*.cpp)
-SRCS_H = $(wildcard $(APP_DIR)/src/*.h)
+# BUILD_SUPPLICANT_WITH_DPP must be set for to use DPP
+# Options:
+# - y
+BUILD_SUPPLICANT_WITH_DPP ?= y
 
-INCLUDES += $(APP_DIR)/src
-
-
-BUILD_DEFINES += APPLICATION_VERSION="\"0.1.0\""
-BUILD_DEFINES += SNTP_DO_NOT_USE_CUSTOM_CONFIG
-BUILD_DEFINES += MQTT_AGENT_DO_NOT_USE_CUSTOM_CONFIG
-BUILD_DEFINES += APP_HEAP=103400
-
-
-
-# Strict C flags (may be overridden for third-party code as required)
-CFLAGS += -Werror -Wall -Wextra
-CONLYFLAGS += -Wc++-compat
-
-# Explicitly specify the C standard version that has been assumed. Your mileage may vary if other
-# versions are used.
-CONLYFLAGS += -std=gnu11
-
-
-# This determines the network stack that will be built. Note that freertosplustcp
-# support is deprecated and will be removed in a future release.
+# This determines the network stack that will be built.
 # Options:
 # - lwip
-# - freertosplustcp
 IP_STACK ?= lwip
 
 # This enables/disables IPv4 support.
@@ -109,6 +87,30 @@ MMIPAL_IPV4_ENABLED ?= 1
 # - 1
 MMIPAL_IPV6_ENABLED ?= 0
 
+# Example source files
+APP_DIR = .
+SRCS_C = $(wildcard $(APP_DIR)/src/*.c)
+SRCS_CPP = $(wildcard $(APP_DIR)/src/*.cpp)
+SRCS_H = $(wildcard $(APP_DIR)/src/*.h)
+
+INCLUDES += $(APP_DIR)/src
+
+
+BUILD_DEFINES += APPLICATION_VERSION="\"0.1.0\""
+BUILD_DEFINES += SNTP_DO_NOT_USE_CUSTOM_CONFIG
+BUILD_DEFINES += MQTT_AGENT_DO_NOT_USE_CUSTOM_CONFIG
+BUILD_DEFINES += APP_HEAP=103400
+BUILD_DEFINES += MMAGIC_WLAN_DPP_ENABLED=$(if $(strip $(BUILD_SUPPLICANT_WITH_DPP)),1,0)
+
+
+
+# Strict C flags (may be overridden for third-party code as required)
+CFLAGS += -Werror -Wall -Wextra
+CONLYFLAGS += -Wc++-compat
+
+# Explicitly specify the C standard version that has been assumed. Your mileage may vary if other
+# versions are used.
+CONLYFLAGS += -std=gnu11
 
 ifneq ($(ENABLE_AP_MODE),)
 BUILD_SUPPLICANT_WITH_AP=y
@@ -129,6 +131,10 @@ DEBUG_BUILD_DEFINES += MAX_ALLOCATIONS=$(shell echo $$((250 + ($(MAX_STAS) * 40)
 # Increase packet memory to accomodate additional stations traffic. This is indicative only.
 MMPKTMEM_TX_POOL_N_BLOCKS = $(shell echo $$((32 + ($(MAX_STAS) * 2))))
 MMPKTMEM_RX_POOL_N_BLOCKS = $(shell echo $$((32 + ($(MAX_STAS) * 2))))
+
+# Enable reserved management frame pool for reliable beacon allocation and management frames to
+# associating STAs
+MMPKTMEM_TX_MGMT_POOL_N_BLOCKS = 4
 endif
 
 ifneq ($(BUILD_SUPPLICANT_WITH_AP)$(BUILD_SUPPLICANT_WITH_DPP)$(BUILD_MORSELIB_FROM_SOURCE),)
@@ -199,7 +205,7 @@ endif
 ifeq ($(BUILDTYPE),debug)
 # Debug builds
 DEBUG_CFLAGS +=-Og
-DEBUG_CFLAGS +=-g
+DEBUG_CFLAGS +=-g3
 DEBUG_CFLAGS +=-gdwarf-5
 
 # NOTE: DWARF >= Version 4 may require GDB 7.0 and -fvar-tracking-assignments for maximum benefit.
@@ -211,6 +217,9 @@ DEBUG_BUILD_DEFINES += ENABLE_MMOSAL_DEV_ASSERT
 
 # Enable print, breakpoint, and, failing that, infinite loop in assertion handler
 DEBUG_BUILD_DEFINES += HALT_ON_ASSERT
+
+# Add step to hold the chip in reset during an assert
+DEBUG_BUILD_DEFINES += RESET_MM_ON_HALT
 
 CFLAGS += $(DEBUG_CFLAGS)
 LINKFLAGS += $(DEBUG_LINKFLAGS)

@@ -14,6 +14,7 @@
 #include "umac/supplicant_shim/umac_supp_shim.h"
 #include "umac/core/umac_core.h"
 #include "umac/regdb/umac_regdb.h"
+#include "umac/health_check/umac_health_check.h"
 
 
 #define WNM_SLEEP_RETRY_REQ_TIMEOUT_MS 1000
@@ -155,8 +156,8 @@ void umac_wnm_sleep_report_event(struct umac_data *umacd, enum umac_wnm_sleep_ev
             {
                 MMLOG_DBG("Restoring WNM State in the chip.\n");
                 uint16_t sta_vif_id = umac_interface_get_vif_id(umacd, UMAC_INTERFACE_STA);
-                MMOSAL_ASSERT(sta_vif_id != UMAC_INTERFACE_VIF_ID_INVALID);
-                mmdrv_set_health_check_veto(MMDRV_HEALTH_CHECK_VETO_ID_WNM_SLEEP);
+                MMOSAL_ASSERT(sta_vif_id != MMDRV_VIF_ID_INVALID);
+                umac_health_check_set_veto(umacd, UMAC_HEALTH_CHECK_VETO_ID_WNM_SLEEP);
                 (void)mmdrv_set_chip_wnm_sleep_enabled(sta_vif_id, true);
             }
             break;
@@ -189,7 +190,7 @@ static void umac_wnm_sleep_retry_request(void *arg1, void *arg2)
 
 
 #define WNM_SLEEP_FSM_LOG(format_str, ...) MMLOG_DBG(format_str, __VA_ARGS__)
-#include "wnm_sleep_fsm.def"
+#include "wnm_sleep_fsm_def.h"
 
 static void wnm_sleep_fsm_entry_requested_entry(struct wnm_sleep_fsm_instance *inst,
                                                 enum wnm_sleep_fsm_state prev_state)
@@ -251,7 +252,7 @@ static void wnm_sleep_fsm_active_entry(struct wnm_sleep_fsm_instance *inst,
     struct umac_data *umacd = (struct umac_data *)inst->arg;
 
     uint16_t sta_vif_id = umac_interface_get_vif_id(umacd, UMAC_INTERFACE_STA);
-    MMOSAL_ASSERT(sta_vif_id != UMAC_INTERFACE_VIF_ID_INVALID);
+    MMOSAL_ASSERT(sta_vif_id != MMDRV_VIF_ID_INVALID);
 
     umac_datapath_pause(umacd, UMAC_DATAPATH_PAUSE_SOURCE_WNM_SLEEP);
     if (umac_config_is_chip_powerdown_enabled(umacd))
@@ -264,7 +265,7 @@ static void wnm_sleep_fsm_active_entry(struct wnm_sleep_fsm_instance *inst,
     }
 
 
-    mmdrv_set_health_check_veto(MMDRV_HEALTH_CHECK_VETO_ID_WNM_SLEEP);
+    umac_health_check_set_veto(umacd, UMAC_HEALTH_CHECK_VETO_ID_WNM_SLEEP);
     umac_connection_set_monitor_disable(umacd, true);
 }
 
@@ -275,12 +276,12 @@ static void wnm_sleep_fsm_active_exit(struct wnm_sleep_fsm_instance *inst,
     struct umac_data *umacd = (struct umac_data *)inst->arg;
 
     uint16_t sta_vif_id = umac_interface_get_vif_id(umacd, UMAC_INTERFACE_STA);
-    MMOSAL_ASSERT(sta_vif_id != UMAC_INTERFACE_VIF_ID_INVALID);
+    MMOSAL_ASSERT(sta_vif_id != MMDRV_VIF_ID_INVALID);
 
     if (umac_config_is_chip_powerdown_enabled(umacd))
     {
         const char *country_code = umac_regdb_get_country_code(umacd);
-        MMOSAL_ASSERT(mmdrv_init(NULL, country_code) == 0);
+        MMOSAL_ASSERT(mmdrv_init(NULL, country_code) == MMWLAN_SUCCESS);
         umac_connection_handle_hw_restarted(umacd);
         umac_config_set_chip_powerdown_enabled(umacd, false);
     }
@@ -290,7 +291,7 @@ static void wnm_sleep_fsm_active_exit(struct wnm_sleep_fsm_instance *inst,
     }
 
     umac_datapath_unpause(umacd, UMAC_DATAPATH_PAUSE_SOURCE_WNM_SLEEP);
-    mmdrv_unset_health_check_veto(MMDRV_HEALTH_CHECK_VETO_ID_WNM_SLEEP);
+    umac_health_check_unset_veto(umacd, UMAC_HEALTH_CHECK_VETO_ID_WNM_SLEEP);
 
     umac_connection_set_monitor_disable(umacd, false);
 }

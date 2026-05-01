@@ -151,45 +151,57 @@ struct mmbuf *mmagic_m2m_ntp_process(struct mmagic_m2m_agent *agent,
                                      struct mmagic_m2m_command_header *header,
                                      struct mmbuf *cmd_buf)
 {
-    if (header)
-    {
-        switch (header->command)
-        {
-            case mmagic_ntp_cmd_get:
-                return mmagic_m2m_ntp_get(agent, sid, header->subcommand, cmd_buf);
-                break;
-
-            case mmagic_ntp_cmd_set:
-                return mmagic_m2m_ntp_set(agent, sid, header->subcommand, cmd_buf);
-                break;
-
-            case mmagic_ntp_cmd_load:
-                return mmagic_m2m_ntp_load(agent, sid, header->subcommand, cmd_buf);
-                break;
-
-            case mmagic_ntp_cmd_commit:
-                return mmagic_m2m_ntp_commit(agent, sid, header->subcommand, cmd_buf);
-                break;
-
-            case mmagic_ntp_cmd_sync:
-                return mmagic_m2m_ntp_sync(agent, sid, header->subcommand, cmd_buf);
-                break;
-
-            case mmagic_ntp_cmd_get_time:
-                return mmagic_m2m_ntp_get_time(agent, sid, header->subcommand, cmd_buf);
-                break;
-
-            default:
-                return mmagic_m2m_create_response(header->subsystem,
-                                                  header->command,
-                                                  header->subcommand,
-                                                  MMAGIC_STATUS_NOT_SUPPORTED,
-                                                  NULL,
-                                                  0);
-        }
-    }
-    else
+    if (!header)
     {
         return mmagic_m2m_create_response(0, 0, 0, MMAGIC_STATUS_ERROR, NULL, 0);
     }
+
+    /* Configuration can always be get and set */
+    switch (header->command)
+    {
+        case mmagic_ntp_cmd_get:
+            return mmagic_m2m_ntp_get(agent, sid, header->subcommand, cmd_buf);
+
+        case mmagic_ntp_cmd_set:
+            return mmagic_m2m_ntp_set(agent, sid, header->subcommand, cmd_buf);
+
+        case mmagic_ntp_cmd_load:
+            return mmagic_m2m_ntp_load(agent, sid, header->subcommand, cmd_buf);
+
+        case mmagic_ntp_cmd_commit:
+            return mmagic_m2m_ntp_commit(agent, sid, header->subcommand, cmd_buf);
+
+        default:
+            break;
+    }
+
+    /* Commands rely on already being initialised and started */
+    if (!mmagic_core_ntp_is_started(&agent->core))
+    {
+        return mmagic_m2m_create_response(header->subsystem,
+                                          header->command,
+                                          header->subcommand,
+                                          MMAGIC_STATUS_UNAVAILABLE,
+                                          NULL,
+                                          0);
+    }
+
+    switch (header->command)
+    {
+        case mmagic_ntp_cmd_sync:
+            return mmagic_m2m_ntp_sync(agent, sid, header->subcommand, cmd_buf);
+
+        case mmagic_ntp_cmd_get_time:
+            return mmagic_m2m_ntp_get_time(agent, sid, header->subcommand, cmd_buf);
+
+        default:
+            break;
+    }
+
+    return mmagic_m2m_create_response(header->subsystem,
+                                      header->command,
+                                      header->subcommand,
+                                      MMAGIC_STATUS_NOT_SUPPORTED,
+                                      NULL,
+                                      0);
 }

@@ -58,6 +58,16 @@
           (++) Perform the CRC computation
           (++) Disable CRC feature
 
+      (#) Error correction code error functions:
+          (++) Use the HAL_FLASHEx_EnableEccCorrectionInterrupt() and HAL_FLASHEx_DisableEccCorrectionInterrupt()
+               functions to enable and disable the FLASH ECC correction interruption.
+          (++) Use the HAL_FLASHEx_EnableEccDetectionInterrupt() and HAL_FLASHEx_DisableEccDetectionInterrupt()
+               functions to enable and disable the FLASH ECC Detection interruption.
+          (++) Handle ECCD interrupt by calling HAL_FLASHEx_BusFault_IRQHandler()
+          (++) Use HAL_FLASHEx_BusFault_IRQHandler() function called under BusFault_IRQHandler() interrupt subroutine
+               to handle the ECCD interrupt.
+          (++) Use HAL_FLASHEx_GetEccInfo() function to get the flash ECC fail information.
+
  @endverbatim
   ******************************************************************************
   * @attention
@@ -170,6 +180,12 @@ static uint32_t FLASH_OB_CPUFreq_GetBoost(void);
   * @param[out]  SectorError pointer to variable  that contains the configuration
   *          information on faulty sector in case of error (0xFFFFFFFF means that all
   *          the sectors have been correctly erased)
+  *
+  * @note   For dual-bank devices, if the SWAP_BANK option byte is enabled, the parameter
+  *         pEraseInit->Banks is modified accordingly. The logical bank addresses are swapped
+  *         as follows:
+  *          - FLASH_BANK_1 corresponds to the physical Bank2
+  *          - FLASH_BANK_2 corresponds to the physical Bank1
   *
   * @retval HAL Status
   */
@@ -287,6 +303,12 @@ HAL_StatusTypeDef HAL_FLASHEx_Erase(FLASH_EraseInitTypeDef *pEraseInit, uint32_t
   * @brief  Perform a mass erase or erase the specified FLASH memory sectors with interrupt enabled
   * @param  pEraseInit pointer to an FLASH_EraseInitTypeDef structure that
   *         contains the configuration information for the erasing.
+  *
+  * @note   For dual-bank devices, if the SWAP_BANK option byte is enabled, the parameter
+  *         pEraseInit->Banks is modified accordingly. The logical bank addresses are swapped
+  *         as follows:
+  *          - FLASH_BANK_1 corresponds to the physical Bank2
+  *          - FLASH_BANK_2 corresponds to the physical Bank1
   *
   * @retval HAL Status
   */
@@ -718,7 +740,8 @@ HAL_StatusTypeDef HAL_FLASHEx_ComputeCRC(FLASH_CRCInitTypeDef *pCRCInit, uint32_
 
       /* Clear CRC flags in Status Register: CRC end of calculation and CRC read error */
       FLASH->CCR1 |= (FLASH_CCR_CLR_CRCEND | FLASH_CCR_CLR_CRCRDERR);
-
+      /* Clear burst size and type bits before setting new values */
+      FLASH->CRCCR1 &= ~(FLASH_CRCCR_CRC_BURST_Msk | FLASH_CRCCR_ALL_BANK);
       /* Clear current CRC result, program burst size and define memory area on which CRC has to be computed */
       FLASH->CRCCR1 |= FLASH_CRCCR_CLEAN_CRC | pCRCInit->BurstSize | pCRCInit->TypeCRC;
 
@@ -767,7 +790,8 @@ HAL_StatusTypeDef HAL_FLASHEx_ComputeCRC(FLASH_CRCInitTypeDef *pCRCInit, uint32_
 
       /* Clear CRC flags in Status Register: CRC end of calculation and CRC read error */
       FLASH->CCR2 |= (FLASH_CCR_CLR_CRCEND | FLASH_CCR_CLR_CRCRDERR);
-
+      /* Clear burst size and type bits before setting new values */
+      FLASH->CRCCR2 &= ~(FLASH_CRCCR_CRC_BURST_Msk | FLASH_CRCCR_ALL_BANK);
       /* Clear current CRC result, program burst size and define memory area on which CRC has to be computed */
       FLASH->CRCCR2 |= FLASH_CRCCR_CLEAN_CRC | pCRCInit->BurstSize | pCRCInit->TypeCRC;
 
@@ -817,6 +841,251 @@ HAL_StatusTypeDef HAL_FLASHEx_ComputeCRC(FLASH_CRCInitTypeDef *pCRCInit, uint32_
 /**
   * @}
   */
+
+#if (USE_FLASH_ECC == 1U)
+/** @defgroup FLASHEx_Exported_Functions_Group2 Extended ECC operation functions
+  *  @brief   Extended ECC operation functions
+  *
+@verbatim
+ ===============================================================================
+                  ##### Extended ECC operation functions #####
+ ===============================================================================
+    [..]
+    This subsection provides a set of functions allowing to manage the Extended FLASH
+    ECC Operations.
+
+@endverbatim
+  * @{
+  */
+
+/**
+  * @brief  Enable ECC correction interrupts on FLASH BANK1 and BANK2.
+  * @param  None
+  * @retval None
+  */
+void HAL_FLASHEx_EnableEccCorrectionInterrupt(void)
+{
+  __HAL_FLASH_ENABLE_IT(FLASH_IT_SNECCERR_BANK1);
+
+#if defined (DUAL_BANK)
+  __HAL_FLASH_ENABLE_IT(FLASH_IT_SNECCERR_BANK2);
+#endif /* DUAL_BANK */
+}
+
+/**
+  * @brief  Disable ECC correction interrupts on FLASH BANK1 and BANK2.
+  * @param  None
+  * @retval None
+  */
+void HAL_FLASHEx_DisableEccCorrectionInterrupt(void)
+{
+  __HAL_FLASH_DISABLE_IT(FLASH_IT_SNECCERR_BANK1);
+
+#if defined (DUAL_BANK)
+  __HAL_FLASH_DISABLE_IT(FLASH_IT_SNECCERR_BANK2);
+#endif /* DUAL_BANK */
+}
+
+/**
+  * @brief  Enable ECC correction interrupt on FLASH BANK1.
+  * @param  None
+  * @retval None
+  */
+void HAL_FLASHEx_EnableEccCorrectionInterrupt_Bank1(void)
+{
+  __HAL_FLASH_ENABLE_IT(FLASH_IT_SNECCERR_BANK1);
+}
+
+/**
+  * @brief  Disable ECC correction interrupt on FLASH BANK1.
+  * @param  None
+  * @retval None
+  */
+void HAL_FLASHEx_DisableEccCorrectionInterrupt_Bank1(void)
+{
+  __HAL_FLASH_DISABLE_IT(FLASH_IT_SNECCERR_BANK1);
+}
+
+#if defined (DUAL_BANK)
+/**
+  * @brief  Enable ECC correction interrupt on FLASH BANK2.
+  * @param  None
+  * @retval None
+  */
+void HAL_FLASHEx_EnableEccCorrectionInterrupt_Bank2(void)
+{
+  __HAL_FLASH_ENABLE_IT(FLASH_IT_SNECCERR_BANK2);
+}
+
+/**
+  * @brief  Disable ECC correction interrupt on FLASH BANK2.
+  * @param  None
+  * @retval None
+  */
+void HAL_FLASHEx_DisableEccCorrectionInterrupt_Bank2(void)
+{
+  __HAL_FLASH_DISABLE_IT(FLASH_IT_SNECCERR_BANK2);
+}
+#endif /* DUAL_BANK */
+
+/**
+  * @brief  Enable ECC Detection interrupts on FLASH BANK1 and BANK2.
+  * @param  None
+  * @retval None
+  */
+void HAL_FLASHEx_EnableEccDetectionInterrupt(void)
+{
+  __HAL_FLASH_ENABLE_IT(FLASH_IT_DBECCERR_BANK1);
+
+#if defined (DUAL_BANK)
+  __HAL_FLASH_ENABLE_IT(FLASH_IT_DBECCERR_BANK2);
+#endif /* DUAL_BANK */
+}
+
+/**
+  * @brief  Disable ECC Detection interrupts on FLASH BANK1 and BANK2.
+  * @param  None
+  * @retval None
+  */
+void HAL_FLASHEx_DisableEccDetectionInterrupt(void)
+{
+  __HAL_FLASH_DISABLE_IT(FLASH_IT_DBECCERR_BANK1);
+
+#if defined (DUAL_BANK)
+  __HAL_FLASH_DISABLE_IT(FLASH_IT_DBECCERR_BANK2);
+#endif /* DUAL_BANK */
+}
+
+/**
+  * @brief  Enable ECC Detection interrupt on FLASH BANK1.
+  * @param  None
+  * @retval None
+  */
+void HAL_FLASHEx_EnableEccDetectionInterrupt_Bank1(void)
+{
+  __HAL_FLASH_ENABLE_IT(FLASH_IT_DBECCERR_BANK1);
+}
+
+/**
+  * @brief  Disable ECC correction interrupt on FLASH BANK1.
+  * @param  None
+  * @retval None
+  */
+void HAL_FLASHEx_DisableEccDetectionInterrupt_Bank1(void)
+{
+  __HAL_FLASH_DISABLE_IT(FLASH_IT_DBECCERR_BANK1);
+}
+
+#if defined (DUAL_BANK)
+/**
+  * @brief  Enable ECC Detection interrupt on FLASH BANK2.
+  * @param  None
+  * @retval None
+  */
+void HAL_FLASHEx_EnableEccDetectionInterrupt_Bank2(void)
+{
+  __HAL_FLASH_ENABLE_IT(FLASH_IT_DBECCERR_BANK2);
+}
+
+/**
+  * @brief  Disable ECC Detection interrupt on FLASH BANK2.
+  * @param  None
+  * @retval None
+  */
+void HAL_FLASHEx_DisableEccDetectionInterrupt_Bank2(void)
+{
+  __HAL_FLASH_DISABLE_IT(FLASH_IT_DBECCERR_BANK2);
+}
+#endif /* DUAL_BANK */
+
+/**
+  * @brief  Get the ECC error information.
+  * @param  pData Pointer to an FLASH_EccInfoTypeDef structure that contains the
+  *         ECC error information.
+  * @note   This function should be called before ECC bit is cleared
+  *         (in callback function)
+  * @retval None
+  */
+void HAL_FLASHEx_GetEccInfo(FLASH_EccInfoTypeDef *pData)
+{
+  uint32_t errorflag;
+
+  /* Check FLASH Bank1 ECC single correction and double detection error flags */
+  errorflag = FLASH->SR1 & (FLASH_FLAG_SNECCERR_BANK1 | FLASH_FLAG_DBECCERR_BANK1);
+  if(errorflag != 0U)
+  {
+    pData->Area = FLASH_ECC_AREA_USER_BANK1;
+    pData->Address = ((((FLASH->ECC_FA1 & FLASH_ECC_FA_FAIL_ECC_ADDR))* FLASH_NB_32BITWORD_IN_FLASHWORD * 4) + FLASH_BANK1_BASE);
+  }
+#if defined (DUAL_BANK)
+  /* Check FLASH Bank2 ECC single correction and double detection error flags */
+  errorflag = FLASH->SR2 & (FLASH_FLAG_SNECCERR_BANK2 | FLASH_FLAG_DBECCERR_BANK2);
+  if(errorflag != 0U)
+  {
+    pData->Area = FLASH_ECC_AREA_USER_BANK2;
+    pData->Address = ((((FLASH->ECC_FA2 & FLASH_ECC_FA_FAIL_ECC_ADDR))* FLASH_NB_32BITWORD_IN_FLASHWORD * 4) + FLASH_BANK2_BASE);
+  }
+#endif /* DUAL_BANK */
+}
+
+/**
+  * @brief Handle Flash ECC Detection interrupt request.
+  * @retval None
+  */
+void HAL_FLASHEx_BusFault_IRQHandler(void)
+{
+  /* Check if the ECC double error occurred*/
+  if ((FLASH->SR1 & FLASH_FLAG_DBECCERR_BANK1)  != 0)
+  {
+    /* FLASH ECC detection user callback */
+    HAL_FLASHEx_EccDetectionCallback();
+
+    /* Clear Bank 1 ECC double detection error flag
+    note : this step will clear all the information related to the flash ECC detection
+    */
+    __HAL_FLASH_CLEAR_FLAG_BANK1(FLASH_FLAG_DBECCERR_BANK1);
+  }
+#if defined (DUAL_BANK)
+  /* Check if the ECC double error occurred*/
+  if ((FLASH->SR2 & FLASH_FLAG_DBECCERR_BANK2)  != 0)
+  {
+    /* FLASH ECC detection user callback */
+    HAL_FLASHEx_EccDetectionCallback();
+
+    /* Clear Bank 2 ECC double detection error flag
+    note : this step will clear all the information related to the flash ECC detection
+    */
+    __HAL_FLASH_CLEAR_FLAG_BANK2(FLASH_FLAG_DBECCERR_BANK2);
+  }
+#endif /* DUAL_BANK */
+}
+
+/**
+  * @brief  FLASH ECC Correction interrupt callback.
+  * @retval None
+  */
+__weak void HAL_FLASHEx_EccCorrectionCallback(void)
+{
+  /* NOTE : This function should not be modified, when the callback is needed,
+            the HAL_FLASHEx_EccCorrectionCallback could be implemented in the user file
+   */
+}
+
+/**
+  * @brief  FLASH ECC Detection interrupt callback.
+  * @retval None
+  */
+__weak void HAL_FLASHEx_EccDetectionCallback(void)
+{
+  /* NOTE : This function should not be modified, when the callback is needed,
+            the HAL_FLASHEx_EccDetectionCallback could be implemented in the user file
+   */
+}
+
+/**
+  * @}
+  */
+#endif /* USE_FLASH_ECC */
 
 /**
   * @}

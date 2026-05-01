@@ -16,8 +16,8 @@
  * interface and network stack.
  *
  * Parameters of interest are listed in the table below. These can be set in the `config.hjson`
- * file for your project and then programmed to the config store either using the Platform IO
- * UI or through the command line. See the config.hjson for advanced parameters.
+ * file for your project and then programmed to the config store via the command line. See the
+ * config.hjson for advanced parameters.
  *
  * | Parameter Name      | Description                                                           |
  * | ------------------- | --------------------------------------------------------------------- |

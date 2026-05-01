@@ -457,35 +457,6 @@ void mmagic_cli_wlan_handle_event_beacon_rx(
     }
 }
 
-void mmagic_cli_wlan_handle_event_standby_exit(
-    struct mmagic_cli *ctx,
-    const struct mmagic_core_event_wlan_standby_exit_args *args)
-{
-    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = { 0 };
-    snprintf(buf, MMAGIC_CLI_PRINT_BUF_LEN, "Standby exit reason = %d", args->reason);
-    embeddedCliPrint(ctx->cli, buf);
-}
-
-void mmagic_cli_wlan_standby_enter(EmbeddedCli *cli, char *args, void *context)
-{
-    struct mmagic_cli *ctx = (struct mmagic_cli *)cli->appContext;
-
-    MM_UNUSED(args);
-    MM_UNUSED(context);
-
-    mmagic_core_wlan_standby_enter(&ctx->core);
-}
-
-void mmagic_cli_wlan_standby_exit(EmbeddedCli *cli, char *args, void *context)
-{
-    struct mmagic_cli *ctx = (struct mmagic_cli *)cli->appContext;
-
-    MM_UNUSED(args);
-    MM_UNUSED(context);
-
-    mmagic_core_wlan_standby_exit(&ctx->core);
-}
-
 void mmagic_cli_wlan_handle_event_sta_event(
     struct mmagic_cli *ctx,
     const struct mmagic_core_event_wlan_sta_event_args *args)
@@ -493,208 +464,6 @@ void mmagic_cli_wlan_handle_event_sta_event(
     char buf[MMAGIC_CLI_PRINT_BUF_LEN] = { 0 };
     mmagic_enum_sta_event_to_string(args->event, buf, sizeof(buf));
     mmagic_cli_printf(ctx->cli, "STA evt %s", buf);
-}
-
-static int hex_to_bytes(const char *hexstring, uint8_t *bytes, size_t bytes_size)
-{
-    const char *pos = hexstring;
-    uint32_t i;
-    uint32_t len = strlen(hexstring);
-
-    if (len & 1)
-    {
-        /* Hex string length must be even number */
-        return -1;
-    }
-
-    if (bytes_size < len / 2)
-    {
-        /* Byte array not large enough */
-        return -1;
-    }
-
-    for (i = 0; i < len / 2; i++)
-    {
-        uint8_t byte = 0;
-        if ((*pos >= '0') && (*pos <= '9'))
-        {
-            byte = (*pos - '0') << 4;
-        }
-        else if ((*pos >= 'a') && (*pos <= 'f'))
-        {
-            byte = (*pos + 10 - 'a') << 4;
-        }
-        else if ((*pos >= 'A') && (*pos <= 'F'))
-        {
-            byte = (*pos + 10 - 'A') << 4;
-        }
-        else
-        {
-            /* Invalid hex string */
-            return -1;
-        }
-        pos++;
-
-        if ((*pos >= '0') && (*pos <= '9'))
-        {
-            byte += *pos - '0';
-        }
-        else if ((*pos >= 'a') && (*pos <= 'f'))
-        {
-            byte += *pos + 10 - 'a';
-        }
-        else if ((*pos >= 'A') && (*pos <= 'F'))
-        {
-            byte += *pos + 10 - 'A';
-        }
-        else
-        {
-            /* Invalid hex string */
-            return -1;
-        }
-        pos++;
-
-        bytes[i] = byte;
-    }
-
-    return len / 2;
-}
-
-void mmagic_cli_wlan_standby_set_status_payload(EmbeddedCli *cli, char *args, void *context)
-{
-    struct mmagic_core_wlan_standby_set_status_payload_cmd_args cmd_args = {};
-    struct mmagic_cli *ctx = (struct mmagic_cli *)cli->appContext;
-
-    MM_UNUSED(context);
-
-    uint16_t num_tokens = embeddedCliGetTokenCount(args);
-    if (num_tokens != 1)
-    {
-        embeddedCliPrint(cli, "Invalid number of arguments");
-        return;
-    }
-
-    int len = hex_to_bytes(embeddedCliGetToken(args, 1),
-                           cmd_args.payload.buffer,
-                           sizeof(cmd_args.payload.buffer));
-    if (len <= 0)
-    {
-        embeddedCliPrint(cli, "Invalid hex string");
-        return;
-    }
-
-    cmd_args.payload.len = len;
-
-    mmagic_core_wlan_standby_set_status_payload(&ctx->core, &cmd_args);
-}
-
-void mmagic_cli_wlan_standby_set_wake_filter(EmbeddedCli *cli, char *args, void *context)
-{
-    struct mmagic_core_wlan_standby_set_wake_filter_cmd_args cmd_args = {};
-    struct mmagic_cli *ctx = (struct mmagic_cli *)cli->appContext;
-    uint32_t uint32val;
-
-    MM_UNUSED(context);
-
-    uint16_t num_tokens = embeddedCliGetTokenCount(args);
-    if ((num_tokens != 1) && (num_tokens != 2))
-    {
-        embeddedCliPrint(cli, "Invalid number of arguments");
-        return;
-    }
-
-    int len = hex_to_bytes(embeddedCliGetToken(args, 1),
-                           cmd_args.filter.buffer,
-                           sizeof(cmd_args.filter.buffer));
-    if (len <= 0)
-    {
-        embeddedCliPrint(cli, "Invalid hex string");
-        return;
-    }
-
-    cmd_args.filter.len = len;
-    cmd_args.offset = 0;
-
-    if (num_tokens == 2)
-    {
-        (void)mmagic_string_to_uint32_t(&uint32val, embeddedCliGetToken(args, 2));
-        cmd_args.offset = uint32val;
-    }
-
-    mmagic_core_wlan_standby_set_wake_filter(&ctx->core, &cmd_args);
-}
-
-void mmagic_cli_wlan_standby_set_config(EmbeddedCli *cli, char *args, void *context)
-{
-    struct mmagic_core_wlan_standby_set_config_cmd_args cmd_args = {};
-    struct mmagic_cli *ctx = (struct mmagic_cli *)cli->appContext;
-    uint32_t uint32val;
-    uint16_t uint16val;
-
-    MM_UNUSED(context);
-
-    uint16_t num_tokens = embeddedCliGetTokenCount(args);
-    if (num_tokens != 8)
-    {
-        embeddedCliPrint(cli, "Invalid number of arguments");
-        return;
-    }
-
-    if (mmagic_string_to_uint32_t(&uint32val, embeddedCliGetToken(args, 1)) < 0)
-    {
-        embeddedCliPrint(cli, "Invalid notify period");
-        return;
-    }
-    cmd_args.notify_period_s = uint32val;
-
-    if (mmagic_string_to_struct_ip_addr(&cmd_args.src_ip, embeddedCliGetToken(args, 2)) < 0)
-    {
-        embeddedCliPrint(cli, "Invalid source IP");
-        return;
-    }
-
-    if (mmagic_string_to_struct_ip_addr(&cmd_args.dst_ip, embeddedCliGetToken(args, 3)) < 0)
-    {
-        embeddedCliPrint(cli, "Invalid destination IP");
-        return;
-    }
-
-    if (mmagic_string_to_uint16_t(&uint16val, embeddedCliGetToken(args, 4)) < 0)
-    {
-        embeddedCliPrint(cli, "Invalid destination port");
-        return;
-    }
-    cmd_args.dst_port = uint16val;
-
-    if (mmagic_string_to_uint32_t(&uint32val, embeddedCliGetToken(args, 5)) < 0)
-    {
-        embeddedCliPrint(cli, "Invalid BSS inactivity");
-        return;
-    }
-    cmd_args.bss_inactivity_s = uint32val;
-
-    if (mmagic_string_to_uint32_t(&uint32val, embeddedCliGetToken(args, 6)) < 0)
-    {
-        embeddedCliPrint(cli, "Invalid snooze interval");
-        return;
-    }
-    cmd_args.snooze_period_s = uint32val;
-
-    if (mmagic_string_to_uint32_t(&uint32val, embeddedCliGetToken(args, 7)) < 0)
-    {
-        embeddedCliPrint(cli, "Invalid snooze increment");
-        return;
-    }
-    cmd_args.snooze_increment_s = uint32val;
-
-    if (mmagic_string_to_uint32_t(&uint32val, embeddedCliGetToken(args, 8)) < 0)
-    {
-        embeddedCliPrint(cli, "Invalid snooze max interval");
-        return;
-    }
-    cmd_args.snooze_max_s = uint32val;
-
-    mmagic_core_wlan_standby_set_config(&ctx->core, &cmd_args);
 }
 
 void mmagic_cli_wlan_get_sta_status(EmbeddedCli *cli, char *args, void *context)
@@ -708,4 +477,43 @@ void mmagic_cli_wlan_get_sta_status(EmbeddedCli *cli, char *args, void *context)
 
     mmagic_enum_sta_state_to_string(rsp.sta_status, buf, sizeof(buf));
     mmagic_cli_printf(ctx->cli, "STA status %s", buf);
+}
+
+void mmagic_cli_wlan_dpp_push_button_start(EmbeddedCli *cli, char *args, void *context)
+{
+    MM_UNUSED(context);
+    MM_UNUSED(args);
+#if (defined(MMAGIC_WLAN_DPP_ENABLED) && MMAGIC_WLAN_DPP_ENABLED)
+    struct mmagic_cli *ctx = (struct mmagic_cli *)cli->appContext;
+    enum mmagic_status status = mmagic_core_wlan_dpp_push_button_start(&ctx->core);
+
+    switch (status)
+    {
+        case MMAGIC_STATUS_OK:
+            embeddedCliPrint(cli, "DPP push button successful");
+            break;
+        case MMAGIC_STATUS_DPP_PB_ERROR:
+            embeddedCliPrint(cli, "DPP push button error");
+            break;
+        case MMAGIC_STATUS_DPP_PB_SESSION_OVERLAP:
+            embeddedCliPrint(cli, "DPP push button session overlapped");
+            break;
+        default:
+            return;
+    }
+#else
+    embeddedCliPrint(cli, "DPP not supported");
+#endif
+}
+
+void mmagic_cli_wlan_dpp_stop(EmbeddedCli *cli, char *args, void *context)
+{
+    MM_UNUSED(context);
+    MM_UNUSED(args);
+#if (defined(MMAGIC_WLAN_DPP_ENABLED) && MMAGIC_WLAN_DPP_ENABLED)
+    struct mmagic_cli *ctx = (struct mmagic_cli *)cli->appContext;
+    mmagic_core_wlan_dpp_stop(&ctx->core);
+#else
+    embeddedCliPrint(cli, "DPP not supported");
+#endif
 }

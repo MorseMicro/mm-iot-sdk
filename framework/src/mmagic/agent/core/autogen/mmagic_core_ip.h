@@ -36,23 +36,14 @@ struct mmagic_ip_config
      * configuration given by ip_addr, netmask, and gateway. This will take effect when
      * the reload command is successfully executed. */
     bool dhcp_enabled;
-    /** If true, enables DHCP offload which allows the Morse chip to directly handle
-     * DHCP discovery and leases without waking up the host processor. Note: this comes
-     * into effect only if ip.dhcp_enabled is also true. */
-    bool dhcp_offload;
     /** When set to true, IP link status notifications will be provided. Setting this to
      * false will suppress these notifications. Defaults to true. */
     bool link_status_evt_en;
-    /** If true, enables ARP response offload which allows the Morse chip to directly
-     * respond to ARP requests without waking up the host processor. */
-    bool offload_arp_response;
-    /** If non zero, enables ARP refresh offload with the specified interval in seconds.
-     * Note: ARP response offload needs to be enabled for this feature to work. */
-    uint32_t offload_arp_refresh_s;
 };
 
 struct mmagic_ip_data
 {
+    bool is_started;
     struct mmagic_ip_config config;
     /** Subsystem private data (to be allocated/managed by the subsystem implementation). */
     void *priv;
@@ -86,6 +77,14 @@ void mmagic_core_ip_save_all(struct mmagic_data *core);
  */
 void mmagic_core_ip_start(struct mmagic_data *core);
 
+/**
+ * Function to check if the ip subsystem has been initialized.
+ *
+ * @param core   Reference to to global mmagic context struct.
+ * @return       True if mmagic_core_ip_init has been called, false otherwise.
+ */
+bool mmagic_core_ip_is_started(struct mmagic_data *core);
+
 /** Response arguments structure for ip_status */
 struct MM_PACKED mmagic_core_ip_status_rsp_args
 {
@@ -96,38 +95,6 @@ enum mmagic_status mmagic_core_ip_status(struct mmagic_data *core,
                                          struct mmagic_core_ip_status_rsp_args *rsp_args);
 
 enum mmagic_status mmagic_core_ip_reload(struct mmagic_data *core);
-
-/** Command arguments structure for ip_enable_tcp_keepalive_offload */
-struct MM_PACKED mmagic_core_ip_enable_tcp_keepalive_offload_cmd_args
-{
-    uint16_t period_s;
-    uint8_t retry_count;
-    uint8_t retry_interval_s;
-};
-
-enum mmagic_status mmagic_core_ip_enable_tcp_keepalive_offload(
-    struct mmagic_data *core,
-    const struct mmagic_core_ip_enable_tcp_keepalive_offload_cmd_args *cmd_args);
-
-enum mmagic_status mmagic_core_ip_disable_tcp_keepalive_offload(struct mmagic_data *core);
-
-/** Command arguments structure for ip_set_whitelist_filter */
-struct MM_PACKED mmagic_core_ip_set_whitelist_filter_cmd_args
-{
-    struct struct_ip_addr src_ip;
-    struct struct_ip_addr dest_ip;
-    struct struct_ip_addr netmask;
-    uint16_t src_port;
-    uint16_t dest_port;
-    uint8_t ip_protocol;
-    uint16_t llc_protocol;
-};
-
-enum mmagic_status mmagic_core_ip_set_whitelist_filter(
-    struct mmagic_data *core,
-    const struct mmagic_core_ip_set_whitelist_filter_cmd_args *cmd_args);
-
-enum mmagic_status mmagic_core_ip_clear_whitelist_filter(struct mmagic_data *core);
 
 /*
  * ---------------------------------------------------------------------------------------------

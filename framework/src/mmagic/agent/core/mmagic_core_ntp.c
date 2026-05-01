@@ -31,7 +31,8 @@ void mmagic_core_ntp_init(struct mmagic_data *core)
 
 void mmagic_core_ntp_start(struct mmagic_data *core)
 {
-    MM_UNUSED(core);
+    struct mmagic_ntp_data *data = mmagic_data_get_ntp(core);
+    data->is_started = true;
 }
 
 enum mmagic_status mmagic_core_ntp_sync(struct mmagic_data *core)

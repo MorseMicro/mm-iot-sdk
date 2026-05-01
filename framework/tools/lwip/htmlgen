@@ -1,0 +1,15 @@
+#!/bin/sh
+#
+# Copyright 2026 Morse Micro
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+# Platform-detecting wrapper for the htmlgen tool. Selects the appropriate
+# pre-built binary for the current host platform.
+
+DIR="$(dirname "$0")"
+case "$(uname -s)-$(uname -m)" in
+    Linux-x86_64)  "$DIR/htmlgen_x86linux" "$@" ;;
+    Darwin-arm64)  "$DIR/htmlgen_arm64mac" "$@" ;;
+    *) echo "htmlgen: unsupported platform: $(uname -s) $(uname -m)" >&2; exit 1 ;;
+esac

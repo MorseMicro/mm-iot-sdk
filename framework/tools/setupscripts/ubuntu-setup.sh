@@ -17,34 +17,61 @@
 # Trap and print a loud error message if something goes wrong
 function ErrorTrapHandler()
 {
+    local status=$?
     echo -e "\033[31mAn error occurred and the requested operation did not complete\033[0m "
+    exit $status
 }
 trap 'ErrorTrapHandler' ERR
 
 
 export SCRIPT_DIR=$( cd -- "$( dirname -- "$0" )" &> /dev/null && pwd )
-export SUDO=sudo
-
-if [[ $1 == "--dry-run" ]]
+if command -v sudo >/dev/null 2>&1
 then
-    echo -e "\033[1mDry run\033[0m ... will only echo commands that would be run"
-    export DRYRUNCMD=echo
+    export SUDO="${SUDO:-sudo}"
+else
+    export SUDO="${SUDO:-}"
 fi
 
-echo
-echo -e "\033[1mDISCLAIMER\033[0m
+TARGET_SUBSCRIPT=""
+while [[ $# -gt 0 ]]
+do
+    case "$1" in
+        --dry-run)
+            echo -e "\033[1mDry run\033[0m ... will only echo commands that would be run"
+            export DRYRUNCMD=echo
+            shift
+            ;;
+        *)
+            if [[ -n "$TARGET_SUBSCRIPT" ]]
+            then
+                echo "Unknown argument: $1"
+                exit 1
+            fi
+            TARGET_SUBSCRIPT="$1"
+            shift
+            ;;
+    esac
+done
 
-This script is provided \"as is\" without warranty of any kind, either
-expressed or implied and is to be used at your own risk. This script requires
-super user access. Back up data before executing this script.
+if [[ -t 0 ]]
+then
+    echo
+    echo -e "\033[1mDISCLAIMER\033[0m
 
-This script will download and install software (Third-Party Software) from
-third parties sources. Morse Micro makes no warranty regarding Third-Party
-Software and shall have no liability or obligition arising therefrom. It is
-your responsibility to verify the trustworthiness of any third-party sources.
-"
+    This script is provided \"as is\" without warranty of any kind, either
+    expressed or implied and is to be used at your own risk. This script requires
+    super user access. Back up data before executing this script.
 
-read -p $'Press \u001b[1mCTRL-C\u001b[0m to abort or \u001b[1mENTER\u001b[0m to continue...'
+    This script will download and install software (Third-Party Software) from
+    third parties sources. Morse Micro makes no warranty regarding Third-Party
+    Software and shall have no liability or obligation arising therefrom. It is
+    your responsibility to verify the trustworthiness of any third-party sources.
+    "
+
+    read -p $'Press \u001b[1mCTRL-C\u001b[0m to abort or \u001b[1mENTER\u001b[0m to continue...'
+else
+    echo -e "\033[33mNon-interactive mode; skipping confirmation prompt.\033[0m"
+fi
 
 source $SCRIPT_DIR/config.sh
 
@@ -53,7 +80,25 @@ $DRYRUNCMD $SUDO mkdir -p $MORSE_TOOLS_DIR
 pushd /tmp > /dev/null
 
 echo
-for subscript in $SCRIPT_DIR/setup.d/S*
+SUBSCRIPTS=("$SCRIPT_DIR"/setup.d/S*)
+if [[ -n "$TARGET_SUBSCRIPT" ]]
+then
+    case "$TARGET_SUBSCRIPT" in
+        setup.d/*) TARGET_PATH="$SCRIPT_DIR/$TARGET_SUBSCRIPT" ;;
+        *)         TARGET_PATH="$SCRIPT_DIR/setup.d/$TARGET_SUBSCRIPT" ;;
+    esac
+
+    if [[ ! -f "$TARGET_PATH" ]]
+    then
+        echo "Subscript not found: $TARGET_PATH"
+        exit 1
+    fi
+
+    SUBSCRIPTS=("$TARGET_PATH")
+    echo -e "\033[1mRunning single subscript:\033[0m $TARGET_PATH"
+fi
+
+for subscript in "${SUBSCRIPTS[@]}"
 do
     /bin/bash -e $subscript
     echo
@@ -61,18 +106,14 @@ done
 
 popd > /dev/null
 
-source $SCRIPT_DIR/config.sh
+if [[ -n "$TARGET_SUBSCRIPT" ]]
+then
+    echo -e "
+\u001b[32m\033[1mComplete\033[0m\033[0m
 
-echo -e "
-\u001b[32m\033[1mComplete\u001b[0m\033[0m
-
-OpenOCD installed in $MORSE_OPENOCD_DIR
-ARM toolchain installed in $MORSE_ARM_TOOLCHAIN_DIR
-
-Please source $SCRIPT_DIR/env.sh to setup your environment. For example:
-
-    . $SCRIPT_DIR/env.sh
-
-You can add the above line to your ~/.bashrc or ~/zshrc (depending on which
-shell you use) for a more permanent solution.
+Ran subscript: $TARGET_SUBSCRIPT
 "
+else
+    /bin/bash -e $SCRIPT_DIR/post-setup.sh
+fi
+

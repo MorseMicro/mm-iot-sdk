@@ -77,7 +77,6 @@ struct ieee802_11_elems {
 	const u8 *qos_traffic_cap;
 	const u8 *bss_max_idle_period;
 	const u8 *ssid_list;
-	const u8 *osen;
 	const u8 *mbo;
 	const u8 *ampe;
 	const u8 *mic;
@@ -110,6 +109,7 @@ struct ieee802_11_elems {
 	const u8 *he_6ghz_band_cap;
 	const u8 *sae_pk;
 	const u8 *s1g_capab;
+	const u8 *max_away_duration;
 	const u8 *pasn_params;
 	const u8 *eht_capabilities;
 	const u8 *eht_operation;
@@ -122,7 +122,10 @@ struct ieee802_11_elems {
 	const u8 *mbssid;
 	const u8 *rsne_override;
 	const u8 *rsne_override_2;
+	const u8 *rsnxe_override;
 	const u8 *rsn_selection;
+	const u8 *wfa_capab;
+	const u8 *proximity_ranging;
 	const u8 *aid;
 
 	u8 ssid_len;
@@ -153,7 +156,6 @@ struct ieee802_11_elems {
 	u8 ext_capab_len;
 	u8 qos_traffic_cap_len;
 	u8 ssid_list_len;
-	u8 osen_len;
 	u8 mbo_len;
 	u8 ampe_len;
 	u8 mic_len;
@@ -192,7 +194,10 @@ struct ieee802_11_elems {
 	u8 mbssid_len;
 	size_t rsne_override_len;
 	size_t rsne_override_2_len;
+	size_t rsnxe_override_len;
 	size_t rsn_selection_len;
+	u8 wfa_capab_len;
+	size_t proximity_ranging_len;
 
 	struct mb_ies_info mb_ies;
 
@@ -214,8 +219,7 @@ void ieee802_11_elems_clear_ids(struct ieee802_11_elems *elems,
 				const u8 *ids, size_t num);
 void ieee802_11_elems_clear_ext_ids(struct ieee802_11_elems *elems,
 				    const u8 *ids, size_t num);
-ParseRes ieee802_11_parse_link_assoc_req(const u8 *start, size_t len,
-					 struct ieee802_11_elems *elems,
+ParseRes ieee802_11_parse_link_assoc_req(struct ieee802_11_elems *elems,
 					 struct wpabuf *mlbuf,
 					 u8 link_id, bool show_errors);
 int ieee802_11_ie_count(const u8 *ies, size_t ies_len);
@@ -303,6 +307,8 @@ u8 country_to_global_op_class(const char *country, u8 op_class);
 
 const struct oper_class_map * get_oper_class(const char *country, u8 op_class);
 int oper_class_bw_to_int(const struct oper_class_map *map);
+bool is_24ghz_freq(int freq);
+bool is_5ghz_freq(int freq);
 int center_idx_to_bw_6ghz(u8 idx);
 bool is_6ghz_freq(int freq);
 bool is_6ghz_op_class(u8 op_class);
@@ -385,6 +391,9 @@ int ieee802_edmg_is_allowed(struct ieee80211_edmg_config allowed,
 			    struct ieee80211_edmg_config requested);
 
 struct wpabuf * ieee802_11_defrag(const u8 *data, size_t len, bool ext_elem);
+size_t ieee802_11_defrag_mle_subelem(struct wpabuf *mlbuf,
+				     const u8 *parent_subelem,
+				     size_t *defrag_len);
 const u8 * get_ml_ie(const u8 *ies, size_t len, u8 type);
 const u8 * get_basic_mle_mld_addr(const u8 *buf, size_t len);
 

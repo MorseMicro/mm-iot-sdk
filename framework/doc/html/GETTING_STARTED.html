@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.10.4</span>
+   &#160;<span id="projectnumber">2.11.2</span>
    </div>
   </td>
  </tr>
@@ -93,37 +93,43 @@ $(document).ready(function(){initNavTree('GETTING_STARTED.html',''); initResizab
 <div class="textblock"><p ><a class="anchor" id="md__home_jenkins_agent_workspace_build_mhs_binaries_mhs_res_doc_gettingstarted"></a></p>
 <p >This getting started guide walks through the process of using the MM-IoT-SDK Framework. This will go through the process of setting up the software infrastructure, building the <code>ping</code> example for the MM6108-EKH05 device, and loading firmware onto the device. For more information about the SDK tools and source see <a class="el" href="OVERVIEW.html">SDK Overview</a>.</p>
 <p >Whilst we are using a MM6108-EKH05 for this example, the exact same steps will work for an MM8108 based platform such as the MM8108-EKH05, adjusting the commands appropriately for the different platform.</p>
-<blockquote class="doxtable">
-<p >&zwj;Note that the MM-IoT-SDK Framework is meant for more advanced users. For a simpler experience it is suggested to use PlatformIO. See <a href="https://www.morsemicro.com/download/platform-io-mm-iot-sdk-user-guide/">Platform IO + MM IoT SDK User Guide</a> for details. </p>
-</blockquote>
-<h1><a class="anchor" id="autotoc_md57"></a>
+<h1><a class="anchor" id="autotoc_md50"></a>
 Prerequisites</h1>
 <ul>
 <li>The Morse Micro IoT SDK software package</li>
 <li>One of <a class="el" href="MMPLATFORMS.html">Morse Micro IoT Reference Platforms</a>. This guide will use the <code>MM6108-EKH05</code>.</li>
-<li>A development PC running Linux. The following instructions are for a PC running <b>Ubuntu 22.04 (x86 64bit)</b></li>
+<li>A development PC running Linux. The following instructions are for a PC running <b>Ubuntu 22.04 (x86 64bit)</b><ul>
+<li>Experimental support for MacOS has been added, see <code>framework/tools/setupscripts_macos</code></li>
+</ul>
+</li>
+<li>Python 3.10 installed on the development PC</li>
 <li>An AP setup using section 4.2 of the <a href="https://www.morsemicro.com/download/mm6108-ekh05-user-guide/">MM6108-EKH05 User Guide</a>. Ensure the AP has been updated to the latest version of firmware.</li>
 </ul>
 <h1><a class="anchor" id="UNPACKING_THE_SW"></a>
 Unpacking the software package</h1>
 <p >The first step is to create an appropriate directory and unzip the software package into it.</p>
-<p >For example: </p><pre class="fragment">unzip mm-iot-sdk-2.10.4.zip -d mm-iot-sdk-2.10.4
+<p >For example: </p><pre class="fragment">unzip mm-iot-sdk-2.11.2.zip -d mm-iot-sdk-2.11.2
 
-cd mm-iot-sdk-2.10.4/framework
+cd mm-iot-sdk-2.11.2/framework
 </pre> <dl class="section warning"><dt>Warning</dt><dd>The zip file does not contain a root folder, so take care to use the <code>-d</code> parameter when unzipping or unzip into an empty directory.</dd></dl>
 <h1><a class="anchor" id="GETTING_STARTED_DEV_PC_SETUP"></a>
 Development PC setup</h1>
-<h2><a class="anchor" id="autotoc_md58"></a>
+<h2><a class="anchor" id="autotoc_md51"></a>
 Dependencies</h2>
-<p >The instructions below assume that the current working directory is <code>mm-iot-sdk-2.10.4/framework</code>.</p>
+<p >The instructions below assume that the current working directory is <code>mm-iot-sdk-2.11.2/framework</code>.</p>
+<p >Python 3.10 is a pre-requisite for the SDK environment. Check your installed version with: </p><pre class="fragment">python3.10 --version
+or
+pyenv versions
+</pre><p> If Python 3.10 is not installed, one option is to install <code>pyenv</code> by following the official installation instructions, including any required shell setup and Python build dependencies, then install Python 3.10 with: </p><pre class="fragment">pyenv install 3.10.20
+</pre><p> For full <code>pyenv</code> installation instructions, see the official docs: <a href="https://github.com/pyenv/pyenv">https://github.com/pyenv/pyenv</a></p>
 <p >Use the setup script in the SDK to install the pre-requisite software: </p><pre class="fragment">./tools/setupscripts/ubuntu-setup.sh
 </pre><p> This script installs some packages in <code>/opt/morse</code>. If you have already connected the development board, unplug the USB cable for 5 seconds and plug it in again after running the script. This will cause the new device permissions to take effect. A shell script is provided that adds the necessary directories to the PATH. This can be sourced as follows: </p><pre class="fragment">. ./tools/setupscripts/env.sh
-</pre><p> The above script needs to be run for every terminal instance. For a more permanent solution, you can add this to the initialization script for your shell, in which case it will not need to be run manually. For example, if you are using the default shell (bash) on <b>Ubuntu 22.04</b>, you can run the following to append it to your <code>.bashrc</code> (make sure to replace &lt;path-to-sdk&gt; as appropriate): </p><pre class="fragment">echo ". /path-to-sdk/mm-iot-sdk-2.10.4/framework/tools/setupscripts/env.sh" &gt;&gt; ~/.bashrc
+</pre><p> The above script needs to be run for every terminal instance. For a more permanent solution, you can add this to the initialization script for your shell, in which case it will not need to be run manually. For example, if you are using the default shell (bash) on <b>Ubuntu 22.04</b>, you can run the following to append it to your <code>.bashrc</code> (make sure to replace &lt;path-to-sdk&gt; as appropriate): </p><pre class="fragment">echo ". /path-to-sdk/mm-iot-sdk-2.11.2/framework/tools/setupscripts/env.sh" &gt;&gt; ~/.bashrc
 </pre><p> After making the above change to <code>.bashrc</code> you will need to close and reopen your terminal for this to take effect.</p>
-<h2><a class="anchor" id="autotoc_md59"></a>
+<h2><a class="anchor" id="autotoc_md52"></a>
 Python environment</h2>
-<p >The virtualenv used for the SDK is defined by the Pipfile located in the <code>mm-iot-sdk-2.10.4/framework</code> directory. To install the Morse Micro Python environment run: </p><pre class="fragment">pipenv sync
-</pre> <h1><a class="anchor" id="autotoc_md60"></a>
+<p >The virtualenv used for the SDK is defined by the Pipfile located in the <code>mm-iot-sdk-2.11.2/framework</code> directory. To install the Morse Micro Python environment run: </p><pre class="fragment">pipenv sync
+</pre> <h1><a class="anchor" id="autotoc_md53"></a>
 Configure Application</h1>
 <h2><a class="anchor" id="GETTING_STARTED_OPENOCD"></a>
 Launching OpenOCD</h2>
@@ -140,14 +146,14 @@ openocd -c "set CONNECT_ASSERT_SRST 1" -f ./src/platforms/mm-mm6108-ekh05/openoc
 <h2><a class="anchor" id="SET_APP_CONFIGURATION"></a>
 Setting Config Store</h2>
 <p >Each application has a number of configuration variables that modify the behavior of the application. These configurations are maintained through the config store on device Flash, and are power-cycle and firmware-load persistent.</p>
-<p >For this example we are going to prepare values using the <code>mm-iot-sdk-2.10.4/examples/ping/config.hjson</code> configuration file then write them to the device. Most config store fields have default values specified in firmware, but there are two important fields that must be specified explicitly:</p>
+<p >For this example we are going to prepare values using the <code>mm-iot-sdk-2.11.2/examples/ping/config.hjson</code> configuration file then write them to the device. Most config store fields have default values specified in firmware, but there are two important fields that must be specified explicitly:</p>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone">Configuration Params   </th><th class="markdownTableHeadNone">Description    </th></tr>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><code>wlan.country_code</code>   </td><td class="markdownTableBodyNone">Two character country code for your applicable regulatory domain. For an up-to-date list of supported country codes see the reference implementation <code>mmregdb.c</code>.    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>bcf_file</code>   </td><td class="markdownTableBodyNone">The path to the appropriate board configuration <code>.mbin</code> file to use.   </td></tr>
+<td class="markdownTableBodyNone"><code>bcf_file</code>   </td><td class="markdownTableBodyNone">The path to the appropriate board configuration <code>.mbin</code> file to use. Refer to <a class="el" href="OVERVIEW.html#ABOUT_BCF">Board Configuration File</a> for more details on identifying the appropriate BCF file.   </td></tr>
 </table>
 <p >Modify the configuration file by removing the leading <code>//</code> from in front of the <code>wlan.country_code</code> and <code>bcf_file</code> values, and replacing them with appropriate values for your country and device. Also update the <code>wlan.ssid</code> and <code>wlan.password</code> fields of the config file with the ssid and password of your AP.</p>
 <p >To see the full list of configuration values for the ping example, see <a class="el" href="OVERVIEW.html#APP_CONFIGURATION">Application Configuration</a>.</p>
@@ -184,25 +190,25 @@ Building Firmware</h1>
 <blockquote class="doxtable">
 <p >&zwj;We will be building for the <code>MM6108-EKH05</code> platform but the same steps apply for all platforms. Just run make from the corresponding directory. </p>
 </blockquote>
-<p>To build the ping example application, first change into the example directory, <code>mm-iot-sdk-2.10.4/examples/ping/targets/mm-mm6108-ekh05</code> then invoke the following command: </p><pre class="fragment">make -j$(nproc)
+<p>To build the ping example application, first change into the example directory, <code>mm-iot-sdk-2.11.2/examples/ping/targets/mm-mm6108-ekh05</code> then invoke the following command: </p><pre class="fragment">make -j$(nproc)
 </pre><p> <code></code> will evaluate to the number of parallel threads capable by your machine.</p>
 <p >The result of the above command will be a <code>ping.elf</code> file in the <code>build/</code> directory</p>
 <h1><a class="anchor" id="PROGRAMMING_FIRMWARE"></a>
 Programming</h1>
 <blockquote class="doxtable">
-<p >&zwj;The following commands are to be run from the <code>mm-iot-sdk-2.10.4/framework</code> directory. </p>
+<p >&zwj;The following commands are to be run from the <code>mm-iot-sdk-2.11.2/framework</code> directory. </p>
 </blockquote>
 <p>To program, configure, and monitor the system we will be using an ST-LINK debugger/programmer operating over USB. The ST-LINK provides both a debug interface and a USB serial port, the latter of which is used for log messages.</p>
-<p >Connect the ST-LINK to the development PC following the instructions on the <a class="el" href="MMPLATFORMS.html">Morse Micro IoT Reference Platforms</a> page. To verify that it has enumerated, run lsub as follows: </p><pre class="fragment">lsusb | grep STM
+<p >Connect the ST-LINK to the development PC following the instructions on the <a class="el" href="MMPLATFORMS.html">Morse Micro IoT Reference Platforms</a> page. To verify that it has enumerated, run <code>lsusb</code> as follows: </p><pre class="fragment">lsusb | grep STM
 </pre><p> This should result in output similar to the following: </p><pre class="fragment">Bus 003 Device 081: ID 0483:374e STMicroelectronics STLINK-V3
-</pre> <h2><a class="anchor" id="autotoc_md61"></a>
+</pre> <h2><a class="anchor" id="autotoc_md54"></a>
 Launching Miniterm</h2>
 <p >Miniterm is a Python-based console application that allows us to monitor and interact with a serial interface. There are many other options such as Minicom or PuTTY that you can use if you so wish. However, your mileage may vary if you decided to use another application.</p>
 <p >Open a new terminal and execute the following command to find the path to the ST-LINK serial port: </p><pre class="fragment">ls /dev/serial/by-id/usb-STMicroelectronics_*
 </pre><p> This will list the ST-LINK serial port devices connected to the PC.</p>
 <p >To start Miniterm, execute the following command, substituting XXX for the actual value from the output of the ls command above: </p><pre class="fragment">miniterm /dev/serial/by-id/usb-STMicroelectronics_XXX 115200
-</pre><p> Leave Miniterm running, this is where we will view the output from the application after programing the device.</p>
-<h2><a class="anchor" id="autotoc_md62"></a>
+</pre><p> Leave Miniterm running, this is where we will view the output from the application after programming the device.</p>
+<h2><a class="anchor" id="autotoc_md55"></a>
 Launching Application</h2>
 <p >For the new configuration to take effect first close OpenOCD by pressing <code>CTRL+C</code>, then launch OpenOCD using the following command: </p><pre class="fragment">openocd -c "set MM_PROGRAM 1" -f src/platforms/mm-mm6108-ekh05/openocd.cfg -c "program ../examples/ping/targets/mm-mm6108-ekh05/build/ping.elf verify reset exit"
 </pre><p> This will attach OpenOCD, load the <code>ping</code> example, start execution, and exit OpenOCD.</p>
@@ -252,20 +258,20 @@ WLAN STA disabled
 Link is down. Time: 28727 ms
 </pre><p> From here you can try out the other <a class="el" href="MMAPPS.html">Example Applications</a>.</p>
 <p >For more information about debugging your software, see <a class="el" href="DEBUGGING.html">Debugging with GDB</a>.</p>
-<h1><a class="anchor" id="autotoc_md63"></a>
+<h1><a class="anchor" id="autotoc_md56"></a>
 Troubleshooting</h1>
 <h2><a class="anchor" id="BCF_CONFIG_STORE"></a>
 Unable to find BCF file entry in config store</h2>
-<h3><a class="anchor" id="autotoc_md64"></a>
+<h3><a class="anchor" id="autotoc_md57"></a>
 Symptom</h3>
 <p >The following message in the console log... </p><pre class="fragment">Unable to find BCF file entry in config store (memory range 0x81e0000-0x8200000)
 Please see the Getting Started Guide for more information.
-</pre> <h3><a class="anchor" id="autotoc_md65"></a>
+</pre> <h3><a class="anchor" id="autotoc_md58"></a>
 Possible cause</h3>
-<p >The above message will be displayed if a Morse Micro Board Configuration File (BCF file) file has not been programmed to the config store. See <a class="el" href="GETTING_STARTED.html#SET_APP_CONFIGURATION">Setting Config Store</a> for steps on how to do this.</p>
-<h2><a class="anchor" id="autotoc_md66"></a>
+<p >The above message will be displayed if a Morse Micro Board Configuration File (BCF) has not been programmed to the config store. See <a class="el" href="GETTING_STARTED.html#SET_APP_CONFIGURATION">Setting Config Store</a> for steps on how to do this.</p>
+<h2><a class="anchor" id="autotoc_md59"></a>
 Unable to connect to the MCU with OpenOCD</h2>
-<h3><a class="anchor" id="autotoc_md67"></a>
+<h3><a class="anchor" id="autotoc_md60"></a>
 Symptom</h3>
 <p >You are unable to connect to the MCU when you run the 'openocd -f openocd.cfg' commands.</p>
 <p >This may look like one of the following </p><pre class="fragment">% openocd -f openocd.cfg
@@ -296,11 +302,11 @@ Info : clock speed 500 kHz
 Info : STLINK V3J8M3 (API v3) VID:PID 0483:374E
 Info : Target voltage: 3.303398
 Error: init mode failed (unable to connect to the target)
-</pre> <h3><a class="anchor" id="autotoc_md68"></a>
+</pre> <h3><a class="anchor" id="autotoc_md61"></a>
 Possible cause 1</h3>
 <p >The voltage (VDD) or current measurement (IDD) jumpers are not attached on your development board.</p>
 <p >For the ST Nucleo U575 development board VDD is JP4 and IDD is JP5. See <a class="el" href="MMPLATFORMS.html">Morse Micro IoT Reference Platforms</a> for details of your specific platform.</p>
-<h3><a class="anchor" id="autotoc_md69"></a>
+<h3><a class="anchor" id="autotoc_md62"></a>
 Possible cause 2</h3>
 <p >The ST-Link debugger is unable to communicate with the host processor because it is in deep sleep. It may be necessary to hold the chip in reset while attaching to it. This can be achieved by adding <code>-c "set CONNECT_ASSERT_SRST 1"</code> to the OpenOCD command line before including <code>openocd.cfg</code>. For example: </p><pre class="fragment">% openocd -c "set CONNECT_ASSERT_SRST 1" -f openocd.cfg
 </pre><p> See <a class="el" href="MMHOSTPOWERSAVE.html#MMHOSTPOWERSAVE_DEBUG_DEEP_SLEEP">Debugging during deep sleep</a> for more information.</p>

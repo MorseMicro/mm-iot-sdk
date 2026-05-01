@@ -13,6 +13,7 @@
 #include <stdarg.h>
 #include "mmosal.h"
 #include "mmhal_os.h"
+#include "mmhal_wlan.h"
 #include "mmlog.h"
 #include "errno.h"
 
@@ -145,14 +146,35 @@ bool mmosal_extract_failure_info(struct mmosal_failure_info *buf, uint32_t *fail
 
 void mmosal_impl_assert(void)
 {
+    /* Flag to prevent infinite recursion in assert - can occur if assert is called in interrupt
+     * context. */
+    static volatile bool assert_in_progress = 0;
+
+    mmosal_disable_interrupts();
+
+    if (assert_in_progress)
+    {
+        /* Nested assert: don't log, don't take mutexes, just stop. */
+        MMPORT_BREAKPOINT();
+        while (1)
+        {
+        }
+    }
+    assert_in_progress = true;
+
 #ifdef HALT_ON_ASSERT
+#ifdef RESET_MM_ON_HALT
+    /* mmhal_wlan_x functions are not for application use, they are for use by Morselib.
+     * Exception made here as host is halted and no futher code runs, we assert the reset line on
+     * the MM chip to stop the transciever from ACKing frames as host cannot service traffic. */
+    mmhal_wlan_assert_reset(true);
+#endif
     if (preserved_failure_info.magic == ASSERT_INFO_MAGIC)
     {
 #if !(defined(ENABLE_MANUAL_FAILURE_LOG_PROCESSING) && ENABLE_MANUAL_FAILURE_LOG_PROCESSING)
         mmosal_dump_failure_info();
 #endif
     }
-    mmosal_disable_interrupts();
     mmhal_log_flush();
     MMPORT_BREAKPOINT();
 #else
@@ -260,12 +282,41 @@ void *mmosal_malloc_dbg(size_t size, const char *name, unsigned line_number)
     return pvPortMalloc_dbg(size, name, line_number);
 }
 
+void *mmosal_calloc_dbg(size_t nitems, size_t size, const char *name, unsigned line_number)
+{
+    void *ptr = pvPortMalloc_dbg(nitems * size, name, line_number);
+    if (ptr != NULL)
+    {
+        memset(ptr, 0, nitems * size);
+    }
+    return ptr;
+}
+
+void *mmosal_realloc_dbg(void *ptr, size_t size, const char *name, unsigned line_number)
+{
+    return pvPortRealloc_dbg(ptr, size, name, line_number);
+}
+
 #else
 void *mmosal_malloc_dbg(size_t size, const char *name, unsigned line_number)
 {
     (void)name;
     (void)line_number;
     return pvPortMalloc_(size);
+}
+
+void *mmosal_calloc_dbg(size_t nitems, size_t size, const char *name, unsigned line_number)
+{
+    (void)name;
+    (void)line_number;
+    return mmosal_calloc_(nitems, size);
+}
+
+void *mmosal_realloc_dbg(void *ptr, size_t size, const char *name, unsigned line_number)
+{
+    (void)name;
+    (void)line_number;
+    return pvPortRealloc_(ptr, size);
 }
 
 #endif
@@ -275,12 +326,12 @@ void mmosal_free(void *p)
     vPortFree_(p);
 }
 
-void *mmosal_realloc(void *ptr, size_t size)
+void *mmosal_realloc_(void *ptr, size_t size)
 {
     return pvPortRealloc_(ptr, size);
 }
 
-void *mmosal_calloc(size_t nitems, size_t size)
+void *mmosal_calloc_(size_t nitems, size_t size)
 {
     void *ptr = pvPortMalloc_(nitems * size);
     if (ptr != NULL)
@@ -511,7 +562,7 @@ void mmosal_mutex_delete(struct mmosal_mutex *mutex)
 
 bool mmosal_mutex_get(struct mmosal_mutex *mutex, uint32_t timeout_ms)
 {
-    uint32_t timeout_ticks = portMAX_DELAY;
+    TickType_t timeout_ticks = portMAX_DELAY;
     if (timeout_ms != UINT32_MAX)
     {
         timeout_ticks = timeout_ms / portTICK_RATE_MS;
@@ -578,7 +629,7 @@ bool mmosal_sem_give_from_isr(struct mmosal_sem *sem)
 
 bool mmosal_sem_wait(struct mmosal_sem *sem, uint32_t timeout_ms)
 {
-    uint32_t timeout_ticks = portMAX_DELAY;
+    TickType_t timeout_ticks = portMAX_DELAY;
     if (timeout_ms != UINT32_MAX)
     {
         timeout_ticks = timeout_ms / portTICK_RATE_MS;
@@ -639,7 +690,7 @@ bool mmosal_semb_give_from_isr(struct mmosal_semb *semb)
 
 bool mmosal_semb_wait(struct mmosal_semb *semb, uint32_t timeout_ms)
 {
-    uint32_t timeout_ticks = portMAX_DELAY;
+    TickType_t timeout_ticks = portMAX_DELAY;
     if (timeout_ms != UINT32_MAX)
     {
         timeout_ticks = timeout_ms / portTICK_RATE_MS;
@@ -675,7 +726,7 @@ void mmosal_queue_delete(struct mmosal_queue *queue)
 
 bool mmosal_queue_pop(struct mmosal_queue *queue, void *item, uint32_t timeout_ms)
 {
-    uint32_t timeout_ticks = portMAX_DELAY;
+    TickType_t timeout_ticks = portMAX_DELAY;
     if (timeout_ms != UINT32_MAX)
     {
         timeout_ticks = timeout_ms / portTICK_RATE_MS;
@@ -685,7 +736,7 @@ bool mmosal_queue_pop(struct mmosal_queue *queue, void *item, uint32_t timeout_m
 
 bool mmosal_queue_push(struct mmosal_queue *queue, const void *item, uint32_t timeout_ms)
 {
-    uint32_t timeout_ticks = portMAX_DELAY;
+    TickType_t timeout_ticks = portMAX_DELAY;
     if (timeout_ms != UINT32_MAX)
     {
         timeout_ticks = timeout_ms / portTICK_RATE_MS;

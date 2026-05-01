@@ -30,8 +30,6 @@ struct umac_config_data
     enum mmwlan_ps_mode ps_mode;
     uint32_t supp_scan_dwell_time_ms;
     const struct mmwlan_beacon_vendor_ie_filter *beacon_vendor_ie_filter;
-    uint32_t min_health_check_intvl_ms;
-    uint32_t max_health_check_intvl_ms;
     uint32_t datapath_rx_reorder_list_maxlen;
     struct mmwlan_qos_queue_params default_qos_queue_params[MMWLAN_QOS_QUEUE_NUM_ACIS];
     enum mmwlan_mcs10_mode mcs10_mode;

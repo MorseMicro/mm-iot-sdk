@@ -535,10 +535,10 @@ typedef  void (*pCOMP_CallbackTypeDef)(COMP_HandleTypeDef *hcomp); /*!< pointer 
   * @brief  Enable the COMP2 EXTI line rising & falling edge trigger.
   * @retval None
   */
-#define __HAL_COMP_COMP2_EXTI_ENABLE_RISING_FALLING_EDGE()   do { \
-                                                                  __HAL_COMP_COMP2_EXTI_ENABLE_RISING_EDGE(); \
-                                                                  __HAL_COMP_COMP2_EXTI_ENABLE_FALLING_EDGE(); \
-                                                                } while(0)
+#define __HAL_COMP_COMP2_EXTI_ENABLE_RISING_FALLING_EDGE() do {                                                        \
+                                                                __HAL_COMP_COMP2_EXTI_ENABLE_RISING_EDGE();            \
+                                                                __HAL_COMP_COMP2_EXTI_ENABLE_FALLING_EDGE();           \
+                                                              } while(0)
 
 /**
   * @brief  Disable the COMP2 EXTI line rising & falling edge trigger.

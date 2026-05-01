@@ -12,6 +12,12 @@
 #ifndef PASN_COMMON_H
 #define PASN_COMMON_H
 
+#include "common/wpa_common.h"
+#ifdef CONFIG_SAE
+#include "common/sae.h"
+#endif /* CONFIG_SAE */
+#include "crypto/sha384.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -66,6 +72,7 @@ struct pasn_data {
 	size_t extra_ies_len;
 
 	/* External modules do not access below variables */
+	bool derive_kek;
 	size_t kek_len;
 	u16 group;
 	bool secure_ltf;
@@ -121,7 +128,6 @@ struct pasn_data {
 	bool noauth; /* Whether PASN without mutual authentication is enabled */
 	int disable_pmksa_caching;
 	int *pasn_groups;
-	struct wpabuf *wrapped_data;
 	int use_anti_clogging;
 	const u8 *rsn_ie;
 	size_t rsn_ie_len;
@@ -130,6 +136,7 @@ struct pasn_data {
 	struct os_reltime last_comeback_key_update;
 	u16 comeback_idx;
 	u16 *comeback_pending_idx;
+	struct wpabuf *frame;
 
 	/**
 	 * send_mgmt - Function handler to transmit a Management frame
@@ -151,6 +158,10 @@ struct pasn_data {
 	 */
 	int (*validate_custom_pmkid)(void *ctx, const u8 *addr,
 				     const u8 *pmkid);
+
+	int (*prepare_data_element)(void *ctx, const u8 *peer_addr);
+
+	int (*parse_data_element)(void *ctx, const u8 *data, size_t len);
 };
 
 /* Initiator */
@@ -210,8 +221,9 @@ int pasn_set_pt(struct pasn_data *pasn, struct sae_pt *pt);
 struct rsn_pmksa_cache * pasn_initiator_pmksa_cache_init(void);
 void pasn_initiator_pmksa_cache_deinit(struct rsn_pmksa_cache *pmksa);
 int pasn_initiator_pmksa_cache_add(struct rsn_pmksa_cache *pmksa,
-				   const u8 *own_addr, const u8 *bssid, u8 *pmk,
-				   size_t pmk_len, u8 *pmkid);
+				   const u8 *own_addr, const u8 *bssid,
+				   const u8 *pmk, size_t pmk_len,
+				   const u8 *pmkid);
 int pasn_initiator_pmksa_cache_get(struct rsn_pmksa_cache *pmksa,
 				   const u8 *bssid, u8 *pmkid, u8 *pmk,
 				   size_t *pmk_len);
@@ -232,8 +244,9 @@ int pasn_set_extra_ies(struct pasn_data *pasn, const u8 *extra_ies,
 struct rsn_pmksa_cache * pasn_responder_pmksa_cache_init(void);
 void pasn_responder_pmksa_cache_deinit(struct rsn_pmksa_cache *pmksa);
 int pasn_responder_pmksa_cache_add(struct rsn_pmksa_cache *pmksa,
-				   const u8 *own_addr, const u8 *bssid, u8 *pmk,
-				   size_t pmk_len, u8 *pmkid);
+				   const u8 *own_addr, const u8 *bssid,
+				   const u8 *pmk, size_t pmk_len,
+				   const u8 *pmkid);
 int pasn_responder_pmksa_cache_get(struct rsn_pmksa_cache *pmksa,
 				   const u8 *bssid, u8 *pmkid, u8 *pmk,
 				   size_t *pmk_len);
@@ -246,6 +259,10 @@ int pasn_get_cipher(struct pasn_data *pasn);
 size_t pasn_get_pmk_len(struct pasn_data *pasn);
 u8 * pasn_get_pmk(struct pasn_data *pasn);
 struct wpa_ptk * pasn_get_ptk(struct pasn_data *pasn);
+int pasn_add_encrypted_data(struct pasn_data *pasn, struct wpabuf *buf,
+			    const u8 *data, size_t data_len);
+int pasn_parse_encrypted_data(struct pasn_data *pasn, const u8 *data,
+			      size_t len);
 
 #ifdef __cplusplus
 }

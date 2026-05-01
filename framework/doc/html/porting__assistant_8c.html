@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.10.4</span>
+   &#160;<span id="projectnumber">2.11.2</span>
    </div>
   </td>
  </tr>
@@ -104,26 +104,31 @@ $(document).ready(function(){initNavTree('porting__assistant_8c.html',''); initR
 <p class="definition">Definition in file <a class="el" href="porting__assistant_8c_source.html">porting_assistant.c</a>.</p>
 </div><div class="textblock"><code>#include &quot;porting_assistant.h&quot;</code><br />
 <code>#include &quot;mmhal_core.h&quot;</code><br />
+<code>#include &quot;mmhal_app.h&quot;</code><br />
+<code>#include &quot;mmversion.h&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for porting_assistant.c:</div>
 <div class="dyncontent">
 <div class="center"><img src="porting__assistant_8c__incl.png" border="0" usemap="#aporting__assistant_8c" alt=""/></div>
 <map name="aporting__assistant_8c" id="aporting__assistant_8c">
-<area shape="rect" title="Porting assistant self test tool to validate hardware and HALs." alt="" coords="141,5,287,32"/>
-<area shape="rect" href="porting__assistant_8h_source.html" title=" " alt="" coords="253,80,399,107"/>
-<area shape="rect" href="mmhal__core_8h_source.html" title=" " alt="" coords="133,229,247,256"/>
-<area shape="rect" title=" " alt="" coords="629,304,700,331"/>
-<area shape="rect" title=" " alt="" coords="237,304,308,331"/>
-<area shape="rect" href="mmosal_8h_source.html" title=" " alt="" coords="472,229,559,256"/>
-<area shape="rect" href="config_8h_source.html" title=" " alt="" coords="177,155,251,181"/>
-<area shape="rect" href="log_8h_source.html" title=" " alt="" coords="355,155,409,181"/>
-<area shape="rect" title=" " alt="" coords="130,304,213,331"/>
-<area shape="rect" title=" " alt="" coords="443,304,510,331"/>
-<area shape="rect" title=" " alt="" coords="535,304,605,331"/>
-<area shape="rect" title=" " alt="" coords="332,304,419,331"/>
-<area shape="rect" title=" " alt="" coords="322,229,397,256"/>
-<area shape="rect" href="mmhal__os_8h_source.html" title=" " alt="" coords="5,229,108,256"/>
-<area shape="rect" title=" " alt="" coords="19,304,94,331"/>
+<area shape="rect" title="Porting assistant self test tool to validate hardware and HALs." alt="" coords="416,5,561,32"/>
+<area shape="rect" href="porting__assistant_8h_source.html" title=" " alt="" coords="191,80,338,107"/>
+<area shape="rect" href="mmhal__core_8h_source.html" title=" " alt="" coords="481,229,595,256"/>
+<area shape="rect" href="mmhal__app_8h_source.html" title=" " alt="" coords="747,229,857,256"/>
+<area shape="rect" href="mmversion_8h_source.html" title=" " alt="" coords="389,80,497,107"/>
+<area shape="rect" title=" " alt="" coords="5,304,76,331"/>
+<area shape="rect" title=" " alt="" coords="408,304,479,331"/>
+<area shape="rect" href="mmosal_8h_source.html" title=" " alt="" coords="119,229,205,256"/>
+<area shape="rect" href="config_8h_source.html" title=" " alt="" coords="200,155,273,181"/>
+<area shape="rect" href="log_8h_source.html" title=" " alt="" coords="297,155,352,181"/>
+<area shape="rect" title=" " alt="" coords="534,304,617,331"/>
+<area shape="rect" title=" " alt="" coords="101,304,167,331"/>
+<area shape="rect" title=" " alt="" coords="192,304,263,331"/>
+<area shape="rect" title=" " alt="" coords="287,304,373,331"/>
+<area shape="rect" title=" " alt="" coords="230,229,305,256"/>
+<area shape="rect" href="mmhal__os_8h_source.html" title=" " alt="" coords="620,229,723,256"/>
+<area shape="rect" title=" " alt="" coords="653,304,727,331"/>
+<area shape="rect" title=" " alt="" coords="770,304,834,331"/>
 </map>
 </div>
 </div>
@@ -225,7 +230,7 @@ const struct <a class="el" href="structtest__step.html">test_step</a>&#160;</td>
 <p>Main entry point to the application. </p>
 <p >This will be invoked in a thread once operating system and hardware initialization has completed. It may return, but it does not have to. </p>
 
-<p class="definition">Definition at line <a class="el" href="porting__assistant_8c_source.html#l00173">173</a> of file <a class="el" href="porting__assistant_8c_source.html">porting_assistant.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="porting__assistant_8c_source.html#l00175">175</a> of file <a class="el" href="porting__assistant_8c_source.html">porting_assistant.c</a>.</p>
 
 </div>
 </div>
@@ -262,7 +267,7 @@ const struct <a class="el" href="structtest__step.html">test_step</a>&#160;</td>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the string representation of the result code (including color if enabled). </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="porting__assistant_8c_source.html#l00089">89</a> of file <a class="el" href="porting__assistant_8c_source.html">porting_assistant.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="porting__assistant_8c_source.html#l00091">91</a> of file <a class="el" href="porting__assistant_8c_source.html">porting_assistant.c</a>.</p>
 
 </div>
 </div>
@@ -316,7 +321,7 @@ const struct <a class="el" href="structtest__step.html">test_step</a>&#160;</td>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="porting__assistant_8c_source.html#l00115">115</a> of file <a class="el" href="porting__assistant_8c_source.html">porting_assistant.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="porting__assistant_8c_source.html#l00117">117</a> of file <a class="el" href="porting__assistant_8c_source.html">porting_assistant.c</a>.</p>
 
 </div>
 </div>
@@ -371,7 +376,7 @@ const struct <a class="el" href="structtest__step.html">test_step</a>&#160;</td>
 </div><!-- fragment -->
 <p>Array of test steps. </p>
 
-<p class="definition">Definition at line <a class="el" href="porting__assistant_8c_source.html#l00055">55</a> of file <a class="el" href="porting__assistant_8c_source.html">porting_assistant.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="porting__assistant_8c_source.html#l00057">57</a> of file <a class="el" href="porting__assistant_8c_source.html">porting_assistant.c</a>.</p>
 
 </div>
 </div>
@@ -381,7 +386,7 @@ const struct <a class="el" href="structtest__step.html">test_step</a>&#160;</td>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_c5388b8f7c63864c1129967aadb7f145.html">examples</a></li><li class="navelem"><a class="el" href="dir_5e468357e77f084276a7e24e7b567dca.html">porting_assistant</a></li><li class="navelem"><a class="el" href="dir_912954fbdfccd3bccf2652d86d3192e7.html">src</a></li><li class="navelem"><a class="el" href="porting__assistant_8c.html">porting_assistant.c</a></li>
+    <li class="navelem"><a class="el" href="dir_4a117e60a3f8308259f4d16395856081.html">examples</a></li><li class="navelem"><a class="el" href="dir_dd87c239b7fb09f8ba6a92871a3af1d5.html">porting_assistant</a></li><li class="navelem"><a class="el" href="dir_38d371ceeee0b2e390d709f2eded64cc.html">src</a></li><li class="navelem"><a class="el" href="porting__assistant_8c.html">porting_assistant.c</a></li>
     <li class="footer">Copyright 2021-2025 Morse Micro </li>
   </ul>
 </div>

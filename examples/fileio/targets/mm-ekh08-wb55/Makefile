@@ -5,7 +5,7 @@
 #
 
 #
-# This file is not used by PlatformIO. It is only used for building using make.
+# This file is only used for building with make.
 #
 
 APP_NAME = fileio
@@ -81,8 +81,6 @@ CONLYFLAGS += -Wc++-compat
 # versions are used.
 CONLYFLAGS += -std=gnu11
 
-
-
 ifneq ($(ENABLE_AP_MODE),)
 BUILD_SUPPLICANT_WITH_AP=y
 # Maximum number of STAs connected to the AP. Used to programatically configure the additional
@@ -102,6 +100,10 @@ DEBUG_BUILD_DEFINES += MAX_ALLOCATIONS=$(shell echo $$((250 + ($(MAX_STAS) * 40)
 # Increase packet memory to accomodate additional stations traffic. This is indicative only.
 MMPKTMEM_TX_POOL_N_BLOCKS = $(shell echo $$((32 + ($(MAX_STAS) * 2))))
 MMPKTMEM_RX_POOL_N_BLOCKS = $(shell echo $$((32 + ($(MAX_STAS) * 2))))
+
+# Enable reserved management frame pool for reliable beacon allocation and management frames to
+# associating STAs
+MMPKTMEM_TX_MGMT_POOL_N_BLOCKS = 4
 endif
 
 ifneq ($(BUILD_SUPPLICANT_WITH_AP)$(BUILD_SUPPLICANT_WITH_DPP)$(BUILD_MORSELIB_FROM_SOURCE),)
@@ -155,7 +157,7 @@ endif
 ifeq ($(BUILDTYPE),debug)
 # Debug builds
 DEBUG_CFLAGS +=-Og
-DEBUG_CFLAGS +=-g
+DEBUG_CFLAGS +=-g3
 DEBUG_CFLAGS +=-gdwarf-5
 
 # NOTE: DWARF >= Version 4 may require GDB 7.0 and -fvar-tracking-assignments for maximum benefit.
@@ -167,6 +169,9 @@ DEBUG_BUILD_DEFINES += ENABLE_MMOSAL_DEV_ASSERT
 
 # Enable print, breakpoint, and, failing that, infinite loop in assertion handler
 DEBUG_BUILD_DEFINES += HALT_ON_ASSERT
+
+# Add step to hold the chip in reset during an assert
+DEBUG_BUILD_DEFINES += RESET_MM_ON_HALT
 
 CFLAGS += $(DEBUG_CFLAGS)
 LINKFLAGS += $(DEBUG_LINKFLAGS)

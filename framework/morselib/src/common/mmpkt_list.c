@@ -189,6 +189,53 @@ struct mmpkt *mmpkt_list_dequeue(struct mmpkt_list *list)
     }
 }
 
+uint32_t mmpkt_list_dequeue_multiple(struct mmpkt_list *src, struct mmpkt_list *dst, uint32_t count)
+{
+    MMPKTLIST_TRACE("dequeue_multiple %x %x %u", (uint32_t)src, (uint32_t)dst, count);
+    MMOSAL_DEV_ASSERT(src != NULL && dst != NULL);
+
+    if (count == 0 || src->head == NULL)
+    {
+        return 0;
+    }
+
+    if (count >= src->len)
+    {
+        count = src->len;
+        mmpkt_list_append_list(dst, src);
+        return count;
+    }
+
+    struct mmpkt *moved_head = src->head;
+    struct mmpkt *moved_tail = moved_head;
+
+    for (uint32_t ii = 1; ii < count; ii++)
+    {
+        moved_tail = mmpkt_get_next(moved_tail);
+    }
+
+    src->head = mmpkt_get_next(moved_tail);
+    mmpkt_set_next(moved_tail, NULL);
+    src->len -= count;
+
+    if (dst->head == NULL)
+    {
+        dst->head = moved_head;
+    }
+    else
+    {
+        mmpkt_set_next(dst->tail, moved_head);
+    }
+    dst->tail = moved_tail;
+    dst->len += count;
+
+#ifdef MMPKT_SANITY
+    mmpkt_list_sanity_check(src);
+    mmpkt_list_sanity_check(dst);
+#endif
+    return count;
+}
+
 struct mmpkt *mmpkt_list_dequeue_tail(struct mmpkt_list *list)
 {
     if (list->tail == NULL)
@@ -202,10 +249,11 @@ struct mmpkt *mmpkt_list_dequeue_tail(struct mmpkt_list *list)
     return mmpkt;
 }
 
-void mmpkt_list_clear(struct mmpkt_list *list)
+uint32_t mmpkt_list_clear(struct mmpkt_list *list)
 {
     struct mmpkt *walk;
     struct mmpkt *next;
+    uint32_t len = list->len;
 
 #ifdef MMPKT_SANITY
     mmpkt_list_sanity_check(list);
@@ -220,6 +268,7 @@ void mmpkt_list_clear(struct mmpkt_list *list)
     list->tail = NULL;
 
     MMPKTLIST_TRACE("clear %x", (uint32_t)list);
+    return len;
 }
 
 void mmpkt_list_append_list(struct mmpkt_list *list, struct mmpkt_list *other)

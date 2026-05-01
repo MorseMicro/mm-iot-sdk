@@ -7,6 +7,7 @@
 #include "mmwlan.h"
 #include "mmwlan_internal.h"
 #include "mmlog.h"
+#include "driver/driver.h"
 #include "common/morse_commands.h"
 #include "umac/ba/umac_ba.h"
 #include "umac/core/umac_core.h"
@@ -95,53 +96,6 @@ static enum mmwlan_status umac_ate_sta_reconnect(struct umac_data *umacd)
     return umac_connection_reassoc(umacd);
 }
 
-
-static enum mmwlan_status umac_ate_exec_fw_command(uint8_t *command,
-                                                   uint8_t *response,
-                                                   uint32_t *response_len)
-{
-    enum mmwlan_status status;
-    struct morse_cmd_resp *resp = (struct morse_cmd_resp *)response;
-
-    int ret = mmdrv_execute_command(command, response, response_len);
-    if (ret == 0 && resp != NULL)
-    {
-        if (resp->status != 0)
-        {
-            ret = (int)(le32toh(resp->status));
-        }
-    }
-
-    switch (ret)
-    {
-        case 0:
-            status = MMWLAN_SUCCESS;
-            break;
-
-        case -ENOMEM:
-            status = MMWLAN_NO_MEM;
-            break;
-
-        case -ENODEV:
-            status = MMWLAN_UNAVAILABLE;
-            break;
-
-        case -EINVAL:
-            status = MMWLAN_INVALID_ARGUMENT;
-            break;
-
-        case -ETIMEDOUT:
-            status = MMWLAN_TIMED_OUT;
-            break;
-
-        default:
-            status = MMWLAN_ERROR;
-            break;
-    }
-
-    return status;
-}
-
 enum mmwlan_status umac_ate_execute_command(struct umac_data *umacd,
                                             uint8_t *command,
                                             uint32_t command_len,
@@ -216,13 +170,7 @@ enum mmwlan_status umac_ate_execute_command(struct umac_data *umacd,
             break;
     }
 
-    enum mmwlan_status status = umac_ate_exec_fw_command(command, response, response_len);
-    if (status != MMWLAN_SUCCESS)
-    {
-        return status;
-    }
-
-    return MMWLAN_SUCCESS;
+    return mmdrv_execute_command(command, response, response_len);
 }
 
 static bool copy_key_info(struct umac_data *umacd, uint8_t key_id, struct mmwlan_key_info *key_info)

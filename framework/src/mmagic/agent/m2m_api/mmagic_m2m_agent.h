@@ -54,13 +54,15 @@ struct MM_PACKED mmagic_m2m_response_header
 
 /** @} */
 
-/** Agent M2M struct used internally by the implementaton. */
+/** Agent M2M struct used internally by the implementation. */
 struct mmagic_m2m_agent
 {
     /** Core data for MMAGIC */
     struct mmagic_data core;
     /** Reference to agent LLC interface. */
     struct mmagic_llc_agent *agent_llc;
+    /** When agent init has finished and it is safe to transmit events. */
+    bool initialized;
 };
 
 /**

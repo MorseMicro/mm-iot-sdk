@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.10.4</span>
+   &#160;<span id="projectnumber">2.11.2</span>
    </div>
   </td>
  </tr>
@@ -170,6 +170,7 @@ Enumerations</h2></td></tr>
 , <a class="el" href="group__MMIPERF.html#gga7b67e7f7ee9517307f9037835fc7f2eea08e59155cc22da9449201ea737be1761">MMIPERF_UDP_DONE_CLIENT</a>
 , <br />
 &#160;&#160;<a class="el" href="group__MMIPERF.html#gga7b67e7f7ee9517307f9037835fc7f2eea26634f39378587f549478c26d13a4375">MMIPERF_INTERRIM_REPORT</a>
+, <a class="el" href="group__MMIPERF.html#gga7b67e7f7ee9517307f9037835fc7f2eeac82886d638e56d617896dc774803af40">MMIPERF_STOPPED</a>
 <br />
  }</td></tr>
 <tr class="memdesc:ga7b67e7f7ee9517307f9037835fc7f2ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enumeration of iperf report types.  <a href="group__MMIPERF.html#ga7b67e7f7ee9517307f9037835fc7f2ee">More...</a><br /></td></tr>
@@ -203,6 +204,9 @@ Functions</h2></td></tr>
 <tr class="memitem:gaecdf17c7ce68929075cb3e6cc51c50f7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMIPERF.html#gaecdf17c7ce68929075cb3e6cc51c50f7">mmiperf_get_interim_report</a> (<a class="el" href="group__MMIPERF.html#gad922644134c6319c84f738c60d5c8301">mmiperf_handle_t</a> handle, struct <a class="el" href="structmmiperf__report.html">mmiperf_report</a> *report)</td></tr>
 <tr class="memdesc:gaecdf17c7ce68929075cb3e6cc51c50f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieve report for an in progress iperf session.  <a href="group__MMIPERF.html#gaecdf17c7ce68929075cb3e6cc51c50f7">More...</a><br /></td></tr>
 <tr class="separator:gaecdf17c7ce68929075cb3e6cc51c50f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga35b1509518cb5051857a49df8393e07c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMIPERF.html#ga35b1509518cb5051857a49df8393e07c">mmiperf_stop</a> (<a class="el" href="group__MMIPERF.html#gad922644134c6319c84f738c60d5c8301">mmiperf_handle_t</a> handle)</td></tr>
+<tr class="memdesc:ga35b1509518cb5051857a49df8393e07c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stop an in-progress iperf session.  <a href="group__MMIPERF.html#ga35b1509518cb5051857a49df8393e07c">More...</a><br /></td></tr>
+<tr class="separator:ga35b1509518cb5051857a49df8393e07c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="gaa013e4cb9e22aa75347f3acf47e901d0" name="gaa013e4cb9e22aa75347f3acf47e901d0"></a>
@@ -260,11 +264,11 @@ Functions</h2></td></tr>
 <div class="ttc" id="agroup__MMIPERF_html_ga3048e920630fa51f6301f3022b7bf639"><div class="ttname"><a href="group__MMIPERF.html#ga3048e920630fa51f6301f3022b7bf639">MMIPERF_DEFAULT_AMOUNT</a></div><div class="ttdeci">#define MMIPERF_DEFAULT_AMOUNT</div><div class="ttdoc">Default amount iperf (negative number indicates a time in hundredths of seconds, a positive value ind...</div><div class="ttdef"><b>Definition:</b> <a href="mmiperf_8h_source.html#l00041">mmiperf.h:41</a></div></div>
 <div class="ttc" id="agroup__MMIPERF_html_ga5c6ce79aabc8ef67ffcb185552e417d8"><div class="ttname"><a href="group__MMIPERF.html#ga5c6ce79aabc8ef67ffcb185552e417d8">MMIPERF_DEFAULT_BANDWIDTH</a></div><div class="ttdeci">#define MMIPERF_DEFAULT_BANDWIDTH</div><div class="ttdoc">Default bandwidth limit for iperf (in kbps)</div><div class="ttdef"><b>Definition:</b> <a href="mmiperf_8h_source.html#l00043">mmiperf.h:43</a></div></div>
 <div class="ttc" id="agroup__MMIPERF_html_gaa02eb362024d33a91fbe31c45d211b47"><div class="ttname"><a href="group__MMIPERF.html#gaa02eb362024d33a91fbe31c45d211b47">MMIPERF_DEFAULT_PORT</a></div><div class="ttdeci">#define MMIPERF_DEFAULT_PORT</div><div class="ttdoc">Default port for TCP and UDP iperf.</div><div class="ttdef"><b>Definition:</b> <a href="mmiperf_8h_source.html#l00034">mmiperf.h:34</a></div></div>
-<div class="ttc" id="agroup__MMIPERF_html_ggaa1fc3bae5d5847c9e2d5a5a2a264a9daa611cb8c6d4f1309605b36b5cefc2251e"><div class="ttname"><a href="group__MMIPERF.html#ggaa1fc3bae5d5847c9e2d5a5a2a264a9daa611cb8c6d4f1309605b36b5cefc2251e">IPERF_VERSION_2_0_13</a></div><div class="ttdeci">@ IPERF_VERSION_2_0_13</div><div class="ttdoc">Iperf version 2.0.13.</div><div class="ttdef"><b>Definition:</b> <a href="mmiperf_8h_source.html#l00091">mmiperf.h:91</a></div></div>
+<div class="ttc" id="agroup__MMIPERF_html_ggaa1fc3bae5d5847c9e2d5a5a2a264a9daa611cb8c6d4f1309605b36b5cefc2251e"><div class="ttname"><a href="group__MMIPERF.html#ggaa1fc3bae5d5847c9e2d5a5a2a264a9daa611cb8c6d4f1309605b36b5cefc2251e">IPERF_VERSION_2_0_13</a></div><div class="ttdeci">@ IPERF_VERSION_2_0_13</div><div class="ttdoc">Iperf version 2.0.13.</div><div class="ttdef"><b>Definition:</b> <a href="mmiperf_8h_source.html#l00093">mmiperf.h:93</a></div></div>
 </div><!-- fragment -->
 <p>Initializer for <a class="el" href="structmmiperf__client__args.html">mmiperf_client_args</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmiperf_8h_source.html#l00182">182</a> of file <a class="el" href="mmiperf_8h_source.html">mmiperf.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmiperf_8h_source.html#l00184">184</a> of file <a class="el" href="mmiperf_8h_source.html">mmiperf.h</a>.</p>
 
 </div>
 </div>
@@ -393,7 +397,7 @@ Functions</h2></td></tr>
 </div><!-- fragment -->
 <p>Initializer for <a class="el" href="structmmiperf__server__args.html">mmiperf_server_args</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmiperf_8h_source.html#l00213">213</a> of file <a class="el" href="mmiperf_8h_source.html">mmiperf.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmiperf_8h_source.html#l00215">215</a> of file <a class="el" href="mmiperf_8h_source.html">mmiperf.h</a>.</p>
 
 </div>
 </div>
@@ -430,7 +434,7 @@ Functions</h2></td></tr>
 
 <p>Iperf client/server handle. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmiperf_8h_source.html#l00097">97</a> of file <a class="el" href="mmiperf_8h_source.html">mmiperf.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmiperf_8h_source.html#l00099">99</a> of file <a class="el" href="mmiperf_8h_source.html">mmiperf.h</a>.</p>
 
 </div>
 </div>
@@ -456,7 +460,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="mmiperf_8h_source.html#l00144">144</a> of file <a class="el" href="mmiperf_8h_source.html">mmiperf.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmiperf_8h_source.html#l00146">146</a> of file <a class="el" href="mmiperf_8h_source.html">mmiperf.h</a>.</p>
 
 </div>
 </div>
@@ -481,7 +485,7 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmiperf_8h_source.html#l00088">88</a> of file <a class="el" href="mmiperf_8h_source.html">mmiperf.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmiperf_8h_source.html#l00090">90</a> of file <a class="el" href="mmiperf_8h_source.html">mmiperf.h</a>.</p>
 
 </div>
 </div>
@@ -517,6 +521,8 @@ Functions</h2></td></tr>
 </td></tr>
 <tr><td class="fieldname"><a id="gga7b67e7f7ee9517307f9037835fc7f2eea26634f39378587f549478c26d13a4375" name="gga7b67e7f7ee9517307f9037835fc7f2eea26634f39378587f549478c26d13a4375"></a>MMIPERF_INTERRIM_REPORT&#160;</td><td class="fielddoc"><p >Interrim report requested via <a class="el" href="group__MMIPERF.html#gaecdf17c7ce68929075cb3e6cc51c50f7">mmiperf_get_interim_report()</a>. </p>
 </td></tr>
+<tr><td class="fieldname"><a id="gga7b67e7f7ee9517307f9037835fc7f2eeac82886d638e56d617896dc774803af40" name="gga7b67e7f7ee9517307f9037835fc7f2eeac82886d638e56d617896dc774803af40"></a>MMIPERF_STOPPED&#160;</td><td class="fielddoc"><p >User requested stop via <a class="el" href="group__MMIPERF.html#ga35b1509518cb5051857a49df8393e07c">mmiperf_stop()</a> </p>
+</td></tr>
 </table>
 
 <p class="definition">Definition at line <a class="el" href="mmiperf_8h_source.html#l00054">54</a> of file <a class="el" href="mmiperf_8h_source.html">mmiperf.h</a>.</p>
@@ -545,7 +551,7 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmiperf_8h_source.html#l00077">77</a> of file <a class="el" href="mmiperf_8h_source.html">mmiperf.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmiperf_8h_source.html#l00079">79</a> of file <a class="el" href="mmiperf_8h_source.html">mmiperf.h</a>.</p>
 
 </div>
 </div>
@@ -694,6 +700,35 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>a handle to the server on success, or <code>NULL</code> on failure. </dd></dl>
+
+</div>
+</div>
+<a id="ga35b1509518cb5051857a49df8393e07c" name="ga35b1509518cb5051857a49df8393e07c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga35b1509518cb5051857a49df8393e07c">&#9670;&nbsp;</a></span>mmiperf_stop()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool mmiperf_stop </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__MMIPERF.html#gad922644134c6319c84f738c60d5c8301">mmiperf_handle_t</a>&#160;</td>
+          <td class="paramname"><em>handle</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Stop an in-progress iperf session. </p>
+<p >Closes active connections, sends any applicable reports (e.g. UDP server to client), removes the session from the active list, and invokes the report callback with <a class="el" href="group__MMIPERF.html#gga7b67e7f7ee9517307f9037835fc7f2eeac82886d638e56d617896dc774803af40">MMIPERF_STOPPED</a>.</p>
+<dl class="section note"><dt>Note</dt><dd>The handle must not be used after this returns. The report callback may be invoked synchronously (TCP, UDP server) or asynchronously (UDP client, from the client task).</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">handle</td><td>Handle to the iperf session to stop.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><code>true</code> if the session was found and stop was initiated, <code>false</code> if handle is invalid. </dd></dl>
 
 </div>
 </div>

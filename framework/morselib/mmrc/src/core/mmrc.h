@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Morse Micro.
+ * Copyright 2022-2026 Morse Micro.
  *
  */
 
@@ -46,8 +46,13 @@
 #define MMRC_SUPP_NUM_GUARD	(MMRC_GUARD_SHORT + 1)
 #endif
 #ifndef MMRC_SUPP_NUM_NSS
-#define MMRC_SUPP_NUM_NSS	(MMRC_SPATIAL_STREAM_1 + 1)
+#define MMRC_SUPP_NUM_NSS	1
 #endif
+
+/**
+ * The index for stats table is limited to 15 bits, this should be plenty.
+ */
+#define MAX_STATS_TABLE_SIZE ((1 << 15) - 1)
 
 /**
  * The default rows of a probability table for a STA.
@@ -64,6 +69,11 @@
  * The frequency of MMRC stat table updates
  */
 #define MMRC_UPDATE_FREQUENCY_MS 100
+
+/**
+ * The maximum number of lookaround candidates
+ */
+#define MAX_LOOKAROUND_CANDIDATES 10
 
 /**
  * Used to specify supported features when initialising a STA
@@ -149,10 +159,7 @@ struct mmrc_rate {
 	u8 rate		: 4;
 
 	/** The number of attempts at this rate */
-	u8 attempts	: 3;
-
-	/** The guard to be used for this rate */
-	u8 guard	: 1;
+	u8 attempts	: 4;
 
 	/** The spatial streams to be used for this rate */
 	u8 ss		: 2;
@@ -164,7 +171,10 @@ struct mmrc_rate {
 	u8 flags	: 3;
 
 	/** The index in the mmrc_table */
-	u16 index;
+	u16 index	: 15;
+
+	/** The guard to be used for this rate */
+	u16 guard	: 1;
 };
 
 /**
@@ -335,6 +345,12 @@ struct mmrc_table {
 	s32 best_rate_cycle_count;
 
 	/**
+	 * Array of candidates for lookaround rates
+	 */
+	struct mmrc_rate lookaround_candidates[MAX_LOOKAROUND_CANDIDATES];
+	u32 num_lookaround_candidates;
+
+	/**
 	 * The probability table for the STA. This MUST always be the last
 	 * element in the struct.
 	 *
@@ -342,6 +358,8 @@ struct mmrc_table {
 	 * @c mmrc_table may be allocated using @ref mmrc_memory_required_for_caps
 	 */
 	struct mmrc_stats_table table[MMRC_DEFAULT_TABLE_SIZE];
+
+	/* DO NOT add any fields after the definition of table */
 };
 
 /**
@@ -381,15 +399,14 @@ void mmrc_get_rates(struct mmrc_table *tb,
  * Feedback to MMRC so the appropriate stats table can be updated.
  *
  * @param tb A pointer to a mmrc table to update
- * @param rates The rate table used to send the last packet
- * @param retry_count The amount of retries attempted using the last
- *	rate table
+ * @param rates The rate table used to send the last packet, as returned by the chip
  * @param was_aggregated True if this packet was ever aggregated
+ * @param was_acked True if this packet was acked
  */
 void mmrc_feedback(struct mmrc_table *tb,
 		   struct mmrc_rate_table *rates,
-		   s32 retry_count,
-		   bool was_aggregated);
+		   bool was_aggregated,
+		   bool was_acked);
 
 /**
  * Update an MMRC table from the most recent stats.

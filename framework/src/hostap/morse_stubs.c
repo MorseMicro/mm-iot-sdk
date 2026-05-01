@@ -1,53 +1,16 @@
 #include "utils/morse.h"
 #include "mmosal.h"
 
-int morse_raw_global_enable(const char *ifname, bool enable)
+int morse_sta_configure_channelization(struct wpa_supplicant *wpa_s, char *country)
 {
-    (void)(ifname);
-
-    if (enable)
-    {
-        mmosal_printf("Raw not supported yet\n");
-        MMOSAL_DEV_ASSERT(false);
-        return -1;
-    }
-    else
-    {
-        return 0;
-    }
+    (void)wpa_s;
+    (void)country;
+    return 0;
 }
 
-int morse_raw_priority_enable(const char *ifname,
-                              bool enable,
-                              u8 prio,
-                              u32 start_time_us,
-                              u32 duration_us,
-                              u8 num_slots,
-                              bool cross_slot,
-                              u16 max_bcn_spread,
-                              u16 nom_stas_per_bcn,
-                              u8 praw_period,
-                              u8 praw_start_offset)
+int morse_ap_configure_channelization(char *country, u8 op_class)
 {
-    (void)(ifname);
-    (void)(prio);
-    (void)(start_time_us);
-    (void)(duration_us);
-    (void)(num_slots);
-    (void)(cross_slot);
-    (void)(max_bcn_spread);
-    (void)(nom_stas_per_bcn);
-    (void)(praw_period);
-    (void)(praw_start_offset);
-
-    if (enable)
-    {
-        mmosal_printf("Raw not supported yet\n");
-        MMOSAL_DEV_ASSERT(false);
-        return -1;
-    }
-    else
-    {
-        return 0;
-    }
+    (void)country;
+    (void)op_class;
+    return 0;
 }

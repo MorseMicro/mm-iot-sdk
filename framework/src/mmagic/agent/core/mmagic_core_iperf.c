@@ -29,7 +29,8 @@ void mmagic_core_iperf_init(struct mmagic_data *core)
 
 void mmagic_core_iperf_start(struct mmagic_data *core)
 {
-    MM_UNUSED(core);
+    struct mmagic_iperf_data *data = mmagic_data_get_iperf(core);
+    data->is_started = true;
 }
 
 /********* MMAGIC Core Iperf ops **********/

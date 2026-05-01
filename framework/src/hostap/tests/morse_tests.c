@@ -27,6 +27,12 @@ void verify_chan_pairs_jp(void)
 	TEST_ASSERT_EQUAL(0, morse_s1g_verify_ht_chan_pairs());
 }
 
+void verify_chan_pairs_au(void)
+{
+	morse_set_s1g_ht_chan_pairs("AU");
+	TEST_ASSERT_EQUAL(0, morse_s1g_verify_ht_chan_pairs());
+}
+
 /* Convert ht channel to s1g channel */
 void test_morse_ht_chan_to_s1g_chan_default(void)
 {
@@ -56,6 +62,67 @@ void test_morse_ht_chan_to_s1g_chan_default(void)
 	TEST_ASSERT_EQUAL(MORSE_S1G_RETURN_ERROR, morse_ht_chan_to_s1g_chan(170));
 	TEST_ASSERT_EQUAL(MORSE_S1G_RETURN_ERROR, morse_ht_chan_to_s1g_chan(130));
 	TEST_ASSERT_EQUAL(MORSE_S1G_RETURN_ERROR, morse_ht_chan_to_s1g_chan(51));
+}
+
+void test_morse_ht_chan_to_s1g_chan_au(void)
+{
+	/* test borders and variety of bandwidths in each section */
+	TEST_ASSERT_EQUAL(28, morse_ht_chan_to_s1g_chan(36));
+	TEST_ASSERT_EQUAL(29, morse_ht_chan_to_s1g_chan(38));
+	TEST_ASSERT_EQUAL(31, morse_ht_chan_to_s1g_chan(42));
+	TEST_ASSERT_EQUAL(35, morse_ht_chan_to_s1g_chan(50));
+	TEST_ASSERT_EQUAL(39, morse_ht_chan_to_s1g_chan(58));
+	TEST_ASSERT_EQUAL(42, morse_ht_chan_to_s1g_chan(64));
+	TEST_ASSERT_EQUAL(44, morse_ht_chan_to_s1g_chan(116));
+	TEST_ASSERT_EQUAL(45, morse_ht_chan_to_s1g_chan(118));
+	TEST_ASSERT_EQUAL(47, morse_ht_chan_to_s1g_chan(122));
+	TEST_ASSERT_EQUAL(49, morse_ht_chan_to_s1g_chan(126));
+	TEST_ASSERT_EQUAL(50, morse_ht_chan_to_s1g_chan(128));
+	TEST_ASSERT_EQUAL(51, morse_ht_chan_to_s1g_chan(155));
+	TEST_ASSERT_EQUAL(55, morse_ht_chan_to_s1g_chan(163));
+	TEST_ASSERT_EQUAL(59, morse_ht_chan_to_s1g_chan(171));
+
+	/* sprinkling of unmapped */
+	TEST_ASSERT_EQUAL(MORSE_S1G_RETURN_ERROR, morse_ht_chan_to_s1g_chan(170));
+	TEST_ASSERT_EQUAL(MORSE_S1G_RETURN_ERROR, morse_ht_chan_to_s1g_chan(130));
+	TEST_ASSERT_EQUAL(MORSE_S1G_RETURN_ERROR, morse_ht_chan_to_s1g_chan(51));
+}
+
+/* Convert HT frequency to S1G channel */
+void test_morse_ht_freq_to_s1g_chan_au(void)
+{
+	/* test borders and variety of bandwidths in each section */
+	TEST_ASSERT_EQUAL(28, morse_ht_freq_to_s1g_chan(5180));
+	TEST_ASSERT_EQUAL(29, morse_ht_freq_to_s1g_chan(5190));
+	TEST_ASSERT_EQUAL(30, morse_ht_freq_to_s1g_chan(5200));
+	TEST_ASSERT_EQUAL(31, morse_ht_freq_to_s1g_chan(5210));
+	TEST_ASSERT_EQUAL(32, morse_ht_freq_to_s1g_chan(5220));
+	TEST_ASSERT_EQUAL(33, morse_ht_freq_to_s1g_chan(5230));
+	TEST_ASSERT_EQUAL(34, morse_ht_freq_to_s1g_chan(5240));
+	TEST_ASSERT_EQUAL(35, morse_ht_freq_to_s1g_chan(5250));
+	TEST_ASSERT_EQUAL(36, morse_ht_freq_to_s1g_chan(5260));
+	TEST_ASSERT_EQUAL(37, morse_ht_freq_to_s1g_chan(5270));
+	TEST_ASSERT_EQUAL(38, morse_ht_freq_to_s1g_chan(5280));
+	TEST_ASSERT_EQUAL(39, morse_ht_freq_to_s1g_chan(5290));
+	TEST_ASSERT_EQUAL(40, morse_ht_freq_to_s1g_chan(5300));
+	TEST_ASSERT_EQUAL(41, morse_ht_freq_to_s1g_chan(5310));
+	TEST_ASSERT_EQUAL(42, morse_ht_freq_to_s1g_chan(5320));
+	TEST_ASSERT_EQUAL(43, morse_ht_freq_to_s1g_chan(5570));
+	TEST_ASSERT_EQUAL(44, morse_ht_freq_to_s1g_chan(5580));
+	TEST_ASSERT_EQUAL(45, morse_ht_freq_to_s1g_chan(5590));
+	TEST_ASSERT_EQUAL(46, morse_ht_freq_to_s1g_chan(5600));
+	TEST_ASSERT_EQUAL(47, morse_ht_freq_to_s1g_chan(5610));
+	TEST_ASSERT_EQUAL(48, morse_ht_freq_to_s1g_chan(5620));
+	TEST_ASSERT_EQUAL(49, morse_ht_freq_to_s1g_chan(5630));
+	TEST_ASSERT_EQUAL(50, morse_ht_freq_to_s1g_chan(5640));
+	TEST_ASSERT_EQUAL(51, morse_ht_freq_to_s1g_chan(5775));
+	TEST_ASSERT_EQUAL(55, morse_ht_freq_to_s1g_chan(5815));
+	TEST_ASSERT_EQUAL(59, morse_ht_freq_to_s1g_chan(5855));
+
+	/* sprinkling of unmapped */
+	TEST_ASSERT_EQUAL(MORSE_S1G_RETURN_ERROR, morse_ht_freq_to_s1g_chan(5850));
+	TEST_ASSERT_EQUAL(MORSE_S1G_RETURN_ERROR, morse_ht_freq_to_s1g_chan(5650));
+	TEST_ASSERT_EQUAL(MORSE_S1G_RETURN_ERROR, morse_ht_freq_to_s1g_chan(5255));
 }
 
 /* Convert ht frequency to s1g channel */
@@ -90,6 +157,35 @@ void test_morse_ht_freq_to_s1g_chan_default(void)
 }
 
 /* Convert s1g channel to ht channel */
+void test_morse_s1g_chan_to_ht_chan_au(void)
+{
+	/* test borders and variety of bandwidths in each section */
+	TEST_ASSERT_EQUAL(36, morse_s1g_chan_to_ht_chan(28));
+	TEST_ASSERT_EQUAL(38, morse_s1g_chan_to_ht_chan(29));
+	TEST_ASSERT_EQUAL(40, morse_s1g_chan_to_ht_chan(30));
+	TEST_ASSERT_EQUAL(42, morse_s1g_chan_to_ht_chan(31));
+	TEST_ASSERT_EQUAL(44, morse_s1g_chan_to_ht_chan(32));
+	TEST_ASSERT_EQUAL(46, morse_s1g_chan_to_ht_chan(33));
+	TEST_ASSERT_EQUAL(48, morse_s1g_chan_to_ht_chan(34));
+	TEST_ASSERT_EQUAL(50, morse_s1g_chan_to_ht_chan(35));
+	TEST_ASSERT_EQUAL(52, morse_s1g_chan_to_ht_chan(36));
+	TEST_ASSERT_EQUAL(54, morse_s1g_chan_to_ht_chan(37));
+	TEST_ASSERT_EQUAL(56, morse_s1g_chan_to_ht_chan(38));
+	TEST_ASSERT_EQUAL(58, morse_s1g_chan_to_ht_chan(39));
+	TEST_ASSERT_EQUAL(60, morse_s1g_chan_to_ht_chan(40));
+	TEST_ASSERT_EQUAL(62, morse_s1g_chan_to_ht_chan(41));
+	TEST_ASSERT_EQUAL(64, morse_s1g_chan_to_ht_chan(42));
+	TEST_ASSERT_EQUAL(120, morse_s1g_chan_to_ht_chan(46));
+	TEST_ASSERT_EQUAL(122, morse_s1g_chan_to_ht_chan(47));
+	TEST_ASSERT_EQUAL(124, morse_s1g_chan_to_ht_chan(48));
+	TEST_ASSERT_EQUAL(126, morse_s1g_chan_to_ht_chan(49));
+	TEST_ASSERT_EQUAL(128, morse_s1g_chan_to_ht_chan(50));
+	TEST_ASSERT_EQUAL(155, morse_s1g_chan_to_ht_chan(51));
+	TEST_ASSERT_EQUAL(163, morse_s1g_chan_to_ht_chan(55));
+	TEST_ASSERT_EQUAL(171, morse_s1g_chan_to_ht_chan(59));
+}
+
+/* Convert s1g channel to ht channel */
 void test_morse_s1g_chan_to_ht_chan_default(void)
 {
 	/* test borders and variety of bandwidths in each section */
@@ -113,6 +209,24 @@ void test_morse_s1g_chan_to_ht_chan_default(void)
 	TEST_ASSERT_EQUAL(171, morse_s1g_chan_to_ht_chan(48));
 	TEST_ASSERT_EQUAL(175, morse_s1g_chan_to_ht_chan(50));
 	TEST_ASSERT_EQUAL(177, morse_s1g_chan_to_ht_chan(51));
+}
+
+/* Convert s1g channel to bandwidth */
+void test_morse_s1g_chan_to_bw_au(void)
+{
+	unsigned int i;
+
+	for (i = 28; i <= 50; i += 2)
+		TEST_ASSERT_EQUAL(1, morse_s1g_chan_to_bw(i));
+
+	for (i = 29; i <= 50; i += 4)
+		TEST_ASSERT_EQUAL(2, morse_s1g_chan_to_bw(i));
+
+	for (i = 31; i <= 50; i += 8)
+		TEST_ASSERT_EQUAL(4, morse_s1g_chan_to_bw(i));
+
+	for (i = 35; i <= 50; i += 16)
+		TEST_ASSERT_EQUAL(8, morse_s1g_chan_to_bw(i));
 }
 
 /* Convert s1g channel to bandwidth */
@@ -246,6 +360,18 @@ void test_morse_s1g_oper_class_to_country(void)
 }
 
 /* Convert an operating class and s1g channel to frequency (kHz) */
+void test_morse_s1g_oper_class_chan_to_freq_au(void)
+{
+	TEST_ASSERT_EQUAL(927000, morse_s1g_op_class_chan_to_freq(22, 50));
+	TEST_ASSERT_EQUAL(926500, morse_s1g_op_class_chan_to_freq(23, 49));
+	TEST_ASSERT_EQUAL(925500, morse_s1g_op_class_chan_to_freq(24, 47));
+	TEST_ASSERT_EQUAL(923500, morse_s1g_op_class_chan_to_freq(25, 43));
+	TEST_ASSERT_EQUAL(919500, morse_s1g_op_class_chan_to_freq(39, 51));
+	TEST_ASSERT_EQUAL(923500, morse_s1g_op_class_chan_to_freq(39, 59));
+	TEST_ASSERT_EQUAL(921500, morse_s1g_op_class_chan_to_freq(40, 55));
+}
+
+/* Convert an operating class and s1g channel to frequency (kHz) */
 void test_morse_s1g_oper_class_chan_to_freq_default(void)
 {
 	TEST_ASSERT_EQUAL(922500, morse_s1g_op_class_chan_to_freq(1, 41));
@@ -275,6 +401,15 @@ void test_morse_s1g_oper_class_chan_to_freq_default(void)
 	TEST_ASSERT_EQUAL(924000, morse_s1g_op_class_chan_to_freq(29, 44));
 	TEST_ASSERT_EQUAL(917900, morse_s1g_op_class_chan_to_freq(30, 33));
 	TEST_ASSERT_EQUAL(866500, morse_s1g_op_class_chan_to_freq(31, 7));
+}
+
+/* Convert ht channel and s1g operating class to s1g frequency (kHz) */
+void test_morse_s1g_op_class_ht_chan_to_s1g_freq_au(void)
+{
+	TEST_ASSERT_EQUAL(927000, morse_s1g_op_class_ht_chan_to_s1g_freq(22, 128));
+	TEST_ASSERT_EQUAL(926500, morse_s1g_op_class_ht_chan_to_s1g_freq(23, 126));
+	TEST_ASSERT_EQUAL(925500, morse_s1g_op_class_ht_chan_to_s1g_freq(24, 122));
+	TEST_ASSERT_EQUAL(923500, morse_s1g_op_class_ht_chan_to_s1g_freq(25, 114));
 }
 
 /* Convert ht channel and s1g operating class to s1g frequency (kHz) */
@@ -310,6 +445,15 @@ void test_morse_s1g_op_class_ht_chan_to_s1g_freq_default(void)
 }
 
 /* Convert an operating class and ht frequency into a s1g frequency (kHz) */
+void test_morse_s1g_op_class_ht_freq_to_s1g_freq_au(void)
+{
+	TEST_ASSERT_EQUAL(927000, morse_s1g_op_class_ht_freq_to_s1g_freq(22, 5640));
+	TEST_ASSERT_EQUAL(926500, morse_s1g_op_class_ht_freq_to_s1g_freq(23, 5630));
+	TEST_ASSERT_EQUAL(925500, morse_s1g_op_class_ht_freq_to_s1g_freq(24, 5610));
+	TEST_ASSERT_EQUAL(923500, morse_s1g_op_class_ht_freq_to_s1g_freq(25, 5570));
+}
+
+/* Convert an operating class and ht frequency into a s1g frequency (kHz) */
 void test_morse_s1g_op_class_ht_freq_to_s1g_freq_default(void)
 {
 	TEST_ASSERT_EQUAL(922500, morse_s1g_op_class_ht_freq_to_s1g_freq(1, 5785));
@@ -339,6 +483,15 @@ void test_morse_s1g_op_class_ht_freq_to_s1g_freq_default(void)
 	TEST_ASSERT_EQUAL(924000, morse_s1g_op_class_ht_freq_to_s1g_freq(29, 5815));
 	TEST_ASSERT_EQUAL(917900, morse_s1g_op_class_ht_freq_to_s1g_freq(30, 5620));
 	TEST_ASSERT_EQUAL(866500, morse_s1g_op_class_ht_freq_to_s1g_freq(31, 5200));
+}
+
+/* Convert a country and ht frequency into a s1g frequency (kHz) */
+void test_morse_cc_ht_freq_to_s1g_freq_au(void)
+{
+	TEST_ASSERT_EQUAL(927000, morse_cc_ht_freq_to_s1g_freq("AU", 5640));
+	TEST_ASSERT_EQUAL(926500, morse_cc_ht_freq_to_s1g_freq("AU", 5630));
+	TEST_ASSERT_EQUAL(925500, morse_cc_ht_freq_to_s1g_freq("AU", 5610));
+	TEST_ASSERT_EQUAL(923500, morse_cc_ht_freq_to_s1g_freq("AU", 5570));
 }
 
 /* Convert a country and ht frequency into a s1g frequency (kHz) */
@@ -832,6 +985,99 @@ void test_morse_s1g_chan_to_ht20_prim_chan_jp(void)
 	TEST_ASSERT_EQUAL(64, morse_s1g_chan_to_ht20_prim_chan(21, 21, "JP"));
 }
 
+void test_morse_s1g_chan_to_ht20_prim_chan_au(void)
+{
+	TEST_ASSERT_EQUAL(60, morse_s1g_chan_to_ht20_prim_chan(41, 40, "AU"));
+	TEST_ASSERT_EQUAL(64, morse_s1g_chan_to_ht20_prim_chan(42, 42, "AU"));
+	TEST_ASSERT_EQUAL(120, morse_s1g_chan_to_ht20_prim_chan(45, 46, "AU"));
+	TEST_ASSERT_EQUAL(124, morse_s1g_chan_to_ht20_prim_chan(49, 48, "AU"));
+	TEST_ASSERT_EQUAL(128, morse_s1g_chan_to_ht20_prim_chan(50, 50, "AU"));
+	TEST_ASSERT_EQUAL(44, morse_s1g_chan_to_ht20_prim_chan(33, 32, "AU"));
+	TEST_ASSERT_EQUAL(48, morse_s1g_chan_to_ht20_prim_chan(34, 34, "AU"));
+	TEST_ASSERT_EQUAL(56, morse_s1g_chan_to_ht20_prim_chan(37, 38, "AU"));
+
+	TEST_ASSERT_EQUAL(36, morse_s1g_chan_to_ht20_prim_chan(31, 28, "AU"));
+	TEST_ASSERT_EQUAL(38, morse_s1g_chan_to_ht20_prim_chan(31, 29, "AU"));
+	TEST_ASSERT_EQUAL(40, morse_s1g_chan_to_ht20_prim_chan(31, 30, "AU"));
+	TEST_ASSERT_EQUAL(44, morse_s1g_chan_to_ht20_prim_chan(31, 32, "AU"));
+	TEST_ASSERT_EQUAL(46, morse_s1g_chan_to_ht20_prim_chan(31, 33, "AU"));
+	TEST_ASSERT_EQUAL(48, morse_s1g_chan_to_ht20_prim_chan(31, 34, "AU"));
+
+	TEST_ASSERT_EQUAL(52, morse_s1g_chan_to_ht20_prim_chan(39, 36, "AU"));
+	TEST_ASSERT_EQUAL(54, morse_s1g_chan_to_ht20_prim_chan(39, 37, "AU"));
+	TEST_ASSERT_EQUAL(56, morse_s1g_chan_to_ht20_prim_chan(39, 38, "AU"));
+	TEST_ASSERT_EQUAL(60, morse_s1g_chan_to_ht20_prim_chan(39, 40, "AU"));
+	TEST_ASSERT_EQUAL(62, morse_s1g_chan_to_ht20_prim_chan(39, 41, "AU"));
+	TEST_ASSERT_EQUAL(64, morse_s1g_chan_to_ht20_prim_chan(39, 42, "AU"));
+	TEST_ASSERT_EQUAL(MORSE_S1G_RETURN_ERROR, morse_s1g_chan_to_ht20_prim_chan(60, 44, "AU"));
+
+	TEST_ASSERT_EQUAL(116, morse_s1g_chan_to_ht20_prim_chan(47, 44, "AU"));
+	TEST_ASSERT_EQUAL(118, morse_s1g_chan_to_ht20_prim_chan(47, 45, "AU"));
+	TEST_ASSERT_EQUAL(120, morse_s1g_chan_to_ht20_prim_chan(47, 46, "AU"));
+	TEST_ASSERT_EQUAL(124, morse_s1g_chan_to_ht20_prim_chan(47, 48, "AU"));
+	TEST_ASSERT_EQUAL(126, morse_s1g_chan_to_ht20_prim_chan(47, 49, "AU"));
+	TEST_ASSERT_EQUAL(128, morse_s1g_chan_to_ht20_prim_chan(47, 50, "AU"));
+
+	TEST_ASSERT_EQUAL(36, morse_s1g_chan_to_ht20_prim_chan(35, 28, "AU"));
+	TEST_ASSERT_EQUAL(38, morse_s1g_chan_to_ht20_prim_chan(35, 29, "AU"));
+	TEST_ASSERT_EQUAL(40, morse_s1g_chan_to_ht20_prim_chan(35, 30, "AU"));
+	TEST_ASSERT_EQUAL(42, morse_s1g_chan_to_ht20_prim_chan(35, 31, "AU"));
+	TEST_ASSERT_EQUAL(44, morse_s1g_chan_to_ht20_prim_chan(35, 32, "AU"));
+	TEST_ASSERT_EQUAL(46, morse_s1g_chan_to_ht20_prim_chan(35, 33, "AU"));
+	TEST_ASSERT_EQUAL(48, morse_s1g_chan_to_ht20_prim_chan(35, 34, "AU"));
+	TEST_ASSERT_EQUAL(52, morse_s1g_chan_to_ht20_prim_chan(35, 36, "AU"));
+	TEST_ASSERT_EQUAL(54, morse_s1g_chan_to_ht20_prim_chan(35, 37, "AU"));
+	TEST_ASSERT_EQUAL(56, morse_s1g_chan_to_ht20_prim_chan(35, 38, "AU"));
+	TEST_ASSERT_EQUAL(58, morse_s1g_chan_to_ht20_prim_chan(35, 39, "AU"));
+	TEST_ASSERT_EQUAL(60, morse_s1g_chan_to_ht20_prim_chan(35, 40, "AU"));
+	TEST_ASSERT_EQUAL(62, morse_s1g_chan_to_ht20_prim_chan(35, 41, "AU"));
+	TEST_ASSERT_EQUAL(64, morse_s1g_chan_to_ht20_prim_chan(35, 42, "AU"));
+
+	TEST_ASSERT_EQUAL(100, morse_s1g_chan_to_ht20_prim_chan(43, 36, "AU"));
+	TEST_ASSERT_EQUAL(102, morse_s1g_chan_to_ht20_prim_chan(43, 37, "AU"));
+	TEST_ASSERT_EQUAL(104, morse_s1g_chan_to_ht20_prim_chan(43, 38, "AU"));
+	TEST_ASSERT_EQUAL(106, morse_s1g_chan_to_ht20_prim_chan(43, 39, "AU"));
+	TEST_ASSERT_EQUAL(108, morse_s1g_chan_to_ht20_prim_chan(43, 40, "AU"));
+	TEST_ASSERT_EQUAL(110, morse_s1g_chan_to_ht20_prim_chan(43, 41, "AU"));
+	TEST_ASSERT_EQUAL(112, morse_s1g_chan_to_ht20_prim_chan(43, 42, "AU"));
+	TEST_ASSERT_EQUAL(116, morse_s1g_chan_to_ht20_prim_chan(43, 44, "AU"));
+	TEST_ASSERT_EQUAL(118, morse_s1g_chan_to_ht20_prim_chan(43, 45, "AU"));
+	TEST_ASSERT_EQUAL(120, morse_s1g_chan_to_ht20_prim_chan(43, 46, "AU"));
+	TEST_ASSERT_EQUAL(122, morse_s1g_chan_to_ht20_prim_chan(43, 47, "AU"));
+	TEST_ASSERT_EQUAL(124, morse_s1g_chan_to_ht20_prim_chan(43, 48, "AU"));
+	TEST_ASSERT_EQUAL(126, morse_s1g_chan_to_ht20_prim_chan(43, 49, "AU"));
+	TEST_ASSERT_EQUAL(128, morse_s1g_chan_to_ht20_prim_chan(43, 50, "AU"));
+
+	/* Proposed AU channels */
+	TEST_ASSERT_EQUAL(149, morse_s1g_chan_to_ht20_prim_chan(51, 32, "AU"));
+	TEST_ASSERT_EQUAL(153, morse_s1g_chan_to_ht20_prim_chan(51, 34, "AU"));
+	TEST_ASSERT_EQUAL(157, morse_s1g_chan_to_ht20_prim_chan(51, 36, "AU"));
+	TEST_ASSERT_EQUAL(161, morse_s1g_chan_to_ht20_prim_chan(51, 38, "AU"));
+	TEST_ASSERT_EQUAL(151, morse_s1g_chan_to_ht20_prim_chan(51, 33, "AU"));
+	TEST_ASSERT_EQUAL(159, morse_s1g_chan_to_ht20_prim_chan(51, 37, "AU"));
+
+	TEST_ASSERT_EQUAL(165, morse_s1g_chan_to_ht20_prim_chan(59, 40, "AU"));
+	TEST_ASSERT_EQUAL(169, morse_s1g_chan_to_ht20_prim_chan(59, 42, "AU"));
+	TEST_ASSERT_EQUAL(173, morse_s1g_chan_to_ht20_prim_chan(59, 44, "AU"));
+	TEST_ASSERT_EQUAL(177, morse_s1g_chan_to_ht20_prim_chan(59, 46, "AU"));
+	TEST_ASSERT_EQUAL(167, morse_s1g_chan_to_ht20_prim_chan(59, 41, "AU"));
+	TEST_ASSERT_EQUAL(175, morse_s1g_chan_to_ht20_prim_chan(59, 45, "AU"));
+
+	TEST_ASSERT_EQUAL(149, morse_s1g_chan_to_ht20_prim_chan(55, 32, "AU"));
+	TEST_ASSERT_EQUAL(153, morse_s1g_chan_to_ht20_prim_chan(55, 34, "AU"));
+	TEST_ASSERT_EQUAL(157, morse_s1g_chan_to_ht20_prim_chan(55, 36, "AU"));
+	TEST_ASSERT_EQUAL(161, morse_s1g_chan_to_ht20_prim_chan(55, 38, "AU"));
+	TEST_ASSERT_EQUAL(151, morse_s1g_chan_to_ht20_prim_chan(55, 33, "AU"));
+	TEST_ASSERT_EQUAL(159, morse_s1g_chan_to_ht20_prim_chan(55, 37, "AU"));
+
+	TEST_ASSERT_EQUAL(165, morse_s1g_chan_to_ht20_prim_chan(55, 40, "AU"));
+	TEST_ASSERT_EQUAL(169, morse_s1g_chan_to_ht20_prim_chan(55, 42, "AU"));
+	TEST_ASSERT_EQUAL(173, morse_s1g_chan_to_ht20_prim_chan(55, 44, "AU"));
+	TEST_ASSERT_EQUAL(177, morse_s1g_chan_to_ht20_prim_chan(55, 46, "AU"));
+	TEST_ASSERT_EQUAL(167, morse_s1g_chan_to_ht20_prim_chan(55, 41, "AU"));
+	TEST_ASSERT_EQUAL(175, morse_s1g_chan_to_ht20_prim_chan(55, 45, "AU"));
+}
+
 void test_morse_s1g_chan_to_ht20_prim_chan_default(void)
 {
 	TEST_ASSERT_EQUAL(149, morse_s1g_chan_to_ht20_prim_chan(44, 37, "US"));
@@ -861,6 +1107,50 @@ void test_morse_s1g_chan_to_ht20_prim_chan_default(void)
 	TEST_ASSERT_EQUAL(60,  morse_s1g_chan_to_ht20_prim_chan(18, 17, "US"));
 	TEST_ASSERT_EQUAL(64,  morse_s1g_chan_to_ht20_prim_chan(19, 19, "US"));
 
+}
+
+void test_morse_ht_chan_offset_au(void)
+{
+	/* Get offset for HT channels */
+	TEST_ASSERT_EQUAL(0,  morse_ht_chan_offset_au(36, -2, 1));
+	TEST_ASSERT_EQUAL(0,  morse_ht_chan_offset_au(40, -2, 1));
+	TEST_ASSERT_EQUAL(0,  morse_ht_chan_offset_au(44, -2, 1));
+	TEST_ASSERT_EQUAL(0,  morse_ht_chan_offset_au(48, -2, 1));
+	TEST_ASSERT_EQUAL(48, morse_ht_chan_offset_au(100, -1, 1));
+	TEST_ASSERT_EQUAL(48, morse_ht_chan_offset_au(102, -1, 1));
+	TEST_ASSERT_EQUAL(48, morse_ht_chan_offset_au(104, -1, 1));
+	TEST_ASSERT_EQUAL(48,  morse_ht_chan_offset_au(108, 0, 1));
+
+	/* Proposed AU channels */
+	TEST_ASSERT_EQUAL(105, morse_ht_chan_offset_au(149, -1, 1));
+	TEST_ASSERT_EQUAL(0, morse_ht_chan_offset_au(155, -1, 1));
+	TEST_ASSERT_EQUAL(105, morse_ht_chan_offset_au(157, -1, 1));
+	TEST_ASSERT_EQUAL(0, morse_ht_chan_offset_au(163, -1, 1));
+	TEST_ASSERT_EQUAL(105,  morse_ht_chan_offset_au(169, 0, 1));
+	TEST_ASSERT_EQUAL(0,  morse_ht_chan_offset_au(171, 0, 1));
+	TEST_ASSERT_EQUAL(57,  morse_ht_chan_offset_au(173, 0, 1));
+	TEST_ASSERT_EQUAL(57,  morse_ht_chan_offset_au(177, 0, 1));
+
+	/* Get offset for S1G channels */
+	TEST_ASSERT_EQUAL(0,  morse_ht_chan_offset_au(35, 32, 0));
+	TEST_ASSERT_EQUAL(0,  morse_ht_chan_offset_au(35, 34, 0));
+	TEST_ASSERT_EQUAL(48, morse_ht_chan_offset_au(43, 39, 0));
+	TEST_ASSERT_EQUAL(0,  morse_ht_chan_offset_au(38, 29, 0));
+	TEST_ASSERT_EQUAL(0,  morse_ht_chan_offset_au(35, 30, 0));
+	TEST_ASSERT_EQUAL(0,  morse_ht_chan_offset_au(35, 36, 0));
+	TEST_ASSERT_EQUAL(48, morse_ht_chan_offset_au(43, 36, 0));
+	TEST_ASSERT_EQUAL(48, morse_ht_chan_offset_au(43, 42, 0));
+	TEST_ASSERT_EQUAL(0,  morse_ht_chan_offset_au(35, 28, 0));
+
+	/* Proposed AU channels */
+	TEST_ASSERT_EQUAL(105,  morse_ht_chan_offset_au(51, 32, 0));
+	TEST_ASSERT_EQUAL(105,  morse_ht_chan_offset_au(51, 34, 0));
+	TEST_ASSERT_EQUAL(105,  morse_ht_chan_offset_au(51, 38, 0));
+	TEST_ASSERT_EQUAL(105,  morse_ht_chan_offset_au(55, 40, 0));
+	TEST_ASSERT_EQUAL(57,  morse_ht_chan_offset_au(55, 45, 0));
+	TEST_ASSERT_EQUAL(57,  morse_ht_chan_offset_au(55, 46, 0));
+	TEST_ASSERT_EQUAL(105,  morse_ht_chan_offset_au(59, 42, 0));
+	TEST_ASSERT_EQUAL(57,  morse_ht_chan_offset_au(59, 44, 0));
 }
 
 void test_morse_ht_chan_offset_jp(void)
@@ -917,8 +1207,8 @@ int main(void)
 {
 	UNITY_BEGIN();
 
-	/* Test the default channel map (AU/US etc)*/
-	morse_set_s1g_ht_chan_pairs("NULL");
+	/* Test the default channel map (US/CA etc)*/
+	morse_set_channelization_scheme("US", CHANNELIZATION_SCHEME_IEEE80211_2020);
 	RUN_TEST(verify_chan_pairs_default);
 	RUN_TEST(test_morse_ht_chan_to_s1g_chan_default);
 	RUN_TEST(test_morse_ht_freq_to_s1g_chan_default);
@@ -943,7 +1233,6 @@ int main(void)
 	RUN_TEST(test_morse_s1g_chan_to_ht20_prim_chan_jp);
 	RUN_TEST(test_morse_ht_chan_offset_jp);
 
-	/* Channel map independent-functions */
 	RUN_TEST(test_morse_ht_chan_to_ht_chan_center);
 	RUN_TEST(test_morse_ht_center_chan_to_ht_chan);
 	RUN_TEST(test_morse_s1g_oper_class_to_ch_width);
@@ -954,6 +1243,20 @@ int main(void)
 	RUN_TEST(test_morse_cc_verify_get_primary_s1g_channel);
 	RUN_TEST(test_morse_cc_get_sec_channel_offset);
 	RUN_TEST(test_morse_s1g_get_start_freq_for_country);
+
+	/* Test the AU channel map as per 802.11-REVmf channelization */
+	morse_set_channelization_scheme("AU", CHANNELIZATION_SCHEME_IEEE80211_REVMF);
+	RUN_TEST(verify_chan_pairs_au);
+	RUN_TEST(test_morse_ht_chan_to_s1g_chan_au);
+	RUN_TEST(test_morse_ht_freq_to_s1g_chan_au);
+	RUN_TEST(test_morse_s1g_chan_to_ht_chan_au);
+	RUN_TEST(test_morse_s1g_chan_to_bw_au);
+	RUN_TEST(test_morse_s1g_oper_class_chan_to_freq_au);
+	RUN_TEST(test_morse_s1g_op_class_ht_chan_to_s1g_freq_au);
+	RUN_TEST(test_morse_s1g_op_class_ht_freq_to_s1g_freq_au);
+	RUN_TEST(test_morse_cc_ht_freq_to_s1g_freq_au);
+	RUN_TEST(test_morse_s1g_chan_to_ht20_prim_chan_au);
+	RUN_TEST(test_morse_ht_chan_offset_au);
 
 	return UNITY_END();
 }

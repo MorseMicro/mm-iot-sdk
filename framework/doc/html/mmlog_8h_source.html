@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.10.4</span>
+   &#160;<span id="projectnumber">2.11.2</span>
    </div>
   </td>
  </tr>
@@ -124,7 +124,7 @@ $(document).ready(function(){initNavTree('mmlog_8h_source.html',''); initResizab
 <div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>                <span class="keyword">const</span> <span class="keywordtype">char</span> *function,</div>
 <div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>                <span class="keywordtype">unsigned</span> line_number,</div>
 <div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>                <span class="keyword">const</span> <span class="keywordtype">char</span> *title,</div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>                <span class="keyword">const</span> uint8_t *<a class="code hl_variable" href="sslclient_8c.html#abdc8ea8147d82c962a7d88863ee32ee0">buf</a>,</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>                <span class="keyword">const</span> uint8_t *<a class="code hl_variable" href="mqttdemo_8c.html#a8d0196caa4b00a1c9678508b882b33ee">buf</a>,</div>
 <div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>                <span class="keywordtype">size_t</span> len);</div>
 <div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span> </div>
 <div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span><span class="comment">/*</span></div>
@@ -232,10 +232,10 @@ $(document).ready(function(){initNavTree('mmlog_8h_source.html',''); initResizab
 <div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>    <span class="keywordflow">return</span> 0;</div>
 <div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span>}</div>
 <div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span> </div>
-<div class="line"><a id="l00220" name="l00220"></a><span class="lineno"><a class="line" href="group__MMLOG.html#gaa0355a13254dd665738b665670bee444">  220</a></span><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code hl_function" href="group__MMLOG.html#gaa0355a13254dd665738b665670bee444">mm_hexdump_blackhole</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *title, <span class="keyword">const</span> uint8_t *<a class="code hl_variable" href="sslclient_8c.html#abdc8ea8147d82c962a7d88863ee32ee0">buf</a>, <span class="keywordtype">size_t</span> len)</div>
+<div class="line"><a id="l00220" name="l00220"></a><span class="lineno"><a class="line" href="group__MMLOG.html#gaa0355a13254dd665738b665670bee444">  220</a></span><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code hl_function" href="group__MMLOG.html#gaa0355a13254dd665738b665670bee444">mm_hexdump_blackhole</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *title, <span class="keyword">const</span> uint8_t *<a class="code hl_variable" href="mqttdemo_8c.html#a8d0196caa4b00a1c9678508b882b33ee">buf</a>, <span class="keywordtype">size_t</span> len)</div>
 <div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>{</div>
 <div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span>    (void)(title);</div>
-<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span>    (void)(<a class="code hl_variable" href="sslclient_8c.html#abdc8ea8147d82c962a7d88863ee32ee0">buf</a>);</div>
+<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span>    (void)(<a class="code hl_variable" href="mqttdemo_8c.html#a8d0196caa4b00a1c9678508b882b33ee">buf</a>);</div>
 <div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span>    (void)(len);</div>
 <div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span>}</div>
 <div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span> </div>
@@ -321,14 +321,14 @@ $(document).ready(function(){initNavTree('mmlog_8h_source.html',''); initResizab
 <div class="ttc" id="agroup__MMLOG_html_gabc9749d59a11de9855c4c71f07e7097f"><div class="ttname"><a href="group__MMLOG.html#gabc9749d59a11de9855c4c71f07e7097f">mm_logging_init</a></div><div class="ttdeci">void mm_logging_init(void)</div><div class="ttdoc">Initialize Morse logging API.</div></div>
 <div class="ttc" id="agroup__MMLOG_html_gae014f5e0ef3901a7bd3c8dcd9ee2de87"><div class="ttname"><a href="group__MMLOG.html#gae014f5e0ef3901a7bd3c8dcd9ee2de87">mm_hexdump</a></div><div class="ttdeci">void mm_hexdump(char level, const char *function, unsigned line_number, const char *title, const uint8_t *buf, size_t len)</div><div class="ttdoc">Dumps a binary buffer in hex.</div></div>
 <div class="ttc" id="agroup__MMLOG_html_gafb2ec5feda89f262a473d91dc2bf8d66"><div class="ttname"><a href="group__MMLOG.html#gafb2ec5feda89f262a473d91dc2bf8d66">printf_blackhole</a></div><div class="ttdeci">static int printf_blackhole(const char *fmt,...)</div><div class="ttdoc">Black hole printf to ensure arguments are referenced when a given log level is disabled.</div><div class="ttdef"><b>Definition:</b> <a href="mmlog_8h_source.html#l00206">mmlog.h:206</a></div></div>
-<div class="ttc" id="asslclient_8c_html_abdc8ea8147d82c962a7d88863ee32ee0"><div class="ttname"><a href="sslclient_8c.html#abdc8ea8147d82c962a7d88863ee32ee0">buf</a></div><div class="ttdeci">char buf[1408]</div><div class="ttdoc">Statically allocated buffer for HTTP GET request, just under 1 packet size.</div><div class="ttdef"><b>Definition:</b> <a href="sslclient_8c_source.html#l00176">sslclient.c:176</a></div></div>
+<div class="ttc" id="amqttdemo_8c_html_a8d0196caa4b00a1c9678508b882b33ee"><div class="ttname"><a href="mqttdemo_8c.html#a8d0196caa4b00a1c9678508b882b33ee">buf</a></div><div class="ttdeci">static unsigned char buf[1024]</div><div class="ttdoc">Statically allocated buffer for MQTT.</div><div class="ttdef"><b>Definition:</b> <a href="mqttdemo_8c_source.html#l00153">mqttdemo.c:153</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.17-->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_4fef7b40ebc01bf0de6074c9d47349d1.html">framework</a></li><li class="navelem"><a class="el" href="dir_feb638b3106c938d2c0f4ef9d234bbf6.html">morselib</a></li><li class="navelem"><a class="el" href="dir_d19ef69c4e17e22198248d7621cc2ab3.html">include</a></li><li class="navelem"><b>mmlog.h</b></li>
+    <li class="navelem"><a class="el" href="dir_facbc76ccb04a5ad7c76a9242f055a51.html">framework</a></li><li class="navelem"><a class="el" href="dir_ec608172d5b1d14b5f046e2028af5025.html">morselib</a></li><li class="navelem"><a class="el" href="dir_ab2e2ef2d3c1eb752826d21384ff7c4c.html">include</a></li><li class="navelem"><b>mmlog.h</b></li>
     <li class="footer">Copyright 2021-2025 Morse Micro </li>
   </ul>
 </div>

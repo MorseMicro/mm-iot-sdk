@@ -8,7 +8,9 @@
 #include "deauthentication.h"
 #include "dot11/dot11.h"
 #include "dot11/dot11_frames.h"
+#include "dot11/dot11_ies.h"
 #include "dot11/dot11_utils.h"
+#include "umac/supplicant_shim/umac_supp_shim.h"
 #include "mmlog.h"
 
 void frame_deauthentication_build(struct umac_data *umacd, struct consbuf *buf, void *args)
@@ -27,6 +29,40 @@ void frame_deauthentication_build(struct umac_data *umacd, struct consbuf *buf, 
                                     data->sta_address,
                                     data->bssid);
         frame->reason_code = htole16(data->reason_code);
+    }
+}
+
+void frame_deauthentication_from_ap_build(struct umac_data *umacd, struct consbuf *buf, void *args)
+{
+    const struct frame_data_deauth_ap *data = (const struct frame_data_deauth_ap *)args;
+    struct dot11_deauth *frame = (struct dot11_deauth *)consbuf_reserve(buf, sizeof(*frame));
+
+    MM_UNUSED(umacd);
+
+    if (frame)
+    {
+        dot11_build_pv0_mgmt_header(&frame->hdr,
+                                    DOT11_FC_SUBTYPE_DEAUTH,
+                                    0,
+                                    data->sta_address,
+                                    data->own_address,
+                                    data->own_address);
+        frame->reason_code = htole16(data->reason_code);
+    }
+
+    if (data->bip_stad != NULL)
+    {
+
+        consbuf_reserve(buf, sizeof(struct dot11_ie_mmie));
+        if (frame)
+        {
+            bool ok = bip_generate_mmie(data->bip_stad, (uint8_t *)frame, buf->offset);
+            if (!ok)
+            {
+
+                buf->offset -= sizeof(struct dot11_ie_mmie);
+            }
+        }
     }
 }
 

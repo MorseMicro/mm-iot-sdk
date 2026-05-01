@@ -127,10 +127,18 @@ void mmagic_cli_sys_load(struct mmagic_cli *ctx, EmbeddedCli *cli)
 void mmagic_cli_sys_reset(EmbeddedCli *cli, char *args, void *context);
 void mmagic_cli_sys_deep_sleep(EmbeddedCli *cli, char *args, void *context);
 void mmagic_cli_sys_get_version(EmbeddedCli *cli, char *args, void *context);
+void mmagic_cli_sys_get_stats(EmbeddedCli *cli, char *args, void *context);
 
 /********* Register bindings function definition **********/
 void mmagic_cli_sys_register_bindings(EmbeddedCli *cli, struct mmagic_data *core)
 {
+    if (!mmagic_core_sys_is_started(core))
+    {
+        embeddedCliPrint(cli, "SYS not started.");
+        /* Module is not started so withhold commands for it from the user */
+        return;
+    }
+
     embeddedCliAddBinding(cli,
                           (CliCommandBinding){ "sys-reset",
                                                "Performs a soft reset.",
@@ -151,6 +159,13 @@ void mmagic_cli_sys_register_bindings(EmbeddedCli *cli, struct mmagic_data *core
                                                true,
                                                core,
                                                mmagic_cli_sys_get_version });
+
+    embeddedCliAddBinding(cli,
+                          (CliCommandBinding){ "sys-get_stats",
+                                               "Retrieve subsystem statistics",
+                                               true,
+                                               core,
+                                               mmagic_cli_sys_get_stats });
 }
 
 void mmagic_cli_sys_init(struct mmagic_cli *ctx)

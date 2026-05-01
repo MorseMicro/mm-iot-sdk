@@ -36,6 +36,7 @@ struct l2_packet_data
     void *rx_callback_ctx;
     int l2_hdr;
     uint8_t own_addr[ETH_ALEN];
+    uint16_t vif_id;
 };
 
 
@@ -58,6 +59,15 @@ struct bss_cache
 #define BSS_CACHE_SIZE(_num_entries) \
     (sizeof(struct bss_cache) + sizeof(struct bss_cache_entry) * (_num_entries))
 
+
+struct umac_supp_config_entry
+{
+
+    const char *name;
+
+    bool (*reader)(struct wpa_config *config, bool ro);
+};
+
 struct umac_supp_shim_data
 {
     bool is_started;
@@ -67,6 +77,7 @@ struct umac_supp_shim_data
 
     void *ap_driver_ctx;
 
+    struct l2_packet_data l2_ap;
 
     struct l2_packet_data l2;
 
@@ -86,4 +97,11 @@ struct umac_supp_shim_data
     bool auto_reconnect_disabled;
 
     bool in_progress_roc;
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wc++-compat"
+
+    struct wpa_driver_scan_filter *filter_ssids;
+#pragma GCC diagnostic pop
+
+    uint8_t num_filter_ssids;
 };

@@ -7,7 +7,10 @@
 
 #pragma once
 
+#include <stdint.h>
+
 #include "driver/morse_driver/morse.h"
+#include "mmwlan.h"
 
 
 int driver_task_start(struct driver_data *driverd);
@@ -51,5 +54,8 @@ static inline bool driver_is_data_tx_allowed(struct driver_data *driverd)
                             (volatile atomic_ulong *)&driverd->state_flags) &&
            !driver_task_notification_check(driverd, DRV_EVT_TRAFFIC_PAUSE_PEND);
 }
+
+
+bool driver_task_drop_scheduled_event(struct driver_data *driverd, enum driver_task_event evt);
 
 

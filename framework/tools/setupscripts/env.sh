@@ -15,12 +15,16 @@ elif [ -n "$BASH_VERSION" ]; then
     SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)
 else
     echo "Unsupported shell"
-    exit 1
+    return 1
 fi
 
-eval $(source "$SCRIPT_DIR/config.sh";
-       echo MORSE_OPENOCD_DIR="$MORSE_OPENOCD_DIR";
-       echo MORSE_ARM_TOOLCHAIN_DIR="$MORSE_ARM_TOOLCHAIN_DIR")
+source $SCRIPT_DIR/config.sh
+
+# Source setup.d scripts for variable definitions only (no install logic)
+VARS_ONLY=1
+source $SCRIPT_DIR/setup.d/S09_gcc-arm-none-eabi-14
+source $SCRIPT_DIR/setup.d/S20_openocd
+unset VARS_ONLY
 
 # Set MMIOT_ROOT environment variable to the framework directory that this script resides under.
 export MMIOT_ROOT="$SCRIPT_DIR/../.."
@@ -53,21 +57,21 @@ unset CURRENT_ARM_TOOLCHAIN_DIR
 unset MORSE_ARM_TOOLCHAIN_DIR
 
 # Miniterm is called pyserial-miniterm in newer installations. Create an
-# alias to keep things simple
-which miniterm > /dev/null
-if [[ $? != 0 ]]; then
-    PYSERIAL_MINITERM=`which pyserial-miniterm`
-    if [[ $? != 0 ]]; then
+# alias to keep things simple.
+if ! command -v miniterm > /dev/null 2>&1; then
+    PYSERIAL_MINITERM=$(command -v pyserial-miniterm 2>/dev/null)
+    if [[ -z "$PYSERIAL_MINITERM" ]]; then
         echo "Unable to find miniterm or pyserial-miniterm. Is pyserial installed?"
-        exit 1
+        return 1
     fi
-    echo miniterm command not found, creating alias to $PYSERIAL_MINITERM
-    alias miniterm=$PYSERIAL_MINITERM
+    echo "miniterm command not found, creating alias to $PYSERIAL_MINITERM"
+    alias miniterm="$PYSERIAL_MINITERM"
+    unset PYSERIAL_MINITERM
 fi
 
-# Add location of the python user site-pakages to PATH. This allows for excution of packages
+# Add location of the python user site-packages to PATH. This allows for execution of packages
 # installed using pip
 export PATH=$HOME/.local/bin:$PATH
 
 # MM-IoT-SDK Version
-export MMIOT_VERSION="2.10.4"
+export MMIOT_VERSION="2.11.2"

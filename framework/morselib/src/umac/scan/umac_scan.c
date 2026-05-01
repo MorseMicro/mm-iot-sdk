@@ -111,8 +111,6 @@ static void umac_req_scan_evt_handler(struct umac_data *umacd, const struct umac
     MMOSAL_ASSERT(scan_req->complete_cb != NULL);
     MMOSAL_ASSERT(scan_req->args.dwell_time_ms != 0);
 
-    umac_datapath_configure_scan_mode(umacd);
-
     if (data->active_scan_req == NULL)
     {
         MMLOG_INF("Scan request: starting scan (dwell=%lu ms)\n", scan_req->args.dwell_time_ms);

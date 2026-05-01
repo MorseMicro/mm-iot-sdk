@@ -105,10 +105,17 @@ static inline struct mmagic_datalink_agent *mmagic_datalink_agent_get(void)
  *
  * @param agent_dl  Reference to the data-link handle.
  * @param new_state The state for the agent to take.
+ * @param from_isr  Flag to indicate if the function is being called from an ISR context.
  */
 static void mmagic_datalink_agent_update_state(struct mmagic_datalink_agent *agent_dl,
-                                               enum mmagic_datalink_agent_state new_state)
+                                               enum mmagic_datalink_agent_state new_state,
+                                               bool from_isr)
 {
+    if (!from_isr)
+    {
+        MMOSAL_TASK_ENTER_CRITICAL();
+    }
+
     switch (agent_dl->state)
     {
     case MMAGIC_DATALINK_AGENT_STATE_ERROR:
@@ -168,9 +175,12 @@ static void mmagic_datalink_agent_update_state(struct mmagic_datalink_agent *age
         break;
     }
 
-    MMOSAL_TASK_ENTER_CRITICAL();
     agent_dl->state = new_state;
-    MMOSAL_TASK_EXIT_CRITICAL();
+
+    if (!from_isr)
+    {
+        MMOSAL_TASK_EXIT_CRITICAL();
+    }
 }
 
 /** Function to assert the ready pin high. */
@@ -230,13 +240,15 @@ static void mmagic_datalink_agent_spi_transmit(struct mmagic_datalink_agent *age
  * receive the max packet size.
  *
  * @param agent_dl Reference to the data-link handle.
+ * @param from_isr Flag to indicate if the function is being called from an ISR context.
  */
-static void mmagic_datalink_agent_configure_rx_idle(struct mmagic_datalink_agent *agent_dl)
+static void mmagic_datalink_agent_configure_rx_idle(struct mmagic_datalink_agent *agent_dl,
+                                                    bool from_isr)
 {
     mmagic_datalink_agent_spi_receive(agent_dl, agent_dl->rx_payload_header,
                                       MMAGIC_DATALINK_PAYLOAD_HEADER_SIZE);
     mmagic_datalink_agent_set_rdy_low();
-    mmagic_datalink_agent_update_state(agent_dl, MMAGIC_DATALINK_AGENT_STATE_IDLE);
+    mmagic_datalink_agent_update_state(agent_dl, MMAGIC_DATALINK_AGENT_STATE_IDLE, from_isr);
 }
 
 /**
@@ -255,7 +267,7 @@ static void mmagic_datalink_agent_handle_spi_tx_cplt(struct mmagic_datalink_agen
     case MMAGIC_DATALINK_AGENT_STATE_C2A_ACK:
         /* Only notify rx thread once the ACK has been sent */
         mmosal_semb_give_from_isr(agent_dl->rx_task_semb);
-        mmagic_datalink_agent_configure_rx_idle(agent_dl);
+        mmagic_datalink_agent_configure_rx_idle(agent_dl, true);
         break;
 
     case MMAGIC_DATALINK_AGENT_STATE_A2C_READ_PAYLOAD:
@@ -266,43 +278,44 @@ static void mmagic_datalink_agent_handle_spi_tx_cplt(struct mmagic_datalink_agen
         agent_dl->prev_tx_payload_len[1] = agent_dl->tx_payload_len[1];
         agent_dl->tx_buf = NULL;
         memset(agent_dl->tx_payload_len, 0, MMAGIC_DATALINK_PAYLOAD_LEN_SIZE);
-        mmagic_datalink_agent_configure_rx_idle(agent_dl);
+        mmagic_datalink_agent_configure_rx_idle(agent_dl, true);
         mmosal_semb_give_from_isr(agent_dl->tx_buf_complete_semb);
         break;
 
     case MMAGIC_DATALINK_AGENT_STATE_A2C_REREAD_PAYLOAD:
-        mmagic_datalink_agent_configure_rx_idle(agent_dl);
+        mmagic_datalink_agent_configure_rx_idle(agent_dl, true);
         break;
 
     case MMAGIC_DATALINK_AGENT_STATE_A2C_READ_LEN:
         if (!agent_dl->tx_buf)
         {
-            mmagic_datalink_agent_configure_rx_idle(agent_dl);
+            mmagic_datalink_agent_configure_rx_idle(agent_dl, true);
             return;
         }
         mmagic_datalink_agent_spi_transmit(agent_dl,
                                            mmbuf_get_data_start(agent_dl->tx_buf),
                                            mmbuf_get_data_length(agent_dl->tx_buf));
-        mmagic_datalink_agent_update_state(agent_dl, MMAGIC_DATALINK_AGENT_STATE_A2C_READ_PAYLOAD);
+        mmagic_datalink_agent_update_state(agent_dl, MMAGIC_DATALINK_AGENT_STATE_A2C_READ_PAYLOAD, true);
         mmagic_datalink_agent_set_rdy_high();
         break;
 
     case MMAGIC_DATALINK_AGENT_STATE_A2C_REREAD_LEN:
         if (!agent_dl->prev_tx_buf)
         {
-            mmagic_datalink_agent_configure_rx_idle(agent_dl);
+            mmagic_datalink_agent_configure_rx_idle(agent_dl, true);
             return;
         }
         mmagic_datalink_agent_spi_transmit(agent_dl,
                                            mmbuf_get_data_start(agent_dl->prev_tx_buf),
                                            mmbuf_get_data_length(agent_dl->prev_tx_buf));
         mmagic_datalink_agent_update_state(agent_dl,
-                                           MMAGIC_DATALINK_AGENT_STATE_A2C_REREAD_PAYLOAD);
+                                           MMAGIC_DATALINK_AGENT_STATE_A2C_REREAD_PAYLOAD, true);
         mmagic_datalink_agent_set_rdy_high();
         break;
 
     default:
-        MMOSAL_ASSERT(false);
+        mmagic_datalink_agent_set_rdy_low();
+        agent_dl->state = MMAGIC_DATALINK_AGENT_STATE_ERROR;
         break;
     }
 }
@@ -322,26 +335,26 @@ static void mmagic_datalink_agent_handle_payload_header(struct mmagic_datalink_a
     {
     case MMAGIC_DATALINK_WRITE:
         agent_dl->rx_packet_len = (payload_header[1] << 8) | payload_header[2];
-        mmagic_datalink_agent_update_state(agent_dl, MMAGIC_DATALINK_AGENT_STATE_C2A_PAYLOAD);
+        mmagic_datalink_agent_update_state(agent_dl, MMAGIC_DATALINK_AGENT_STATE_C2A_PAYLOAD, true);
         mmagic_datalink_agent_spi_receive(agent_dl, agent_dl->rx_packet_buf,
                                           agent_dl->rx_packet_len);
         break;
 
     case MMAGIC_DATALINK_READ:
-        mmagic_datalink_agent_update_state(agent_dl, MMAGIC_DATALINK_AGENT_STATE_A2C_READ_LEN);
+        mmagic_datalink_agent_update_state(agent_dl, MMAGIC_DATALINK_AGENT_STATE_A2C_READ_LEN, true);
         mmagic_datalink_agent_spi_transmit(agent_dl, agent_dl->tx_payload_len,
                                            MMAGIC_DATALINK_PAYLOAD_LEN_SIZE);
         break;
 
     case MMAGIC_DATALINK_REREAD:
-        mmagic_datalink_agent_update_state(agent_dl, MMAGIC_DATALINK_AGENT_STATE_A2C_REREAD_LEN);
+        mmagic_datalink_agent_update_state(agent_dl, MMAGIC_DATALINK_AGENT_STATE_A2C_REREAD_LEN, true);
         mmagic_datalink_agent_spi_transmit(agent_dl, agent_dl->prev_tx_payload_len,
                                            MMAGIC_DATALINK_PAYLOAD_LEN_SIZE);
         break;
 
     default:
         /* Ignore unknown mmagic_datalink payload type. */
-        mmagic_datalink_agent_configure_rx_idle(agent_dl);
+        mmagic_datalink_agent_configure_rx_idle(agent_dl, true);
         break;
     }
 }
@@ -370,7 +383,8 @@ static void mmagic_datalink_agent_handle_spi_rx_cplt(struct mmagic_datalink_agen
 
     default:
         /* We shouldn't be receiving in any other state. */
-        MMOSAL_ASSERT(false);
+        mmagic_datalink_agent_set_rdy_low();
+        agent_dl->state = MMAGIC_DATALINK_AGENT_STATE_ERROR;
         break;
     }
 }
@@ -389,7 +403,7 @@ static void mmagic_datalink_agent_handle_spi_error(struct mmagic_datalink_agent 
     {
     case MMAGIC_DATALINK_AGENT_STATE_C2A_PAYLOAD:
         agent_dl->rx_packet_len = 0;
-        mmagic_datalink_agent_configure_rx_idle(agent_dl);
+        mmagic_datalink_agent_configure_rx_idle(agent_dl, true);
         break;
 
     default:
@@ -434,11 +448,11 @@ static struct mmbuf *mmagic_datalink_agent_handle_c2a_work(struct mmagic_datalin
     struct mmbuf *buf = mmbuf_alloc_on_heap(0, agent_dl->max_rx_buffer_size);
     if (!buf)
     {
-        mmagic_datalink_agent_configure_rx_idle(agent_dl);
+        mmagic_datalink_agent_configure_rx_idle(agent_dl, false);
         return NULL;
     }
     mmbuf_append_data(buf, agent_dl->rx_packet_buf, agent_dl->rx_packet_len);
-    mmagic_datalink_agent_update_state(agent_dl, MMAGIC_DATALINK_AGENT_STATE_C2A_ACK);
+    mmagic_datalink_agent_update_state(agent_dl, MMAGIC_DATALINK_AGENT_STATE_C2A_ACK, false);
     mmagic_datalink_agent_spi_transmit(agent_dl, mmagic_datalink_ack_payload, 1);
     mmagic_datalink_agent_set_rdy_high();
     return buf;
@@ -486,7 +500,7 @@ void MMAGIC_DATALINK_AGENT_WAKE_HANDLER(void)
         LL_EXTI_ClearFallingFlag_0_31(MMAGIC_DATALINK_AGENT_WAKE_LINE);
         if (agent_dl->state != MMAGIC_DATALINK_AGENT_STATE_IDLE)
         {
-            mmagic_datalink_agent_configure_rx_idle(agent_dl);
+            mmagic_datalink_agent_configure_rx_idle(agent_dl, true);
         }
 
         if (agent_dl->tx_buf)
@@ -505,7 +519,8 @@ void MMAGIC_DATALINK_AGENT_WAKE_HANDLER(void)
 
 /**
  * Function to initialize the DMA peripherals for the SPI interface. This must be called after the
- * SPI interface has been initialized. */
+ * SPI interface has been initialized.
+ */
 static void mmagic_datalink_agent_dma_init(struct mmagic_datalink_agent *agent_dl);
 
 struct mmagic_datalink_agent *mmagic_datalink_agent_init(
@@ -559,7 +574,7 @@ struct mmagic_datalink_agent *mmagic_datalink_agent_init(
     MX_SPI2_Init();
     mmagic_datalink_agent_dma_init(agent_dl);
 
-    mmagic_datalink_agent_configure_rx_idle(agent_dl);
+    mmagic_datalink_agent_configure_rx_idle(agent_dl, false);
 
     agent_dl->initialized = true;
     ok = mmagic_datalink_agent_set_deep_sleep_mode(agent_dl,

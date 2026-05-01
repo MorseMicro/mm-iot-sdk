@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.10.4</span>
+   &#160;<span id="projectnumber">2.11.2</span>
    </div>
   </td>
  </tr>
@@ -99,7 +99,7 @@ Machine-to-Machine (M2M) interface for three chip solution</div></div>
  <h1><a class="anchor" id="MMAGIC_M2M_PROTOCOL_STACK"></a>
 Protocol Stack</h1>
 <p >The following diagram shows the M2M interface protocol software stack. At the top of the stack is the application code that runs on the Controller. This interacts with the Controller library via the <a class="el" href="group__MMAGIC__CONTROLLER.html">Morse M2M Interface Controller API</a>, which is defined in <code><a class="el" href="mmagic__controller_8h_source.html">mmagic_controller.h</a></code>. The Controller library takes care of serializing and deserializing data for communication with the Agent. It implements the controller side of the "Link Layer Control (LLC)" protocol that is responsible for multiplexing and synchronizing commands, responses, and events.</p>
-<p >Actual communication between the Controller and the Agent is the responsibility of the data link layer. This layer provides a semi-reliable transport for communicating packets asychronously between the Controller and Agent. Because the data link implementation is platform and hardware dependent it needs to be implemented on a per-platform basis. Protocols are currently defined for SPI and UART transports (see <a class="el" href="group__MMAGIC__M2M__PROTOCOL.html#MMAGIC_M2M_PROTOCOL_SPI_DATALINK">M2M SPI Data Link Protocol</a> and <a class="el" href="group__MMAGIC__M2M__PROTOCOL.html#MMAGIC_M2M_PROTOCOL_UART_DATALINK">M2M UART Data Link Protocol</a> respectively). On the Controller side, the <a class="el" href="group__MMAGIC__DATALINK__CONTROLLER.html">Morse M2M Interface Controller Data Link API</a> provides the interface between the Controller library and the data link implementation.</p>
+<p >Actual communication between the Controller and the Agent is the responsibility of the data link layer. This layer provides a semi-reliable transport for communicating packets asynchronously between the Controller and Agent. Because the data link implementation is platform and hardware dependent it needs to be implemented on a per-platform basis. Protocols are currently defined for SPI and UART transports (see <a class="el" href="group__MMAGIC__M2M__PROTOCOL.html#MMAGIC_M2M_PROTOCOL_SPI_DATALINK">M2M SPI Data Link Protocol</a> and <a class="el" href="group__MMAGIC__M2M__PROTOCOL.html#MMAGIC_M2M_PROTOCOL_UART_DATALINK">M2M UART Data Link Protocol</a> respectively). On the Controller side, the <a class="el" href="group__MMAGIC__DATALINK__CONTROLLER.html">Morse M2M Interface Controller Data Link API</a> provides the interface between the Controller library and the data link implementation.</p>
 <div class="image">
 <img src="mmagic-m2m-stack.drawio.png" alt=""/>
 <div class="caption">
@@ -139,7 +139,7 @@ SPI packet write transfers</h2>
 <li>The Controller deasserts the Wake pin by driving it low.</li>
 </ol>
 <p >' Copyright 2024 Morse Micro ' SPDX-License-Identifier: Apache-2.0 </p><div class="plantumlgraph">
-<img src="inline_umlgraph_5.png" />
+<img src="inline_umlgraph_3.png" />
 </div>
  </p>
 <h2><a class="anchor" id="MMAGIC_M2M_PROTOCOL_SPI_DATALINK_READ"></a>
@@ -157,7 +157,7 @@ SPI packet read transfers</h2>
 <li>The Controller deasserts the Wake pin by driving it low.</li>
 </ol>
 <p >' Copyright 2024 Morse Micro ' SPDX-License-Identifier: Apache-2.0 </p><div class="plantumlgraph">
-<img src="inline_umlgraph_6.png" />
+<img src="inline_umlgraph_4.png" />
 </div>
  </p>
 <h2><a class="anchor" id="MMAGIC_M2M_PROTOCOL_SPI_DATALINK_IRQ"></a>
@@ -167,7 +167,7 @@ Interrupt requests</h2>
 <h2><a class="anchor" id="MMAGIC_M2M_PROTOCOL_SPI_DATALINK_STRUCTS"></a>
 Data structures</h2>
 <p >The <code>Transfer Header</code> is written by the Controller at the start of each transfer and comprises a one octet Transfer Type field followed by a two octet Length field. The use of these fields is defined in the sections above.</p>
-<p >The <code>Ack Trailer</code> is read by the Controller at the end of a packet write transfer. It comprises a single octet indicating positive acknowledgement (CRC was valid) or negative acknowledgement (CRC or other failure).</p>
+<p >The <code>Ack Trailer</code> is read by the Controller at the end of a packet write transfer. It comprises a single octet indicating positive acknowledgment (CRC was valid) or negative acknowledgment (CRC or other failure).</p>
 <p >The <code>Length</code> field is read during a packet read transfer and is a two octet field.</p>
 <p >All multi-octet fields are little endian except the CRC, which is big endian.</p>
 <h1><a class="anchor" id="MMAGIC_M2M_PROTOCOL_UART_DATALINK"></a>
@@ -180,7 +180,7 @@ M2M UART Data Link Protocol</h1>
 <li>The packet is encoded using the SLIP encoding and is transmitted via the UART.</li>
 </ol>
 <p >Packet reception mirrors transmission.</p>
-<p >For an example implementation see <code>mmagic/agent/m2m_datalink/mmagic_datalink_uart.c</code>. This data link can be enabled when using the <a class="el" href="cli_8c.html">cli.c</a> examaple application by setting the <a class="el" href="group__MMCONFIG.html">Morse Micro Persistent Configuration Store</a> variable <code>cli.mode</code> to <code>m2m</code>.</p>
+<p >For an example implementation see <code>mmagic/agent/m2m_datalink/mmagic_datalink_uart.c</code>. This data link can be enabled when using the <a class="el" href="cli_8c.html">cli.c</a> example application by setting the <a class="el" href="group__MMCONFIG.html">Morse Micro Persistent Configuration Store</a> variable <code>cli.mode</code> to <code>m2m</code>.</p>
 <h1><a class="anchor" id="MMAGIC_M2M_PROTOCOL_PACKETS"></a>
 M2M Packet Structure</h1>
 <p >The following diagram shows the structure of M2M packets, excluding data link layer framing.</p>

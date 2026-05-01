@@ -50,7 +50,7 @@ extern "C" {
 
 {% for enum in config.enums %}
 /** {{enum.description}} */
-{{enum.datatype}}
+{{enum.decl_datatype}}
 {
     {%- for value in enum.values %}
     /** {{value.description}} */
@@ -90,7 +90,7 @@ struct MM_PACKED raw{{maxlen}}
     uint32_t len;
     {%endif %}
 
-    /** The acutal data buffer. */
+    /** The actual data buffer. */
     uint8_t data[{{maxlen}}];
 };
 {% endfor -%}
@@ -191,6 +191,9 @@ void mmagic_controller_deinit(struct mmagic_controller *controller);
 /** The default timeout when waiting for a response from a command sent to the agent in ms. */
 #define MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS 1000
 
+/** The default timeout when waiting for a response from a commit command sent to the agent in ms. */
+#define MMAGIC_CONTROLLER_DEFAULT_COMMIT_RESPONSE_TIMEOUT_MS 12000
+
 /**
  * Sends a command to the agent.
  *
@@ -278,15 +281,7 @@ enum mmagic_{{module.name}}_var
 /** {{module.name}} configuration command IDs */
 enum mmagic_{{module.name}}_cmd
 {
-    /** Retrieve the value of a configuration variable */
-    {{mm.cmd_label(config, module, "get")}} = 0,
-    /** Set the value of a configuration variable */
-    {{mm.cmd_label(config, module, "set")}} = 1,
-    /** Reserved (unused) */
-    {{mm.cmd_label(config, module, "load")}} = 2,
-    /** Commit the current configuration to flash */
-    {{mm.cmd_label(config, module, "commit")}} = 3,
-    {%- for command in module.commands %}
+    {%- for command in module.all_commands %}
     /** {{command.description }} */
     {{mm.cmd_label(config, module, command.name)}} = {{command.id}},
     {%- endfor %}
@@ -423,7 +418,7 @@ static inline enum mmagic_status mmagic_controller_{{module.name}}_commit_all(st
     {
         return status;
     }
-    status = mmagic_controller_rx(controller, CONTROL_STREAM, {{mm.module_label(config, module)}}, {{mm.cmd_label(config, module, "commit")}}, 0, NULL, 0, MMAGIC_CONTROLLER_DEFAULT_RESPONSE_TIMEOUT_MS);
+    status = mmagic_controller_rx(controller, CONTROL_STREAM, {{mm.module_label(config, module)}}, {{mm.cmd_label(config, module, "commit")}}, 0, NULL, 0, MMAGIC_CONTROLLER_DEFAULT_COMMIT_RESPONSE_TIMEOUT_MS);
     return status;
 }
 
@@ -460,10 +455,10 @@ struct MM_PACKED mmagic_core_{{module.name}}_{{command.name}}_rsp_args
  * @param controller        Reference to the controller handle.
  * @param[in] cmd_args      Command arguments
  * @param[out] rsp_args     Pointer to the data structure to be filled out with the result.
- *                          If the return code is not @ref MMAGIC_STATUS_OK then the
+ *                          If the return code is not @c MMAGIC_STATUS_OK then the
  *                          contents of this structure will be undefined.
  *
- * @return @ref MMAGIC_STATUS_OK else an appropriate error code.
+ * @return @c MMAGIC_STATUS_OK else an appropriate error code.
  */
 static inline enum mmagic_status mmagic_controller_{{module.name}}_{{command.name}}(struct mmagic_controller *controller,
     struct mmagic_core_{{module.name}}_{{command.name}}_cmd_args *cmd_args,
@@ -475,7 +470,7 @@ static inline enum mmagic_status mmagic_controller_{{module.name}}_{{command.nam
  * @param controller        Reference to the controller handle.
  * @param[in] cmd_args      Command arguments
  *
- * @return @ref MMAGIC_STATUS_OK else an appropriate error code.
+ * @return @c MMAGIC_STATUS_OK else an appropriate error code.
  */
 static inline enum mmagic_status mmagic_controller_{{module.name}}_{{command.name}}(struct mmagic_controller *controller,
     struct mmagic_core_{{module.name}}_{{command.name}}_cmd_args *cmd_args)
@@ -487,10 +482,10 @@ static inline enum mmagic_status mmagic_controller_{{module.name}}_{{command.nam
  *
  * @param controller        Reference to the controller handle.
  * @param[out] rsp_args     Pointer to the data structure to be filled out with the result.
- *                          If the return code is not @ref MMAGIC_STATUS_OK then the
+ *                          If the return code is not @c MMAGIC_STATUS_OK then the
  *                          contents of this structure will be undefined.
  *
- * @return @ref MMAGIC_STATUS_OK else an appropriate error code.
+ * @return @c MMAGIC_STATUS_OK else an appropriate error code.
  */
 static inline enum mmagic_status mmagic_controller_{{module.name}}_{{command.name}}(struct mmagic_controller *controller,
     struct mmagic_core_{{module.name}}_{{command.name}}_rsp_args *rsp_args)
@@ -500,7 +495,7 @@ static inline enum mmagic_status mmagic_controller_{{module.name}}_{{command.nam
  *
  * @param controller         Reference to the controller handle.
  *
- * @return @ref MMAGIC_STATUS_OK else an appropriate error code.
+ * @return @c MMAGIC_STATUS_OK else an appropriate error code.
  */
 static inline enum mmagic_status mmagic_controller_{{module.name}}_{{command.name}}(struct mmagic_controller *controller)
 {%- endif %}
@@ -597,7 +592,7 @@ struct MM_PACKED mmagic_{{module.name}}_{{event.name}}_event_args
  *
  * @warning This function must not invoke any mmagic API functions.
  *
- * @param event_args  Notication arguments received from the agent.
+ * @param event_args  Notification arguments received from the agent.
  * @param arg         Opaque argument that was provided when the callback was registered.
  */
 typedef void (*mmagic_{{module.name}}_{{event.name}}_event_handler_t)(const struct mmagic_{{module.name}}_{{event.name}}_event_args *event_args, void *arg);

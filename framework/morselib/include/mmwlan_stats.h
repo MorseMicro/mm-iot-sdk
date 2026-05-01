@@ -10,6 +10,8 @@
 
 #pragma once
 
+#include <stdint.h>
+
 /**
  * @ingroup MMWLAN_STATS
  * @{
@@ -42,7 +44,7 @@ enum mmwlan_stats_connect_timestamp_index
 /**
  * Data structure to contain all stats from the UMAC.
  * @warning This is not considered stable API and may change between releases.
- *          For example ordering of fields may change and fields may be removed.
+ *          For example, ordering of fields may change and fields may be removed.
  */
 struct mmwlan_stats_umac_data
 {
@@ -108,6 +110,13 @@ struct mmwlan_stats_umac_data
 
     /** Number of times any timer or timeout has fired. */
     uint32_t timeouts_fired;
+
+    /** Number of frames dropped by the driver due to timeout before TX. */
+    uint32_t datapath_driver_tx_skbq_timeout;
+
+    /** Number of frames sent by the driver that timed out before receiving a TX status from the
+     *  chip. */
+    uint32_t datapath_driver_tx_pending_status_timeout;
 };
 
 /** @} */

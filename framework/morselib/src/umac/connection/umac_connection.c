@@ -32,10 +32,11 @@
 #include "umac/config/umac_config.h"
 #include "umac/twt/umac_twt.h"
 #include "umac/ba/umac_ba.h"
-#include "umac/offload/umac_offload.h"
 #include "dot11/dot11_utils.h"
 #include "umac/ies/ecsa.h"
 #include "umac/ies/s1g_beacon_compatibility.h"
+#include "umac/regdb/umac_regdb.h"
+#include "umac/relay/umac_relay.h"
 
 
 #define UMAC_CONNECTION_MON_UNSTABLE_INTERVAL_MS 100
@@ -52,7 +53,7 @@ void umac_connection_init(struct umac_data *umacd)
 
     data->stad = umac_sta_data_alloc_static(umacd);
 
-    data->vif_id = UMAC_INTERFACE_VIF_ID_INVALID;
+    umac_sta_data_set_vif_id(data->stad, MMDRV_VIF_ID_INVALID);
     umac_keys_init(data->stad);
     connection_fsm_init(&data->conn_fsm);
     connection_mon_fsm_init(&data->conn_mon.fsm);
@@ -123,21 +124,25 @@ static enum mmwlan_status umac_connection_start_interface(struct umac_data *umac
 {
     struct umac_connection_data *data = umac_data_get_connection(umacd);
 
-    umac_datapath_configure_sta_mode(umacd);
-
-    enum mmwlan_status status = umac_interface_add(umacd, UMAC_INTERFACE_STA, NULL, &data->vif_id);
+    enum mmwlan_status status =
+        umac_interface_add(umacd, UMAC_INTERFACE_STA, umac_datapath_ops_sta, NULL);
     if (status != MMWLAN_SUCCESS)
     {
-        MMLOG_INF("Interface add failed\n");
+        MMLOG_WRN("Interface add failed\n");
         return status;
     }
+
+    uint16_t vif_id = umac_interface_get_vif_id(umacd, UMAC_INTERFACE_STA);
+    MMLOG_DBG("STA VIF ID: %u\n", vif_id);
+    MMOSAL_DEV_ASSERT(vif_id != MMDRV_VIF_ID_INVALID);
+    umac_sta_data_set_vif_id(data->stad, vif_id);
 
     status = umac_supp_add_sta_interface(umacd, confname);
     if (status != MMWLAN_SUCCESS)
     {
-        MMLOG_INF("Supplicant interface add failed\n");
+        MMLOG_WRN("Supplicant interface add failed\n");
         umac_interface_remove(umacd, UMAC_INTERFACE_STA);
-        data->vif_id = UMAC_INTERFACE_VIF_ID_INVALID;
+        umac_sta_data_set_vif_id(data->stad, MMDRV_VIF_ID_INVALID);
         return status;
     }
     return MMWLAN_SUCCESS;
@@ -201,7 +206,7 @@ enum mmwlan_status umac_connection_stop_dpp(struct umac_data *umacd)
     data->dpp_args.dpp_event_cb = NULL;
     data->dpp_args.dpp_event_cb_arg = NULL;
     umac_interface_remove(umacd, UMAC_INTERFACE_STA);
-    data->vif_id = UMAC_INTERFACE_VIF_ID_INVALID;
+    umac_sta_data_set_vif_id(data->stad, MMDRV_VIF_ID_INVALID);
     data->mode = UMAC_CONNECTION_MODE_NONE;
     return MMWLAN_SUCCESS;
 }
@@ -231,20 +236,9 @@ enum mmwlan_status umac_connection_reassoc(struct umac_data *umacd)
 
     if (data->mode == UMAC_CONNECTION_MODE_NONE)
     {
-        umac_datapath_configure_sta_mode(umacd);
-        status = umac_interface_add(umacd, UMAC_INTERFACE_STA, NULL, &data->vif_id);
+        status = umac_connection_start_interface(umacd, UMAC_SUPP_STA_CONFIG_NAME);
         if (status != MMWLAN_SUCCESS)
         {
-            MMLOG_INF("Interface add failed\n");
-            return status;
-        }
-
-        status = umac_supp_add_sta_interface(umacd, UMAC_SUPP_STA_CONFIG_NAME);
-        if (status != MMWLAN_SUCCESS)
-        {
-            MMLOG_INF("Supplicant interface add failed\n");
-            umac_interface_remove(umacd, UMAC_INTERFACE_STA);
-            data->vif_id = UMAC_INTERFACE_VIF_ID_INVALID;
             return status;
         }
 
@@ -267,7 +261,6 @@ enum mmwlan_status umac_connection_start(struct umac_data *umacd,
 {
     MMOSAL_DEV_ASSERT(args != NULL);
     struct umac_connection_data *data = umac_data_get_connection(umacd);
-    int ret;
 
     if (data->mode != UMAC_CONNECTION_MODE_NONE && data->mode != UMAC_CONNECTION_MODE_STA)
     {
@@ -310,15 +303,16 @@ enum mmwlan_status umac_connection_start(struct umac_data *umacd,
     umac_stats_clear_connect_timestamps(umacd);
     umac_stats_update_connect_timestamp(umacd, MMWLAN_STATS_CONNECT_TIMESTAMP_START);
 
+    uint16_t vif_id = umac_interface_get_vif_id(umacd, UMAC_INTERFACE_STA);
+    MMOSAL_DEV_ASSERT(vif_id != MMDRV_VIF_ID_INVALID);
+
     if (filter != NULL)
     {
-        ret = mmdrv_update_beacon_vendor_ie_filter(data->vif_id,
-                                                   (const uint8_t *)filter->ouis,
-                                                   filter->n_ouis);
-        MMOSAL_ASSERT(ret == 0);
+        status = mmdrv_update_beacon_vendor_ie_filter(vif_id,
+                                                      (const uint8_t *)filter->ouis,
+                                                      filter->n_ouis);
+        MMOSAL_ASSERT(status == MMWLAN_SUCCESS);
     }
-
-    umac_offload_init(umacd, data->vif_id);
 
 
     status = umac_supp_connect(umacd);
@@ -356,14 +350,12 @@ enum mmwlan_status umac_connection_stop(struct umac_data *umacd)
 
     umac_supp_disconnect(umacd);
     enum mmwlan_status status = umac_supp_remove_sta_interface(umacd);
+    umac_sta_data_set_vif_id(data->stad, MMDRV_VIF_ID_INVALID);
 
     MMOSAL_DEV_ASSERT(status == MMWLAN_SUCCESS);
     umac_interface_remove(umacd, UMAC_INTERFACE_STA);
-    data->vif_id = UMAC_INTERFACE_VIF_ID_INVALID;
     umac_rc_stop(data->stad);
     umac_rc_deinit(data->stad);
-
-    umac_sta_data_set_aid(data->stad, 0);
 
 
     data->mode = UMAC_CONNECTION_MODE_NONE;
@@ -724,7 +716,6 @@ enum mmwlan_status umac_connection_set_bss_cfg(struct umac_data *umacd,
                                                const uint8_t *bssid,
                                                struct umac_connection_bss_cfg *config)
 {
-    int ret;
     bool success;
     enum mmwlan_status status = MMWLAN_ERROR;
 
@@ -755,16 +746,56 @@ enum mmwlan_status umac_connection_set_bss_cfg(struct umac_data *umacd,
         goto exit;
     }
 
-    ret = mmdrv_cfg_bss(data->vif_id, data->bss_cfg.beacon_interval, 0, 0);
-    if (ret)
+    uint16_t vif_id = umac_interface_get_vif_id(umacd, UMAC_INTERFACE_STA);
+    MMOSAL_DEV_ASSERT(vif_id != MMDRV_VIF_ID_INVALID);
+    status = mmdrv_cfg_bss(vif_id, data->bss_cfg.beacon_interval, 0, 0);
+    if (status != MMWLAN_SUCCESS)
     {
-        MMLOG_WRN("Failed to set bss configuration, %d\n", ret);
-        status = MMWLAN_ERROR;
+        MMLOG_WRN("Failed to set bss configuration (%u)\n", status);
         goto exit;
     }
 
 exit:
     return status;
+}
+
+enum mmwlan_status umac_connection_get_channel_info(struct umac_data *umacd,
+                                                    struct mmwlan_vif_channel_info *cfg)
+{
+    if (cfg == NULL)
+    {
+        return MMWLAN_INVALID_ARGUMENT;
+    }
+
+    struct umac_connection_data *data = umac_data_get_connection(umacd);
+    if (!data->is_initialised || !umac_connection_bss_is_configured(umacd))
+    {
+        return MMWLAN_UNAVAILABLE;
+    }
+
+    const struct mmwlan_s1g_channel *operating_chan =
+        umac_regdb_get_channel(umacd, data->bss_cfg.channel_cfg.operating_channel_index);
+    if (operating_chan == NULL ||
+        !umac_regdb_op_class_match(umacd,
+                                   data->bss_cfg.channel_cfg.operating_class,
+                                   operating_chan))
+    {
+        return MMWLAN_CHANNEL_INVALID;
+    }
+
+    int pri_1mhz_chan_idx =
+        umac_interface_calc_pri_1mhz_idx(umacd, &data->bss_cfg.channel_cfg, operating_chan);
+    if (pri_1mhz_chan_idx < 0)
+    {
+        return MMWLAN_CHANNEL_INVALID;
+    }
+
+    cfg->op_class = data->bss_cfg.channel_cfg.operating_class;
+    cfg->s1g_chan_num = data->bss_cfg.channel_cfg.operating_channel_index;
+    cfg->pri_bw_mhz = data->bss_cfg.channel_cfg.primary_channel_width_mhz;
+    cfg->pri_1mhz_chan_idx = (uint8_t)pri_1mhz_chan_idx;
+
+    return MMWLAN_SUCCESS;
 }
 
 enum mmwlan_status umac_connection_get_bssid(struct umac_data *umacd, uint8_t *bssid)
@@ -817,10 +848,10 @@ void umac_connection_set_drv_qos_cfg_default(struct umac_data *umacd)
     for (aci = 0; aci < MMWLAN_QOS_QUEUE_NUM_ACIS; aci++)
     {
         const struct mmwlan_qos_queue_params *queue_params = &all_queue_params[aci];
-        int ret = mmdrv_cfg_qos_queue(queue_params);
-        if (ret != 0)
+        enum mmwlan_status status = mmdrv_cfg_qos_queue(queue_params);
+        if (status != MMWLAN_SUCCESS)
         {
-            MMLOG_WRN("Failed to configue QoS queue %d (ret=%d)\n", aci, ret);
+            MMLOG_WRN("Failed to configue QoS queue %d (%u)\n", aci, status);
             MMOSAL_DEV_ASSERT(false);
         }
         else
@@ -857,10 +888,10 @@ static void umac_connection_update_drv_qos_cfg(const struct dot11_ie_wmm_param *
 
         queue_params.txop_max_us = (uint32_t)(rec->txop_limit) * 32;
 
-        int ret = mmdrv_cfg_qos_queue(&queue_params);
-        if (ret != 0)
+        enum mmwlan_status status = mmdrv_cfg_qos_queue(&queue_params);
+        if (status != MMWLAN_SUCCESS)
         {
-            MMLOG_WRN("Failed to configue QoS queue %u (ret=%d)\n", aci, ret);
+            MMLOG_WRN("Failed to configue QoS queue %u (%u)\n", aci, status);
             MMOSAL_DEV_ASSERT(false);
         }
         else
@@ -989,6 +1020,9 @@ void umac_connection_process_assoc_reassoc_rsp(struct umac_data *umacd, struct m
 
     if (frame_data.status_code == DOT11_STATUS_SUCCESS)
     {
+        uint16_t vif_id = umac_interface_get_vif_id(umacd, UMAC_INTERFACE_STA);
+        MMOSAL_DEV_ASSERT(vif_id != MMDRV_VIF_ID_INVALID);
+
         umac_stats_update_connect_timestamp(umacd, MMWLAN_STATS_CONNECT_TIMESTAMP_RECV_ASSOC);
 
         const struct dot11_ie_twt *twt_ie = ie_twt_find(frame_data.ies, frame_data.ies_len);
@@ -1013,9 +1047,7 @@ void umac_connection_process_assoc_reassoc_rsp(struct umac_data *umacd, struct m
             dot11_s1g_cap_info_4_get_non_tim_support(s1g_caps->s1g_capabilities_information[4]);
         if (data->non_tim_mode_supported && umac_config_is_non_tim_mode_enabled(umacd))
         {
-            mmdrv_set_param(data->vif_id,
-                            MORSE_PARAM_ID_NON_TIM_MODE,
-                            data->non_tim_mode_supported);
+            mmdrv_set_param(vif_id, MORSE_PARAM_ID_NON_TIM_MODE, data->non_tim_mode_supported);
         }
 
         data->ampdu_mss = dot11_s1g_cap_info_3_get_min_mpdu_start_spacing(
@@ -1024,7 +1056,7 @@ void umac_connection_process_assoc_reassoc_rsp(struct umac_data *umacd, struct m
         data->control_resp_1mhz_in_en = dot11_s1g_cap_info_7_get_1mhz_ctrl_rsp_preamble_support(
             s1g_caps->s1g_capabilities_information[7]);
 
-        mmdrv_set_control_response_bw(data->vif_id,
+        mmdrv_set_control_response_bw(vif_id,
                                       MMDRV_DIRECTION_INCOMING,
                                       data->control_resp_1mhz_in_en);
 
@@ -1043,14 +1075,14 @@ void umac_connection_process_assoc_reassoc_rsp(struct umac_data *umacd, struct m
             if (morse_ie->cap0 & MORSE_VENDOR_IE_CAP0_SHORT_ACK_TIMEOUT)
             {
 
-                mmdrv_set_param(data->vif_id,
+                mmdrv_set_param(vif_id,
                                 MORSE_PARAM_ID_EXTRA_ACK_TIMEOUT_ADJUST_US,
                                 MORSE_SHORT_ACK_TIMEOUT_ADJUST_US);
             }
             else
             {
 
-                mmdrv_set_param(data->vif_id,
+                mmdrv_set_param(vif_id,
                                 MORSE_PARAM_ID_EXTRA_ACK_TIMEOUT_ADJUST_US,
                                 DEFAULT_MORSE_IBSS_ACK_TIMEOUT_ADJUST_US);
             }
@@ -1061,7 +1093,7 @@ void umac_connection_process_assoc_reassoc_rsp(struct umac_data *umacd, struct m
         {
 
 
-            mmdrv_set_param(data->vif_id,
+            mmdrv_set_param(vif_id,
                             MORSE_PARAM_ID_EXTRA_ACK_TIMEOUT_ADJUST_US,
                             DEFAULT_MORSE_IBSS_ACK_TIMEOUT_ADJUST_US);
 
@@ -1207,27 +1239,29 @@ enum mmwlan_status umac_connection_process_deauth_tx(struct umac_data *umacd,
 }
 
 
-static enum mmwlan_status umac_connection_set_sta_state(struct umac_connection_data *data,
+static enum mmwlan_status umac_connection_set_sta_state(struct umac_data *umacd,
+                                                        struct umac_connection_data *data,
                                                         enum morse_sta_state state)
 {
     uint16_t aid = umac_sta_data_get_aid(data->stad);
     const uint8_t *bssid = umac_sta_data_peek_bssid(data->stad);
 
-    int ret = mmdrv_update_sta_state(data->vif_id, aid, bssid, state);
-    if (ret)
+    uint16_t vif_id = umac_interface_get_vif_id(umacd, UMAC_INTERFACE_STA);
+    MMOSAL_DEV_ASSERT(vif_id != MMDRV_VIF_ID_INVALID);
+
+    enum mmwlan_status status = mmdrv_update_sta_state(vif_id, aid, bssid, state);
+    if (status != MMWLAN_SUCCESS)
     {
-        MMLOG_DBG("Unable to update sta state in mmdrv (ret: %d).\n", ret);
-        return MMWLAN_ERROR;
+        MMLOG_DBG("Unable to update sta state in mmdrv (ret: %u).\n", status);
+        return status;
     }
-    else
-    {
-        return MMWLAN_SUCCESS;
-    }
+
+    return MMWLAN_SUCCESS;
 }
 
 static void umac_connection_process_failed_ap_query(struct umac_connection_data *data)
 {
-    MMLOG_INF("Check for AP failed\n");
+    MMLOG_WRN("Check for AP failed\n");
     data->conn_mon.failed_ap_queries++;
     if (data->conn_mon.failed_ap_queries >= UMAC_CONNECTION_DEAUTH_THRESHOLD_AP_QUERIES)
     {
@@ -1235,13 +1269,12 @@ static void umac_connection_process_failed_ap_query(struct umac_connection_data 
     }
 }
 
-void umac_connection_handle_ack_status(struct mmpkt *mmpkt, struct umac_data *umacd, bool acked)
+void umac_connection_handle_ack_status(struct umac_data *umacd, struct mmpkt *mmpkt, bool acked)
 {
     struct umac_connection_data *data = umac_data_get_connection(umacd);
 
 
-    if ((data->conn_mon.fsm.current_state != CONNECTION_MON_FSM_STATE_STABLE) &&
-        (data->conn_mon.fsm.current_state != CONNECTION_MON_FSM_STATE_UNSTABLE))
+    if (data->conn_mon.fsm.current_state != CONNECTION_MON_FSM_STATE_UNSTABLE)
     {
         return;
     }
@@ -1264,7 +1297,7 @@ void umac_connection_handle_ack_status(struct mmpkt *mmpkt, struct umac_data *um
         bool is_qos_null = (frame_ver_type_subtype == DOT11_VER_TYPE_SUBTYPE(0, DATA, QOS_NULL));
         mmpkt_close(&view);
 
-        if (data->conn_mon.fsm.current_state == CONNECTION_MON_FSM_STATE_UNSTABLE && is_qos_null)
+        if (is_qos_null)
         {
             umac_connection_process_failed_ap_query(data);
         }
@@ -1318,93 +1351,54 @@ void umac_connection_set_monitor_disable(struct umac_data *umacd, bool disable)
     data->conn_mon.disabled = disable;
 }
 
-void umac_connection_set_signal_monitor(struct umac_data *umacd,
-                                        int16_t threshold,
-                                        int16_t hysteresis)
+enum mmwlan_status umac_connection_set_signal_monitor(struct umac_data *umacd,
+                                                      int16_t threshold,
+                                                      int16_t hysteresis)
 {
     struct umac_connection_data *data = umac_data_get_connection(umacd);
+    uint16_t vif_id = umac_interface_get_vif_id(umacd, UMAC_INTERFACE_STA);
+    MMOSAL_DEV_ASSERT(vif_id != MMDRV_VIF_ID_INVALID);
 
     data->conn_signal_mon.signal_threshold_dbm = threshold;
     data->conn_signal_mon.signal_hysteresis_dbm = hysteresis;
-}
 
-enum umac_connection_signal_change umac_connection_check_signal_change(struct umac_data *umacd,
-                                                                       int16_t rssi)
-{
-    struct umac_connection_data *data = umac_data_get_connection(umacd);
-
-    int16_t delta_rssi = (rssi - data->conn_signal_mon.signal_threshold_dbm);
-    int16_t abs_delta_rssi = ((delta_rssi) > 0 ? (delta_rssi) : -(delta_rssi));
-
-    bool current_state = (delta_rssi > 0 ? true : false);
-
-    if ((data->conn_signal_mon.signal_threshold_dbm != 0) &&
-        (abs_delta_rssi >= data->conn_signal_mon.signal_hysteresis_dbm) &&
-        (current_state != data->conn_signal_mon.is_above_threshold))
-    {
-        data->conn_signal_mon.is_above_threshold = current_state;
-        if (current_state)
-        {
-            return UMAC_CONNECTION_SIGNAL_CHANGE_ABOVE_THRESHOLD;
-        }
-        else
-        {
-            return UMAC_CONNECTION_SIGNAL_CHANGE_BELOW_THRESHOLD;
-        }
-    }
-
-    return UMAC_CONNECTION_SIGNAL_CHANGE_NO_CHANGE;
+    return mmdrv_set_cqm_rssi(vif_id, threshold, (uint32_t)hysteresis);
 }
 
 enum mmwlan_status umac_connection_update_beacon_vendor_ie_filter(
     struct umac_data *umacd,
     const struct mmwlan_beacon_vendor_ie_filter *filter)
 {
-    int ret = 0;
-    struct umac_connection_data *data = umac_data_get_connection(umacd);
+    enum mmwlan_status status;
 
-    umac_config_set_beacon_vendor_ie_filter(umacd, filter);
 
-    if (data->conn_fsm.current_state == CONNECTION_FSM_STATE_CONNECTED)
+    if (umac_connection_get_vif_id(umacd) == MMDRV_VIF_ID_INVALID)
     {
-        if (filter == NULL)
-        {
-            ret = mmdrv_update_beacon_vendor_ie_filter(data->vif_id, NULL, 0);
-        }
-        else
-        {
-            ret = mmdrv_update_beacon_vendor_ie_filter(data->vif_id,
-                                                       (const uint8_t *)filter->ouis,
-                                                       filter->n_ouis);
-        }
+        umac_config_set_beacon_vendor_ie_filter(umacd, filter);
+        return MMWLAN_SUCCESS;
     }
 
-    if (!ret)
+    uint16_t vif_id = umac_interface_get_vif_id(umacd, UMAC_INTERFACE_STA);
+    MMOSAL_DEV_ASSERT(vif_id != MMDRV_VIF_ID_INVALID);
+
+    if (filter == NULL)
+    {
+        status = mmdrv_update_beacon_vendor_ie_filter(vif_id, NULL, 0);
+    }
+    else
+    {
+        status = mmdrv_update_beacon_vendor_ie_filter(vif_id,
+                                                      (const uint8_t *)filter->ouis,
+                                                      filter->n_ouis);
+    }
+
+    if (status == MMWLAN_SUCCESS)
     {
 
         umac_config_set_beacon_vendor_ie_filter(umacd, filter);
     }
 
-    switch (ret)
-    {
-        case 0:
-            return MMWLAN_SUCCESS;
-
-        case -ENODEV:
-            return MMWLAN_UNAVAILABLE;
-
-        case -ENOSPC:
-            return MMWLAN_INVALID_ARGUMENT;
-
-        case -ENOMEM:
-            return MMWLAN_NO_MEM;
-
-        case -ETIMEDOUT:
-            return MMWLAN_TIMED_OUT;
-
-        default:
-            return MMWLAN_ERROR;
-    }
+    return status;
 }
 
 void umac_connection_beacon_vendor_ie_filter_process(struct umac_data *umacd,
@@ -1454,7 +1448,7 @@ static void umac_connection_handle_ecsa(void *arg1, void *arg2)
     data->ecsa_active = false;
     if (status != MMWLAN_SUCCESS)
     {
-        MMLOG_ERR("Channel switch failed with status code %u\n", status);
+        MMLOG_ERR("Channel switch failed (%u)\n", status);
         goto exit;
     }
 
@@ -1646,41 +1640,58 @@ static void umac_connection_monitor_check(void *arg1, void *arg2)
 void umac_connection_handle_hw_restarted(struct umac_data *umacd)
 {
     struct umac_connection_data *data = umac_data_get_connection(umacd);
-    int ret;
     enum mmwlan_status status;
     const struct mmwlan_beacon_vendor_ie_filter *filter =
         umac_config_get_beacon_vendor_ie_filter(umacd);
 
-    if (data->vif_id != UMAC_INTERFACE_VIF_ID_INVALID)
+    uint16_t vif_id = umac_interface_get_vif_id(umacd, UMAC_INTERFACE_STA);
+    if (vif_id != MMDRV_VIF_ID_INVALID)
     {
         uint16_t aid = umac_sta_data_get_aid(data->stad);
         const uint8_t *bssid = umac_sta_data_peek_bssid(data->stad);
 
         MMLOG_DBG("Reinstall VIF\n");
-        umac_interface_reinstall_vif(umacd, UMAC_INTERFACE_STA, &data->vif_id);
-        ret = mmdrv_update_sta_state(data->vif_id, aid, bssid, MORSE_STA_NONE);
-        MMOSAL_ASSERT(ret == 0);
+        umac_interface_reinstall_vif(umacd, MMWLAN_VIF_STA);
+        vif_id = umac_interface_get_vif_id(umacd, UMAC_INTERFACE_STA);
+        status = mmdrv_update_sta_state(vif_id, aid, bssid, MORSE_STA_NONE);
+        if (status != MMWLAN_SUCCESS)
+        {
+            UMAC_FATAL_ERROR(umacd);
+            return;
+        }
 
         MMLOG_DBG("Reconfigure channel\n");
         status = umac_interface_reconfigure_channel(umacd);
-        MMOSAL_ASSERT(status == MMWLAN_SUCCESS);
+        if (status != MMWLAN_SUCCESS)
+        {
+            UMAC_FATAL_ERROR(umacd);
+            return;
+        }
 
         MMLOG_DBG("Reinstall keys\n");
-        umac_keys_reinstall_keys(data->stad, data->vif_id);
+        umac_keys_reinstall_keys(data->stad, vif_id);
 
         if (data->conn_fsm.current_state == CONNECTION_FSM_STATE_CONNECTED)
         {
             MMLOG_DBG("Set STA state\n");
-            ret = mmdrv_update_sta_state(data->vif_id, aid, bssid, MORSE_STA_AUTHORIZED);
-            MMOSAL_ASSERT(ret == 0);
+            status = mmdrv_update_sta_state(vif_id, aid, bssid, MORSE_STA_AUTHORIZED);
+            if (status != MMWLAN_SUCCESS)
+            {
+                UMAC_FATAL_ERROR(umacd);
+                return;
+            }
 
 
             if (filter != NULL)
             {
-                ret = mmdrv_update_beacon_vendor_ie_filter(data->vif_id,
-                                                           (const uint8_t *)filter->ouis,
-                                                           filter->n_ouis);
-                MMOSAL_ASSERT(ret == 0);
+                status = mmdrv_update_beacon_vendor_ie_filter(vif_id,
+                                                              (const uint8_t *)filter->ouis,
+                                                              filter->n_ouis);
+                if (status != MMWLAN_SUCCESS)
+                {
+                    UMAC_FATAL_ERROR(umacd);
+                    return;
+                }
             }
 
             umac_wnm_sleep_report_event(umacd, UMAC_WNM_SLEEP_EVENT_HW_RESTARTED);
@@ -1689,12 +1700,20 @@ void umac_connection_handle_hw_restarted(struct umac_data *umacd)
         if (data->conn_fsm.current_state >= CONNECTION_FSM_STATE_AUTHENTICATING)
         {
             MMLOG_DBG("Configure BSS\n");
-            ret = mmdrv_cfg_bss(data->vif_id, data->bss_cfg.beacon_interval, 0, 0);
-            MMOSAL_ASSERT(ret == 0);
-            ret = mmdrv_set_control_response_bw(data->vif_id,
-                                                MMDRV_DIRECTION_INCOMING,
-                                                data->control_resp_1mhz_in_en);
-            MMOSAL_ASSERT(ret == 0);
+            status = mmdrv_cfg_bss(vif_id, data->bss_cfg.beacon_interval, 0, 0);
+            if (status != MMWLAN_SUCCESS)
+            {
+                UMAC_FATAL_ERROR(umacd);
+                return;
+            }
+            status = mmdrv_set_control_response_bw(vif_id,
+                                                   MMDRV_DIRECTION_INCOMING,
+                                                   data->control_resp_1mhz_in_en);
+            if (status != MMWLAN_SUCCESS)
+            {
+                UMAC_FATAL_ERROR(umacd);
+                return;
+            }
         }
 
         MMLOG_DBG("Restore power save state\n");
@@ -1702,7 +1721,8 @@ void umac_connection_handle_hw_restarted(struct umac_data *umacd)
 
         MMLOG_DBG("Reconfigure fragmentation threshold\n");
         unsigned fragment_threshold = umac_config_get_frag_threshold(umacd);
-        if (mmdrv_set_frag_threshold(fragment_threshold))
+        status = mmdrv_set_frag_threshold(fragment_threshold);
+        if (status != MMWLAN_SUCCESS)
         {
             MMLOG_WRN("Failed to reconfigure fragmentation threshold.\n");
         }
@@ -1710,9 +1730,7 @@ void umac_connection_handle_hw_restarted(struct umac_data *umacd)
         if (data->non_tim_mode_supported && umac_config_is_non_tim_mode_enabled(umacd))
         {
             MMLOG_DBG("Re-enable Non-TIM mode\n");
-            mmdrv_set_param(data->vif_id,
-                            MORSE_PARAM_ID_NON_TIM_MODE,
-                            data->non_tim_mode_supported);
+            mmdrv_set_param(vif_id, MORSE_PARAM_ID_NON_TIM_MODE, data->non_tim_mode_supported);
         }
 
         const struct mmwlan_twt_config_args *twt_config = umac_twt_get_config(umacd);
@@ -1725,9 +1743,6 @@ void umac_connection_handle_hw_restarted(struct umac_data *umacd)
                 MMLOG_ERR("Failed to install TWT agreement.\n");
             }
         }
-
-
-        umac_offload_restore_all(umacd);
 
         umac_datapath_handle_hw_restarted(umacd, data->stad);
     }
@@ -1742,7 +1757,8 @@ void umac_connection_set_sta_autoconnect(struct umac_data *umacd,
 struct umac_sta_data *umac_connection_get_stad(struct umac_data *umacd)
 {
     struct umac_connection_data *data = umac_data_get_connection(umacd);
-    if (data->vif_id != UMAC_INTERFACE_VIF_ID_INVALID)
+    uint16_t vif_id = umac_interface_get_vif_id(umacd, UMAC_INTERFACE_STA);
+    if (vif_id != MMDRV_VIF_ID_INVALID)
     {
         return data->stad;
     }
@@ -1755,8 +1771,7 @@ struct umac_sta_data *umac_connection_get_stad(struct umac_data *umacd)
 
 uint16_t umac_connection_get_vif_id(struct umac_data *umacd)
 {
-    struct umac_connection_data *data = umac_data_get_connection(umacd);
-    return data->vif_id;
+    return umac_interface_get_vif_id(umacd, UMAC_INTERFACE_STA);
 }
 
 static void invoke_link_callback(struct umac_data *umacd,
@@ -1786,7 +1801,7 @@ static void invoke_link_callback(struct umac_data *umacd,
 
 
 #define CONNECTION_MON_FSM_LOG(format_str, ...) MMLOG_DBG(format_str, __VA_ARGS__)
-#include "connection_mon_fsm.def"
+#include "connection_mon_fsm_def.h"
 
 static void connection_mon_fsm_stable_entry(struct connection_mon_fsm_instance *inst,
                                             enum connection_mon_fsm_state prev_state)
@@ -1856,7 +1871,7 @@ static void connection_mon_fsm_reentrance_error(struct connection_mon_fsm_instan
 
 
 #define CONNECTION_FSM_LOG(format_str, ...) MMLOG_DBG(format_str, __VA_ARGS__)
-#include "connection_fsm.def"
+#include "connection_fsm_def.h"
 
 
 
@@ -1867,7 +1882,7 @@ static void connection_fsm_disconnected_entry(struct connection_fsm_instance *in
     struct umac_connection_data *data = umac_data_get_connection(umacd);
     if (prev_state != CONNECTION_FSM_STATE_DISCONNECTED)
     {
-        enum mmwlan_status result = umac_connection_set_sta_state(data, MORSE_STA_NONE);
+        enum mmwlan_status result = umac_connection_set_sta_state(umacd, data, MORSE_STA_NONE);
         if (result != MMWLAN_SUCCESS)
         {
             MMLOG_WRN("Unable to set sta state.\n");
@@ -1899,6 +1914,7 @@ static void connection_fsm_disconnected_exit(struct connection_fsm_instance *ins
     {
         data->sta_status_cb(MMWLAN_STA_CONNECTING);
     }
+    umac_relay_handle_sta_state(umacd, MMWLAN_STA_CONNECTING);
 }
 
 static void connection_fsm_authenticating_entry(struct connection_fsm_instance *inst,
@@ -1921,7 +1937,7 @@ static void connection_fsm_connecting_entry(struct connection_fsm_instance *inst
 
     umac_datapath_stad_init(data->stad);
 
-    enum mmwlan_status result = umac_connection_set_sta_state(data, MORSE_STA_AUTHENTICATED);
+    enum mmwlan_status result = umac_connection_set_sta_state(umacd, data, MORSE_STA_AUTHENTICATED);
     if (result != MMWLAN_SUCCESS)
     {
         MMLOG_WRN("Unable to set sta state.\n");
@@ -1945,9 +1961,10 @@ static void connection_fsm_connected_entry(struct connection_fsm_instance *inst,
     {
         data->sta_status_cb(MMWLAN_STA_CONNECTED);
     }
+    umac_relay_handle_sta_state(umacd, MMWLAN_STA_CONNECTED);
     invoke_link_callback(umacd, data, MMWLAN_LINK_UP);
 
-    enum mmwlan_status result = umac_connection_set_sta_state(data, MORSE_STA_AUTHORIZED);
+    enum mmwlan_status result = umac_connection_set_sta_state(umacd, data, MORSE_STA_AUTHORIZED);
     if (result != MMWLAN_SUCCESS)
     {
         MMLOG_WRN("Unable to set sta state.\n");
@@ -1990,6 +2007,7 @@ static void connection_fsm_connected_exit(struct connection_fsm_instance *inst,
     {
         data->sta_status_cb(MMWLAN_STA_DISABLED);
     }
+    umac_relay_handle_sta_state(umacd, MMWLAN_STA_DISABLED);
     invoke_link_callback(umacd, data, MMWLAN_LINK_DOWN);
 
     umac_wnm_sleep_report_event(umacd, UMAC_WNM_SLEEP_EVENT_CONNECTION_LOST);

@@ -16,9 +16,17 @@
 static inline void * wpa_drv_init(struct wpa_supplicant *wpa_s,
 				  const char *ifname)
 {
-	if (wpa_s->driver->init2)
+	if (wpa_s->driver->init2) {
+		enum wpa_p2p_mode p2p_mode = WPA_P2P_MODE_WFD_R1;
+
+#ifdef CONFIG_P2P
+		p2p_mode = wpa_s->p2p_mode;
+#endif /* CONFIG_P2P */
+
 		return wpa_s->driver->init2(wpa_s, ifname,
-					    wpa_s->global_drv_priv);
+					    wpa_s->global_drv_priv,
+					    p2p_mode);
+	}
 	if (wpa_s->driver->init) {
 		return wpa_s->driver->init(wpa_s, ifname);
 	}
@@ -104,6 +112,8 @@ static inline int wpa_drv_mesh_link_probe(struct wpa_supplicant *wpa_s,
 static inline int wpa_drv_scan(struct wpa_supplicant *wpa_s,
 			       struct wpa_driver_scan_params *params)
 {
+	params->link_id = -1;
+
 #ifdef CONFIG_TESTING_OPTIONS
 	if (wpa_s->test_failure == WPAS_TEST_FAILURE_SCAN_TRIGGER)
 		return -EBUSY;
@@ -519,6 +529,16 @@ static inline int wpa_drv_mlo_signal_poll(struct wpa_supplicant *wpa_s,
 {
 	if (wpa_s->driver->mlo_signal_poll)
 		return wpa_s->driver->mlo_signal_poll(wpa_s->drv_priv, mlo_si);
+	return -1;
+}
+
+static inline int
+wpa_drv_setup_link_reconfig(struct wpa_supplicant *wpa_s,
+			    struct wpa_mlo_reconfig_info *info)
+{
+	if (wpa_s->driver->setup_link_reconfig)
+		return wpa_s->driver->setup_link_reconfig(wpa_s->drv_priv,
+							  info);
 	return -1;
 }
 

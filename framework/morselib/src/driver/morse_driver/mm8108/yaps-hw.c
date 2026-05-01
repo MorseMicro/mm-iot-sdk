@@ -16,7 +16,6 @@
 
 #include "dot11/dot11_frames.h"
 #include "driver/driver.h"
-#include "driver/health/driver_health.h"
 #include "driver/morse_crc/morse_crc.h"
 #include "driver/morse_driver/chip_if.h"
 #include "driver/morse_driver/morse.h"
@@ -178,7 +177,7 @@ static int yaps_hw_lock(struct morse_yaps *yaps)
     return 0;
 }
 
-void yaps_hw_unlock(struct morse_yaps *yaps)
+static void yaps_hw_unlock(struct morse_yaps *yaps)
 {
     atomic_clear_bit_unlock(0, &yaps->aux_data->access_lock);
 }
@@ -222,7 +221,7 @@ static inline uint32_t morse_yaps_delimiter(struct morse_yaps *yaps,
     return delim;
 }
 
-void morse_yaps_hw_enable_irqs(struct driver_data *driverd, bool enable)
+static void morse_yaps_hw_enable_irqs(struct driver_data *driverd, bool enable)
 {
     morse_hw_irq_enable(driverd, MORSE_INT_YAPS_FC_PKT_WAITING_IRQN, enable);
     morse_hw_irq_enable(driverd, MORSE_INT_YAPS_FC_PACKET_FREED_UP_IRQN, enable);
@@ -235,101 +234,126 @@ void morse_yaps_hw_read_table(struct driver_data *driverd, struct morse_yaps_hw_
     morse_yaps_hw_enable_irqs(driverd, true);
 }
 
-static unsigned int morse_yaps_pages_required(struct morse_yaps *yaps, unsigned int size_bytes)
+static unsigned int morse_yaps_pages_required(struct morse_yaps *yaps, const struct mmpkt *mmpkt)
 {
+    uint32_t size_bytes = mmpkt_peek_data_length(mmpkt);
 
     return MORSE_INT_CEIL(size_bytes + yaps->aux_data->reserved_yaps_page_size, YAPS_PAGE_SIZE) +
            YAPS_METADATA_PAGE_COUNT +
            YAPS_PHANDLE_CORRUPTION_WAR_EXTRA_PAGE;
 }
 
-
-static bool morse_yaps_will_fit(struct morse_yaps *yaps,
-                                struct mmpkt *mmpkt,
-                                enum morse_yaps_to_chip_q tc_queue,
-                                bool update)
+static uint32_t morse_yaps_hw_get_tc_queue_space(struct morse_yaps *yaps,
+                                                 enum morse_yaps_to_chip_q tc_queue)
 {
-    bool will_fit = true;
-    struct mmpktview *view = mmpkt_open(mmpkt);
-    uint32_t data_len = mmpkt_get_data_length(view);
-    mmpkt_close(&view);
-    const uint32_t pages_required = morse_yaps_pages_required(yaps, data_len);
-    uint32_t pool_pages_avail = 0;
-    uint32_t pkts_in_queue = 0;
-    int queue_pkts_avail = 0;
-
     switch (tc_queue)
     {
-        case MORSE_YAPS_TX_Q:
-            pool_pages_avail = yaps->aux_data->status_regs.tc_tx_pool_num_pages;
-            pkts_in_queue = yaps->aux_data->status_regs.tc_tx_num_pkts;
-            queue_pkts_avail = yaps->aux_data->tc_tx_q_size - pkts_in_queue;
-            break;
-
         case MORSE_YAPS_CMD_Q:
-            pool_pages_avail = yaps->aux_data->status_regs.tc_cmd_pool_num_pages;
-            pkts_in_queue = yaps->aux_data->status_regs.tc_cmd_num_pkts;
-            queue_pkts_avail = yaps->aux_data->tc_cmd_q_size - pkts_in_queue;
+            return yaps->aux_data->tc_cmd_q_size - yaps->aux_data->status_regs.tc_cmd_num_pkts;
             break;
 
         case MORSE_YAPS_BEACON_Q:
-            pool_pages_avail = yaps->aux_data->status_regs.tc_beacon_pool_num_pages;
-            pkts_in_queue = yaps->aux_data->status_regs.tc_beacon_num_pkts;
-            queue_pkts_avail = yaps->aux_data->tc_beacon_q_size - pkts_in_queue;
+            return yaps->aux_data->tc_beacon_q_size -
+                   yaps->aux_data->status_regs.tc_beacon_num_pkts;
             break;
 
         case MORSE_YAPS_MGMT_Q:
-            pool_pages_avail = yaps->aux_data->status_regs.tc_mgmt_pool_num_pages;
-            pkts_in_queue = yaps->aux_data->status_regs.tc_mgmt_num_pkts;
-            queue_pkts_avail = yaps->aux_data->tc_mgmt_q_size - pkts_in_queue;
+            return yaps->aux_data->tc_mgmt_q_size - yaps->aux_data->status_regs.tc_mgmt_num_pkts;
+            break;
+
+        case MORSE_YAPS_TX_Q:
+            return yaps->aux_data->tc_tx_q_size - yaps->aux_data->status_regs.tc_tx_num_pkts;
+            break;
+
+        default:
+            MMLOG_ERR("Invalid to-chip queue %u\n", tc_queue);
+            MMOSAL_ASSERT(false);
+            return 0;
+    }
+}
+
+static uint32_t morse_yaps_hw_get_tc_queue_pages(struct morse_yaps *yaps,
+                                                 enum morse_yaps_to_chip_q tc_queue)
+{
+    switch (tc_queue)
+    {
+        case MORSE_YAPS_CMD_Q:
+            return yaps->aux_data->status_regs.tc_cmd_pool_num_pages;
+            break;
+
+        case MORSE_YAPS_BEACON_Q:
+            return yaps->aux_data->status_regs.tc_beacon_pool_num_pages;
+            break;
+
+        case MORSE_YAPS_MGMT_Q:
+            return yaps->aux_data->status_regs.tc_mgmt_pool_num_pages;
+            break;
+
+        case MORSE_YAPS_TX_Q:
+            return yaps->aux_data->status_regs.tc_tx_pool_num_pages;
+            break;
+
+        default:
+            MMLOG_ERR("Invalid to-chip queue %u\n", tc_queue);
+            MMOSAL_ASSERT(false);
+            return 0;
+    }
+}
+
+
+static bool morse_yaps_will_fit(struct morse_yaps *yaps,
+                                const struct mmpkt *mmpkt,
+                                enum morse_yaps_to_chip_q tc_queue)
+{
+    if (morse_yaps_hw_get_tc_queue_space(yaps, tc_queue) == 0)
+    {
+        MMLOG_DBG("no queue space\n");
+        return false;
+    }
+
+    const uint32_t pages_avail = morse_yaps_hw_get_tc_queue_pages(yaps, tc_queue);
+    const uint32_t pages_required = morse_yaps_pages_required(yaps, mmpkt);
+
+    if (pages_required > pages_avail)
+    {
+        MMLOG_DBG("yaps pages required %d, pages avail %d\n", pages_required, pages_avail);
+        return false;
+    }
+
+    return true;
+}
+
+static void morse_yaps_update_status_pkt_sent(struct morse_yaps *yaps,
+                                              const struct mmpkt *mmpkt,
+                                              enum morse_yaps_to_chip_q tc_queue)
+{
+    MMOSAL_ASSERT(morse_yaps_will_fit(yaps, mmpkt, tc_queue));
+    const uint32_t pages_required = morse_yaps_pages_required(yaps, mmpkt);
+    switch (tc_queue)
+    {
+        case MORSE_YAPS_TX_Q:
+            yaps->aux_data->status_regs.tc_tx_pool_num_pages -= pages_required;
+            yaps->aux_data->status_regs.tc_tx_num_pkts += 1;
+            break;
+
+        case MORSE_YAPS_CMD_Q:
+            yaps->aux_data->status_regs.tc_cmd_pool_num_pages -= pages_required;
+            yaps->aux_data->status_regs.tc_cmd_num_pkts += 1;
+            break;
+
+        case MORSE_YAPS_BEACON_Q:
+            yaps->aux_data->status_regs.tc_beacon_pool_num_pages -= pages_required;
+            yaps->aux_data->status_regs.tc_beacon_num_pkts += 1;
+            break;
+
+        case MORSE_YAPS_MGMT_Q:
+            yaps->aux_data->status_regs.tc_mgmt_pool_num_pages -= pages_required;
+            yaps->aux_data->status_regs.tc_mgmt_num_pkts += 1;
             break;
 
         default:
             MMLOG_ERR("yaps invalid tc queue\n");
     }
-
-    MORSE_WARN_ON(queue_pkts_avail < 0);
-
-    if (pages_required > pool_pages_avail)
-    {
-        will_fit = false;
-    }
-
-    if (queue_pkts_avail == 0)
-    {
-        will_fit = false;
-    }
-
-    if (will_fit && update)
-    {
-        switch (tc_queue)
-        {
-            case MORSE_YAPS_TX_Q:
-                yaps->aux_data->status_regs.tc_tx_pool_num_pages -= pages_required;
-                yaps->aux_data->status_regs.tc_tx_num_pkts += 1;
-                break;
-
-            case MORSE_YAPS_CMD_Q:
-                yaps->aux_data->status_regs.tc_cmd_pool_num_pages -= pages_required;
-                yaps->aux_data->status_regs.tc_cmd_num_pkts += 1;
-                break;
-
-            case MORSE_YAPS_BEACON_Q:
-                yaps->aux_data->status_regs.tc_beacon_pool_num_pages -= pages_required;
-                yaps->aux_data->status_regs.tc_beacon_num_pkts += 1;
-                break;
-
-            case MORSE_YAPS_MGMT_Q:
-                yaps->aux_data->status_regs.tc_mgmt_pool_num_pages -= pages_required;
-                yaps->aux_data->status_regs.tc_mgmt_num_pkts += 1;
-                break;
-
-            default:
-                MMLOG_ERR("yaps invalid tc queue\n");
-        }
-    }
-
-    return will_fit;
 }
 
 static int morse_yaps_hw_write_pkt_err_check(struct morse_yaps *yaps,
@@ -348,7 +372,7 @@ static int morse_yaps_hw_write_pkt_err_check(struct morse_yaps *yaps,
     {
         return -EINVAL;
     }
-    if (!morse_yaps_will_fit(yaps, mmpkt, tc_queue, true))
+    if (!morse_yaps_will_fit(yaps, mmpkt, tc_queue))
     {
         return -ENOMEM;
     }
@@ -356,10 +380,10 @@ static int morse_yaps_hw_write_pkt_err_check(struct morse_yaps *yaps,
     return 0;
 }
 
-static int morse_yaps_hw_write_pkt(struct morse_yaps *yaps,
-                                   struct mmpkt *mmpkt,
-                                   enum morse_yaps_to_chip_q tc_queue,
-                                   struct mmpkt *next_pkt)
+int morse_yaps_hw_write_pkt(struct morse_yaps *yaps,
+                            struct mmpkt *mmpkt,
+                            enum morse_yaps_to_chip_q tc_queue,
+                            struct mmpkt *next_pkt)
 {
     int ret = 0;
 
@@ -374,14 +398,17 @@ static int morse_yaps_hw_write_pkt(struct morse_yaps *yaps,
     ret = morse_yaps_hw_write_pkt_err_check(yaps, mmpkt, tc_queue);
     if (ret)
     {
-        MMLOG_WRN("Write pkt check failed %d\n", ret);
+        MMLOG_INF("Write pkt check failed %d\n", ret);
         goto exit;
     }
+
+
+    morse_yaps_update_status_pkt_sent(yaps, mmpkt, tc_queue);
 
     struct mmpktview *view = mmpkt_open(mmpkt);
 
 
-    bool set_irq = (next_pkt == NULL) || !morse_yaps_will_fit(yaps, next_pkt, tc_queue, false);
+    bool set_irq = (next_pkt == NULL) || !morse_yaps_will_fit(yaps, next_pkt, tc_queue);
     uint32_t delim = morse_yaps_delimiter(yaps, mmpkt_get_data_length(view), tc_queue, set_irq);
     delim = htole32(delim);
     mmpkt_prepend_data(view, (uint8_t *)&delim, sizeof(delim));
@@ -430,7 +457,7 @@ static bool morse_yaps_is_valid_delimiter(uint32_t delim)
     return true;
 }
 
-static int morse_yaps_hw_read_pkt(struct morse_yaps *yaps, struct mmpkt **mmpkt)
+int morse_yaps_hw_read_pkt(struct morse_yaps *yaps, struct mmpkt **mmpkt)
 {
     int ret = 0;
     uint32_t delim;
@@ -542,7 +569,7 @@ exit:
     return ret;
 }
 
-static int morse_yaps_hw_update_status(struct morse_yaps *yaps)
+int morse_yaps_hw_update_status(struct morse_yaps *yaps)
 {
     int ret;
     uint32_t reg_read_timeout;
@@ -575,10 +602,9 @@ static int morse_yaps_hw_update_status(struct morse_yaps *yaps)
     {
         if (ret != -ENODEV)
         {
-            MORSE_WARN_ON(ret);
             MMLOG_ERR("Error reading yaps status registers: %d\n", ret);
         }
-        driver_health_demand_check(yaps->driverd);
+        mmdrv_host_health_check_required();
         goto exit_unlock;
     }
 
@@ -603,7 +629,6 @@ static int morse_yaps_hw_update_status(struct morse_yaps *yaps)
     if (status_regs->tc_delim_crc_fail_detected)
     {
 
-        MORSE_WARN_ON(status_regs->tc_delim_crc_fail_detected);
         MMLOG_ERR("to-chip yaps delimiter CRC fail\n");
         ret = -EIO;
     }
@@ -620,12 +645,6 @@ exit_unlock:
     return ret;
 }
 
-const struct morse_yaps_ops morse_yaps_hw_ops = {
-    .write_pkt = morse_yaps_hw_write_pkt,
-    .read_pkt = morse_yaps_hw_read_pkt,
-    .update_status = morse_yaps_hw_update_status,
-};
-
 int morse_yaps_hw_init(struct driver_data *driverd)
 {
     int ret = 0;
@@ -641,8 +660,6 @@ int morse_yaps_hw_init(struct driver_data *driverd)
 
     memset(&morse_yaps_hw_aux_data, 0, sizeof(struct morse_yaps_hw_aux_data));
     yaps->aux_data = &morse_yaps_hw_aux_data;
-
-    yaps->ops = &morse_yaps_hw_ops;
 
 
     flags = MORSE_CHIP_IF_FLAGS_DATA |
@@ -685,17 +702,6 @@ err_exit:
     return ret;
 }
 
-void morse_yaps_hw_yaps_flush_tx_data(struct driver_data *driverd)
-{
-    struct morse_yaps *yaps = &driverd->chip_if->yaps;
-
-    if ((yaps->flags & MORSE_CHIP_IF_FLAGS_DIR_TO_CHIP) &&
-        (yaps->flags & (MORSE_CHIP_IF_FLAGS_DATA | MORSE_CHIP_IF_FLAGS_BEACON)))
-    {
-        morse_yaps_flush_tx_data(yaps);
-    }
-}
-
 void morse_yaps_hw_finish(struct driver_data *driverd)
 {
     struct morse_yaps *yaps;
@@ -714,35 +720,39 @@ void morse_yaps_hw_finish(struct driver_data *driverd)
         memset(yaps->aux_data, 0, sizeof(struct morse_yaps_hw_aux_data));
         yaps->aux_data = NULL;
     }
-    yaps->ops = NULL;
     driverd->chip_if = NULL;
 }
 
-uint32_t morse_yaps_hw_get_tc_queue_space(struct morse_yaps *yaps,
-                                          enum morse_yaps_to_chip_q tc_queue)
+uint32_t morse_yaps_hw_get_num_pkts(struct morse_yaps *yaps,
+                                    enum morse_yaps_to_chip_q tc_queue,
+                                    struct mmpkt_list *pktlist)
 {
-    switch (tc_queue)
+    uint32_t num_spaces = morse_yaps_hw_get_tc_queue_space(yaps, tc_queue);
+    uint32_t num_pages = morse_yaps_hw_get_tc_queue_pages(yaps, tc_queue);
+
+    uint32_t num_pkts = 0;
+    uint32_t pages_needed = 0;
+
+    struct mmpkt *pfirst, *pnext;
+    MMPKT_LIST_WALK(pktlist, pfirst, pnext)
     {
-        case MORSE_YAPS_CMD_Q:
-            return yaps->aux_data->tc_cmd_q_size - yaps->aux_data->status_regs.tc_cmd_num_pkts;
-            break;
+        if (num_pkts >= num_spaces)
+        {
 
-        case MORSE_YAPS_BEACON_Q:
-            return yaps->aux_data->tc_beacon_q_size -
-                   yaps->aux_data->status_regs.tc_beacon_num_pkts;
             break;
+        }
 
-        case MORSE_YAPS_MGMT_Q:
-            return yaps->aux_data->tc_mgmt_q_size - yaps->aux_data->status_regs.tc_mgmt_num_pkts;
+        uint32_t pkt_pages = morse_yaps_pages_required(yaps, pfirst);
+        if (pkt_pages + pages_needed > num_pages)
+        {
+
             break;
-
-        case MORSE_YAPS_TX_Q:
-            return yaps->aux_data->tc_tx_q_size - yaps->aux_data->status_regs.tc_tx_num_pkts;
-            break;
-
-        default:
-            MMLOG_ERR("Invalid to-chip queue %u\n", tc_queue);
-            MMOSAL_ASSERT(false);
-            return 0;
+        }
+        ++num_pkts;
+        pages_needed += pkt_pages;
     }
+
+    MMOSAL_DEV_ASSERT(num_pkts <= num_spaces);
+    MMOSAL_DEV_ASSERT(pages_needed <= num_pages);
+    return num_pkts;
 }

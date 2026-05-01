@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.10.4</span>
+   &#160;<span id="projectnumber">2.11.2</span>
    </div>
   </td>
  </tr>
@@ -94,9 +94,9 @@ $(document).ready(function(){initNavTree('structmmwlan__stats__umac__data.html',
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Data structure to contain all stats from the UMAC. </p>
-<dl class="section warning"><dt>Warning</dt><dd>This is not considered stable API and may change between releases. For example ordering of fields may change and fields may be removed. </dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>This is not considered stable API and may change between releases. For example, ordering of fields may change and fields may be removed. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan__stats_8h_source.html#l00047">47</a> of file <a class="el" href="mmwlan__stats_8h_source.html">mmwlan_stats.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan__stats_8h_source.html#l00049">49</a> of file <a class="el" href="mmwlan__stats_8h_source.html">mmwlan_stats.h</a>.</p>
 </div>
 <p><code>#include &lt;<a class="el" href="mmwlan__stats_8h_source.html">mmwlan_stats.h</a>&gt;</code></p>
 <table class="memberdecls">
@@ -162,6 +162,12 @@ Data Fields</h2></td></tr>
 <tr class="memitem:a2666ef421f82bf9eefed2f37f80675c6"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__stats__umac__data.html#a2666ef421f82bf9eefed2f37f80675c6">timeouts_fired</a></td></tr>
 <tr class="memdesc:a2666ef421f82bf9eefed2f37f80675c6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of times any timer or timeout has fired.  <a href="structmmwlan__stats__umac__data.html#a2666ef421f82bf9eefed2f37f80675c6">More...</a><br /></td></tr>
 <tr class="separator:a2666ef421f82bf9eefed2f37f80675c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa6960aeafe429f98d96bc358a6c67a23"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__stats__umac__data.html#aa6960aeafe429f98d96bc358a6c67a23">datapath_driver_tx_skbq_timeout</a></td></tr>
+<tr class="memdesc:aa6960aeafe429f98d96bc358a6c67a23"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of frames dropped by the driver due to timeout before TX.  <a href="structmmwlan__stats__umac__data.html#aa6960aeafe429f98d96bc358a6c67a23">More...</a><br /></td></tr>
+<tr class="separator:aa6960aeafe429f98d96bc358a6c67a23"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4c8507739334a9d9270b79fad2a221a5"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__stats__umac__data.html#a4c8507739334a9d9270b79fad2a221a5">datapath_driver_tx_pending_status_timeout</a></td></tr>
+<tr class="memdesc:a4c8507739334a9d9270b79fad2a221a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of frames sent by the driver that timed out before receiving a TX status from the chip.  <a href="structmmwlan__stats__umac__data.html#a4c8507739334a9d9270b79fad2a221a5">More...</a><br /></td></tr>
+<tr class="separator:a4c8507739334a9d9270b79fad2a221a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Field Documentation</h2>
 <a id="ada5d8a8c8ecc9824a2292256266d959e" name="ada5d8a8c8ecc9824a2292256266d959e"></a>
@@ -178,7 +184,7 @@ Data Fields</h2></td></tr>
 
 <p>Timestamps taken during the connection process. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan__stats_8h_source.html#l00059">59</a> of file <a class="el" href="mmwlan__stats_8h_source.html">mmwlan_stats.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan__stats_8h_source.html#l00061">61</a> of file <a class="el" href="mmwlan__stats_8h_source.html">mmwlan_stats.h</a>.</p>
 
 </div>
 </div>
@@ -196,7 +202,7 @@ Data Fields</h2></td></tr>
 
 <p>Number of RX pages that have been dropped due to allocation failures. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan__stats_8h_source.html#l00084">84</a> of file <a class="el" href="mmwlan__stats_8h_source.html">mmwlan_stats.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan__stats_8h_source.html#l00086">86</a> of file <a class="el" href="mmwlan__stats_8h_source.html">mmwlan_stats.h</a>.</p>
 
 </div>
 </div>
@@ -215,7 +221,43 @@ Data Fields</h2></td></tr>
 <p>Number of RX pages that have been dropped due to read failures. </p>
 <p >This includes cases where pages are dropped due to being malformed. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan__stats_8h_source.html#l00088">88</a> of file <a class="el" href="mmwlan__stats_8h_source.html">mmwlan_stats.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan__stats_8h_source.html#l00090">90</a> of file <a class="el" href="mmwlan__stats_8h_source.html">mmwlan_stats.h</a>.</p>
+
+</div>
+</div>
+<a id="a4c8507739334a9d9270b79fad2a221a5" name="a4c8507739334a9d9270b79fad2a221a5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4c8507739334a9d9270b79fad2a221a5">&#9670;&nbsp;</a></span>datapath_driver_tx_pending_status_timeout</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t mmwlan_stats_umac_data::datapath_driver_tx_pending_status_timeout</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Number of frames sent by the driver that timed out before receiving a TX status from the chip. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmwlan__stats_8h_source.html#l00119">119</a> of file <a class="el" href="mmwlan__stats_8h_source.html">mmwlan_stats.h</a>.</p>
+
+</div>
+</div>
+<a id="aa6960aeafe429f98d96bc358a6c67a23" name="aa6960aeafe429f98d96bc358a6c67a23"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa6960aeafe429f98d96bc358a6c67a23">&#9670;&nbsp;</a></span>datapath_driver_tx_skbq_timeout</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t mmwlan_stats_umac_data::datapath_driver_tx_skbq_timeout</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Number of frames dropped by the driver due to timeout before TX. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmwlan__stats_8h_source.html#l00115">115</a> of file <a class="el" href="mmwlan__stats_8h_source.html">mmwlan_stats.h</a>.</p>
 
 </div>
 </div>
@@ -234,7 +276,7 @@ Data Fields</h2></td></tr>
 <p>Total number of frames that have been dropped due to CCMP failures. </p>
 <p >(e.g., replay detection). </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan__stats_8h_source.html#l00081">81</a> of file <a class="el" href="mmwlan__stats_8h_source.html">mmwlan_stats.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan__stats_8h_source.html#l00083">83</a> of file <a class="el" href="mmwlan__stats_8h_source.html">mmwlan_stats.h</a>.</p>
 
 </div>
 </div>
@@ -252,7 +294,7 @@ Data Fields</h2></td></tr>
 
 <p>High water mark of the RX Management Queue. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan__stats_8h_source.html#l00077">77</a> of file <a class="el" href="mmwlan__stats_8h_source.html">mmwlan_stats.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan__stats_8h_source.html#l00079">79</a> of file <a class="el" href="mmwlan__stats_8h_source.html">mmwlan_stats.h</a>.</p>
 
 </div>
 </div>
@@ -270,7 +312,7 @@ Data Fields</h2></td></tr>
 
 <p>High water mark in terms of number of frames in the RX reorder list. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan__stats_8h_source.html#l00091">91</a> of file <a class="el" href="mmwlan__stats_8h_source.html">mmwlan_stats.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan__stats_8h_source.html#l00093">93</a> of file <a class="el" href="mmwlan__stats_8h_source.html">mmwlan_stats.h</a>.</p>
 
 </div>
 </div>
@@ -288,7 +330,7 @@ Data Fields</h2></td></tr>
 
 <p>Number of frames dropped due to outdated sequence control field value. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan__stats_8h_source.html#l00101">101</a> of file <a class="el" href="mmwlan__stats_8h_source.html">mmwlan_stats.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan__stats_8h_source.html#l00103">103</a> of file <a class="el" href="mmwlan__stats_8h_source.html">mmwlan_stats.h</a>.</p>
 
 </div>
 </div>
@@ -306,7 +348,7 @@ Data Fields</h2></td></tr>
 
 <p>Number of frames that have been flushed due to the RX A-MPDU reordering buffer overflowing. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan__stats_8h_source.html#l00095">95</a> of file <a class="el" href="mmwlan__stats_8h_source.html">mmwlan_stats.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan__stats_8h_source.html#l00097">97</a> of file <a class="el" href="mmwlan__stats_8h_source.html">mmwlan_stats.h</a>.</p>
 
 </div>
 </div>
@@ -324,7 +366,7 @@ Data Fields</h2></td></tr>
 
 <p>Number of frames dropped due to repeated sequence control field value. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan__stats_8h_source.html#l00104">104</a> of file <a class="el" href="mmwlan__stats_8h_source.html">mmwlan_stats.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan__stats_8h_source.html#l00106">106</a> of file <a class="el" href="mmwlan__stats_8h_source.html">mmwlan_stats.h</a>.</p>
 
 </div>
 </div>
@@ -342,7 +384,7 @@ Data Fields</h2></td></tr>
 
 <p>Number of frames that have been flushed from the RX reorder list due to timeout. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan__stats_8h_source.html#l00098">98</a> of file <a class="el" href="mmwlan__stats_8h_source.html">mmwlan_stats.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan__stats_8h_source.html#l00100">100</a> of file <a class="el" href="mmwlan__stats_8h_source.html">mmwlan_stats.h</a>.</p>
 
 </div>
 </div>
@@ -360,7 +402,7 @@ Data Fields</h2></td></tr>
 
 <p>Total number of frames that have actually been put into the A-MPDU reordering buffer. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan__stats_8h_source.html#l00107">107</a> of file <a class="el" href="mmwlan__stats_8h_source.html">mmwlan_stats.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan__stats_8h_source.html#l00109">109</a> of file <a class="el" href="mmwlan__stats_8h_source.html">mmwlan_stats.h</a>.</p>
 
 </div>
 </div>
@@ -378,7 +420,7 @@ Data Fields</h2></td></tr>
 
 <p>Number of RX frames that have been dropped due to RX Queue being full. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan__stats_8h_source.html#l00053">53</a> of file <a class="el" href="mmwlan__stats_8h_source.html">mmwlan_stats.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan__stats_8h_source.html#l00055">55</a> of file <a class="el" href="mmwlan__stats_8h_source.html">mmwlan_stats.h</a>.</p>
 
 </div>
 </div>
@@ -396,7 +438,7 @@ Data Fields</h2></td></tr>
 
 <p>High water mark of the RX Queue. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan__stats_8h_source.html#l00071">71</a> of file <a class="el" href="mmwlan__stats_8h_source.html">mmwlan_stats.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan__stats_8h_source.html#l00073">73</a> of file <a class="el" href="mmwlan__stats_8h_source.html">mmwlan_stats.h</a>.</p>
 
 </div>
 </div>
@@ -414,7 +456,7 @@ Data Fields</h2></td></tr>
 
 <p>Number of TX frames that have been dropped due to TX Queue being full. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan__stats_8h_source.html#l00056">56</a> of file <a class="el" href="mmwlan__stats_8h_source.html">mmwlan_stats.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan__stats_8h_source.html#l00058">58</a> of file <a class="el" href="mmwlan__stats_8h_source.html">mmwlan_stats.h</a>.</p>
 
 </div>
 </div>
@@ -432,7 +474,7 @@ Data Fields</h2></td></tr>
 
 <p>High water mark of the TX Queue. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan__stats_8h_source.html#l00074">74</a> of file <a class="el" href="mmwlan__stats_8h_source.html">mmwlan_stats.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan__stats_8h_source.html#l00076">76</a> of file <a class="el" href="mmwlan__stats_8h_source.html">mmwlan_stats.h</a>.</p>
 
 </div>
 </div>
@@ -450,7 +492,7 @@ Data Fields</h2></td></tr>
 
 <p>Count of the number of times the driver has sent a hardware restart notification. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan__stats_8h_source.html#l00065">65</a> of file <a class="el" href="mmwlan__stats_8h_source.html">mmwlan_stats.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan__stats_8h_source.html#l00067">67</a> of file <a class="el" href="mmwlan__stats_8h_source.html">mmwlan_stats.h</a>.</p>
 
 </div>
 </div>
@@ -468,7 +510,7 @@ Data Fields</h2></td></tr>
 
 <p>Time that the last TX frame was sent to the driver. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan__stats_8h_source.html#l00050">50</a> of file <a class="el" href="mmwlan__stats_8h_source.html">mmwlan_stats.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan__stats_8h_source.html#l00052">52</a> of file <a class="el" href="mmwlan__stats_8h_source.html">mmwlan_stats.h</a>.</p>
 
 </div>
 </div>
@@ -486,7 +528,7 @@ Data Fields</h2></td></tr>
 
 <p>Count of the number of successfully conducted scans. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan__stats_8h_source.html#l00068">68</a> of file <a class="el" href="mmwlan__stats_8h_source.html">mmwlan_stats.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan__stats_8h_source.html#l00070">70</a> of file <a class="el" href="mmwlan__stats_8h_source.html">mmwlan_stats.h</a>.</p>
 
 </div>
 </div>
@@ -504,7 +546,7 @@ Data Fields</h2></td></tr>
 
 <p>Current RSSI value for AP. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan__stats_8h_source.html#l00062">62</a> of file <a class="el" href="mmwlan__stats_8h_source.html">mmwlan_stats.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan__stats_8h_source.html#l00064">64</a> of file <a class="el" href="mmwlan__stats_8h_source.html">mmwlan_stats.h</a>.</p>
 
 </div>
 </div>
@@ -522,7 +564,7 @@ Data Fields</h2></td></tr>
 
 <p>Number of times any timer or timeout has fired. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan__stats_8h_source.html#l00110">110</a> of file <a class="el" href="mmwlan__stats_8h_source.html">mmwlan_stats.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan__stats_8h_source.html#l00112">112</a> of file <a class="el" href="mmwlan__stats_8h_source.html">mmwlan_stats.h</a>.</p>
 
 </div>
 </div>

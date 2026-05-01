@@ -11,10 +11,10 @@ var searchData=
   ['airtime_5fmin_5fus_8',['airtime_min_us',['../structmmwlan__s1g__channel.html#a1d2de953b66a3f3ab83e9ef31856b69c',1,'mmwlan_s1g_channel']]],
   ['akm_5fsuites_9',['akm_suites',['../structmm__rsn__information.html#afeb14b10b4d3254ddc7cba7fd6427255',1,'mm_rsn_information']]],
   ['amount_10',['amount',['../structmmiperf__client__args.html#acc821f1f8b906b475419389cb2ac6840',1,'mmiperf_client_args']]],
-  ['app_5fversion_11',['app_version',['../structmmagic__m2m__agent__init__args.html#ad4731621e21f22b29c7cb8bf54e55ab9',1,'mmagic_m2m_agent_init_args::app_version()'],['../structmmagic__cli__init__args.html#a1bb65a2fbd8ab2521bfba887fd55c314',1,'mmagic_cli_init_args::app_version()']]],
-  ['application_5fend_12',['application_end',['../bootloader_8c.html#aaaf4eda13ed1d5a1e8fcefbc9d9f4bd6',1,'bootloader.c']]],
-  ['application_5fstart_13',['application_start',['../bootloader_8c.html#a37d4a9c3115f43a3e2b3e102bc81b48f',1,'bootloader.c']]],
-  ['application_5fversion_14',['application_version',['../structstruct__version__info.html#a356046d0378fabaf71581e810d8d84d6',1,'struct_version_info']]],
-  ['args_15',['args',['../structmmwlan__scan__req.html#aa043d7fb919fb60301e7e1031940a085',1,'mmwlan_scan_req::args()'],['../structmmwlan__dpp__cb__args.html#a02f8dc30ca3410a73f8ab26e190a28be',1,'mmwlan_dpp_cb_args::args()']]],
+  ['app_5fversion_11',['app_version',['../structmmagic__cli__init__args.html#a1bb65a2fbd8ab2521bfba887fd55c314',1,'mmagic_cli_init_args::app_version()'],['../structmmagic__m2m__agent__init__args.html#ad4731621e21f22b29c7cb8bf54e55ab9',1,'mmagic_m2m_agent_init_args::app_version()']]],
+  ['application_5fversion_12',['application_version',['../structstruct__version__info.html#a356046d0378fabaf71581e810d8d84d6',1,'struct_version_info']]],
+  ['arg_13',['arg',['../structmmwlan__fatal__error__args.html#a08b8a08b894c3d7c10df4e6da83d1f03',1,'mmwlan_fatal_error_args']]],
+  ['args_14',['args',['../structmmwlan__scan__req.html#aa043d7fb919fb60301e7e1031940a085',1,'mmwlan_scan_req::args()'],['../structmmwlan__dpp__cb__args.html#a02f8dc30ca3410a73f8ab26e190a28be',1,'mmwlan_dpp_cb_args::args()']]],
+  ['async_5fstart_15',['async_start',['../structmmwlan__ap__args.html#a69607f4be5d5168749aecc6c9573412a',1,'mmwlan_ap_args']]],
   ['avg_5ftime_5fms_16',['avg_time_ms',['../structstruct__ping__status.html#a9391646295b6c202a210ff7d5234b373',1,'struct_ping_status']]]
 ];

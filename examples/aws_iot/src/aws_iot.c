@@ -236,151 +236,6 @@
  * reference of the available commands is at: @c https://docs.aws.amazon.com/cli/latest/index.html
  *
  *
- * # OTA Updates
- *
- * This application supports Over The Air updates. OTA updates can be used to update the existing
- * application on the IoT device with newer versions of itself. For OTA updates to work, there must
- * be a bootloader installed and an existing version of the application that is able to connect to the
- * AWS IoT infrastructure.
- *
- * @note OTA updates are disabled by default, to enable set the build define @c ENABLE_OTA_APP to 1.
- *
- * To perform an OTA update, first ensure there is a version of this application running on the
- * device with the right credentials and certificates to connect to the service.  In addition to
- * certificates and keys described in step 3 of the Getting Started section above, we will
- * also need a code signing certificate to be installed on the device. This certificate can be
- * generated using a tool like openssl as described below:
- *
- * @note OTA update feature is supported only on @c mm-ekh08-u575 and @c mm-mm6108-ekh05 platforms - you
- * will get an error on all other platforms if you attempt an OTA update. To add OTA support to
- * your platform, you will need to:
- * - Build and install the bootloader for your platform. (See @ref bootloader.c) If you are
- *   loading the application using @c openocd, then _first_ load the application and then load
- *   the bootloader. Do this every time you load the application using openocd as the
- *   application contains a stub bootloader that will overwrite the real bootloader.
- * - Ensure you have enabled flash file-system support for your platform. To add flash
- *   file-system support for your platform, you will need to add a @c .filesystem section
- *   to your linker definition file that is big enough to accommodate the OTA download image
- *   plus any other data you may store in the file-system. Also ensure you have a valid
- *   implementation of @ref mmhal_get_littlefs_config() that returns your file-system
- *   configuration.
- *
- * ## Generating Code Signing Keys
- *
- * ### Option 1: Generating @c ECDSA Keys for signing by AWS
- * The steps below are from the following document:
- * @c https://docs.aws.amazon.com/freertos/latest/userguide/ota-code-sign-cert-win.html
- * - In your working directory, create a file named @c cert_config.txt with the following text:
- *   @code
- *   [ req ]
- *   prompt             = no
- *   distinguished_name = my_dn
- *   [ my_dn ]
- *   commonName = me@myemail.com
- *   [ my_exts ]
- *   keyUsage         = digitalSignature
- *   extendedKeyUsage = codeSigning
- *   @endcode
- *   Replace @c me@myemail.com with your organization email and replace the my in @c my_dn
- *   and @c my_exts with your organization name as appropriate.
- *
- * - Create an @c ECDSA code-signing private key:
- *   @code
- *   openssl genpkey -algorithm EC -pkeyopt ec_paramgen_curve:P-256 -pkeyopt ec_param_enc:named_curve -outform PEM -out otasigning.key
- *   @endcode
- * - Create an @c ECDSA code-signing certificate:
- *   @code
- *   openssl req -new -x509 -config cert_config.txt -extensions my_exts -nodes -days 365 -key otasigning.key -out otasigning.pem.crt
- *   @endcode
- * - Copy the @c otasigning.pem.crt file to the credentials folder and follow the
- *   @ref MMCONFIG_PROGRAMMING instructions to load the @c config.hjson file to the device.
- *   Ensure you have generated the other certificates, keys and provisioning information
- *   as described in @ref AWS_GETTING_STARTED section above.
- *
- * ### Option 2: Generating Self signing (RSA) keys
- * - Create the signing keys & certificate as shown below:
- *   @code
- *   openssl genrsa -out otasigning.key 2048
- *   openssl rsa -in otasigning.key -pubout otasigning.pem.crt
- *   @endcode
- * - Copy the @c otasigning.pem.crt file to the credentials folder and follow the
- *   @ref MMCONFIG_PROGRAMMING instructions to load the @c config.hjson file to the device.
- *   Ensure you have generated the other certificates, keys and provisioning information
- *   as described in @ref AWS_GETTING_STARTED section above.
- * - Sign the code
- *  - Build the update file for the application, you should get a .mbin file in the output directory
- *    @code
- *    make mbin -j4
- *    @endcode
- *  - Sign the .mbin file as shown below
- *    @code
- *    openssl dgst -sha256 -sign otasigning.key -out signature.bin <MBIN file>
- *    openssl enc -base64 -in signature.bin -out signature.txt
- *    @endcode
- * - Upload the MBIN file to AWS as described below, paste the contents of the @c signature.txt
- *   file into the signature field
- *
- * ## Deploying the update
- * - First, ensure your AWS account has the required permissions. For more information, see:
- *   @c https://docs.aws.amazon.com/freertos/latest/userguide/code-sign-policy.html
- * - In the AWS IoT Core portal, select Manage > Remote Actions > Jobs, then click Create job.
- * - Under Job type select Create FreeRTOS OTA update job, then choose Next.
- * - Enter a name for the job and click Next.
- * - Under Devices to update, choose one or more things or thing groups from the drop down menu.
- * - Select @c MQTT for file transfer protocol.
- * - Under Sign and choose your file, select Sign a new file for me.
- * - If you are using Option 2 (Self signed image), then select Use My custom signed file
- *  - Cut and paste the contents of the @c signature.txt file that you generated while signing
- *    into the signature box.
- *  - Select SHA-256 as the original hash algorithm.
- *  - Select RSA as the original encryption algorithm.
- *  - Enter @c aws.ota_cert as the path name of the code signing certificate on the device.
- *    (This incidentally is the name of the config store key that contains the certificate)
- *  - Click Upload a new file and upload the .mbin file.
- *  - If you have not already done so, create an S3 bucket and specify the path to save the
- *    file as.
- *  - In path name of the file on the device enter the name of the mbin file.  Ensure this is a
- *    valid file name or the update will fail.
- *  - Select an @c IAM role with permissions to do OTA updates and click Next.
- *  - In the next screen click Create Job.
- * - If you are using Option 1 (Signing by AWS)
- *  - If you have not already done so, under Code signing profile, choose Create new profile.
- *   - In Create a code signing profile, enter a name for your code-signing profile.
- *   - Under Device hardware platform choose Windows Simulator.
- *     You will need to get your platform certified by AWS for it to appear here.
- *   - Select Import a new code signing certificate.
- *   - Upload @c otasigning.pem.crt as the certificate body.
- *   - Upload @c otasigning.key as the certificate private key.
- *   - Click import.
- *   - Enter @c aws.ota_cert as the path name of the code signing certificate on the device.
- *   - Click Create.
- *  - Back at the previous screen, select the code signing profile you just created.
- *  - Click Upload a new file and upload the .mbin file.
- *  - If you have not already done so, create an S3 bucket and specify the path to save the
- *    file as.
- *  - In path name of the file on the device enter the name of the mbin file.  Ensure this is a
- *    valid file name or the update will fail.
- *  - Select an @c IAM role with permissions to do OTA updates and click Next.
- *  - In the next screen click Create Job.
- *
- * Congratulations! The update has been deployed.  If the application is currently running on
- * the device, it should immediately see the update and start downloading it. In a minute or two
- * the device should reboot and the new update will be applied.  AWS will indicate successful
- * update on the console once the updated firmware boots and connects to AWS.
- *
- * @note OTA update performance will depend on the configuration in @c ota_config.h and modifying
- *       this configuration may decrease update time. See @c ota_config.h for more information on
- *       each option and what they are used for.
- * @note If the above process does not work for you, then you can debug the issue by enabling
- * OTA logging by removing the @c DISABLE_OTA_LOGGING flag from the @c Makefile and
- * @c platformio.ini files for this example. Also, ensure you increment the version numbers in
- * @c version.h prior to every OTA update or you will get warnings that the new version is not
- * higher than the old version, the update will still complete though.
- *
- * For more information, see:
- * @c https://docs.aws.amazon.com/freertos/latest/userguide/ota-console-workflow.html
- *
- *
  * # Fleet Provisioning
  *
  * The steps above describe how to provision one device at a time for AWS IoT. This however is
@@ -513,9 +368,6 @@
 #if defined(ENABLE_SHADOW_APP) && ENABLE_SHADOW_APP
 #include "shadow_device_task.h"
 #endif
-#if defined(ENABLE_OTA_APP) && ENABLE_OTA_APP
-#include "ota_update_task.h"
-#endif
 #if defined(ENABLE_PROVISIONING_APP) && ENABLE_PROVISIONING_APP
 #include "fleet_provisioning_task.h"
 #endif
@@ -561,53 +413,6 @@
     "},"                        \
     "\"clientToken\":\"%06lu\"" \
     "}"
-
-#if defined(ENABLE_OTA_APP) && ENABLE_OTA_APP
-/**
- * This function is called when an OTA update has been triggered.
- *
- * The primary use case of this function is to clear up space in the file system for the
- * OTA download. Once this function returns there should be enough space available in the
- * file system to store the complete update image.
- * For more information see @c ota_preupdate_cb_fn_t.
- */
-void ota_preupdate_callback(void)
-{
-    /* An OTA update has been triggered, print a message notifying the user */
-    printf("An OTA update has been triggered, downloading the file in the background...\n");
-
-    /* Perform any cleanup for the file system such as deleting logs, uploading data, etc.
-     * If the device runs out of space in the filesystem while downloading the update then
-     * the update will fail. You may block till cleanup is completed. */
-}
-
-/**
- * This function is called after an OTA update was processed.
- *
- * The application may perform any logging to note the event and also to migrate any
- * data from the older version if required. The application may also use this callback
- * to restore any files and data it had uploaded to the cloud prior to the update
- * starting. This function may also be used to atomically update firmware and BCF images
- * contained in the update file. For more information see @c ota_postupdate_cb_fn_t.
- *
- * @param update_file Path to the update file - use this to update firmware or BCF if required.
- *                    This file will be automatically deleted on return from this function.
- * @param status      0 on success, bootloader error code on failure.
- */
-void ota_postupdate_callback(const char *update_file, int status)
-{
-    (void)update_file;
-
-    if (status == 0)
-    {
-        printf("OTA Update completed successfully\n");
-    }
-    else
-    {
-        printf("OTA Update failed with error code %d\n", status);
-    }
-}
-#endif
 
 #if defined(ENABLE_SHADOW_APP) && ENABLE_SHADOW_APP
 
@@ -852,7 +657,7 @@ void app_init(void)
 
     /* Wi-Fi is connected, sync to NTP - required for certificate expiry validation */
     char sntp_server[64];
-    strncpy(sntp_server, "0.pool.ntp.org", sizeof(sntp_server)); /* default if key is not found */
+    strncpy(sntp_server, "time.aws.com", sizeof(sntp_server)); /* default if key is not found */
     (void)mmconfig_read_string("sntp.server", sntp_server, sizeof(sntp_server));
     sntp_sync_with_backoff(sntp_server,
                            NTP_MIN_TIMEOUT,
@@ -892,11 +697,6 @@ void app_init(void)
                "please see getting started guide on how to provision.\n");
 #endif
     }
-
-#if defined(ENABLE_OTA_APP) && ENABLE_OTA_APP
-    /* Now spool up the OTA task */
-    start_ota_update_task(ota_preupdate_callback, ota_postupdate_callback);
-#endif
 
 #if defined(ENABLE_SHADOW_APP) && ENABLE_SHADOW_APP
     state_change_sem = mmosal_sem_create(1, 1, "state_change_sem");

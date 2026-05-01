@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['enable_5ftls_0',['enable_tls',['../structmmagic__core__tcp__connect__cmd__args.html#ac56625c217083a48d365a0010b1f1357',1,'mmagic_core_tcp_connect_cmd_args']]],
-  ['enabled_1',['enabled',['../structmmagic__core__tcp__set__rx__ready__evt__enabled__cmd__args.html#a1ccff8313aa418b090e8214afe930e06',1,'mmagic_core_tcp_set_rx_ready_evt_enabled_cmd_args']]],
+  ['enable_5ftls_0',['enable_tls',['../structmmagic__core__socket__connect__cmd__args.html#acb6faca9caf65716a5ecb597162d55dc',1,'mmagic_core_socket_connect_cmd_args']]],
+  ['enabled_1',['enabled',['../structmmagic__core__socket__set__rx__ready__evt__enabled__cmd__args.html#aa5ff779b52072e7f89a4d293fc52dd5c',1,'mmagic_core_socket_set_rx_ready_evt_enabled_cmd_args']]],
   ['error_5fcount_2',['error_count',['../structmmiperf__report.html#afeb4ea2572bfe9ca2afcf0dfa49d3d72',1,'mmiperf_report']]],
   ['escape_3',['escape',['../structslip__rx__state.html#a6bc697eea8043b5b6d2d43f08a4c11a2',1,'slip_rx_state']]],
   ['event_4',['event',['../structmmwlan__sta__event__cb__args.html#a38137d0a6000b1b39de91eb82c615c66',1,'mmwlan_sta_event_cb_args::event()'],['../structmmwlan__dpp__cb__args.html#aefb678469add397dcbf227856c039eb7',1,'mmwlan_dpp_cb_args::event()'],['../structmmagic__wlan__sta__event__event__args.html#aa913ec8c5d2e25192f2011b29904931f',1,'mmagic_wlan_sta_event_event_args::event()']]],

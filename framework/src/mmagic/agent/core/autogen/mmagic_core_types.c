@@ -396,6 +396,14 @@ static const struct enum_status_string_lut
         .string_value = "bad_version",
         .enum_value = MMAGIC_STATUS_BAD_VERSION,
     },
+    {
+        .string_value = "dpp_pb_error",
+        .enum_value = MMAGIC_STATUS_DPP_PB_ERROR,
+    },
+    {
+        .string_value = "dpp_pb_session_overlap",
+        .enum_value = MMAGIC_STATUS_DPP_PB_SESSION_OVERLAP,
+    },
 };
 
 int mmagic_enum_status_to_string(enum mmagic_status value, char *buf, size_t len)
@@ -603,76 +611,6 @@ int mmagic_string_to_enum_deep_sleep_mode(enum mmagic_deep_sleep_mode *value, co
     return -1;
 }
 
-static const struct enum_standby_mode_exit_reason_string_lut
-{
-    const char *string_value;
-    enum mmagic_standby_mode_exit_reason enum_value;
-} enum_standby_mode_exit_reason_string_lut[] = {
-    {
-        .string_value = "standby_exit_none",
-        .enum_value = MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_NONE,
-    },
-    {
-        .string_value = "standby_exit_wakeup_frame",
-        .enum_value = MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_WAKEUP_FRAME,
-    },
-    {
-        .string_value = "standby_exit_associate",
-        .enum_value = MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_ASSOCIATE,
-    },
-    {
-        .string_value = "standby_exit_ext_input",
-        .enum_value = MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_EXT_INPUT,
-    },
-    {
-        .string_value = "standby_exit_whitelist_pkt",
-        .enum_value = MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_WHITELIST_PKT,
-    },
-    {
-        .string_value = "standby_exit_tcp_connection_lost",
-        .enum_value = MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_TCP_CONNECTION_LOST,
-    },
-    {
-        .string_value = "standby_exit_hw_scan_not_enabled",
-        .enum_value = MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_HW_SCAN_NOT_ENABLED,
-    },
-    {
-        .string_value = "standby_exit_hw_scan_failed_to_start",
-        .enum_value = MMAGIC_STANDBY_MODE_EXIT_REASON_STANDBY_EXIT_HW_SCAN_FAILED_TO_START,
-    },
-};
-
-int mmagic_enum_standby_mode_exit_reason_to_string(enum mmagic_standby_mode_exit_reason value,
-                                                   char *buf,
-                                                   size_t len)
-{
-    for (size_t ii = 0; ii < MM_ARRAY_COUNT(enum_standby_mode_exit_reason_string_lut); ii++)
-    {
-        if (enum_standby_mode_exit_reason_string_lut[ii].enum_value == value)
-        {
-            return snprintf(buf,
-                            len,
-                            "%s",
-                            enum_standby_mode_exit_reason_string_lut[ii].string_value);
-        }
-    }
-    return -1;
-}
-
-int mmagic_string_to_enum_standby_mode_exit_reason(enum mmagic_standby_mode_exit_reason *value,
-                                                   const char *buf)
-{
-    for (size_t ii = 0; ii < MM_ARRAY_COUNT(enum_standby_mode_exit_reason_string_lut); ii++)
-    {
-        if (strcasecmp(buf, enum_standby_mode_exit_reason_string_lut[ii].string_value) == 0)
-        {
-            *value = enum_standby_mode_exit_reason_string_lut[ii].enum_value;
-            return 0;
-        }
-    }
-    return -1;
-}
-
 static const struct enum_sta_state_string_lut
 {
     const char *string_value;
@@ -781,6 +719,94 @@ int mmagic_string_to_enum_sta_event(enum mmagic_sta_event *value, const char *bu
     return -1;
 }
 
+static const struct enum_socket_proto_string_lut
+{
+    const char *string_value;
+    enum mmagic_socket_proto enum_value;
+} enum_socket_proto_string_lut[] = {
+    {
+        .string_value = "tcp",
+        .enum_value = MMAGIC_SOCKET_PROTO_TCP,
+    },
+    {
+        .string_value = "udp",
+        .enum_value = MMAGIC_SOCKET_PROTO_UDP,
+    },
+};
+
+int mmagic_enum_socket_proto_to_string(enum mmagic_socket_proto value, char *buf, size_t len)
+{
+    for (size_t ii = 0; ii < MM_ARRAY_COUNT(enum_socket_proto_string_lut); ii++)
+    {
+        if (enum_socket_proto_string_lut[ii].enum_value == value)
+        {
+            return snprintf(buf, len, "%s", enum_socket_proto_string_lut[ii].string_value);
+        }
+    }
+    return -1;
+}
+
+int mmagic_string_to_enum_socket_proto(enum mmagic_socket_proto *value, const char *buf)
+{
+    for (size_t ii = 0; ii < MM_ARRAY_COUNT(enum_socket_proto_string_lut); ii++)
+    {
+        if (strcasecmp(buf, enum_socket_proto_string_lut[ii].string_value) == 0)
+        {
+            *value = enum_socket_proto_string_lut[ii].enum_value;
+            return 0;
+        }
+    }
+    return -1;
+}
+
+static const struct enum_subsystem_id_string_lut
+{
+    const char *string_value;
+    enum mmagic_subsystem_id enum_value;
+} enum_subsystem_id_string_lut[] = {
+    {
+        .string_value = "host",
+        .enum_value = MMAGIC_SUBSYSTEM_ID_HOST,
+    },
+    {
+        .string_value = "mac",
+        .enum_value = MMAGIC_SUBSYSTEM_ID_MAC,
+    },
+    {
+        .string_value = "phy",
+        .enum_value = MMAGIC_SUBSYSTEM_ID_PHY,
+    },
+    {
+        .string_value = "umac",
+        .enum_value = MMAGIC_SUBSYSTEM_ID_UMAC,
+    },
+};
+
+int mmagic_enum_subsystem_id_to_string(enum mmagic_subsystem_id value, char *buf, size_t len)
+{
+    for (size_t ii = 0; ii < MM_ARRAY_COUNT(enum_subsystem_id_string_lut); ii++)
+    {
+        if (enum_subsystem_id_string_lut[ii].enum_value == value)
+        {
+            return snprintf(buf, len, "%s", enum_subsystem_id_string_lut[ii].string_value);
+        }
+    }
+    return -1;
+}
+
+int mmagic_string_to_enum_subsystem_id(enum mmagic_subsystem_id *value, const char *buf)
+{
+    for (size_t ii = 0; ii < MM_ARRAY_COUNT(enum_subsystem_id_string_lut); ii++)
+    {
+        if (strcasecmp(buf, enum_subsystem_id_string_lut[ii].string_value) == 0)
+        {
+            *value = enum_subsystem_id_string_lut[ii].enum_value;
+            return 0;
+        }
+    }
+    return -1;
+}
+
 /* -------------------- Basic types -------------------- */
 
 int mmagic_bool_to_string(bool value, char *buf, size_t len)
@@ -802,6 +828,23 @@ int mmagic_string_to_bool(bool *value, const char *buf)
     }
 
     return -1;
+}
+
+int mmagic_uint8_t_to_hexstring(const uint8_t *array, size_t array_len, char *buf, size_t buf_len)
+{
+    /* Each uint8_t converts to two hexadecimal digits e.g. 'ab'.
+     * The generated string will not split the digits from a single uint8_t - it must all fit
+     * including a terminator
+     */
+#define UINT8_T_HEX_LEN 2
+    size_t idx = 0;
+    while ((idx < array_len) && (((idx + 1) * UINT8_T_HEX_LEN) < buf_len))
+    {
+        snprintf(&buf[idx * 2], UINT8_T_HEX_LEN + 1, "%02x", array[idx]);
+        idx++;
+    }
+
+    return idx;
 }
 
 int mmagic_uint16_t_to_string(uint16_t value, char *buf, size_t len)

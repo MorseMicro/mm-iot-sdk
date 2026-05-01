@@ -83,7 +83,8 @@ static void mmnetif_rx(struct mmpkt *rxpkt, const struct mmwlan_rx_metadata *met
                                 &pbuf->p,
                                 mmpkt_get_data_start(pbuf->pktview),
                                 mmpkt_get_data_length(pbuf->pktview));
-        int ret = tcpip_input(p, netif);
+        MMOSAL_DEV_ASSERT(netif->input != NULL);
+        int ret = netif->input(p, netif);
         if (ret == ERR_OK)
         {
             LINK_STATS_INC(link.recv);
@@ -227,18 +228,25 @@ err_t mmnetif_init(struct netif *netif)
     /* Boot the transceiver so that we can read the MAC address. */
     struct mmwlan_boot_args boot_args = MMWLAN_BOOT_ARGS_INIT;
     status = mmwlan_boot(&boot_args);
-    if (status != MMWLAN_SUCCESS)
+    if (status == MMWLAN_SUCCESS)
+    {
+        /* Set MAC hardware address */
+        status = mmwlan_get_mac_addr(netif->hwaddr);
+        MMOSAL_ASSERT(status == MMWLAN_SUCCESS);
+    }
+    else if (status == MMWLAN_CHANNEL_LIST_NOT_SET)
+    {
+        LWIP_DEBUGF(NETIF_DEBUG | LWIP_DBG_LEVEL_SERIOUS,
+                    ("mmwlan_boot failed because channel list is not set\n"));
+    }
+    else
     {
         LWIP_DEBUGF(NETIF_DEBUG | LWIP_DBG_LEVEL_SEVERE,
                     ("mmwlan_boot failed with code %d\n", status));
+        MMOSAL_ASSERT(false);
     }
-    MMOSAL_ASSERT(status == MMWLAN_SUCCESS);
 
-    /* Set MAC hardware address */
     netif->hwaddr_len = MMWLAN_MAC_ADDR_LEN;
-    status = mmwlan_get_mac_addr(netif->hwaddr);
-    MMOSAL_ASSERT(status == MMWLAN_SUCCESS);
-
     netif->mtu = 1500;
 #if LWIP_IPV4 && !LWIP_IPV6
     netif->flags |= NETIF_FLAG_BROADCAST | NETIF_FLAG_ETHARP | NETIF_FLAG_IGMP;

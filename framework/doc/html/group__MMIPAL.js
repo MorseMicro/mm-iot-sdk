@@ -20,9 +20,7 @@ var group__MMIPAL =
       [ "ip6_mode", "structmmipal__init__args.html#a039c9ce0adac0886490ab31f47802620", null ],
       [ "ip_addr", "structmmipal__init__args.html#af0a945121c03bea2d9d68274a8cd4821", null ],
       [ "mode", "structmmipal__init__args.html#aa8ea6f4bfc27973166408ca9022c9f1b", null ],
-      [ "netmask", "structmmipal__init__args.html#adb4e68a901669a22eb9971a492db1fae", null ],
-      [ "offload_arp_refresh_s", "structmmipal__init__args.html#a1be9ccde36fcf6f00f1295b13d2868d3", null ],
-      [ "offload_arp_response", "structmmipal__init__args.html#a300bfe8f55bd14330a8c2ea17df8371e", null ]
+      [ "netmask", "structmmipal__init__args.html#adb4e68a901669a22eb9971a492db1fae", null ]
     ] ],
     [ "mmipal_link_status", "structmmipal__link__status.html", [
       [ "gateway", "structmmipal__link__status.html#a54c7a82096e1ea5abadeebee82d1e331", null ],
@@ -44,8 +42,7 @@ var group__MMIPAL =
       [ "MMIPAL_DISABLED", "group__MMIPAL.html#ggafc9d0260b07ca329e4fc2393a769c3cda1daa5bbd662049fcc18526b4ae2f96b5", null ],
       [ "MMIPAL_STATIC", "group__MMIPAL.html#ggafc9d0260b07ca329e4fc2393a769c3cda94fc853f6c5c0d4e4bbc722c9e77e9dc", null ],
       [ "MMIPAL_DHCP", "group__MMIPAL.html#ggafc9d0260b07ca329e4fc2393a769c3cda7af3e1dc0c8e2336742f2852c0a799c7", null ],
-      [ "MMIPAL_AUTOIP", "group__MMIPAL.html#ggafc9d0260b07ca329e4fc2393a769c3cda0d6e8956e62814fd570cdb9fc87124f6", null ],
-      [ "MMIPAL_DHCP_OFFLOAD", "group__MMIPAL.html#ggafc9d0260b07ca329e4fc2393a769c3cda8890eac1c09ea4ce42edc972a6e9d1e4", null ]
+      [ "MMIPAL_AUTOIP", "group__MMIPAL.html#ggafc9d0260b07ca329e4fc2393a769c3cda0d6e8956e62814fd570cdb9fc87124f6", null ]
     ] ],
     [ "mmipal_ip6_addr_mode", "group__MMIPAL.html#ga766bcb2fa9bef02bbc17203399c84f55", [
       [ "MMIPAL_IP6_DISABLED", "group__MMIPAL.html#gga766bcb2fa9bef02bbc17203399c84f55a816ac2c6e768f2afe87c6058d46429e5", null ],

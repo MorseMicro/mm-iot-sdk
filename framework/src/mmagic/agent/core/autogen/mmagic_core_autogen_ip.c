@@ -16,6 +16,11 @@
  */
 #define MAX_VAL_LEN 101
 
+bool mmagic_core_ip_is_started(struct mmagic_data *core)
+{
+    return core->ip_data.is_started;
+}
+
 void mmagic_core_ip_load_all(struct mmagic_data *core)
 {
     struct mmagic_ip_data *data = &core->ip_data;
@@ -69,33 +74,9 @@ void mmagic_core_ip_load_all(struct mmagic_data *core)
 
     {
         char val[MAX_VAL_LEN] = { 0 };
-        if (mmconfig_read_string("ip.dhcp_offload", val, sizeof(val)) > 0)
-        {
-            (void)mmagic_string_to_bool(&data->config.dhcp_offload, val);
-        }
-    }
-
-    {
-        char val[MAX_VAL_LEN] = { 0 };
         if (mmconfig_read_string("ip.link_status_evt_en", val, sizeof(val)) > 0)
         {
             (void)mmagic_string_to_bool(&data->config.link_status_evt_en, val);
-        }
-    }
-
-    {
-        char val[MAX_VAL_LEN] = { 0 };
-        if (mmconfig_read_string("ip.offload_arp_response", val, sizeof(val)) > 0)
-        {
-            (void)mmagic_string_to_bool(&data->config.offload_arp_response, val);
-        }
-    }
-
-    {
-        char val[MAX_VAL_LEN] = { 0 };
-        if (mmconfig_read_string("ip.offload_arp_refresh_s", val, sizeof(val)) > 0)
-        {
-            (void)mmagic_string_to_uint32_t(&data->config.offload_arp_refresh_s, val);
         }
     }
 }
@@ -141,26 +122,8 @@ void mmagic_core_ip_save_all(struct mmagic_data *core)
 
     {
         char val[MAX_VAL_LEN];
-        mmagic_bool_to_string(data->config.dhcp_offload, val, sizeof(val));
-        mmconfig_write_string("ip.dhcp_offload", val);
-    }
-
-    {
-        char val[MAX_VAL_LEN];
         mmagic_bool_to_string(data->config.link_status_evt_en, val, sizeof(val));
         mmconfig_write_string("ip.link_status_evt_en", val);
-    }
-
-    {
-        char val[MAX_VAL_LEN];
-        mmagic_bool_to_string(data->config.offload_arp_response, val, sizeof(val));
-        mmconfig_write_string("ip.offload_arp_response", val);
-    }
-
-    {
-        char val[MAX_VAL_LEN];
-        mmagic_uint32_t_to_string(data->config.offload_arp_refresh_s, val, sizeof(val));
-        mmconfig_write_string("ip.offload_arp_refresh_s", val);
     }
 }
 

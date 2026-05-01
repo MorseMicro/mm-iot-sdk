@@ -61,6 +61,12 @@ void umac_supp_l2_sock_receive(struct umac_data *umacd,
                                const uint8_t *src_addr);
 
 
+void umac_supp_l2_sock_receive_ap(struct umac_data *umacd,
+                                  const uint8_t *payload,
+                                  size_t payload_len,
+                                  const uint8_t *src_addr);
+
+
 void umac_supp_process_deauth(struct umac_data *umacd);
 
 
@@ -86,13 +92,27 @@ void umac_supp_process_unprotected_deauth(struct umac_data *umacd,
                                           const uint8_t *da);
 
 
+void umac_supp_process_unprotected_deauth_ap(struct umac_data *umacd,
+                                             uint16_t reason_code,
+                                             const uint8_t *sa,
+                                             const uint8_t *da);
+
+
 void umac_supp_process_unprotected_disassoc(struct umac_data *umacd,
                                             uint16_t reason_code,
                                             const uint8_t *sa,
                                             const uint8_t *da);
 
 
-void umac_supp_process_mgmt_frame(struct umac_data *umacd, struct mmpktview *rxbufview);
+void umac_supp_process_unprotected_disassoc_ap(struct umac_data *umacd,
+                                               uint16_t reason_code,
+                                               const uint8_t *sa,
+                                               const uint8_t *da);
+
+
+void umac_supp_process_mgmt_frame(struct umac_data *umacd,
+                                  struct mmpktview *rxbufview,
+                                  enum mmwlan_vif vif);
 
 
 void umac_supp_process_probe_req_frame(struct umac_data *umacd,
@@ -114,6 +134,9 @@ bool bip_is_valid(struct umac_sta_data *stad,
                   const struct dot11_hdr *header,
                   const uint8_t *data,
                   size_t data_len);
+
+
+bool bip_generate_mmie(struct umac_sta_data *stad, uint8_t *data, size_t data_len);
 
 
 bool ccmp_is_valid(struct umac_sta_data *stad,

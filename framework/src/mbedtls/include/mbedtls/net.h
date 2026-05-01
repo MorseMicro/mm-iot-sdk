@@ -44,9 +44,9 @@
 
 #include "mbedtls/ssl.h"
 
-#include <stdatomic.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 /** Failed to open a socket. */
 #define MBEDTLS_ERR_NET_SOCKET_FAILED -0x0042
@@ -101,7 +101,7 @@ typedef void (*mbedtls_net_rx_callback_t)(struct mbedtls_net_context *ctx, void 
 /**
  * Data structure for mbedtls session network layer context.
  *
- * This supports both FreeRTOS+ TCP and LWIP as the TCP/IP stack.
+ * This supports LWIP as the TCP/IP stack.
  */
 typedef struct mbedtls_net_context
 {
@@ -119,17 +119,11 @@ typedef struct mbedtls_net_context
         void *socket;
     };
 
-    /** Subset of this data structure used only by FreeRTOS+ TCP. */
-    struct
-    {
-        /** The socket type, in case the IP stack does not provide a means of reading this back
-         *  from the socket. */
-        int type;
-        /** Set to @c FREERTOS_MSG_DONTWAIT if non-blocking, else 0. */
-        int non_blocking_flag;
-        /** The socket set used for polling */
-        void *socket_set;
-    } freertos;
+    /** Registered callback to be invoked when RX data becomes available. */
+    mbedtls_net_rx_callback_t rx_callback;
+
+    /** Opaque argument for @c rx_callback. */
+    void *rx_callback_arg;
 
     /**
      * Indicates whether RX data has become ready since the last read or the last time this
@@ -137,12 +131,7 @@ typedef struct mbedtls_net_context
      *
      * Note that it only gets set if rx_callack is registered.
      */
-    atomic_size_t rx_data_ready;
-
-    /** Registered callback to be invoked when RX data becomes available. */
-    mbedtls_net_rx_callback_t rx_callback;
-    /** Opaque argument for @c rx_callback. */
-    void *rx_callback_arg;
+    bool rx_data_ready;
 } mbedtls_net_context;
 
 /**

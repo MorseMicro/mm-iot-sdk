@@ -1,5 +1,5 @@
 #
-# Copyright 2023-2024 Morse Micro
+# Copyright 2023-2026 Morse Micro
 #
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -17,14 +17,15 @@ MMIPERF_SRCS_H += common/mmiperf_private.h
 
 
 ifeq ($(IP_STACK),lwip)
-MMIPERF_SRCS_C += lwip/mmiperf_tcp.c
-MMIPERF_SRCS_C += lwip/mmiperf_udp.c
+MMIPERF_SRCS_C += lwip/mmiperf_lwip_common.c
+MMIPERF_SRCS_C += lwip/mmiperf_tcp_common.c
+MMIPERF_SRCS_C += lwip/mmiperf_tcp_client.c
+MMIPERF_SRCS_C += lwip/mmiperf_tcp_server.c
+MMIPERF_SRCS_C += lwip/mmiperf_udp_client.c
+MMIPERF_SRCS_C += lwip/mmiperf_udp_server.c
 MMIPERF_SRCS_H += lwip/mmiperf_lwip.h
 else
-MMIPERF_SRCS_C += freertosplustcp/mmiperf_tcp.c
-MMIPERF_SRCS_C += freertosplustcp/mmiperf_udp.c
-MMIPERF_SRCS_C += freertosplustcp/mmiperf_freertosplustcp_common.c
-BUILD_DEFINES += MMIPERF_STACK_SIZE=640
+$(error Unknown IP_STACK '$(IP_STACK)' specified)
 endif
 
 MMIPERF_SRCS_H += mmiperf.h

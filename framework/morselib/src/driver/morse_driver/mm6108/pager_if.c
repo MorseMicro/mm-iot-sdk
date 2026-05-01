@@ -69,7 +69,17 @@ int morse_pager_irq_handler(struct driver_data *driverd, uint32_t status)
     bool is_cmd_resp_bypass = false;
 
 
+    uint32_t raw_status = status;
     status &= enabled_irqs;
+
+    if (status == 0)
+    {
+        MMLOG_WRN("Handler called with no enabled irqs to process RAW_IRQ:0x%x, EN_IRQ:0x%x\n",
+                  raw_status,
+                  enabled_irqs);
+
+        return 0;
+    }
 
     for (count = 0; count < chip_if->pager_count; count++)
     {
@@ -106,8 +116,14 @@ int morse_pager_irq_handler(struct driver_data *driverd, uint32_t status)
                 if (chip_if->bypass.tx_status.to_process[ii] == 0)
                 {
                     chip_if->bypass.tx_status.to_process[ii] = page;
+                    page = 0;
                     break;
                 }
+            }
+            if (page != 0)
+            {
+                MMLOG_ERR("Dropped TX status bypass page\n");
+                MMOSAL_DEV_ASSERT(0);
             }
 
             rx_pend |= true;
@@ -126,25 +142,28 @@ int morse_pager_irq_handler(struct driver_data *driverd, uint32_t status)
                 if (chip_if->bypass.cmd_resp.to_process[ii] == 0)
                 {
                     chip_if->bypass.cmd_resp.to_process[ii] = page;
+                    page = 0;
                     break;
                 }
+            }
+            if (page != 0)
+            {
+                MMLOG_ERR("Dropped cmd resp bypass page\n");
+                MMOSAL_DEV_ASSERT(0);
             }
 
             rx_pend |= true;
         }
     }
 
-    if (rx_pend || tx_buffer_return_pend)
+    if (rx_pend)
     {
-        if (rx_pend)
-        {
-            driver_task_notify_event(driverd, DRV_EVT_RX_PEND);
-        }
+        driver_task_notify_event(driverd, DRV_EVT_RX_PEND);
+    }
 
-        if (tx_buffer_return_pend)
-        {
-            driver_task_notify_event(driverd, DRV_EVT_PAGE_RETURN_PEND);
-        }
+    if (tx_buffer_return_pend)
+    {
+        driver_task_notify_event(driverd, DRV_EVT_PAGE_RETURN_PEND);
     }
     return 0;
 }

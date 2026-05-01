@@ -31,6 +31,7 @@
 #define FREERTOS_CONFIG_H
 
 #include "mmosal.h"
+#include "mmport.h"
 
 /*-----------------------------------------------------------
  * Application specific definitions.
@@ -152,10 +153,11 @@ extern const uint32_t mmhal_system_clock;
 #define configMAX_SYSCALL_INTERRUPT_PRIORITY \
     (configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY << (8 - configPRIO_BITS))
 
-/* Define configBREAK() to trigger a breakpoint
- * NOTE: this implementation is specific to GCC and ARM. */
-#if defined(__GNUC__) && (defined(__ARMEL__) || defined(__ARMEB__))
-#define configBREAK() __asm("bkpt 0 \n\t")
+#ifndef configBREAK
+#define configBREAK() MMPORT_BREAKPOINT()
+#endif
+
+#ifndef configABORT
 #define configABORT()             \
     do {                          \
         taskDISABLE_INTERRUPTS(); \

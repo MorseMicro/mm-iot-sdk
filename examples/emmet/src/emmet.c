@@ -72,14 +72,13 @@
 
 #include <string.h>
 #include "mmhal_app.h"
+#include "mmlog.h"
 #include "mmosal.h"
 #include "mmwlan.h"
 #include "mmregdb.h"
 #include "emmet.h"
 #include "mm_app_loadconfig.h"
 #include "mm_app_common.h"
-
-#include "mmipal.h"
 
 /**
  * Link status callback
@@ -145,7 +144,8 @@ void app_init(void)
     /* Initialize Emmet first to ensure host interface is in a valid state. */
     emmet_init();
 
-    printf("\n\nMorse Emmet Demo (Built " __DATE__ " " __TIME__ ")\n\n");
+    MMLOG_PRINTF("\n\n");
+    MMLOG_APP("Morse Emmet Demo (Built " __DATE__ " " __TIME__ ")\n\n");
 
     /* Initialize MMWLAN interface */
     mmwlan_init();
@@ -161,9 +161,11 @@ void app_init(void)
     load_mmipal_init_args(&mmipal_init_args);
 
     /* Initialize IP stack. */
-    if (mmipal_init(&mmipal_init_args) != MMIPAL_SUCCESS)
+    enum mmipal_status ipal_status = mmipal_init(&mmipal_init_args);
+
+    if (ipal_status != MMIPAL_SUCCESS)
     {
-        printf("Error initializing network interface.\n");
+        MMLOG_ERR("Error initializing network interface.\n");
         MMOSAL_ASSERT(false);
     }
 
@@ -173,4 +175,5 @@ void app_init(void)
     emmet_set_reg_db(get_regulatory_db());
 
     emmet_start();
+    MMLOG_APP("Emmet Started\n");
 }

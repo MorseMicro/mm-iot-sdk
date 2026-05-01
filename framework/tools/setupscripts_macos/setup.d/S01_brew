@@ -1,0 +1,14 @@
+#
+# Copyright 2026 Morse Micro
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+if command -v brew >/dev/null 2>&1
+then
+    echo -e "\033[36mHomebrew already installed. Skipping installation.\033[0m"
+else
+    echo -e "\033[32mInstalling Homebrew.\033[0m"
+    $DRYRUNCMD NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    $DRYRUNCMD eval "$(/opt/homebrew/bin/brew shellenv)"
+fi

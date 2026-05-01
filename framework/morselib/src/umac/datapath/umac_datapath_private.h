@@ -8,16 +8,6 @@
 
 #pragma once
 
-struct MM_PACKED umac_8023_hdr
-{
-    struct
-    {
-        uint8_t dest_addr[DOT11_MAC_ADDR_LEN];
-        uint8_t src_addr[DOT11_MAC_ADDR_LEN];
-        uint16_t ethertype_be;
-    };
-};
-
 MM_STATIC_ASSERT(sizeof(struct umac_8023_hdr) == 14, "Invalid 802.3 definition");
 MM_STATIC_ASSERT(
     offsetof(struct umac_8023_hdr, ethertype_be) ==
@@ -44,7 +34,9 @@ struct umac_datapath_ops
     struct umac_sta_data *(*lookup_stad_by_aid)(struct umac_data *umacd, uint16_t aid);
 
 
-    bool (*set_stad_sleep_state)(struct umac_sta_data *stad, bool asleep);
+    bool (*update_stad_state_rx)(struct umac_sta_data *stad,
+                                 const struct mmdrv_rx_metadata *metadata,
+                                 uint16_t frame_control_le);
 
 
     bool (*is_stad_tx_paused)(struct umac_sta_data *stad);
@@ -68,7 +60,19 @@ struct umac_datapath_ops
     enum mmwlan_sta_state (*get_sta_state)(struct umac_sta_data *stad);
 
 
+    void (*supp_l2_sock_receive)(struct umac_data *umacd,
+                                 const uint8_t *payload,
+                                 size_t payload_len,
+                                 const uint8_t *src_addr);
+
+
+    void (*handle_frame_unknown_sta)(struct umac_data *umacd, const uint8_t *ta);
+
+
     const uint16_t *frames_allowed_pre_association;
+
+
+    const char *type;
 };
 
 

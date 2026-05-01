@@ -160,6 +160,58 @@ static int process_bcf_addr(struct driver_data *driverd,
     return 0;
 }
 
+static int process_coredump_mem_region(struct driver_data *driverd,
+                                       morse_file_read_cb_t file_read_cb,
+                                       uint32_t *file_read_offset,
+                                       struct mbin_tlv_hdr tlv_hdr)
+{
+    struct mmhal_robuf robuf = { 0 };
+    struct morse_fw_info_tlv_cordump_mem raw_coredump_info = { 0 };
+    uint32_t received = 0;
+
+    if (tlv_hdr.len != sizeof(struct morse_fw_info_tlv_cordump_mem))
+    {
+        MMLOG_WRN("mbin COREDUPM_MEM_REGION section wrong length\n");
+        return -EINVAL;
+    }
+
+    MM_STATIC_ASSERT(sizeof(struct morse_fw_info_tlv_cordump_mem) <= 12,
+                     "Function written with the expectation that this struct was small. Consisder "
+                     "reimplementing.");
+
+
+    while (received < sizeof(raw_coredump_info))
+    {
+        uint32_t remaining = sizeof(raw_coredump_info) - received;
+        int ret = read_into_robuf(&robuf, file_read_cb, file_read_offset, remaining);
+        if (ret != 0)
+        {
+            return ret;
+        }
+
+        memcpy(((uint8_t *)&raw_coredump_info) + received, robuf.buf, robuf.len);
+        received += robuf.len;
+        robuf_cleanup(&robuf);
+    }
+
+    for (uint32_t i = 0; i < MM_ARRAY_COUNT(driverd->coredump.memory_regions); i++)
+    {
+        struct morse_coredump_mem_region *region = &driverd->coredump.memory_regions[i];
+        if (region->type != 0)
+        {
+            continue;
+        }
+
+        region->type = le32toh(raw_coredump_info.region_type);
+        region->start = le32toh(raw_coredump_info.start);
+        region->len = le32toh(raw_coredump_info.len);
+        MMLOG_DBG("Got assert addr 0x%08lx\n", driverd->coredump.memory_regions[i].start);
+        break;
+    }
+
+    return 0;
+}
+
 static int load_from_file_to_chip(struct driver_data *driverd,
                                   morse_file_read_cb_t file_read_cb,
                                   uint32_t *file_read_offset,
@@ -345,6 +397,14 @@ int morse_firmware_load_mbin(struct driver_data *driverd, morse_file_read_cb_t f
         {
             case FIELD_TYPE_FW_TLV_BCF_ADDR:
                 ret = process_bcf_addr(driverd, file_read_cb, &offset, tlv_hdr);
+                if (ret != 0)
+                {
+                    return ret;
+                }
+                break;
+
+            case FIELD_TYPE_COREDUMP_MEM_REGION:
+                ret = process_coredump_mem_region(driverd, file_read_cb, &offset, tlv_hdr);
                 if (ret != 0)
                 {
                     return ret;

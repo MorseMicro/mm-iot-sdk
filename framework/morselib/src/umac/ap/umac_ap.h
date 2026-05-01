@@ -18,6 +18,9 @@
 enum mmwlan_status umac_ap_enable_ap(struct umac_data *umacd, const struct mmwlan_ap_args *args);
 
 
+enum mmwlan_status umac_ap_disable_ap(struct umac_data *umacd);
+
+
 bool umac_ap_validate_ap_args(struct umac_data *umacd, const struct mmwlan_ap_args *args);
 
 
@@ -54,16 +57,20 @@ const struct mmwlan_ap_args *umac_ap_get_args(struct umac_data *umacd);
 const struct mmwlan_s1g_channel *umac_ap_get_specified_s1g_channel(struct umac_data *umacd);
 
 
+enum mmwlan_status umac_ap_get_channel_info(struct umac_data *umacd,
+                                            struct mmwlan_vif_channel_info *cfg);
+
+
 struct mmpkt *umac_ap_get_beacon(struct umac_data *umacd);
 
 
 void umac_ap_handle_probe_req(struct umac_data *umacd, struct mmpktview *rxbufview);
 
 
-uint16_t umac_ap_get_vif_id(struct umac_data *umacd);
-
-
 enum mmwlan_status umac_ap_get_bssid(struct umac_data *umacd, uint8_t *bssid);
+
+
+const uint8_t *umac_ap_peek_bssid(struct umac_data *umacd);
 
 
 struct umac_ap_sta_info
@@ -87,14 +94,10 @@ enum mmwlan_status umac_ap_update_sta(struct umac_data *umacd,
 enum mmwlan_status umac_ap_remove_sta(struct umac_data *umacd, const uint8_t *mac_addr);
 
 
-enum mmwlan_sta_state umac_ap_get_state(struct umac_sta_data *stad);
+enum mmwlan_sta_state umac_ap_get_sta_state(struct umac_sta_data *stad);
 
 
 struct umac_sta_data *umac_ap_lookup_sta_by_addr(struct umac_data *umacd, const uint8_t *sta_addr);
-
-
-struct umac_sta_data *umac_ap_lookup_sta_by_dest_addr(struct umac_data *umacd,
-                                                      const uint8_t *dest_addr);
 
 
 struct umac_sta_data *umac_ap_lookup_sta_by_aid(struct umac_data *umacd, uint16_t aid);
@@ -114,8 +117,13 @@ enum mmwlan_status umac_ap_get_sta_status(struct umac_data *umacd,
                                           struct mmwlan_ap_sta_status *sta_status);
 
 
+void umac_ap_update_stad_last_active(struct umac_sta_data *stad, uint32_t activity_ms);
+
+
+uint32_t umac_ap_get_stad_last_active(struct umac_sta_data *stad);
+
+
 bool umac_ap_tx_dequeue_frame(struct umac_data *umacd,
                               struct umac_sta_data **stad,
                               struct mmpkt **txbuf);
-
 

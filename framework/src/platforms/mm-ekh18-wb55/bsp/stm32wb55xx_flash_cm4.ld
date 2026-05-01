@@ -65,7 +65,6 @@ SECTIONS
   {
     . = ALIGN(4);
     KEEP(*(.isr_vector)) /* Startup code */
-    . = ALIGN(8);      /* Align to double words to ease flash programming in bootloader */
   } >FLASH
 
   .mmconfig :
@@ -99,8 +98,6 @@ SECTIONS
 
     KEEP (*(.init))
     KEEP (*(.fini))
-
-    . = ALIGN(8);      /* Align to double words to ease flash programming in bootloader */
     _etext = .;        /* define a global symbols at end of code */
   } >FLASH
 
@@ -110,7 +107,6 @@ SECTIONS
     . = ALIGN(4);
     *(.rodata)         /* .rodata sections (constants, strings, etc.) */
     *(.rodata*)        /* .rodata* sections (constants, strings, etc.) */
-    . = ALIGN(8);      /* Align to double words to ease flash programming in bootloader */
   } >FLASH
 
   .ARM.extab   : { *(.ARM.extab* .gnu.linkonce.armextab.*) } >FLASH
@@ -118,7 +114,6 @@ SECTIONS
     __exidx_start = .;
     *(.ARM.exidx*)
     __exidx_end = .;
-    . = ALIGN(8);      /* Align to double words to ease flash programming in bootloader */
   } >FLASH
 
   .preinit_array     :
@@ -126,7 +121,6 @@ SECTIONS
     PROVIDE_HIDDEN (__preinit_array_start = .);
     KEEP (*(.preinit_array*))
     PROVIDE_HIDDEN (__preinit_array_end = .);
-    . = ALIGN(8);      /* Align to double words to ease flash programming in bootloader */
   } >FLASH
   .init_array :
   {
@@ -134,7 +128,6 @@ SECTIONS
     KEEP (*(SORT(.init_array.*)))
     KEEP (*(.init_array*))
     PROVIDE_HIDDEN (__init_array_end = .);
-    . = ALIGN(8);      /* Align to double words to ease flash programming in bootloader */
   } >FLASH
   .fini_array :
   {
@@ -142,7 +135,6 @@ SECTIONS
     KEEP (*(SORT(.fini_array.*)))
     KEEP (*(.fini_array*))
     PROVIDE_HIDDEN (__fini_array_end = .);
-    . = ALIGN(8);      /* Align to double words to ease flash programming in bootloader */
   } >FLASH
 
   /* used by the startup to initialize data */
@@ -158,7 +150,6 @@ SECTIONS
 
     . = ALIGN(4);
     _edata = .;        /* define a global symbol at data end */
-    . = ALIGN(8);      /* Align to double words to ease flash programming in bootloader */
   } >RAM1 AT> FLASH
 
 

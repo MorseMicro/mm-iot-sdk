@@ -12,6 +12,10 @@
 #include "m2m_api/mmagic_m2m_agent.h"
 
 /********* Enumerations **********/
+enum mmagic_mqtt_vars
+{
+    mmagic_mqtt_var_keepalive_s = 0,
+};
 
 /**
  * Process the received M2M buffer.

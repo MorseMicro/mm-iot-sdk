@@ -8,7 +8,7 @@ var group__MMAGIC__CONTROLLER =
     [ "Module ping: Ping application.", "group__MMAGIC__CONTROLLER__PING.html", "group__MMAGIC__CONTROLLER__PING" ],
     [ "Module iperf: Iperf application.", "group__MMAGIC__CONTROLLER__IPERF.html", "group__MMAGIC__CONTROLLER__IPERF" ],
     [ "Module sys: System management.", "group__MMAGIC__CONTROLLER__SYS.html", "group__MMAGIC__CONTROLLER__SYS" ],
-    [ "Module tcp: TCP Socket IO, supports secure connections using TLS.", "group__MMAGIC__CONTROLLER__TCP.html", "group__MMAGIC__CONTROLLER__TCP" ],
+    [ "Module socket: Socket IO, supports secure connections using", "group__MMAGIC__CONTROLLER__SOCKET.html", "group__MMAGIC__CONTROLLER__SOCKET" ],
     [ "Module tls: TLS support.", "group__MMAGIC__CONTROLLER__TLS.html", "group__MMAGIC__CONTROLLER__TLS" ],
     [ "Module ntp: Network Time Protocol.", "group__MMAGIC__CONTROLLER__NTP.html", "group__MMAGIC__CONTROLLER__NTP" ],
     [ "Module mqtt: MQTT agent.", "group__MMAGIC__CONTROLLER__MQTT.html", "group__MMAGIC__CONTROLLER__MQTT" ],

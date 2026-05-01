@@ -70,7 +70,7 @@ struct wpa_sm {
 	u8 ssid[32];
 	size_t ssid_len;
 	int wpa_ptk_rekey;
-	int wpa_deny_ptk0_rekey:1;
+	unsigned int wpa_deny_ptk0_rekey:1;
 	int p2p;
 	int wpa_rsc_relaxation;
 	int owe_ptk_workaround;
@@ -113,7 +113,10 @@ struct wpa_sm {
 	unsigned int secure_ltf:1;
 	unsigned int secure_rtt:1;
 	unsigned int prot_range_neg:1;
+	unsigned int prot_range_neg_x20:1;
 	unsigned int ssid_protection:1;
+	unsigned int spp_amsdu:1;
+	unsigned int sae_pw_id_change:1;
 
 	u8 *assoc_wpa_ie; /* Own WPA/RSN IE from (Re)AssocReq */
 	size_t assoc_wpa_ie_len;
@@ -189,12 +192,15 @@ struct wpa_sm {
 	struct wpabuf *test_assoc_ie;
 	struct wpabuf *test_eapol_m2_elems;
 	struct wpabuf *test_eapol_m4_elems;
+	struct wpabuf *test_rsnxe_data;
+	struct wpabuf *test_rsnxe_mask;
 	int ft_rsnxe_used;
 	unsigned int oci_freq_override_eapol;
 	unsigned int oci_freq_override_eapol_g2;
 	unsigned int oci_freq_override_ft_assoc;
 	unsigned int oci_freq_override_fils_assoc;
 	unsigned int disable_eapol_g2_tx;
+	unsigned int eapol_2_key_info_set_mask;
 	bool encrypt_eapol_m2;
 	bool encrypt_eapol_m4;
 #endif /* CONFIG_TESTING_OPTIONS */
@@ -237,6 +243,14 @@ struct wpa_sm {
 
 	bool rsn_override_support;
 	enum wpa_rsn_override rsn_override;
+
+	u8 last_kck[WPA_KCK_MAX_LEN];
+	size_t last_kck_len;
+	size_t last_kck_pmk_len;
+	unsigned int last_kck_key_mgmt;
+	int last_kck_eapol_key_ver;
+	u8 last_kck_aa[ETH_ALEN];
+	int last_eapol_key_ver;
 };
 
 

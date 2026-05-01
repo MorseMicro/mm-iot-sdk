@@ -16,6 +16,11 @@
  */
 #define MAX_VAL_LEN 101
 
+bool mmagic_core_wlan_is_started(struct mmagic_data *core)
+{
+    return core->wlan_data.is_started;
+}
+
 void mmagic_core_wlan_load_all(struct mmagic_data *core)
 {
     struct mmagic_wlan_data *data = &core->wlan_data;
@@ -234,6 +239,14 @@ void mmagic_core_wlan_load_all(struct mmagic_data *core)
             (void)mmagic_string_to_enum_duty_cycle_mode(&data->config.duty_cycle_mode, val);
         }
     }
+
+    {
+        char val[MAX_VAL_LEN] = { 0 };
+        if (mmconfig_read_string("wlan.connect_on_boot", val, sizeof(val)) > 0)
+        {
+            (void)mmagic_string_to_bool(&data->config.connect_on_boot, val);
+        }
+    }
 }
 
 void mmagic_core_wlan_save_all(struct mmagic_data *core)
@@ -400,6 +413,12 @@ void mmagic_core_wlan_save_all(struct mmagic_data *core)
         mmagic_enum_duty_cycle_mode_to_string(data->config.duty_cycle_mode, val, sizeof(val));
         mmconfig_write_string("wlan.duty_cycle_mode", val);
     }
+
+    {
+        char val[MAX_VAL_LEN];
+        mmagic_bool_to_string(data->config.connect_on_boot, val, sizeof(val));
+        mmconfig_write_string("wlan.connect_on_boot", val);
+    }
 }
 
 enum mmagic_status mmagic_core_event_wlan_beacon_rx(
@@ -412,20 +431,6 @@ enum mmagic_status mmagic_core_event_wlan_beacon_rx(
     return core->event_fn(core->event_fn_arg,
                           mmagic_wlan,
                           mmagic_wlan_event_beacon_rx,
-                          payload,
-                          payload_len);
-}
-
-enum mmagic_status mmagic_core_event_wlan_standby_exit(
-    struct mmagic_data *core,
-    const struct mmagic_core_event_wlan_standby_exit_args *args)
-{
-    const uint8_t *payload = (const uint8_t *)args;
-    size_t payload_len = sizeof(*args);
-    MMOSAL_ASSERT(core->event_fn != NULL);
-    return core->event_fn(core->event_fn_arg,
-                          mmagic_wlan,
-                          mmagic_wlan_event_standby_exit,
                           payload,
                           payload_len);
 }

@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.10.4</span>
+   &#160;<span id="projectnumber">2.11.2</span>
    </div>
   </td>
  </tr>
@@ -174,12 +174,10 @@ $(document).ready(function(){initNavTree('mmconfig_8h_source.html',''); initResi
 <div class="line"><a id="l00544" name="l00544"></a><span class="lineno">  544</span>                         uint32_t *bytes_used,</div>
 <div class="line"><a id="l00545" name="l00545"></a><span class="lineno">  545</span>                         int32_t *bytes_remaining);</div>
 <div class="line"><a id="l00546" name="l00546"></a><span class="lineno">  546</span> </div>
-<div class="line"><a id="l00553" name="l00553"></a><span class="lineno"><a class="line" href="group__MMCONFIG__API.html#ga908514f26d5872bf4b86b8f3dc012411">  553</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="group__MMCONFIG__API.html#ga908514f26d5872bf4b86b8f3dc012411">load_mmwlan_settings</a>(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00554" name="l00554"></a><span class="lineno">  554</span> </div>
-<div class="line"><a id="l00555" name="l00555"></a><span class="lineno">  555</span><span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a id="l00556" name="l00556"></a><span class="lineno">  556</span>}</div>
-<div class="line"><a id="l00557" name="l00557"></a><span class="lineno">  557</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00558" name="l00558"></a><span class="lineno">  558</span> </div>
+<div class="line"><a id="l00547" name="l00547"></a><span class="lineno">  547</span><span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a id="l00548" name="l00548"></a><span class="lineno">  548</span>}</div>
+<div class="line"><a id="l00549" name="l00549"></a><span class="lineno">  549</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00550" name="l00550"></a><span class="lineno">  550</span> </div>
 <div class="ttc" id="agroup__MMCONFIG__API_html_ga093ef5caa1ee5d2d49ac26510e3f8d3b"><div class="ttname"><a href="group__MMCONFIG__API.html#ga093ef5caa1ee5d2d49ac26510e3f8d3b">mmconfig_write_int</a></div><div class="ttdeci">int mmconfig_write_int(const char *key, int value)</div><div class="ttdoc">Converts the given integer to a string and writes to persistent store.</div></div>
 <div class="ttc" id="agroup__MMCONFIG__API_html_ga116bd92e4bd372a3964ff66dce82a657"><div class="ttname"><a href="group__MMCONFIG__API.html#ga116bd92e4bd372a3964ff66dce82a657">mmconfig_delete_key</a></div><div class="ttdeci">static int mmconfig_delete_key(const char *key)</div><div class="ttdoc">Deletes the specified key(s) from persistent store.</div><div class="ttdef"><b>Definition:</b> <a href="mmconfig_8h_source.html#l00300">mmconfig.h:300</a></div></div>
 <div class="ttc" id="agroup__MMCONFIG__API_html_ga3f0ca3ae6640a9e5436d2b7c89d36f17"><div class="ttname"><a href="group__MMCONFIG__API.html#ga3f0ca3ae6640a9e5436d2b7c89d36f17">mmconfig_result</a></div><div class="ttdeci">mmconfig_result</div><div class="ttdoc">Return &amp; error codes.</div><div class="ttdef"><b>Definition:</b> <a href="mmconfig_8h_source.html#l00220">mmconfig.h:221</a></div></div>
@@ -191,7 +189,6 @@ $(document).ready(function(){initNavTree('mmconfig_8h_source.html',''); initResi
 <div class="ttc" id="agroup__MMCONFIG__API_html_ga74809c11ae255459a980efda8327f650"><div class="ttname"><a href="group__MMCONFIG__API.html#ga74809c11ae255459a980efda8327f650">mmconfig_eraseall</a></div><div class="ttdeci">int mmconfig_eraseall(void)</div><div class="ttdoc">Erases all flash blocks allocated to persistent storage and write the signature at the 2 copies in fl...</div></div>
 <div class="ttc" id="agroup__MMCONFIG__API_html_ga8339629d27f454f568df2f68e457d5bd"><div class="ttname"><a href="group__MMCONFIG__API.html#ga8339629d27f454f568df2f68e457d5bd">mmconfig_write_uint32</a></div><div class="ttdeci">int mmconfig_write_uint32(const char *key, uint32_t value)</div><div class="ttdoc">Converts the given unsigned integer to a string and writes to persistent store.</div></div>
 <div class="ttc" id="agroup__MMCONFIG__API_html_ga8da661777231d2aaaa2c8b327c707471"><div class="ttname"><a href="group__MMCONFIG__API.html#ga8da661777231d2aaaa2c8b327c707471">mmconfig_check_usage</a></div><div class="ttdeci">int mmconfig_check_usage(const struct mmconfig_update_node *node_list, uint32_t *bytes_used, int32_t *bytes_remaining)</div><div class="ttdoc">Calculates the number of bytes that would be needed to write the given updates (if not NULL) and the ...</div></div>
-<div class="ttc" id="agroup__MMCONFIG__API_html_ga908514f26d5872bf4b86b8f3dc012411"><div class="ttname"><a href="group__MMCONFIG__API.html#ga908514f26d5872bf4b86b8f3dc012411">load_mmwlan_settings</a></div><div class="ttdeci">void load_mmwlan_settings(void)</div><div class="ttdoc">Loads and applies any other mmwlan settings specified in config store.</div></div>
 <div class="ttc" id="agroup__MMCONFIG__API_html_gab1379a02dfbef05b86b02a475f09f484"><div class="ttname"><a href="group__MMCONFIG__API.html#gab1379a02dfbef05b86b02a475f09f484">mmconfig_write_data</a></div><div class="ttdeci">int mmconfig_write_data(const char *key, const void *data, size_t size)</div><div class="ttdoc">Writes the raw data to persistent store location identified by key.</div></div>
 <div class="ttc" id="agroup__MMCONFIG__API_html_gac4d12564d7dc99fcdec5aac2cf571669"><div class="ttname"><a href="group__MMCONFIG__API.html#gac4d12564d7dc99fcdec5aac2cf571669">mmconfig_validate_key</a></div><div class="ttdeci">int mmconfig_validate_key(const char *key)</div><div class="ttdoc">Validates an entire key intended for data storage.</div></div>
 <div class="ttc" id="agroup__MMCONFIG__API_html_gaced6e1453d3114b98696af9bbcca4288"><div class="ttname"><a href="group__MMCONFIG__API.html#gaced6e1453d3114b98696af9bbcca4288">mmconfig_read_bytes</a></div><div class="ttdeci">int mmconfig_read_bytes(const char *key, void *buffer, uint32_t buffsize, uint32_t offset)</div><div class="ttdoc">Returns the persistent store data identified by the key.</div></div>
@@ -221,7 +218,7 @@ $(document).ready(function(){initNavTree('mmconfig_8h_source.html',''); initResi
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_4fef7b40ebc01bf0de6074c9d47349d1.html">framework</a></li><li class="navelem"><a class="el" href="dir_97809a04007e88893d16fee0f3ef142e.html">src</a></li><li class="navelem"><a class="el" href="dir_a65ca16f71a0b70254928dd1d2de52d5.html">mmconfig</a></li><li class="navelem"><b>mmconfig.h</b></li>
+    <li class="navelem"><a class="el" href="dir_facbc76ccb04a5ad7c76a9242f055a51.html">framework</a></li><li class="navelem"><a class="el" href="dir_0b69701c7a190a4812ee42d723a1f567.html">src</a></li><li class="navelem"><a class="el" href="dir_dc13d23e732a9bb467c7d61f68209977.html">mmconfig</a></li><li class="navelem"><b>mmconfig.h</b></li>
     <li class="footer">Copyright 2021-2025 Morse Micro </li>
   </ul>
 </div>

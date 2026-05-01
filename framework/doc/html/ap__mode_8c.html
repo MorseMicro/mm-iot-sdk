@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.10.4</span>
+   &#160;<span id="projectnumber">2.11.2</span>
    </div>
   </td>
  </tr>
@@ -105,25 +105,27 @@ $(document).ready(function(){initNavTree('ap__mode_8c.html',''); initResizable()
 <code>#include &quot;mmutils.h&quot;</code><br />
 <code>#include &quot;mm_app_common.h&quot;</code><br />
 <code>#include &quot;mm_app_loadconfig.h&quot;</code><br />
+<code>#include &quot;mmlog.h&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for ap_mode.c:</div>
 <div class="dyncontent">
 <div class="center"><img src="ap__mode_8c__incl.png" border="0" usemap="#aap__mode_8c" alt=""/></div>
 <map name="aap__mode_8c" id="aap__mode_8c">
-<area shape="rect" title="AP Example Application." alt="" coords="353,5,447,32"/>
-<area shape="rect" title=" " alt="" coords="105,155,175,181"/>
-<area shape="rect" href="mmconfig_8h_source.html" title=" " alt="" coords="177,80,276,107"/>
-<area shape="rect" href="mmosal_8h_source.html" title=" " alt="" coords="413,80,499,107"/>
-<area shape="rect" href="mmutils_8h_source.html" title=" " alt="" coords="300,80,388,107"/>
-<area shape="rect" title=" " alt="" coords="524,80,679,107"/>
-<area shape="rect" title=" " alt="" coords="703,80,868,107"/>
-<area shape="rect" title=" " alt="" coords="5,155,80,181"/>
-<area shape="rect" title=" " alt="" coords="395,155,477,181"/>
-<area shape="rect" title=" " alt="" coords="299,155,370,181"/>
-<area shape="rect" title=" " alt="" coords="597,155,664,181"/>
-<area shape="rect" title=" " alt="" coords="502,155,573,181"/>
-<area shape="rect" title=" " alt="" coords="689,155,775,181"/>
-<area shape="rect" title=" " alt="" coords="200,155,275,181"/>
+<area shape="rect" title="AP Example Application." alt="" coords="378,5,471,32"/>
+<area shape="rect" title=" " alt="" coords="5,229,76,256"/>
+<area shape="rect" href="mmconfig_8h_source.html" title=" " alt="" coords="489,80,587,107"/>
+<area shape="rect" href="mmosal_8h_source.html" title=" " alt="" coords="304,155,391,181"/>
+<area shape="rect" href="mmutils_8h_source.html" title=" " alt="" coords="191,155,279,181"/>
+<area shape="rect" title=" " alt="" coords="611,80,766,107"/>
+<area shape="rect" title=" " alt="" coords="790,80,955,107"/>
+<area shape="rect" href="mmlog_8h_source.html" title=" " alt="" coords="385,80,465,107"/>
+<area shape="rect" title=" " alt="" coords="466,155,541,181"/>
+<area shape="rect" title=" " alt="" coords="406,229,489,256"/>
+<area shape="rect" title=" " alt="" coords="604,229,675,256"/>
+<area shape="rect" title=" " alt="" coords="513,229,579,256"/>
+<area shape="rect" title=" " alt="" coords="200,229,271,256"/>
+<area shape="rect" title=" " alt="" coords="295,229,381,256"/>
+<area shape="rect" title=" " alt="" coords="101,229,175,256"/>
 </map>
 </div>
 </div>
@@ -161,7 +163,7 @@ Macros</h2></td></tr>
 <tr class="memitem:a002f3d2b185a9a24b5f8af7f6d1f7c52"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ap__mode_8c.html#a002f3d2b185a9a24b5f8af7f6d1f7c52">PRIMARY_BW_MHZ</a>&#160;&#160;&#160;(0)</td></tr>
 <tr class="memdesc:a002f3d2b185a9a24b5f8af7f6d1f7c52"><td class="mdescLeft">&#160;</td><td class="mdescRight">Primary Bandwidth to use for AP.  <a href="ap__mode_8c.html#a002f3d2b185a9a24b5f8af7f6d1f7c52">More...</a><br /></td></tr>
 <tr class="separator:a002f3d2b185a9a24b5f8af7f6d1f7c52"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acf3743614f683e2e0c58185ceec9846b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ap__mode_8c.html#acf3743614f683e2e0c58185ceec9846b">PRIMARY_1MHZ_CHANNEL_INDEX</a>&#160;&#160;&#160;(0)</td></tr>
+<tr class="memitem:acf3743614f683e2e0c58185ceec9846b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ap__mode_8c.html#acf3743614f683e2e0c58185ceec9846b">PRIMARY_1MHZ_CHANNEL_INDEX</a>&#160;&#160;&#160;(3)</td></tr>
 <tr class="memdesc:acf3743614f683e2e0c58185ceec9846b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Primary 1 MHz Channel Index to use for AP.  <a href="ap__mode_8c.html#acf3743614f683e2e0c58185ceec9846b">More...</a><br /></td></tr>
 <tr class="separator:acf3743614f683e2e0c58185ceec9846b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0c87f8d902d78fa393aea9e3741422f6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ap__mode_8c.html#a0c87f8d902d78fa393aea9e3741422f6">MAX_STAS</a>&#160;&#160;&#160;<a class="el" href="group__MMWLAN__AP.html#gadce3323a0b305ef1125330fa5e457cf6">MMWLAN_DEFAULT_AP_MAX_STAS</a></td></tr>
@@ -176,6 +178,9 @@ Macros</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:ab0708e6d11c31f9ea43201d6237799b8"><td class="memItemLeft" align="right" valign="top">static char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ap__mode_8c.html#ab0708e6d11c31f9ea43201d6237799b8">mmwlan_ap_sta_state_to_str</a> (enum <a class="el" href="group__MMWLAN__AP.html#ga03b994d1e0ad93b3449e0d2687dd9929">mmwlan_ap_sta_state</a> state)</td></tr>
+<tr class="memdesc:ab0708e6d11c31f9ea43201d6237799b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function to convert <code>mmwlan_ap_sta_state</code> enumeration to a human readable string.  <a href="ap__mode_8c.html#ab0708e6d11c31f9ea43201d6237799b8">More...</a><br /></td></tr>
+<tr class="separator:ab0708e6d11c31f9ea43201d6237799b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac367a8876852fe4d3c7fca272938f4d3"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ap__mode_8c.html#ac367a8876852fe4d3c7fca272938f4d3">handle_ap_sta_status</a> (const struct <a class="el" href="structmmwlan__ap__sta__status.html">mmwlan_ap_sta_status</a> *sta_status, void *arg)</td></tr>
 <tr class="memdesc:ac367a8876852fe4d3c7fca272938f4d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handler for AP STA Status callback.  <a href="ap__mode_8c.html#ac367a8876852fe4d3c7fca272938f4d3">More...</a><br /></td></tr>
 <tr class="separator:ac367a8876852fe4d3c7fca272938f4d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -221,7 +226,7 @@ Variables</h2></td></tr>
 <p>Stringify macro. </p>
 <p >Do not use directly; use <a class="el" href="ap__mode_8c.html#a6df1d22fb5f09eccc23b9f399670cfd7">STRINGIFY()</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="ap__mode_8c_source.html#l00120">120</a> of file <a class="el" href="ap__mode_8c_source.html">ap_mode.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ap__mode_8c_source.html#l00121">121</a> of file <a class="el" href="ap__mode_8c_source.html">ap_mode.c</a>.</p>
 
 </div>
 </div>
@@ -240,7 +245,7 @@ Variables</h2></td></tr>
 <p>SSID of the AP. </p>
 <p >(Do not quote; it will be stringified.) </p>
 
-<p class="definition">Definition at line <a class="el" href="ap__mode_8c_source.html#l00051">51</a> of file <a class="el" href="ap__mode_8c_source.html">ap_mode.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ap__mode_8c_source.html#l00052">52</a> of file <a class="el" href="ap__mode_8c_source.html">ap_mode.c</a>.</p>
 
 </div>
 </div>
@@ -259,7 +264,7 @@ Variables</h2></td></tr>
 <p>The maximum number of stations that can connect to the AP. </p>
 <p >Must not be greater than <a class="el" href="group__MMWLAN__AP.html#ga96d44ab20aa3809f7eeb98c87277aa13">MMWLAN_AP_MAX_STAS_LIMIT</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="ap__mode_8c_source.html#l00116">116</a> of file <a class="el" href="ap__mode_8c_source.html">ap_mode.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ap__mode_8c_source.html#l00117">117</a> of file <a class="el" href="ap__mode_8c_source.html">ap_mode.c</a>.</p>
 
 </div>
 </div>
@@ -278,7 +283,7 @@ Variables</h2></td></tr>
 <p>Operating Class to use for AP. </p>
 <p >This together with S1G_CHANNEL must correspond to a channel in the regulatory database. </p>
 
-<p class="definition">Definition at line <a class="el" href="ap__mode_8c_source.html#l00083">83</a> of file <a class="el" href="ap__mode_8c_source.html">ap_mode.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ap__mode_8c_source.html#l00084">84</a> of file <a class="el" href="ap__mode_8c_source.html">ap_mode.c</a>.</p>
 
 </div>
 </div>
@@ -297,7 +302,7 @@ Variables</h2></td></tr>
 <p>Protected Management Frames (PMF) mode (. </p>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="group__MMWLAN.html#ga6f1e10b52468bc91ff773e96377bfa17" title="Enumeration of Protected Management Frame (PMF) modes (802.11w).">mmwlan_pmf_mode</a>). </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="ap__mode_8c_source.html#l00069">69</a> of file <a class="el" href="ap__mode_8c_source.html">ap_mode.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ap__mode_8c_source.html#l00070">70</a> of file <a class="el" href="ap__mode_8c_source.html">ap_mode.c</a>.</p>
 
 </div>
 </div>
@@ -308,14 +313,14 @@ Variables</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define PRIMARY_1MHZ_CHANNEL_INDEX&#160;&#160;&#160;(0)</td>
+          <td class="memname">#define PRIMARY_1MHZ_CHANNEL_INDEX&#160;&#160;&#160;(3)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>Primary 1 MHz Channel Index to use for AP. </p>
 
-<p class="definition">Definition at line <a class="el" href="ap__mode_8c_source.html#l00108">108</a> of file <a class="el" href="ap__mode_8c_source.html">ap_mode.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ap__mode_8c_source.html#l00109">109</a> of file <a class="el" href="ap__mode_8c_source.html">ap_mode.c</a>.</p>
 
 </div>
 </div>
@@ -338,7 +343,7 @@ Variables</h2></td></tr>
 <li>2 </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="ap__mode_8c_source.html#l00103">103</a> of file <a class="el" href="ap__mode_8c_source.html">ap_mode.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ap__mode_8c_source.html#l00104">104</a> of file <a class="el" href="ap__mode_8c_source.html">ap_mode.c</a>.</p>
 
 </div>
 </div>
@@ -357,7 +362,7 @@ Variables</h2></td></tr>
 <p>S1G Channel to use for AP. </p>
 <p >This together with OP_CLASS must correspond to a channel in the regulatory database. </p>
 
-<p class="definition">Definition at line <a class="el" href="ap__mode_8c_source.html#l00091">91</a> of file <a class="el" href="ap__mode_8c_source.html">ap_mode.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ap__mode_8c_source.html#l00092">92</a> of file <a class="el" href="ap__mode_8c_source.html">ap_mode.c</a>.</p>
 
 </div>
 </div>
@@ -376,7 +381,7 @@ Variables</h2></td></tr>
 <p>Passphrase of the AP (ignored if security type is not SAE). </p>
 <p >(Do not quote; it will be stringified.) </p>
 
-<p class="definition">Definition at line <a class="el" href="ap__mode_8c_source.html#l00057">57</a> of file <a class="el" href="ap__mode_8c_source.html">ap_mode.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ap__mode_8c_source.html#l00058">58</a> of file <a class="el" href="ap__mode_8c_source.html">ap_mode.c</a>.</p>
 
 </div>
 </div>
@@ -395,7 +400,7 @@ Variables</h2></td></tr>
 <p>Security type (. </p>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="group__MMWLAN.html#gaa1811e3233be70cf35a4611111eddca0" title="Enumeration of supported security types.">mmwlan_security_type</a>). </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="ap__mode_8c_source.html#l00063">63</a> of file <a class="el" href="ap__mode_8c_source.html">ap_mode.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ap__mode_8c_source.html#l00064">64</a> of file <a class="el" href="ap__mode_8c_source.html">ap_mode.c</a>.</p>
 
 </div>
 </div>
@@ -413,7 +418,7 @@ Variables</h2></td></tr>
 
 <p>Statically configured gateway address. </p>
 
-<p class="definition">Definition at line <a class="el" href="ap__mode_8c_source.html#l00036">36</a> of file <a class="el" href="ap__mode_8c_source.html">ap_mode.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ap__mode_8c_source.html#l00037">37</a> of file <a class="el" href="ap__mode_8c_source.html">ap_mode.c</a>.</p>
 
 </div>
 </div>
@@ -431,7 +436,7 @@ Variables</h2></td></tr>
 
 <p>Statically configured IP address. </p>
 
-<p class="definition">Definition at line <a class="el" href="ap__mode_8c_source.html#l00032">32</a> of file <a class="el" href="ap__mode_8c_source.html">ap_mode.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ap__mode_8c_source.html#l00033">33</a> of file <a class="el" href="ap__mode_8c_source.html">ap_mode.c</a>.</p>
 
 </div>
 </div>
@@ -449,7 +454,7 @@ Variables</h2></td></tr>
 
 <p>Statically configured netmask. </p>
 
-<p class="definition">Definition at line <a class="el" href="ap__mode_8c_source.html#l00040">40</a> of file <a class="el" href="ap__mode_8c_source.html">ap_mode.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ap__mode_8c_source.html#l00041">41</a> of file <a class="el" href="ap__mode_8c_source.html">ap_mode.c</a>.</p>
 
 </div>
 </div>
@@ -471,7 +476,7 @@ Variables</h2></td></tr>
 
 <p>Convert the content of the given macro to a string. </p>
 
-<p class="definition">Definition at line <a class="el" href="ap__mode_8c_source.html#l00122">122</a> of file <a class="el" href="ap__mode_8c_source.html">ap_mode.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ap__mode_8c_source.html#l00123">123</a> of file <a class="el" href="ap__mode_8c_source.html">ap_mode.c</a>.</p>
 
 </div>
 </div>
@@ -495,7 +500,7 @@ Variables</h2></td></tr>
 <p>Main entry point to the application. </p>
 <p >This will be invoked in a thread once operating system and hardware initialization has completed. It may return, but it does not have to. </p>
 
-<p class="definition">Definition at line <a class="el" href="ap__mode_8c_source.html#l00399">399</a> of file <a class="el" href="ap__mode_8c_source.html">ap_mode.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ap__mode_8c_source.html#l00434">434</a> of file <a class="el" href="ap__mode_8c_source.html">ap_mode.c</a>.</p>
 
 </div>
 </div>
@@ -542,7 +547,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="ap__mode_8c_source.html#l00133">133</a> of file <a class="el" href="ap__mode_8c_source.html">ap_mode.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ap__mode_8c_source.html#l00161">161</a> of file <a class="el" href="ap__mode_8c_source.html">ap_mode.c</a>.</p>
 
 </div>
 </div>
@@ -578,7 +583,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="ap__mode_8c_source.html#l00379">379</a> of file <a class="el" href="ap__mode_8c_source.html">ap_mode.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ap__mode_8c_source.html#l00414">414</a> of file <a class="el" href="ap__mode_8c_source.html">ap_mode.c</a>.</p>
 
 </div>
 </div>
@@ -616,7 +621,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="ap__mode_8c_source.html#l00155">155</a> of file <a class="el" href="ap__mode_8c_source.html">ap_mode.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ap__mode_8c_source.html#l00184">184</a> of file <a class="el" href="ap__mode_8c_source.html">ap_mode.c</a>.</p>
 
 </div>
 </div>
@@ -645,7 +650,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="ap__mode_8c_source.html#l00179">179</a> of file <a class="el" href="ap__mode_8c_source.html">ap_mode.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ap__mode_8c_source.html#l00208">208</a> of file <a class="el" href="ap__mode_8c_source.html">ap_mode.c</a>.</p>
 
 </div>
 </div>
@@ -675,7 +680,44 @@ Variables</h2></td></tr>
 
 <p>Loads various WLAN AP specific settings from config store and applies them. </p>
 
-<p class="definition">Definition at line <a class="el" href="ap__mode_8c_source.html#l00323">323</a> of file <a class="el" href="ap__mode_8c_source.html">ap_mode.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ap__mode_8c_source.html#l00358">358</a> of file <a class="el" href="ap__mode_8c_source.html">ap_mode.c</a>.</p>
+
+</div>
+</div>
+<a id="ab0708e6d11c31f9ea43201d6237799b8" name="ab0708e6d11c31f9ea43201d6237799b8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab0708e6d11c31f9ea43201d6237799b8">&#9670;&nbsp;</a></span>mmwlan_ap_sta_state_to_str()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static char * mmwlan_ap_sta_state_to_str </td>
+          <td>(</td>
+          <td class="paramtype">enum <a class="el" href="group__MMWLAN__AP.html#ga03b994d1e0ad93b3449e0d2687dd9929">mmwlan_ap_sta_state</a>&#160;</td>
+          <td class="paramname"><em>state</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Function to convert <code>mmwlan_ap_sta_state</code> enumeration to a human readable string. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">state</td><td>State enum to convert</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>sting representation of the enumeration. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="ap__mode_8c_source.html#l00135">135</a> of file <a class="el" href="ap__mode_8c_source.html">ap_mode.c</a>.</p>
 
 </div>
 </div>
@@ -694,7 +736,7 @@ Variables</h2></td></tr>
 
 <p>A throw away variable for checking that the opaque argument is correct. </p>
 
-<p class="definition">Definition at line <a class="el" href="ap__mode_8c_source.html#l00125">125</a> of file <a class="el" href="ap__mode_8c_source.html">ap_mode.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ap__mode_8c_source.html#l00126">126</a> of file <a class="el" href="ap__mode_8c_source.html">ap_mode.c</a>.</p>
 
 </div>
 </div>
@@ -704,7 +746,7 @@ Variables</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_c5388b8f7c63864c1129967aadb7f145.html">examples</a></li><li class="navelem"><a class="el" href="dir_c0e438e5c91396ac2e47b25ca41124e5.html">ap_mode</a></li><li class="navelem"><a class="el" href="dir_a1d49751a8377eac246820fe371f039c.html">src</a></li><li class="navelem"><a class="el" href="ap__mode_8c.html">ap_mode.c</a></li>
+    <li class="navelem"><a class="el" href="dir_4a117e60a3f8308259f4d16395856081.html">examples</a></li><li class="navelem"><a class="el" href="dir_c916b27efbac7e5d403715ec0fc0769e.html">ap_mode</a></li><li class="navelem"><a class="el" href="dir_9100e4f1c0c2c898f7d0829743297392.html">src</a></li><li class="navelem"><a class="el" href="ap__mode_8c.html">ap_mode.c</a></li>
     <li class="footer">Copyright 2021-2025 Morse Micro </li>
   </ul>
 </div>

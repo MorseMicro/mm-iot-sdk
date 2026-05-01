@@ -6,7 +6,7 @@ This package contains the Morse Micro IoT SDK, providing a framework for getting
 
 ## Usage
 
-Open [documentation.html](/documentation.html) for the full MM-IoT-SDK user guide.
+Open [documentation.html](https://morsemicro.github.io/mm-iot-sdk/documentation.html) for the full MM-IoT-SDK user guide.
 
 # License
 

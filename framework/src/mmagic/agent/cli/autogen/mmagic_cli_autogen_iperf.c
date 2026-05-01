@@ -356,11 +356,18 @@ void mmagic_cli_iperf_run(EmbeddedCli *cli, char *args, void *context);
 /********* Register bindings function definition **********/
 void mmagic_cli_iperf_register_bindings(EmbeddedCli *cli, struct mmagic_data *core)
 {
+    if (!mmagic_core_iperf_is_started(core))
+    {
+        embeddedCliPrint(cli, "IPERF not started.");
+        /* Module is not started so withhold commands for it from the user */
+        return;
+    }
+
     embeddedCliAddBinding(
         cli,
         (CliCommandBinding){
             "iperf-run",
-            "Starts an iperf session using the current values in the the subsystem config.",
+            "Starts an iperf session using the current values in the subsystem config.",
             true,
             core,
             mmagic_cli_iperf_run });

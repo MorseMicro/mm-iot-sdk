@@ -12,6 +12,9 @@
 #include "utils/list.h"
 #include "drivers/driver.h"
 #include "p2p.h"
+#ifdef CONFIG_AIDL
+#include "ap/ap_config.h"
+#endif /*CONFIG_AIDL*/
 
 #define P2P_GO_NEG_CNF_MAX_RETRY_COUNT 1
 
@@ -34,6 +37,13 @@ enum p2p_go_state {
 	UNKNOWN_GO,
 	LOCAL_GO,
 	REMOTE_GO
+};
+
+/* Enumeration for P2P device current role */
+enum p2p_role {
+	P2P_ROLE_IDLE = 0,
+	P2P_ROLE_PAIRING_INITIATOR,
+	P2P_ROLE_PAIRING_RESPONDER,
 };
 
 /**
@@ -182,6 +192,23 @@ struct p2p_device {
 
 	/* Password for P2P2 GO negotiation */
 	char password[100];
+
+	/* PASN data structure */
+	struct pasn_data *pasn;
+	struct wpabuf *action_frame_wrapper;
+
+	/* Device role */
+	enum p2p_role role;
+
+	/* Invitation parameters for P2P2 */
+	bool inv_reject;
+	u8 inv_status;
+	int inv_freq;
+	int inv_peer_oper_freq;
+	u8 inv_bssid[ETH_ALEN];
+	u8 inv_ssid[SSID_MAX_LEN];
+	size_t inv_ssid_len;
+	bool inv_all_channels;
 };
 
 struct p2p_sd_query {
@@ -198,6 +225,8 @@ struct p2p_id_key {
 	int akmp;
 	/* Cipher version type */
 	int cipher_version;
+	/* DevIK expiration time in hours */
+	u32 expiration;
 	/* Buffer to hold the DevIK */
 	u8 dik_data[DEVICE_IDENTITY_KEY_MAX_LEN];
 	/* Length of DevIK */
@@ -414,6 +443,18 @@ struct p2p_data {
 	 */
 	int ssid_set;
 
+#ifdef CONFIG_AIDL
+	/**
+	 * passphrase - WPA2-Personal passphrase for GO Negotiation (if local end will be GO)
+	 */
+	char passphrase[MAX_PASSPHRASE_LEN + 1];
+
+	/**
+	 * passphrase_set - Whether passphrase is already set for GO Negotiation
+	 */
+	int passphrase_set;
+#endif /*CONFIG_AIDL*/
+
 	/**
 	 * Regulatory class for own operational channel
 	 */
@@ -626,6 +667,49 @@ struct p2p_data {
 	struct rsn_pmksa_cache *initiator_pmksa;
 	/* Pairing responder PMKSA cache */
 	struct rsn_pmksa_cache *responder_pmksa;
+
+	/* DevIK variables: Cipher version, DevIK, and its lifetime
+	 * These are fetched from the P2P2 included in the PASN Encrypted Data
+	 * element during P2P2 group negotiation with PASN Authentication
+	 * frames. These values are stored in struct p2p_data for an ongoing GO
+	 * negotiation or join-a-group operation with the assumption that these
+	 * operations cannot happen in parallel with multiple peers. After
+	 * successful group formation and connection, these are moved to
+	 * wpa_supplicant configuration if the connection is persistent. */
+	u8 dik_cipher_version;
+	u8 peer_dik_data[DEVICE_IDENTITY_KEY_MAX_LEN];
+	size_t peer_dik_len;
+	unsigned int peer_dik_lifetime;
+
+	/* Password used during an ongoing group formation after opportunistic
+	 * PASN authentication or while joining an existing group. This will be
+	 * moved to a more permanent location from struct p2p_data at the
+	 * conclusion of a successful pairing. */
+	char dev_sae_password[100];
+	char peer_sae_password[100];
+
+	/* Variable used to know the role of the device in a given instance.
+	 * go_role variable is set while authorizing a P2P Client for PASN
+	 * authentication with predefined GO intent value for GO (15 for
+	 * P2P-GO). Once the authentication is completed and security
+	 * configuration is done, this variable is reset to false.
+	 */
+	bool go_role;
+
+#ifdef CONFIG_TESTING_OPTIONS
+	/**
+	 * PASN PTK of recent auth
+	 */
+	u8 pasn_ptk[128];
+
+	/**
+	 * PASN PTK length
+	 */
+	size_t pasn_ptk_len;
+#endif /* CONFIG_TESTING_OPTIONS */
+
+	bool usd_service;
+	u8 p2p_service_hash[P2PS_HASH_LEN];
 };
 
 /**
@@ -887,6 +971,8 @@ void p2p_buf_add_pref_channel_list(struct wpabuf *buf,
 				   const struct weighted_pcl *pref_freq_list,
 				   unsigned int size);
 struct wpabuf * p2p_encaps_ie(const struct wpabuf *subelems, u32 ie_type);
+struct wpabuf * p2p_group_build_p2p2_ie(struct p2p_data *p2p,
+					struct wpabuf *p2p2_ie, int freq);
 
 /* p2p_sd.c */
 struct p2p_sd_query * p2p_pending_sd_req(struct p2p_data *p2p,
@@ -940,19 +1026,23 @@ void p2p_process_pcea(struct p2p_data *p2p, struct p2p_message *msg,
 		      struct p2p_device *dev);
 
 /* p2p_invitation.c */
+struct wpabuf * p2p_build_invitation_req(struct p2p_data *p2p,
+					 struct p2p_device *peer,
+					 const u8 *go_dev_addr, int dev_pw_id);
 void p2p_handle_invitation_req(struct p2p_data *p2p, const u8 *sa,
 			       const u8 *data, size_t len, int rx_freq);
 void p2p_handle_invitation_resp(struct p2p_data *p2p, const u8 *sa,
 				const u8 *data, size_t len);
 struct wpabuf * p2p_process_invitation_req(struct p2p_data *p2p, const u8 *sa,
 					   const u8 *data, size_t len,
-					   int rx_freq);
+					   int rx_freq, bool p2p2);
 void p2p_process_invitation_resp(struct p2p_data *p2p, const u8 *sa,
 				 const u8 *data, size_t len);
 int p2p_invite_send(struct p2p_data *p2p, struct p2p_device *dev,
 		    const u8 *go_dev_addr, int dev_pw_id);
 void p2p_invitation_req_cb(struct p2p_data *p2p, int success);
-void p2p_invitation_resp_cb(struct p2p_data *p2p, int success);
+void p2p_invitation_resp_cb(struct p2p_data *p2p, const u8 *dst, int success);
+void p2p_start_invitation_connect(struct p2p_data *p2p, struct p2p_device *dev);
 
 /* p2p_dev_disc.c */
 void p2p_process_dev_disc_req(struct p2p_data *p2p, const u8 *sa,
@@ -993,7 +1083,6 @@ int dev_type_list_match(const u8 *dev_type, const u8 *req_dev_type[],
 struct wpabuf * p2p_build_probe_resp_ies(struct p2p_data *p2p,
 					 const u8 *query_hash,
 					 u8 query_count);
-void p2p_build_ssid(struct p2p_data *p2p, u8 *ssid, size_t *ssid_len);
 int p2p_send_action(struct p2p_data *p2p, unsigned int freq, const u8 *dst,
 		    const u8 *src, const u8 *bssid, const u8 *buf,
 		    size_t len, unsigned int wait_time);
@@ -1010,6 +1099,10 @@ void p2p_pref_channel_filter(const struct p2p_channels *a,
 			     struct p2p_channels *res, bool go);
 
 void p2p_sd_query_cb(struct p2p_data *p2p, int success);
+void p2p_pasn_initialize(struct p2p_data *p2p, struct p2p_device *dev,
+			 const u8 *addr, int freq, bool verify,
+			 bool derive_kek);
+void p2p_buf_add_usd_service_hash(struct wpabuf *buf, struct p2p_data *p2p);
 
 void p2p_dbg(struct p2p_data *p2p, const char *fmt, ...)
 PRINTF_FORMAT(2, 3);

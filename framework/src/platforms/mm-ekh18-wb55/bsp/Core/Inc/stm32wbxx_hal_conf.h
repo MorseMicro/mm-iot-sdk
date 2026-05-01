@@ -46,7 +46,7 @@
 /*#define HAL_LCD_MODULE_ENABLED   */
 /*#define HAL_LPTIM_MODULE_ENABLED   */
 /*#define HAL_PCD_MODULE_ENABLED   */
-/*#define HAL_PKA_MODULE_ENABLED   */
+#define HAL_PKA_MODULE_ENABLED
 /*#define HAL_QSPI_MODULE_ENABLED   */
 /*#define HAL_RNG_MODULE_ENABLED   */
 /*#define HAL_RTC_MODULE_ENABLED   */
@@ -54,7 +54,7 @@
 /*#define HAL_SMBUS_MODULE_ENABLED   */
 /*#define HAL_SMARTCARD_MODULE_ENABLED   */
 /*#define HAL_SPI_MODULE_ENABLED   */
-#define HAL_TIM_MODULE_ENABLED
+/*#define HAL_TIM_MODULE_ENABLED   */
 /*#define HAL_TSC_MODULE_ENABLED   */
 /*#define HAL_UART_MODULE_ENABLED   */
 /*#define HAL_USART_MODULE_ENABLED   */

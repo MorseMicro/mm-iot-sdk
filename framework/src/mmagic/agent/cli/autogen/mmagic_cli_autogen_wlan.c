@@ -1163,6 +1163,48 @@ int mmagic_cli_wlan_get_duty_cycle_mode(struct mmagic_data *core, EmbeddedCli *c
     return 0;
 }
 
+int mmagic_cli_wlan_get_connect_on_boot(struct mmagic_data *core, EmbeddedCli *cli)
+{
+    struct mmagic_wlan_data *data = mmagic_data_get_wlan(core);
+    const char *key_name = "wlan.connect_on_boot";
+    MM_STATIC_ASSERT((sizeof("wlan.connect_on_boot") - 1) < KEY_NAME_PADDING,
+                     "Key must be shorter than padding");
+
+    char buf[MMAGIC_CLI_PRINT_BUF_LEN] = { 0 };
+    /* -1 to allow for a NULL terminator at the end */
+    const size_t max_str_len = sizeof(buf) - 1;
+    size_t cursor = 0;
+    int written = 0;
+
+    written = snprintf(&buf[cursor], max_str_len - cursor, "%-*s", KEY_NAME_PADDING, key_name);
+    if (written < 0 || (cursor + written) > max_str_len)
+    {
+        return -1;
+    }
+    cursor += written;
+    written =
+        mmagic_bool_to_string(data->config.connect_on_boot, &buf[cursor], max_str_len - cursor);
+    if (written == 0)
+    {
+        /*
+         * The value we just tried writing ended up being empty. Move the cursor back to the end of
+         * the key and denote that it has an empty value.
+         */
+        const uint32_t key_len = strlen(key_name);
+        cursor = key_len;
+        written = snprintf(&buf[cursor], max_str_len - cursor, " (empty)");
+    }
+    if (written < 0 || (cursor + written) > max_str_len)
+    {
+        return -1;
+    }
+    cursor += written;
+
+    embeddedCliPrint(cli, buf);
+
+    return 0;
+}
+
 /********* Setters **********/
 
 int mmagic_cli_wlan_set_country_code(struct mmagic_data *core, EmbeddedCli *cli, const char *val)
@@ -1557,6 +1599,20 @@ int mmagic_cli_wlan_set_duty_cycle_mode(struct mmagic_data *core, EmbeddedCli *c
     return 0;
 }
 
+int mmagic_cli_wlan_set_connect_on_boot(struct mmagic_data *core, EmbeddedCli *cli, const char *val)
+{
+    struct mmagic_wlan_data *data = mmagic_data_get_wlan(core);
+
+    if (mmagic_string_to_bool(&data->config.connect_on_boot, val))
+    {
+        return -1;
+    }
+
+    mmagic_cli_wlan_get_connect_on_boot(core, cli);
+
+    return 0;
+}
+
 /********* Dictionary **********
  *
  * This list must be in alphabetical order as @c mmagic_cli_element_search() is implemented using
@@ -1566,6 +1622,7 @@ struct mmagic_cli_config_elem wlan_cli_config_vars[] = {
     { "ampdu_enabled", mmagic_cli_wlan_get_ampdu_enabled, mmagic_cli_wlan_set_ampdu_enabled },
     { "bssid", mmagic_cli_wlan_get_bssid, mmagic_cli_wlan_set_bssid },
     { "cac_enabled", mmagic_cli_wlan_get_cac_enabled, mmagic_cli_wlan_set_cac_enabled },
+    { "connect_on_boot", mmagic_cli_wlan_get_connect_on_boot, mmagic_cli_wlan_set_connect_on_boot },
     { "country_code", mmagic_cli_wlan_get_country_code, mmagic_cli_wlan_set_country_code },
     { "duty_cycle_mode", mmagic_cli_wlan_get_duty_cycle_mode, mmagic_cli_wlan_set_duty_cycle_mode },
     { "fragment_threshold",
@@ -1706,16 +1763,20 @@ void mmagic_cli_wlan_get_mac_addr(EmbeddedCli *cli, char *args, void *context);
 void mmagic_cli_wlan_wnm_sleep(EmbeddedCli *cli, char *args, void *context);
 void mmagic_cli_wlan_beacon_monitor_enable(EmbeddedCli *cli, char *args, void *context);
 void mmagic_cli_wlan_beacon_monitor_disable(EmbeddedCli *cli, char *args, void *context);
-void mmagic_cli_wlan_standby_enter(EmbeddedCli *cli, char *args, void *context);
-void mmagic_cli_wlan_standby_exit(EmbeddedCli *cli, char *args, void *context);
-void mmagic_cli_wlan_standby_set_status_payload(EmbeddedCli *cli, char *args, void *context);
-void mmagic_cli_wlan_standby_set_wake_filter(EmbeddedCli *cli, char *args, void *context);
-void mmagic_cli_wlan_standby_set_config(EmbeddedCli *cli, char *args, void *context);
 void mmagic_cli_wlan_get_sta_status(EmbeddedCli *cli, char *args, void *context);
+void mmagic_cli_wlan_dpp_push_button_start(EmbeddedCli *cli, char *args, void *context);
+void mmagic_cli_wlan_dpp_stop(EmbeddedCli *cli, char *args, void *context);
 
 /********* Register bindings function definition **********/
 void mmagic_cli_wlan_register_bindings(EmbeddedCli *cli, struct mmagic_data *core)
 {
+    if (!mmagic_core_wlan_is_started(core))
+    {
+        embeddedCliPrint(cli, "WLAN not started.");
+        /* Module is not started so withhold commands for it from the user */
+        return;
+    }
+
     embeddedCliAddBinding(
         cli,
         (CliCommandBinding){
@@ -1783,70 +1844,31 @@ void mmagic_cli_wlan_register_bindings(EmbeddedCli *cli, struct mmagic_data *cor
             core,
             mmagic_cli_wlan_beacon_monitor_disable });
 
-    embeddedCliAddBinding(
-        cli,
-        (CliCommandBinding){
-            "wlan-standby_enter",
-            "This puts the Morse chip into standby mode allowing the host processor to go to sleep "
-            "while the Morse chip takes over certain functionality to keep the connection alive "
-            "with the provision to wake up the host processor when certain conditions are met.",
-            true,
-            core,
-            mmagic_cli_wlan_standby_enter });
-
-    embeddedCliAddBinding(
-        cli,
-        (CliCommandBinding){
-            "wlan-standby_exit",
-            "Forces the Morse chip to exit standby mode. There may be certain instances such as a "
-            "timer expiry, which cause the host chip to wake up independant of the Morse chip. In "
-            "such situations, the host calls this function to instruct the Morse chip to exit "
-            "standby mode and return to normal operating mode.",
-            true,
-            core,
-            mmagic_cli_wlan_standby_exit });
-
-    embeddedCliAddBinding(
-        cli,
-        (CliCommandBinding){
-            "wlan-standby_set_status_payload",
-            "Sets the user payload for the standby status packet. Once standby mode is enabled, "
-            "the Morse chip will periodically emit a UDP standby status packet regardless of "
-            "whether it is in standby or not. The UDP packet will also be sent immediately upon "
-            "entering or exiting Standby mode. If this command is not executed then the standby "
-            "status packet will contain no payload.",
-            true,
-            core,
-            mmagic_cli_wlan_standby_set_status_payload });
-
-    embeddedCliAddBinding(
-        cli,
-        (CliCommandBinding){
-            "wlan-standby_set_wake_filter",
-            "Configures the standby mode UDP wake packet filter. The system can be woken up from "
-            "standby mode by sending it a UDP wake packet. If a wake filter is set using this "
-            "function then the wake packet will only wake up the system if the specified filter "
-            "pattern matches the payload at the specified offset within the payload. If this "
-            "command is not executed then any wake packet will wake up the system.",
-            true,
-            core,
-            mmagic_cli_wlan_standby_set_wake_filter });
-
-    embeddedCliAddBinding(
-        cli,
-        (CliCommandBinding){ "wlan-standby_set_config",
-                             "Sets the standby mode configuration parameters. If this command is "
-                             "not executed then the defaults are as specified.",
-                             true,
-                             core,
-                             mmagic_cli_wlan_standby_set_config });
-
     embeddedCliAddBinding(cli,
                           (CliCommandBinding){ "wlan-get_sta_status",
                                                "Retrieves the STA status of the WLAN interface.",
                                                true,
                                                core,
                                                mmagic_cli_wlan_get_sta_status });
+
+    embeddedCliAddBinding(
+        cli,
+        (CliCommandBinding){
+            "wlan-dpp_push_button_start",
+            "Instructs the WLAN device to start the Device Provisioning Protocol (DPP) Push Button "
+            "(PB) provisioning process. SSID and password will be automatically copied to "
+            "wlan.ssid and wlan.password and saved in the persistent config store.",
+            true,
+            core,
+            mmagic_cli_wlan_dpp_push_button_start });
+
+    embeddedCliAddBinding(
+        cli,
+        (CliCommandBinding){ "wlan-dpp_stop",
+                             "Instructs the WLAN device to abort the ongoing DPP session.",
+                             true,
+                             core,
+                             mmagic_cli_wlan_dpp_stop });
 }
 
 void mmagic_cli_wlan_init(struct mmagic_cli *ctx)

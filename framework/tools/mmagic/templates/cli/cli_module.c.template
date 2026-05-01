@@ -278,6 +278,13 @@ void mmagic_cli_{{data.name}}_{{command.name}}(EmbeddedCli *cli, char *args, voi
 /********* Register bindings function definition **********/
 void mmagic_cli_{{data.name}}_register_bindings(EmbeddedCli *cli, struct mmagic_data *core)
 {
+    if (!mmagic_core_{{data.name}}_is_started(core))
+    {
+        embeddedCliPrint(cli, "{{data.name.upper()}} not started.");
+        /* Module is not started so withhold commands for it from the user */
+        return;
+    }
+
     {% for command in data.commands %}
     embeddedCliAddBinding(cli, (CliCommandBinding) {
         "{{data.name}}-{{command.name}}",

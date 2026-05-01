@@ -10,6 +10,10 @@ import socket
 LOG_LEVEL_EXTRA = 5     # Extra verbosity beyond debug
 
 
+class OpenOcdTclHaltError(Exception):
+    pass
+
+
 class OpenOcdTcl:
     TERMINATOR = b"\x1a"
 
@@ -63,10 +67,14 @@ class OpenOcdTcl:
         return rsp
 
     def halt_target(self):
-        self._execute("halt")
+        rsp = self._execute("halt")
+        if "not halted" in rsp.lower():
+            raise OpenOcdTclHaltError(f"Failed to halt target {self.hostname}:{self.port}")
 
     def reset_halt_target(self):
-        self._execute("reset halt")
+        rsp = self._execute("reset halt")
+        if "not halted" in rsp.lower():
+            raise OpenOcdTclHaltError(f"Failed to halt target {self.hostname}:{self.port}")
 
     def reset_run_target(self):
         self._execute("reset run")

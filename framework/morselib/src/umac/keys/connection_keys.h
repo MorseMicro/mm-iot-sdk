@@ -61,6 +61,6 @@ int connection_keys_get_active_key_id(struct connection_keys_data *data,
 void connection_keys_increment_tx_seq(struct connection_keys_data *data, uint8_t key_id);
 
 
-uint64_t connection_keys_get_tx_seq(struct connection_keys_data *data, enum umac_key_type key_type);
+uint64_t connection_keys_get_tx_seq(struct connection_keys_data *data, uint8_t key_id);
 
 

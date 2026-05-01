@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.10.4</span>
+   &#160;<span id="projectnumber">2.11.2</span>
    </div>
   </td>
  </tr>
@@ -507,151 +507,159 @@ $(document).ready(function(){initNavTree('sdio__spi_8c_source.html',''); initRes
 <div class="line"><a id="l00485" name="l00485"></a><span class="lineno">  485</span>            size = next_boundary - address;</div>
 <div class="line"><a id="l00486" name="l00486"></a><span class="lineno">  486</span>        }</div>
 <div class="line"><a id="l00487" name="l00487"></a><span class="lineno">  487</span> </div>
-<div class="line"><a id="l00488" name="l00488"></a><span class="lineno">  488</span>        morse_cmd53_read(function, address, <a class="code hl_variable" href="structmmhal__wlan__sdio__cmd53__write__args.html#a3dd013d60ce3211ec0c064948407f45e">data</a>, size);</div>
-<div class="line"><a id="l00489" name="l00489"></a><span class="lineno">  489</span> </div>
-<div class="line"><a id="l00490" name="l00490"></a><span class="lineno">  490</span>        <span class="comment">/*</span></div>
-<div class="line"><a id="l00491" name="l00491"></a><span class="lineno">  491</span><span class="comment">         * Observed sometimes that SDIO read repeats the first 4-bytes word twice,</span></div>
-<div class="line"><a id="l00492" name="l00492"></a><span class="lineno">  492</span><span class="comment">         * overwriting second word (hence, tail will be overwritten with &#39;sync&#39; byte). When</span></div>
-<div class="line"><a id="l00493" name="l00493"></a><span class="lineno">  493</span><span class="comment">         * this happens, reading will fetch the correct word.</span></div>
-<div class="line"><a id="l00494" name="l00494"></a><span class="lineno">  494</span><span class="comment">         * NB: if repeated again, pass it anyway and upper layers will handle it</span></div>
-<div class="line"><a id="l00495" name="l00495"></a><span class="lineno">  495</span><span class="comment">         */</span></div>
-<div class="line"><a id="l00496" name="l00496"></a><span class="lineno">  496</span>        <span class="keywordflow">if</span> ((size &gt;= 8) &amp;&amp; !memcmp(<a class="code hl_variable" href="structmmhal__wlan__sdio__cmd53__write__args.html#a3dd013d60ce3211ec0c064948407f45e">data</a>, <a class="code hl_variable" href="structmmhal__wlan__sdio__cmd53__write__args.html#a3dd013d60ce3211ec0c064948407f45e">data</a> + 4, 4))</div>
-<div class="line"><a id="l00497" name="l00497"></a><span class="lineno">  497</span>        {</div>
-<div class="line"><a id="l00498" name="l00498"></a><span class="lineno">  498</span>            <span class="comment">/* Lets try one more time before passing up */</span></div>
-<div class="line"><a id="l00499" name="l00499"></a><span class="lineno">  499</span>            printf(<span class="stringliteral">&quot;Corrupt Payload. Re-Read first 8 bytes\n&quot;</span>);</div>
-<div class="line"><a id="l00500" name="l00500"></a><span class="lineno">  500</span>            morse_cmd53_read(function, address, <a class="code hl_variable" href="structmmhal__wlan__sdio__cmd53__write__args.html#a3dd013d60ce3211ec0c064948407f45e">data</a>, 8);</div>
-<div class="line"><a id="l00501" name="l00501"></a><span class="lineno">  501</span>        }</div>
-<div class="line"><a id="l00502" name="l00502"></a><span class="lineno">  502</span> </div>
-<div class="line"><a id="l00503" name="l00503"></a><span class="lineno">  503</span>        address += size;</div>
-<div class="line"><a id="l00504" name="l00504"></a><span class="lineno">  504</span>        <a class="code hl_variable" href="structmmhal__wlan__sdio__cmd53__write__args.html#a3dd013d60ce3211ec0c064948407f45e">data</a> += size;</div>
-<div class="line"><a id="l00505" name="l00505"></a><span class="lineno">  505</span>        len -= size;</div>
-<div class="line"><a id="l00506" name="l00506"></a><span class="lineno">  506</span>    }</div>
-<div class="line"><a id="l00507" name="l00507"></a><span class="lineno">  507</span> </div>
-<div class="line"><a id="l00508" name="l00508"></a><span class="lineno">  508</span>exit:</div>
-<div class="line"><a id="l00509" name="l00509"></a><span class="lineno">  509</span>    <span class="keywordflow">return</span> result;</div>
-<div class="line"><a id="l00510" name="l00510"></a><span class="lineno">  510</span>}</div>
-<div class="line"><a id="l00511" name="l00511"></a><span class="lineno">  511</span> </div>
-<div class="line"><a id="l00512" name="l00512"></a><span class="lineno">  512</span><span class="keywordtype">int</span> sdio_spi_write_multi_byte(uint32_t address, <span class="keyword">const</span> uint8_t *<a class="code hl_variable" href="structmmhal__wlan__sdio__cmd53__write__args.html#a3dd013d60ce3211ec0c064948407f45e">data</a>, uint32_t len)</div>
-<div class="line"><a id="l00513" name="l00513"></a><span class="lineno">  513</span>{</div>
-<div class="line"><a id="l00514" name="l00514"></a><span class="lineno">  514</span>    <span class="keywordtype">int</span> result = -1;</div>
-<div class="line"><a id="l00515" name="l00515"></a><span class="lineno">  515</span>    <span class="keyword">enum</span> <a class="code hl_enumeration" href="group__MMHAL__WLAN__SDIO__UTILS.html#gabf165327a23c8043f111e060e12607d3">mmhal_sdio_function</a> function = <a class="code hl_enumvalue" href="group__MMHAL__WLAN__SDIO__UTILS.html#ggabf165327a23c8043f111e060e12607d3afbd121886257b23e80a1964ef5bb8b65">MMHAL_SDIO_FUNCTION_2</a>;</div>
-<div class="line"><a id="l00516" name="l00516"></a><span class="lineno">  516</span>    <span class="keyword">enum</span> max_block_transfer_size max_transfer_size = MAX_BLOCK_TRANSFER_SIZE_FN2;</div>
-<div class="line"><a id="l00517" name="l00517"></a><span class="lineno">  517</span> </div>
-<div class="line"><a id="l00518" name="l00518"></a><span class="lineno">  518</span>    <span class="comment">/* Length must be a non-zero multiple of 4 */</span></div>
-<div class="line"><a id="l00519" name="l00519"></a><span class="lineno">  519</span>    <span class="keywordflow">if</span> (len == 0 || (len &amp; 0x03) != 0)</div>
-<div class="line"><a id="l00520" name="l00520"></a><span class="lineno">  520</span>    {</div>
-<div class="line"><a id="l00521" name="l00521"></a><span class="lineno">  521</span>        printf(<span class="stringliteral">&quot;Invalid length %lu\n&quot;</span>, len);</div>
-<div class="line"><a id="l00522" name="l00522"></a><span class="lineno">  522</span>        result = <a class="code hl_enumvalue" href="group__MMHAL__WLAN__SDIO.html#gga404e654bbcf25530e1f4b43488fd77aca2584b53aba85f9ea4139f9e1e9604a53">MMHAL_SDIO_INVALID_ARGUMENT</a>;</div>
-<div class="line"><a id="l00523" name="l00523"></a><span class="lineno">  523</span>        <span class="keywordflow">goto</span> exit;</div>
-<div class="line"><a id="l00524" name="l00524"></a><span class="lineno">  524</span>    }</div>
+<div class="line"><a id="l00488" name="l00488"></a><span class="lineno">  488</span>        result = morse_cmd53_read(function, address, <a class="code hl_variable" href="structmmhal__wlan__sdio__cmd53__write__args.html#a3dd013d60ce3211ec0c064948407f45e">data</a>, size);</div>
+<div class="line"><a id="l00489" name="l00489"></a><span class="lineno">  489</span>        <span class="keywordflow">if</span> (result != 0)</div>
+<div class="line"><a id="l00490" name="l00490"></a><span class="lineno">  490</span>        {</div>
+<div class="line"><a id="l00491" name="l00491"></a><span class="lineno">  491</span>            <span class="keywordflow">goto</span> exit;</div>
+<div class="line"><a id="l00492" name="l00492"></a><span class="lineno">  492</span>        }</div>
+<div class="line"><a id="l00493" name="l00493"></a><span class="lineno">  493</span> </div>
+<div class="line"><a id="l00494" name="l00494"></a><span class="lineno">  494</span>        <span class="comment">/*</span></div>
+<div class="line"><a id="l00495" name="l00495"></a><span class="lineno">  495</span><span class="comment">         * Observed sometimes that SDIO read repeats the first 4-bytes word twice,</span></div>
+<div class="line"><a id="l00496" name="l00496"></a><span class="lineno">  496</span><span class="comment">         * overwriting second word (hence, tail will be overwritten with &#39;sync&#39; byte). When</span></div>
+<div class="line"><a id="l00497" name="l00497"></a><span class="lineno">  497</span><span class="comment">         * this happens, reading will fetch the correct word.</span></div>
+<div class="line"><a id="l00498" name="l00498"></a><span class="lineno">  498</span><span class="comment">         * NB: if repeated again, pass it anyway and upper layers will handle it</span></div>
+<div class="line"><a id="l00499" name="l00499"></a><span class="lineno">  499</span><span class="comment">         */</span></div>
+<div class="line"><a id="l00500" name="l00500"></a><span class="lineno">  500</span>        <span class="keywordflow">if</span> ((size &gt;= 8) &amp;&amp; !memcmp(<a class="code hl_variable" href="structmmhal__wlan__sdio__cmd53__write__args.html#a3dd013d60ce3211ec0c064948407f45e">data</a>, <a class="code hl_variable" href="structmmhal__wlan__sdio__cmd53__write__args.html#a3dd013d60ce3211ec0c064948407f45e">data</a> + 4, 4))</div>
+<div class="line"><a id="l00501" name="l00501"></a><span class="lineno">  501</span>        {</div>
+<div class="line"><a id="l00502" name="l00502"></a><span class="lineno">  502</span>            <span class="comment">/* Lets try one more time before passing up */</span></div>
+<div class="line"><a id="l00503" name="l00503"></a><span class="lineno">  503</span>            printf(<span class="stringliteral">&quot;Corrupt Payload. Re-Read first 8 bytes\n&quot;</span>);</div>
+<div class="line"><a id="l00504" name="l00504"></a><span class="lineno">  504</span>            result = morse_cmd53_read(function, address, <a class="code hl_variable" href="structmmhal__wlan__sdio__cmd53__write__args.html#a3dd013d60ce3211ec0c064948407f45e">data</a>, 8);</div>
+<div class="line"><a id="l00505" name="l00505"></a><span class="lineno">  505</span>            <span class="keywordflow">if</span> (result != 0)</div>
+<div class="line"><a id="l00506" name="l00506"></a><span class="lineno">  506</span>            {</div>
+<div class="line"><a id="l00507" name="l00507"></a><span class="lineno">  507</span>                <span class="keywordflow">goto</span> exit;</div>
+<div class="line"><a id="l00508" name="l00508"></a><span class="lineno">  508</span>            }</div>
+<div class="line"><a id="l00509" name="l00509"></a><span class="lineno">  509</span>        }</div>
+<div class="line"><a id="l00510" name="l00510"></a><span class="lineno">  510</span> </div>
+<div class="line"><a id="l00511" name="l00511"></a><span class="lineno">  511</span>        address += size;</div>
+<div class="line"><a id="l00512" name="l00512"></a><span class="lineno">  512</span>        <a class="code hl_variable" href="structmmhal__wlan__sdio__cmd53__write__args.html#a3dd013d60ce3211ec0c064948407f45e">data</a> += size;</div>
+<div class="line"><a id="l00513" name="l00513"></a><span class="lineno">  513</span>        len -= size;</div>
+<div class="line"><a id="l00514" name="l00514"></a><span class="lineno">  514</span>    }</div>
+<div class="line"><a id="l00515" name="l00515"></a><span class="lineno">  515</span> </div>
+<div class="line"><a id="l00516" name="l00516"></a><span class="lineno">  516</span>exit:</div>
+<div class="line"><a id="l00517" name="l00517"></a><span class="lineno">  517</span>    <span class="keywordflow">return</span> result;</div>
+<div class="line"><a id="l00518" name="l00518"></a><span class="lineno">  518</span>}</div>
+<div class="line"><a id="l00519" name="l00519"></a><span class="lineno">  519</span> </div>
+<div class="line"><a id="l00520" name="l00520"></a><span class="lineno">  520</span><span class="keywordtype">int</span> sdio_spi_write_multi_byte(uint32_t address, <span class="keyword">const</span> uint8_t *<a class="code hl_variable" href="structmmhal__wlan__sdio__cmd53__write__args.html#a3dd013d60ce3211ec0c064948407f45e">data</a>, uint32_t len)</div>
+<div class="line"><a id="l00521" name="l00521"></a><span class="lineno">  521</span>{</div>
+<div class="line"><a id="l00522" name="l00522"></a><span class="lineno">  522</span>    <span class="keywordtype">int</span> result = -1;</div>
+<div class="line"><a id="l00523" name="l00523"></a><span class="lineno">  523</span>    <span class="keyword">enum</span> <a class="code hl_enumeration" href="group__MMHAL__WLAN__SDIO__UTILS.html#gabf165327a23c8043f111e060e12607d3">mmhal_sdio_function</a> function = <a class="code hl_enumvalue" href="group__MMHAL__WLAN__SDIO__UTILS.html#ggabf165327a23c8043f111e060e12607d3afbd121886257b23e80a1964ef5bb8b65">MMHAL_SDIO_FUNCTION_2</a>;</div>
+<div class="line"><a id="l00524" name="l00524"></a><span class="lineno">  524</span>    <span class="keyword">enum</span> max_block_transfer_size max_transfer_size = MAX_BLOCK_TRANSFER_SIZE_FN2;</div>
 <div class="line"><a id="l00525" name="l00525"></a><span class="lineno">  525</span> </div>
-<div class="line"><a id="l00526" name="l00526"></a><span class="lineno">  526</span>    <span class="comment">/* Writes cannot cross 64K boundaries, so we may need to do several operations</span></div>
-<div class="line"><a id="l00527" name="l00527"></a><span class="lineno">  527</span><span class="comment">     * to write the all the given data. */</span></div>
-<div class="line"><a id="l00528" name="l00528"></a><span class="lineno">  528</span>    <span class="keywordflow">while</span> (len &gt; 0)</div>
-<div class="line"><a id="l00529" name="l00529"></a><span class="lineno">  529</span>    {</div>
-<div class="line"><a id="l00530" name="l00530"></a><span class="lineno">  530</span>        result = morse_address_base_set(address, MORSE_CONFIG_ACCESS_4BYTE, function);</div>
-<div class="line"><a id="l00531" name="l00531"></a><span class="lineno">  531</span>        <span class="keywordflow">if</span> (result != 0)</div>
-<div class="line"><a id="l00532" name="l00532"></a><span class="lineno">  532</span>        {</div>
-<div class="line"><a id="l00533" name="l00533"></a><span class="lineno">  533</span>            <span class="keywordflow">goto</span> exit;</div>
-<div class="line"><a id="l00534" name="l00534"></a><span class="lineno">  534</span>        }</div>
-<div class="line"><a id="l00535" name="l00535"></a><span class="lineno">  535</span> </div>
-<div class="line"><a id="l00536" name="l00536"></a><span class="lineno">  536</span>        <span class="comment">/* We first calculate the number of bytes to transfer on this iteration of the loop. */</span></div>
-<div class="line"><a id="l00537" name="l00537"></a><span class="lineno">  537</span>        uint32_t size = min_u32(len, max_transfer_size); <span class="comment">// NOLINT(build/include_what_you_use)</span></div>
-<div class="line"><a id="l00538" name="l00538"></a><span class="lineno">  538</span> </div>
-<div class="line"><a id="l00539" name="l00539"></a><span class="lineno">  539</span>        <span class="comment">/* Write operations cannot cross the 64K boundary. We truncate the operation if this is</span></div>
-<div class="line"><a id="l00540" name="l00540"></a><span class="lineno">  540</span><span class="comment">         * is the case. */</span></div>
-<div class="line"><a id="l00541" name="l00541"></a><span class="lineno">  541</span>        uint32_t next_boundary = (address &amp; 0xFFFF0000) + 0x10000;</div>
-<div class="line"><a id="l00542" name="l00542"></a><span class="lineno">  542</span>        <span class="keywordflow">if</span> ((address + size) &gt; next_boundary)</div>
-<div class="line"><a id="l00543" name="l00543"></a><span class="lineno">  543</span>        {</div>
-<div class="line"><a id="l00544" name="l00544"></a><span class="lineno">  544</span>            size = next_boundary - address;</div>
-<div class="line"><a id="l00545" name="l00545"></a><span class="lineno">  545</span>        }</div>
+<div class="line"><a id="l00526" name="l00526"></a><span class="lineno">  526</span>    <span class="comment">/* Length must be a non-zero multiple of 4 */</span></div>
+<div class="line"><a id="l00527" name="l00527"></a><span class="lineno">  527</span>    <span class="keywordflow">if</span> (len == 0 || (len &amp; 0x03) != 0)</div>
+<div class="line"><a id="l00528" name="l00528"></a><span class="lineno">  528</span>    {</div>
+<div class="line"><a id="l00529" name="l00529"></a><span class="lineno">  529</span>        printf(<span class="stringliteral">&quot;Invalid length %lu\n&quot;</span>, len);</div>
+<div class="line"><a id="l00530" name="l00530"></a><span class="lineno">  530</span>        result = <a class="code hl_enumvalue" href="group__MMHAL__WLAN__SDIO.html#gga404e654bbcf25530e1f4b43488fd77aca2584b53aba85f9ea4139f9e1e9604a53">MMHAL_SDIO_INVALID_ARGUMENT</a>;</div>
+<div class="line"><a id="l00531" name="l00531"></a><span class="lineno">  531</span>        <span class="keywordflow">goto</span> exit;</div>
+<div class="line"><a id="l00532" name="l00532"></a><span class="lineno">  532</span>    }</div>
+<div class="line"><a id="l00533" name="l00533"></a><span class="lineno">  533</span> </div>
+<div class="line"><a id="l00534" name="l00534"></a><span class="lineno">  534</span>    <span class="comment">/* Writes cannot cross 64K boundaries, so we may need to do several operations</span></div>
+<div class="line"><a id="l00535" name="l00535"></a><span class="lineno">  535</span><span class="comment">     * to write the all the given data. */</span></div>
+<div class="line"><a id="l00536" name="l00536"></a><span class="lineno">  536</span>    <span class="keywordflow">while</span> (len &gt; 0)</div>
+<div class="line"><a id="l00537" name="l00537"></a><span class="lineno">  537</span>    {</div>
+<div class="line"><a id="l00538" name="l00538"></a><span class="lineno">  538</span>        result = morse_address_base_set(address, MORSE_CONFIG_ACCESS_4BYTE, function);</div>
+<div class="line"><a id="l00539" name="l00539"></a><span class="lineno">  539</span>        <span class="keywordflow">if</span> (result != 0)</div>
+<div class="line"><a id="l00540" name="l00540"></a><span class="lineno">  540</span>        {</div>
+<div class="line"><a id="l00541" name="l00541"></a><span class="lineno">  541</span>            <span class="keywordflow">goto</span> exit;</div>
+<div class="line"><a id="l00542" name="l00542"></a><span class="lineno">  542</span>        }</div>
+<div class="line"><a id="l00543" name="l00543"></a><span class="lineno">  543</span> </div>
+<div class="line"><a id="l00544" name="l00544"></a><span class="lineno">  544</span>        <span class="comment">/* We first calculate the number of bytes to transfer on this iteration of the loop. */</span></div>
+<div class="line"><a id="l00545" name="l00545"></a><span class="lineno">  545</span>        uint32_t size = min_u32(len, max_transfer_size); <span class="comment">// NOLINT(build/include_what_you_use)</span></div>
 <div class="line"><a id="l00546" name="l00546"></a><span class="lineno">  546</span> </div>
-<div class="line"><a id="l00547" name="l00547"></a><span class="lineno">  547</span>        result = morse_cmd53_write(function, address, <a class="code hl_variable" href="structmmhal__wlan__sdio__cmd53__write__args.html#a3dd013d60ce3211ec0c064948407f45e">data</a>, size);</div>
-<div class="line"><a id="l00548" name="l00548"></a><span class="lineno">  548</span>        <span class="keywordflow">if</span> (result != 0)</div>
-<div class="line"><a id="l00549" name="l00549"></a><span class="lineno">  549</span>        {</div>
-<div class="line"><a id="l00550" name="l00550"></a><span class="lineno">  550</span>            <span class="keywordflow">goto</span> exit;</div>
-<div class="line"><a id="l00551" name="l00551"></a><span class="lineno">  551</span>        }</div>
-<div class="line"><a id="l00552" name="l00552"></a><span class="lineno">  552</span> </div>
-<div class="line"><a id="l00553" name="l00553"></a><span class="lineno">  553</span>        address += size;</div>
-<div class="line"><a id="l00554" name="l00554"></a><span class="lineno">  554</span>        <a class="code hl_variable" href="structmmhal__wlan__sdio__cmd53__write__args.html#a3dd013d60ce3211ec0c064948407f45e">data</a> += size;</div>
-<div class="line"><a id="l00555" name="l00555"></a><span class="lineno">  555</span>        len -= size;</div>
-<div class="line"><a id="l00556" name="l00556"></a><span class="lineno">  556</span>    }</div>
-<div class="line"><a id="l00557" name="l00557"></a><span class="lineno">  557</span> </div>
-<div class="line"><a id="l00558" name="l00558"></a><span class="lineno">  558</span>exit:</div>
-<div class="line"><a id="l00559" name="l00559"></a><span class="lineno">  559</span>    <span class="keywordflow">return</span> result;</div>
-<div class="line"><a id="l00560" name="l00560"></a><span class="lineno">  560</span>}</div>
-<div class="line"><a id="l00561" name="l00561"></a><span class="lineno">  561</span> </div>
-<div class="line"><a id="l00562" name="l00562"></a><span class="lineno">  562</span><span class="keywordtype">int</span> sdio_spi_write_le32(uint32_t address, uint32_t <a class="code hl_variable" href="structmmhal__wlan__sdio__cmd53__write__args.html#a3dd013d60ce3211ec0c064948407f45e">data</a>)</div>
-<div class="line"><a id="l00563" name="l00563"></a><span class="lineno">  563</span>{</div>
-<div class="line"><a id="l00564" name="l00564"></a><span class="lineno">  564</span>    <span class="keywordtype">int</span> result = -1;</div>
-<div class="line"><a id="l00565" name="l00565"></a><span class="lineno">  565</span>    <span class="keyword">enum</span> <a class="code hl_enumeration" href="group__MMHAL__WLAN__SDIO__UTILS.html#gabf165327a23c8043f111e060e12607d3">mmhal_sdio_function</a> function = <a class="code hl_enumvalue" href="group__MMHAL__WLAN__SDIO__UTILS.html#ggabf165327a23c8043f111e060e12607d3afbd121886257b23e80a1964ef5bb8b65">MMHAL_SDIO_FUNCTION_2</a>;</div>
-<div class="line"><a id="l00566" name="l00566"></a><span class="lineno">  566</span> </div>
-<div class="line"><a id="l00567" name="l00567"></a><span class="lineno">  567</span>    result = morse_address_base_set(address, MORSE_CONFIG_ACCESS_4BYTE, function);</div>
-<div class="line"><a id="l00568" name="l00568"></a><span class="lineno">  568</span>    <span class="keywordflow">if</span> (result != 0)</div>
-<div class="line"><a id="l00569" name="l00569"></a><span class="lineno">  569</span>    {</div>
-<div class="line"><a id="l00570" name="l00570"></a><span class="lineno">  570</span>        <span class="keywordflow">goto</span> exit;</div>
-<div class="line"><a id="l00571" name="l00571"></a><span class="lineno">  571</span>    }</div>
-<div class="line"><a id="l00572" name="l00572"></a><span class="lineno">  572</span> </div>
-<div class="line"><a id="l00573" name="l00573"></a><span class="lineno">  573</span>    result = morse_cmd53_write(function, address, (uint8_t *)&amp;<a class="code hl_variable" href="structmmhal__wlan__sdio__cmd53__write__args.html#a3dd013d60ce3211ec0c064948407f45e">data</a>, <span class="keyword">sizeof</span>(<a class="code hl_variable" href="structmmhal__wlan__sdio__cmd53__write__args.html#a3dd013d60ce3211ec0c064948407f45e">data</a>));</div>
+<div class="line"><a id="l00547" name="l00547"></a><span class="lineno">  547</span>        <span class="comment">/* Write operations cannot cross the 64K boundary. We truncate the operation if this is</span></div>
+<div class="line"><a id="l00548" name="l00548"></a><span class="lineno">  548</span><span class="comment">         * is the case. */</span></div>
+<div class="line"><a id="l00549" name="l00549"></a><span class="lineno">  549</span>        uint32_t next_boundary = (address &amp; 0xFFFF0000) + 0x10000;</div>
+<div class="line"><a id="l00550" name="l00550"></a><span class="lineno">  550</span>        <span class="keywordflow">if</span> ((address + size) &gt; next_boundary)</div>
+<div class="line"><a id="l00551" name="l00551"></a><span class="lineno">  551</span>        {</div>
+<div class="line"><a id="l00552" name="l00552"></a><span class="lineno">  552</span>            size = next_boundary - address;</div>
+<div class="line"><a id="l00553" name="l00553"></a><span class="lineno">  553</span>        }</div>
+<div class="line"><a id="l00554" name="l00554"></a><span class="lineno">  554</span> </div>
+<div class="line"><a id="l00555" name="l00555"></a><span class="lineno">  555</span>        result = morse_cmd53_write(function, address, <a class="code hl_variable" href="structmmhal__wlan__sdio__cmd53__write__args.html#a3dd013d60ce3211ec0c064948407f45e">data</a>, size);</div>
+<div class="line"><a id="l00556" name="l00556"></a><span class="lineno">  556</span>        <span class="keywordflow">if</span> (result != 0)</div>
+<div class="line"><a id="l00557" name="l00557"></a><span class="lineno">  557</span>        {</div>
+<div class="line"><a id="l00558" name="l00558"></a><span class="lineno">  558</span>            <span class="keywordflow">goto</span> exit;</div>
+<div class="line"><a id="l00559" name="l00559"></a><span class="lineno">  559</span>        }</div>
+<div class="line"><a id="l00560" name="l00560"></a><span class="lineno">  560</span> </div>
+<div class="line"><a id="l00561" name="l00561"></a><span class="lineno">  561</span>        address += size;</div>
+<div class="line"><a id="l00562" name="l00562"></a><span class="lineno">  562</span>        <a class="code hl_variable" href="structmmhal__wlan__sdio__cmd53__write__args.html#a3dd013d60ce3211ec0c064948407f45e">data</a> += size;</div>
+<div class="line"><a id="l00563" name="l00563"></a><span class="lineno">  563</span>        len -= size;</div>
+<div class="line"><a id="l00564" name="l00564"></a><span class="lineno">  564</span>    }</div>
+<div class="line"><a id="l00565" name="l00565"></a><span class="lineno">  565</span> </div>
+<div class="line"><a id="l00566" name="l00566"></a><span class="lineno">  566</span>exit:</div>
+<div class="line"><a id="l00567" name="l00567"></a><span class="lineno">  567</span>    <span class="keywordflow">return</span> result;</div>
+<div class="line"><a id="l00568" name="l00568"></a><span class="lineno">  568</span>}</div>
+<div class="line"><a id="l00569" name="l00569"></a><span class="lineno">  569</span> </div>
+<div class="line"><a id="l00570" name="l00570"></a><span class="lineno">  570</span><span class="keywordtype">int</span> sdio_spi_write_le32(uint32_t address, uint32_t <a class="code hl_variable" href="structmmhal__wlan__sdio__cmd53__write__args.html#a3dd013d60ce3211ec0c064948407f45e">data</a>)</div>
+<div class="line"><a id="l00571" name="l00571"></a><span class="lineno">  571</span>{</div>
+<div class="line"><a id="l00572" name="l00572"></a><span class="lineno">  572</span>    <span class="keywordtype">int</span> result = -1;</div>
+<div class="line"><a id="l00573" name="l00573"></a><span class="lineno">  573</span>    <span class="keyword">enum</span> <a class="code hl_enumeration" href="group__MMHAL__WLAN__SDIO__UTILS.html#gabf165327a23c8043f111e060e12607d3">mmhal_sdio_function</a> function = <a class="code hl_enumvalue" href="group__MMHAL__WLAN__SDIO__UTILS.html#ggabf165327a23c8043f111e060e12607d3afbd121886257b23e80a1964ef5bb8b65">MMHAL_SDIO_FUNCTION_2</a>;</div>
 <div class="line"><a id="l00574" name="l00574"></a><span class="lineno">  574</span> </div>
-<div class="line"><a id="l00575" name="l00575"></a><span class="lineno">  575</span>exit:</div>
-<div class="line"><a id="l00576" name="l00576"></a><span class="lineno">  576</span>    <span class="keywordflow">return</span> result;</div>
-<div class="line"><a id="l00577" name="l00577"></a><span class="lineno">  577</span>}</div>
-<div class="line"><a id="l00578" name="l00578"></a><span class="lineno">  578</span> </div>
-<div class="line"><a id="l00579" name="l00579"></a><span class="lineno">  579</span><span class="keywordtype">int</span> sdio_spi_send_cmd(uint8_t cmd_idx, uint32_t arg, uint32_t *rsp)</div>
-<div class="line"><a id="l00580" name="l00580"></a><span class="lineno">  580</span>{</div>
-<div class="line"><a id="l00581" name="l00581"></a><span class="lineno">  581</span>    <span class="keywordflow">return</span> <a class="code hl_function" href="group__MMHAL__WLAN__SDIO.html#gabea5c964dafe205d8ca3da5b93a1f2b3">mmhal_wlan_sdio_cmd</a>(cmd_idx, arg, rsp);</div>
-<div class="line"><a id="l00582" name="l00582"></a><span class="lineno">  582</span>}</div>
-<div class="line"><a id="l00583" name="l00583"></a><span class="lineno">  583</span> </div>
-<div class="line"><a id="l00584" name="l00584"></a><span class="lineno">  584</span><span class="keywordtype">int</span> sdio_spi_update_le32(uint32_t address, uint32_t mask, uint32_t value)</div>
-<div class="line"><a id="l00585" name="l00585"></a><span class="lineno">  585</span>{</div>
-<div class="line"><a id="l00586" name="l00586"></a><span class="lineno">  586</span>    <span class="keywordtype">int</span> result = -1;</div>
-<div class="line"><a id="l00587" name="l00587"></a><span class="lineno">  587</span>    uint32_t reg_value;</div>
-<div class="line"><a id="l00588" name="l00588"></a><span class="lineno">  588</span>    result = sdio_spi_read_le32(address, &amp;reg_value);</div>
-<div class="line"><a id="l00589" name="l00589"></a><span class="lineno">  589</span>    <span class="keywordflow">if</span> (result &lt; 0)</div>
-<div class="line"><a id="l00590" name="l00590"></a><span class="lineno">  590</span>    {</div>
-<div class="line"><a id="l00591" name="l00591"></a><span class="lineno">  591</span>        <span class="keywordflow">return</span> result;</div>
-<div class="line"><a id="l00592" name="l00592"></a><span class="lineno">  592</span>    }</div>
-<div class="line"><a id="l00593" name="l00593"></a><span class="lineno">  593</span>    reg_value |= (value &amp; mask);</div>
-<div class="line"><a id="l00594" name="l00594"></a><span class="lineno">  594</span>    reg_value &amp;= (value | ~mask);</div>
-<div class="line"><a id="l00595" name="l00595"></a><span class="lineno">  595</span>    result = sdio_spi_write_le32(address, reg_value);</div>
-<div class="line"><a id="l00596" name="l00596"></a><span class="lineno">  596</span>    <span class="keywordflow">if</span> (result &lt; 0)</div>
-<div class="line"><a id="l00597" name="l00597"></a><span class="lineno">  597</span>    {</div>
-<div class="line"><a id="l00598" name="l00598"></a><span class="lineno">  598</span>        <span class="keywordflow">return</span> result;</div>
-<div class="line"><a id="l00599" name="l00599"></a><span class="lineno">  599</span>    }</div>
-<div class="line"><a id="l00600" name="l00600"></a><span class="lineno">  600</span>    <span class="keywordflow">return</span> result;</div>
-<div class="line"><a id="l00601" name="l00601"></a><span class="lineno">  601</span>}</div>
-<div class="ttc" id="agroup__MMHAL__WLAN__SDIO__UTILS_html_ga3b06d2e5b678e5bf87db0936be92b965"><div class="ttname"><a href="group__MMHAL__WLAN__SDIO__UTILS.html#ga3b06d2e5b678e5bf87db0936be92b965">mmhal_make_cmd53_arg</a></div><div class="ttdeci">static uint32_t mmhal_make_cmd53_arg(enum mmhal_sdio_rw rw, enum mmhal_sdio_function fn, enum mmhal_sdio_mode mode, uint32_t address, uint16_t count)</div><div class="ttdoc">Construct an SDIO CMD53 argument based on the given arguments.</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00704">mmhal_wlan.h:704</a></div></div>
-<div class="ttc" id="agroup__MMHAL__WLAN__SDIO__UTILS_html_ga63b1e123d142c5e4834d3296a61f2dce"><div class="ttname"><a href="group__MMHAL__WLAN__SDIO__UTILS.html#ga63b1e123d142c5e4834d3296a61f2dce">mmhal_make_cmd52_arg</a></div><div class="ttdeci">static uint32_t mmhal_make_cmd52_arg(enum mmhal_sdio_rw rw, enum mmhal_sdio_function fn, uint32_t address, uint8_t write_data)</div><div class="ttdoc">Construct an SDIO CMD52 argument based on the given arguments.</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00677">mmhal_wlan.h:677</a></div></div>
-<div class="ttc" id="agroup__MMHAL__WLAN__SDIO__UTILS_html_gabf165327a23c8043f111e060e12607d3"><div class="ttname"><a href="group__MMHAL__WLAN__SDIO__UTILS.html#gabf165327a23c8043f111e060e12607d3">mmhal_sdio_function</a></div><div class="ttdeci">mmhal_sdio_function</div><div class="ttdoc">SDIO CMD52/CMD53 function number.</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00630">mmhal_wlan.h:631</a></div></div>
-<div class="ttc" id="agroup__MMHAL__WLAN__SDIO__UTILS_html_gad7d1ec53c7b486bd15fde117c6cdf600"><div class="ttname"><a href="group__MMHAL__WLAN__SDIO__UTILS.html#gad7d1ec53c7b486bd15fde117c6cdf600">MMHAL_SDIO_ADDRESS_MAX</a></div><div class="ttdeci">#define MMHAL_SDIO_ADDRESS_MAX</div><div class="ttdoc">CMD52/53 Register Address maximum value.</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00656">mmhal_wlan.h:656</a></div></div>
-<div class="ttc" id="agroup__MMHAL__WLAN__SDIO__UTILS_html_gga974059e45cecfe75771bb26f143b2b9fa12d8af1c231efa9fbf235c2d334e8c6c"><div class="ttname"><a href="group__MMHAL__WLAN__SDIO__UTILS.html#gga974059e45cecfe75771bb26f143b2b9fa12d8af1c231efa9fbf235c2d334e8c6c">MMHAL_SDIO_MODE_BLOCK</a></div><div class="ttdeci">@ MMHAL_SDIO_MODE_BLOCK</div><div class="ttdoc">Byte mode.</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00641">mmhal_wlan.h:641</a></div></div>
-<div class="ttc" id="agroup__MMHAL__WLAN__SDIO__UTILS_html_gga97e4a75cc0a3609521f240aba8caf1a7a47698c0637dbe38bd9c7182b9266d938"><div class="ttname"><a href="group__MMHAL__WLAN__SDIO__UTILS.html#gga97e4a75cc0a3609521f240aba8caf1a7a47698c0637dbe38bd9c7182b9266d938">MMHAL_SDIO_READ</a></div><div class="ttdeci">@ MMHAL_SDIO_READ</div><div class="ttdoc">Read operation.</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00625">mmhal_wlan.h:625</a></div></div>
-<div class="ttc" id="agroup__MMHAL__WLAN__SDIO__UTILS_html_gga97e4a75cc0a3609521f240aba8caf1a7a69d4618ec62df55196b9e13346810da5"><div class="ttname"><a href="group__MMHAL__WLAN__SDIO__UTILS.html#gga97e4a75cc0a3609521f240aba8caf1a7a69d4618ec62df55196b9e13346810da5">MMHAL_SDIO_WRITE</a></div><div class="ttdeci">@ MMHAL_SDIO_WRITE</div><div class="ttdoc">Write operation.</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00626">mmhal_wlan.h:626</a></div></div>
-<div class="ttc" id="agroup__MMHAL__WLAN__SDIO__UTILS_html_ggabf165327a23c8043f111e060e12607d3a10eac07551aaca0c1ff5785e55a4052e"><div class="ttname"><a href="group__MMHAL__WLAN__SDIO__UTILS.html#ggabf165327a23c8043f111e060e12607d3a10eac07551aaca0c1ff5785e55a4052e">MMHAL_SDIO_FUNCTION_1</a></div><div class="ttdeci">@ MMHAL_SDIO_FUNCTION_1</div><div class="ttdoc">Function 0.</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00633">mmhal_wlan.h:633</a></div></div>
-<div class="ttc" id="agroup__MMHAL__WLAN__SDIO__UTILS_html_ggabf165327a23c8043f111e060e12607d3afbd121886257b23e80a1964ef5bb8b65"><div class="ttname"><a href="group__MMHAL__WLAN__SDIO__UTILS.html#ggabf165327a23c8043f111e060e12607d3afbd121886257b23e80a1964ef5bb8b65">MMHAL_SDIO_FUNCTION_2</a></div><div class="ttdeci">@ MMHAL_SDIO_FUNCTION_2</div><div class="ttdoc">Function 1.</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00634">mmhal_wlan.h:634</a></div></div>
+<div class="line"><a id="l00575" name="l00575"></a><span class="lineno">  575</span>    result = morse_address_base_set(address, MORSE_CONFIG_ACCESS_4BYTE, function);</div>
+<div class="line"><a id="l00576" name="l00576"></a><span class="lineno">  576</span>    <span class="keywordflow">if</span> (result != 0)</div>
+<div class="line"><a id="l00577" name="l00577"></a><span class="lineno">  577</span>    {</div>
+<div class="line"><a id="l00578" name="l00578"></a><span class="lineno">  578</span>        <span class="keywordflow">goto</span> exit;</div>
+<div class="line"><a id="l00579" name="l00579"></a><span class="lineno">  579</span>    }</div>
+<div class="line"><a id="l00580" name="l00580"></a><span class="lineno">  580</span> </div>
+<div class="line"><a id="l00581" name="l00581"></a><span class="lineno">  581</span>    result = morse_cmd53_write(function, address, (uint8_t *)&amp;<a class="code hl_variable" href="structmmhal__wlan__sdio__cmd53__write__args.html#a3dd013d60ce3211ec0c064948407f45e">data</a>, <span class="keyword">sizeof</span>(<a class="code hl_variable" href="structmmhal__wlan__sdio__cmd53__write__args.html#a3dd013d60ce3211ec0c064948407f45e">data</a>));</div>
+<div class="line"><a id="l00582" name="l00582"></a><span class="lineno">  582</span> </div>
+<div class="line"><a id="l00583" name="l00583"></a><span class="lineno">  583</span>exit:</div>
+<div class="line"><a id="l00584" name="l00584"></a><span class="lineno">  584</span>    <span class="keywordflow">return</span> result;</div>
+<div class="line"><a id="l00585" name="l00585"></a><span class="lineno">  585</span>}</div>
+<div class="line"><a id="l00586" name="l00586"></a><span class="lineno">  586</span> </div>
+<div class="line"><a id="l00587" name="l00587"></a><span class="lineno">  587</span><span class="keywordtype">int</span> sdio_spi_send_cmd(uint8_t cmd_idx, uint32_t arg, uint32_t *rsp)</div>
+<div class="line"><a id="l00588" name="l00588"></a><span class="lineno">  588</span>{</div>
+<div class="line"><a id="l00589" name="l00589"></a><span class="lineno">  589</span>    <span class="keywordflow">return</span> <a class="code hl_function" href="group__MMHAL__WLAN__SDIO.html#gabea5c964dafe205d8ca3da5b93a1f2b3">mmhal_wlan_sdio_cmd</a>(cmd_idx, arg, rsp);</div>
+<div class="line"><a id="l00590" name="l00590"></a><span class="lineno">  590</span>}</div>
+<div class="line"><a id="l00591" name="l00591"></a><span class="lineno">  591</span> </div>
+<div class="line"><a id="l00592" name="l00592"></a><span class="lineno">  592</span><span class="keywordtype">int</span> sdio_spi_update_le32(uint32_t address, uint32_t mask, uint32_t value)</div>
+<div class="line"><a id="l00593" name="l00593"></a><span class="lineno">  593</span>{</div>
+<div class="line"><a id="l00594" name="l00594"></a><span class="lineno">  594</span>    <span class="keywordtype">int</span> result = -1;</div>
+<div class="line"><a id="l00595" name="l00595"></a><span class="lineno">  595</span>    uint32_t reg_value;</div>
+<div class="line"><a id="l00596" name="l00596"></a><span class="lineno">  596</span>    result = sdio_spi_read_le32(address, &amp;reg_value);</div>
+<div class="line"><a id="l00597" name="l00597"></a><span class="lineno">  597</span>    <span class="keywordflow">if</span> (result &lt; 0)</div>
+<div class="line"><a id="l00598" name="l00598"></a><span class="lineno">  598</span>    {</div>
+<div class="line"><a id="l00599" name="l00599"></a><span class="lineno">  599</span>        <span class="keywordflow">return</span> result;</div>
+<div class="line"><a id="l00600" name="l00600"></a><span class="lineno">  600</span>    }</div>
+<div class="line"><a id="l00601" name="l00601"></a><span class="lineno">  601</span>    reg_value |= (value &amp; mask);</div>
+<div class="line"><a id="l00602" name="l00602"></a><span class="lineno">  602</span>    reg_value &amp;= (value | ~mask);</div>
+<div class="line"><a id="l00603" name="l00603"></a><span class="lineno">  603</span>    result = sdio_spi_write_le32(address, reg_value);</div>
+<div class="line"><a id="l00604" name="l00604"></a><span class="lineno">  604</span>    <span class="keywordflow">if</span> (result &lt; 0)</div>
+<div class="line"><a id="l00605" name="l00605"></a><span class="lineno">  605</span>    {</div>
+<div class="line"><a id="l00606" name="l00606"></a><span class="lineno">  606</span>        <span class="keywordflow">return</span> result;</div>
+<div class="line"><a id="l00607" name="l00607"></a><span class="lineno">  607</span>    }</div>
+<div class="line"><a id="l00608" name="l00608"></a><span class="lineno">  608</span>    <span class="keywordflow">return</span> result;</div>
+<div class="line"><a id="l00609" name="l00609"></a><span class="lineno">  609</span>}</div>
+<div class="ttc" id="agroup__MMHAL__WLAN__SDIO__UTILS_html_ga3b06d2e5b678e5bf87db0936be92b965"><div class="ttname"><a href="group__MMHAL__WLAN__SDIO__UTILS.html#ga3b06d2e5b678e5bf87db0936be92b965">mmhal_make_cmd53_arg</a></div><div class="ttdeci">static uint32_t mmhal_make_cmd53_arg(enum mmhal_sdio_rw rw, enum mmhal_sdio_function fn, enum mmhal_sdio_mode mode, uint32_t address, uint16_t count)</div><div class="ttdoc">Construct an SDIO CMD53 argument based on the given arguments.</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00713">mmhal_wlan.h:713</a></div></div>
+<div class="ttc" id="agroup__MMHAL__WLAN__SDIO__UTILS_html_ga63b1e123d142c5e4834d3296a61f2dce"><div class="ttname"><a href="group__MMHAL__WLAN__SDIO__UTILS.html#ga63b1e123d142c5e4834d3296a61f2dce">mmhal_make_cmd52_arg</a></div><div class="ttdeci">static uint32_t mmhal_make_cmd52_arg(enum mmhal_sdio_rw rw, enum mmhal_sdio_function fn, uint32_t address, uint8_t write_data)</div><div class="ttdoc">Construct an SDIO CMD52 argument based on the given arguments.</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00686">mmhal_wlan.h:686</a></div></div>
+<div class="ttc" id="agroup__MMHAL__WLAN__SDIO__UTILS_html_gabf165327a23c8043f111e060e12607d3"><div class="ttname"><a href="group__MMHAL__WLAN__SDIO__UTILS.html#gabf165327a23c8043f111e060e12607d3">mmhal_sdio_function</a></div><div class="ttdeci">mmhal_sdio_function</div><div class="ttdoc">SDIO CMD52/CMD53 function number.</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00639">mmhal_wlan.h:640</a></div></div>
+<div class="ttc" id="agroup__MMHAL__WLAN__SDIO__UTILS_html_gad7d1ec53c7b486bd15fde117c6cdf600"><div class="ttname"><a href="group__MMHAL__WLAN__SDIO__UTILS.html#gad7d1ec53c7b486bd15fde117c6cdf600">MMHAL_SDIO_ADDRESS_MAX</a></div><div class="ttdeci">#define MMHAL_SDIO_ADDRESS_MAX</div><div class="ttdoc">CMD52/53 Register Address maximum value.</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00665">mmhal_wlan.h:665</a></div></div>
+<div class="ttc" id="agroup__MMHAL__WLAN__SDIO__UTILS_html_gga974059e45cecfe75771bb26f143b2b9fa12d8af1c231efa9fbf235c2d334e8c6c"><div class="ttname"><a href="group__MMHAL__WLAN__SDIO__UTILS.html#gga974059e45cecfe75771bb26f143b2b9fa12d8af1c231efa9fbf235c2d334e8c6c">MMHAL_SDIO_MODE_BLOCK</a></div><div class="ttdeci">@ MMHAL_SDIO_MODE_BLOCK</div><div class="ttdoc">Byte mode.</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00650">mmhal_wlan.h:650</a></div></div>
+<div class="ttc" id="agroup__MMHAL__WLAN__SDIO__UTILS_html_gga97e4a75cc0a3609521f240aba8caf1a7a47698c0637dbe38bd9c7182b9266d938"><div class="ttname"><a href="group__MMHAL__WLAN__SDIO__UTILS.html#gga97e4a75cc0a3609521f240aba8caf1a7a47698c0637dbe38bd9c7182b9266d938">MMHAL_SDIO_READ</a></div><div class="ttdeci">@ MMHAL_SDIO_READ</div><div class="ttdoc">Read operation.</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00634">mmhal_wlan.h:634</a></div></div>
+<div class="ttc" id="agroup__MMHAL__WLAN__SDIO__UTILS_html_gga97e4a75cc0a3609521f240aba8caf1a7a69d4618ec62df55196b9e13346810da5"><div class="ttname"><a href="group__MMHAL__WLAN__SDIO__UTILS.html#gga97e4a75cc0a3609521f240aba8caf1a7a69d4618ec62df55196b9e13346810da5">MMHAL_SDIO_WRITE</a></div><div class="ttdeci">@ MMHAL_SDIO_WRITE</div><div class="ttdoc">Write operation.</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00635">mmhal_wlan.h:635</a></div></div>
+<div class="ttc" id="agroup__MMHAL__WLAN__SDIO__UTILS_html_ggabf165327a23c8043f111e060e12607d3a10eac07551aaca0c1ff5785e55a4052e"><div class="ttname"><a href="group__MMHAL__WLAN__SDIO__UTILS.html#ggabf165327a23c8043f111e060e12607d3a10eac07551aaca0c1ff5785e55a4052e">MMHAL_SDIO_FUNCTION_1</a></div><div class="ttdeci">@ MMHAL_SDIO_FUNCTION_1</div><div class="ttdoc">Function 0.</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00642">mmhal_wlan.h:642</a></div></div>
+<div class="ttc" id="agroup__MMHAL__WLAN__SDIO__UTILS_html_ggabf165327a23c8043f111e060e12607d3afbd121886257b23e80a1964ef5bb8b65"><div class="ttname"><a href="group__MMHAL__WLAN__SDIO__UTILS.html#ggabf165327a23c8043f111e060e12607d3afbd121886257b23e80a1964ef5bb8b65">MMHAL_SDIO_FUNCTION_2</a></div><div class="ttdeci">@ MMHAL_SDIO_FUNCTION_2</div><div class="ttdoc">Function 1.</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00643">mmhal_wlan.h:643</a></div></div>
 <div class="ttc" id="agroup__MMHAL__WLAN__SDIO_html_ga1cd8a239eaa5748f1f5117cccb2259ab"><div class="ttname"><a href="group__MMHAL__WLAN__SDIO.html#ga1cd8a239eaa5748f1f5117cccb2259ab">mmhal_wlan_sdio_cmd53_read</a></div><div class="ttdeci">int mmhal_wlan_sdio_cmd53_read(const struct mmhal_wlan_sdio_cmd53_read_args *args)</div><div class="ttdoc">Execute an SDIO CMD53 read.</div></div>
 <div class="ttc" id="agroup__MMHAL__WLAN__SDIO_html_ga88c5c6539c70f2f9bbbfd69e5acc9d78"><div class="ttname"><a href="group__MMHAL__WLAN__SDIO.html#ga88c5c6539c70f2f9bbbfd69e5acc9d78">mmhal_wlan_sdio_cmd53_write</a></div><div class="ttdeci">int mmhal_wlan_sdio_cmd53_write(const struct mmhal_wlan_sdio_cmd53_write_args *args)</div><div class="ttdoc">Execute an SDIO CMD53 write.</div></div>
 <div class="ttc" id="agroup__MMHAL__WLAN__SDIO_html_gabea5c964dafe205d8ca3da5b93a1f2b3"><div class="ttname"><a href="group__MMHAL__WLAN__SDIO.html#gabea5c964dafe205d8ca3da5b93a1f2b3">mmhal_wlan_sdio_cmd</a></div><div class="ttdeci">int mmhal_wlan_sdio_cmd(uint8_t cmd_idx, uint32_t arg, uint32_t *rsp)</div><div class="ttdoc">Execute an SDIO command without data.</div></div>
-<div class="ttc" id="agroup__MMHAL__WLAN__SDIO_html_gga404e654bbcf25530e1f4b43488fd77aca2584b53aba85f9ea4139f9e1e9604a53"><div class="ttname"><a href="group__MMHAL__WLAN__SDIO.html#gga404e654bbcf25530e1f4b43488fd77aca2584b53aba85f9ea4139f9e1e9604a53">MMHAL_SDIO_INVALID_ARGUMENT</a></div><div class="ttdeci">@ MMHAL_SDIO_INVALID_ARGUMENT</div><div class="ttdoc">Invalid argument given (e.g., incorrect buffer alignment).</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00510">mmhal_wlan.h:510</a></div></div>
-<div class="ttc" id="agroup__MMHAL__WLAN__SDIO_html_gga404e654bbcf25530e1f4b43488fd77acaa8ebb417553e81543b5115e0fd950973"><div class="ttname"><a href="group__MMHAL__WLAN__SDIO.html#gga404e654bbcf25530e1f4b43488fd77acaa8ebb417553e81543b5115e0fd950973">MMHAL_SDIO_OTHER_ERROR</a></div><div class="ttdeci">@ MMHAL_SDIO_OTHER_ERROR</div><div class="ttdoc">Another error not covered by the above error codes.</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00526">mmhal_wlan.h:526</a></div></div>
-<div class="ttc" id="agroup__MMOSAL__ASSERT_html_ga9bae87b1059a31f390403d647b73e4b9"><div class="ttname"><a href="group__MMOSAL__ASSERT.html#ga9bae87b1059a31f390403d647b73e4b9">MMOSAL_ASSERT</a></div><div class="ttdeci">#define MMOSAL_ASSERT(expr)</div><div class="ttdoc">Assert that the given expression evaluates to true and abort execution if not.</div><div class="ttdef"><b>Definition:</b> <a href="mmosal_8h_source.html#l00934">mmosal.h:934</a></div></div>
-<div class="ttc" id="astructmmhal__wlan__sdio__cmd53__read__args_html"><div class="ttname"><a href="structmmhal__wlan__sdio__cmd53__read__args.html">mmhal_wlan_sdio_cmd53_read_args</a></div><div class="ttdoc">Arguments structure for mmhal_wlan_sdio_cmd53_read().</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00583">mmhal_wlan.h:584</a></div></div>
-<div class="ttc" id="astructmmhal__wlan__sdio__cmd53__read__args_html_a283bbc0ad64e85a42bd96a0d0c016b21"><div class="ttname"><a href="structmmhal__wlan__sdio__cmd53__read__args.html#a283bbc0ad64e85a42bd96a0d0c016b21">mmhal_wlan_sdio_cmd53_read_args::block_size</a></div><div class="ttdeci">uint16_t block_size</div><div class="ttdoc">If non-zero this indicates that the data should be transferred in block mode with the given block siz...</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00598">mmhal_wlan.h:598</a></div></div>
-<div class="ttc" id="astructmmhal__wlan__sdio__cmd53__read__args_html_a91881a23957aaf00ffc3c02420fe9e5d"><div class="ttname"><a href="structmmhal__wlan__sdio__cmd53__read__args.html#a91881a23957aaf00ffc3c02420fe9e5d">mmhal_wlan_sdio_cmd53_read_args::sdio_arg</a></div><div class="ttdeci">uint32_t sdio_arg</div><div class="ttdoc">The SDIO argument.</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00587">mmhal_wlan.h:587</a></div></div>
-<div class="ttc" id="astructmmhal__wlan__sdio__cmd53__read__args_html_ac95af2902eddbb6bdfdef2d9bbe9f4f4"><div class="ttname"><a href="structmmhal__wlan__sdio__cmd53__read__args.html#ac95af2902eddbb6bdfdef2d9bbe9f4f4">mmhal_wlan_sdio_cmd53_read_args::data</a></div><div class="ttdeci">uint8_t * data</div><div class="ttdoc">Pointer to the data buffer to receive the data.</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00589">mmhal_wlan.h:589</a></div></div>
-<div class="ttc" id="astructmmhal__wlan__sdio__cmd53__write__args_html"><div class="ttname"><a href="structmmhal__wlan__sdio__cmd53__write__args.html">mmhal_wlan_sdio_cmd53_write_args</a></div><div class="ttdoc">Arguments structure for mmhal_wlan_sdio_cmd53_write().</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00553">mmhal_wlan.h:554</a></div></div>
-<div class="ttc" id="astructmmhal__wlan__sdio__cmd53__write__args_html_a3dd013d60ce3211ec0c064948407f45e"><div class="ttname"><a href="structmmhal__wlan__sdio__cmd53__write__args.html#a3dd013d60ce3211ec0c064948407f45e">mmhal_wlan_sdio_cmd53_write_args::data</a></div><div class="ttdeci">const uint8_t * data</div><div class="ttdoc">Pointer to the data buffer.</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00559">mmhal_wlan.h:559</a></div></div>
-<div class="ttc" id="astructmmhal__wlan__sdio__cmd53__write__args_html_a465f5e35ba705242b047b16fa17ee0e2"><div class="ttname"><a href="structmmhal__wlan__sdio__cmd53__write__args.html#a465f5e35ba705242b047b16fa17ee0e2">mmhal_wlan_sdio_cmd53_write_args::block_size</a></div><div class="ttdeci">uint16_t block_size</div><div class="ttdoc">If non-zero this indicates that the data should be transferred in block mode with the given block siz...</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00568">mmhal_wlan.h:568</a></div></div>
-<div class="ttc" id="astructmmhal__wlan__sdio__cmd53__write__args_html_a4f3547cc978db8d65254b438b683d4c8"><div class="ttname"><a href="structmmhal__wlan__sdio__cmd53__write__args.html#a4f3547cc978db8d65254b438b683d4c8">mmhal_wlan_sdio_cmd53_write_args::transfer_length</a></div><div class="ttdeci">uint16_t transfer_length</div><div class="ttdoc">Transfer length measured in blocks if block_size is non-zero otherwise in bytes.</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00562">mmhal_wlan.h:562</a></div></div>
-<div class="ttc" id="astructmmhal__wlan__sdio__cmd53__write__args_html_abe319fee4ff123038d5bbff76fc322d5"><div class="ttname"><a href="structmmhal__wlan__sdio__cmd53__write__args.html#abe319fee4ff123038d5bbff76fc322d5">mmhal_wlan_sdio_cmd53_write_args::sdio_arg</a></div><div class="ttdeci">uint32_t sdio_arg</div><div class="ttdoc">The SDIO argument.</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00557">mmhal_wlan.h:557</a></div></div>
+<div class="ttc" id="agroup__MMHAL__WLAN__SDIO_html_gga404e654bbcf25530e1f4b43488fd77aca2584b53aba85f9ea4139f9e1e9604a53"><div class="ttname"><a href="group__MMHAL__WLAN__SDIO.html#gga404e654bbcf25530e1f4b43488fd77aca2584b53aba85f9ea4139f9e1e9604a53">MMHAL_SDIO_INVALID_ARGUMENT</a></div><div class="ttdeci">@ MMHAL_SDIO_INVALID_ARGUMENT</div><div class="ttdoc">Invalid argument given (e.g., incorrect buffer alignment).</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00519">mmhal_wlan.h:519</a></div></div>
+<div class="ttc" id="agroup__MMHAL__WLAN__SDIO_html_gga404e654bbcf25530e1f4b43488fd77acaa8ebb417553e81543b5115e0fd950973"><div class="ttname"><a href="group__MMHAL__WLAN__SDIO.html#gga404e654bbcf25530e1f4b43488fd77acaa8ebb417553e81543b5115e0fd950973">MMHAL_SDIO_OTHER_ERROR</a></div><div class="ttdeci">@ MMHAL_SDIO_OTHER_ERROR</div><div class="ttdoc">Another error not covered by the above error codes.</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00535">mmhal_wlan.h:535</a></div></div>
+<div class="ttc" id="agroup__MMOSAL__ASSERT_html_ga9bae87b1059a31f390403d647b73e4b9"><div class="ttname"><a href="group__MMOSAL__ASSERT.html#ga9bae87b1059a31f390403d647b73e4b9">MMOSAL_ASSERT</a></div><div class="ttdeci">#define MMOSAL_ASSERT(expr)</div><div class="ttdoc">Assert that the given expression evaluates to true and abort execution if not.</div><div class="ttdef"><b>Definition:</b> <a href="mmosal_8h_source.html#l01006">mmosal.h:1006</a></div></div>
+<div class="ttc" id="astructmmhal__wlan__sdio__cmd53__read__args_html"><div class="ttname"><a href="structmmhal__wlan__sdio__cmd53__read__args.html">mmhal_wlan_sdio_cmd53_read_args</a></div><div class="ttdoc">Arguments structure for mmhal_wlan_sdio_cmd53_read().</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00592">mmhal_wlan.h:593</a></div></div>
+<div class="ttc" id="astructmmhal__wlan__sdio__cmd53__read__args_html_a283bbc0ad64e85a42bd96a0d0c016b21"><div class="ttname"><a href="structmmhal__wlan__sdio__cmd53__read__args.html#a283bbc0ad64e85a42bd96a0d0c016b21">mmhal_wlan_sdio_cmd53_read_args::block_size</a></div><div class="ttdeci">uint16_t block_size</div><div class="ttdoc">If non-zero this indicates that the data should be transferred in block mode with the given block siz...</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00607">mmhal_wlan.h:607</a></div></div>
+<div class="ttc" id="astructmmhal__wlan__sdio__cmd53__read__args_html_a91881a23957aaf00ffc3c02420fe9e5d"><div class="ttname"><a href="structmmhal__wlan__sdio__cmd53__read__args.html#a91881a23957aaf00ffc3c02420fe9e5d">mmhal_wlan_sdio_cmd53_read_args::sdio_arg</a></div><div class="ttdeci">uint32_t sdio_arg</div><div class="ttdoc">The SDIO argument.</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00596">mmhal_wlan.h:596</a></div></div>
+<div class="ttc" id="astructmmhal__wlan__sdio__cmd53__read__args_html_ac95af2902eddbb6bdfdef2d9bbe9f4f4"><div class="ttname"><a href="structmmhal__wlan__sdio__cmd53__read__args.html#ac95af2902eddbb6bdfdef2d9bbe9f4f4">mmhal_wlan_sdio_cmd53_read_args::data</a></div><div class="ttdeci">uint8_t * data</div><div class="ttdoc">Pointer to the data buffer to receive the data.</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00598">mmhal_wlan.h:598</a></div></div>
+<div class="ttc" id="astructmmhal__wlan__sdio__cmd53__write__args_html"><div class="ttname"><a href="structmmhal__wlan__sdio__cmd53__write__args.html">mmhal_wlan_sdio_cmd53_write_args</a></div><div class="ttdoc">Arguments structure for mmhal_wlan_sdio_cmd53_write().</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00562">mmhal_wlan.h:563</a></div></div>
+<div class="ttc" id="astructmmhal__wlan__sdio__cmd53__write__args_html_a3dd013d60ce3211ec0c064948407f45e"><div class="ttname"><a href="structmmhal__wlan__sdio__cmd53__write__args.html#a3dd013d60ce3211ec0c064948407f45e">mmhal_wlan_sdio_cmd53_write_args::data</a></div><div class="ttdeci">const uint8_t * data</div><div class="ttdoc">Pointer to the data buffer.</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00568">mmhal_wlan.h:568</a></div></div>
+<div class="ttc" id="astructmmhal__wlan__sdio__cmd53__write__args_html_a465f5e35ba705242b047b16fa17ee0e2"><div class="ttname"><a href="structmmhal__wlan__sdio__cmd53__write__args.html#a465f5e35ba705242b047b16fa17ee0e2">mmhal_wlan_sdio_cmd53_write_args::block_size</a></div><div class="ttdeci">uint16_t block_size</div><div class="ttdoc">If non-zero this indicates that the data should be transferred in block mode with the given block siz...</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00577">mmhal_wlan.h:577</a></div></div>
+<div class="ttc" id="astructmmhal__wlan__sdio__cmd53__write__args_html_a4f3547cc978db8d65254b438b683d4c8"><div class="ttname"><a href="structmmhal__wlan__sdio__cmd53__write__args.html#a4f3547cc978db8d65254b438b683d4c8">mmhal_wlan_sdio_cmd53_write_args::transfer_length</a></div><div class="ttdeci">uint16_t transfer_length</div><div class="ttdoc">Transfer length measured in blocks if block_size is non-zero otherwise in bytes.</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00571">mmhal_wlan.h:571</a></div></div>
+<div class="ttc" id="astructmmhal__wlan__sdio__cmd53__write__args_html_abe319fee4ff123038d5bbff76fc322d5"><div class="ttname"><a href="structmmhal__wlan__sdio__cmd53__write__args.html#abe319fee4ff123038d5bbff76fc322d5">mmhal_wlan_sdio_cmd53_write_args::sdio_arg</a></div><div class="ttdeci">uint32_t sdio_arg</div><div class="ttdoc">The SDIO argument.</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__wlan_8h_source.html#l00566">mmhal_wlan.h:566</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.17-->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_c5388b8f7c63864c1129967aadb7f145.html">examples</a></li><li class="navelem"><a class="el" href="dir_5e468357e77f084276a7e24e7b567dca.html">porting_assistant</a></li><li class="navelem"><a class="el" href="dir_912954fbdfccd3bccf2652d86d3192e7.html">src</a></li><li class="navelem"><b>sdio_spi.c</b></li>
+    <li class="navelem"><a class="el" href="dir_4a117e60a3f8308259f4d16395856081.html">examples</a></li><li class="navelem"><a class="el" href="dir_dd87c239b7fb09f8ba6a92871a3af1d5.html">porting_assistant</a></li><li class="navelem"><a class="el" href="dir_38d371ceeee0b2e390d709f2eded64cc.html">src</a></li><li class="navelem"><b>sdio_spi.c</b></li>
     <li class="footer">Copyright 2021-2025 Morse Micro </li>
   </ul>
 </div>

@@ -27,10 +27,7 @@ static struct mmagic_ip_config default_config = {
     .dns_server0 = { .addr = "" },
     .dns_server1 = { .addr = "" },
     .dhcp_enabled = true,
-    .dhcp_offload = false,
     .link_status_evt_en = true,
-    .offload_arp_response = false,
-    .offload_arp_refresh_s = 0,
 };
 
 static enum mmipal_link_state current_link_state = MMIPAL_LINK_DOWN;
@@ -112,12 +109,7 @@ static void mmagic_core_ip_init_interface(struct mmagic_data *data)
                         ip_data->config.gateway.addr,
                         sizeof(init_args.gateway_addr));
 
-    init_args.mode = ip_data->config.dhcp_enabled ?
-                         ip_data->config.dhcp_offload ? MMIPAL_DHCP_OFFLOAD : MMIPAL_DHCP :
-                         MMIPAL_STATIC;
-
-    init_args.offload_arp_response = ip_data->config.offload_arp_response;
-    init_args.offload_arp_refresh_s = ip_data->config.offload_arp_refresh_s;
+    init_args.mode = ip_data->config.dhcp_enabled ? MMIPAL_DHCP : MMIPAL_STATIC;
 
     /* Initialize IP stack. */
     if (mmipal_init(&init_args) != MMIPAL_SUCCESS)
@@ -137,7 +129,9 @@ void mmagic_core_ip_init(struct mmagic_data *core)
 
 void mmagic_core_ip_start(struct mmagic_data *core)
 {
+    struct mmagic_ip_data *data = mmagic_data_get_ip(core);
     mmagic_core_ip_init_interface(core);
+    data->is_started = true;
 }
 
 /********* MMAGIC Core IP ops **********/
@@ -158,6 +152,11 @@ enum mmagic_status mmagic_core_ip_status(struct mmagic_data *core,
     if (status != MMIPAL_SUCCESS)
     {
         return mmagic_mmipal_status_to_mmagic_status(status);
+    }
+
+    if (ip_config.mode == MMIPAL_DISABLED)
+    {
+        return MMAGIC_STATUS_NOT_SUPPORTED;
     }
 
     rsp_args->status.link_state = current_link_state == MMIPAL_LINK_UP ? MMAGIC_IP_LINK_STATE_UP :
@@ -206,87 +205,9 @@ enum mmagic_status mmagic_core_ip_reload(struct mmagic_data *core)
     mmosal_safer_strcpy(config.gateway_addr,
                         data->config.gateway.addr,
                         sizeof(config.gateway_addr));
-    config.mode = data->config.dhcp_enabled ?
-                      data->config.dhcp_offload ? MMIPAL_DHCP_OFFLOAD : MMIPAL_DHCP :
-                      MMIPAL_STATIC;
+    config.mode = data->config.dhcp_enabled ? MMIPAL_DHCP : MMIPAL_STATIC;
 
     mmipal_set_ip_config(&config);
 
     return MMAGIC_STATUS_OK;
-}
-
-enum mmagic_status mmagic_core_ip_enable_tcp_keepalive_offload(
-    struct mmagic_data *core,
-    const struct mmagic_core_ip_enable_tcp_keepalive_offload_cmd_args *cmd_args)
-{
-    struct mmwlan_tcp_keepalive_offload_args args = MMWLAN_TCP_KEEPALIVE_OFFLOAD_ARGS_INIT;
-    MM_UNUSED(core);
-
-    args.period_s = cmd_args->period_s;
-    args.retry_count = cmd_args->retry_count;
-    args.retry_interval_s = cmd_args->retry_interval_s;
-    args.set_cfgs = MMWLAN_TCP_KEEPALIVE_SET_CFG_TIMING_ONLY;
-
-    enum mmwlan_status status = mmwlan_enable_tcp_keepalive_offload(&args);
-    return mmagic_mmwlan_status_to_mmagic_status(status);
-}
-
-enum mmagic_status mmagic_core_ip_disable_tcp_keepalive_offload(struct mmagic_data *core)
-{
-    MM_UNUSED(core);
-
-    enum mmwlan_status status = mmwlan_disable_tcp_keepalive_offload();
-    return mmagic_mmwlan_status_to_mmagic_status(status);
-}
-
-enum mmagic_status mmagic_core_ip_set_whitelist_filter(
-    struct mmagic_data *core,
-    const struct mmagic_core_ip_set_whitelist_filter_cmd_args *cmd_args)
-{
-    uint32_t ip1, ip2, ip3, ip4;
-    struct mmwlan_config_whitelist whitelist = { 0 };
-
-    MM_UNUSED(core);
-
-    whitelist.flags = 0;
-    int ret = sscanf(cmd_args->src_ip.addr, "%lu.%lu.%lu.%lu", &ip1, &ip2, &ip3, &ip4);
-    if (ret != 4)
-    {
-        return MMAGIC_STATUS_INVALID_ARG;
-    }
-    whitelist.src_ip = ip1 + (ip2 << 8) + (ip3 << 16) + (ip4 << 24);
-
-    ret = sscanf(cmd_args->dest_ip.addr, "%lu.%lu.%lu.%lu", &ip1, &ip2, &ip3, &ip4);
-    if (ret != 4)
-    {
-        return MMAGIC_STATUS_INVALID_ARG;
-    }
-    whitelist.dest_ip = ip1 + (ip2 << 8) + (ip3 << 16) + (ip4 << 24);
-
-    ret = sscanf(cmd_args->netmask.addr, "%lu.%lu.%lu.%lu", &ip1, &ip2, &ip3, &ip4);
-    if (ret != 4)
-    {
-        return MMAGIC_STATUS_INVALID_ARG;
-    }
-    whitelist.netmask = ip1 + (ip2 << 8) + (ip3 << 16) + (ip4 << 24);
-
-    whitelist.src_port = cmd_args->src_port;
-    whitelist.dest_port = cmd_args->dest_port;
-    whitelist.ip_protocol = cmd_args->ip_protocol;
-    whitelist.llc_protocol = cmd_args->llc_protocol;
-
-    enum mmwlan_status status = mmwlan_set_whitelist_filter(&whitelist);
-    return mmagic_mmwlan_status_to_mmagic_status(status);
-}
-
-enum mmagic_status mmagic_core_ip_clear_whitelist_filter(struct mmagic_data *core)
-{
-    struct mmwlan_config_whitelist whitelist = { 0 };
-
-    MM_UNUSED(core);
-
-    whitelist.flags = MMWLAN_WHITELIST_FLAGS_CLEAR;
-
-    enum mmwlan_status status = mmwlan_set_whitelist_filter(&whitelist);
-    return mmagic_mmwlan_status_to_mmagic_status(status);
 }

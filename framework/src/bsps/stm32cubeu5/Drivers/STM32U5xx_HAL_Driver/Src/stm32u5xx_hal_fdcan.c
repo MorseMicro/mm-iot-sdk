@@ -253,7 +253,7 @@ static const uint8_t DLCtoBytes[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 12, 16, 20, 24, 
   * @{
   */
 static void FDCAN_CalcultateRamBlockAddresses(FDCAN_HandleTypeDef *hfdcan);
-static void FDCAN_CopyMessageToRAM(FDCAN_HandleTypeDef *hfdcan, const FDCAN_TxHeaderTypeDef *pTxHeader,
+static void FDCAN_CopyMessageToRAM(const FDCAN_HandleTypeDef *hfdcan, const FDCAN_TxHeaderTypeDef *pTxHeader,
                                    const uint8_t *pTxData, uint32_t BufferIndex);
 /**
   * @}
@@ -1302,7 +1302,7 @@ HAL_StatusTypeDef HAL_FDCAN_ConfigFilter(FDCAN_HandleTypeDef *hfdcan, const FDCA
     if (sFilterConfig->IdType == FDCAN_STANDARD_ID)
     {
       /* Check function parameters */
-      assert_param(IS_FDCAN_MAX_VALUE(sFilterConfig->FilterIndex, (hfdcan->Init.StdFiltersNbr - 1U)));
+      assert_param(IS_FDCAN_MAX_VALUE((sFilterConfig->FilterIndex + 1U), hfdcan->Init.StdFiltersNbr));
       assert_param(IS_FDCAN_MAX_VALUE(sFilterConfig->FilterID1, 0x7FFU));
       assert_param(IS_FDCAN_MAX_VALUE(sFilterConfig->FilterID2, 0x7FFU));
       assert_param(IS_FDCAN_STD_FILTER_TYPE(sFilterConfig->FilterType));
@@ -1322,7 +1322,7 @@ HAL_StatusTypeDef HAL_FDCAN_ConfigFilter(FDCAN_HandleTypeDef *hfdcan, const FDCA
     else /* sFilterConfig->IdType == FDCAN_EXTENDED_ID */
     {
       /* Check function parameters */
-      assert_param(IS_FDCAN_MAX_VALUE(sFilterConfig->FilterIndex, (hfdcan->Init.ExtFiltersNbr - 1U)));
+      assert_param(IS_FDCAN_MAX_VALUE((sFilterConfig->FilterIndex + 1U), hfdcan->Init.ExtFiltersNbr));
       assert_param(IS_FDCAN_MAX_VALUE(sFilterConfig->FilterID1, 0x1FFFFFFFU));
       assert_param(IS_FDCAN_MAX_VALUE(sFilterConfig->FilterID2, 0x1FFFFFFFU));
       assert_param(IS_FDCAN_EXT_FILTER_TYPE(sFilterConfig->FilterType));
@@ -3460,7 +3460,7 @@ static void FDCAN_CalcultateRamBlockAddresses(FDCAN_HandleTypeDef *hfdcan)
   * @param  BufferIndex index of the buffer to be configured.
   * @retval none
  */
-static void FDCAN_CopyMessageToRAM(FDCAN_HandleTypeDef *hfdcan, const FDCAN_TxHeaderTypeDef *pTxHeader,
+static void FDCAN_CopyMessageToRAM(const FDCAN_HandleTypeDef *hfdcan, const FDCAN_TxHeaderTypeDef *pTxHeader,
                                    const uint8_t *pTxData, uint32_t BufferIndex)
 {
   uint32_t TxElementW1;

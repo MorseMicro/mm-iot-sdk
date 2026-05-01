@@ -167,7 +167,7 @@
  * ===========================================
  *
  * This section provides instructions for programming the config store from a host PC via the
- * command line. Alternatively the config store may be programmed through the Platform IO UI.
+ * command line.
  *
  * - Connect the target on USB and start OpenOCD in a terminal by running the following command from
  *   the `framework` directory. If OpenOCD starts successfully it will print some information
@@ -543,14 +543,6 @@ int mmconfig_validate_key_character(char character);
 int mmconfig_check_usage(const struct mmconfig_update_node *node_list,
                          uint32_t *bytes_used,
                          int32_t *bytes_remaining);
-
-/**
- * Loads and applies any other @c mmwlan settings specified in config store.
- *
- * Specifically looks for @c wlan.subbands_enabled, @c wlan.sgi_enabled,
- * @c wlan.ampdu_enabled, @c wlan.fragment_threshold and @c wlan.rts_threshold.
- */
-void load_mmwlan_settings(void);
 
 #ifdef __cplusplus
 }

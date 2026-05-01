@@ -76,7 +76,7 @@ f0 --> f2
 f3 --> f2
 f2 --> c0
 @enduml
-@startuml inline_umlgraph_3.png
+@startuml inline_umlgraph_2.png
 skinparam SequenceMessageAlign center
 !pragma teoz true
 
@@ -145,7 +145,7 @@ alt successful response from AP
     MMWLAN --> APP: MMWLAN_ERROR
 end
 @enduml
-@startuml inline_umlgraph_5.png
+@startuml inline_umlgraph_3.png
 hide time-axis
 title Data Link Packet Write Transfer
 scale 100 as 50 pixels
@@ -220,7 +220,7 @@ highlight 200 to 500 : SPI write transaction
 highlight 600 to 1200 : SPI write transaction
 highlight 1300 to 1600 : SPI read transaction
 @enduml
-@startuml inline_umlgraph_6.png
+@startuml inline_umlgraph_4.png
 hide time-axis
 title Data Link Packet Read Transfer
 scale 100 as 50 pixels

@@ -19,7 +19,12 @@ import zlib
 
 from elftools.elf.elffile import ELFFile
 
+# More chip firmware info
 FIELD_TYPE_FW_TLV_BCF_ADDR = 0x0001
+FIELD_TYPE_COREDUMP_MEM_REGION = 0x0002
+COREDUMP_MEM_REGION_GENERAL = 0x0001
+COREDUMP_MEM_REGION_ASSERT_INFO = 0x0002
+
 FIELD_TYPE_MAGIC = 0x8000
 # This is Morse chip firmware
 FIELD_TYPE_FW_SEGMENT = 0x8001
@@ -69,15 +74,16 @@ class MbinFile:
         self.tlv_count += 1
         logging.debug("Added TLV of length %d, type 0x%04x", len(data), type)
 
-    def add_tlv_block(self, tlv_block, filter):
+    def add_tlv_block(self, tlv_block, filter_spec):
         offset = 0
         while offset < len(tlv_block):
             tlv_type, tlv_len = struct.unpack_from("<HH", tlv_block, offset)
             offset += struct.calcsize("<HH")
-            if filter is None or tlv_type in filter:
-                self.add_tlv(tlv_type, tlv_block[offset:offset + tlv_len])
+            tlv_val = tlv_block[offset:offset + tlv_len]
+            if _fw_info_filter_allows(tlv_type, tlv_val, filter_spec):
+                self.add_tlv(tlv_type, tlv_val)
             else:
-                logging.debug("Filtering out TLV type %04x len %d", tlv_type, tlv_len)
+                logging.debug("Filtering out TLV type 0x%04x len %d", tlv_type, tlv_len)
             offset += tlv_len
 
     def add_headers(self, magic_number):
@@ -139,6 +145,50 @@ def _pad_data(data):
     return data
 
 
+def _parse_fw_info_filter(value):
+    if value is None:
+        return None
+    types = set()
+    subtype_filters = {}
+    entries = [entry.strip() for entry in value.split(",") if entry.strip()]
+    for entry in entries:
+        if ":" in entry:
+            type_str, subtype_str = entry.split(":", 1)
+            if not type_str or not subtype_str:
+                raise argparse.ArgumentTypeError(
+                    "fw-info filter entries must be '<type>' or '<type>:<subtype>'"
+                )
+            tlv_type = int(type_str, 0)
+            tlv_subtype = int(subtype_str, 0)
+            types.add(tlv_type)
+            subtype_filters.setdefault(tlv_type, set()).add(tlv_subtype)
+        else:
+            tlv_type = int(entry, 0)
+            types.add(tlv_type)
+    if not types:
+        return None
+    return {"types": types, "subtypes": subtype_filters}
+
+
+def _fw_info_filter_allows(tlv_type, tlv_val, filter_spec):
+    if filter_spec is None:
+        return True
+    if tlv_type not in filter_spec["types"]:
+        return False
+    subtype_filter = filter_spec["subtypes"].get(tlv_type)
+    if not subtype_filter:
+        return True
+    if len(tlv_val) < 4:
+        logging.warning(
+            "FW info TLV type %d too short (%d bytes) for subtype filter",
+            tlv_type,
+            len(tlv_val),
+        )
+        return False
+    subtype = struct.unpack_from("<I", tlv_val, 0)[0]
+    return subtype in subtype_filter
+
+
 def _app_setup_args(parser):
     parser.add_argument("-o", "--output", required=True,
                         help="Filename for compressed firmware output")
@@ -158,9 +208,10 @@ def _app_setup_args(parser):
                         help="Optional comma separated list of regdoms to include. "
                              "If not specified, all regdoms will be included. "
                              "Applies to BCF conversion only.")
-    parser.add_argument("--fw-info-filter", "-t",
+    parser.add_argument("--fw-info-filter", "-t", type=_parse_fw_info_filter,
                         help="Optional comma separated list of TLV IDs to include from the "
                              ".fw_info section of the firmware. "
+                             "Each entry can be '<type>' or '<type>:<subtype>' (e.g. '1,2:2'). "
                              "If not specified, all will be included. "
                              "Applies to firmware conversion only.")
 
@@ -200,11 +251,7 @@ def _app_main(args):
             # Find and parse specific named sections section
             for section in elffile.iter_sections():
                 if section.name == ".fw_info":
-                    if args.fw_info_filter:
-                        tlv_filter = [int(x) for x in args.fw_info_filter.split(",")]
-                    else:
-                        tlv_filter = None
-                    outbin.add_tlv_block(section.data(), tlv_filter)
+                    outbin.add_tlv_block(section.data(), args.fw_info_filter)
                 elif section.name in SECTION_MAPPINGS:
                     logging.debug("Adding %s TLV", section.name)
                     outbin.add_tlv(SECTION_MAPPINGS[section.name], _pad_data(section.data()))

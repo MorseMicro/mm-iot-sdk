@@ -1,0 +1,13 @@
+#
+# Copyright 2026 Morse Micro
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+if [[ -x /opt/homebrew/bin/brew ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+
+echo -e "\033[32mInstalling required packages from Homebrew.\033[0m"
+
+$DRYRUNCMD brew install $(cat "$SCRIPT_DIR/brew-pkglist.txt")

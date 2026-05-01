@@ -195,13 +195,6 @@ static void morse_ps_evaluate(struct driver_data *driverd)
     }
 }
 
-static void morse_ps_standby_exit_evt_handler(struct umac_data *umacd, const struct umac_evt *evt)
-{
-    MM_UNUSED(evt);
-
-    umac_offload_standby_exit(umacd);
-}
-
 void morse_ps_network_activity(struct driver_data *driverd)
 {
     MMOSAL_MUTEX_GET_INF(driverd->ps.lock);
@@ -211,8 +204,9 @@ void morse_ps_network_activity(struct driver_data *driverd)
 
 int morse_ps_set_dynamic_ps_timeout(struct driver_data *driverd, uint32_t timeout_ms)
 {
-    int ret =
-        mmdrv_set_param(UNKNOWN_VIF_ID, MORSE_PARAM_ID_DYNAMIC_PS_TIMEOUT_MS, htole32(timeout_ms));
+    int ret = mmdrv_set_param(MMDRV_VIF_ID_INVALID,
+                              MORSE_PARAM_ID_DYNAMIC_PS_TIMEOUT_MS,
+                              htole32(timeout_ms));
     if (ret)
     {
         return ret;
@@ -249,20 +243,6 @@ void morse_ps_work(struct driver_data *driverd)
         MMOSAL_MUTEX_GET_INF(driverd->ps.lock);
         morse_ps_wakeup(driverd);
         MMOSAL_MUTEX_RELEASE(driverd->ps.lock);
-
-        if (driverd->standby_waiting_for_wakeup)
-        {
-            struct umac_evt evt = UMAC_EVT_INIT(morse_ps_standby_exit_evt_handler);
-            struct umac_data *umacd = umac_data_get_umacd();
-            if (umac_core_evt_queue(umacd, &evt))
-            {
-                driverd->standby_waiting_for_wakeup = false;
-            }
-            else
-            {
-                MMLOG_WRN("Could not queue STANDBY_EXIT event!\n");
-            }
-        }
     }
 
     if (bus_activity)

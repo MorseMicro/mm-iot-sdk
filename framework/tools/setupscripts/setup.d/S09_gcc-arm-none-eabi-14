@@ -1,0 +1,26 @@
+#
+# Copyright 2026 Morse Micro
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+source $SCRIPT_DIR/config.sh
+
+MORSE_ARM_TOOLCHAIN_VERSION=14.2.1-1.1
+MORSE_ARM_TOOLCHAIN_DESTINATION_DIRECTORY=$MORSE_TOOLS_DIR
+MORSE_ARM_TOOLCHAIN_DIR=$MORSE_ARM_TOOLCHAIN_DESTINATION_DIRECTORY/xpack-arm-none-eabi-gcc-$MORSE_ARM_TOOLCHAIN_VERSION
+MORSE_ARM_TOOLCHAIN_TAR=xpack-arm-none-eabi-gcc-$MORSE_ARM_TOOLCHAIN_VERSION-linux-$MORSE_ARCH2.tar.gz
+MORSE_ARM_TOOLCHAIN_TAR_SHA=$MORSE_ARM_TOOLCHAIN_TAR.sha
+
+[[ "${VARS_ONLY:-0}" == "1" ]] && return
+
+if [ -d "$MORSE_ARM_TOOLCHAIN_DIR" ]
+then
+    echo -e "\u001b[36mToolchain directory $MORSE_ARM_TOOLCHAIN_DIR already exists. Skipping installation.\u001b[0m"
+else
+    echo -e "\u001b[32mDownloading and extracting ARM toolchain (xPack).\u001b[0m"
+    $DRYRUNCMD wget -q --show-progress https://github.com/xpack-dev-tools/arm-none-eabi-gcc-xpack/releases/download/v$MORSE_ARM_TOOLCHAIN_VERSION/$MORSE_ARM_TOOLCHAIN_TAR_SHA -O $MORSE_ARM_TOOLCHAIN_TAR_SHA
+    $DRYRUNCMD wget -q --show-progress https://github.com/xpack-dev-tools/arm-none-eabi-gcc-xpack/releases/download/v$MORSE_ARM_TOOLCHAIN_VERSION/$MORSE_ARM_TOOLCHAIN_TAR -O $MORSE_ARM_TOOLCHAIN_TAR
+    $DRYRUNCMD sha256sum -c $MORSE_ARM_TOOLCHAIN_TAR_SHA || (echo -e "\u001b[31mDownload corrupted, retry. \u001b[0m" && exit 1)
+    $DRYRUNCMD $SUDO tar -xf $MORSE_ARM_TOOLCHAIN_TAR -C $MORSE_ARM_TOOLCHAIN_DESTINATION_DIRECTORY
+fi

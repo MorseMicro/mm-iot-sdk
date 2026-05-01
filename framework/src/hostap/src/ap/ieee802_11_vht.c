@@ -95,6 +95,9 @@ u8 * hostapd_eid_vht_operation(struct hostapd_data *hapd, u8 *eid)
 
 #ifdef CONFIG_IEEE80211BE
 	if (punct_bitmap) {
+		oper_chwidth = hostapd_get_oper_chwidth(hapd->iconf);
+		seg0 = hostapd_get_oper_centr_freq_seg0_idx(hapd->iconf);
+		seg1 = hostapd_get_oper_centr_freq_seg1_idx(hapd->iconf);
 		punct_update_legacy_bw(punct_bitmap,
 				       hapd->iconf->channel,
 				       &oper_chwidth, &seg0, &seg1);
@@ -187,7 +190,8 @@ u16 copy_sta_vht_capab(struct hostapd_data *hapd, struct sta_info *sta,
 	/* Disable VHT caps for STAs associated to no-VHT BSSes. */
 	if (!vht_capab || !(sta->flags & WLAN_STA_WMM) ||
 	    !hapd->iconf->ieee80211ac || hapd->conf->disable_11ac ||
-	    !check_valid_vht_mcs(hapd->iface->current_mode, vht_capab)) {
+	    !check_valid_vht_mcs(hapd->iface->current_mode, vht_capab) ||
+	    !(sta->flags & WLAN_STA_HT)) {
 		sta->flags &= ~WLAN_STA_VHT;
 		os_free(sta->vht_capabilities);
 		sta->vht_capabilities = NULL;
@@ -212,7 +216,7 @@ u16 copy_sta_vht_capab(struct hostapd_data *hapd, struct sta_info *sta,
 u16 copy_sta_vht_oper(struct hostapd_data *hapd, struct sta_info *sta,
 		      const u8 *vht_oper)
 {
-	if (!vht_oper) {
+	if (!vht_oper || !(sta->flags & WLAN_STA_VHT)) {
 		os_free(sta->vht_operation);
 		sta->vht_operation = NULL;
 		return WLAN_STATUS_SUCCESS;

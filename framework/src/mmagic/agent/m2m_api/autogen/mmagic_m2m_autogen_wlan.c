@@ -248,6 +248,14 @@ static struct mmbuf *mmagic_m2m_wlan_get(struct mmagic_m2m_agent *agent,
                                               &data->config.duty_cycle_mode,
                                               sizeof(data->config.duty_cycle_mode));
 
+        case mmagic_wlan_var_connect_on_boot:
+            return mmagic_m2m_create_response(mmagic_wlan,
+                                              mmagic_wlan_cmd_get,
+                                              subcommand,
+                                              MMAGIC_STATUS_OK,
+                                              &data->config.connect_on_boot,
+                                              sizeof(data->config.connect_on_boot));
+
         default:
             return mmagic_m2m_create_response(mmagic_wlan,
                                               mmagic_wlan_cmd_get,
@@ -546,6 +554,16 @@ static struct mmbuf *mmagic_m2m_wlan_set(struct mmagic_m2m_agent *agent,
                                               0);
             break;
 
+        case mmagic_wlan_var_connect_on_boot:
+            memcpy(&data->config.connect_on_boot, args, sizeof(data->config.connect_on_boot));
+            return mmagic_m2m_create_response(mmagic_wlan,
+                                              mmagic_wlan_cmd_set,
+                                              subcommand,
+                                              MMAGIC_STATUS_OK,
+                                              NULL,
+                                              0);
+            break;
+
         default:
             return mmagic_m2m_create_response(mmagic_wlan,
                                               mmagic_wlan_cmd_set,
@@ -736,96 +754,6 @@ static struct mmbuf *mmagic_m2m_wlan_beacon_monitor_disable(struct mmagic_m2m_ag
                                       0);
 }
 
-static struct mmbuf *mmagic_m2m_wlan_standby_enter(struct mmagic_m2m_agent *agent,
-                                                   uint8_t sid,
-                                                   uint8_t subcommand,
-                                                   struct mmbuf *commandbuffer)
-{
-    enum mmagic_status status;
-    MM_UNUSED(commandbuffer);
-    MM_UNUSED(sid);
-    status = mmagic_core_wlan_standby_enter(&agent->core);
-    return mmagic_m2m_create_response(mmagic_wlan,
-                                      mmagic_wlan_cmd_standby_enter,
-                                      subcommand,
-                                      status,
-                                      NULL,
-                                      0);
-}
-
-static struct mmbuf *mmagic_m2m_wlan_standby_exit(struct mmagic_m2m_agent *agent,
-                                                  uint8_t sid,
-                                                  uint8_t subcommand,
-                                                  struct mmbuf *commandbuffer)
-{
-    enum mmagic_status status;
-    MM_UNUSED(commandbuffer);
-    MM_UNUSED(sid);
-    status = mmagic_core_wlan_standby_exit(&agent->core);
-    return mmagic_m2m_create_response(mmagic_wlan,
-                                      mmagic_wlan_cmd_standby_exit,
-                                      subcommand,
-                                      status,
-                                      NULL,
-                                      0);
-}
-
-static struct mmbuf *mmagic_m2m_wlan_standby_set_status_payload(struct mmagic_m2m_agent *agent,
-                                                                uint8_t sid,
-                                                                uint8_t subcommand,
-                                                                struct mmbuf *commandbuffer)
-{
-    enum mmagic_status status;
-    struct mmagic_core_wlan_standby_set_status_payload_cmd_args *cmd_args =
-        (struct mmagic_core_wlan_standby_set_status_payload_cmd_args *)mmbuf_get_data_start(
-            commandbuffer);
-    MM_UNUSED(sid);
-    status = mmagic_core_wlan_standby_set_status_payload(&agent->core, cmd_args);
-    return mmagic_m2m_create_response(mmagic_wlan,
-                                      mmagic_wlan_cmd_standby_set_status_payload,
-                                      subcommand,
-                                      status,
-                                      NULL,
-                                      0);
-}
-
-static struct mmbuf *mmagic_m2m_wlan_standby_set_wake_filter(struct mmagic_m2m_agent *agent,
-                                                             uint8_t sid,
-                                                             uint8_t subcommand,
-                                                             struct mmbuf *commandbuffer)
-{
-    enum mmagic_status status;
-    struct mmagic_core_wlan_standby_set_wake_filter_cmd_args *cmd_args =
-        (struct mmagic_core_wlan_standby_set_wake_filter_cmd_args *)mmbuf_get_data_start(
-            commandbuffer);
-    MM_UNUSED(sid);
-    status = mmagic_core_wlan_standby_set_wake_filter(&agent->core, cmd_args);
-    return mmagic_m2m_create_response(mmagic_wlan,
-                                      mmagic_wlan_cmd_standby_set_wake_filter,
-                                      subcommand,
-                                      status,
-                                      NULL,
-                                      0);
-}
-
-static struct mmbuf *mmagic_m2m_wlan_standby_set_config(struct mmagic_m2m_agent *agent,
-                                                        uint8_t sid,
-                                                        uint8_t subcommand,
-                                                        struct mmbuf *commandbuffer)
-{
-    enum mmagic_status status;
-    struct mmagic_core_wlan_standby_set_config_cmd_args *cmd_args =
-        (struct mmagic_core_wlan_standby_set_config_cmd_args *)mmbuf_get_data_start(commandbuffer);
-    MM_UNUSED(sid);
-    status = mmagic_core_wlan_standby_set_config(&agent->core, cmd_args);
-    return mmagic_m2m_create_response(mmagic_wlan,
-                                      mmagic_wlan_cmd_standby_set_config,
-                                      subcommand,
-                                      status,
-                                      NULL,
-                                      0);
-}
-
 static struct mmbuf *mmagic_m2m_wlan_get_sta_status(struct mmagic_m2m_agent *agent,
                                                     uint8_t sid,
                                                     uint8_t subcommand,
@@ -844,110 +772,123 @@ static struct mmbuf *mmagic_m2m_wlan_get_sta_status(struct mmagic_m2m_agent *age
                                       sizeof(rsp_args));
 }
 
+static struct mmbuf *mmagic_m2m_wlan_dpp_push_button_start(struct mmagic_m2m_agent *agent,
+                                                           uint8_t sid,
+                                                           uint8_t subcommand,
+                                                           struct mmbuf *commandbuffer)
+{
+    enum mmagic_status status;
+    MM_UNUSED(commandbuffer);
+    MM_UNUSED(sid);
+    status = mmagic_core_wlan_dpp_push_button_start(&agent->core);
+    return mmagic_m2m_create_response(mmagic_wlan,
+                                      mmagic_wlan_cmd_dpp_push_button_start,
+                                      subcommand,
+                                      status,
+                                      NULL,
+                                      0);
+}
+
+static struct mmbuf *mmagic_m2m_wlan_dpp_stop(struct mmagic_m2m_agent *agent,
+                                              uint8_t sid,
+                                              uint8_t subcommand,
+                                              struct mmbuf *commandbuffer)
+{
+    enum mmagic_status status;
+    MM_UNUSED(commandbuffer);
+    MM_UNUSED(sid);
+    status = mmagic_core_wlan_dpp_stop(&agent->core);
+    return mmagic_m2m_create_response(mmagic_wlan,
+                                      mmagic_wlan_cmd_dpp_stop,
+                                      subcommand,
+                                      status,
+                                      NULL,
+                                      0);
+}
+
 struct mmbuf *mmagic_m2m_wlan_process(struct mmagic_m2m_agent *agent,
                                       uint8_t sid,
                                       struct mmagic_m2m_command_header *header,
                                       struct mmbuf *cmd_buf)
 {
-    if (header)
-    {
-        switch (header->command)
-        {
-            case mmagic_wlan_cmd_get:
-                return mmagic_m2m_wlan_get(agent, sid, header->subcommand, cmd_buf);
-                break;
-
-            case mmagic_wlan_cmd_set:
-                return mmagic_m2m_wlan_set(agent, sid, header->subcommand, cmd_buf);
-                break;
-
-            case mmagic_wlan_cmd_load:
-                return mmagic_m2m_wlan_load(agent, sid, header->subcommand, cmd_buf);
-                break;
-
-            case mmagic_wlan_cmd_commit:
-                return mmagic_m2m_wlan_commit(agent, sid, header->subcommand, cmd_buf);
-                break;
-
-            case mmagic_wlan_cmd_connect:
-                return mmagic_m2m_wlan_connect(agent, sid, header->subcommand, cmd_buf);
-                break;
-
-            case mmagic_wlan_cmd_disconnect:
-                return mmagic_m2m_wlan_disconnect(agent, sid, header->subcommand, cmd_buf);
-                break;
-
-            case mmagic_wlan_cmd_scan:
-                return mmagic_m2m_wlan_scan(agent, sid, header->subcommand, cmd_buf);
-                break;
-
-            case mmagic_wlan_cmd_get_rssi:
-                return mmagic_m2m_wlan_get_rssi(agent, sid, header->subcommand, cmd_buf);
-                break;
-
-            case mmagic_wlan_cmd_get_mac_addr:
-                return mmagic_m2m_wlan_get_mac_addr(agent, sid, header->subcommand, cmd_buf);
-                break;
-
-            case mmagic_wlan_cmd_wnm_sleep:
-                return mmagic_m2m_wlan_wnm_sleep(agent, sid, header->subcommand, cmd_buf);
-                break;
-
-            case mmagic_wlan_cmd_beacon_monitor_enable:
-                return mmagic_m2m_wlan_beacon_monitor_enable(agent,
-                                                             sid,
-                                                             header->subcommand,
-                                                             cmd_buf);
-                break;
-
-            case mmagic_wlan_cmd_beacon_monitor_disable:
-                return mmagic_m2m_wlan_beacon_monitor_disable(agent,
-                                                              sid,
-                                                              header->subcommand,
-                                                              cmd_buf);
-                break;
-
-            case mmagic_wlan_cmd_standby_enter:
-                return mmagic_m2m_wlan_standby_enter(agent, sid, header->subcommand, cmd_buf);
-                break;
-
-            case mmagic_wlan_cmd_standby_exit:
-                return mmagic_m2m_wlan_standby_exit(agent, sid, header->subcommand, cmd_buf);
-                break;
-
-            case mmagic_wlan_cmd_standby_set_status_payload:
-                return mmagic_m2m_wlan_standby_set_status_payload(agent,
-                                                                  sid,
-                                                                  header->subcommand,
-                                                                  cmd_buf);
-                break;
-
-            case mmagic_wlan_cmd_standby_set_wake_filter:
-                return mmagic_m2m_wlan_standby_set_wake_filter(agent,
-                                                               sid,
-                                                               header->subcommand,
-                                                               cmd_buf);
-                break;
-
-            case mmagic_wlan_cmd_standby_set_config:
-                return mmagic_m2m_wlan_standby_set_config(agent, sid, header->subcommand, cmd_buf);
-                break;
-
-            case mmagic_wlan_cmd_get_sta_status:
-                return mmagic_m2m_wlan_get_sta_status(agent, sid, header->subcommand, cmd_buf);
-                break;
-
-            default:
-                return mmagic_m2m_create_response(header->subsystem,
-                                                  header->command,
-                                                  header->subcommand,
-                                                  MMAGIC_STATUS_NOT_SUPPORTED,
-                                                  NULL,
-                                                  0);
-        }
-    }
-    else
+    if (!header)
     {
         return mmagic_m2m_create_response(0, 0, 0, MMAGIC_STATUS_ERROR, NULL, 0);
     }
+
+    /* Configuration can always be get and set */
+    switch (header->command)
+    {
+        case mmagic_wlan_cmd_get:
+            return mmagic_m2m_wlan_get(agent, sid, header->subcommand, cmd_buf);
+
+        case mmagic_wlan_cmd_set:
+            return mmagic_m2m_wlan_set(agent, sid, header->subcommand, cmd_buf);
+
+        case mmagic_wlan_cmd_load:
+            return mmagic_m2m_wlan_load(agent, sid, header->subcommand, cmd_buf);
+
+        case mmagic_wlan_cmd_commit:
+            return mmagic_m2m_wlan_commit(agent, sid, header->subcommand, cmd_buf);
+
+        default:
+            break;
+    }
+
+    /* Commands rely on already being initialised and started */
+    if (!mmagic_core_wlan_is_started(&agent->core))
+    {
+        return mmagic_m2m_create_response(header->subsystem,
+                                          header->command,
+                                          header->subcommand,
+                                          MMAGIC_STATUS_UNAVAILABLE,
+                                          NULL,
+                                          0);
+    }
+
+    switch (header->command)
+    {
+        case mmagic_wlan_cmd_connect:
+            return mmagic_m2m_wlan_connect(agent, sid, header->subcommand, cmd_buf);
+
+        case mmagic_wlan_cmd_disconnect:
+            return mmagic_m2m_wlan_disconnect(agent, sid, header->subcommand, cmd_buf);
+
+        case mmagic_wlan_cmd_scan:
+            return mmagic_m2m_wlan_scan(agent, sid, header->subcommand, cmd_buf);
+
+        case mmagic_wlan_cmd_get_rssi:
+            return mmagic_m2m_wlan_get_rssi(agent, sid, header->subcommand, cmd_buf);
+
+        case mmagic_wlan_cmd_get_mac_addr:
+            return mmagic_m2m_wlan_get_mac_addr(agent, sid, header->subcommand, cmd_buf);
+
+        case mmagic_wlan_cmd_wnm_sleep:
+            return mmagic_m2m_wlan_wnm_sleep(agent, sid, header->subcommand, cmd_buf);
+
+        case mmagic_wlan_cmd_beacon_monitor_enable:
+            return mmagic_m2m_wlan_beacon_monitor_enable(agent, sid, header->subcommand, cmd_buf);
+
+        case mmagic_wlan_cmd_beacon_monitor_disable:
+            return mmagic_m2m_wlan_beacon_monitor_disable(agent, sid, header->subcommand, cmd_buf);
+
+        case mmagic_wlan_cmd_get_sta_status:
+            return mmagic_m2m_wlan_get_sta_status(agent, sid, header->subcommand, cmd_buf);
+
+        case mmagic_wlan_cmd_dpp_push_button_start:
+            return mmagic_m2m_wlan_dpp_push_button_start(agent, sid, header->subcommand, cmd_buf);
+
+        case mmagic_wlan_cmd_dpp_stop:
+            return mmagic_m2m_wlan_dpp_stop(agent, sid, header->subcommand, cmd_buf);
+
+        default:
+            break;
+    }
+
+    return mmagic_m2m_create_response(header->subsystem,
+                                      header->command,
+                                      header->subcommand,
+                                      MMAGIC_STATUS_NOT_SUPPORTED,
+                                      NULL,
+                                      0);
 }

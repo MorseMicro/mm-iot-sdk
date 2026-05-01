@@ -59,14 +59,14 @@ void mmagic_cli_iperf_run(EmbeddedCli *cli, char *args, void *context)
     {
         case MMAGIC_IPERF_MODE_UDP_SERVER:
             embeddedCliPrint(cli, "\nStarting Iperf UDP server...\n");
-            if (ip_status == MMIPAL_SUCCESS)
+            if (ip_status == MMIPAL_SUCCESS && ip_config.mode != MMIPAL_DISABLED)
             {
                 mmagic_cli_printf(cli,
                                   "Execute cmd on AP 'iperf -c %s -p %u -i 1 -u -b 20M' for IPv4",
                                   ip_config.ip_addr,
                                   data->config.port);
             }
-            if (ip6_status == MMIPAL_SUCCESS)
+            if (ip6_status == MMIPAL_SUCCESS && ip6_config.ip6_mode != MMIPAL_IP6_DISABLED)
             {
                 mmagic_cli_printf(cli,
                                   "Execute cmd on AP "
@@ -79,14 +79,14 @@ void mmagic_cli_iperf_run(EmbeddedCli *cli, char *args, void *context)
 
         case MMAGIC_IPERF_MODE_TCP_SERVER:
             embeddedCliPrint(cli, "\nStarting Iperf TCP server...\n");
-            if (ip_status == MMIPAL_SUCCESS)
+            if (ip_status == MMIPAL_SUCCESS && ip_config.mode != MMIPAL_DISABLED)
             {
                 mmagic_cli_printf(cli,
                                   "Execute cmd on AP 'iperf -c %s -p %u -i 1' for IPv4",
                                   ip_config.ip_addr,
                                   data->config.port);
             }
-            if (ip6_status == MMIPAL_SUCCESS)
+            if (ip6_status == MMIPAL_SUCCESS && ip6_config.ip6_mode != MMIPAL_IP6_DISABLED)
             {
                 mmagic_cli_printf(cli,
                                   "Execute cmd on AP "

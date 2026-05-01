@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.10.4</span>
+   &#160;<span id="projectnumber">2.11.2</span>
    </div>
   </td>
  </tr>
@@ -142,11 +142,11 @@ $(document).ready(function(){initNavTree('log_8h_source.html',''); initResizable
 <div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>{</div>
 <div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>    va_list arg;</div>
 <div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>    va_start(arg, fstr);</div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    <span class="keywordtype">char</span> <a class="code hl_variable" href="sslclient_8c.html#abdc8ea8147d82c962a7d88863ee32ee0">buf</a>[128];</div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>    <span class="keywordtype">int</span> len = VSNPRINTF(<a class="code hl_variable" href="sslclient_8c.html#abdc8ea8147d82c962a7d88863ee32ee0">buf</a>, <span class="keyword">sizeof</span>(<a class="code hl_variable" href="sslclient_8c.html#abdc8ea8147d82c962a7d88863ee32ee0">buf</a>), fstr, arg);</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    <span class="keywordtype">char</span> <a class="code hl_variable" href="mqttdemo_8c.html#a8d0196caa4b00a1c9678508b882b33ee">buf</a>[128];</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>    <span class="keywordtype">int</span> len = VSNPRINTF(<a class="code hl_variable" href="mqttdemo_8c.html#a8d0196caa4b00a1c9678508b882b33ee">buf</a>, <span class="keyword">sizeof</span>(<a class="code hl_variable" href="mqttdemo_8c.html#a8d0196caa4b00a1c9678508b882b33ee">buf</a>), fstr, arg);</div>
 <div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    <a class="code hl_define" href="group__MMOSAL__ASSERT.html#ga9bae87b1059a31f390403d647b73e4b9">MMOSAL_ASSERT</a>(len &gt;= 0);</div>
 <div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>    va_end(arg);</div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>    <a class="code hl_function" href="group__MMHAL__OS.html#ga6aa1b4bbef7b22825aa7906285ac0ee2">mmhal_log_write</a>((<span class="keyword">const</span> uint8_t *)<a class="code hl_variable" href="sslclient_8c.html#abdc8ea8147d82c962a7d88863ee32ee0">buf</a>, len);</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>    <a class="code hl_function" href="group__MMHAL__OS.html#ga6aa1b4bbef7b22825aa7906285ac0ee2">mmhal_log_write</a>((<span class="keyword">const</span> uint8_t *)<a class="code hl_variable" href="mqttdemo_8c.html#a8d0196caa4b00a1c9678508b882b33ee">buf</a>, len);</div>
 <div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>}</div>
 <div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span> </div>
 <div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span><span class="preprocessor">#define LOG_PRINTF(...) log_printf(__VA_ARGS__)</span></div>
@@ -157,15 +157,15 @@ $(document).ready(function(){initNavTree('log_8h_source.html',''); initResizable
 <div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span><span class="preprocessor">#define STRINGIFY(x) #x</span></div>
 <div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span><span class="preprocessor">#endif</span></div>
 <div class="ttc" id="agroup__MMHAL__OS_html_ga6aa1b4bbef7b22825aa7906285ac0ee2"><div class="ttname"><a href="group__MMHAL__OS.html#ga6aa1b4bbef7b22825aa7906285ac0ee2">mmhal_log_write</a></div><div class="ttdeci">void mmhal_log_write(const uint8_t *data, size_t len)</div><div class="ttdoc">Write to the debug log.</div></div>
-<div class="ttc" id="agroup__MMOSAL__ASSERT_html_ga9bae87b1059a31f390403d647b73e4b9"><div class="ttname"><a href="group__MMOSAL__ASSERT.html#ga9bae87b1059a31f390403d647b73e4b9">MMOSAL_ASSERT</a></div><div class="ttdeci">#define MMOSAL_ASSERT(expr)</div><div class="ttdoc">Assert that the given expression evaluates to true and abort execution if not.</div><div class="ttdef"><b>Definition:</b> <a href="mmosal_8h_source.html#l00934">mmosal.h:934</a></div></div>
-<div class="ttc" id="asslclient_8c_html_abdc8ea8147d82c962a7d88863ee32ee0"><div class="ttname"><a href="sslclient_8c.html#abdc8ea8147d82c962a7d88863ee32ee0">buf</a></div><div class="ttdeci">char buf[1408]</div><div class="ttdoc">Statically allocated buffer for HTTP GET request, just under 1 packet size.</div><div class="ttdef"><b>Definition:</b> <a href="sslclient_8c_source.html#l00176">sslclient.c:176</a></div></div>
+<div class="ttc" id="agroup__MMOSAL__ASSERT_html_ga9bae87b1059a31f390403d647b73e4b9"><div class="ttname"><a href="group__MMOSAL__ASSERT.html#ga9bae87b1059a31f390403d647b73e4b9">MMOSAL_ASSERT</a></div><div class="ttdeci">#define MMOSAL_ASSERT(expr)</div><div class="ttdoc">Assert that the given expression evaluates to true and abort execution if not.</div><div class="ttdef"><b>Definition:</b> <a href="mmosal_8h_source.html#l01006">mmosal.h:1006</a></div></div>
+<div class="ttc" id="amqttdemo_8c_html_a8d0196caa4b00a1c9678508b882b33ee"><div class="ttname"><a href="mqttdemo_8c.html#a8d0196caa4b00a1c9678508b882b33ee">buf</a></div><div class="ttdeci">static unsigned char buf[1024]</div><div class="ttdoc">Statically allocated buffer for MQTT.</div><div class="ttdef"><b>Definition:</b> <a href="mqttdemo_8c_source.html#l00153">mqttdemo.c:153</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.17-->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_c5388b8f7c63864c1129967aadb7f145.html">examples</a></li><li class="navelem"><a class="el" href="dir_5e468357e77f084276a7e24e7b567dca.html">porting_assistant</a></li><li class="navelem"><a class="el" href="dir_912954fbdfccd3bccf2652d86d3192e7.html">src</a></li><li class="navelem"><b>log.h</b></li>
+    <li class="navelem"><a class="el" href="dir_4a117e60a3f8308259f4d16395856081.html">examples</a></li><li class="navelem"><a class="el" href="dir_dd87c239b7fb09f8ba6a92871a3af1d5.html">porting_assistant</a></li><li class="navelem"><a class="el" href="dir_38d371ceeee0b2e390d709f2eded64cc.html">src</a></li><li class="navelem"><b>log.h</b></li>
     <li class="footer">Copyright 2021-2025 Morse Micro </li>
   </ul>
 </div>

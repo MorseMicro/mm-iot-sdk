@@ -55,7 +55,7 @@ enum mmagic_llc_packet_type
     /** This is an unsolicited event from Agent to Controller. */
     MMAGIC_LLC_PTYPE_EVENT = 2,
 
-    /** An unspecified error condition has occured */
+    /** An unspecified error condition has occurred */
     MMAGIC_LLC_PTYPE_ERROR = 3,
 
     /** Instructs the agent to reset itself */
@@ -79,6 +79,7 @@ enum mmagic_llc_packet_type
     MMAGIC_LLC_PTYPE_SYNC_RESP = 11,
 };
 
+/** This is the header for a MMAGIC LLC packet */
 struct MM_PACKED mmagic_llc_header
 {
     /** Packet type and sequence number, cmd is upper nibble, seq is lower nibble */
@@ -89,15 +90,17 @@ struct MM_PACKED mmagic_llc_header
     uint16_t length;
 };
 
+/** Request to resynchronize MMAGIC communication */
 struct MM_PACKED mmagic_llc_sync_req
 {
-    /** Token to match respones to requests. */
+    /** Token to match responses to requests. */
     uint8_t token[4];
 };
 
+/** Response to a MMAGIC resynchronization request */
 struct MM_PACKED mmagic_llc_sync_rsp
 {
-    /** Token to match respones to requests. */
+    /** Token to match responses to requests. */
     uint8_t token[4];
     /** The last seen sequence number for Controller to Agent transmissions. */
     uint8_t last_seen_seq;
@@ -178,10 +181,9 @@ struct MM_PACKED mmagic_m2m_event_header
 enum mmagic_m2m_event_id
 {
     MMAGIC_WLAN_EVT_BEACON_RX = 1,
-    MMAGIC_WLAN_EVT_STANDBY_EXIT = 2,
     MMAGIC_WLAN_EVT_STA_EVENT = 3,
     MMAGIC_IP_EVT_LINK_STATUS = 4,
-    MMAGIC_TCP_EVT_RX_READY = 1,
+    MMAGIC_SOCKET_EVT_RX_READY = 1,
     MMAGIC_MQTT_EVT_MESSAGE_RECEIVED = 5,
     MMAGIC_MQTT_EVT_BROKER_CONNECTION = 6,
 };
@@ -193,8 +195,13 @@ enum mmagic_m2m_event_id
 /** Maximum number of streams possible. */
 #define MMAGIC_LLC_MAX_STREAMS (8)
 
+/** Context for the MMAGIC Controller.
+ *
+ * This maintains the state needed to interact with the agent.
+ */
 struct mmagic_controller
 {
+    /** Transport and synchronization context */
     struct
     {
         /** The HAL transport handle */
@@ -209,24 +216,24 @@ struct mmagic_controller
         volatile enum mmagic_status sync_status;
     } controller_llc;
 
+    /** Handlers registered to be called in response to agent events */
     struct
     {
         mmagic_wlan_beacon_rx_event_handler_t wlan_beacon_rx;
         void *wlan_beacon_rx_arg;
-        mmagic_wlan_standby_exit_event_handler_t wlan_standby_exit;
-        void *wlan_standby_exit_arg;
         mmagic_wlan_sta_event_event_handler_t wlan_sta_event;
         void *wlan_sta_event_arg;
         mmagic_ip_link_status_event_handler_t ip_link_status;
         void *ip_link_status_arg;
-        mmagic_tcp_rx_ready_event_handler_t tcp_rx_ready;
-        void *tcp_rx_ready_arg;
+        mmagic_socket_rx_ready_event_handler_t socket_rx_ready;
+        void *socket_rx_ready_arg;
         mmagic_mqtt_message_received_event_handler_t mqtt_message_received;
         void *mqtt_message_received_arg;
         mmagic_mqtt_broker_connection_event_handler_t mqtt_broker_connection;
         void *mqtt_broker_connection_arg;
     } event_handlers;
 
+    /** A queue for each stream */
     struct mmosal_queue *stream_queue[MMAGIC_LLC_MAX_STREAMS];
     /** The mutex to protect access to the streams @c mmbuf_list and TX path */
     struct mmosal_mutex *tx_mutex;
@@ -256,15 +263,6 @@ void mmagic_controller_register_wlan_beacon_rx_handler(
     controller->event_handlers.wlan_beacon_rx_arg = arg;
 }
 
-void mmagic_controller_register_wlan_standby_exit_handler(
-    struct mmagic_controller *controller,
-    mmagic_wlan_standby_exit_event_handler_t handler,
-    void *arg)
-{
-    controller->event_handlers.wlan_standby_exit = handler;
-    controller->event_handlers.wlan_standby_exit_arg = arg;
-}
-
 void mmagic_controller_register_wlan_sta_event_handler(
     struct mmagic_controller *controller,
     mmagic_wlan_sta_event_event_handler_t handler,
@@ -283,12 +281,13 @@ void mmagic_controller_register_ip_link_status_handler(
     controller->event_handlers.ip_link_status_arg = arg;
 }
 
-void mmagic_controller_register_tcp_rx_ready_handler(struct mmagic_controller *controller,
-                                                     mmagic_tcp_rx_ready_event_handler_t handler,
-                                                     void *arg)
+void mmagic_controller_register_socket_rx_ready_handler(
+    struct mmagic_controller *controller,
+    mmagic_socket_rx_ready_event_handler_t handler,
+    void *arg)
 {
-    controller->event_handlers.tcp_rx_ready = handler;
-    controller->event_handlers.tcp_rx_ready_arg = arg;
+    controller->event_handlers.socket_rx_ready = handler;
+    controller->event_handlers.socket_rx_ready_arg = arg;
 }
 
 void mmagic_controller_register_mqtt_message_received_handler(
@@ -680,6 +679,12 @@ static enum mmagic_status mmagic_status_from_u8(uint8_t status)
         case MMAGIC_STATUS_BAD_VERSION:
             return MMAGIC_STATUS_BAD_VERSION;
 
+        case MMAGIC_STATUS_DPP_PB_ERROR:
+            return MMAGIC_STATUS_DPP_PB_ERROR;
+
+        case MMAGIC_STATUS_DPP_PB_SESSION_OVERLAP:
+            return MMAGIC_STATUS_DPP_PB_SESSION_OVERLAP;
+
         default:
             return MMAGIC_STATUS_ERROR;
     }
@@ -697,6 +702,11 @@ enum mmagic_status mmagic_controller_rx(struct mmagic_controller *controller,
     struct mmbuf *rx_buffer = NULL;
     struct mmagic_m2m_response_header *rx_header;
 
+    if (stream_id >= MMAGIC_LLC_MAX_STREAMS)
+    {
+        return MMAGIC_STATUS_INVALID_STREAM;
+    }
+
     if (!mmosal_queue_pop(controller->stream_queue[stream_id], &rx_buffer, timeout_ms))
     {
         return MMAGIC_STATUS_ERROR;
@@ -705,12 +715,6 @@ enum mmagic_status mmagic_controller_rx(struct mmagic_controller *controller,
     if (rx_buffer == NULL)
     {
         return MMAGIC_STATUS_ERROR;
-    }
-
-    if (stream_id >= MMAGIC_LLC_MAX_STREAMS)
-    {
-        mmbuf_release(rx_buffer);
-        return MMAGIC_STATUS_INVALID_STREAM;
     }
 
     rx_header =
@@ -829,24 +833,6 @@ static void mmagic_m2m_controller_event_rx_callback(struct mmagic_controller *co
                             controller->event_handlers.wlan_beacon_rx_arg);
                     }
                     break;
-                case MMAGIC_WLAN_EVT_STANDBY_EXIT:
-                    if (controller->event_handlers.wlan_standby_exit != NULL)
-                    {
-                        /** Event arguments structure for wlan_standby_exit */
-                        struct mmagic_wlan_standby_exit_event_args *args =
-                            (struct mmagic_wlan_standby_exit_event_args *)mmbuf_remove_from_start(
-                                rx_buffer,
-                                sizeof(*args));
-                        if (args == NULL)
-                        {
-                            goto cleanup;
-                        }
-
-                        controller->event_handlers.wlan_standby_exit(
-                            args,
-                            controller->event_handlers.wlan_standby_exit_arg);
-                    }
-                    break;
                 case MMAGIC_WLAN_EVT_STA_EVENT:
                     if (controller->event_handlers.wlan_sta_event != NULL)
                     {
@@ -896,15 +882,15 @@ static void mmagic_m2m_controller_event_rx_callback(struct mmagic_controller *co
                     break;
             }
             break;
-        case MMAGIC_TCP:
+        case MMAGIC_SOCKET:
             switch (rx_header->event)
             {
-                case MMAGIC_TCP_EVT_RX_READY:
-                    if (controller->event_handlers.tcp_rx_ready != NULL)
+                case MMAGIC_SOCKET_EVT_RX_READY:
+                    if (controller->event_handlers.socket_rx_ready != NULL)
                     {
-                        /** Event arguments structure for tcp_rx_ready */
-                        struct mmagic_tcp_rx_ready_event_args *args =
-                            (struct mmagic_tcp_rx_ready_event_args *)mmbuf_remove_from_start(
+                        /** Event arguments structure for socket_rx_ready */
+                        struct mmagic_socket_rx_ready_event_args *args =
+                            (struct mmagic_socket_rx_ready_event_args *)mmbuf_remove_from_start(
                                 rx_buffer,
                                 sizeof(*args));
                         if (args == NULL)
@@ -912,9 +898,9 @@ static void mmagic_m2m_controller_event_rx_callback(struct mmagic_controller *co
                             goto cleanup;
                         }
 
-                        controller->event_handlers.tcp_rx_ready(
+                        controller->event_handlers.socket_rx_ready(
                             args,
-                            controller->event_handlers.tcp_rx_ready_arg);
+                            controller->event_handlers.socket_rx_ready_arg);
                     }
                     break;
 

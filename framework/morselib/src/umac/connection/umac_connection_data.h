@@ -44,7 +44,6 @@ struct umac_connection_data
     bool is_initialised;
 
     bool ecsa_active;
-    uint16_t vif_id;
     struct umac_connection_bss_cfg bss_cfg;
     mmwlan_link_state_cb_t link_callback;
     void *link_arg;

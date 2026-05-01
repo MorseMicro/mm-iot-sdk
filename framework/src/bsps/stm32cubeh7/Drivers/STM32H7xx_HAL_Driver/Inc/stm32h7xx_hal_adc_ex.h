@@ -137,7 +137,7 @@ typedef struct
   FunctionalState InjectedOffsetSignedSaturation;      /*!< Specifies whether the Signed saturation feature is used or not.
                                                This parameter is applied only for 16-bit or 8-bit resolution.
                                                This parameter can be set to ENABLE or DISABLE. */
-  
+
   uint32_t InjectedNbrOfConversion;       /*!< Specifies the number of ranks that will be converted within the ADC group injected sequencer.
                                                To use the injected group sequencer and convert several ranks, parameter 'ScanConvMode' must be enabled.
                                                This parameter must be a number between Min_Data = 1 and Max_Data = 4.
@@ -918,12 +918,20 @@ typedef struct
 #define IS_ADC_INJECTED_NB_CONV(__LENGTH__) (((__LENGTH__) >= (1U)) && ((__LENGTH__) <= (4U)))
 
 /**
-  * @brief Calibration factor size verification (7 bits maximum).
+  * @brief Calibration factor size verification (11 bits maximum).
   * @param __CALIBRATION_FACTOR__ Calibration factor value.
   * @retval SET (__CALIBRATION_FACTOR__ is within the authorized size) or RESET (__CALIBRATION_FACTOR__ is too large)
   */
-#define IS_ADC_CALFACT(__CALIBRATION_FACTOR__) ((__CALIBRATION_FACTOR__) <= (0x7FU))
+#define IS_ADC_CALFACT(__CALIBRATION_FACTOR__) ((__CALIBRATION_FACTOR__) <= (0x7FFU))
 
+#if defined(ADC_VER_V5_V90)
+/**
+  * @brief Calibration factor size verification (7 bits maximum on ADC3).
+  * @param __CALIBRATION_FACTOR__ Calibration factor value.
+  * @retval SET (__CALIBRATION_FACTOR__ is within the authorized size) or RESET (__CALIBRATION_FACTOR__ is too large)
+  */
+#define IS_ADC_CALFACT_ADC3(__CALIBRATION_FACTOR__) ((__CALIBRATION_FACTOR__) <= (0x7FU))
+#endif
 
 /**
   * @brief Verify the ADC channel setting.
@@ -1002,6 +1010,80 @@ typedef struct
                                            ((__CHANNEL__) == ADC_CHANNEL_13)     || \
                                            ((__CHANNEL__) == ADC_CHANNEL_14)     || \
                                            ((__CHANNEL__) == ADC_CHANNEL_15)       )
+
+/**
+  * @brief Helper macro to determine the selected channel corresponding
+  *        negative input for ADC1.
+  * @param __CHANNEL__: programmed ADC channel.
+  * @retval return the negative input channels corresponding to the selected channel.
+  */
+#define ADC_CHANNEL_DIFF_NEG_INPUT_ADC1(__CHANNEL__) (((__CHANNEL__) == ADC_CHANNEL_1)  ? ADC_CHANNEL_0  : \
+                                                      ((__CHANNEL__) == ADC_CHANNEL_2)  ? ADC_CHANNEL_6  : \
+                                                      ((__CHANNEL__) == ADC_CHANNEL_3)  ? ADC_CHANNEL_7  : \
+                                                      ((__CHANNEL__) == ADC_CHANNEL_4)  ? ADC_CHANNEL_8  : \
+                                                      ((__CHANNEL__) == ADC_CHANNEL_5)  ? ADC_CHANNEL_9  : \
+                                                      ((__CHANNEL__) == ADC_CHANNEL_10) ? ADC_CHANNEL_11 : \
+                                                      ((__CHANNEL__) == ADC_CHANNEL_11) ? ADC_CHANNEL_12 : \
+                                                      ((__CHANNEL__) == ADC_CHANNEL_12) ? ADC_CHANNEL_13 : \
+                                                      ((__CHANNEL__) == ADC_CHANNEL_16) ? ADC_CHANNEL_17 : \
+                                                      ((__CHANNEL__) == ADC_CHANNEL_18) ? ADC_CHANNEL_19 : 0UL)
+
+/**
+  * @brief Helper macro to determine the selected channel corresponding
+  *        negative input for ADC2.
+  * @param __CHANNEL__: programmed ADC channel.
+  * @retval return the negative input channels corresponding to the selected channel.
+  */
+#define ADC_CHANNEL_DIFF_NEG_INPUT_ADC2(__CHANNEL__) (((__CHANNEL__) == ADC_CHANNEL_1)  ? ADC_CHANNEL_0  : \
+                                                      ((__CHANNEL__) == ADC_CHANNEL_2)  ? ADC_CHANNEL_6  : \
+                                                      ((__CHANNEL__) == ADC_CHANNEL_3)  ? ADC_CHANNEL_7  : \
+                                                      ((__CHANNEL__) == ADC_CHANNEL_4)  ? ADC_CHANNEL_8  : \
+                                                      ((__CHANNEL__) == ADC_CHANNEL_5)  ? ADC_CHANNEL_9  : \
+                                                      ((__CHANNEL__) == ADC_CHANNEL_10) ? ADC_CHANNEL_11 : \
+                                                      ((__CHANNEL__) == ADC_CHANNEL_11) ? ADC_CHANNEL_12 : \
+                                                      ((__CHANNEL__) == ADC_CHANNEL_12) ? ADC_CHANNEL_13 : \
+                                                      ((__CHANNEL__) == ADC_CHANNEL_18) ? ADC_CHANNEL_19 : 0UL)
+
+#if defined(ADC_VER_V5_V90)
+/**
+  * @brief Helper macro to determine the selected channel corresponding
+  *        negative input for ADC3.
+  * @param __CHANNEL__: programmed ADC channel.
+  * @retval return the negative input channels corresponding to the selected channel.
+  */
+#define ADC_CHANNEL_DIFF_NEG_INPUT_ADC3(__CHANNEL__) (((__CHANNEL__) == ADC_CHANNEL_1)  ? ADC_CHANNEL_0  : \
+                                                      ((__CHANNEL__) == ADC_CHANNEL_2)  ? ADC_CHANNEL_6  : \
+                                                      ((__CHANNEL__) == ADC_CHANNEL_3)  ? ADC_CHANNEL_7  : \
+                                                      ((__CHANNEL__) == ADC_CHANNEL_4)  ? ADC_CHANNEL_8  : \
+                                                      ((__CHANNEL__) == ADC_CHANNEL_5)  ? ADC_CHANNEL_9  : \
+                                                      ((__CHANNEL__) == ADC_CHANNEL_10) ? ADC_CHANNEL_11 : \
+                                                      ((__CHANNEL__) == ADC_CHANNEL_11) ? ADC_CHANNEL_12 : \
+                                                      ((__CHANNEL__) == ADC_CHANNEL_13) ? ADC_CHANNEL_14 : \
+                                                      ((__CHANNEL__) == ADC_CHANNEL_14) ? ADC_CHANNEL_15 : 0UL)
+#endif /* ADC_VER_V5_V90 */
+
+#if defined(ADC_VER_V5_V90)
+/**
+  * @brief  Helper macro to determine the selected channel corresponding
+  *         negative input on the ADC instance selected.
+  * @param __HANDLE__ ADC handle.
+  * @param __CHANNEL__ This parameter can be one of the following values:
+  * @retval return the negative input channels corresponding to the selected channel.
+  */
+#define ADC_CHANNEL_DIFF_NEG_INPUT(__HANDLE__, __CHANNEL__) ((((__HANDLE__)->Instance) == ADC1) ? ADC_CHANNEL_DIFF_NEG_INPUT_ADC1(__CHANNEL__) : \
+                                                             (((__HANDLE__)->Instance) == ADC2) ? ADC_CHANNEL_DIFF_NEG_INPUT_ADC2(__CHANNEL__) : \
+                                                             (((__HANDLE__)->Instance) == ADC3) ? ADC_CHANNEL_DIFF_NEG_INPUT_ADC3(__CHANNEL__) : 0UL)
+#else
+/**
+  * @brief  Helper macro to determine the selected channel corresponding
+  *         negative input on the ADC instance selected.
+  * @param __HANDLE__ ADC handle.
+  * @param __CHANNEL__ This parameter can be one of the following values:
+  * @retval return the negative input channels corresponding to the selected channel.
+  */
+#define ADC_CHANNEL_DIFF_NEG_INPUT(__HANDLE__, __CHANNEL__) ((((__HANDLE__)->Instance) == ADC1) ? ADC_CHANNEL_DIFF_NEG_INPUT_ADC1(__CHANNEL__) : \
+                                                             (((__HANDLE__)->Instance) == ADC2) ? ADC_CHANNEL_DIFF_NEG_INPUT_ADC2(__CHANNEL__) : 0UL)
+#endif /* ADC_VER_V5_V90 */
 
 /**
   * @brief Verify the ADC single-ended input or differential mode setting.
@@ -1303,7 +1385,7 @@ typedef struct
 
 /* ADC calibration */
 HAL_StatusTypeDef       HAL_ADCEx_Calibration_Start(ADC_HandleTypeDef *hadc, uint32_t CalibrationMode, uint32_t SingleDiff);
-uint32_t                HAL_ADCEx_Calibration_GetValue(ADC_HandleTypeDef *hadc, uint32_t SingleDiff);
+uint32_t                HAL_ADCEx_Calibration_GetValue(const ADC_HandleTypeDef *hadc, uint32_t SingleDiff);
 HAL_StatusTypeDef       HAL_ADCEx_LinearCalibration_GetValue(ADC_HandleTypeDef *hadc, uint32_t *LinearCalib_Buffer);
 HAL_StatusTypeDef       HAL_ADCEx_Calibration_SetValue(ADC_HandleTypeDef *hadc, uint32_t SingleDiff, uint32_t CalibrationFactor);
 HAL_StatusTypeDef       HAL_ADCEx_LinearCalibration_SetValue(ADC_HandleTypeDef *hadc, uint32_t *LinearCalib_Buffer);
@@ -1320,12 +1402,12 @@ HAL_StatusTypeDef       HAL_ADCEx_InjectedStart_IT(ADC_HandleTypeDef *hadc);
 HAL_StatusTypeDef       HAL_ADCEx_InjectedStop_IT(ADC_HandleTypeDef *hadc);
 
 /* ADC multimode */
-HAL_StatusTypeDef       HAL_ADCEx_MultiModeStart_DMA(ADC_HandleTypeDef *hadc, uint32_t *pData, uint32_t Length);
+HAL_StatusTypeDef       HAL_ADCEx_MultiModeStart_DMA(ADC_HandleTypeDef *hadc, const uint32_t *pData, uint32_t Length);
 HAL_StatusTypeDef       HAL_ADCEx_MultiModeStop_DMA(ADC_HandleTypeDef *hadc);
-uint32_t                HAL_ADCEx_MultiModeGetValue(ADC_HandleTypeDef *hadc);
+uint32_t                HAL_ADCEx_MultiModeGetValue(const ADC_HandleTypeDef *hadc);
 
 /* ADC retrieve conversion value intended to be used with polling or interruption */
-uint32_t                HAL_ADCEx_InjectedGetValue(ADC_HandleTypeDef *hadc, uint32_t InjectedRank);
+uint32_t                HAL_ADCEx_InjectedGetValue(const ADC_HandleTypeDef *hadc, uint32_t InjectedRank);
 
 /* ADC IRQHandler and Callbacks used in non-blocking modes (Interruption) */
 void                    HAL_ADCEx_InjectedConvCpltCallback(ADC_HandleTypeDef *hadc);

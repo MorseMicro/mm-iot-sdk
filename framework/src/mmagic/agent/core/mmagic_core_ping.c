@@ -27,7 +27,8 @@ void mmagic_core_ping_init(struct mmagic_data *core)
 
 void mmagic_core_ping_start(struct mmagic_data *core)
 {
-    MM_UNUSED(core);
+    struct mmagic_ping_data *data = mmagic_data_get_ping(core);
+    data->is_started = true;
 }
 
 /********* MMAGIC Core Ping ops **********/
@@ -63,9 +64,10 @@ enum mmagic_status mmagic_core_ping_run(struct mmagic_data *core,
         }
     }
 
-    mmosal_task_sleep(10);
-
-    mmping_stats(&stats);
+    do {
+        mmosal_task_sleep(1000);
+        mmping_stats(&stats);
+    } while (stats.ping_is_running);
 
     (void)mmosal_safer_strcpy(rsp_args->status.receiver_addr.addr,
                               stats.ping_receiver,

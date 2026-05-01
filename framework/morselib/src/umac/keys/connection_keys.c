@@ -257,16 +257,14 @@ void connection_keys_increment_tx_seq(struct connection_keys_data *data, uint8_t
     }
 }
 
-uint64_t connection_keys_get_tx_seq(struct connection_keys_data *data, enum umac_key_type key_type)
+uint64_t connection_keys_get_tx_seq(struct connection_keys_data *data, uint8_t key_id)
 {
     bool success = false;
     uint64_t tx_seq = 0;
 
     MMOSAL_TASK_ENTER_CRITICAL();
-    int key_id = umac_keys_get_active_key_id_protected(data, key_type);
-    if (key_id >= 0)
+    if (connection_keys_key_is_installed(data, key_id))
     {
-
         tx_seq = data->keys[key_id]->tx_seq;
         success = true;
     }
@@ -274,7 +272,7 @@ uint64_t connection_keys_get_tx_seq(struct connection_keys_data *data, enum umac
 
     if (!success)
     {
-        MMLOG_WRN("Unable to find active key for key type %u\n", key_type);
+        MMLOG_WRN("Unable to find active key for key ID %u\n", key_id);
     }
 
     return tx_seq;

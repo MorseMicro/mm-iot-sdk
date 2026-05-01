@@ -1,4 +1,4 @@
-# Copyright 2023-2025 Morse Micro
+# Copyright 2023-2026 Morse Micro
 #
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -113,7 +113,7 @@ enums:
 
       - name: tx_error
         value: 8
-        description: An error occured during transmission.
+        description: An error occurred during transmission.
 
       - name: no_mem
         value: 9
@@ -222,6 +222,16 @@ enums:
         value: 32
         description: Operation failed due to a version mismatch.
 
+      - name: dpp_pb_error
+        value: 33
+        description: >-
+          An error occurred during the DPP push button process.
+
+      - name: dpp_pb_session_overlap
+        value: 34
+        description: >-
+          A session overlap occurred during the DPP push button process.
+
   - name: enum_iperf_mode
     description: Mode to use when running the iperf.
     values:
@@ -284,34 +294,6 @@ enums:
         value: 2
         description: The datalink layer is responsible for waking the agent.
 
-  - name: enum_standby_mode_exit_reason
-    description: Reasons for exiting standby mode.
-    values:
-      - name: standby_exit_none
-        value: 0
-        description: Standby mode was exited manually through a call to standby_exit.
-      - name: standby_exit_wakeup_frame
-        value: 1
-        description: We were woken up by a wakeup frame.
-      - name: standby_exit_associate
-        value: 2
-        description: We just reassociated with the AP.
-      - name: standby_exit_ext_input
-        value: 3
-        description: We were woken up by an external input trigger.
-      - name: standby_exit_whitelist_pkt
-        value: 4
-        description: We received a packet from a whitelist source.
-      - name: standby_exit_tcp_connection_lost
-        value: 5
-        description: An open TCP connection was lost.
-      - name: standby_exit_hw_scan_not_enabled
-        value: 6
-        description: Hardware scan was not enabled.
-      - name: standby_exit_hw_scan_failed_to_start
-        value: 7
-        description: Hardware scan failed to start.
-
   - name: enum_sta_state
     description: Station states
     values:
@@ -359,6 +341,33 @@ enums:
       - name: ctrl_port_closed
         value: 7
         description: The Supplicant IEEE 802.1X Controlled Port is now closed.
+
+  - name: enum_socket_proto
+    description: Enumeration of socket protocols.
+    values:
+      - name: tcp
+        value: 0
+        description: TCP protocol (and TLS)
+
+      - name: udp
+        value: 1
+        description: UDP protocol
+
+  - name: enum_subsystem_id
+    description: Morse subsystem identifiers
+    values:
+      - name: host
+        value: 0
+        description: Host core.
+      - name: mac
+        value: 1
+        description: MAC core.
+      - name: phy
+        value: 2
+        description: Phy core.
+      - name: umac
+        value: 3
+        description: Upper MAC.
 
 structs:
   - name: struct_mac_addr
@@ -799,6 +808,13 @@ modules:
           be consumed immediately.
         type: enum_duty_cycle_mode
 
+      - name: connect_on_boot
+        id: 29
+        description: >-
+          On boot attempt to connect immediately to the AP with the current parameters rather than
+          waiting for a connect command on wlan. Defaults to false.
+        type: bool
+
     commands:
       - name: connect
         id: 8
@@ -876,102 +892,43 @@ modules:
         description: >-
           Disable beacon monitoring. If beacon monitor is not enabled then this has no effect.
 
-      - name: standby_enter
-        id: 16
-        description: >-
-          This puts the Morse chip into standby mode allowing the host processor to go to sleep
-          while the Morse chip takes over certain functionality to keep the connection alive with
-          the provision to wake up the host processor when certain conditions are met.
+      # The following commands are no longer supported. Kept here to avoid accidental reuse of
+      # deprecated IDs.
+      # - name: standby_enter
+      #   id: 16
 
-      - name: standby_exit
-        id: 17
-        description: >-
-          Forces the Morse chip to exit standby mode. There may be certain instances such as a
-          timer expiry, which cause the host chip to wake up independant of the Morse chip. In
-          such situations, the host calls this function to instruct the Morse chip to exit standby
-          mode and return to normal operating mode.
+      # - name: standby_exit
+      #   id: 17
 
-      - name: standby_set_status_payload
-        id: 18
-        description: >-
-          Sets the user payload for the standby status packet. Once standby mode is enabled, the
-          Morse chip will periodically emit a UDP standby status packet regardless of
-          whether it is in standby or not. The UDP packet will also be sent immediately upon
-          entering or exiting Standby mode. If this command is not executed then the standby
-          status packet will contain no payload.
+      # - name: standby_set_status_payload
+      #   id: 18
 
-        command_args:
-          - name: payload
-            description: Payload to append to standby status packets.
-            type: struct_buffer64
+      # - name: standby_set_wake_filter
+      #   id: 19
 
-      - name: standby_set_wake_filter
-        id: 19
-        description: >-
-          Configures the standby mode UDP wake packet filter. The system can be woken up from
-          standby mode by sending it a UDP wake packet. If a wake filter is set using this function
-          then the wake packet will only wake up the system if the specified filter pattern matches
-          the payload at the specified offset within the payload. If this command is not executed
-          then any wake packet will wake up the system.
-
-        command_args:
-          - name: filter
-            description: Filter to apply to wake packets to wake on match.
-            type: struct_buffer64
-          - name: offset
-            description: Offset within wake packet payload to apply the filter.
-            type: uint32_t
-
-      - name: standby_set_config
-        id: 20
-        description: >-
-          Sets the standby mode configuration parameters. If this command is not executed
-          then the defaults are as specified.
-
-        command_args:
-          - name: notify_period_s
-            description: Interval in seconds for transmitting Standby status packets (Default 15s).
-            type: uint32_t
-          - name: src_ip
-            description: Source IP address to use for the standby status packets (Default 0.0.0.0).
-            type: struct_ip_addr
-          - name: dst_ip
-            description: Destination IP address for the standby status packets (Default 0.0.0.0).
-            type: struct_ip_addr
-          - name: dst_port
-            description: >-
-              Destination UDP Port for the standby status packets, also used the source port for
-              outgoing UDP port for outgoing UDP packets (Default 22000).
-            type: uint16_t
-          - name: bss_inactivity_s
-            description: >-
-              Deprecated. This parameter is no longer used and will be removed in a future release.
-            type: uint32_t
-          - name: snooze_period_s
-            description: >-
-              The interval in seconds to wake periodically from snooze mode and check for beacons.
-              If no beacons are found then the Morse chip will re-enter snooze mode. If beacons are
-              found then the Morse chip will exit standby mode so the host can reassociate
-              (Default 60s).
-            type: uint32_t
-          - name: snooze_increment_s
-            description: >-
-              The amount in seconds to increase successive snooze intervals. This saves power
-              by snoozing for longer before checking for beacons again if no beacons are found.
-              (Default 0s).
-            type: uint32_t
-          - name: snooze_max_s
-            description: >-
-              The maximum time in seconds to snooze for after increments (Default unlimited).
-            type: uint32_t
+      # - name: standby_set_config
+      #   id: 20
 
       - name: get_sta_status
         id: 21
         description: Retrieves the STA status of the WLAN interface.
+        response_timeout_ms: 3000
         response_args:
           - name: sta_status
             description: The current STA status.
             type: enum_sta_state
+
+      - name: dpp_push_button_start
+        id: 22
+        description: >-
+          Instructs the WLAN device to start the Device Provisioning Protocol (DPP) Push Button (PB)
+          provisioning process. SSID and password will be automatically copied to wlan.ssid and
+          wlan.password and saved in the persistent config store.
+
+      - name: dpp_stop
+        id: 23
+        description: >-
+          Instructs the WLAN device to abort the ongoing DPP session.
 
     events:
       - name: beacon_rx
@@ -989,17 +946,10 @@ modules:
               specifying the length IE contents (i.e., excluding the Tag and Length).
             type: raw1536
 
-      - name: standby_exit
-        id: 2
-        description: >-
-          Triggered when chip exits standby mode either manually or through an event.
-
-        event_args:
-          - name: reason
-            description: >-
-              Reason why we exited standby mode. If we manually exited standby mode through a call
-              to wlan-standby_exit, then the reason will be standby_exit_none.
-            type: enum_standby_mode_exit_reason
+      # The following event is no longer supported. Kept here to avoid accidental reuse of
+      # deprecated IDs.
+      # - name: standby_exit
+      #   id: 2
 
       - name: sta_event
         id: 3
@@ -1062,13 +1012,10 @@ modules:
           successfully executed.
         type: bool
 
-      - name: dhcp_offload
-        id: 6
-        description: >-
-          If true, enables DHCP offload which allows the Morse chip to directly handle
-          DHCP discovery and leases without waking up the host processor. Note: this comes into
-          effect only if ip.dhcp_enabled is also true.
-        type: bool
+      # The following variables are no longer supported. Kept here to avoid accidental reuse of
+      # deprecated IDs.
+      # - name: dhcp_offload
+      #   id: 6
 
       - name: link_status_evt_en
         id: 7
@@ -1077,19 +1024,11 @@ modules:
           will suppress these notifications. Defaults to true.
         type: bool
 
-      - name: offload_arp_response
-        id: 8
-        description: >-
-          If true, enables ARP response offload which allows the Morse chip to directly respond
-          to ARP requests without waking up the host processor.
-        type: bool
+      # - name: offload_arp_response
+      #   id: 8
 
-      - name: offload_arp_refresh_s
-        id: 9
-        description: >-
-          If non zero, enables ARP refresh offload with the specified interval in seconds.
-          Note: ARP response offload needs to be enabled for this feature to work.
-        type: uint32_t
+      # - name: offload_arp_refresh_s
+      #   id: 9
 
     commands:
       - name: status
@@ -1109,64 +1048,19 @@ modules:
           Reloads the IP stack network configuration based on the current values in the subsystem
           config.
 
-      - name: enable_tcp_keepalive_offload
-        id: 10
-        description: >-
-          Enables sending periodic TCP keep-alive packets by the morse chip allowing the TCP
-          connection to be maintained without waking up the host processor. This needs to be
-          enabled before opening a TCP connection. As of now, this feature will work only
-          on the first TCP connection opened after this command.
+      # The following commands are no longer supported. Kept here to avoid accidental reuse of
+      # deprecated IDs.
+      # - name: enable_tcp_keepalive_offload
+      #   id: 10
 
-        command_args:
-          - name: period_s
-            description: Interval in seconds to send the keep-alive packets in.
-            type: uint16_t
-          - name: retry_count
-            description: The number of times to retry before giving up.
-            type: uint8_t
-          - name: retry_interval_s
-            description: The interval in seconds to wait between retries.
-            type: uint8_t
+      # - name: disable_tcp_keepalive_offload
+      #   id: 11
 
-      - name: disable_tcp_keepalive_offload
-        id: 11
-        description: Disables sending of TCP keepalive packets.
+      # - name: set_whitelist_filter
+      #   id: 12
 
-      - name: set_whitelist_filter
-        id: 12
-        description: >-
-          Sets the whitelist filter specifing which incoming packets can wake the system from
-          standby mode.
-
-        command_args:
-          - name: src_ip
-            description: The IPv4 source address to match, 0.0.0.0 for any.
-            type: struct_ip_addr
-          - name: dest_ip
-            description: >-
-              The IPv4 destination address to match, 0.0.0.0 for any (Usually our IP address).
-            type: struct_ip_addr
-          - name: netmask
-            description: The netmask to apply to the source or destination IP, 0.0.0.0 for any.
-            type: struct_ip_addr
-          - name: src_port
-            description: The source port to match, 0 for any.
-            type: uint16_t
-          - name: dest_port
-            description: The destination port to match, 0 for any.
-            type: uint16_t
-          - name: ip_protocol
-            description: The IPv4 protocol number to match - 6 for TCP, 17 for UDP, 0 for any.
-            type: uint8_t
-          - name: llc_protocol
-            description: >-
-              The LLC protocol (or EtherType) to match - 0x0800 for IPv4 and 0x86DD for IPv6,
-              0 for any.
-            type: uint16_t
-
-      - name: clear_whitelist_filter
-        id: 13
-        description: Clears any applied whitelist filters.
+      # - name: clear_whitelist_filter
+      #   id: 13
 
     events:
       - name: link_status
@@ -1207,7 +1101,9 @@ modules:
     commands:
       - name: run
         id: 8
-        description: Commences a ping session using the current values in the the subsystem config.
+        description: Commences a ping session using the current values in the subsystem config.
+        response_timeout_ms: -1
+
         response_args:
           - name: status
             description: >-
@@ -1249,7 +1145,8 @@ modules:
     commands:
       - name: run
         id: 8
-        description: Starts an iperf session using the current values in the the subsystem config.
+        description: Starts an iperf session using the current values in the subsystem config.
+        response_timeout_ms: -1
 
         response_args:
           - name: status
@@ -1282,15 +1179,30 @@ modules:
             description: Reference to structure to store the version information.
             type: struct_version_info
 
-  - name: tcp
+      - name: get_stats
+        id: 11
+        description: Retrieve subsystem statistics
+        command_args:
+          - name: subsystem
+            description: Subsystem from which to retrieve statistics.
+            type: enum_subsystem_id
+          - name: reset
+            description: Reset the statistics after retrieving them where applicable.
+            type: bool
+        response_args:
+          - name: buffer
+            description: Statistics data. The format is specific to the subsystem.
+            type: raw1600
+
+  - name: socket
     id: 6
-    description: TCP Socket IO, supports secure connections using TLS.
+    description: Socket IO, supports secure connections using TLS.
     cli_support: False
 
     commands:
       - name: connect
         id: 8
-        description: Opens a client TCP socket and returns its stream ID.
+        description: Opens a client socket and returns its stream ID.
         response_timeout_ms: 15000
         command_args:
           - name: url
@@ -1298,8 +1210,12 @@ modules:
             type: string254
 
           - name: port
-            description: TCP port to connect to.
+            description: Port to connect to.
             type: uint16_t
+
+          - name: protocol
+            description: Underlying protocol to be used.
+            type: enum_socket_proto
 
           - name: enable_tls
             description: Enables TLS. Configure certificates through the TLS module.
@@ -1312,11 +1228,15 @@ modules:
 
       - name: bind
         id: 9
-        description: Opens a server TCP socket and returns its stream ID.
+        description: Opens a server socket and returns its stream ID.
         command_args:
           - name: port
-            description: TCP port to listen on.
+            description: Port to listen on.
             type: uint16_t
+
+          - name: protocol
+            description: Underlying protocol to be used.
+            type: enum_socket_proto
 
         response_args:
           - name: stream_id
@@ -1412,7 +1332,7 @@ modules:
         description: >-
           Sets whether the RX ready event should be enabled for the given socket.
           Note that the RX ready event is currently only supported for TCP sockets and that
-          behaviour with TLS sockets undefined.
+          behavior with TLS sockets undefined.
         command_args:
           - name: stream_id
             description: Stream ID of the socket to close.
@@ -1429,7 +1349,7 @@ modules:
 
         event_args:
           - name: stream_id
-            description: Stream ID of the TCP socket this applies to.
+            description: Stream ID of the socket this applies to.
             type: uint8_t
 
   - name: tls
@@ -1493,12 +1413,18 @@ modules:
     description: MQTT agent.
     cli_support: False
 
+    configs:
+      - name: keepalive_s
+        id: 0
+        description: The period at which keep-alive messages are sent by the client
+        type: uint16_t
+
     commands:
       - name: start_agent
         id: 8
         description: >-
             Starts the MQTT agent. Automatically handles reconnects with a
-            backoff timer and saves up to 10 subscriptions across reconnects.
+            back-off timer and saves up to 10 subscriptions across reconnects.
             Listen to "broker_connection" events for information about
             the state of the connection to the broker.
         command_args:
@@ -1573,6 +1499,7 @@ modules:
       - name: stop_agent
         id: 11
         description: Stops the MQTT agent.
+        response_timeout_ms: 5000
         command_args:
           - name: stream_id
             description: Stream ID of the MQTT connection.

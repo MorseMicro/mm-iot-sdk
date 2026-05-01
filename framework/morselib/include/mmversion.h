@@ -29,14 +29,14 @@ extern "C" {
  *
  * @note In general, this should not be used directly. Instead use @ref mmwlan_get_version().
  */
-#define MM_VERSION_BUILDID  "2.10.4"
+#define MM_VERSION_BUILDID  "2.11.2"
 
 /** Semantic version number major component. */
 #define MM_VERSION_MAJOR    (2)
 /** Semantic version number minor component. */
-#define MM_VERSION_MINOR    (10)
+#define MM_VERSION_MINOR    (11)
 /** Semantic version number patch component . */
-#define MM_VERSION_PATCH    (4)
+#define MM_VERSION_PATCH    (2)
 
 /**
  * Construct a single integer containing a semantic version number with the value

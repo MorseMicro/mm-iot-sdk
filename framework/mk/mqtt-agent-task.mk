@@ -8,6 +8,7 @@ MQTT_AGENT_TASK_DIR = src/freertos-libs/mqtt-agent-task
 
 # C files to be included while compiling
 MQTT_AGENT_TASK_SRCS_C += mqtt_agent_task.c
+MQTT_AGENT_TASK_SRCS_C += mqtt_agent_task_powersave.c
 MQTT_AGENT_TASK_SRCS_C += command_pool.c
 
 # Header files for dependancy checking
