@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.12.3</span>
+   &#160;<span id="projectnumber">2.13.1</span>
    </div>
   </td>
  </tr>
@@ -108,15 +108,15 @@ Prerequisites</h1>
 <h1><a class="anchor" id="UNPACKING_THE_SW"></a>
 Unpacking the software package</h1>
 <p >The first step is to create an appropriate directory and unzip the software package into it.</p>
-<p >For example: </p><pre class="fragment">unzip mm-iot-sdk-2.12.3.zip -d mm-iot-sdk-2.12.3
+<p >For example: </p><pre class="fragment">unzip mm-iot-sdk-2.13.1.zip -d mm-iot-sdk-2.13.1
 
-cd mm-iot-sdk-2.12.3/framework
+cd mm-iot-sdk-2.13.1/framework
 </pre> <dl class="section warning"><dt>Warning</dt><dd>The zip file does not contain a root folder, so take care to use the <code>-d</code> parameter when unzipping or unzip into an empty directory.</dd></dl>
 <h1><a class="anchor" id="GETTING_STARTED_DEV_PC_SETUP"></a>
 Development PC setup</h1>
 <h2><a class="anchor" id="autotoc_md51"></a>
 Dependencies</h2>
-<p >The instructions below assume that the current working directory is <code>mm-iot-sdk-2.12.3/framework</code>.</p>
+<p >The instructions below assume that the current working directory is <code>mm-iot-sdk-2.13.1/framework</code>.</p>
 <p >Python 3.10 is a pre-requisite for the SDK environment. Check your installed version with: </p><pre class="fragment">python3.10 --version
 or
 pyenv versions
@@ -124,11 +124,11 @@ pyenv versions
 </pre><p> For full <code>pyenv</code> installation instructions, see the official docs: <a href="https://github.com/pyenv/pyenv">https://github.com/pyenv/pyenv</a></p>
 <p >Use the setup script in the SDK to install the pre-requisite software: </p><pre class="fragment">./tools/setupscripts/ubuntu-setup.sh
 </pre><p> This script installs some packages in <code>/opt/morse</code>. If you have already connected the development board, unplug the USB cable for 5 seconds and plug it in again after running the script. This will cause the new device permissions to take effect. A shell script is provided that adds the necessary directories to the PATH. This can be sourced as follows: </p><pre class="fragment">. ./tools/setupscripts/env.sh
-</pre><p> The above script needs to be run for every terminal instance. For a more permanent solution, you can add this to the initialization script for your shell, in which case it will not need to be run manually. For example, if you are using the default shell (bash) on <b>Ubuntu 22.04</b>, you can run the following to append it to your <code>.bashrc</code> (make sure to replace &lt;path-to-sdk&gt; as appropriate): </p><pre class="fragment">echo ". /path-to-sdk/mm-iot-sdk-2.12.3/framework/tools/setupscripts/env.sh" &gt;&gt; ~/.bashrc
+</pre><p> The above script needs to be run for every terminal instance. For a more permanent solution, you can add this to the initialization script for your shell, in which case it will not need to be run manually. For example, if you are using the default shell (bash) on <b>Ubuntu 22.04</b>, you can run the following to append it to your <code>.bashrc</code> (make sure to replace &lt;path-to-sdk&gt; as appropriate): </p><pre class="fragment">echo ". /path-to-sdk/mm-iot-sdk-2.13.1/framework/tools/setupscripts/env.sh" &gt;&gt; ~/.bashrc
 </pre><p> After making the above change to <code>.bashrc</code> you will need to close and reopen your terminal for this to take effect.</p>
 <h2><a class="anchor" id="autotoc_md52"></a>
 Python environment</h2>
-<p >The virtualenv used for the SDK is defined by the Pipfile located in the <code>mm-iot-sdk-2.12.3/framework</code> directory. To install the Morse Micro Python environment run: </p><pre class="fragment">pipenv sync
+<p >The virtualenv used for the SDK is defined by the Pipfile located in the <code>mm-iot-sdk-2.13.1/framework</code> directory. To install the Morse Micro Python environment run: </p><pre class="fragment">pipenv sync
 </pre> <h1><a class="anchor" id="autotoc_md53"></a>
 Configure Application</h1>
 <h2><a class="anchor" id="GETTING_STARTED_OPENOCD"></a>
@@ -146,7 +146,7 @@ openocd -c "set CONNECT_ASSERT_SRST 1" -f ./src/platforms/mm-mm6108-ekh05/openoc
 <h2><a class="anchor" id="SET_APP_CONFIGURATION"></a>
 Setting Config Store</h2>
 <p >Each application has a number of configuration variables that modify the behavior of the application. These configurations are maintained through the config store on device Flash, and are power-cycle and firmware-load persistent.</p>
-<p >For this example we are going to prepare values using the <code>mm-iot-sdk-2.12.3/examples/ping/config.hjson</code> configuration file then write them to the device. Most config store fields have default values specified in firmware, but there are two important fields that must be specified explicitly:</p>
+<p >For this example we are going to prepare values using the <code>mm-iot-sdk-2.13.1/examples/ping/config.hjson</code> configuration file then write them to the device. Most config store fields have default values specified in firmware, but there are two important fields that must be specified explicitly:</p>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone">Configuration Params   </th><th class="markdownTableHeadNone">Description    </th></tr>
@@ -190,13 +190,13 @@ Building Firmware</h1>
 <blockquote class="doxtable">
 <p >&zwj;We will be building for the <code>MM6108-EKH05</code> platform but the same steps apply for all platforms. Just run make from the corresponding directory. </p>
 </blockquote>
-<p>To build the ping example application, first change into the example directory, <code>mm-iot-sdk-2.12.3/examples/ping/targets/mm-mm6108-ekh05</code> then invoke the following command: </p><pre class="fragment">make -j$(nproc)
+<p>To build the ping example application, first change into the example directory, <code>mm-iot-sdk-2.13.1/examples/ping/targets/mm-mm6108-ekh05</code> then invoke the following command: </p><pre class="fragment">make -j$(nproc)
 </pre><p> <code></code> will evaluate to the number of parallel threads capable by your machine.</p>
 <p >The result of the above command will be a <code>ping.elf</code> file in the <code>build/</code> directory</p>
 <h1><a class="anchor" id="PROGRAMMING_FIRMWARE"></a>
 Programming</h1>
 <blockquote class="doxtable">
-<p >&zwj;The following commands are to be run from the <code>mm-iot-sdk-2.12.3/framework</code> directory. </p>
+<p >&zwj;The following commands are to be run from the <code>mm-iot-sdk-2.13.1/framework</code> directory. </p>
 </blockquote>
 <p>To program, configure, and monitor the system we will be using an ST-LINK debugger/programmer operating over USB. The ST-LINK provides both a debug interface and a USB serial port, the latter of which is used for log messages.</p>
 <p >Connect the ST-LINK to the development PC following the instructions on the <a class="el" href="MMPLATFORMS.html">Morse Micro IoT Reference Platforms</a> page. To verify that it has enumerated, run <code>lsusb</code> as follows: </p><pre class="fragment">lsusb | grep STM

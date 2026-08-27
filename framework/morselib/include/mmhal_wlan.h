@@ -86,8 +86,9 @@ const struct mmhal_chip *mmhal_get_chip(void);
  * Get MAC address override.
  *
  * This function allows the HAL to override the MAC address to be used by the device. The MAC
- * address override should be written to @p mac_addr. If no override is required then @p mac_addr
- * should be left untouched.
+ * address override should be written to @p mac_addr. Any MAC address written must pass
+ * @ref mm_mac_addr_is_valid_sta.
+ * If no override is required then @p mac_addr should be left untouched.
  *
  * @param mac_addr Location where the MAC address will be stored. When called this will contain the
  *                 MAC address provided by the transceiver if available or all zeros if no MAC

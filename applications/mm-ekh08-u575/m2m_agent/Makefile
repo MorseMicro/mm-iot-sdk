@@ -40,6 +40,7 @@ ifeq ($(VERBOSE),)
 QUIET = @
 endif
 
+
 # Set BUILD_SUPPLICANT_FROM_SOURCE to a non-empty string to build the WPA Supplicant from source
 # and link against libmorse_nosupplicant.a. If this is set, the crypto will also be built from
 # source using mbedTLS.
@@ -111,6 +112,10 @@ CONLYFLAGS += -Wc++-compat
 # Explicitly specify the C standard version that has been assumed. Your mileage may vary if other
 # versions are used.
 CONLYFLAGS += -std=gnu11
+
+ifeq ($(EXCLUDE_MMCONFIG),1)
+BUILD_DEFINES += EXCLUDE_MMCONFIG=$(EXCLUDE_MMCONFIG)
+endif
 
 ifneq ($(ENABLE_AP_MODE),)
 BUILD_SUPPLICANT_WITH_AP=y

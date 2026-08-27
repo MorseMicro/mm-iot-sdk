@@ -497,8 +497,15 @@
 /**
  * The number of sys timeouts used by the core stack (not apps)
  * The default number of timeouts is calculated here for all enabled modules.
+ *
+ * Unless specified, each enabled module will use the same number of timers whether they are cyclic
+ * or on-demand timers. The exceptions are:
+ * LWIP_TCP: Uses two on-demand timers (fast + slow) when MORSE_LWIP_TIMERS_ON_DEMAND is enabled,
+ *           otherwise uses one cyclic timer.
+ * MORSE_LWIP_TIMERS_ON_DEMAND is not a module but, when it is enabled, an additional timer is
+ * required for evaluating the scheduling of other on-demand timers.
  */
-#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (ESP_LWIP_DHCP_FINE_TIMERS_ONDEMAND ? LWIP_DHCP : 2*LWIP_DHCP) + LWIP_ACD + (ESP_LWIP_IGMP_TIMERS_ONDEMAND ? 0 : LWIP_IGMP) + (ESP_LWIP_DNS_TIMERS_ONDEMAND ? 0 : LWIP_DNS) + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + (ESP_LWIP_MLD6_TIMERS_ONDEMAND ? 0 : LWIP_IPV6_MLD) + LWIP_IPV6_DHCP6)))
+#define LWIP_NUM_SYS_TIMEOUT_INTERNAL   (LWIP_TCP * (MORSE_LWIP_TIMERS_ON_DEMAND ? 2 : 1) + IP_REASSEMBLY + LWIP_ARP + 2*LWIP_DHCP + LWIP_ACD + LWIP_IGMP + LWIP_DNS + PPP_NUM_TIMEOUTS + (LWIP_IPV6 * (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD + LWIP_IPV6_DHCP6)) + MORSE_LWIP_TIMERS_ON_DEMAND)
 
 /**
  * MEMP_NUM_SYS_TIMEOUT: the number of simultaneously active timeouts.

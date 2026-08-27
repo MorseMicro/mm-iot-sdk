@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.12.3</span>
+   &#160;<span id="projectnumber">2.13.1</span>
    </div>
   </td>
  </tr>
@@ -96,10 +96,10 @@ $(document).ready(function(){initNavTree('structmmipal__init__args.html',''); in
 <div class="textblock"><p >Initialize arguments structure. </p>
 <p >This should be initialized using <code>MMIPAL_INIT_ARGS_DEFAULT</code>. For example:</p>
 <div class="fragment"><div class="line"><span class="keyword">struct </span><a class="code hl_struct" href="structmmipal__init__args.html">mmipal_init_args</a> args = <a class="code hl_define" href="group__MMIPAL.html#ga58358044d2adb0b796443b3987c455ec">MMIPAL_INIT_ARGS_DEFAULT</a>;</div>
-<div class="ttc" id="agroup__MMIPAL_html_ga58358044d2adb0b796443b3987c455ec"><div class="ttname"><a href="group__MMIPAL.html#ga58358044d2adb0b796443b3987c455ec">MMIPAL_INIT_ARGS_DEFAULT</a></div><div class="ttdeci">#define MMIPAL_INIT_ARGS_DEFAULT</div><div class="ttdoc">Default values for mmipal_init_args.</div><div class="ttdef"><b>Definition:</b> <a href="mmipal_8h_source.html#l00193">mmipal.h:193</a></div></div>
-<div class="ttc" id="astructmmipal__init__args_html"><div class="ttname"><a href="structmmipal__init__args.html">mmipal_init_args</a></div><div class="ttdoc">Initialize arguments structure.</div><div class="ttdef"><b>Definition:</b> <a href="mmipal_8h_source.html#l00172">mmipal.h:173</a></div></div>
+<div class="ttc" id="agroup__MMIPAL_html_ga58358044d2adb0b796443b3987c455ec"><div class="ttname"><a href="group__MMIPAL.html#ga58358044d2adb0b796443b3987c455ec">MMIPAL_INIT_ARGS_DEFAULT</a></div><div class="ttdeci">#define MMIPAL_INIT_ARGS_DEFAULT</div><div class="ttdoc">Default values for mmipal_init_args.</div><div class="ttdef"><b>Definition:</b> <a href="mmipal_8h_source.html#l00196">mmipal.h:196</a></div></div>
+<div class="ttc" id="astructmmipal__init__args_html"><div class="ttname"><a href="structmmipal__init__args.html">mmipal_init_args</a></div><div class="ttdoc">Initialize arguments structure.</div><div class="ttdef"><b>Definition:</b> <a href="mmipal_8h_source.html#l00173">mmipal.h:174</a></div></div>
 </div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="mmipal_8h_source.html#l00172">172</a> of file <a class="el" href="mmipal_8h_source.html">mmipal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmipal_8h_source.html#l00173">173</a> of file <a class="el" href="mmipal_8h_source.html">mmipal.h</a>.</p>
 </div>
 <p><code>#include &lt;<a class="el" href="mmipal_8h_source.html">mmipal.h</a>&gt;</code></p>
 <table class="memberdecls">
@@ -117,6 +117,9 @@ Data Fields</h2></td></tr>
 <tr class="memitem:a9c47221066842695ba9aa83beab4c6b4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__MMIPAL.html#gad7cd05b2ca37d79ebbda48b5f2a59498">mmipal_ip_addr_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmipal__init__args.html#a9c47221066842695ba9aa83beab4c6b4">gateway_addr</a></td></tr>
 <tr class="memdesc:a9c47221066842695ba9aa83beab4c6b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gateway IP address to use (if <code>mode</code> is <code>MMIPAL_STATIC</code>).  <a href="structmmipal__init__args.html#a9c47221066842695ba9aa83beab4c6b4">More...</a><br /></td></tr>
 <tr class="separator:a9c47221066842695ba9aa83beab4c6b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1f306d16783058760d6d8b5eb1b1e6c7"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmipal__init__args.html#a1f306d16783058760d6d8b5eb1b1e6c7">hostname</a> [<a class="el" href="group__MMUTILS__WLAN.html#ga7a4844b0ab5efb4675e51c4caef78321">MM_HOSTNAME_MAX_LEN</a>]</td></tr>
+<tr class="memdesc:a1f306d16783058760d6d8b5eb1b1e6c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Interface hostname.  <a href="structmmipal__init__args.html#a1f306d16783058760d6d8b5eb1b1e6c7">More...</a><br /></td></tr>
+<tr class="separator:a1f306d16783058760d6d8b5eb1b1e6c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a039c9ce0adac0886490ab31f47802620"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMIPAL.html#ga766bcb2fa9bef02bbc17203399c84f55">mmipal_ip6_addr_mode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmipal__init__args.html#a039c9ce0adac0886490ab31f47802620">ip6_mode</a></td></tr>
 <tr class="memdesc:a039c9ce0adac0886490ab31f47802620"><td class="mdescLeft">&#160;</td><td class="mdescRight">IPv6 address allocation mode to use.  <a href="structmmipal__init__args.html#a039c9ce0adac0886490ab31f47802620">More...</a><br /></td></tr>
 <tr class="separator:a039c9ce0adac0886490ab31f47802620"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -139,7 +142,25 @@ Data Fields</h2></td></tr>
 
 <p>Gateway IP address to use (if <code>mode</code> is <code>MMIPAL_STATIC</code>). </p>
 
-<p class="definition">Definition at line <a class="el" href="mmipal_8h_source.html#l00181">181</a> of file <a class="el" href="mmipal_8h_source.html">mmipal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmipal_8h_source.html#l00182">182</a> of file <a class="el" href="mmipal_8h_source.html">mmipal.h</a>.</p>
+
+</div>
+</div>
+<a id="a1f306d16783058760d6d8b5eb1b1e6c7" name="a1f306d16783058760d6d8b5eb1b1e6c7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1f306d16783058760d6d8b5eb1b1e6c7">&#9670;&nbsp;</a></span>hostname</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">char mmipal_init_args::hostname[<a class="el" href="group__MMUTILS__WLAN.html#ga7a4844b0ab5efb4675e51c4caef78321">MM_HOSTNAME_MAX_LEN</a>]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Interface hostname. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmipal_8h_source.html#l00184">184</a> of file <a class="el" href="mmipal_8h_source.html">mmipal.h</a>.</p>
 
 </div>
 </div>
@@ -157,7 +178,7 @@ Data Fields</h2></td></tr>
 
 <p>IPv6 address to use (if <code>ip6_mode</code> is <code>MMIPAL_IP6_STATIC</code>). </p>
 
-<p class="definition">Definition at line <a class="el" href="mmipal_8h_source.html#l00186">186</a> of file <a class="el" href="mmipal_8h_source.html">mmipal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmipal_8h_source.html#l00189">189</a> of file <a class="el" href="mmipal_8h_source.html">mmipal.h</a>.</p>
 
 </div>
 </div>
@@ -175,7 +196,7 @@ Data Fields</h2></td></tr>
 
 <p>IPv6 address allocation mode to use. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmipal_8h_source.html#l00184">184</a> of file <a class="el" href="mmipal_8h_source.html">mmipal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmipal_8h_source.html#l00187">187</a> of file <a class="el" href="mmipal_8h_source.html">mmipal.h</a>.</p>
 
 </div>
 </div>
@@ -193,7 +214,7 @@ Data Fields</h2></td></tr>
 
 <p>IP address to use (if <code>mode</code> is <code>MMIPAL_STATIC</code>). </p>
 
-<p class="definition">Definition at line <a class="el" href="mmipal_8h_source.html#l00177">177</a> of file <a class="el" href="mmipal_8h_source.html">mmipal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmipal_8h_source.html#l00178">178</a> of file <a class="el" href="mmipal_8h_source.html">mmipal.h</a>.</p>
 
 </div>
 </div>
@@ -211,7 +232,7 @@ Data Fields</h2></td></tr>
 
 <p>IP address allocation mode to use. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmipal_8h_source.html#l00175">175</a> of file <a class="el" href="mmipal_8h_source.html">mmipal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmipal_8h_source.html#l00176">176</a> of file <a class="el" href="mmipal_8h_source.html">mmipal.h</a>.</p>
 
 </div>
 </div>
@@ -229,7 +250,7 @@ Data Fields</h2></td></tr>
 
 <p>Netmask to use (if <code>mode</code> is <code>MMIPAL_STATIC</code>). </p>
 
-<p class="definition">Definition at line <a class="el" href="mmipal_8h_source.html#l00179">179</a> of file <a class="el" href="mmipal_8h_source.html">mmipal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmipal_8h_source.html#l00180">180</a> of file <a class="el" href="mmipal_8h_source.html">mmipal.h</a>.</p>
 
 </div>
 </div>

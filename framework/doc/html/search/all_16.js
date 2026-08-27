@@ -17,8 +17,9 @@ var searchData=
   ['wlan_20statistics_20api_14',['WLAN Statistics API',['../group__MMWLAN__STATS.html',1,'']]],
   ['wlan_20test_20_28ate_29_20api_15',['WLAN Test (ATE) API',['../group__MMWLAN__TEST.html',1,'']]],
   ['wlan_20utilities_16',['WLAN Utilities',['../group__MMUTILS__WLAN.html',1,'']]],
-  ['wlan_5fconnect_17',['wlan_connect',['../m2m__controller_8c.html#a1b18cdee34a9f27753292fc69f5df1c8',1,'m2m_controller.c']]],
-  ['wnm_20sleep_20management_18',['WNM Sleep management',['../group__MMWLAN__WNM.html',1,'']]],
-  ['wnm_5fsleep_2ec_19',['wnm_sleep.c',['../wnm__sleep_8c.html',1,'']]],
-  ['wnm_5fsleep_5fenabled_20',['wnm_sleep_enabled',['../structmmagic__core__wlan__wnm__sleep__cmd__args.html#a1f7485c432d5e2c4c13162527e6f3657',1,'mmagic_core_wlan_wnm_sleep_cmd_args::wnm_sleep_enabled()'],['../structmmwlan__set__wnm__sleep__enabled__args.html#a5605ee17b705eb75c1f8f7c272c71390',1,'mmwlan_set_wnm_sleep_enabled_args::wnm_sleep_enabled()']]]
+  ['wlan_20vendor_20specific_20ie_20add_20_2f_20clear_20api_17',['WLAN Vendor Specific IE add / clear API',['../group__MMWLAN__VENDOR__IE__API.html',1,'']]],
+  ['wlan_5fconnect_18',['wlan_connect',['../m2m__controller_8c.html#a1b18cdee34a9f27753292fc69f5df1c8',1,'m2m_controller.c']]],
+  ['wnm_20sleep_20management_19',['WNM Sleep management',['../group__MMWLAN__WNM.html',1,'']]],
+  ['wnm_5fsleep_2ec_20',['wnm_sleep.c',['../wnm__sleep_8c.html',1,'']]],
+  ['wnm_5fsleep_5fenabled_21',['wnm_sleep_enabled',['../structmmagic__core__wlan__wnm__sleep__cmd__args.html#a1f7485c432d5e2c4c13162527e6f3657',1,'mmagic_core_wlan_wnm_sleep_cmd_args::wnm_sleep_enabled()'],['../structmmwlan__set__wnm__sleep__enabled__args.html#a5605ee17b705eb75c1f8f7c272c71390',1,'mmwlan_set_wnm_sleep_enabled_args::wnm_sleep_enabled()']]]
 ];

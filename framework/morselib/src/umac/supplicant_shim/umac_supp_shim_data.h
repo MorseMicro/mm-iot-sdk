@@ -104,4 +104,6 @@ struct umac_supp_shim_data
 #pragma GCC diagnostic pop
 
     uint8_t num_filter_ssids;
+
+    uint8_t *scan_results_depth_cache;
 };

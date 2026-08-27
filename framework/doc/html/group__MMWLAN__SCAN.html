@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.12.3</span>
+   &#160;<span id="projectnumber">2.13.1</span>
    </div>
   </td>
  </tr>
@@ -116,7 +116,7 @@ Data Structures</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:ga5b478017f60cfcc091f5ca8e2b4d98a6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__SCAN.html#ga5b478017f60cfcc091f5ca8e2b4d98a6">MMWLAN_SCAN_CONFIG_INIT</a>&#160;&#160;&#160;    { <a class="el" href="group__MMWLAN__SCAN.html#ga2b5fd4f717491b6907140de51aa01509">MMWLAN_SCAN_DEFAULT_DWELL_TIME_MS</a>, false, <a class="el" href="group__MMWLAN__SCAN.html#ga42059e49cf41a6db4d8aaf5e813753ec">MMWLAN_SCAN_DEFAULT_DWELL_ON_HOME_MS</a> }</td></tr>
+<tr class="memitem:ga5b478017f60cfcc091f5ca8e2b4d98a6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__SCAN.html#ga5b478017f60cfcc091f5ca8e2b4d98a6">MMWLAN_SCAN_CONFIG_INIT</a></td></tr>
 <tr class="memdesc:ga5b478017f60cfcc091f5ca8e2b4d98a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializer for <a class="el" href="structmmwlan__scan__config.html">mmwlan_scan_config</a>.  <a href="group__MMWLAN__SCAN.html#ga5b478017f60cfcc091f5ca8e2b4d98a6">More...</a><br /></td></tr>
 <tr class="separator:ga5b478017f60cfcc091f5ca8e2b4d98a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga2b5fd4f717491b6907140de51aa01509"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__SCAN.html#ga2b5fd4f717491b6907140de51aa01509">MMWLAN_SCAN_DEFAULT_DWELL_TIME_MS</a>&#160;&#160;&#160;(30)</td></tr>
@@ -184,17 +184,19 @@ Functions</h2></td></tr>
 <div class="line">        .ssid = { 0 },                                            \</div>
 <div class="line">        .ssid_len = 0,                                            \</div>
 <div class="line">        .dwell_on_home_ms = <a class="code hl_define" href="group__MMWLAN__SCAN.html#ga42059e49cf41a6db4d8aaf5e813753ec">MMWLAN_SCAN_DEFAULT_DWELL_ON_HOME_MS</a>, \</div>
+<div class="line">        .selected_channels = NULL,                                \</div>
+<div class="line">        .selected_channels_len = 0,                               \</div>
 <div class="line">    }</div>
-<div class="ttc" id="agroup__MMWLAN__SCAN_html_ga2b5fd4f717491b6907140de51aa01509"><div class="ttname"><a href="group__MMWLAN__SCAN.html#ga2b5fd4f717491b6907140de51aa01509">MMWLAN_SCAN_DEFAULT_DWELL_TIME_MS</a></div><div class="ttdeci">#define MMWLAN_SCAN_DEFAULT_DWELL_TIME_MS</div><div class="ttdoc">Default value for mmwlan_scan_args.dwell_time_ms.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00797">mmwlan.h:797</a></div></div>
-<div class="ttc" id="agroup__MMWLAN__SCAN_html_ga42059e49cf41a6db4d8aaf5e813753ec"><div class="ttname"><a href="group__MMWLAN__SCAN.html#ga42059e49cf41a6db4d8aaf5e813753ec">MMWLAN_SCAN_DEFAULT_DWELL_ON_HOME_MS</a></div><div class="ttdeci">#define MMWLAN_SCAN_DEFAULT_DWELL_ON_HOME_MS</div><div class="ttdoc">Default time to dwell on home channel, in between scan channels.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00799">mmwlan.h:799</a></div></div>
+<div class="ttc" id="agroup__MMWLAN__SCAN_html_ga2b5fd4f717491b6907140de51aa01509"><div class="ttname"><a href="group__MMWLAN__SCAN.html#ga2b5fd4f717491b6907140de51aa01509">MMWLAN_SCAN_DEFAULT_DWELL_TIME_MS</a></div><div class="ttdeci">#define MMWLAN_SCAN_DEFAULT_DWELL_TIME_MS</div><div class="ttdoc">Default value for mmwlan_scan_args.dwell_time_ms.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00841">mmwlan.h:841</a></div></div>
+<div class="ttc" id="agroup__MMWLAN__SCAN_html_ga42059e49cf41a6db4d8aaf5e813753ec"><div class="ttname"><a href="group__MMWLAN__SCAN.html#ga42059e49cf41a6db4d8aaf5e813753ec">MMWLAN_SCAN_DEFAULT_DWELL_ON_HOME_MS</a></div><div class="ttdeci">#define MMWLAN_SCAN_DEFAULT_DWELL_ON_HOME_MS</div><div class="ttdoc">Default time to dwell on home channel, in between scan channels.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00843">mmwlan.h:843</a></div></div>
 </div><!-- fragment -->
 <p>Initializer for <a class="el" href="structmmwlan__scan__args.html">mmwlan_scan_args</a>. </p>
 <p >For example:</p>
 <div class="fragment"><div class="line"><span class="keyword">struct </span><a class="code hl_struct" href="structmmwlan__scan__args.html">mmwlan_scan_args</a> scan_args = <a class="code hl_define" href="group__MMWLAN__SCAN.html#ga185c90a221a8b25584fa41b8f33c2783">MMWLAN_SCAN_ARGS_INIT</a>;</div>
-<div class="ttc" id="agroup__MMWLAN__SCAN_html_ga185c90a221a8b25584fa41b8f33c2783"><div class="ttname"><a href="group__MMWLAN__SCAN.html#ga185c90a221a8b25584fa41b8f33c2783">MMWLAN_SCAN_ARGS_INIT</a></div><div class="ttdeci">#define MMWLAN_SCAN_ARGS_INIT</div><div class="ttdoc">Initializer for mmwlan_scan_args.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00865">mmwlan.h:865</a></div></div>
-<div class="ttc" id="astructmmwlan__scan__args_html"><div class="ttname"><a href="structmmwlan__scan__args.html">mmwlan_scan_args</a></div><div class="ttdoc">Structure to hold scan arguments.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00825">mmwlan.h:826</a></div></div>
+<div class="ttc" id="agroup__MMWLAN__SCAN_html_ga185c90a221a8b25584fa41b8f33c2783"><div class="ttname"><a href="group__MMWLAN__SCAN.html#ga185c90a221a8b25584fa41b8f33c2783">MMWLAN_SCAN_ARGS_INIT</a></div><div class="ttdeci">#define MMWLAN_SCAN_ARGS_INIT</div><div class="ttdoc">Initializer for mmwlan_scan_args.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00921">mmwlan.h:921</a></div></div>
+<div class="ttc" id="astructmmwlan__scan__args_html"><div class="ttname"><a href="structmmwlan__scan__args.html">mmwlan_scan_args</a></div><div class="ttdoc">Structure to hold scan arguments.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00869">mmwlan.h:870</a></div></div>
 </div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00865">865</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00921">921</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -205,14 +207,22 @@ Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define MMWLAN_SCAN_CONFIG_INIT&#160;&#160;&#160;    { <a class="el" href="group__MMWLAN__SCAN.html#ga2b5fd4f717491b6907140de51aa01509">MMWLAN_SCAN_DEFAULT_DWELL_TIME_MS</a>, false, <a class="el" href="group__MMWLAN__SCAN.html#ga42059e49cf41a6db4d8aaf5e813753ec">MMWLAN_SCAN_DEFAULT_DWELL_ON_HOME_MS</a> }</td>
+          <td class="memname">#define MMWLAN_SCAN_CONFIG_INIT</td>
         </tr>
       </table>
 </div><div class="memdoc">
-
+<b>Value:</b><div class="fragment"><div class="line">    {                                                                       \</div>
+<div class="line">        .dwell_time_ms = <a class="code hl_define" href="group__MMWLAN__SCAN.html#ga2b5fd4f717491b6907140de51aa01509">MMWLAN_SCAN_DEFAULT_DWELL_TIME_MS</a>,                 \</div>
+<div class="line">        .ndp_probe_enabled = <span class="keyword">false</span>,                                         \</div>
+<div class="line">        .home_channel_dwell_time_ms = <a class="code hl_define" href="group__MMWLAN__SCAN.html#ga42059e49cf41a6db4d8aaf5e813753ec">MMWLAN_SCAN_DEFAULT_DWELL_ON_HOME_MS</a>, \</div>
+<div class="line">        .selected_channels = NULL,                                          \</div>
+<div class="line">        .selected_channels_len = 0,                                         \</div>
+<div class="line">        .selective_scan_attempts = 0,                                       \</div>
+<div class="line">    }</div>
+</div><!-- fragment -->
 <p>Initializer for <a class="el" href="structmmwlan__scan__config.html">mmwlan_scan_config</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00784">784</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00821">821</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -230,7 +240,7 @@ Functions</h2></td></tr>
 
 <p>Default time to dwell on home channel, in between scan channels. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00799">799</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00843">843</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -249,7 +259,7 @@ Functions</h2></td></tr>
 <p>Default value for <code><a class="el" href="structmmwlan__scan__args.html#ae97bb04cac794a2be4dfa2c74dae1c6b" title="Minimum time to dwell on a channel waiting for probe responses/beacons.">mmwlan_scan_args.dwell_time_ms</a></code>. </p>
 <p >Note that reducing the dwell time below this value may impact scan reliability. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00797">797</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00841">841</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -267,7 +277,7 @@ Functions</h2></td></tr>
 
 <p>Minimum value for <code><a class="el" href="structmmwlan__scan__args.html#ae97bb04cac794a2be4dfa2c74dae1c6b" title="Minimum time to dwell on a channel waiting for probe responses/beacons.">mmwlan_scan_args.dwell_time_ms</a></code>. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00802">802</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00846">846</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -286,10 +296,10 @@ Functions</h2></td></tr>
 <p>Initializer for <a class="el" href="structmmwlan__scan__req.html">mmwlan_scan_req</a>. </p>
 <p >For example:</p>
 <div class="fragment"><div class="line"><span class="keyword">struct </span><a class="code hl_struct" href="structmmwlan__scan__req.html">mmwlan_scan_req</a> scan_req = <a class="code hl_define" href="group__MMWLAN__SCAN.html#ga8dbce3240f8c8c9c36145b0ec821ba53">MMWLAN_SCAN_REQ_INIT</a>;</div>
-<div class="ttc" id="agroup__MMWLAN__SCAN_html_ga8dbce3240f8c8c9c36145b0ec821ba53"><div class="ttname"><a href="group__MMWLAN__SCAN.html#ga8dbce3240f8c8c9c36145b0ec821ba53">MMWLAN_SCAN_REQ_INIT</a></div><div class="ttdeci">#define MMWLAN_SCAN_REQ_INIT</div><div class="ttdoc">Initializer for mmwlan_scan_req.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00899">mmwlan.h:899</a></div></div>
-<div class="ttc" id="astructmmwlan__scan__req_html"><div class="ttname"><a href="structmmwlan__scan__req.html">mmwlan_scan_req</a></div><div class="ttdoc">Structure to hold arguments specific to a given instance of a scan.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00878">mmwlan.h:879</a></div></div>
+<div class="ttc" id="agroup__MMWLAN__SCAN_html_ga8dbce3240f8c8c9c36145b0ec821ba53"><div class="ttname"><a href="group__MMWLAN__SCAN.html#ga8dbce3240f8c8c9c36145b0ec821ba53">MMWLAN_SCAN_REQ_INIT</a></div><div class="ttdeci">#define MMWLAN_SCAN_REQ_INIT</div><div class="ttdoc">Initializer for mmwlan_scan_req.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00957">mmwlan.h:957</a></div></div>
+<div class="ttc" id="astructmmwlan__scan__req_html"><div class="ttname"><a href="structmmwlan__scan__req.html">mmwlan_scan_req</a></div><div class="ttdoc">Structure to hold arguments specific to a given instance of a scan.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00936">mmwlan.h:937</a></div></div>
 </div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00899">899</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00957">957</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -308,7 +318,7 @@ Functions</h2></td></tr>
 
 <p>mmwlan scan complete callback function prototype. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00819">819</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00863">863</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -354,7 +364,7 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00807">807</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00851">851</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>

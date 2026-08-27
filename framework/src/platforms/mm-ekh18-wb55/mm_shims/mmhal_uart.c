@@ -3,7 +3,6 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  * @file
- * This File implements platform specific shims for accessing the data-link transport.
  */
 
 #include "mm_hal_common.h"

@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.12.3</span>
+   &#160;<span id="projectnumber">2.13.1</span>
    </div>
   </td>
  </tr>
@@ -125,6 +125,16 @@ Application helper routines for Wireless LAN interface</h1>
 <p >To set the parameters in config store from the command line, follow the <a class="el" href="group__MMCONFIG.html#MMCONFIG_PROGRAMMING">Programming the config store from a host PC</a> instructions. </p>
 
 <p class="definition">Definition in file <a class="el" href="mm__app__common_8h_source.html">mm_app_common.h</a>.</p>
+</div><div class="textblock"><code>#include &lt;stdbool.h&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+Include dependency graph for mm_app_common.h:</div>
+<div class="dyncontent">
+<div class="center"><img src="mm__app__common_8h__incl.png" border="0" usemap="#amm__app__common_8h" alt=""/></div>
+<map name="amm__app__common_8h" id="amm__app__common_8h">
+<area shape="rect" title="Morse Micro application helper routines for initializing/de&#45;initializing the Wireless LAN interface a..." alt="" coords="5,5,160,32"/>
+<area shape="rect" title=" " alt="" coords="41,80,124,107"/>
+</map>
+</div>
 </div>
 <p><a href="mm__app__common_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -143,8 +153,50 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>app_wlan_stop</b> (vo
 <tr class="memitem:a02d380e3d6901335d0e3a3b84985eec6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mm__app__common_8h.html#a02d380e3d6901335d0e3a3b84985eec6">app_print_version_info</a> (void)</td></tr>
 <tr class="memdesc:a02d380e3d6901335d0e3a3b84985eec6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prints various version information.  <a href="mm__app__common_8h.html#a02d380e3d6901335d0e3a3b84985eec6">More...</a><br /></td></tr>
 <tr class="separator:a02d380e3d6901335d0e3a3b84985eec6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a126fa23a42e8a82e6bca8fc166f9bc41"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mm__app__common_8h.html#a126fa23a42e8a82e6bca8fc166f9bc41">app_chip_stats_dump</a> (uint32_t core_num, bool reset)</td></tr>
+<tr class="memdesc:a126fa23a42e8a82e6bca8fc166f9bc41"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prints to log a hex dump of statistics from the Morse transceiver.  <a href="mm__app__common_8h.html#a126fa23a42e8a82e6bca8fc166f9bc41">More...</a><br /></td></tr>
+<tr class="separator:a126fa23a42e8a82e6bca8fc166f9bc41"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="a126fa23a42e8a82e6bca8fc166f9bc41" name="a126fa23a42e8a82e6bca8fc166f9bc41"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a126fa23a42e8a82e6bca8fc166f9bc41">&#9670;&nbsp;</a></span>app_chip_stats_dump()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool app_chip_stats_dump </td>
+          <td>(</td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>core_num</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>reset</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Prints to log a hex dump of statistics from the Morse transceiver. </p>
+<p >The log can then be parsed by external tooling.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">core_num</td><td>The core to retrieve stats for. <code>UINT32_MAX</code> for all cores. </td></tr>
+    <tr><td class="paramname">reset</td><td>Boolean indicating whether to reset the stats after retrieving.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>whether the log succeeded or not. </dd></dl>
+
+</div>
+</div>
 <a id="a02d380e3d6901335d0e3a3b84985eec6" name="a02d380e3d6901335d0e3a3b84985eec6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a02d380e3d6901335d0e3a3b84985eec6">&#9670;&nbsp;</a></span>app_print_version_info()</h2>
 
@@ -216,7 +268,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>app_wlan_stop</b> (vo
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_b30bbaacd8897076552de0c72e174d4b.html">examples</a></li><li class="navelem"><a class="el" href="dir_d95111321e82295842a36d4e61e78351.html">_common</a></li><li class="navelem"><a class="el" href="dir_f70bd1edb63d1611541263032eb4a5cd.html">src</a></li><li class="navelem"><a class="el" href="mm__app__common_8h.html">mm_app_common.h</a></li>
+    <li class="navelem"><a class="el" href="dir_c54b5d5dcb045ee1b25216dd19539314.html">examples</a></li><li class="navelem"><a class="el" href="dir_d74e4754e381b0ed65ff7600fefcf0ae.html">_common</a></li><li class="navelem"><a class="el" href="dir_4d5f52d5227dc661e3031a7f6d16c433.html">src</a></li><li class="navelem"><a class="el" href="mm__app__common_8h.html">mm_app_common.h</a></li>
     <li class="footer">Copyright 2021-2025 Morse Micro </li>
   </ul>
 </div>

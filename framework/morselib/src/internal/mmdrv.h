@@ -340,6 +340,9 @@ struct mmdrv_tx_metadata
 
 
     uint8_t enc;
+
+
+    bool is_mgmt;
 };
 
 

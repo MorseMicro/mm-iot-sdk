@@ -7,9 +7,11 @@
 #include "mmdrv.h"
 #include "mmpkt_list.h"
 #include "mmpkt.h"
+#include "mmutils.h"
 #include "mmwlan.h"
 #include "mmwlan_internal.h"
 #include "umac/datapath/umac_datapath.h"
+#include "umac/ap/umac_ap.h"
 #include "umac/datapath/umac_datapath_private.h"
 #include "umac/data/umac_data.h"
 #include "umac/datapath/datapath_defrag.h"
@@ -33,6 +35,7 @@
 #include "umac/ies/mmie.h"
 #include "umac/frames/disassociation.h"
 #include "umac/frames/deauthentication.h"
+#include "umac/ap/traffic_bitmap.h"
 
 #define UMAC_802_1_HEADER_LEN 8
 static const uint8_t snap_802_1h[] = { 0xAA, 0xAA, 0x03, 0x00, 0x00, 0x00 };
@@ -483,14 +486,6 @@ static void umac_datapath_process_rx_data_frame_after_reorder(
             MMLOG_INF("Drop Mcast/Bcast frame with fragment bit on\n");
             goto drop;
         }
-
-
-        if (dot11_frame_control_get_from_ds(header->frame_control) &&
-            umac_interface_addr_matches_mac_addr(stad, dot11_get_sa_data(data_hdr)))
-        {
-            MMLOG_DBG("Filter out Bcast frame which AP relayed for us\n");
-            goto drop;
-        }
     }
     else
     {
@@ -562,6 +557,23 @@ static void umac_datapath_process_rx_data_frame_after_reorder(
 
         return;
     }
+
+
+    if (umac_interface_addr_matches_mac_addr(stad, dot11_get_sa_data(data_hdr)))
+    {
+        MMLOG_DBG("Filter out Bcast frame which AP relayed for us\n");
+        goto drop;
+    }
+
+#if !(defined(MMWLAN_AP_DISABLED) && MMWLAN_AP_DISABLED)
+
+    if (vif == MMWLAN_VIF_AP &&
+        mm_mac_addr_is_equal(umac_ap_peek_bssid(umacd), dot11_get_ra(header)) &&
+        umac_interface_addr_matches_mac_addr(umac_connection_get_stad(umacd), dot11_get_da(header)))
+    {
+        vif = MMWLAN_VIF_STA;
+    }
+#endif
 
 
     struct umac_8023_hdr header_8023 = { 0 };
@@ -849,12 +861,6 @@ static void umac_datapath_process_rx_data_frame(struct umac_data *umacd,
     const size_t data_hdr_len = dot11_data_hdr_get_len(data_hdr);
     uint8_t reorder_buf_size;
 
-    if (stad == NULL)
-    {
-        MMLOG_DBG("Dropping frame, not transmitted from our AP.\n");
-        goto drop;
-    }
-
     struct umac_datapath_sta_data *sta_data = umac_sta_data_get_datapath(stad);
 
     if ((dot11_frame_control_get_subtype(header->frame_control) == DOT11_FC_SUBTYPE_NULL_DATA) ||
@@ -919,7 +925,7 @@ static void umac_datapath_process_rx_data_frame(struct umac_data *umacd,
         {
 
             umac_stats_increment_datapath_rx_reorder_outdated_drops(umacd);
-            MMLOG_DBG("Dropping outdated frame (SEQ: 0x%x, EXP: 0x%x)\n",
+            MMLOG_WRN("Dropping outdated frame (SEQ: 0x%x, EXP: 0x%x)\n",
                       seq_ctrl,
                       expected_seq_ctrl);
             goto drop;
@@ -1210,12 +1216,6 @@ static bool umac_datapath_rx_frame_allowed_pre_association(
     return false;
 }
 
-static bool umac_datapath_filter_all_beacons(struct umac_data *umacd)
-{
-    struct umac_datapath_data *data = umac_data_get_datapath(umacd);
-    return data->filter_beacons;
-}
-
 void umac_datapath_set_filter_all_beacons(struct umac_data *umacd, bool filter)
 {
     struct umac_datapath_data *data = umac_data_get_datapath(umacd);
@@ -1261,137 +1261,6 @@ static void umac_datapath_reassign_vif_id(struct umac_data *umacd,
     MMLOG_WRN("RX VIF unknown, frame type %x:%x\n",
               ((frame_ver_type_subtype & DOT11_MASK_FC_TYPE) >> DOT11_SHIFT_FC_TYPE),
               ((frame_ver_type_subtype & DOT11_MASK_FC_SUBTYPE) >> DOT11_SHIFT_FC_SUBTYPE));
-}
-
-
-static bool umac_datapath_rx_frame_preprocess(struct umac_data *umacd, struct mmpktview *rxbufview)
-{
-    bool drop_frame = false;
-    uint16_t frame_ver_type_subtype;
-
-
-    const struct dot11_data_hdr *data_hdr =
-        (const struct dot11_data_hdr *)mmpkt_get_data_start(rxbufview);
-    const struct dot11_hdr *header = &data_hdr->base;
-    uint32_t header_len = dot11_data_hdr_get_len(data_hdr);
-
-    if (!umac_datapath_validate_buf_len(rxbufview, sizeof(header->frame_control)))
-    {
-        MMLOG_WRN("Frame length invalid. Dropping.\n");
-        drop_frame = true;
-        goto exit;
-    }
-
-    frame_ver_type_subtype = dot11_frame_control_get_ver_type_subtype(header->frame_control);
-
-    if (frame_ver_type_subtype == DOT11_VER_TYPE_SUBTYPE(0, CTRL, RTS))
-    {
-
-        MMLOG_INF("Dropping RTS frame.\n");
-        drop_frame = true;
-        goto exit;
-    }
-
-    if (frame_ver_type_subtype == DOT11_VER_TYPE_SUBTYPE(0, EXT, S1G_BEACON))
-    {
-        if (umac_datapath_filter_all_beacons(umacd))
-        {
-            MMLOG_VRB("Dropping beacon.\n");
-            drop_frame = true;
-            goto exit;
-        }
-
-        header_len = sizeof(struct dot11_s1g_beacon_hdr);
-    }
-
-
-    if (!umac_datapath_validate_buf_len(rxbufview, header_len))
-    {
-        MMLOG_INF("Frame too short, drop.\n");
-        drop_frame = true;
-        goto exit;
-    }
-
-    struct mmdrv_rx_metadata *metadata = mmpkt_get_metadata(mmpkt_from_view(rxbufview)).rx;
-    if (metadata == NULL)
-    {
-        MMLOG_WRN("Metadata error.\n");
-        MMOSAL_DEV_ASSERT(false);
-        drop_frame = true;
-        goto exit;
-    }
-    uint16_t vif_id = umac_interface_get_vif_id_from_rx_metadata(metadata);
-
-
-    if (vif_id == MMDRV_VIF_ID_INVALID)
-    {
-        static const struct umac_datapath_vif_reassignment vif_reassignment_lut[] = {
-            { DOT11_VER_TYPE_SUBTYPE(0, MGMT, PROBE_REQ), UMAC_INTERFACE_AP },
-            { DOT11_VER_TYPE_SUBTYPE(0, EXT, S1G_BEACON), UMAC_INTERFACE_STA },
-            { DOT11_VER_TYPE_SUBTYPE(0, MGMT, PROBE_RSP), UMAC_INTERFACE_STA },
-        };
-
-        umac_datapath_reassign_vif_id(umacd,
-                                      metadata,
-                                      frame_ver_type_subtype,
-                                      vif_reassignment_lut,
-                                      MM_ARRAY_COUNT(vif_reassignment_lut));
-
-
-        vif_id = umac_interface_get_vif_id_from_rx_metadata(metadata);
-    }
-
-    const struct umac_datapath_ops *datapath_ops =
-        umac_interface_get_datapath_ops_by_vif_id(umacd, vif_id);
-
-    if (datapath_ops == NULL)
-    {
-
-        MMLOG_DBG("No ops for vif_id %u. Dropping RX frame %x:%x\n",
-                  vif_id,
-                  ((frame_ver_type_subtype & DOT11_MASK_FC_TYPE) >> DOT11_SHIFT_FC_TYPE),
-                  ((frame_ver_type_subtype & DOT11_MASK_FC_SUBTYPE) >> DOT11_SHIFT_FC_SUBTYPE));
-        drop_frame = true;
-        goto exit;
-    }
-
-    if (!umac_datapath_rx_frame_allowed_pre_association(datapath_ops,
-                                                        frame_ver_type_subtype,
-                                                        header->frame_control))
-    {
-        const uint8_t *ta = dot11_get_ta(header);
-        struct umac_sta_data *stad = datapath_ops->lookup_stad_by_peer_addr(umacd, ta);
-        if (stad == NULL)
-        {
-            MMLOG_WRN("Dropping packet from unknown sender " MM_MAC_ADDR_FMT " (%04x, vif_id %u)\n",
-                      MM_MAC_ADDR_VAL(ta),
-                      frame_ver_type_subtype,
-                      vif_id);
-            drop_frame = true;
-            datapath_ops->handle_frame_unknown_sta(umacd, ta);
-            goto exit;
-        }
-
-        if (umac_interface_addr_matches_mac_addr(stad, dot11_get_sa_data(data_hdr)))
-        {
-            MMLOG_INF("Source address matches our MAC address, dropping received frame.\n");
-            drop_frame = true;
-            goto exit;
-        }
-
-        struct umac_datapath_sta_data *sta_data = umac_sta_data_get_datapath(stad);
-        if (umac_datapath_is_rx_frame_duplicate(sta_data, rxbufview))
-        {
-            MMLOG_INF("Dropping duplicate frame. Type %u, Subtype %u.\n",
-                      dot11_frame_control_get_type(header->frame_control),
-                      dot11_frame_control_get_subtype(header->frame_control));
-            drop_frame = true;
-            goto exit;
-        }
-    }
-
-exit:
-    return drop_frame;
 }
 
 void umac_datapath_init(struct umac_data *umacd)
@@ -1528,61 +1397,150 @@ static void umac_datapath_process_rx_frame(struct umac_data *umacd,
 {
     struct mmpktview *rxbufview = mmpkt_open(rxbuf);
 
-
-    struct dot11_hdr *header = (struct dot11_hdr *)mmpkt_get_data_start(rxbufview);
-    uint16_t frame_control_le = header->frame_control;
-    uint16_t frame_ver_type_subtype = dot11_frame_control_get_ver_type_subtype(frame_control_le);
+    const struct dot11_data_hdr *data_hdr =
+        (const struct dot11_data_hdr *)mmpkt_get_data_start(rxbufview);
+    uint32_t header_len = dot11_data_hdr_get_len(data_hdr);
+    uint16_t frame_control_le = data_hdr->base.frame_control;
     uint16_t frame_type = dot11_frame_control_get_type(frame_control_le);
     uint16_t frame_subtype = dot11_frame_control_get_subtype(frame_control_le);
-    MMLOG_VRB("RX frame. Type: %d, Subtype: %d.\n", frame_type, frame_subtype);
+    uint16_t frame_ver_type_subtype = dot11_frame_control_get_ver_type_subtype(frame_control_le);
+
+    if (frame_ver_type_subtype == DOT11_VER_TYPE_SUBTYPE(0, CTRL, RTS))
+    {
+
+        MMLOG_INF("Dropping RTS frame.\n");
+        goto drop;
+    }
+
+    bool is_beacon = frame_ver_type_subtype == DOT11_VER_TYPE_SUBTYPE(0, EXT, S1G_BEACON);
+    if (is_beacon)
+    {
+        if (data->filter_beacons)
+        {
+            MMLOG_VRB("Dropping beacon.\n");
+            goto drop;
+        }
+
+        header_len = sizeof(struct dot11_s1g_beacon_hdr);
+    }
+
+
+    if (!umac_datapath_validate_buf_len(rxbufview, header_len))
+    {
+        MMLOG_INF("Frame too short, drop.\n");
+        goto drop;
+    }
+
+    const uint8_t *ta = NULL;
+    const uint8_t *sa = NULL;
+    if (is_beacon)
+    {
+        ta = ((const struct dot11_s1g_beacon_hdr *)mmpkt_get_data_start(rxbufview))->source_addr;
+        sa = ta;
+    }
+    else
+    {
+        ta = dot11_get_ta(&data_hdr->base);
+        sa = dot11_get_sa_data(data_hdr);
+    }
+
+    if (mm_mac_addr_is_multicast(sa) || mm_mac_addr_is_multicast(ta))
+    {
+        MMLOG_WRN("Dropping malformed pkt. Multicast SA (" MM_MAC_ADDR_FMT
+                  ") or TA (" MM_MAC_ADDR_FMT ")\n",
+                  MM_MAC_ADDR_VAL(sa),
+                  MM_MAC_ADDR_VAL(ta));
+        goto drop;
+    }
 
     struct mmdrv_rx_metadata *metadata = mmdrv_get_rx_metadata(rxbuf);
     uint16_t vif_id = umac_interface_get_vif_id_from_rx_metadata(metadata);
+
+
+
+    if (vif_id == MMDRV_VIF_ID_INVALID)
+    {
+        static const struct umac_datapath_vif_reassignment vif_reassignment_lut[] = {
+            { DOT11_VER_TYPE_SUBTYPE(0, MGMT, PROBE_REQ), UMAC_INTERFACE_AP },
+            { DOT11_VER_TYPE_SUBTYPE(0, EXT, S1G_BEACON), UMAC_INTERFACE_STA },
+            { DOT11_VER_TYPE_SUBTYPE(0, MGMT, PROBE_RSP), UMAC_INTERFACE_STA },
+        };
+
+        umac_datapath_reassign_vif_id(umacd,
+                                      metadata,
+                                      frame_ver_type_subtype,
+                                      vif_reassignment_lut,
+                                      MM_ARRAY_COUNT(vif_reassignment_lut));
+
+
+        vif_id = umac_interface_get_vif_id_from_rx_metadata(metadata);
+        if (vif_id == MMDRV_VIF_ID_INVALID)
+        {
+            goto drop;
+        }
+    }
+
     const struct umac_datapath_ops *datapath_ops =
         umac_interface_get_datapath_ops_by_vif_id(umacd, vif_id);
+
     if (datapath_ops == NULL)
     {
-        MMLOG_WRN("No datapath ops for vif %u, dropping\n", vif_id);
-        mmpkt_close(&rxbufview);
-        mmpkt_release(rxbuf);
-        return;
+        MMLOG_WRN("No ops for vif_id %u. Dropping RX frame %x:%x\n",
+                  vif_id,
+                  ((frame_ver_type_subtype & DOT11_MASK_FC_TYPE) >> DOT11_SHIFT_FC_TYPE),
+                  ((frame_ver_type_subtype & DOT11_MASK_FC_SUBTYPE) >> DOT11_SHIFT_FC_SUBTYPE));
+        goto drop;
     }
 
-
-    const uint8_t *ta = NULL;
-    struct umac_sta_data *stad = NULL;
-    if (frame_ver_type_subtype != DOT11_VER_TYPE_SUBTYPE(0, EXT, S1G_BEACON))
-    {
-        ta = dot11_get_ta(header);
-        stad = datapath_ops->lookup_stad_by_peer_addr(umacd, ta);
-        MMOSAL_DEV_ASSERT(mm_mac_addr_is_multicast(ta) == false);
-    }
-
-
-    if (stad == NULL && umac_datapath_rx_frame_allowed_pre_association(datapath_ops,
-                                                                       frame_ver_type_subtype,
-                                                                       frame_control_le))
-    {
-
-        stad = datapath_ops->lookup_stad_by_peer_addr(umacd, NULL);
-    }
-
+    struct umac_sta_data *stad = datapath_ops->lookup_stad_by_peer_addr(umacd, ta);
     if (stad == NULL)
     {
-        if (ta != NULL)
+        bool allowed_preassoc =
+            umac_datapath_rx_frame_allowed_pre_association(datapath_ops,
+                                                           frame_ver_type_subtype,
+                                                           frame_control_le);
+        if (!allowed_preassoc)
         {
-            MMLOG_WRN("Unable to find STA record for " MM_MAC_ADDR_FMT "\n", MM_MAC_ADDR_VAL(ta));
+            MMLOG_WRN("Dropping packet from unknown sender " MM_MAC_ADDR_FMT " (%04x, vif_id %u)\n",
+                      MM_MAC_ADDR_VAL(ta),
+                      frame_ver_type_subtype,
+                      vif_id);
+            datapath_ops->handle_frame_unknown_sta(umacd, ta);
+            goto drop;
         }
-        mmpkt_close(&rxbufview);
-        mmpkt_release(rxbuf);
-        return;
+
+        stad = datapath_ops->lookup_stad_by_peer_addr(umacd, NULL);
+        if (stad == NULL)
+        {
+            MMLOG_WRN("No preassoc STAD available\n");
+            goto drop;
+        }
+    }
+    else
+    {
+        if (umac_interface_addr_matches_mac_addr(stad, sa))
+        {
+            uint16_t ap_vif_id = umac_interface_get_vif_id(umacd, UMAC_INTERFACE_AP);
+            if (vif_id == ap_vif_id)
+            {
+
+                MMLOG_WRN("Frame from us received on AP VIF. Possible loop detected!\n");
+                goto drop;
+            }
+
+        }
+
+        struct umac_datapath_sta_data *sta_data = umac_sta_data_get_datapath(stad);
+        if (umac_datapath_is_rx_frame_duplicate(sta_data, rxbufview))
+        {
+            MMLOG_INF("Dropping duplicate frame. Type %u, Subtype %u\n", frame_type, frame_subtype);
+            goto drop;
+        }
     }
 
-    if (umac_sta_data_is_associated(stad))
-    {
-        bool ok = datapath_ops->update_stad_state_rx(stad, metadata, frame_control_le);
-        MMOSAL_DEV_ASSERT(ok);
-    }
+    MMLOG_VRB("RX frame. Type: %d, Subtype: %d.\n", frame_type, frame_subtype);
+
+    datapath_ops->update_stad_state_rx(stad, metadata, frame_control_le);
 
     if (frame_type == DOT11_FC_TYPE_DATA)
     {
@@ -1593,6 +1551,12 @@ static void umac_datapath_process_rx_frame(struct umac_data *umacd,
         umac_datapath_process_rx_other_frame(umacd, stad, data, rxbuf, rxbufview);
     }
 
+    return;
+
+drop:
+    mmpkt_close(&rxbufview);
+    mmpkt_release(rxbuf);
+    return;
 }
 
 
@@ -1654,8 +1618,9 @@ void umac_datapath_rx_frame(struct umac_data *umacd, struct mmpkt *rxbuf)
     struct umac_datapath_data *data = umac_data_get_datapath(umacd);
     struct mmpktview *rxbufview = mmpkt_open(rxbuf);
 
-    if (umac_datapath_rx_frame_preprocess(umacd, rxbufview))
+    if (!umac_datapath_validate_buf_len(rxbufview, MM_MEMBER_SIZE(struct dot11_hdr, frame_control)))
     {
+        MMLOG_WRN("Frame length invalid. Dropping.\n");
         mmpkt_close(&rxbufview);
         mmpkt_release(rxbuf);
         return;
@@ -1932,6 +1897,75 @@ error:
     return status;
 }
 
+static enum mmwlan_status umac_datapath_process_tx_mgmt_frame(struct umac_data *umacd,
+                                                              struct umac_sta_data *stad,
+                                                              struct mmpkt *txbuf)
+{
+    struct umac_datapath_sta_data *sta_data = umac_sta_data_get_datapath(stad);
+    struct mmpktview *txbufview = mmpkt_open(txbuf);
+    struct dot11_hdr *header = (struct dot11_hdr *)mmpkt_get_data_start(txbufview);
+    struct mmdrv_tx_metadata *tx_metadata = mmdrv_get_tx_metadata(txbuf);
+    enum mmwlan_status status;
+    int key_id = -1;
+
+    const struct umac_datapath_ops *datapath_ops =
+        umac_interface_get_datapath_ops_by_vif_id(umacd, tx_metadata->vif_id);
+    MMOSAL_DEV_ASSERT(datapath_ops != NULL);
+
+    if ((tx_metadata->enc != ENCRYPTION_DISABLED) &&
+        (datapath_ops->get_sta_state(stad) == MMWLAN_STA_CONNECTED))
+    {
+
+        if (umac_sta_data_pmf_is_required(stad) && frame_is_robust_mgmt(txbufview))
+        {
+
+            if (!mm_mac_addr_is_multicast(dot11_get_da(header)))
+            {
+                header->frame_control |= htole16(DOT11_MASK_FC_PROTECTED);
+                key_id = umac_keys_get_active_key_id(stad, UMAC_KEY_TYPE_PAIRWISE);
+                if (key_id >= 0)
+                {
+                    umac_keys_increment_tx_seq(stad, key_id);
+                }
+                else
+                {
+                    MMLOG_WRN("Dropping frame, no key to encrypt protected management frame\n");
+                    mmpkt_close(&txbufview);
+                    mmpkt_release(txbuf);
+                    return MMWLAN_ERROR;
+                }
+            }
+        }
+    }
+
+    DOT11_SEQUENCE_CONTROL_SET_SEQUENCE_NUMBER(
+        header->sequence_control,
+        sta_data->tx_seq_num_spaces[MMDRV_SEQ_NUM_BASELINE]++);
+
+    tx_metadata->flags = MMDRV_TX_FLAG_IMMEDIATE_REPORT;
+    if (key_id >= 0)
+    {
+        tx_metadata->flags |= MMDRV_TX_FLAG_HW_ENC;
+        tx_metadata->key_idx = key_id;
+    }
+
+    tx_metadata->tid = MMWLAN_MAX_QOS_TID;
+    tx_metadata->aid = umac_sta_data_get_aid(stad);
+
+    umac_rc_init_rate_table_mgmt(umacd, &tx_metadata->rc_data, false);
+
+    umac_stats_update_last_tx_time(umacd);
+
+    mmpkt_close(&txbufview);
+    status = mmdrv_tx_frame(txbuf, true);
+    if (status != MMWLAN_SUCCESS)
+    {
+        MMLOG_WRN("mmdrv_tx_frame failed (%u)\n", status);
+    }
+
+    return status;
+}
+
 static uint32_t umac_datapath_calculate_tx_timeout_ms(struct umac_data *umacd, bool blocking)
 {
     if (blocking)
@@ -2028,6 +2062,7 @@ enum mmwlan_status umac_datapath_tx_frame(struct umac_data *umacd,
     }
 
     tx_metadata->enc = is_eapol ? enc : ENCRYPTION_ENABLED;
+    tx_metadata->is_mgmt = false;
 
     if (is_eapol && !datapath_ops->is_stad_tx_paused(stad))
     {
@@ -2104,6 +2139,7 @@ static inline bool umac_datapath_process_tx(struct umac_data *umacd,
 
         struct mmpkt *mmpkt = NULL;
         struct umac_sta_data *stad = NULL;
+
         has_more = umac_datapath_dequeue_tx_frame(umacd, &stad, &mmpkt);
 
         if (mmpkt == NULL)
@@ -2115,12 +2151,21 @@ static inline bool umac_datapath_process_tx(struct umac_data *umacd,
 
         const struct mmdrv_tx_metadata *tx_metadata = mmdrv_get_tx_metadata(mmpkt);
 
-        MMLOG_VRB("TX dequeue %p for AID %u, VIF %u\n",
+        MMLOG_VRB("TX dequeue %p for AID %u, VIF %u (mgmt=%d)\n",
                   mmpkt,
                   umac_sta_data_get_aid(stad),
-                  tx_metadata->vif_id);
+                  tx_metadata->vif_id,
+                  tx_metadata->is_mgmt);
 
-        umac_datapath_process_tx_frame(umacd, stad, mmpkt_open(mmpkt));
+
+        if (tx_metadata->is_mgmt)
+        {
+            umac_datapath_process_tx_mgmt_frame(umacd, stad, mmpkt);
+        }
+        else
+        {
+            umac_datapath_process_tx_frame(umacd, stad, mmpkt_open(mmpkt));
+        }
     }
     return has_more;
 }
@@ -2140,28 +2185,18 @@ static void umac_datapath_flush_txq(struct umac_data *umacd)
 
 enum mmwlan_status umac_datapath_tx_mgmt_frame(struct umac_sta_data *stad, struct mmpkt *txbuf)
 {
-    enum mmwlan_status status;
     struct umac_data *umacd = umac_sta_data_get_umacd(stad);
     struct umac_datapath_data *data = umac_data_get_datapath(umacd);
-    struct umac_datapath_sta_data *sta_data = umac_sta_data_get_datapath(stad);
     struct mmpktview *txbufview = mmpkt_open(txbuf);
     struct dot11_hdr *header = (struct dot11_hdr *)mmpkt_get_data_start(txbufview);
     struct mmdrv_tx_metadata *tx_metadata = mmdrv_get_tx_metadata(txbuf);
-    uint32_t timeout_ms;
-    uint16_t pause_mask;
 
-    uint8_t seq_num_space = MMDRV_SEQ_NUM_BASELINE;
-
+    MMOSAL_DEV_ASSERT(umac_core_evtloop_is_active(umacd));
     MMOSAL_DEV_ASSERT(stad != NULL);
     MMOSAL_DEV_ASSERT(tx_metadata != NULL);
 
     tx_metadata->vif_id = umac_sta_data_get_vif_id(stad);
-
-    bool is_probe_request =
-        (dot11_frame_control_get_type(header->frame_control) == DOT11_FC_TYPE_MGMT) &&
-        (dot11_frame_control_get_subtype(header->frame_control) == DOT11_FC_SUBTYPE_PROBE_REQ);
-    DOT11_SEQUENCE_CONTROL_SET_SEQUENCE_NUMBER(header->sequence_control,
-                                               sta_data->tx_seq_num_spaces[seq_num_space]++);
+    tx_metadata->is_mgmt = true;
 
     const struct umac_datapath_ops *datapath_ops =
         umac_interface_get_datapath_ops_by_vif_id(umacd, tx_metadata->vif_id);
@@ -2174,73 +2209,51 @@ enum mmwlan_status umac_datapath_tx_mgmt_frame(struct umac_sta_data *stad, struc
         return MMWLAN_ERROR;
     }
 
-    int key_id = -1;
-    if ((tx_metadata->enc != ENCRYPTION_DISABLED) &&
-        (datapath_ops->get_sta_state(stad) == MMWLAN_STA_CONNECTED))
+    MMOSAL_DEV_ASSERT(dot11_frame_control_get_type(header->frame_control) == DOT11_FC_TYPE_MGMT);
+    if (dot11_frame_control_get_type(header->frame_control) != DOT11_FC_TYPE_MGMT)
     {
-
-        if (umac_sta_data_pmf_is_required(stad) && frame_is_robust_mgmt(txbufview))
-        {
-
-            if (!mm_mac_addr_is_multicast(dot11_get_da(header)))
-            {
-                header->frame_control |= htole16(DOT11_MASK_FC_PROTECTED);
-                key_id = umac_keys_get_active_key_id(stad, UMAC_KEY_TYPE_PAIRWISE);
-                if (key_id >= 0)
-                {
-                    umac_keys_increment_tx_seq(stad, key_id);
-                }
-                else
-                {
-                    MMLOG_WRN("Dropping frame, no key to encrypt protected management frame\n");
-                    mmpkt_close(&txbufview);
-                    mmpkt_release(txbuf);
-                    return MMWLAN_ERROR;
-                }
-            }
-        }
-    }
-
-    tx_metadata->flags = MMDRV_TX_FLAG_IMMEDIATE_REPORT;
-    if (key_id >= 0)
-    {
-        tx_metadata->flags |= MMDRV_TX_FLAG_HW_ENC;
-        tx_metadata->key_idx = key_id;
-    }
-
-    tx_metadata->tid = MMWLAN_MAX_QOS_TID;
-    tx_metadata->aid = umac_sta_data_get_aid(stad);
-
-    umac_rc_init_rate_table_mgmt(umacd, &tx_metadata->rc_data, false);
-
-
-    pause_mask = ~MMDRV_PAUSE_SOURCE_MASK_PKTMEM;
-    if (is_probe_request)
-    {
-        pause_mask &= ~UMAC_DATAPATH_PAUSE_SOURCE_SCAN;
-    }
-
-    timeout_ms = umac_datapath_calculate_tx_timeout_ms(umacd, true);
-    status = umac_datapath_wait_for_tx_ready_(data, timeout_ms, pause_mask);
-    if (status != MMWLAN_SUCCESS)
-    {
-        MMLOG_WRN("Tx Datapath Blocked (is_probe_request=%d)\n", is_probe_request);
+        MMLOG_WRN("Frame type is %u, not management",
+                  dot11_frame_control_get_type(header->frame_control));
         mmpkt_close(&txbufview);
         mmpkt_release(txbuf);
-        umac_stats_increment_datapath_txq_frames_dropped(umacd);
-        return status;
+        return MMWLAN_ERROR;
     }
 
-    umac_stats_update_last_tx_time(umacd);
-
+    bool is_probe_request = dot11_frame_control_get_subtype(header->frame_control) ==
+                            DOT11_FC_SUBTYPE_PROBE_REQ;
+    bool is_bufferable = mgmt_frame_is_bufferable(header->frame_control);
     mmpkt_close(&txbufview);
-    status = mmdrv_tx_frame(txbuf, true);
-    if (status != MMWLAN_SUCCESS)
+
+
+    uint16_t datapath_pause_mask = ~MMDRV_PAUSE_SOURCE_MASK_PKTMEM;
+    if (is_probe_request)
     {
-        return status;
+
+        datapath_pause_mask &= ~UMAC_DATAPATH_PAUSE_SOURCE_SCAN;
     }
 
-    return MMWLAN_SUCCESS;
+    if (!is_bufferable)
+    {
+
+        uint32_t timeout_ms = umac_datapath_calculate_tx_timeout_ms(umacd, true);
+        enum mmwlan_status status =
+            umac_datapath_wait_for_tx_ready_(data, timeout_ms, datapath_pause_mask);
+        if (status != MMWLAN_SUCCESS)
+        {
+            MMLOG_WRN("Tx Datapath Blocked (is_bufferable=%d)\n", is_bufferable);
+            mmpkt_release(txbuf);
+            umac_stats_increment_datapath_txq_frames_dropped(umacd);
+            return MMWLAN_UNAVAILABLE;
+        }
+    }
+    else if (datapath_ops->is_stad_tx_paused(stad) ||
+             umac_datapath_tx_is_paused(data, datapath_pause_mask))
+    {
+        datapath_ops->enqueue_tx_frame(umacd, stad, txbuf);
+        return MMWLAN_SUCCESS;
+    }
+
+    return umac_datapath_process_tx_mgmt_frame(umacd, stad, txbuf);
 }
 
 void umac_datapath_handle_tx_status(struct umac_data *umacd, struct mmpkt *mmpkt)

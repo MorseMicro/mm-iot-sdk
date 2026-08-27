@@ -156,7 +156,8 @@ static enum mmwlan_status mmdrv_fetch_fw_version(struct driver_data *driverd,
 
     MMLOG_INF("Chip raw firmware version: %s\n", version_string);
 
-    if (sscanf(version_string, "rel_%d_%d_%d", &major, &minor, &patch) != 3)
+    if (sscanf(version_string, "rel_mm%*d_%d_%d_%d", &major, &minor, &patch) != 3 &&
+        sscanf(version_string, "rel_%d_%d_%d", &major, &minor, &patch) != 3)
     {
         MMLOG_ERR("Unreleased FW version detected: %s\n", version_string);
         major = 0;
@@ -206,6 +207,11 @@ static bool mmdrv_valid_fw_flags(uint32_t firmware_flags)
     }
 
     if ((firmware_flags & MORSE_FW_FLAGS_STA_IFACE_MANAGE_SNS_QOS_NULL) == 0)
+    {
+        return false;
+    }
+
+    if ((firmware_flags & MORSE_FW_FLAGS_FAILSAFE_MODE) != 0)
     {
         return false;
     }

@@ -57,11 +57,18 @@ const struct mmwlan_ap_args *umac_ap_get_args(struct umac_data *umacd);
 const struct mmwlan_s1g_channel *umac_ap_get_specified_s1g_channel(struct umac_data *umacd);
 
 
+bool umac_ap_is_scan_channel_allowed(struct umac_data *umacd,
+                                     const struct mmwlan_s1g_channel *scan_ch);
+
+
 enum mmwlan_status umac_ap_get_channel_info(struct umac_data *umacd,
                                             struct mmwlan_vif_channel_info *cfg);
 
 
 struct mmpkt *umac_ap_get_beacon(struct umac_data *umacd);
+
+
+void umac_ap_signal_beacon_critical_update(struct umac_data *umacd);
 
 
 void umac_ap_handle_probe_req(struct umac_data *umacd, struct mmpktview *rxbufview);

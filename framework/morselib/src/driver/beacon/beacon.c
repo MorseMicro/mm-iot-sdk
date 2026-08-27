@@ -54,16 +54,11 @@ static int morse_beacon_work_(struct driver_data *driverd)
         struct morse_skbq *mq = driverd->cfg->ops->skbq_bcn_tc_q(driverd);
         if (!mq)
         {
-            static bool error_message_displayed = false;
-            if (!error_message_displayed)
-            {
-                MMLOG_ERR("Failed to find beacon mq\n");
-                error_message_displayed = true;
-            }
-
+            MMLOG_ERR("Failed to find beacon mq\n");
             return -MM_EINVAL;
         }
 
+        MMLOG_VRB("Sending beacon to SKBQ\n");
         return morse_skbq_mmpkt_tx(mq, beacon, MORSE_SKB_CHAN_BEACON);
     }
 

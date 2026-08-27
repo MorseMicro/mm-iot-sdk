@@ -41,6 +41,7 @@ LWIP_SRCS_C += src/apps/mqtt/mqtt.c
 LWIP_SRCS_C += src/apps/smtp/smtp.c
 LWIP_SRCS_C += src/apps/altcp_tls/altcp_tls_mbedtls.c
 LWIP_SRCS_C += src/apps/altcp_tls/altcp_tls_mbedtls_mem.c
+LWIP_SRCS_C += src/apps/http/http_client.c
 LWIP_SRCS_C += src/apps/http/httpd.c
 LWIP_SRCS_C += src/apps/http/fs.c
 LWIP_SRCS_C += src/netif/ethernet.c

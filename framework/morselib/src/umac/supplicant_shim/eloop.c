@@ -5,6 +5,7 @@
 
 #include "umac_supp_shim_private.h"
 
+#include "mmutils.h"
 #include "umac/data/umac_data.h"
 #include "umac/core/umac_core.h"
 
@@ -35,6 +36,9 @@ int eloop_register_timeout(unsigned int secs,
 
     return ok ? 0 : -1;
 }
+
+MM_STATIC_ASSERT((intptr_t)ELOOP_ALL_CTX == (intptr_t)UMAC_CORE_TIMEOUT_ANY_CTX,
+                 "Wildcard timeout arg mismatch");
 
 int eloop_cancel_timeout(eloop_timeout_handler handler, void *eloop_data, void *user_data)
 {

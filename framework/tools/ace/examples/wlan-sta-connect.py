@@ -85,7 +85,12 @@ def _main():
                         help="TWT setup command. Only REQUEST and SUGGEST is supported).")
     parser.add_argument("-4", "--use-4addr", action="store_true",
                         help="Enable use of 4 address frames")
-
+    parser.add_argument("-C", "--selected-channels", nargs="+", type=int, default=[],
+                        help="List of S1G channel numbers to restrict connection scans to")
+    parser.add_argument("-A", "--selective-scan-attempts", default=1, type=int,
+                        help="Number of scans restricted to the selected channels before "
+                             "falling back to the full channel list. Ignored if no restricted "
+                             "channels set")
     args = parser.parse_args()
 
     morse_common.configure_logging(args.verbose)
@@ -128,7 +133,9 @@ def _main():
                twt_enabled=args.twt_enabled, twt_wake_interval_us=args.twt_wake_interval_us,
                twt_min_wake_duration_us=args.twt_min_wake_duration_us,
                twt_setup_command=TWT_setup_command,
-               use_4addr=args.use_4addr)
+               use_4addr=args.use_4addr,
+               selected_channels=bytes(args.selected_channels),
+               selective_scan_attempts=args.selective_scan_attempts)
 
     print("Waiting for connection...")
 

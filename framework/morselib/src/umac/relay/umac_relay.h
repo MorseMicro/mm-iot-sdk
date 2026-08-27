@@ -52,6 +52,29 @@ void umac_relay_update_tx_metadata(struct umac_data *umacd,
                                    struct mmpkt *pkt,
                                    struct mmwlan_tx_metadata *metadata);
 
+
+void umac_relay_emit_ies(struct umac_data *umacd,
+                         struct consbuf *buf,
+                         enum dot11_fc_type type,
+                         enum dot11_fc_subtype subtype);
+
+
+uint8_t umac_relay_get_depth(struct umac_data *umacd);
+
+
+bool umac_relay_filter_scan_depth(struct umac_data *umacd, uint8_t *min, uint8_t *max);
+
+
+void umac_relay_process_beacon_ies(struct umac_data *umacd, const uint8_t *ies, uint32_t ies_len);
+
+
+enum mmwlan_relay_state umac_relay_get_state(struct umac_data *umacd);
+
+
+enum mmwlan_status umac_relay_register_depth_change_cb(struct umac_data *umacd,
+                                                       mmwlan_relay_depth_change_cb_t cb,
+                                                       void *arg);
+
 #else
 
 static inline bool umac_relay_validate_relay_args(struct umac_data *umacd,
@@ -129,6 +152,57 @@ static inline void umac_relay_update_tx_metadata(struct umac_data *umacd,
     MM_UNUSED(umacd);
     MM_UNUSED(pkt);
     MM_UNUSED(metadata);
+}
+
+static inline void umac_relay_emit_ies(struct umac_data *umacd,
+                                       struct consbuf *buf,
+                                       enum dot11_fc_type type,
+                                       enum dot11_fc_subtype subtype)
+{
+    MM_UNUSED(umacd);
+    MM_UNUSED(buf);
+    MM_UNUSED(type);
+    MM_UNUSED(subtype);
+}
+
+static inline uint8_t umac_relay_get_depth(struct umac_data *umacd)
+{
+    MM_UNUSED(umacd);
+    return MMWLAN_RELAY_DEPTH_UNKNOWN;
+}
+
+static inline bool umac_relay_filter_scan_depth(struct umac_data *umacd, uint8_t *min, uint8_t *max)
+{
+    MM_UNUSED(umacd);
+    MM_UNUSED(min);
+    MM_UNUSED(max);
+    return false;
+}
+
+static inline void umac_relay_process_beacon_ies(struct umac_data *umacd,
+                                                 const uint8_t *ies,
+                                                 uint32_t ies_len)
+{
+    MM_UNUSED(umacd);
+    MM_UNUSED(ies);
+    MM_UNUSED(ies_len);
+}
+
+static inline enum mmwlan_relay_state umac_relay_get_state(struct umac_data *umacd)
+{
+    MM_UNUSED(umacd);
+    return MMWLAN_RELAY_STATE_DISABLED;
+}
+
+static inline enum mmwlan_status umac_relay_register_depth_change_cb(
+    struct umac_data *umacd,
+    mmwlan_relay_depth_change_cb_t cb,
+    void *arg)
+{
+    MM_UNUSED(umacd);
+    MM_UNUSED(cb);
+    MM_UNUSED(arg);
+    return MMWLAN_UNAVAILABLE;
 }
 
 #endif

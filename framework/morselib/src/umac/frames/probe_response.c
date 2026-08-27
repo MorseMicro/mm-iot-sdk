@@ -12,6 +12,10 @@
 #include "umac/ies/s1g_capabilities.h"
 #include "umac/ies/s1g_operation.h"
 #include "umac/ies/short_bcn_ie.h"
+#include "umac/ies/vendor_ie.h"
+#include "umac/relay/umac_relay.h"
+#include "umac/data/umac_data.h"
+#include "umac/config/umac_config.h"
 
 bool frame_probe_response_parse(struct mmpktview *view, struct frame_data_probe_response *result)
 {
@@ -83,8 +87,6 @@ bool frame_probe_response_parse(struct mmpktview *view, struct frame_data_probe_
 
 void frame_probe_response_build(struct umac_data *umacd, struct consbuf *buf, void *args)
 {
-    MM_UNUSED(umacd);
-
     const struct frame_data_probe_response *data = (const struct frame_data_probe_response *)args;
 
     struct dot11_hdr *hdr = (struct dot11_hdr *)consbuf_reserve(buf, sizeof(*hdr));
@@ -115,4 +117,8 @@ void frame_probe_response_build(struct umac_data *umacd, struct consbuf *buf, vo
         MMOSAL_ASSERT(data->ies != NULL);
         consbuf_append(buf, data->ies, data->ies_len);
     }
+
+    umac_relay_emit_ies(umacd, buf, DOT11_FC_TYPE_MGMT, DOT11_FC_SUBTYPE_PROBE_RSP);
+
+    vendor_ie_list_emit(umac_config_get_vendor_ies(umacd), buf, MMWLAN_VENDOR_IE_MGMT_PROBE_RESP);
 }

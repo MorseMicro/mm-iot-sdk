@@ -130,6 +130,12 @@ static void umac_interface_init_vif(struct umac_data *umacd,
     if (vif_data->active_interface_types & UMAC_INTERFACE_STA)
     {
         mmdrv_set_listen_interval_sleep(vif_data->vif_id, umac_config_get_listen_interval(umacd));
+
+        uint8_t beacon_loss_count = umac_config_get_beacon_loss_count(umacd);
+        if (beacon_loss_count != UINT8_MAX)
+        {
+            mmdrv_set_param(vif_data->vif_id, MORSE_PARAM_ID_BEACON_LOSS_COUNT, beacon_loss_count);
+        }
         umac_twt_init_vif(umacd, &vif_data->vif_id);
         umac_interface_configure_control_response_out_1mhz(umacd, vif_data);
     }

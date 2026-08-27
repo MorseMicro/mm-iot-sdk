@@ -60,6 +60,52 @@ TEST_STEP(test_step_os_realloc, "Memory reallocation")
     return TEST_PASSED;
 }
 
+static void test_func()
+{
+    // Do some work
+    return;
+}
+
+TEST_STEP(test_step_os_task_creation, "Task creation")
+{
+    struct mmosal_task *task_handle =
+        mmosal_task_create(test_func, NULL, MMOSAL_TASK_PRI_NORM, 64, "Test Task");
+    if (task_handle == NULL)
+    {
+        TEST_LOG_APPEND("mmosal_task_create() returned NULL; expected a task handle.\n\n");
+        return TEST_FAILED;
+    }
+
+    return TEST_PASSED;
+}
+
+TEST_STEP(test_step_os_active_context, "Check app run from OS thread")
+{
+    struct mmosal_task *task_handle = mmosal_task_get_active();
+
+    if (task_handle == NULL)
+    {
+        TEST_LOG_APPEND("Test failed: Porting Assistant relies on OS features such as task "
+                        "pre-emption for the remaining tests.\n\n");
+
+        TEST_LOG_APPEND(
+            "Please ensure Porting Assistant's app_init() is launched as a task, and\n");
+        TEST_LOG_APPEND("that your port starts its task scheduler.\n\n");
+
+        TEST_LOG_APPEND("For example, on a FreeRTOS port this would use xTaskCreate() and "
+                        "vTaskStartScheduler().\n\n");
+
+        TEST_LOG_APPEND(
+            "See mmosal_main() and mmosal_task_create() from the provided EKH05 port as\n");
+        TEST_LOG_APPEND("a reference (review mmosal_shim_freertos.c).\n\n");
+        return TEST_FAILED;
+    }
+
+    TEST_LOG_APPEND("Test passed, running in %s\n", mmosal_task_name());
+
+    return TEST_PASSED;
+}
+
 TEST_STEP(test_step_os_time, "Passage of time")
 {
     uint32_t start_time = mmosal_get_time_ms();
@@ -114,7 +160,7 @@ static void new_task_main(void *arg)
     mmosal_task_delete(NULL);
 }
 
-TEST_STEP(test_step_os_task_creation, "Task creation and preemption")
+TEST_STEP(test_step_os_task_preemption, "Task preemption")
 {
     task_handle = mmosal_task_create(new_task_main, NULL, MMOSAL_TASK_PRI_HIGH, 512, "Test Task");
     if (task_handle == NULL)

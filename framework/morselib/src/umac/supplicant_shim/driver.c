@@ -7,6 +7,7 @@
 #include "mmutils.h"
 #include "mmwlan.h"
 #include "umac/regdb/umac_regdb.h"
+#include "umac/relay/umac_relay.h"
 #include "umac_supp_shim_private.h"
 
 #include "common/common.h"
@@ -25,6 +26,7 @@
 #include "umac/frames/authentication.h"
 #include "umac/frames/deauthentication.h"
 #include "umac/frames/action.h"
+#include "umac/ies/morse_ie.h"
 #include "umac/ies/s1g_operation.h"
 #include "umac/ies/ssid.h"
 #include "umac/interface/umac_interface.h"
@@ -250,6 +252,12 @@ static struct wpa_scan_res *mmwpas_alloc_and_fill_scan_result(const struct umac_
     return res;
 }
 
+
+static int mmwpas_get_scan_res_score(const struct wpa_scan_res *res)
+{
+    return res->level;
+}
+
 static void mmwpas_scan_rx_handler(struct umac_data *umacd, const struct umac_scan_response *rsp)
 {
     struct umac_supp_shim_data *data = umac_data_get_supp_shim(umacd);
@@ -287,83 +295,107 @@ static void mmwpas_scan_rx_handler(struct umac_data *umacd, const struct umac_sc
         }
     }
 
-
-    if (data->in_progress_scan_results->num == 0)
+    uint8_t ie_depth = MMWLAN_RELAY_DEPTH_UNKNOWN;
+    uint8_t min_depth = 0;
+    uint8_t max_depth = 0;
+    if (umac_relay_filter_scan_depth(umacd, &min_depth, &max_depth))
     {
-        MMLOG_VRB("Inserting scan result " MM_MAC_ADDR_FMT " @ idx 0 (num, %u)\n",
-                  MM_MAC_ADDR_VAL(rsp->frame.bssid),
+        ie_depth = 0;
+
+        const struct dot11_ie_morse_s1g_relay *relay_ie =
+            ie_morse_s1g_relay_find(rsp->frame.ies, rsp->frame.ies_len);
+        if (relay_ie != NULL)
+        {
+            ie_depth = relay_ie->depth;
+        }
+
+        if (ie_depth < min_depth || ie_depth > max_depth)
+        {
+            MMLOG_DBG("Scan result depth (%u) not in range [%lu..%lu]\n",
+                      ie_depth,
+                      min_depth,
+                      max_depth);
+            return;
+        }
+    }
+
+    struct wpa_scan_res *new_res = mmwpas_alloc_and_fill_scan_result(rsp);
+    if (new_res == NULL)
+    {
+        return;
+    }
+
+
+    if (data->in_progress_scan_results->num < data->max_scan_results)
+    {
+        int insert_idx = data->in_progress_scan_results->num;
+        MMLOG_VRB("Inserting scan result " MM_MAC_ADDR_FMT " @ idx %d (num, %u)\n",
+                  MM_MAC_ADDR_VAL(new_res->bssid),
+                  insert_idx,
                   data->in_progress_scan_results->num);
 
-        MMOSAL_ASSERT(data->in_progress_scan_results->res[0] == NULL);
-        data->in_progress_scan_results->res[0] = mmwpas_alloc_and_fill_scan_result(rsp);
-
-        if (data->in_progress_scan_results->res[0] != NULL)
-        {
-            data->in_progress_scan_results->num = 1;
-        }
+        MMOSAL_ASSERT(data->in_progress_scan_results->res[insert_idx] == NULL);
+        data->in_progress_scan_results->res[insert_idx] = new_res;
+        ++data->in_progress_scan_results->num;
+#if defined(ENABLE_MMWLAN_RELAY) && ENABLE_MMWLAN_RELAY
+        data->scan_results_depth_cache[insert_idx] = ie_depth;
+#endif
         return;
     }
 
 
-    int ii;
-    int insert_at_idx = 0;
-    for (ii = 0; ii < (int)data->in_progress_scan_results->num; ii++)
+    int lowest_idx = -1;
+    int new_res_score = mmwpas_get_scan_res_score(new_res);
+    int lowest_score = new_res_score;
+    for (size_t ii = 0; ii < data->max_scan_results; ii++)
     {
         struct wpa_scan_res *res = data->in_progress_scan_results->res[ii];
-        MMOSAL_ASSERT(res != NULL);
-        if (res->level >= rsp->rssi)
+        MMOSAL_DEV_ASSERT(res != NULL);
+        int score = mmwpas_get_scan_res_score(res);
+        if (score < lowest_score)
         {
-            insert_at_idx = ii + 1;
+            lowest_idx = ii;
+            lowest_score = score;
         }
     }
 
-    if (insert_at_idx >= data->max_scan_results)
+    if (lowest_idx == -1)
     {
-        MMLOG_VRB("Scan result too quiet to add to results list (" MM_MAC_ADDR_FMT
-                  ") num=%u, max=%u\n",
-                  MM_MAC_ADDR_VAL(rsp->frame.bssid),
-                  data->in_progress_scan_results->num,
-                  data->max_scan_results);
+        MMLOG_VRB("Scan result worse than existing results list (" MM_MAC_ADDR_FMT ") score=%d\n",
+                  MM_MAC_ADDR_VAL(new_res->bssid),
+                  new_res_score);
+        os_free(new_res);
         return;
     }
 
-    MMLOG_VRB("Inserting scan result " MM_MAC_ADDR_FMT " @ idx %d (num %u)\n",
-              MM_MAC_ADDR_VAL(rsp->frame.bssid),
-              insert_at_idx,
-              data->in_progress_scan_results->num);
+    MMLOG_VRB("Inserting scan result " MM_MAC_ADDR_FMT " @ idx %d (score %d)\n",
+              MM_MAC_ADDR_VAL(new_res->bssid),
+              lowest_idx,
+              new_res_score);
 
-    struct wpa_scan_res *res = mmwpas_alloc_and_fill_scan_result(rsp);
-    if (res == NULL)
-    {
-        return;
-    }
-
-
-    MMOSAL_ASSERT(data->in_progress_scan_results->num <= data->max_scan_results);
-    if (data->in_progress_scan_results->num == data->max_scan_results)
-    {
-        size_t idx = data->max_scan_results - 1;
-        MMLOG_VRB("Discarding scan result " MM_MAC_ADDR_FMT "\n",
-                  MM_MAC_ADDR_VAL(data->in_progress_scan_results->res[idx]->bssid));
-        os_free(data->in_progress_scan_results->res[idx]);
-        data->in_progress_scan_results->res[idx] = NULL;
-        data->in_progress_scan_results->num--;
-    }
-
-    for (ii = (int)data->in_progress_scan_results->num; ii > insert_at_idx; ii--)
-    {
-        data->in_progress_scan_results->res[ii] = data->in_progress_scan_results->res[ii - 1];
-    }
-    data->in_progress_scan_results->res[insert_at_idx] = res;
-    data->in_progress_scan_results->num++;
+    MMLOG_VRB("Discarding scan result " MM_MAC_ADDR_FMT " (score %d)\n",
+              MM_MAC_ADDR_VAL(data->in_progress_scan_results->res[lowest_idx]->bssid),
+              lowest_score);
+    os_free(data->in_progress_scan_results->res[lowest_idx]);
+    data->in_progress_scan_results->res[lowest_idx] = new_res;
+#if defined(ENABLE_MMWLAN_RELAY) && ENABLE_MMWLAN_RELAY
+    data->scan_results_depth_cache[lowest_idx] = ie_depth;
+#endif
 }
 
 static void mmwpas_clean_up_scan_data(struct umac_supp_shim_data *data)
 {
     mmosal_free(data->scan_req.args.extra_ies);
     data->scan_req.args.extra_ies = NULL;
+    mmosal_free(data->scan_req.args.selected_channels);
+    data->scan_req.args.selected_channels = NULL;
+    data->scan_req.args.selected_channels_len = 0;
     wpa_scan_results_free(data->in_progress_scan_results);
     data->in_progress_scan_results = NULL;
+#if defined(ENABLE_MMWLAN_RELAY) && ENABLE_MMWLAN_RELAY
+    mmosal_free(data->scan_results_depth_cache);
+    data->scan_results_depth_cache = NULL;
+#endif
     mmosal_free(data->bss_cache);
     data->bss_cache = NULL;
     if (data->filter_ssids != NULL)
@@ -444,6 +476,60 @@ static bool mmwpas_bss_cache_lookup(struct umac_supp_shim_data *data,
     return false;
 }
 
+#if defined(ENABLE_MMWLAN_RELAY) && ENABLE_MMWLAN_RELAY
+
+#define MMWPAS_RELAY_MIN_RSSI_DBM (-80)
+
+
+static void mmwpas_filter_scan_results_by_relay_depth(struct umac_data *umacd,
+                                                      struct wpa_scan_results *results)
+{
+    if (!umac_data_get_relay(umacd))
+    {
+        return;
+    }
+
+    struct umac_supp_shim_data *data = umac_data_get_supp_shim(umacd);
+    unsigned ii;
+    uint8_t best_depth = MMWLAN_RELAY_DEPTH_UNKNOWN;
+    for (ii = 0; ii < results->num; ii++)
+    {
+        struct wpa_scan_res *res = results->res[ii];
+        uint8_t res_cached_depth = data->scan_results_depth_cache[ii];
+        if (res->level >= MMWPAS_RELAY_MIN_RSSI_DBM && res_cached_depth < best_depth)
+        {
+            best_depth = res_cached_depth;
+        }
+    }
+
+    if (best_depth == MMWLAN_RELAY_DEPTH_UNKNOWN)
+    {
+        MMLOG_INF("Relay filter: no eligible result, leaving %u results unfiltered\n",
+                  results->num);
+        return;
+    }
+
+    unsigned kept = 0;
+    for (ii = 0; ii < results->num; ii++)
+    {
+        struct wpa_scan_res *res = results->res[ii];
+        results->res[ii] = NULL;
+        uint8_t res_cached_depth = data->scan_results_depth_cache[ii];
+        data->scan_results_depth_cache[ii] = MMWLAN_RELAY_DEPTH_UNKNOWN;
+        if (res->level >= MMWPAS_RELAY_MIN_RSSI_DBM && res_cached_depth == best_depth)
+        {
+            results->res[kept++] = res;
+        }
+        else
+        {
+            os_free(res);
+        }
+    }
+    MMLOG_INF("Relay filter: kept %u of %u results at depth %u\n", kept, results->num, best_depth);
+    results->num = kept;
+}
+#endif
+
 static void mmwpas_scan_complete_handler(struct umac_data *umacd,
                                          enum mmwlan_scan_state result_code)
 {
@@ -452,6 +538,9 @@ static void mmwpas_scan_complete_handler(struct umac_data *umacd,
     MMOSAL_ASSERT(data->in_progress_scan_results != NULL);
     data->completed_scan_results = data->in_progress_scan_results;
     data->in_progress_scan_results = NULL;
+#if defined(ENABLE_MMWLAN_RELAY) && ENABLE_MMWLAN_RELAY
+    mmwpas_filter_scan_results_by_relay_depth(umacd, data->completed_scan_results);
+#endif
     mmwpas_clean_up_scan_data(data);
     mmwpas_bss_cache_build(data, data->completed_scan_results);
 
@@ -544,6 +633,30 @@ static int mmwpas_initialise_scan_data(struct umac_data *umacd,
         }
     }
 
+
+    args->selected_channels = NULL;
+    args->selected_channels_len = 0;
+    if (umac_connection_consume_selective_scan_attempt(umacd))
+    {
+        uint8_t *config_channels;
+        uint8_t config_channels_len;
+        uint8_t attempts_unused;
+        umac_config_get_selective_scan_channels(umacd,
+                                                &config_channels,
+                                                &config_channels_len,
+                                                &attempts_unused);
+        if (config_channels != NULL && config_channels_len != 0)
+        {
+            args->selected_channels = (uint8_t *)mmosal_malloc(config_channels_len);
+            if (args->selected_channels == NULL)
+            {
+                goto error;
+            }
+            memcpy(args->selected_channels, config_channels, config_channels_len);
+            args->selected_channels_len = config_channels_len;
+        }
+    }
+
     data->scan_req.rx_cb = mmwpas_scan_rx_handler;
     data->scan_req.complete_cb = mmwpas_scan_complete_handler;
 
@@ -577,6 +690,14 @@ static int mmwpas_initialise_scan_data(struct umac_data *umacd,
         data->num_filter_ssids = params->num_filter_ssids;
     }
 
+#if defined(ENABLE_MMWLAN_RELAY) && ENABLE_MMWLAN_RELAY
+    data->scan_results_depth_cache = (uint8_t *)mmosal_malloc(data->max_scan_results);
+    if (data->scan_results_depth_cache == NULL)
+    {
+        goto error;
+    }
+    memset(data->scan_results_depth_cache, MMWLAN_RELAY_DEPTH_UNKNOWN, data->max_scan_results);
+#endif
     return 0;
 
 error:

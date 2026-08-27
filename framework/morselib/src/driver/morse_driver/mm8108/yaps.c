@@ -473,6 +473,7 @@ void morse_yaps_work(struct driver_data *driverd)
     {
         if (morse_yaps_tx_beacon_handler(yaps))
         {
+            MMLOG_WRN("More beacons are waiting to be sent\n");
 
             driver_task_schedule_notification(driverd, DRV_EVT_TX_BEACON_PEND, 1);
         }

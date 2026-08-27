@@ -2,6 +2,7 @@ var group__MMIPAL =
 [
     [ "mmipal_ip_config", "structmmipal__ip__config.html", [
       [ "gateway_addr", "structmmipal__ip__config.html#a873bd4a1d9edb6bcc713873e81d5d0f3", null ],
+      [ "hostname", "structmmipal__ip__config.html#ae9cff92a05ff125706f9c2964c97c683", null ],
       [ "ip_addr", "structmmipal__ip__config.html#acb0c5ba6301d5a6e2ff9d1c83a9185d7", null ],
       [ "mode", "structmmipal__ip__config.html#a803f5b7044f44bedd8fb115717f156c2", null ],
       [ "netmask", "structmmipal__ip__config.html#af9cb4f1b6febe6f0852773db86649665", null ]
@@ -16,6 +17,7 @@ var group__MMIPAL =
     ] ],
     [ "mmipal_init_args", "structmmipal__init__args.html", [
       [ "gateway_addr", "structmmipal__init__args.html#a9c47221066842695ba9aa83beab4c6b4", null ],
+      [ "hostname", "structmmipal__init__args.html#a1f306d16783058760d6d8b5eb1b1e6c7", null ],
       [ "ip6_addr", "structmmipal__init__args.html#a1eea15de7ad7c2c4bdbc13cc50e37b60", null ],
       [ "ip6_mode", "structmmipal__init__args.html#a039c9ce0adac0886490ab31f47802620", null ],
       [ "ip_addr", "structmmipal__init__args.html#af0a945121c03bea2d9d68274a8cd4821", null ],

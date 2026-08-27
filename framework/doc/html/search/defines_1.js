@@ -2,7 +2,7 @@ var searchData=
 [
   ['ansi_5fbold_0',['ANSI_BOLD',['../scan_8c.html#a46587b83544b8e9be045bb93f644ac82',1,'scan.c']]],
   ['ansi_5freset_1',['ANSI_RESET',['../scan_8c.html#af77a445894f2f750d43cf2182cd29e55',1,'scan.c']]],
-  ['ap_5fssid_2',['AP_SSID',['../ap__mode_8c.html#a56ee34255f5306176ee8fea2137397d4',1,'AP_SSID():&#160;ap_mode.c'],['../relay__mode_8c.html#a56ee34255f5306176ee8fea2137397d4',1,'AP_SSID():&#160;relay_mode.c']]],
+  ['ap_5fssid_2',['AP_SSID',['../ap__mode_8c.html#a56ee34255f5306176ee8fea2137397d4',1,'ap_mode.c']]],
   ['aws_5fkey_5fdevice_5fcertificate_3',['AWS_KEY_DEVICE_CERTIFICATE',['../aws__iot__config_8h.html#a6ca6b891c245bb850348eac6f54d8eeb',1,'aws_iot_config.h']]],
   ['aws_5fkey_5fdevice_5fkeys_4',['AWS_KEY_DEVICE_KEYS',['../aws__iot__config_8h.html#a171ab6deb63c48a1662bcce5ec8a651d',1,'aws_iot_config.h']]],
   ['aws_5fkey_5fendpoint_5',['AWS_KEY_ENDPOINT',['../aws__iot__config_8h.html#aaf0767d487d7422fa0111c9c1c4051f0',1,'aws_iot_config.h']]],

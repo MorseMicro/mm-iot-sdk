@@ -209,6 +209,12 @@ static bool umac_datapath_ap_update_stad_state_rx(struct umac_sta_data *stad,
         return false;
     }
 
+    if (!umac_sta_data_is_associated(stad))
+    {
+
+        return true;
+    }
+
     uint16_t frame_ver_type_subtype = dot11_frame_control_get_ver_type_subtype(frame_control_le);
     uint16_t frame_type = dot11_frame_control_get_type(frame_control_le);
     bool frame_is_data_mgmt = frame_type == DOT11_FC_TYPE_DATA || frame_type == DOT11_FC_TYPE_MGMT;

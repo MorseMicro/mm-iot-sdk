@@ -16,6 +16,7 @@ var group__MMUTILS__WLAN =
       [ "primary_channel_number", "structmm__s1g__operation.html#aa5fb23e1b2bf0fb22d82a02d07517bcb", null ],
       [ "primary_channel_width_mhz", "structmm__s1g__operation.html#a1a51c442a5ac11bbaa20e39557507605", null ]
     ] ],
+    [ "MM_HOSTNAME_MAX_LEN", "group__MMUTILS__WLAN.html#ga7a4844b0ab5efb4675e51c4caef78321", null ],
     [ "MM_RSN_INFORMATION_IE_TYPE", "group__MMUTILS__WLAN.html#gae2fbd328d6e13febd3049da4b58bd587", null ],
     [ "MM_RSN_INFORMATION_MAX_AKM_SUITES", "group__MMUTILS__WLAN.html#ga0740251f6384f959b97be29c792ec494", null ],
     [ "MM_RSN_INFORMATION_MAX_PAIRWISE_CIPHER_SUITES", "group__MMUTILS__WLAN.html#gadfb933b6a22a4f04dccb2913e4131591", null ],
@@ -41,7 +42,9 @@ var group__MMUTILS__WLAN =
     [ "mm_mac_addr_is_broadcast", "group__MMUTILS__WLAN.html#ga1e97fc7f91c33e251a53dd6a1a5d2450", null ],
     [ "mm_mac_addr_is_equal", "group__MMUTILS__WLAN.html#ga8bf8e749b51a63f830695647a3a8c820", null ],
     [ "mm_mac_addr_is_multicast", "group__MMUTILS__WLAN.html#ga845987d45e8078e61641c16f942286af", null ],
+    [ "mm_mac_addr_is_valid_sta", "group__MMUTILS__WLAN.html#gaf1813185aff337a322b46509d929ac3e", null ],
     [ "mm_mac_addr_is_zero", "group__MMUTILS__WLAN.html#ga52e9a60b21072f5eaac62d7881e0147d", null ],
     [ "mm_parse_rsn_information", "group__MMUTILS__WLAN.html#gacae95f09408e208f9c8a0cf7b7ebe53d", null ],
-    [ "mm_parse_s1g_operation", "group__MMUTILS__WLAN.html#ga764f142f61dcb585663b33137faeda1f", null ]
+    [ "mm_parse_s1g_operation", "group__MMUTILS__WLAN.html#ga764f142f61dcb585663b33137faeda1f", null ],
+    [ "mm_validate_hostname", "group__MMUTILS__WLAN.html#ga2622c1a2a0ed9478824149682bdb7a17", null ]
 ];

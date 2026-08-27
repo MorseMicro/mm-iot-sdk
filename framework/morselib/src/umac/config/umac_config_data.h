@@ -36,4 +36,16 @@ struct umac_config_data
     uint32_t supp_scan_home_dwell_time_ms;
     enum mmwlan_duty_cycle_mode duty_cycle_mode;
     bool non_tim_mode_enabled;
+
+    uint8_t *selected_channels;
+
+    uint8_t selected_channels_len;
+
+    uint8_t selective_scan_attempts;
+
+    struct vendor_ies *vendor_ies;
+
+    uint8_t beacon_loss_count;
+
+    uint8_t relay_depth_override;
 };

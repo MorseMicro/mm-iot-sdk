@@ -12,6 +12,17 @@ BUILD_DEFINES += MMHAL_CHIP_TYPE=$(MMHAL_CHIP_TYPE)
 
 FW_MBIN ?= mm6108.mbin
 
+# If mmconfig has been excluded from the build the BCF file must be compiled into the application.
+# BCF_MBIN_REL is specified here so morsefirmware.mk can include the correct file.
+# Customers / consumers can override by specifying BCF_MBIN. See morsefirmware.mk
+ifeq ($(EXCLUDE_MMCONFIG),1)
+# BCF_MBIN_REL ?= mm6108/bcfs/bcf_aw_hm593_4v3.mbin
+# BCF_MBIN_REL ?= mm6108/bcfs/bcf_aw_hm593.mbin
+ifeq ($(BCF_MBIN_REL),)
+$(error BCF file required. Select from the options above)
+endif
+endif
+
 # This platform is well resourced so we can use statically allocated pktmem with generous
 # allocations.
 MMPKTMEM_TYPE = static

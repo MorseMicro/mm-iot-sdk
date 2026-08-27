@@ -368,3 +368,25 @@ bool ie_s1g_capabilities_get_traveling_pilots_support(
             return false;
     }
 }
+
+uint8_t ie_s1g_capabilities_get_sta_type(const struct dot11_ie_s1g_capabilities *s1g_caps)
+{
+    MMOSAL_ASSERT(s1g_caps);
+
+    return dot11_s1g_cap_info_4_get_sta_type_support(s1g_caps->s1g_capabilities_information[4]);
+}
+
+bool ie_s1g_capabilities_is_ampdu_support_enabled(const struct dot11_ie_s1g_capabilities *s1g_caps)
+{
+    MMOSAL_ASSERT(s1g_caps);
+
+    return dot11_s1g_cap_info_5_get_ampdu_supported(s1g_caps->s1g_capabilities_information[5]) != 0;
+}
+
+bool ie_s1g_capabilities_is_ctrl_resp_1mhz_enabled(const struct dot11_ie_s1g_capabilities *s1g_caps)
+{
+    MMOSAL_ASSERT(s1g_caps);
+
+    return dot11_s1g_cap_info_7_get_1mhz_ctrl_rsp_preamble_support(
+               s1g_caps->s1g_capabilities_information[7]) != 0;
+}

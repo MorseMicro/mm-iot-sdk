@@ -9,7 +9,7 @@
 #include "common/common.h"
 
 #define MORSE_CMD_SEMVER_MAJOR 57
-#define MORSE_CMD_SEMVER_MINOR 0
+#define MORSE_CMD_SEMVER_MINOR 3
 #define MORSE_CMD_SEMVER_PATCH 0
 
 enum morse_cmd_id
@@ -110,6 +110,21 @@ enum morse_cmd_ocs_subcmd
 {
     MORSE_CMD_OCS_SUBCMD_CONFIG = 1,
     MORSE_CMD_OCS_SUBCMD_STATUS = 2,
+};
+
+
+enum morse_cmd_boot_code
+{
+    MORSE_CMD_BOOT_CODE_NONE = 0,
+    MORSE_CMD_BOOT_CODE_BCF_INIT = 1,
+    MORSE_CMD_BOOT_CODE_VALID_BCF_NOT_FOUND = 2,
+    MORSE_CMD_BOOT_CODE_BCF_LEN_INVALID = 3,
+    MORSE_CMD_BOOT_CODE_BCF_CRC_INVALID = 4,
+    MORSE_CMD_BOOT_CODE_BCF_UNSUPPORTED_VERSION = 5,
+    MORSE_CMD_BOOT_CODE_BCF_REGDOM_LEN_INVALID = 6,
+    MORSE_CMD_BOOT_CODE_BCF_REGDOM_CRC_INVALID = 7,
+    MORSE_CMD_BOOT_CODE_BCF_PARSE_FAIL = 8,
+    MORSE_CMD_BOOT_CODE_COMPLETE = 255,
 };
 
 
@@ -874,6 +889,8 @@ struct MM_PACKED morse_cmd_standby_mode_exit
     uint8_t reason;
 
     uint8_t sta_state;
+
+    uint8_t gpio_num;
 };
 
 

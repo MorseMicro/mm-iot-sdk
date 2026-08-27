@@ -17,5 +17,6 @@ var searchData=
   ['wlan_20statistics_20api_14',['WLAN Statistics API',['../group__MMWLAN__STATS.html',1,'']]],
   ['wlan_20test_20_28ate_29_20api_15',['WLAN Test (ATE) API',['../group__MMWLAN__TEST.html',1,'']]],
   ['wlan_20utilities_16',['WLAN Utilities',['../group__MMUTILS__WLAN.html',1,'']]],
-  ['wnm_20sleep_20management_17',['WNM Sleep management',['../group__MMWLAN__WNM.html',1,'']]]
+  ['wlan_20vendor_20specific_20ie_20add_20_2f_20clear_20api_17',['WLAN Vendor Specific IE add / clear API',['../group__MMWLAN__VENDOR__IE__API.html',1,'']]],
+  ['wnm_20sleep_20management_18',['WNM Sleep management',['../group__MMWLAN__WNM.html',1,'']]]
 ];

@@ -25,3 +25,6 @@ struct mmpkt *build_mgmt_frame(struct umac_data *umacd, mgmt_frame_builder_t bui
 bool frame_is_robust_mgmt(struct mmpktview *view);
 
 
+bool mgmt_frame_is_bufferable(uint16_t frame_control_le);
+
+

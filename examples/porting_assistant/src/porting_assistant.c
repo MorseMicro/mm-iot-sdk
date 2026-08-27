@@ -38,8 +38,10 @@
 /* Test step declarations */
 extern const struct test_step test_step_os_malloc; /**< Test definition */
 extern const struct test_step test_step_os_realloc; /**< Test definition */
-extern const struct test_step test_step_os_time; /**< Test definition */
 extern const struct test_step test_step_os_task_creation; /**< Test definition */
+extern const struct test_step test_step_os_active_context; /**< Test definition */
+extern const struct test_step test_step_os_time; /**< Test definition */
+extern const struct test_step test_step_os_task_preemption; /**< Test definition */
 
 extern const struct test_step test_step_mmhal_wlan_init; /**< Test definition */
 extern const struct test_step test_step_mmhal_wlan_hard_reset; /**< Test definition */
@@ -59,8 +61,12 @@ extern const struct test_step test_step_benchmark_cpu_mem_stack_perf; /**< Test 
 static const struct test_step *const test_steps[] = {
     &test_step_os_malloc,
     &test_step_os_realloc,
-    &test_step_os_time,
     &test_step_os_task_creation,
+    /* task_creation and active_context tests essential OS pre-conditions and therefore
+     * MUST be tested before other os tests to flag failure early. */
+    &test_step_os_active_context,
+    &test_step_os_time,
+    &test_step_os_task_preemption,
     &test_step_mmhal_wlan_init,
     &test_step_mmhal_wlan_hard_reset,
     &test_step_mmhal_wlan_sdio_startup,
@@ -145,7 +151,7 @@ static void run_test_steps(const struct test_step *const steps[],
             LOG_WRITE("\n");
             LOG_WRITE(log_buf);
         }
-
+        LOG_FLUSH();
         switch (result)
         {
             case TEST_NO_RESULT:

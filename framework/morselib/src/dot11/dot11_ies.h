@@ -225,6 +225,15 @@ struct MM_PACKED dot11_ie_channel_switch_wrapper
 };
 
 
+struct MM_PACKED dot11_ie_vendor_specific
+{
+
+    struct dot11_ie_vs_hdr vs_header;
+
+    uint8_t data[];
+};
+
+
 struct MM_PACKED dot11_ie_wmm_info
 {
 
@@ -279,6 +288,17 @@ struct MM_PACKED dot11_ie_morse_info
     uint8_t cap0;
 
     uint8_t ops0;
+};
+
+
+struct MM_PACKED dot11_ie_morse_s1g_relay
+{
+
+    struct dot11_ie_vs_hdr vs_header;
+
+    uint8_t type;
+
+    uint8_t depth;
 };
 
 

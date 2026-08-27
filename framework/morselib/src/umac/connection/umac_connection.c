@@ -27,6 +27,7 @@
 #include "umac/ies/morse_ie.h"
 #include "umac/ies/aid_response.h"
 #include "umac/ies/timeout_interval.h"
+#include "umac/ies/vendor_ie.h"
 #include "umac/interface/umac_interface.h"
 #include "umac/wnm_sleep/umac_wnm_sleep.h"
 #include "umac/config/umac_config.h"
@@ -121,6 +122,7 @@ bool umac_connection_validate_sta_args(const struct mmwlan_sta_args *args)
     return true;
 }
 
+
 static enum mmwlan_status umac_connection_start_interface(struct umac_data *umacd,
                                                           const char *confname)
 {
@@ -139,6 +141,12 @@ static enum mmwlan_status umac_connection_start_interface(struct umac_data *umac
     MMOSAL_DEV_ASSERT(vif_id != MMDRV_VIF_ID_INVALID);
     umac_sta_data_set_vif_id(data->stad, vif_id);
 
+    if (confname == NULL)
+    {
+        MMLOG_DBG("Interface without supplicant requested\n");
+        return MMWLAN_SUCCESS;
+    }
+
     status = umac_supp_add_sta_interface(umacd, confname);
     if (status != MMWLAN_SUCCESS)
     {
@@ -148,6 +156,19 @@ static enum mmwlan_status umac_connection_start_interface(struct umac_data *umac
         return status;
     }
     return MMWLAN_SUCCESS;
+}
+
+static void umac_connection_stop_interface(struct umac_data *umacd)
+{
+    struct umac_connection_data *data = umac_data_get_connection(umacd);
+    if (data->mode != UMAC_CONNECTION_MODE_PREASSOC)
+    {
+        enum mmwlan_status status = umac_supp_remove_sta_interface(umacd);
+
+        MMOSAL_DEV_ASSERT(status == MMWLAN_SUCCESS);
+    }
+    umac_sta_data_set_vif_id(data->stad, MMDRV_VIF_ID_INVALID);
+    umac_interface_remove(umacd, UMAC_INTERFACE_STA);
 }
 
 #if !(defined(MMWLAN_DPP_DISABLED) && MMWLAN_DPP_DISABLED)
@@ -221,16 +242,14 @@ enum mmwlan_status umac_connection_stop_dpp(struct umac_data *umacd)
         umac_supp_dpp_push_button_stop(umacd);
     }
 
-    umac_supp_remove_sta_interface(umacd);
-
 
     umac_ps_set_suspended(umacd, false);
 
     data->dpp_event_cb = NULL;
     data->dpp_event_cb_arg = NULL;
     data->dpp_bootstrap_id = -1;
-    umac_interface_remove(umacd, UMAC_INTERFACE_STA);
-    umac_sta_data_set_vif_id(data->stad, MMDRV_VIF_ID_INVALID);
+    umac_connection_stop_interface(umacd);
+
     data->mode = UMAC_CONNECTION_MODE_NONE;
     return MMWLAN_SUCCESS;
 }
@@ -284,6 +303,9 @@ enum mmwlan_status umac_connection_reassoc(struct umac_data *umacd)
 
     if (data->mode == UMAC_CONNECTION_MODE_NONE)
     {
+
+        data->selective_scans_used = 0;
+
         status = umac_connection_start_interface(umacd, UMAC_SUPP_STA_CONFIG_NAME);
         if (status != MMWLAN_SUCCESS)
         {
@@ -342,6 +364,9 @@ enum mmwlan_status umac_connection_start(struct umac_data *umacd,
         data->sta_args.extra_assoc_ies = extra_assoc_ies;
     }
 
+
+    data->selective_scans_used = 0;
+
     enum mmwlan_status status = umac_connection_start_interface(umacd, UMAC_SUPP_STA_CONFIG_NAME);
     if (status != MMWLAN_SUCCESS)
     {
@@ -398,11 +423,7 @@ enum mmwlan_status umac_connection_stop(struct umac_data *umacd)
 
     umac_supp_disconnect(umacd);
     umac_core_cancel_timeout(umacd, umac_connection_assoc_reassoc_req_retry, umacd, NULL);
-    enum mmwlan_status status = umac_supp_remove_sta_interface(umacd);
-    umac_sta_data_set_vif_id(data->stad, MMDRV_VIF_ID_INVALID);
-
-    MMOSAL_DEV_ASSERT(status == MMWLAN_SUCCESS);
-    umac_interface_remove(umacd, UMAC_INTERFACE_STA);
+    umac_connection_stop_interface(umacd);
     umac_rc_stop(data->stad);
     umac_rc_deinit(data->stad);
 
@@ -438,6 +459,41 @@ enum mmwlan_sta_state umac_connection_get_state(struct umac_data *umacd)
     {
         return MMWLAN_STA_CONNECTING;
     }
+}
+
+bool umac_connection_consume_selective_scan_attempt(struct umac_data *umacd)
+{
+    struct umac_connection_data *data = umac_data_get_connection(umacd);
+    uint8_t *channels;
+    uint8_t num_channels;
+    uint8_t iterations;
+
+    umac_config_get_selective_scan_channels(umacd, &channels, &num_channels, &iterations);
+
+    if (channels == NULL || num_channels == 0 || iterations == 0)
+    {
+        return false;
+    }
+
+    if (iterations == UINT8_MAX)
+    {
+
+        return true;
+    }
+
+
+    if (data->conn_fsm.current_state == CONNECTION_FSM_STATE_CONNECTED)
+    {
+        return false;
+    }
+
+    if (data->selective_scans_used >= iterations)
+    {
+        return false;
+    }
+
+    data->selective_scans_used++;
+    return true;
 }
 
 void umac_connection_roam(struct umac_data *umacd, const uint8_t *bssid)
@@ -1637,6 +1693,9 @@ void umac_connection_process_beacon_ies(struct umac_data *umacd,
     }
 
 
+    umac_relay_process_beacon_ies(umacd, ies, ies_len);
+
+
     umac_connection_beacon_vendor_ie_filter_process(umacd, ies, ies_len);
 }
 
@@ -1844,6 +1903,43 @@ static void invoke_link_callback(struct umac_data *umacd,
     {
         MMLOG_ERR("Link/VIF status callback not registered.\n");
     }
+}
+
+enum mmwlan_status umac_connection_start_preassoc(struct umac_data *umacd)
+{
+    struct umac_connection_data *data = umac_data_get_connection(umacd);
+    if (data->mode != UMAC_CONNECTION_MODE_NONE)
+    {
+        return MMWLAN_UNAVAILABLE;
+    }
+
+    enum mmwlan_status status = umac_connection_start_interface(umacd, NULL);
+    if (status != MMWLAN_SUCCESS)
+    {
+        return status;
+    }
+
+    data->mode = UMAC_CONNECTION_MODE_PREASSOC;
+    return status;
+}
+
+enum mmwlan_status umac_connection_stop_preassoc(struct umac_data *umacd)
+{
+    struct umac_connection_data *data = umac_data_get_connection(umacd);
+
+    if (data->mode == UMAC_CONNECTION_MODE_NONE)
+    {
+        return MMWLAN_SUCCESS;
+    }
+
+    if (data->mode != UMAC_CONNECTION_MODE_PREASSOC)
+    {
+        return MMWLAN_UNAVAILABLE;
+    }
+
+    umac_connection_stop_interface(umacd);
+    data->mode = UMAC_CONNECTION_MODE_NONE;
+    return MMWLAN_SUCCESS;
 }
 
 
@@ -2065,6 +2161,9 @@ static void connection_fsm_connected_exit(struct connection_fsm_instance *inst,
     {
         connection_mon_fsm_handle_event(&data->conn_mon.fsm, CONNECTION_MON_FSM_EVENT_STOP);
     }
+
+
+    data->selective_scans_used = 0;
 }
 
 

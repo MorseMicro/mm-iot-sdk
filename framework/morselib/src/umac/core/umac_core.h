@@ -200,6 +200,26 @@ struct umac_evt
         struct
         {
 
+            const struct mmwlan_vendor_ie *ie;
+
+            struct mmosal_semb *semb;
+
+            volatile enum mmwlan_status *status;
+        } add_vendor_ie;
+
+        struct
+        {
+
+            uint8_t mgmt_type_mask;
+
+            struct mmosal_semb *semb;
+
+            volatile enum mmwlan_status *status;
+        } clear_vendor_ies;
+
+        struct
+        {
+
             uint32_t reason;
         } connection_loss;
 
@@ -287,6 +307,26 @@ struct umac_evt
             struct mmpkt *txbuf;
 
         } tx_mgmt_frame;
+
+        struct
+        {
+
+            uint8_t beacon_loss_count;
+
+            struct mmosal_semb *semb;
+
+            volatile enum mmwlan_status *status;
+        } set_beacon_loss_count;
+
+        struct
+        {
+
+            uint8_t depth;
+
+            struct mmosal_semb *semb;
+
+            volatile enum mmwlan_status *status;
+        } set_relay_depth_override;
     } args;
 };
 
@@ -387,6 +427,9 @@ bool umac_core_register_timeout(struct umac_data *umacd,
                                 umac_core_timeout_handler_t handler,
                                 void *arg1,
                                 void *arg2);
+
+
+#define UMAC_CORE_TIMEOUT_ANY_CTX ((void *)-1)
 
 
 int umac_core_cancel_timeout(struct umac_data *umacd,

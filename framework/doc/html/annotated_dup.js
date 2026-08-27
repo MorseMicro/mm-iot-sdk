@@ -107,6 +107,7 @@ var annotated_dup =
     [ "mmwlan_stats_umac_data", "structmmwlan__stats__umac__data.html", "structmmwlan__stats__umac__data" ],
     [ "mmwlan_twt_config_args", "structmmwlan__twt__config__args.html", "structmmwlan__twt__config__args" ],
     [ "mmwlan_tx_metadata", "structmmwlan__tx__metadata.html", "structmmwlan__tx__metadata" ],
+    [ "mmwlan_vendor_ie", "structmmwlan__vendor__ie.html", "structmmwlan__vendor__ie" ],
     [ "mmwlan_version", "structmmwlan__version.html", "structmmwlan__version" ],
     [ "mmwlan_vif_channel_info", "structmmwlan__vif__channel__info.html", "structmmwlan__vif__channel__info" ],
     [ "mmwlan_vif_state", "structmmwlan__vif__state.html", "structmmwlan__vif__state" ],

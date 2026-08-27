@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "umac/ies/ies_common.h"
+#include "umac/ies/vendor_ie.h"
 
 
 const struct dot11_ie_wmm_param *ie_wmm_param_find(const uint8_t *ies, size_t ies_len);

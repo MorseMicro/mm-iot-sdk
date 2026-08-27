@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "umac/ies/ies_common.h"
+#include "umac/ies/vendor_ie.h"
 #include "umac/data/umac_data.h"
 
 
@@ -30,5 +30,11 @@ const struct dot11_ie_morse_info *ie_morse_info_find(const uint8_t *ies, size_t 
 
 
 void ie_morse_info_build(struct umac_data *umacd, struct consbuf *buf);
+
+
+const struct dot11_ie_morse_s1g_relay *ie_morse_s1g_relay_find(const uint8_t *ies, size_t ies_len);
+
+
+void ie_morse_s1g_relay_build(struct umac_data *umacd, struct consbuf *buf);
 
 

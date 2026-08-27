@@ -36,6 +36,8 @@
  * @ref MMCONFIG_PROGRAMMING instructions.
  */
 
+#include <stdbool.h>
+
 /**
  * Initializes the WLAN interface (and dependencies) using settings specified in the config store.
  * If no settings are found, the defaults are used.
@@ -65,3 +67,15 @@ void app_wlan_stop(void);
  * @note This is invoked implicitly by @ref app_wlan_init().
  */
 void app_print_version_info(void);
+
+/**
+ * Prints to log a hex dump of statistics from the Morse transceiver.
+ *
+ * The log can then be parsed by external tooling.
+ *
+ * @param core_num  The core to retrieve stats for. @c UINT32_MAX for all cores.
+ * @param reset     Boolean indicating whether to reset the stats after retrieving.
+ *
+ * @returns whether the log succeeded or not.
+ */
+bool app_chip_stats_dump(uint32_t core_num, bool reset);

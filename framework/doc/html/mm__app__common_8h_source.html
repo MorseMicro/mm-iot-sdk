@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.12.3</span>
+   &#160;<span id="projectnumber">2.13.1</span>
    </div>
   </td>
  </tr>
@@ -96,14 +96,19 @@ $(document).ready(function(){initNavTree('mm__app__common_8h_source.html',''); i
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment"> * SPDX-License-Identifier: Apache-2.0</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment"> */</span></div>
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span> </div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno"><a class="line" href="mm__app__common_8h.html#ac74a7d993e4fd372d18ee5d2f2570fb9">   48</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="mm__app__common_8h.html#ac74a7d993e4fd372d18ee5d2f2570fb9">app_wlan_init</a>(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span> </div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno"><a class="line" href="mm__app__common_8h.html#aeda94efa10a45cefab39a3459374c074">   55</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="mm__app__common_8h.html#aeda94efa10a45cefab39a3459374c074">app_wlan_start</a>(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span> </div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno"><a class="line" href="mm__app__common_8h.html#a73b05ab3c7445083a464d8df405115c8">   60</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="mm__app__common_8h.html#a73b05ab3c7445083a464d8df405115c8">app_wlan_stop</a>(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span> </div>
-<div class="line"><a id="l00067" name="l00067"></a><span class="lineno"><a class="line" href="mm__app__common_8h.html#a02d380e3d6901335d0e3a3b84985eec6">   67</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="mm__app__common_8h.html#a02d380e3d6901335d0e3a3b84985eec6">app_print_version_info</a>(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span><span class="preprocessor">#include &lt;stdbool.h&gt;</span></div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span> </div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno"><a class="line" href="mm__app__common_8h.html#ac74a7d993e4fd372d18ee5d2f2570fb9">   50</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="mm__app__common_8h.html#ac74a7d993e4fd372d18ee5d2f2570fb9">app_wlan_init</a>(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span> </div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno"><a class="line" href="mm__app__common_8h.html#aeda94efa10a45cefab39a3459374c074">   57</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="mm__app__common_8h.html#aeda94efa10a45cefab39a3459374c074">app_wlan_start</a>(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span> </div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno"><a class="line" href="mm__app__common_8h.html#a73b05ab3c7445083a464d8df405115c8">   62</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="mm__app__common_8h.html#a73b05ab3c7445083a464d8df405115c8">app_wlan_stop</a>(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span> </div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno"><a class="line" href="mm__app__common_8h.html#a02d380e3d6901335d0e3a3b84985eec6">   69</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="mm__app__common_8h.html#a02d380e3d6901335d0e3a3b84985eec6">app_print_version_info</a>(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span> </div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno"><a class="line" href="mm__app__common_8h.html#a126fa23a42e8a82e6bca8fc166f9bc41">   81</a></span><span class="keywordtype">bool</span> <a class="code hl_function" href="mm__app__common_8h.html#a126fa23a42e8a82e6bca8fc166f9bc41">app_chip_stats_dump</a>(uint32_t core_num, <span class="keywordtype">bool</span> reset);</div>
 <div class="ttc" id="amm__app__common_8h_html_a02d380e3d6901335d0e3a3b84985eec6"><div class="ttname"><a href="mm__app__common_8h.html#a02d380e3d6901335d0e3a3b84985eec6">app_print_version_info</a></div><div class="ttdeci">void app_print_version_info(void)</div><div class="ttdoc">Prints various version information.</div></div>
+<div class="ttc" id="amm__app__common_8h_html_a126fa23a42e8a82e6bca8fc166f9bc41"><div class="ttname"><a href="mm__app__common_8h.html#a126fa23a42e8a82e6bca8fc166f9bc41">app_chip_stats_dump</a></div><div class="ttdeci">bool app_chip_stats_dump(uint32_t core_num, bool reset)</div><div class="ttdoc">Prints to log a hex dump of statistics from the Morse transceiver.</div></div>
 <div class="ttc" id="amm__app__common_8h_html_a73b05ab3c7445083a464d8df405115c8"><div class="ttname"><a href="mm__app__common_8h.html#a73b05ab3c7445083a464d8df405115c8">app_wlan_stop</a></div><div class="ttdeci">void app_wlan_stop(void)</div><div class="ttdoc">Disconnects from Wi-Fi and de-initializes the WLAN interface.</div></div>
 <div class="ttc" id="amm__app__common_8h_html_ac74a7d993e4fd372d18ee5d2f2570fb9"><div class="ttname"><a href="mm__app__common_8h.html#ac74a7d993e4fd372d18ee5d2f2570fb9">app_wlan_init</a></div><div class="ttdeci">void app_wlan_init(void)</div><div class="ttdoc">Initializes the WLAN interface (and dependencies) using settings specified in the config store.</div></div>
 <div class="ttc" id="amm__app__common_8h_html_aeda94efa10a45cefab39a3459374c074"><div class="ttname"><a href="mm__app__common_8h.html#aeda94efa10a45cefab39a3459374c074">app_wlan_start</a></div><div class="ttdeci">void app_wlan_start(void)</div><div class="ttdoc">Starts the WLAN interface and connects to Wi-Fi using settings specified in the config store.</div></div>
@@ -113,7 +118,7 @@ $(document).ready(function(){initNavTree('mm__app__common_8h_source.html',''); i
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_b30bbaacd8897076552de0c72e174d4b.html">examples</a></li><li class="navelem"><a class="el" href="dir_d95111321e82295842a36d4e61e78351.html">_common</a></li><li class="navelem"><a class="el" href="dir_f70bd1edb63d1611541263032eb4a5cd.html">src</a></li><li class="navelem"><a class="el" href="mm__app__common_8h.html">mm_app_common.h</a></li>
+    <li class="navelem"><a class="el" href="dir_c54b5d5dcb045ee1b25216dd19539314.html">examples</a></li><li class="navelem"><a class="el" href="dir_d74e4754e381b0ed65ff7600fefcf0ae.html">_common</a></li><li class="navelem"><a class="el" href="dir_4d5f52d5227dc661e3031a7f6d16c433.html">src</a></li><li class="navelem"><a class="el" href="mm__app__common_8h.html">mm_app_common.h</a></li>
     <li class="footer">Copyright 2021-2025 Morse Micro </li>
   </ul>
 </div>

@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.12.3</span>
+   &#160;<span id="projectnumber">2.13.1</span>
    </div>
   </td>
  </tr>
@@ -96,7 +96,7 @@ $(document).ready(function(){initNavTree('structmmwlan__dpp__qr__args.html','');
 <div class="textblock"><p >Structure to hold the QR enrollee specific arguments for the DPP process. </p>
 <dl class="section warning"><dt>Warning</dt><dd>BETA NOTICE: This is a beta API that is under development; breaking changes may be introduced in future releases. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01760">1760</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01839">1839</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 </div>
 <p><code>#include &lt;<a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>&gt;</code></p>
 <table class="memberdecls">
@@ -130,7 +130,7 @@ Data Fields</h2></td></tr>
 <p >If NULL (the default for zero-initialized structs), a fresh key pair is generated automatically. This is useful for ephemeral/dynamic QR codes where the URI is retrieved at run-time via <code><a class="el" href="group__MMWLAN__DPP.html#ga0f2820979558c87790e32b5baf90511a" title="Retrieve the DPP bootstrap URI for the current QR enrollee session.">mmwlan_dpp_get_uri()</a></code> rather than printed on a fixed label.</p>
 <p >A suitable DER key can be generated with: </p><div class="fragment"><div class="line">openssl ecparam -name prime256v1 -genkey -noout -outform DER -out bootstrap.der</div>
 </div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01778">1778</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01857">1857</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -149,7 +149,7 @@ Data Fields</h2></td></tr>
 <p>Length of <code>bootstrap_private_key</code> in bytes. </p>
 <p >Set to 0 for auto-generated key pair. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01780">1780</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01859">1859</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -170,7 +170,7 @@ Data Fields</h2></td></tr>
 <p >One iteration consists of one complete pass through the candidate channel list. The channel list is built from the preferred S1G frequency plus any channels where DPP configurator connectivity was detected in a scan; the list is refreshed by a new scan every 4 rounds. Between iterations the device waits approximately 30 seconds before starting the next round.</p>
 <p >When all iterations are exhausted without receiving a DPP configuration, chirping stops and <code>MMWLAN_DPP_EVT_CONF_RECEIVED</code> will not be delivered. The application may re-invoke <a class="el" href="group__MMWLAN__DPP.html#gaf2278ba50e3bcbd6fa96408ec3c634c3">mmwlan_dpp_start()</a> to begin another round of chirps if desired. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01798">1798</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l01877">1877</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>

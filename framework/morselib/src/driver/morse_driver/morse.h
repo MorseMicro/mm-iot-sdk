@@ -11,7 +11,7 @@
 #include "mmdrv.h"
 #include "coredump.h"
 
-#define MORSE_DRIVER_SEMVER_MAJOR 56
+#define MORSE_DRIVER_SEMVER_MAJOR 57
 #define MORSE_DRIVER_SEMVER_MINOR 0
 #define MORSE_DRIVER_SEMVER_PATCH 0
 

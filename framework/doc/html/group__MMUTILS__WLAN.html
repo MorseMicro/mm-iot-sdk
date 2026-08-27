@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.12.3</span>
+   &#160;<span id="projectnumber">2.13.1</span>
    </div>
   </td>
  </tr>
@@ -124,6 +124,9 @@ Macros</h2></td></tr>
 <tr class="memitem:ga9dee8eb7462203439607cacc1e453c4f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMUTILS__WLAN.html#ga9dee8eb7462203439607cacc1e453c4f">MM_S1G_OPERATION_IE_TYPE</a>&#160;&#160;&#160;(232)</td></tr>
 <tr class="memdesc:ga9dee8eb7462203439607cacc1e453c4f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Tag number of the S1G Operation information element.  <a href="group__MMUTILS__WLAN.html#ga9dee8eb7462203439607cacc1e453c4f">More...</a><br /></td></tr>
 <tr class="separator:ga9dee8eb7462203439607cacc1e453c4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga7a4844b0ab5efb4675e51c4caef78321"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMUTILS__WLAN.html#ga7a4844b0ab5efb4675e51c4caef78321">MM_HOSTNAME_MAX_LEN</a>&#160;&#160;&#160;(64)</td></tr>
+<tr class="memdesc:ga7a4844b0ab5efb4675e51c4caef78321"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum length of a hostname string, including null-terminator.  <a href="group__MMUTILS__WLAN.html#ga7a4844b0ab5efb4675e51c4caef78321">More...</a><br /></td></tr>
+<tr class="separator:ga7a4844b0ab5efb4675e51c4caef78321"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -190,8 +193,32 @@ Functions</h2></td></tr>
 <tr class="memitem:ga8bf8e749b51a63f830695647a3a8c820"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMUTILS__WLAN.html#ga8bf8e749b51a63f830695647a3a8c820">mm_mac_addr_is_equal</a> (const uint8_t *mac_addr1, const uint8_t *mac_addr2)</td></tr>
 <tr class="memdesc:ga8bf8e749b51a63f830695647a3a8c820"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compares two MAC addresses and determines if they are equal.  <a href="group__MMUTILS__WLAN.html#ga8bf8e749b51a63f830695647a3a8c820">More...</a><br /></td></tr>
 <tr class="separator:ga8bf8e749b51a63f830695647a3a8c820"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf1813185aff337a322b46509d929ac3e"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMUTILS__WLAN.html#gaf1813185aff337a322b46509d929ac3e">mm_mac_addr_is_valid_sta</a> (const uint8_t *mac_addr)</td></tr>
+<tr class="memdesc:gaf1813185aff337a322b46509d929ac3e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines if a given MAC address is a valid STA address.  <a href="group__MMUTILS__WLAN.html#gaf1813185aff337a322b46509d929ac3e">More...</a><br /></td></tr>
+<tr class="separator:gaf1813185aff337a322b46509d929ac3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga2622c1a2a0ed9478824149682bdb7a17"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMUTILS__WLAN.html#ga2622c1a2a0ed9478824149682bdb7a17">mm_validate_hostname</a> (const char *hostname)</td></tr>
+<tr class="memdesc:ga2622c1a2a0ed9478824149682bdb7a17"><td class="mdescLeft">&#160;</td><td class="mdescRight">Validate if a given hostname string is valid i.e.  <a href="group__MMUTILS__WLAN.html#ga2622c1a2a0ed9478824149682bdb7a17">More...</a><br /></td></tr>
+<tr class="separator:ga2622c1a2a0ed9478824149682bdb7a17"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="ga7a4844b0ab5efb4675e51c4caef78321" name="ga7a4844b0ab5efb4675e51c4caef78321"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga7a4844b0ab5efb4675e51c4caef78321">&#9670;&nbsp;</a></span>MM_HOSTNAME_MAX_LEN</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define MM_HOSTNAME_MAX_LEN&#160;&#160;&#160;(64)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Maximum length of a hostname string, including null-terminator. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00434">434</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
+
+</div>
+</div>
 <a id="gae2fbd328d6e13febd3049da4b58bd587" name="gae2fbd328d6e13febd3049da4b58bd587"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#gae2fbd328d6e13febd3049da4b58bd587">&#9670;&nbsp;</a></span>MM_RSN_INFORMATION_IE_TYPE</h2>
 
@@ -736,6 +763,43 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="gaf1813185aff337a322b46509d929ac3e" name="gaf1813185aff337a322b46509d929ac3e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaf1813185aff337a322b46509d929ac3e">&#9670;&nbsp;</a></span>mm_mac_addr_is_valid_sta()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool mm_mac_addr_is_valid_sta </td>
+          <td>(</td>
+          <td class="paramtype">const uint8_t *&#160;</td>
+          <td class="paramname"><em>mac_addr</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Determines if a given MAC address is a valid STA address. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">mac_addr</td><td>Array of length <a class="el" href="group__MMWLAN.html#gad1f02bb330d9d2f4c831a1cf9d44ff1a">MMWLAN_MAC_ADDR_LEN</a> containing a MAC address.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><code>true</code> if given MAC address is valid for a STA, else <code>false</code> </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="mmutils_8h_source.html#l00428">428</a> of file <a class="el" href="mmutils_8h_source.html">mmutils.h</a>.</p>
+
+</div>
+</div>
 <a id="ga52e9a60b21072f5eaac62d7881e0147d" name="ga52e9a60b21072f5eaac62d7881e0147d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga52e9a60b21072f5eaac62d7881e0147d">&#9670;&nbsp;</a></span>mm_mac_addr_is_zero()</h2>
 
@@ -860,6 +924,34 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>-2 on parse error, -1 if the S1G Opration IE was not found, 0 on success. </dd></dl>
+
+</div>
+</div>
+<a id="ga2622c1a2a0ed9478824149682bdb7a17" name="ga2622c1a2a0ed9478824149682bdb7a17"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga2622c1a2a0ed9478824149682bdb7a17">&#9670;&nbsp;</a></span>mm_validate_hostname()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool mm_validate_hostname </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>hostname</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Validate if a given hostname string is valid i.e. </p>
+<p >only contains alphanumeric characters or hyphens and is up to 63 characters in length + NULL terminator.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">hostname</td><td>The hostname to check.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><code>true</code> if the hostname is valid, else <code>false</code>. </dd></dl>
 
 </div>
 </div>

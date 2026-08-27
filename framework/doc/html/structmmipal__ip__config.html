@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.12.3</span>
+   &#160;<span id="projectnumber">2.13.1</span>
    </div>
   </td>
  </tr>
@@ -96,10 +96,10 @@ $(document).ready(function(){initNavTree('structmmipal__ip__config.html',''); in
 <div class="textblock"><p >IPv4 configuration structure. </p>
 <p >This should be initialized using <code>MMIPAL_IP_CONFIG_DEFAULT</code>. For example:</p>
 <div class="fragment"><div class="line"><span class="keyword">struct </span><a class="code hl_struct" href="structmmipal__ip__config.html">mmipal_ip_config</a> config = <a class="code hl_define" href="group__MMIPAL.html#gaaf26c0dd7e02e68ef7a49ae726e8d9d2">MMIPAL_IP_CONFIG_DEFAULT</a>;</div>
-<div class="ttc" id="agroup__MMIPAL_html_gaaf26c0dd7e02e68ef7a49ae726e8d9d2"><div class="ttname"><a href="group__MMIPAL.html#gaaf26c0dd7e02e68ef7a49ae726e8d9d2">MMIPAL_IP_CONFIG_DEFAULT</a></div><div class="ttdeci">#define MMIPAL_IP_CONFIG_DEFAULT</div><div class="ttdoc">Initializer for mmipal_ip_config.</div><div class="ttdef"><b>Definition:</b> <a href="mmipal_8h_source.html#l00107">mmipal.h:107</a></div></div>
-<div class="ttc" id="astructmmipal__ip__config_html"><div class="ttname"><a href="structmmipal__ip__config.html">mmipal_ip_config</a></div><div class="ttdoc">IPv4 configuration structure.</div><div class="ttdef"><b>Definition:</b> <a href="mmipal_8h_source.html#l00094">mmipal.h:95</a></div></div>
+<div class="ttc" id="agroup__MMIPAL_html_gaaf26c0dd7e02e68ef7a49ae726e8d9d2"><div class="ttname"><a href="group__MMIPAL.html#gaaf26c0dd7e02e68ef7a49ae726e8d9d2">MMIPAL_IP_CONFIG_DEFAULT</a></div><div class="ttdeci">#define MMIPAL_IP_CONFIG_DEFAULT</div><div class="ttdoc">Initializer for mmipal_ip_config.</div><div class="ttdef"><b>Definition:</b> <a href="mmipal_8h_source.html#l00111">mmipal.h:111</a></div></div>
+<div class="ttc" id="astructmmipal__ip__config_html"><div class="ttname"><a href="structmmipal__ip__config.html">mmipal_ip_config</a></div><div class="ttdoc">IPv4 configuration structure.</div><div class="ttdef"><b>Definition:</b> <a href="mmipal_8h_source.html#l00096">mmipal.h:97</a></div></div>
 </div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="mmipal_8h_source.html#l00094">94</a> of file <a class="el" href="mmipal_8h_source.html">mmipal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmipal_8h_source.html#l00096">96</a> of file <a class="el" href="mmipal_8h_source.html">mmipal.h</a>.</p>
 </div>
 <p><code>#include &lt;<a class="el" href="mmipal_8h_source.html">mmipal.h</a>&gt;</code></p>
 <table class="memberdecls">
@@ -117,6 +117,9 @@ Data Fields</h2></td></tr>
 <tr class="memitem:a873bd4a1d9edb6bcc713873e81d5d0f3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__MMIPAL.html#gad7cd05b2ca37d79ebbda48b5f2a59498">mmipal_ip_addr_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmipal__ip__config.html#a873bd4a1d9edb6bcc713873e81d5d0f3">gateway_addr</a></td></tr>
 <tr class="memdesc:a873bd4a1d9edb6bcc713873e81d5d0f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gateway address.  <a href="structmmipal__ip__config.html#a873bd4a1d9edb6bcc713873e81d5d0f3">More...</a><br /></td></tr>
 <tr class="separator:a873bd4a1d9edb6bcc713873e81d5d0f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae9cff92a05ff125706f9c2964c97c683"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmipal__ip__config.html#ae9cff92a05ff125706f9c2964c97c683">hostname</a> [<a class="el" href="group__MMUTILS__WLAN.html#ga7a4844b0ab5efb4675e51c4caef78321">MM_HOSTNAME_MAX_LEN</a>]</td></tr>
+<tr class="memdesc:ae9cff92a05ff125706f9c2964c97c683"><td class="mdescLeft">&#160;</td><td class="mdescRight">Interface hostname.  <a href="structmmipal__ip__config.html#ae9cff92a05ff125706f9c2964c97c683">More...</a><br /></td></tr>
+<tr class="separator:ae9cff92a05ff125706f9c2964c97c683"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Field Documentation</h2>
 <a id="a873bd4a1d9edb6bcc713873e81d5d0f3" name="a873bd4a1d9edb6bcc713873e81d5d0f3"></a>
@@ -133,7 +136,25 @@ Data Fields</h2></td></tr>
 
 <p>Gateway address. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmipal_8h_source.html#l00103">103</a> of file <a class="el" href="mmipal_8h_source.html">mmipal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmipal_8h_source.html#l00105">105</a> of file <a class="el" href="mmipal_8h_source.html">mmipal.h</a>.</p>
+
+</div>
+</div>
+<a id="ae9cff92a05ff125706f9c2964c97c683" name="ae9cff92a05ff125706f9c2964c97c683"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae9cff92a05ff125706f9c2964c97c683">&#9670;&nbsp;</a></span>hostname</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">char mmipal_ip_config::hostname[<a class="el" href="group__MMUTILS__WLAN.html#ga7a4844b0ab5efb4675e51c4caef78321">MM_HOSTNAME_MAX_LEN</a>]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Interface hostname. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmipal_8h_source.html#l00107">107</a> of file <a class="el" href="mmipal_8h_source.html">mmipal.h</a>.</p>
 
 </div>
 </div>
@@ -151,7 +172,7 @@ Data Fields</h2></td></tr>
 
 <p>local IP address </p>
 
-<p class="definition">Definition at line <a class="el" href="mmipal_8h_source.html#l00099">99</a> of file <a class="el" href="mmipal_8h_source.html">mmipal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmipal_8h_source.html#l00101">101</a> of file <a class="el" href="mmipal_8h_source.html">mmipal.h</a>.</p>
 
 </div>
 </div>
@@ -169,7 +190,7 @@ Data Fields</h2></td></tr>
 
 <p>IP address allocation mode. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmipal_8h_source.html#l00097">97</a> of file <a class="el" href="mmipal_8h_source.html">mmipal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmipal_8h_source.html#l00099">99</a> of file <a class="el" href="mmipal_8h_source.html">mmipal.h</a>.</p>
 
 </div>
 </div>
@@ -187,7 +208,7 @@ Data Fields</h2></td></tr>
 
 <p>Netmask address. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmipal_8h_source.html#l00101">101</a> of file <a class="el" href="mmipal_8h_source.html">mmipal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmipal_8h_source.html#l00103">103</a> of file <a class="el" href="mmipal_8h_source.html">mmipal.h</a>.</p>
 
 </div>
 </div>

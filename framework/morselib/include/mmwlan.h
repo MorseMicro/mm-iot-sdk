@@ -778,11 +778,55 @@ struct mmwlan_scan_config
      * @note This does not affect scans requested with the @ref mmwlan_scan_request().
      */
     uint32_t home_channel_dwell_time_ms;
+
+    /**
+     * Optional list of S1G channel numbers to use for selective scans during the (re)connection
+     * sequence. When set, the first @c selective_scan_attempts scans of an
+     * association attempt will be restricted to these channels, after which it falls back
+     * to scanning the full configured channel list.
+     *
+     * If a channel is not present in the currently configured channel list, or that
+     * corresponds to a channel with bandwidth greater than 2 MHz, @ref mmwlan_set_scan_config()
+     * will return an error.
+     *
+     * A copy of the array is made internally; the caller may free it after the call returns.
+     * Set to @c NULL with @c selected_channels_len of zero to disable.
+     *
+     * @see selective_scan_attempts
+     */
+    uint8_t *selected_channels;
+
+    /** Length of @c selected_channels. Set to zero to disable the selective scan feature. */
+    uint8_t selected_channels_len;
+
+    /**
+     * Number of scans at the start of an association sequence that should be restricted to the
+     * channels configured via @ref selected_channels.
+     *
+     * After this many attempts, scan falls back to scanning the full configured channel list.
+     * The counter resets when the STA leaves the connected state, so each reconnect attempt
+     * begins with another batch of selective scans.
+     *
+     * Special values:
+     * - @c 0 disables the feature (scans always use the full channel list).
+     * - @c UINT8_MAX always uses the selected channel list, including for background and roam scans
+     *   while connected.
+     *
+     * Has no effect unless @ref selected_channels has also been set with a non-empty list.
+     */
+    uint8_t selective_scan_attempts;
 };
 
 /** Initializer for @ref mmwlan_scan_config. */
-#define MMWLAN_SCAN_CONFIG_INIT \
-    { MMWLAN_SCAN_DEFAULT_DWELL_TIME_MS, false, MMWLAN_SCAN_DEFAULT_DWELL_ON_HOME_MS }
+#define MMWLAN_SCAN_CONFIG_INIT                                             \
+    {                                                                       \
+        .dwell_time_ms = MMWLAN_SCAN_DEFAULT_DWELL_TIME_MS,                 \
+        .ndp_probe_enabled = false,                                         \
+        .home_channel_dwell_time_ms = MMWLAN_SCAN_DEFAULT_DWELL_ON_HOME_MS, \
+        .selected_channels = NULL,                                          \
+        .selected_channels_len = 0,                                         \
+        .selective_scan_attempts = 0,                                       \
+    }
 
 /**
  * Update the scan configuration with the given settings.
@@ -851,6 +895,18 @@ struct mmwlan_scan_args
      * If set to 0, the device will not return to the home channel during the scan.
      */
     uint32_t dwell_on_home_ms;
+    /**
+     * Optional selected list of S1G channel numbers to scan. When @c NULL (and
+     * @c selected_channels_len is zero) the full configured channel list is scanned. If a channel
+     * with bandwidth larger than 2 MHz or an invalid channel is entered,
+     * @ref mmwlan_scan_request() will return an error code.
+     *
+     * A copy of the array is made internally; the caller may free it after the call returns.
+     * Set to @c NULL with @c selected_channels_len of zero to disable.
+     */
+    uint8_t *selected_channels;
+    /** Length of @c selected_channels. Zero means "scan all channels". */
+    uint8_t selected_channels_len;
 };
 
 /**
@@ -870,6 +926,8 @@ struct mmwlan_scan_args
         .ssid = { 0 },                                            \
         .ssid_len = 0,                                            \
         .dwell_on_home_ms = MMWLAN_SCAN_DEFAULT_DWELL_ON_HOME_MS, \
+        .selected_channels = NULL,                                \
+        .selected_channels_len = 0,                               \
     }
 
 /**
@@ -1145,6 +1203,12 @@ struct mmwlan_sta_args
      * on until @c scan_interval_limit_s is reached.
      *
      * If this is 0 then the @ref MMWLAN_DEFAULT_SCAN_INTERVAL_BASE_S will be used.
+     *
+     * @note Jitter is automatically applied to each computed interval: the actual wait is
+     *       randomized to between 50% and 150% of the computed value, with an additional
+     *       random delay of up to one second added when the scan is fired. This spreads
+     *       probe requests across time and prevents medium flooding (thundering herd
+     *       problem) in networks with large station counts.
      */
     uint16_t scan_interval_base_s;
     /**
@@ -1439,6 +1503,21 @@ int32_t mmwlan_get_rssi(void);
  * @returns @c MMWLAN_SUCCESS on success, else an appropriate error code.
  */
 enum mmwlan_status mmwlan_set_listen_interval(uint16_t interval);
+
+/**
+ * Set the beacon loss threshold.
+ *
+ * Set the threshold for the number of consecutively missed DTIM beacons that will trigger a beacon
+ * loss event. Beacon loss events are used to indicate the connection to an AP may be lost.
+ * On beacon loss, the STA will attempt to query the AP to recover the connection. If this fails,
+ * the connection to the AP will be terminated and the STA will initiate a new connection.
+ *
+ * @param threshold Number of consecutive missed DTIM beacons that triggers beacon loss.
+ *                  Value must be less than @c UINT8_MAX.
+ *
+ * @returns @c MMWLAN_SUCCESS on success, else an appropriate error code.
+ */
+enum mmwlan_status mmwlan_set_beacon_loss_threshold(uint8_t threshold);
 
 /**
  * @defgroup MMWLAN_WNM     WNM Sleep management
@@ -2128,6 +2207,9 @@ struct mmwlan_ap_args
  * parameters match the STA current operating channel. The recommended way to obtain these values
  * is @ref mmwlan_get_vif_channel_info() with @ref MMWLAN_VIF_STA.
  *
+ * @note: When the AP interface is active, channels may be restricted for operations such as
+ * scanning.
+ *
  * @param args Arguments (e.g., SSID, etc.). See @ref mmwlan_ap_args.
  *
  * @return @ref MMWLAN_SUCCESS on success, else an appropriate error code.
@@ -2183,6 +2265,28 @@ static inline enum mmwlan_status mmwlan_ap_get_bssid(uint8_t *bssid)
 #define MMWLAN_RELAY_DEFAULT_FORWARDING_TABLE_SIZE (64)
 
 /**
+ * Relay depth change callback function prototype.
+ *
+ * @param new_depth Current depth of the relay node after the change cb was triggered.
+ * @param arg       Opaque argument to be passed to the callback.
+ */
+typedef void (*mmwlan_relay_depth_change_cb_t)(uint8_t new_depth, void *arg);
+
+/**
+ * Register a relay depth change callback for use in relay mode.
+ *
+ * @warning ALPHA NOTICE: This is an alpha API that is under development;
+ *          breaking changes may be introduced in future releases.
+ *
+ * @param callback  The callback to register.
+ * @param arg       Opaque argument to be passed to the callback.
+ *
+ * @return @ref MMWLAN_SUCCESS on success, else an appropriate error code.
+ */
+enum mmwlan_status mmwlan_register_depth_change_cb(mmwlan_relay_depth_change_cb_t callback,
+                                                   void *arg);
+
+/**
  * Arguments data structure for @ref mmwlan_relay_enable().
  *
  * @warning ALPHA NOTICE: This is an alpha API that is under development;
@@ -2226,6 +2330,9 @@ struct mmwlan_relay_args
 /**
  * Enable S1G Relay mode.
  *
+ * The relay mode must be enabled prior to enabling the STA or AP, to ensure the device connects
+ * to the relay network with relay awareness.
+ *
  * @warning ALPHA NOTICE: This is an alpha API that is under development;
  *          breaking changes may be introduced in future releases.
  *
@@ -2237,6 +2344,27 @@ struct mmwlan_relay_args
  */
 enum mmwlan_status mmwlan_relay_enable(const struct mmwlan_relay_args *args);
 
+/** Maximum valid relay depth. */
+#define MMWLAN_RELAY_MAX_DEPTH 8
+
+/**
+ * Set the S1G Relay depth override.
+ *
+ * A depth of 0 clears any configured override.
+ *
+ * @warning ALPHA NOTICE: This is an alpha API that is under development;
+ *          breaking changes may be introduced in future releases.
+ *
+ * @note This is a test API and is not intended for use outside of testing.
+ *
+ * @note Only valid while STA and AP are both disabled.
+ *
+ * @param depth Relay depth override, max value of @ref MMWLAN_RELAY_MAX_DEPTH.
+ * @returns @ref MMWLAN_SUCCESS; @ref MMWLAN_UNAVAILABLE if STA/AP active;
+ *          @ref MMWLAN_INVALID_ARGUMENT if @p depth is out of range.
+ */
+enum mmwlan_status mmwlan_relay_set_depth_override(uint8_t depth);
+
 /**
  * Disable S1G Relay mode.
  *
@@ -2247,6 +2375,48 @@ enum mmwlan_status mmwlan_relay_enable(const struct mmwlan_relay_args *args);
  *          enabled at build time, or another appropriate error code.
  */
 enum mmwlan_status mmwlan_relay_disable(void);
+
+/**
+ * Enumeration of S1G Relay states.
+ */
+enum mmwlan_relay_state
+{
+    /** Relay mode is not enabled. */
+    MMWLAN_RELAY_STATE_DISABLED,
+    /** Relay is enabled on a non-root node whose AP interface is not yet up (STA only). */
+    MMWLAN_RELAY_STATE_STA,
+    /** Relay is enabled on a non-root node whose AP interface is up, relaying for children. */
+    MMWLAN_RELAY_STATE_RELAY,
+    /** Relay is enabled on the root node of the relay tree. */
+    MMWLAN_RELAY_STATE_ROOT,
+};
+
+/**
+ * Get the current S1G Relay state.
+ *
+ * @warning ALPHA NOTICE: This is an alpha API that is under development;
+ *          breaking changes may be introduced in future releases.
+ *
+ * @returns The current @ref mmwlan_relay_state. Returns @ref MMWLAN_RELAY_STATE_DISABLED if S1G
+ *          Relay support was not enabled at build time or relay is not currently enabled.
+ */
+enum mmwlan_relay_state mmwlan_relay_get_state(void);
+
+/** Relay depth value returned when the depth is unknown. */
+#define MMWLAN_RELAY_DEPTH_UNKNOWN UINT8_MAX
+
+/**
+ * Get the current S1G Relay depth.
+ *
+ * The depth is the number of links between this device and the root node.
+ *
+ * @warning ALPHA NOTICE: This is an alpha API that is under development;
+ *          breaking changes may be introduced in future releases.
+ *
+ * @returns The current relay depth, or @ref MMWLAN_RELAY_DEPTH_UNKNOWN if the depth is unknown
+ *          because relay is not active or the node has no path to the root.
+ */
+uint8_t mmwlan_relay_get_depth(void);
 
 /** @} */
 
@@ -2312,6 +2482,88 @@ struct mmwlan_beacon_vendor_ie_filter
  */
 enum mmwlan_status mmwlan_update_beacon_vendor_ie_filter(
     const struct mmwlan_beacon_vendor_ie_filter *filter);
+
+/** @} */
+
+/**
+ * @defgroup MMWLAN_VENDOR_IE_API   WLAN Vendor Specific IE add / clear API
+ *
+ * @{
+ *
+ * API for adding and clearing Vendor Specific IEs. These elements can be added to Beacon, Probe
+ * Response and (Re)Association Response frames.
+ */
+
+/**
+ * Maximum total size in bytes of all appended Vendor Specific IEs (including element headers).
+ */
+#define MMWLAN_VENDOR_IE_TOTAL_MAX_BYTES (2 * (UINT8_MAX + 2))
+
+/** Maximum size of a single Vendor Specific IE payload in bytes (limited by 8-bit length field). */
+#define MMWLAN_VENDOR_IE_MAX_SIZE (UINT8_MAX)
+
+/** Minimum size of a single Vendor Specific IE payload in bytes (OUI alone). */
+#define MMWLAN_VENDOR_IE_MIN_SIZE (3)
+
+/**
+ * Bitmask flags identifying which management frame types a Vendor Specific IE should be appended
+ * to.
+ */
+enum mmwlan_vendor_ie_mgmt_type
+{
+    MMWLAN_VENDOR_IE_MGMT_BEACON = (1u << 0), /**< Beacon frames. */
+    MMWLAN_VENDOR_IE_MGMT_PROBE_RESP = (1u << 1), /**< Probe Response frames. */
+
+    /**< All supported management frame types. Mask must intersect all supported frame types. */
+    MMWLAN_VENDOR_IE_MGMT_ALL = 0b111,
+};
+
+/**
+ * Descriptor for one Vendor Specific information element to insert into outgoing management
+ * frames.
+ *
+ * @note @c data is the IE payload starting at the 3-byte OUI, optionally followed by
+ * vendor-defined contents.
+ */
+struct mmwlan_vendor_ie
+{
+    /** Vendor Specific IE payload: [OUI(3)][optional OUI type][vendor-defined ...]. */
+    const uint8_t *data;
+    /** Length of @c data in bytes.
+     * Must satisfy @ref MMWLAN_VENDOR_IE_MIN_SIZE <= @c data_len <= @ref
+     * MMWLAN_VENDOR_IE_MAX_SIZE. */
+    uint8_t data_len;
+    /** Bitmask of @ref mmwlan_vendor_ie_mgmt_type identifying which outgoing management frames
+     *  this IE should be appended to. */
+    uint8_t mgmt_type_mask;
+};
+
+/**
+ * Append a Vendor Specific IE to the active list of Vendor Specific IEs.
+ *
+ * @note This will block until the Vendor Specific IE has been added or some error has occurred.
+ *
+ * @note If @ref MMWLAN_NO_MEM is returned while an AP is running, the IE has been stored and will
+ *       be applied on the next AP (re)start, but the currently running AP could not be updated.
+ *       The store is not rolled back, so re-adding the same IE would create a duplicate entry.
+ *
+ * @param ie Descriptor of the Vendor Specific IE to add. Must not be @c NULL. The element contents
+ *           are copied internally, so the caller retains ownership of the struct memory.
+ *
+ * @return @ref MMWLAN_SUCCESS on success, else an appropriate error code.
+ */
+enum mmwlan_status mmwlan_add_vendor_ie(const struct mmwlan_vendor_ie *ie);
+
+/**
+ * Clear the registered Vendor Specific IEs for the given management frame type.
+ *
+ * @note Blocks until done or error.
+ *
+ * @param mgmt_type_mask Bitmask of @ref mmwlan_vendor_ie_mgmt_type bits to clear.
+ *
+ * @return @ref MMWLAN_SUCCESS on success, else an appropriate error code.
+ */
+enum mmwlan_status mmwlan_clear_vendor_ies(uint8_t mgmt_type_mask);
 
 /** @} */
 

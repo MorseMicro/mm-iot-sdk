@@ -132,7 +132,7 @@ exit:
         mmosal_semb_give(driverd->driver_task.pending_semb);
         DRV_TASK_TRACE("schd %u", evt);
     }
-    MMLOG_INF("Scheduled evt %u at timeout %u\n", evt, timeout_at_ms);
+    MMLOG_DBG("Scheduled evt %u at timeout %u\n", evt, timeout_at_ms);
 }
 
 void driver_task_main(void *arg)

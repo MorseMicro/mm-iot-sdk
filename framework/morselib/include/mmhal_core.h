@@ -51,7 +51,7 @@ enum mmhal_veto_id
     /** End of deep sleep veto ID range that is allocated for morselib use. Note that this must not
      *  be changed as it is built into morselib. */
     MMHAL_VETO_ID_MORSELIB_MAX = 19,
-    /** Deep sleep veto ID for data-link subsystem. */
+    /** Deep sleep veto ID for data link subsystem. */
     MMHAL_VETO_ID_DATALINK = 20,
     /** Deep sleep veto ID allocated to @ref MMCONFIG. */
     MMHAL_VETO_ID_MMCONFIG = 21,

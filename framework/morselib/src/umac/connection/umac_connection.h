@@ -186,6 +186,14 @@ void umac_connection_signal_sta_event(struct umac_data *umacd, enum mmwlan_sta_e
 struct umac_sta_data *umac_connection_get_stad(struct umac_data *umacd);
 
 
+bool umac_connection_consume_selective_scan_attempt(struct umac_data *umacd);
+
+
 uint16_t umac_connection_get_vif_id(struct umac_data *umacd);
 
+
+enum mmwlan_status umac_connection_start_preassoc(struct umac_data *umacd);
+
+
+enum mmwlan_status umac_connection_stop_preassoc(struct umac_data *umacd);
 

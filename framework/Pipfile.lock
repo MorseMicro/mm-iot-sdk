@@ -34,15 +34,6 @@
             "markers": "python_version >= '3.7'",
             "version": "==1.9.2"
         },
-        "dict-to-dataclass": {
-            "hashes": [
-                "sha256:95784ab5dfa0e4cacb929e069ea738b8b2b00c2214414e30f4ed62e695069032",
-                "sha256:dc19ba72d3a5124409f09a1c56e004754240efb1e7379b0e790a4ef0be34b284"
-            ],
-            "index": "pypi",
-            "markers": "python_version >= '3.7'",
-            "version": "==0.0.8"
-        },
         "hjson": {
             "hashes": [
                 "sha256:55af475a27cf83a7969c808399d7bccdec8fb836a07ddbd574587593b9cdcf75",
@@ -95,22 +86,6 @@
             ],
             "index": "pypi",
             "version": "==0.32"
-        },
-        "python-dateutil": {
-            "hashes": [
-                "sha256:73ebfe9dbf22e832286dafa60473e4cd239f8592f699aa5adaf10050e6e1823c",
-                "sha256:75bb3f31ea686f1197762692a9ee6a7550b59fc6ca3a1f4b5d7e32fb98e2da2a"
-            ],
-            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2'",
-            "version": "==2.8.1"
-        },
-        "six": {
-            "hashes": [
-                "sha256:4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274",
-                "sha256:ff70335d468e7eb6ec65b95b99d3a2836546063f63acc5171de367e834932a81"
-            ],
-            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2'",
-            "version": "==1.17.0"
         }
     },
     "develop": {

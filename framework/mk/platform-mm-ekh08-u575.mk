@@ -11,7 +11,15 @@ MMHAL_CHIP_TYPE ?= mmhal_mm6108
 BUILD_DEFINES += MMHAL_CHIP_TYPE=$(MMHAL_CHIP_TYPE)
 
 FW_MBIN ?= mm6108.mbin
+ifeq ($(EXCLUDE_MMCONFIG),1)
+# EKH08s vary, your MBIN file will be one of the following
+#BCF_MBIN_REL ?= mm6108/bcfs/bcf_aw_hm593.mbin
+#BCF_MBIN_REL ?= mm6108/bcfs/bcf_mf08651_us.mbin
+ifeq ($(BCF_MBIN_REL),)
+$(error BCF file required. Select from the options above)
+endif
 
+endif
 # This platform is well resourced so we can use statically allocated pktmem with generous
 # allocations.
 MMPKTMEM_TYPE = static

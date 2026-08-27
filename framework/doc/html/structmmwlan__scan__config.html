@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.12.3</span>
+   &#160;<span id="projectnumber">2.13.1</span>
    </div>
   </td>
  </tr>
@@ -96,7 +96,7 @@ $(document).ready(function(){initNavTree('structmmwlan__scan__config.html',''); 
 <div class="textblock"><p >Scan configuration data structure. </p>
 <p >Use <a class="el" href="group__MMWLAN__SCAN.html#ga5b478017f60cfcc091f5ca8e2b4d98a6">MMWLAN_SCAN_CONFIG_INIT</a> for initialization. For example:</p>
 <div class="fragment"><div class="line"><span class="keyword">struct </span><a class="code hl_struct" href="structmmwlan__scan__config.html">mmwlan_scan_config</a> scan_config = <a class="code hl_define" href="group__MMWLAN__SCAN.html#ga5b478017f60cfcc091f5ca8e2b4d98a6">MMWLAN_SCAN_CONFIG_INIT</a>;</div>
-<div class="ttc" id="agroup__MMWLAN__SCAN_html_ga5b478017f60cfcc091f5ca8e2b4d98a6"><div class="ttname"><a href="group__MMWLAN__SCAN.html#ga5b478017f60cfcc091f5ca8e2b4d98a6">MMWLAN_SCAN_CONFIG_INIT</a></div><div class="ttdeci">#define MMWLAN_SCAN_CONFIG_INIT</div><div class="ttdoc">Initializer for mmwlan_scan_config.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00784">mmwlan.h:784</a></div></div>
+<div class="ttc" id="agroup__MMWLAN__SCAN_html_ga5b478017f60cfcc091f5ca8e2b4d98a6"><div class="ttname"><a href="group__MMWLAN__SCAN.html#ga5b478017f60cfcc091f5ca8e2b4d98a6">MMWLAN_SCAN_CONFIG_INIT</a></div><div class="ttdeci">#define MMWLAN_SCAN_CONFIG_INIT</div><div class="ttdoc">Initializer for mmwlan_scan_config.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00821">mmwlan.h:821</a></div></div>
 <div class="ttc" id="astructmmwlan__scan__config_html"><div class="ttname"><a href="structmmwlan__scan__config.html">mmwlan_scan_config</a></div><div class="ttdoc">Scan configuration data structure.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00751">mmwlan.h:752</a></div></div>
 </div><!-- fragment --><dl class="section see"><dt>See also</dt><dd><a class="el" href="group__MMWLAN__SCAN.html#ga632ecb9c29d782148d7c9af9395762b6" title="Update the scan configuration with the given settings.">mmwlan_set_scan_config()</a> </dd></dl>
 
@@ -115,6 +115,15 @@ Data Fields</h2></td></tr>
 <tr class="memitem:aa70425bf650c371fd4a9ec3c39366d74"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__scan__config.html#aa70425bf650c371fd4a9ec3c39366d74">home_channel_dwell_time_ms</a></td></tr>
 <tr class="memdesc:aa70425bf650c371fd4a9ec3c39366d74"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the home channel dwell time to use for scans that are requested internally within the mmwlan driver (e.g., when connecting or background scanning).  <a href="structmmwlan__scan__config.html#aa70425bf650c371fd4a9ec3c39366d74">More...</a><br /></td></tr>
 <tr class="separator:aa70425bf650c371fd4a9ec3c39366d74"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aae9372e4791ad3a99cab79674d7db686"><td class="memItemLeft" align="right" valign="top">uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__scan__config.html#aae9372e4791ad3a99cab79674d7db686">selected_channels</a></td></tr>
+<tr class="memdesc:aae9372e4791ad3a99cab79674d7db686"><td class="mdescLeft">&#160;</td><td class="mdescRight">Optional list of S1G channel numbers to use for selective scans during the (re)connection sequence.  <a href="structmmwlan__scan__config.html#aae9372e4791ad3a99cab79674d7db686">More...</a><br /></td></tr>
+<tr class="separator:aae9372e4791ad3a99cab79674d7db686"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a64c01a273bcbf58e548166f49eb89ce7"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__scan__config.html#a64c01a273bcbf58e548166f49eb89ce7">selected_channels_len</a></td></tr>
+<tr class="memdesc:a64c01a273bcbf58e548166f49eb89ce7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Length of <code>selected_channels</code>.  <a href="structmmwlan__scan__config.html#a64c01a273bcbf58e548166f49eb89ce7">More...</a><br /></td></tr>
+<tr class="separator:a64c01a273bcbf58e548166f49eb89ce7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a47bc2c5b579d3ff4d14352b4278e8a"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__scan__config.html#a7a47bc2c5b579d3ff4d14352b4278e8a">selective_scan_attempts</a></td></tr>
+<tr class="memdesc:a7a47bc2c5b579d3ff4d14352b4278e8a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of scans at the start of an association sequence that should be restricted to the channels configured via <a class="el" href="structmmwlan__scan__config.html#aae9372e4791ad3a99cab79674d7db686">selected_channels</a>.  <a href="structmmwlan__scan__config.html#a7a47bc2c5b579d3ff4d14352b4278e8a">More...</a><br /></td></tr>
+<tr class="separator:a7a47bc2c5b579d3ff4d14352b4278e8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Field Documentation</h2>
 <a id="abb7f68897da19247834438a46a7f18bd" name="abb7f68897da19247834438a46a7f18bd"></a>
@@ -172,6 +181,71 @@ Data Fields</h2></td></tr>
 <dl class="section warning"><dt>Warning</dt><dd>Be careful when enabling NDP probe requests. Some APs may not respond to NDP probe requests if the CSSID (Compressed SSID) field is not populated. When using the <a class="el" href="group__MMWLAN__SCAN.html#gacf6def12dc1c130f80670fc79f30211d">mmwlan_scan_request()</a> API with NDP probe requests enabled, it is advisable to include an SSID in the scan arguments (see <a class="el" href="structmmwlan__scan__args.html#a62199cfc87f9a93a1e52d88d5a02d9eb">mmwlan_scan_args::ssid</a>). </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00772">772</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+
+</div>
+</div>
+<a id="aae9372e4791ad3a99cab79674d7db686" name="aae9372e4791ad3a99cab79674d7db686"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aae9372e4791ad3a99cab79674d7db686">&#9670;&nbsp;</a></span>selected_channels</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t* mmwlan_scan_config::selected_channels</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Optional list of S1G channel numbers to use for selective scans during the (re)connection sequence. </p>
+<p >When set, the first <code>selective_scan_attempts</code> scans of an association attempt will be restricted to these channels, after which it falls back to scanning the full configured channel list.</p>
+<p >If a channel is not present in the currently configured channel list, or that corresponds to a channel with bandwidth greater than 2 MHz, <a class="el" href="group__MMWLAN__SCAN.html#ga632ecb9c29d782148d7c9af9395762b6">mmwlan_set_scan_config()</a> will return an error.</p>
+<p >A copy of the array is made internally; the caller may free it after the call returns. Set to <code>NULL</code> with <code>selected_channels_len</code> of zero to disable.</p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="structmmwlan__scan__config.html#a7a47bc2c5b579d3ff4d14352b4278e8a" title="Number of scans at the start of an association sequence that should be restricted to the channels con...">selective_scan_attempts</a> </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00797">797</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+
+</div>
+</div>
+<a id="a64c01a273bcbf58e548166f49eb89ce7" name="a64c01a273bcbf58e548166f49eb89ce7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a64c01a273bcbf58e548166f49eb89ce7">&#9670;&nbsp;</a></span>selected_channels_len</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t mmwlan_scan_config::selected_channels_len</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Length of <code>selected_channels</code>. </p>
+<p >Set to zero to disable the selective scan feature. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00800">800</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+
+</div>
+</div>
+<a id="a7a47bc2c5b579d3ff4d14352b4278e8a" name="a7a47bc2c5b579d3ff4d14352b4278e8a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7a47bc2c5b579d3ff4d14352b4278e8a">&#9670;&nbsp;</a></span>selective_scan_attempts</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t mmwlan_scan_config::selective_scan_attempts</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Number of scans at the start of an association sequence that should be restricted to the channels configured via <a class="el" href="structmmwlan__scan__config.html#aae9372e4791ad3a99cab79674d7db686">selected_channels</a>. </p>
+<p >After this many attempts, scan falls back to scanning the full configured channel list. The counter resets when the STA leaves the connected state, so each reconnect attempt begins with another batch of selective scans.</p>
+<p >Special values:</p><ul>
+<li><code>0</code> disables the feature (scans always use the full channel list).</li>
+<li><code>UINT8_MAX</code> always uses the selected channel list, including for background and roam scans while connected.</li>
+</ul>
+<p >Has no effect unless <a class="el" href="structmmwlan__scan__config.html#aae9372e4791ad3a99cab79674d7db686">selected_channels</a> has also been set with a non-empty list. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00817">817</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>

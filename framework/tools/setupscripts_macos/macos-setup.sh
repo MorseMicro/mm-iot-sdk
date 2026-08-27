@@ -1,4 +1,5 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
+set -e
 #
 # Copyright 2026 Morse Micro
 #

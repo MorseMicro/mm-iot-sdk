@@ -79,7 +79,7 @@ enum mmhal_uart_deep_sleep_mode
 {
     /** Deep sleep mode is disabled. */
     MMHAL_UART_DEEP_SLEEP_DISABLED,
-    /** Enable deep sleep until activity occurs on data-link transport. */
+    /** Enable deep sleep until activity occurs on data link transport. */
     MMHAL_UART_DEEP_SLEEP_ONE_SHOT,
 };
 

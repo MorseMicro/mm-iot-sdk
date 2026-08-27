@@ -418,6 +418,8 @@ int32_t transport_recv_with_timeout(NetworkContext_t * pNetworkContext,
  * @param[out] source_ip       Buffer into which to receive source IP address
  * @param[out] source_ip_len   Length of source_ip buffer
  * @param[out] source_port     Variable into which to receive source IP port
+ * @param[out] datagram_truncated If non-NULL, set to true when a UDP datagram was
+ *                                larger than @p bytesToRecv (may be NULL).
  *
  * @return number of bytes received if successful or a negative value on error.
  */
@@ -427,7 +429,8 @@ int32_t transport_recv_from_with_timeout(NetworkContext_t *pNetworkContext,
                                          uint32_t timeoutMs,
                                          char *source_ip,
                                          size_t source_ip_len,
-                                         uint16_t *source_port);
+                                         uint16_t *source_port,
+                                         bool *datagram_truncated);
 
 /**
  * Sends data over an established TLS connection.

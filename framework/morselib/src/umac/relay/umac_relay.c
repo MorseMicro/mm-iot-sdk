@@ -4,6 +4,7 @@
  */
 
 #include "umac_relay.h"
+#include "umac/config/umac_config.h"
 #include "umac_relay_private.h"
 
 #include "common/common.h"
@@ -16,6 +17,7 @@
 #include "umac/core/umac_core.h"
 #include "umac/datapath/umac_datapath.h"
 #include "umac/frames/s1g_action.h"
+#include "umac/ies/morse_ie.h"
 #include "umac/interface/umac_interface.h"
 
 #if defined(ENABLE_MMWLAN_RELAY) && ENABLE_MMWLAN_RELAY
@@ -132,6 +134,12 @@ enum mmwlan_status umac_relay_enable(struct umac_data *umacd, const struct mmwla
         return MMWLAN_UNAVAILABLE;
     }
 
+    if (umac_connection_get_state(umacd) != MMWLAN_STA_DISABLED || umac_data_get_ap(umacd) != NULL)
+    {
+        MMLOG_WRN("Must start relay before STA and AP\n");
+        return MMWLAN_UNAVAILABLE;
+    }
+
     unsigned forwarding_table_size = args->forwarding_table_size;
     if (forwarding_table_size == 0)
     {
@@ -150,7 +158,25 @@ enum mmwlan_status umac_relay_enable(struct umac_data *umacd, const struct mmwla
     data->args.forwarding_table_size = forwarding_table_size;
     data->reachable_update_latency_ms = ADDRESS_UPDATE_LATENCY_MS;
 
+    data->depth = args->is_root_node ? 0 : MMWLAN_RELAY_DEPTH_UNKNOWN;
+    data->recover_depth = data->depth;
+    umac_ap_signal_beacon_critical_update(umacd);
+
     umac_relay_table_init(data);
+
+    if (!args->is_root_node && umac_connection_get_state(umacd) == MMWLAN_STA_CONNECTED)
+    {
+        struct umac_sta_data *stad = umac_connection_get_stad(umacd);
+        if (stad != NULL)
+        {
+            MMLOG_INF("Sending 4addr QoS NULL for relay\n");
+            enum mmwlan_status status = umac_datapath_build_and_tx_4addr_qos_null_frame(stad);
+            if (status != MMWLAN_SUCCESS)
+            {
+                MMLOG_WRN("Failed to TX 4addr QoS NULL\n");
+            }
+        }
+    }
 
     MMLOG_INF("S1G Relay enabled (%s node)\n", args->is_root_node ? "root" : "non-root");
     return MMWLAN_SUCCESS;
@@ -162,10 +188,140 @@ enum mmwlan_status umac_relay_disable(struct umac_data *umacd)
     if (data == NULL)
     {
         MMLOG_WRN("Relay not active\n");
-        return MMWLAN_UNAVAILABLE;
+        return MMWLAN_SUCCESS;
     }
     umac_data_dealloc_relay(umacd);
     return MMWLAN_SUCCESS;
+}
+
+void umac_relay_emit_ies(struct umac_data *umacd,
+                         struct consbuf *buf,
+                         enum dot11_fc_type type,
+                         enum dot11_fc_subtype subtype)
+{
+    struct umac_relay_data *data = umac_data_get_relay(umacd);
+    if (data == NULL)
+    {
+        return;
+    }
+
+    bool is_probe_rsp = (type == DOT11_FC_TYPE_MGMT && subtype == DOT11_FC_SUBTYPE_PROBE_RSP);
+    bool is_s1g_beacon = (type == DOT11_FC_TYPE_EXT && subtype == DOT11_FC_SUBTYPE_S1G_BEACON);
+
+    if (is_probe_rsp || is_s1g_beacon)
+    {
+        ie_morse_s1g_relay_build(umacd, buf);
+    }
+}
+
+uint8_t umac_relay_get_depth(struct umac_data *umacd)
+{
+    struct umac_relay_data *data = umac_data_get_relay(umacd);
+    return (data != NULL) ? data->depth : MMWLAN_RELAY_DEPTH_UNKNOWN;
+}
+
+bool umac_relay_filter_scan_depth(struct umac_data *umacd, uint8_t *min, uint8_t *max)
+{
+    struct umac_relay_data *data = umac_data_get_relay(umacd);
+    MMOSAL_DEV_ASSERT(min && max);
+    if (data == NULL)
+    {
+        return false;
+    }
+
+    *min = 0;
+    *max = MM_MIN(data->depth, data->recover_depth) - 1;
+
+    uint8_t override_depth = umac_config_get_relay_depth_override(umacd);
+    if (override_depth)
+    {
+        *min = override_depth - 1;
+        *max = override_depth - 1;
+    }
+    return true;
+}
+
+void umac_relay_process_beacon_ies(struct umac_data *umacd, const uint8_t *ies, uint32_t ies_len)
+{
+    struct umac_relay_data *data = umac_data_get_relay(umacd);
+    if (data == NULL)
+    {
+        return;
+    }
+
+    uint8_t parent_depth = 0;
+
+    {
+        const struct dot11_ie_morse_s1g_relay *ie = ie_morse_s1g_relay_find(ies, ies_len);
+        if (ie != NULL)
+        {
+            parent_depth = ie->depth;
+        }
+    }
+
+
+    uint8_t new_depth = (parent_depth == MMWLAN_RELAY_DEPTH_UNKNOWN) ? MMWLAN_RELAY_DEPTH_UNKNOWN :
+                                                                       (parent_depth + 1);
+    if (new_depth != data->depth)
+    {
+        if (new_depth == MMWLAN_RELAY_DEPTH_UNKNOWN)
+        {
+            MMLOG_WRN("Parent relay indicates path to root broken\n");
+            data->recover_depth = data->depth;
+            struct mmwlan_vif_state vif_state = {
+                .vif = MMWLAN_VIF_STA,
+                .link_state = MMWLAN_LINK_DOWN,
+            };
+            umac_interface_invoke_vif_state_cb(umacd, &vif_state);
+
+        }
+        else
+        {
+            if (data->depth == MMWLAN_RELAY_DEPTH_UNKNOWN)
+            {
+                struct mmwlan_vif_state vif_state = {
+                    .vif = MMWLAN_VIF_STA,
+                    .link_state = MMWLAN_LINK_UP,
+                };
+                umac_interface_invoke_vif_state_cb(umacd, &vif_state);
+            }
+            uint8_t override_depth = umac_config_get_relay_depth_override(umacd);
+            MMOSAL_DEV_ASSERT(override_depth == 0 || new_depth == override_depth);
+            MMOSAL_DEV_ASSERT(new_depth <= data->recover_depth);
+            data->recover_depth = MMWLAN_RELAY_DEPTH_UNKNOWN;
+
+        }
+
+        MMLOG_INF("Relay depth updated to %u (parent depth %u)\n", new_depth, parent_depth);
+        data->depth = new_depth;
+
+
+        umac_ap_signal_beacon_critical_update(umacd);
+
+        if (data->depth_change_cb != NULL)
+        {
+            data->depth_change_cb(data->depth, data->depth_change_cb_arg);
+        }
+    }
+}
+
+enum mmwlan_relay_state umac_relay_get_state(struct umac_data *umacd)
+{
+    struct umac_relay_data *data = umac_data_get_relay(umacd);
+    if (data == NULL)
+    {
+        return MMWLAN_RELAY_STATE_DISABLED;
+    }
+    if (data->args.is_root_node)
+    {
+        return MMWLAN_RELAY_STATE_ROOT;
+    }
+
+    if (umac_data_get_ap(umacd) != NULL)
+    {
+        return MMWLAN_RELAY_STATE_RELAY;
+    }
+    return MMWLAN_RELAY_STATE_STA;
 }
 
 void umac_relay_process_data_frame(struct umac_sta_data *stad,
@@ -194,15 +350,13 @@ void umac_relay_process_data_frame(struct umac_sta_data *stad,
     }
 
     bool is_multicast = mm_mac_addr_is_multicast(da);
-    {
-        MMLOG_VRB("SA=" MM_MAC_ADDR_FMT ", DA=" MM_MAC_ADDR_FMT ", TA=" MM_MAC_ADDR_FMT
-                  ", RA=" MM_MAC_ADDR_FMT ", MC? %u\n",
-                  MM_MAC_ADDR_VAL(dot11_get_sa_data(data_hdr)),
-                  MM_MAC_ADDR_VAL(da),
-                  MM_MAC_ADDR_VAL(dot11_get_ta(&data_hdr->base)),
-                  MM_MAC_ADDR_VAL(dot11_get_ra(&data_hdr->base)),
-                  is_multicast);
-    }
+    MMLOG_VRB("SA=" MM_MAC_ADDR_FMT ", DA=" MM_MAC_ADDR_FMT ", TA=" MM_MAC_ADDR_FMT
+              ", RA=" MM_MAC_ADDR_FMT ", MC? %u\n",
+              MM_MAC_ADDR_VAL(dot11_get_sa_data(data_hdr)),
+              MM_MAC_ADDR_VAL(da),
+              MM_MAC_ADDR_VAL(dot11_get_ta(&data_hdr->base)),
+              MM_MAC_ADDR_VAL(dot11_get_ra(&data_hdr->base)),
+              is_multicast);
 
     const uint8_t *ra = NULL;
     const uint8_t *sa = NULL;
@@ -239,6 +393,10 @@ void umac_relay_process_data_frame(struct umac_sta_data *stad,
             vif_id = umac_interface_get_vif_id(umacd, UMAC_INTERFACE_AP);
 
 
+            if (sta_mode_stad && umac_interface_addr_matches_mac_addr(sta_mode_stad, sa))
+            {
+                *_rxbufview = NULL;
+            }
         }
     }
     else
@@ -374,7 +532,7 @@ static void umac_relay_process_reachable_address_update(
               update_type == REACHABLE_ADDRESS_ADD ? "add" : "remove",
               MM_MAC_ADDR_VAL(mac),
               MM_MAC_ADDR_VAL(initiator_mac),
-              MM_MAC_ADDR_VAL(initiator_mac));
+              MM_MAC_ADDR_VAL(sender_mac_addr));
 
     if (update_type == REACHABLE_ADDRESS_ADD)
     {
@@ -637,12 +795,53 @@ void umac_relay_handle_sta_state(struct umac_data *umacd, enum mmwlan_sta_state 
     {
 
         umac_relay_table_mark_entries_as_newly_added(data);
+
+
+        if (data->depth != MMWLAN_RELAY_DEPTH_UNKNOWN && umac_data_get_ap(umacd) != NULL)
+        {
+            data->recover_depth = data->depth;
+            data->depth = MMWLAN_RELAY_DEPTH_UNKNOWN;
+
+            if (data->depth_change_cb != NULL)
+            {
+                data->depth_change_cb(data->depth, data->depth_change_cb_arg);
+            }
+        }
     }
     else
     {
 
         schedule_update(umacd, data);
+        if (!data->args.is_root_node)
+        {
+            struct umac_sta_data *stad = umac_connection_get_stad(umacd);
+            if (stad == NULL)
+            {
+                MMLOG_WRN("STA State connected but connection has no STAD\n");
+                return;
+            }
+            MMLOG_INF("Sending 4addr QoS NULL for relay\n");
+            enum mmwlan_status status = umac_datapath_build_and_tx_4addr_qos_null_frame(stad);
+            if (status != MMWLAN_SUCCESS)
+            {
+                MMLOG_WRN("Failed to TX 4addr QoS NULL\n");
+            }
+        }
     }
+}
+
+enum mmwlan_status umac_relay_register_depth_change_cb(struct umac_data *umacd,
+                                                       mmwlan_relay_depth_change_cb_t callback,
+                                                       void *arg)
+{
+    struct umac_relay_data *data = umac_data_get_relay(umacd);
+    if (data == NULL)
+    {
+        return MMWLAN_UNAVAILABLE;
+    }
+    data->depth_change_cb = callback;
+    data->depth_change_cb_arg = arg;
+    return MMWLAN_SUCCESS;
 }
 
 #endif

@@ -13,10 +13,12 @@
 #include "umac/stats/umac_stats.h"
 #include "umac_ap_data.h"
 #include "umac/data/umac_data.h"
+#include "umac/config/umac_config.h"
 #include "umac/datapath/umac_datapath.h"
 #include "umac/frames/frames_common.h"
 #include "umac/frames/probe_response.h"
 #include "umac/ies/s1g_tim.h"
+#include "umac/ies/vendor_ie.h"
 #include "umac/interface/umac_interface.h"
 #include "umac/keys/umac_keys.h"
 #include "umac/rc/umac_rc.h"
@@ -94,25 +96,6 @@ bool umac_ap_validate_ap_args(struct umac_data *umacd, const struct mmwlan_ap_ar
     }
     else
     {
-        if (sta_active && (args->op_class != sta_channel_info.op_class ||
-                           args->s1g_chan_num != sta_channel_info.s1g_chan_num ||
-                           args->pri_bw_mhz != sta_channel_info.pri_bw_mhz ||
-                           args->pri_1mhz_chan_idx != sta_channel_info.pri_1mhz_chan_idx))
-        {
-            MMLOG_ERR("AP channel must match active STA channel\n"
-                      "STA: op_class=%u chan=%u pri_bw=%u pri_1mhz_idx=%u\n"
-                      "AP: op_class=%u chan=%u pri_bw=%u pri_1mhz_idx=%u\n",
-                      sta_channel_info.op_class,
-                      sta_channel_info.s1g_chan_num,
-                      sta_channel_info.pri_bw_mhz,
-                      sta_channel_info.pri_1mhz_chan_idx,
-                      args->op_class,
-                      args->s1g_chan_num,
-                      args->pri_bw_mhz,
-                      args->pri_1mhz_chan_idx);
-            return false;
-        }
-
         const struct mmwlan_s1g_channel *chan = umac_regdb_get_channel(umacd, args->s1g_chan_num);
         if (chan == NULL || !umac_regdb_op_class_match(umacd, args->op_class, chan))
         {
@@ -137,6 +120,25 @@ bool umac_ap_validate_ap_args(struct umac_data *umacd, const struct mmwlan_ap_ar
                 }
             }
 #endif
+            return false;
+        }
+
+        if (sta_active && (!umac_regdb_op_class_match(umacd, sta_channel_info.op_class, chan) ||
+                           args->s1g_chan_num != sta_channel_info.s1g_chan_num ||
+                           args->pri_bw_mhz != sta_channel_info.pri_bw_mhz ||
+                           args->pri_1mhz_chan_idx != sta_channel_info.pri_1mhz_chan_idx))
+        {
+            MMLOG_ERR("AP channel must match active STA channel\n"
+                      "STA: op_class=%u chan=%u pri_bw=%u pri_1mhz_idx=%u\n"
+                      "AP: op_class=%u chan=%u pri_bw=%u pri_1mhz_idx=%u\n",
+                      sta_channel_info.op_class,
+                      sta_channel_info.s1g_chan_num,
+                      sta_channel_info.pri_bw_mhz,
+                      sta_channel_info.pri_1mhz_chan_idx,
+                      args->op_class,
+                      args->s1g_chan_num,
+                      args->pri_bw_mhz,
+                      args->pri_1mhz_chan_idx);
             return false;
         }
 
@@ -388,11 +390,16 @@ enum mmwlan_status umac_ap_start(struct umac_data *umacd, const struct umac_ap_c
         goto failure;
     }
 
-    struct mmwlan_vif_state state = {
-        .vif = MMWLAN_VIF_AP,
-        .link_state = MMWLAN_LINK_UP,
-    };
-    umac_interface_invoke_vif_state_cb(umacd, &state);
+    enum mmwlan_relay_state relay_state = umac_relay_get_state(umacd);
+    if (relay_state == MMWLAN_RELAY_STATE_DISABLED || relay_state == MMWLAN_RELAY_STATE_ROOT)
+    {
+
+        struct mmwlan_vif_state state = {
+            .vif = MMWLAN_VIF_AP,
+            .link_state = MMWLAN_LINK_UP,
+        };
+        umac_interface_invoke_vif_state_cb(umacd, &state);
+    }
 
     return MMWLAN_SUCCESS;
 
@@ -417,6 +424,26 @@ void umac_ap_build_beacon(struct umac_data *umacd, struct consbuf *buf, void *pa
                      *traffic_indicator,
                      data->bitmap);
     consbuf_append(buf, data->config.tail, data->config.tail_len);
+
+    umac_relay_emit_ies(umacd, buf, DOT11_FC_TYPE_EXT, DOT11_FC_SUBTYPE_S1G_BEACON);
+
+    vendor_ie_list_emit(umac_config_get_vendor_ies(umacd), buf, MMWLAN_VENDOR_IE_MGMT_BEACON);
+}
+
+void umac_ap_signal_beacon_critical_update(struct umac_data *umacd)
+{
+    struct umac_ap_data *data = umac_data_get_ap(umacd);
+    if (data == NULL ||
+        data->config.head == NULL ||
+        data->config.head_len < sizeof(struct dot11_s1g_beacon_hdr))
+    {
+
+        return;
+    }
+
+
+    struct dot11_s1g_beacon_hdr *hdr = (struct dot11_s1g_beacon_hdr *)data->config.head;
+    hdr->change_sequence++;
 }
 
 struct mmpkt *umac_ap_get_beacon(struct umac_data *umacd)
@@ -494,6 +521,12 @@ static bool umac_ap_should_ignore_probe_req(struct umac_data *umacd,
                   rx_metadata->bw_mhz,
                   pri_chan_freq_100khz / 10,
                   pri_chan_freq_100khz % 10);
+        return true;
+    }
+
+    if (umac_relay_get_state(umacd) == MMWLAN_RELAY_STATE_RELAY &&
+        umac_relay_get_depth(umacd) == MMWLAN_RELAY_DEPTH_UNKNOWN)
+    {
         return true;
     }
     return false;
@@ -851,6 +884,7 @@ static enum mmwlan_status umac_ap_remove_sta_record(struct umac_data *umacd,
     umac_rc_stop(stad);
     umac_rc_deinit(stad);
     umac_datapath_stad_flush_txq(umacd, stad);
+    ap_traffic_bitmap_clear_aid_bit(data->bitmap, aid);
 
     mmosal_free(stad);
 
@@ -908,6 +942,18 @@ enum mmwlan_status umac_ap_get_bssid(struct umac_data *umacd, uint8_t *bssid)
     return MMWLAN_SUCCESS;
 }
 
+const uint8_t *umac_ap_peek_bssid(struct umac_data *umacd)
+{
+    struct umac_ap_data *data = umac_data_get_ap(umacd);
+    if (data == NULL || data->sta_common == NULL)
+    {
+        MMLOG_DBG("AP mode not active\n");
+        return NULL;
+    }
+
+    return umac_sta_data_peek_bssid(data->sta_common);
+}
+
 enum mmwlan_sta_state umac_ap_get_sta_state(struct umac_sta_data *stad)
 {
     if (stad != NULL)
@@ -949,6 +995,26 @@ const struct mmwlan_s1g_channel *umac_ap_get_specified_s1g_channel(struct umac_d
     }
 
     return data->specified_chan;
+}
+
+bool umac_ap_is_scan_channel_allowed(struct umac_data *umacd,
+                                     const struct mmwlan_s1g_channel *scan_ch)
+{
+    const struct mmwlan_s1g_channel *ap_op_ch = umac_ap_get_specified_s1g_channel(umacd);
+    if (ap_op_ch == NULL)
+    {
+        return true;
+    }
+
+    const struct mmwlan_ap_args *ap_args = umac_ap_get_args(umacd);
+    const struct mmwlan_s1g_channel *ap_pri_ch =
+        umac_interface_calc_pri_channel(umacd,
+                                        ap_op_ch,
+                                        ap_args->pri_1mhz_chan_idx,
+                                        ap_args->pri_bw_mhz);
+    MMOSAL_DEV_ASSERT(ap_pri_ch && ap_pri_ch->bw_mhz <= 2);
+
+    return ap_pri_ch == scan_ch;
 }
 
 enum mmwlan_status umac_ap_get_channel_info(struct umac_data *umacd,
@@ -1172,6 +1238,17 @@ enum mmwlan_status umac_ap_disable_ap(struct umac_data *umacd)
     {
         MMLOG_INF("AP not active\n");
         return MMWLAN_SUCCESS;
+    }
+
+    enum mmwlan_relay_state relay_state = umac_relay_get_state(umacd);
+    if (relay_state == MMWLAN_RELAY_STATE_DISABLED || relay_state == MMWLAN_RELAY_STATE_ROOT)
+    {
+
+        struct mmwlan_vif_state state = {
+            .vif = MMWLAN_VIF_AP,
+            .link_state = MMWLAN_LINK_DOWN,
+        };
+        umac_interface_invoke_vif_state_cb(umacd, &state);
     }
 
     MMLOG_DBG("Removing AP Supplicant interface\n");

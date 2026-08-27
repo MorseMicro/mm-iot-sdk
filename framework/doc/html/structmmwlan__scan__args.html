@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.12.3</span>
+   &#160;<span id="projectnumber">2.13.1</span>
    </div>
   </td>
  </tr>
@@ -96,7 +96,7 @@ $(document).ready(function(){initNavTree('structmmwlan__scan__args.html',''); in
 <div class="textblock"><p >Structure to hold scan arguments. </p>
 <p >This structure should be initialized using <a class="el" href="group__MMWLAN__SCAN.html#ga185c90a221a8b25584fa41b8f33c2783">MMWLAN_SCAN_ARGS_INIT</a> for forward compatibility. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00825">825</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00869">869</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 </div>
 <p><code>#include &lt;<a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>&gt;</code></p>
 <table class="memberdecls">
@@ -120,6 +120,12 @@ Data Fields</h2></td></tr>
 <tr class="memitem:ab3d53a2735ea71f92a271b3416a9eda5"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__scan__args.html#ab3d53a2735ea71f92a271b3416a9eda5">dwell_on_home_ms</a></td></tr>
 <tr class="memdesc:ab3d53a2735ea71f92a271b3416a9eda5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Time to dwell on home channel in between channels during a scan, to allow traffic to still pass.  <a href="structmmwlan__scan__args.html#ab3d53a2735ea71f92a271b3416a9eda5">More...</a><br /></td></tr>
 <tr class="separator:ab3d53a2735ea71f92a271b3416a9eda5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa65ab96b665c6440e0884489f4c40686"><td class="memItemLeft" align="right" valign="top">uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__scan__args.html#aa65ab96b665c6440e0884489f4c40686">selected_channels</a></td></tr>
+<tr class="memdesc:aa65ab96b665c6440e0884489f4c40686"><td class="mdescLeft">&#160;</td><td class="mdescRight">Optional selected list of S1G channel numbers to scan.  <a href="structmmwlan__scan__args.html#aa65ab96b665c6440e0884489f4c40686">More...</a><br /></td></tr>
+<tr class="separator:aa65ab96b665c6440e0884489f4c40686"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af9bb9ac881308ee8e76738349841a0a5"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__scan__args.html#af9bb9ac881308ee8e76738349841a0a5">selected_channels_len</a></td></tr>
+<tr class="memdesc:af9bb9ac881308ee8e76738349841a0a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Length of <code>selected_channels</code>.  <a href="structmmwlan__scan__args.html#af9bb9ac881308ee8e76738349841a0a5">More...</a><br /></td></tr>
+<tr class="separator:af9bb9ac881308ee8e76738349841a0a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Field Documentation</h2>
 <a id="ab3d53a2735ea71f92a271b3416a9eda5" name="ab3d53a2735ea71f92a271b3416a9eda5"></a>
@@ -137,7 +143,7 @@ Data Fields</h2></td></tr>
 <p>Time to dwell on home channel in between channels during a scan, to allow traffic to still pass. </p>
 <p >This will only perform while connected to an AP and is ignored otherwise. If set to 0, the device will not return to the home channel during the scan. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00853">853</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00897">897</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -156,7 +162,7 @@ Data Fields</h2></td></tr>
 <p>Minimum time to dwell on a channel waiting for probe responses/beacons. </p>
 <dl class="section note"><dt>Note</dt><dd>There is some additional delay applied on top of this to allow for tuning to each channel and sending a probe request. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00833">833</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00877">877</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -175,7 +181,7 @@ Data Fields</h2></td></tr>
 <p>Extra Information Elements to include in Probe Request frames. </p>
 <p >May be <code>NULL</code> if <code>extra_ies_len</code> is zero. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00838">838</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00882">882</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -193,7 +199,46 @@ Data Fields</h2></td></tr>
 
 <p>Length of <code>extra_ies</code>. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00840">840</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00884">884</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+
+</div>
+</div>
+<a id="aa65ab96b665c6440e0884489f4c40686" name="aa65ab96b665c6440e0884489f4c40686"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa65ab96b665c6440e0884489f4c40686">&#9670;&nbsp;</a></span>selected_channels</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t* mmwlan_scan_args::selected_channels</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Optional selected list of S1G channel numbers to scan. </p>
+<p >When <code>NULL</code> (and <code>selected_channels_len</code> is zero) the full configured channel list is scanned. If a channel with bandwidth larger than 2 MHz or an invalid channel is entered, <a class="el" href="group__MMWLAN__SCAN.html#gacf6def12dc1c130f80670fc79f30211d">mmwlan_scan_request()</a> will return an error code.</p>
+<p >A copy of the array is made internally; the caller may free it after the call returns. Set to <code>NULL</code> with <code>selected_channels_len</code> of zero to disable. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00907">907</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+
+</div>
+</div>
+<a id="af9bb9ac881308ee8e76738349841a0a5" name="af9bb9ac881308ee8e76738349841a0a5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af9bb9ac881308ee8e76738349841a0a5">&#9670;&nbsp;</a></span>selected_channels_len</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t mmwlan_scan_args::selected_channels_len</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Length of <code>selected_channels</code>. </p>
+<p >Zero means "scan all channels". </p>
+
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00909">909</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -212,7 +257,7 @@ Data Fields</h2></td></tr>
 <p>SSID used for scan. </p>
 <p >May be <code>NULL</code>, with <code>ssid_len</code> set to zero for an undirected scan. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00845">845</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00889">889</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -230,7 +275,7 @@ Data Fields</h2></td></tr>
 
 <p>Length of the SSID. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00847">847</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00891">891</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>

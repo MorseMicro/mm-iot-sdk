@@ -25,10 +25,15 @@
 #include "umac/frames/action.h"
 #include "umac/ies/s1g_operation.h"
 #include "umac/ies/ssid.h"
+#include "umac/ies/vendor_ie.h"
 #include "umac/interface/umac_interface.h"
 #include "umac/stats/umac_stats.h"
 #include "umac/wnm_sleep/umac_wnm_sleep.h"
 #include "umac/ies/s1g_capabilities.h"
+
+#include "hostap/src/utils/wpabuf.h"
+#include "hostap/src/ap/hostapd.h"
+#include "hostap/src/ap/ap_config.h"
 
 
 #define HZ_TO_KHZ(x) ((x) / 1000)
@@ -555,6 +560,13 @@ static int mmwpas_sta_deauth(void *priv,
               reason);
 
     struct umac_sta_data *stad = umac_ap_lookup_sta_by_addr(umacd, addr);
+    if (stad == NULL)
+    {
+        MMLOG_WRN("Failed to tx deauth to " MM_MAC_ADDR_FMT ", status %u\n",
+                  MM_MAC_ADDR_VAL(addr),
+                  MMWLAN_NOT_FOUND);
+        return -1;
+    }
     struct frame_data_deauth_ap deauth_params = {
         .own_address = own_addr,
         .sta_address = addr,

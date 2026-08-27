@@ -42,6 +42,7 @@ ifeq ($(VERBOSE),)
 QUIET = @
 endif
 
+
 # Set BUILD_SUPPLICANT_FROM_SOURCE to a non-empty string to build the WPA Supplicant from source
 # and link against libmorse_nosupplicant.a. If this is set, the crypto will also be built from
 # source using mbedTLS.
@@ -60,6 +61,12 @@ BUILD_SUPPLICANT_CRYPTO_FROM_SOURCE?=y
 # AP mode. This will increase heap allocations and compile the WPA supplicant with AP mode support.
 # Additional memory increase is indicative only.
 #ENABLE_AP_MODE=y
+
+# Whether or not to exclude the mmconfig component at compilation time
+# Options:
+# - 1
+# - 0
+EXCLUDE_MMCONFIG ?= 0
 
 # Example source files
 APP_DIR = ../..
@@ -80,6 +87,10 @@ CONLYFLAGS += -Wc++-compat
 # Explicitly specify the C standard version that has been assumed. Your mileage may vary if other
 # versions are used.
 CONLYFLAGS += -std=gnu11
+
+ifeq ($(EXCLUDE_MMCONFIG),1)
+BUILD_DEFINES += EXCLUDE_MMCONFIG=$(EXCLUDE_MMCONFIG)
+endif
 
 ifneq ($(ENABLE_AP_MODE),)
 BUILD_SUPPLICANT_WITH_AP=y

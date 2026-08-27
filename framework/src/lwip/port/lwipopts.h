@@ -8,6 +8,7 @@
 
 #include "mmosal.h"
 #include "mmhal_core.h"
+#include "mmutils.h"
 #include "mmipal.h"
 #include "mmlog.h"
 #include "arch/sys_arch.h"
@@ -123,6 +124,8 @@
 
 /**
  * MEMP_NUM_SYS_TIMEOUT: the number of simultaneously active timeouts.
+ *
+ * + 2 for "application" timeouts such as MQTT, SNTP, MDNS, TFTP
  */
 #ifndef MEMP_NUM_SYS_TIMEOUT
 #define MEMP_NUM_SYS_TIMEOUT (LWIP_NUM_SYS_TIMEOUT_INTERNAL + 2)
@@ -197,6 +200,17 @@
 #if !defined LWIP_DHCP_DOES_ACD_CHECK
 #define LWIP_DHCP_DOES_ACD_CHECK (0)
 #endif
+
+/**
+ * The default DHCP_MIN_OPTIONS_LEN will not be enough space to store the hostname
+ * (see @ref LWIP_NETIF_HOSTNAME). Instead set DHCP_OPTIONS_LEN allocation to ensure
+ * there is enough space.
+ */
+#ifndef DHCP_OPTIONS_LEN
+#define DHCP_OPTIONS_LEN (100)
+#endif
+MM_STATIC_ASSERT(DHCP_OPTIONS_LEN >= 100,
+                 "Must have enough space in the DHCP options for hostname");
 
 /*
  *  ------------------------------------
@@ -333,6 +347,14 @@
 #if defined(LWIP_MDNS_RESPONDER) && LWIP_MDNS_RESPONDER != 0
 #define LWIP_NUM_NETIF_CLIENT_DATA (1)
 #endif
+#endif
+
+/**
+ * LWIP_NETIF_HOSTNAME==1: use DHCP_OPTION_HOSTNAME with netif's hostname
+ * field.
+ */
+#ifndef LWIP_NETIF_HOSTNAME
+#define LWIP_NETIF_HOSTNAME (1)
 #endif
 
 /*

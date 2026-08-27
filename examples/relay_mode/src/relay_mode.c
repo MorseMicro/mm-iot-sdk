@@ -22,35 +22,7 @@
 #include "mm_app_common.h"
 #include "mm_app_loadconfig.h"
 #include "mmlog.h"
-
-/*
- * --
- * Default SSID/Security configuration
- * --
- */
-
-#ifndef AP_SSID
-/** SSID of the AP. (Do not quote; it will be stringified.) */
-#define AP_SSID MorseMicroIoT
-#endif
-
-#ifndef SAE_PASSPHRASE
-/** Passphrase of the AP (ignored if security type is not SAE).
- *  (Do not quote; it will be stringified.) */
-#define SAE_PASSPHRASE 12345678
-#endif
-
-/* Default security type  */
-#ifndef SECURITY_TYPE
-/** Security type (@see mmwlan_security_type). */
-#define SECURITY_TYPE MMWLAN_SAE
-#endif
-
-/* Default PMF mode */
-#ifndef PMF_MODE
-/** Protected Management Frames (PMF) mode (@see mmwlan_pmf_mode). */
-#define PMF_MODE MMWLAN_PMF_REQUIRED
-#endif
+#include "relay_mode_led.h"
 
 #ifndef MAX_STAS
 /**
@@ -60,12 +32,7 @@
 #define MAX_STAS MMWLAN_DEFAULT_AP_MAX_STAS
 #endif
 
-/** Stringify macro. Do not use directly; use @ref STRINGIFY(). */
-#define _STRINGIFY(x) #x
-/** Convert the content of the given macro to a string. */
-#define STRINGIFY(x) _STRINGIFY(x)
-
-/** A throw away variable for checking that the opaque argument is correct. */
+/** A throwaway variable for checking that the opaque argument is correct. */
 uint32_t opaque_argument_value;
 
 /**
@@ -73,7 +40,7 @@ uint32_t opaque_argument_value;
  *
  * @param state State enum to convert
  *
- * @return sting representation of the enumeration.
+ * @return string representation of the enumeration.
  */
 static char *mmwlan_ap_sta_state_to_str(enum mmwlan_ap_sta_state state)
 {
@@ -115,72 +82,40 @@ static void handle_ap_sta_status(const struct mmwlan_ap_sta_status *sta_status, 
 }
 
 /**
- * Loads the provided structure with initialization parameters
- * read from config store.  If a specific parameter is not found then
- * default values are used.  Use this function to load defaults before
- * calling @c mmwlan_ap_enable().
+ * Handler for relay depth change callback.
+ *
+ * @param new_depth The relay depth after the change.
+ * @param arg       Opaque argument that was provided when the callback was registered.
+ */
+static void handle_relay_depth_change(uint8_t new_depth, void *arg)
+{
+    /* Validate that the opaque argument received matches the value passed in. This is just for
+     * testing purposes. */
+    MMOSAL_ASSERT(arg == &opaque_argument_value);
+
+    if (new_depth == MMWLAN_RELAY_DEPTH_UNKNOWN)
+    {
+        MMLOG_APP("Relay depth unknown (no path to root)\n");
+    }
+    else
+    {
+        MMLOG_APP("Relay depth changed to %u\n", new_depth);
+    }
+
+    relay_led_set_depth(new_depth);
+}
+
+/**
+ * Loads the provided structure, with the subset of AP initialization parameters that are
+ * applicable to a relay, from config store.
  *
  * @param ap_args A pointer to the @c mmwlan_ap_args to return
  *                    the settings in.
  */
-void load_mmwlan_ap_args(struct mmwlan_ap_args *ap_args)
+static void load_relay_mmwlan_ap_args(struct mmwlan_ap_args *ap_args)
 {
     char strval[32];
-
-    /* Load SSID */
-    (void)mmosal_safer_strcpy((char *)ap_args->ssid, STRINGIFY(AP_SSID), sizeof(ap_args->ssid));
-    (void)mmconfig_read_string("wlan.ap_ssid", (char *)ap_args->ssid, sizeof(ap_args->ssid));
-    ap_args->ssid_len = strlen((char *)ap_args->ssid);
-
-    /* Load password */
-    (void)mmosal_safer_strcpy(ap_args->passphrase,
-                              STRINGIFY(SAE_PASSPHRASE),
-                              sizeof(ap_args->passphrase));
-    (void)mmconfig_read_string("wlan.ap_password",
-                               ap_args->passphrase,
-                               sizeof(ap_args->passphrase));
-    ap_args->passphrase_len = strlen(ap_args->passphrase);
-
-    /* Load security type */
-    ap_args->security_type = SECURITY_TYPE;
-    if (mmconfig_read_string("wlan.ap_security", strval, sizeof(strval)) > 0)
-    {
-        if (strncmp("sae", strval, sizeof(strval)) == 0)
-        {
-            ap_args->security_type = MMWLAN_SAE;
-        }
-        else if (strncmp("owe", strval, sizeof(strval)) == 0)
-        {
-            ap_args->security_type = MMWLAN_OWE;
-        }
-        else if (strncmp("open", strval, sizeof(strval)) == 0)
-        {
-            ap_args->security_type = MMWLAN_OPEN;
-        }
-        else
-        {
-            printf("Invalid value of %s read from config store: %s\n", "wlan.ap_security", strval);
-        }
-    }
-
-    /* Load PMF mode */
-    ap_args->pmf_mode = PMF_MODE;
-    if (mmconfig_read_string("wlan.ap_pmf_mode", strval, sizeof(strval)) > 0)
-    {
-        if (strncmp("disabled", strval, sizeof(strval)) == 0)
-        {
-            printf("PMF disabled\n");
-            ap_args->pmf_mode = MMWLAN_PMF_DISABLED;
-        }
-        else if (strncmp("required", strval, sizeof(strval)) == 0)
-        {
-            ap_args->pmf_mode = MMWLAN_PMF_REQUIRED;
-        }
-        else
-        {
-            printf("Invalid value of %s read from config store: %s\n", "wlan.ap_pmf_mode", strval);
-        }
-    }
+    uint32_t uint32val;
 
     /* Load BSSID */
     if (mmconfig_read_string("wlan.ap_bssid", strval, sizeof(strval)) > 0)
@@ -211,6 +146,58 @@ void load_mmwlan_ap_args(struct mmwlan_ap_args *ap_args)
             }
         }
     }
+
+    /* Load DTIM period */
+    if (mmconfig_read_uint32("wlan.ap_dtim_period", &uint32val) == MMCONFIG_OK)
+    {
+        if (uint32val <= UINT16_MAX)
+        {
+            ap_args->dtim_period = uint32val;
+        }
+        else
+        {
+            printf("%s out of range\n", "wlan.ap_dtim_period");
+        }
+    }
+
+    /* Load Beacon Interval */
+    if (mmconfig_read_uint32("wlan.ap_beacon_interval_tus", &uint32val) == MMCONFIG_OK)
+    {
+        if (uint32val <= UINT16_MAX)
+        {
+            ap_args->beacon_interval_tus = uint32val;
+        }
+        else
+        {
+            printf("%s out of range\n", "wlan.ap_beacon_interval_tus");
+        }
+    }
+}
+
+/**
+ * Apply any relay mode specific settings from the config store.
+ */
+static void load_mmwlan_relay_settings(void)
+{
+    /* Optionally override the relay depth. Only valid while STA and AP are both disabled, so it
+     * must be applied before connecting to the network. */
+    uint32_t relay_depth_override;
+    if (mmconfig_read_uint32("wlan.relay_depth_override", &relay_depth_override) == MMCONFIG_OK)
+    {
+        if (relay_depth_override <= MMWLAN_RELAY_MAX_DEPTH)
+        {
+            enum mmwlan_status status =
+                mmwlan_relay_set_depth_override((uint8_t)relay_depth_override);
+            if (status != MMWLAN_SUCCESS)
+            {
+                MMLOG_ERR("Failed to set relay depth override (status %d)\n", status);
+            }
+        }
+        else
+        {
+            printf("%s out of range\n", "wlan.relay_depth_override");
+        }
+    }
 }
 
 /**
@@ -219,39 +206,61 @@ void load_mmwlan_ap_args(struct mmwlan_ap_args *ap_args)
  */
 void app_init(void)
 {
+    enum mmwlan_status status;
+
     MMLOG_PRINTF("\n\nRelay Mode Example (Built " __DATE__ " " __TIME__ ")\n\n");
 
-    /* Initialize and connect to Wi-Fi, blocks till connected */
-    app_wlan_init();
-    app_wlan_start();
+    relay_led_init();
 
-    /* Query STA channel info to configure the AP interface. */
-    struct mmwlan_vif_channel_info channel_info = {};
-    enum mmwlan_status status = mmwlan_get_vif_channel_info(MMWLAN_VIF_STA, &channel_info);
-    if (status != MMWLAN_SUCCESS)
-    {
-        MMLOG_ERR("Failed to retrieve STA channel info\n", status);
-        MMOSAL_ASSERT(0);
-    }
+    /* Initialise the Wi-Fi system and boot the chip. */
+    app_wlan_init();
+
+    load_mmwlan_relay_settings();
 
     /* Bring up the relay subsystem. */
-    struct mmwlan_relay_args args = MMWLAN_RELAY_ARGS_INIT;
-    status = mmwlan_relay_enable(&args);
+    struct mmwlan_relay_args relay_args = MMWLAN_RELAY_ARGS_INIT;
+    status = mmwlan_relay_enable(&relay_args);
     if (status != MMWLAN_SUCCESS)
     {
         MMLOG_ERR("Failed to start relay (status %d)\n", status);
+        relay_led_set_failed();
         MMOSAL_ASSERT(0);
     }
 
-    /* Configure the AP args. */
-    struct mmwlan_ap_args ap_args = MMWLAN_AP_ARGS_INIT;
-    load_mmwlan_ap_args(&ap_args);
+    status = mmwlan_register_depth_change_cb(handle_relay_depth_change, &opaque_argument_value);
+    if (status != MMWLAN_SUCCESS)
+    {
+        MMLOG_ERR("Failed to register depth change callback (status %d)\n", status);
+    }
+
+    /* Connect to Wi-Fi network, block till connected. */
+    relay_led_set_connecting();
+    app_wlan_start();
+    if (mmwlan_get_sta_state() == MMWLAN_STA_CONNECTED)
+    {
+        relay_led_set_connected();
+    }
+    else
+    {
+        relay_led_set_failed();
+    }
     mmwlan_set_power_save_mode(MMWLAN_PS_DISABLED);
 
-    ap_args.op_class = channel_info.op_class;
-    ap_args.s1g_chan_num = channel_info.s1g_chan_num;
-    ap_args.pri_bw_mhz = channel_info.pri_bw_mhz;
-    ap_args.pri_1mhz_chan_idx = channel_info.pri_1mhz_chan_idx;
+    /* Load the sta args shared by the whole relay tree. */
+    struct mmwlan_sta_args sta_args = MMWLAN_STA_ARGS_INIT;
+    load_mmwlan_sta_args(&sta_args);
+
+    /* Bring up the AP interface. */
+    struct mmwlan_ap_args ap_args = MMWLAN_AP_ARGS_INIT;
+    load_relay_mmwlan_ap_args(&ap_args);
+
+    /* The AP re-advertises the STA credentials so the whole tree shares one SSID. */
+    memcpy(ap_args.ssid, sta_args.ssid, sizeof(ap_args.ssid));
+    ap_args.ssid_len = sta_args.ssid_len;
+    ap_args.security_type = sta_args.security_type;
+    memcpy(ap_args.passphrase, sta_args.passphrase, sizeof(ap_args.passphrase));
+    ap_args.passphrase_len = sta_args.passphrase_len;
+    ap_args.pmf_mode = sta_args.pmf_mode;
 
     ap_args.sta_status_cb = handle_ap_sta_status;
     ap_args.sta_status_cb_arg = &opaque_argument_value;
@@ -271,5 +280,6 @@ void app_init(void)
     else
     {
         MMLOG_PRINTF("Failed to start AP (status %d)\n", status);
+        relay_led_set_failed();
     }
 }

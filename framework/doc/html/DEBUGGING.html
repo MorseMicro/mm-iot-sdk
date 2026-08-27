@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.12.3</span>
+   &#160;<span id="projectnumber">2.13.1</span>
    </div>
   </td>
  </tr>
@@ -106,7 +106,7 @@ Launching GDB</h2>
 <p >To verify that the correct ARM toolchain is in the path, execute the following command: </p><pre class="fragment">which arm-none-eabi-gdb
 </pre><p> We should expect: </p><pre class="fragment">/opt/morse/gcc-arm-none-eabi-10.3-2021.07/bin/arm-none-eabi-gdb
 </pre><p> Once OpenOCD and Miniterm are running, as described in the previous sections, it is possible to then launch GDB to program the device.</p>
-<p >Navigate to the example directory (where we ran the <code>make</code> command) and run gdb on the built '.elf' file: </p><pre class="fragment">cd mm-iot-sdk-2.12.3/examples/ping/targets/mm-mm6108-ekh05
+<p >Navigate to the example directory (where we ran the <code>make</code> command) and run gdb on the built '.elf' file: </p><pre class="fragment">cd mm-iot-sdk-2.13.1/examples/ping/targets/mm-mm6108-ekh05
 arm-none-eabi-gdb build/ping.elf -ex 'target extended-remote :3333'
 </pre><p> This will start GDB and connect to the local OpenOCD instance started above.</p>
 <p >From the GDB terminal first reset and halt the device by executing: </p><pre class="fragment">monitor reset halt

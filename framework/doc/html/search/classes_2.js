@@ -103,7 +103,8 @@ var searchData=
   ['mmwlan_5fstats_5fumac_5fdata_100',['mmwlan_stats_umac_data',['../structmmwlan__stats__umac__data.html',1,'']]],
   ['mmwlan_5ftwt_5fconfig_5fargs_101',['mmwlan_twt_config_args',['../structmmwlan__twt__config__args.html',1,'']]],
   ['mmwlan_5ftx_5fmetadata_102',['mmwlan_tx_metadata',['../structmmwlan__tx__metadata.html',1,'']]],
-  ['mmwlan_5fversion_103',['mmwlan_version',['../structmmwlan__version.html',1,'']]],
-  ['mmwlan_5fvif_5fchannel_5finfo_104',['mmwlan_vif_channel_info',['../structmmwlan__vif__channel__info.html',1,'']]],
-  ['mmwlan_5fvif_5fstate_105',['mmwlan_vif_state',['../structmmwlan__vif__state.html',1,'']]]
+  ['mmwlan_5fvendor_5fie_103',['mmwlan_vendor_ie',['../structmmwlan__vendor__ie.html',1,'']]],
+  ['mmwlan_5fversion_104',['mmwlan_version',['../structmmwlan__version.html',1,'']]],
+  ['mmwlan_5fvif_5fchannel_5finfo_105',['mmwlan_vif_channel_info',['../structmmwlan__vif__channel__info.html',1,'']]],
+  ['mmwlan_5fvif_5fstate_106',['mmwlan_vif_state',['../structmmwlan__vif__state.html',1,'']]]
 ];

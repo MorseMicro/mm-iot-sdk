@@ -88,6 +88,7 @@ var group__MMWLAN__STA =
     [ "mmwlan_get_bssid", "group__MMWLAN__STA.html#ga6ec36d234ce586880ffcaccfd187bf38", null ],
     [ "mmwlan_get_rssi", "group__MMWLAN__STA.html#ga16ebb3265617241dc16b6c28c70a26f5", null ],
     [ "mmwlan_get_sta_state", "group__MMWLAN__STA.html#ga6235c4111f69778fc27fd677a0cc11ba", null ],
+    [ "mmwlan_set_beacon_loss_threshold", "group__MMWLAN__STA.html#gaa59c00b116aad33d1339909b922eca3c", null ],
     [ "mmwlan_set_dynamic_ps_timeout", "group__MMWLAN__STA.html#gab3998a2783dcd4d3a4a0eb8072eb1c7f", null ],
     [ "mmwlan_set_listen_interval", "group__MMWLAN__STA.html#ga0a7cfd34d9add8cfbbc428c8a845de30", null ],
     [ "mmwlan_set_non_tim_mode_enabled", "group__MMWLAN__STA.html#gae6f9bd8d9b72cec2d7fb4e1776659e07", null ],

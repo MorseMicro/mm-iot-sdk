@@ -109,6 +109,7 @@ def _main():
                pri_bw_mhz=args.halow_primary_bandwidth,
                pri_1mhz_chan_idx=pri_1mhz_chan_idx,
                max_stas=args.max_stas)
+    print("Enabled AP")
 
 
 if __name__ == "__main__":

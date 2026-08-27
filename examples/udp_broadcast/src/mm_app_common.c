@@ -21,6 +21,7 @@
 #include "mmipal.h"
 #include "mmconfig.h"
 #include "mmhal_app.h"
+#include "mmlog.h"
 #include "mmutils.h"
 #include "mm_app_loadconfig.h"
 #include "mm_app_common.h"
@@ -152,7 +153,7 @@ static void fatal_error_handler(struct mmwlan_fatal_error_args *args)
      * from. This function is just a placeholder – application-specific handling of such errors
      * should be added here. For further information, see the documentation for
      * mmwlan_register_fatal_error_handler(). */
-    MMOSAL_DEV_ASSERT(true);
+    MMOSAL_DEV_ASSERT(false);
     /* Indicate to app_wlan_start that link up was unsuccessful */
     link_success = false;
     mmosal_semb_give(attempting_link);
@@ -277,4 +278,86 @@ void app_wlan_stop(void)
 {
     /* Shutdown wlan interface */
     mmwlan_shutdown();
+}
+
+static void hex_dump_morse_stats(struct mmwlan_morse_stats *stats, uint32_t core_num, bool reset)
+{
+    enum
+    {
+        BYTES_PER_LINE = 10,
+    };
+
+    static uint8_t call_count = 0;
+    char leader[8];
+    /* Fetch and set of call_count is not atomic, but the race window is very small and not likely
+     * to ever occur. Similarly call_count will wrap, but this should not happen fast enough for
+     * interleaving of two instances of same call_count to occur. */
+    snprintf(leader, sizeof(leader), "MM#%02X", call_count++);
+
+    MMLOG_APP("Morse stats dump %s (len: %u, core: %u, reset: %c)\n",
+              leader,
+              stats->len,
+              core_num,
+              reset ? 'y' : 'n');
+
+    char hexbytes[BYTES_PER_LINE * 2 + 1];
+    for (uint32_t ii = 0; ii < stats->len; ii++)
+    {
+        uint32_t pos = ii % BYTES_PER_LINE;
+        snprintf(&hexbytes[pos * 2], sizeof("XX"), "%02X", stats->buf[ii]);
+
+        if (pos == BYTES_PER_LINE - 1 || ii == stats->len - 1)
+        {
+            MMLOG_PRINTF("%s %s\n", leader, hexbytes);
+        }
+    }
+}
+
+bool app_chip_stats_dump(uint32_t core_num, bool reset)
+{
+    enum
+    {
+        MAX_CORE_STATS = 3,
+    };
+    struct mmwlan_morse_stats *stats_list[MAX_CORE_STATS] = {};
+
+    if (core_num == UINT32_MAX)
+    {
+        bool some_stats = false;
+        for (uint32_t core = 0; core < MAX_CORE_STATS; ++core)
+        {
+            stats_list[core] = mmwlan_get_morse_stats(core, reset);
+            some_stats |= (stats_list[core] != NULL);
+        }
+        if (!some_stats)
+        {
+            return false;
+        }
+    }
+    else if (core_num < MAX_CORE_STATS)
+    {
+        stats_list[core_num] = mmwlan_get_morse_stats(core_num, reset);
+        if (stats_list[core_num] == NULL)
+        {
+            return false;
+        }
+    }
+    else
+    {
+        MMLOG_ERR("Core %d invalid\n", core_num);
+        return false;
+    }
+
+    /* Log all stats after fetch, so each core stats can be obtained as close as possible. */
+    for (size_t core = 0; core < MAX_CORE_STATS; ++core)
+    {
+        struct mmwlan_morse_stats *stats = stats_list[core];
+        if (stats)
+        {
+            hex_dump_morse_stats(stats, core, reset);
+            mmwlan_free_morse_stats(stats);
+        }
+    }
+
+    return true;
 }

@@ -27,7 +27,7 @@ source $SCRIPT_DIR/setup.d/S20_openocd || return 1
 unset VARS_ONLY
 
 # Set MMIOT_ROOT environment variable to the framework directory that this script resides under.
-export MMIOT_ROOT="$SCRIPT_DIR/../.."
+export MMIOT_ROOT="$(realpath $SCRIPT_DIR/../..)"
 
 unset SCRIPT_DIR
 
@@ -74,4 +74,4 @@ fi
 export PATH=$HOME/.local/bin:$PATH
 
 # MM-IoT-SDK Version
-export MMIOT_VERSION="2.12.3"
+export MMIOT_VERSION="2.13.1"

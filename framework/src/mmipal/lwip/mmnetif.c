@@ -118,7 +118,7 @@ static void mmnetif_vif_state(const struct mmwlan_vif_state *state, void *arg)
         {
             LWIP_DEBUGF(NETIF_DEBUG | LWIP_DBG_LEVEL_ALL,
                         ("mmnetif: ignoring link down on other VIF\n"));
-            return;
+            goto unlock;
         }
 
         LWIP_DEBUGF(NETIF_DEBUG | LWIP_DBG_LEVEL_ALL, ("mmnetif: link down\n"));
@@ -157,6 +157,7 @@ static void mmnetif_vif_state(const struct mmwlan_vif_state *state, void *arg)
         err_t err = tcpip_callback_with_block((tcpip_callback_fn)netif_set_link_up, netif, 0);
         LWIP_ASSERT("sched callback failed", err == ERR_OK);
     }
+unlock:
     UNLOCK_TCPIP_CORE();
 }
 

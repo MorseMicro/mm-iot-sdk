@@ -310,6 +310,12 @@ uint32_t umac_timeoutq_time_to_next_timeout(struct umac_core_data *core)
     }
 }
 
+
+static bool timeout_arg_matches(void *registered, void *query)
+{
+    return query == UMAC_CORE_TIMEOUT_ANY_CTX || query == registered;
+}
+
 static int umac_timeoutq_cancel_protected(struct umac_core_timeoutq *toq,
                                           umac_core_timeout_handler_t handler,
                                           void *arg1,
@@ -320,7 +326,10 @@ static int umac_timeoutq_cancel_protected(struct umac_core_timeoutq *toq,
     int count = 0;
 
 
-    while (walk != NULL && walk->handler == handler && walk->arg1 == arg1 && walk->arg2 == arg2)
+    while (walk != NULL &&
+           walk->handler == handler &&
+           timeout_arg_matches(walk->arg1, arg1) &&
+           timeout_arg_matches(walk->arg2, arg2))
     {
         toq->head = walk->next;
         umac_timeoutq_free_protected(toq, walk);
@@ -340,7 +349,9 @@ static int umac_timeoutq_cancel_protected(struct umac_core_timeoutq *toq,
 
     while (walk != NULL)
     {
-        if (walk->handler == handler && walk->arg1 == arg1 && walk->arg2 == arg2)
+        if (walk->handler == handler &&
+            timeout_arg_matches(walk->arg1, arg1) &&
+            timeout_arg_matches(walk->arg2, arg2))
         {
             prev->next = walk->next;
 

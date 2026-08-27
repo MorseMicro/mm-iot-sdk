@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include "mmwlan.h"
 #include "umac_relay.h"
 #include "common/consbuf.h"
 #include "umac/ies/reachable_address.h"
@@ -35,7 +36,17 @@ struct umac_relay_data
     struct mmwlan_relay_args args;
 
 
+    uint8_t depth;
+
+
+    uint8_t recover_depth;
+
+
     uint32_t reachable_update_latency_ms;
+
+
+    mmwlan_relay_depth_change_cb_t depth_change_cb;
+    void *depth_change_cb_arg;
 
 
     struct umac_relay_table_entry *table_heads[UMAC_RELAY_NUM_BUCKETS];

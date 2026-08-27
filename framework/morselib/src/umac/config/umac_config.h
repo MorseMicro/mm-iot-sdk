@@ -9,9 +9,13 @@
 
 #include "mmwlan.h"
 #include "umac/data/umac_data.h"
+#include "umac/ies/vendor_ie.h"
 
 
 void umac_config_init(struct umac_data *umacd);
+
+
+void umac_config_deinit(struct umac_data *umacd);
 
 
 struct umac_config_rc_override
@@ -83,6 +87,12 @@ void umac_config_set_rts_threshold(struct umac_data *umacd, uint32_t threshold);
 uint32_t umac_config_get_rts_threshold(struct umac_data *umacd);
 
 
+void umac_config_set_relay_depth_override(struct umac_data *umacd, uint8_t depth);
+
+
+uint8_t umac_config_get_relay_depth_override(struct umac_data *umacd);
+
+
 void umac_config_set_frag_threshold(struct umac_data *umacd, uint32_t threshold);
 
 
@@ -131,6 +141,12 @@ void umac_config_set_listen_interval(struct umac_data *umacd, uint16_t listen_in
 
 
 uint16_t umac_config_get_listen_interval(struct umac_data *umacd);
+
+
+void umac_config_set_beacon_loss_count(struct umac_data *umacd, uint8_t beacon_loss_count);
+
+
+uint8_t umac_config_get_beacon_loss_count(struct umac_data *umacd);
 
 
 void umac_config_set_ndp_probe_support(struct umac_data *umacd, bool enabled);
@@ -185,5 +201,27 @@ void umac_config_set_duty_cycle_mode(struct umac_data *umacd,
 
 
 enum mmwlan_duty_cycle_mode umac_config_get_duty_cycle_mode(struct umac_data *umacd);
+
+
+void umac_config_set_selective_scan_channels(struct umac_data *umacd,
+                                             uint8_t *channels,
+                                             uint8_t num_channels,
+                                             uint8_t attempts);
+
+
+void umac_config_get_selective_scan_channels(struct umac_data *umacd,
+                                             uint8_t **channels_out,
+                                             uint8_t *num_out,
+                                             uint8_t *attempts_out);
+
+
+enum mmwlan_status umac_config_add_vendor_ie(struct umac_data *umacd,
+                                             const struct mmwlan_vendor_ie *ie);
+
+
+void umac_config_clear_vendor_ies(struct umac_data *umacd, uint8_t mgmt_type_mask);
+
+
+struct vendor_ies *umac_config_get_vendor_ies(struct umac_data *umacd);
 
 

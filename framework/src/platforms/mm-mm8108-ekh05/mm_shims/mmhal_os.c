@@ -480,7 +480,6 @@ uint32_t mmhal_sleep(enum mmhal_sleep_state sleep_state, uint32_t expected_idle_
         if (elapsed_ms > expected_idle_time_ms)
         {
             /* Clamp elapsed time. */
-            MMOSAL_DEV_ASSERT(elapsed_ms - expected_idle_time_ms == 1);
             elapsed_ms = expected_idle_time_ms;
         }
 

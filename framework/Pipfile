@@ -12,7 +12,6 @@ coloredlogs = "*"
 hjson = "*"
 pyelftools = "*"
 dacite = "*"
-dict-to-dataclass = "*"
 
 [dev-packages]
 matplotlib = "~=3.7.3"

@@ -37,7 +37,7 @@ var searchData=
   ['ping_5ftotal_5fcount_34',['ping_total_count',['../structmmping__stats.html#aac0e9f186176040005e9e20587804ae9',1,'mmping_stats']]],
   ['pkt_5fspacing_5fus_35',['pkt_spacing_us',['../structmmwlan__s1g__channel.html#ad7f9820f7f7a5ca14956351e4af683af',1,'mmwlan_s1g_channel']]],
   ['platform_5finfo_36',['platform_info',['../structmmosal__failure__info.html#af79798ad1c78868c7262b5bb5013e633',1,'mmosal_failure_info']]],
-  ['pmf_5fmode_37',['PMF_MODE',['../relay__mode_8c.html#a618bebd7e10a920d615032c10cfde27c',1,'PMF_MODE():&#160;relay_mode.c'],['../ap__mode_8c.html#a618bebd7e10a920d615032c10cfde27c',1,'PMF_MODE():&#160;ap_mode.c']]],
+  ['pmf_5fmode_37',['PMF_MODE',['../ap__mode_8c.html#a618bebd7e10a920d615032c10cfde27c',1,'ap_mode.c']]],
   ['pmf_5fmode_38',['pmf_mode',['../structmmwlan__sta__args.html#a5f424a8f2c9ea4906a99fcc87dc5553f',1,'mmwlan_sta_args::pmf_mode()'],['../structmmwlan__ap__args.html#a434724b9beab12b75939efc7a11a1619',1,'mmwlan_ap_args::pmf_mode()']]],
   ['port_39',['port',['../structmmagic__core__socket__connect__cmd__args.html#aee74720c7c4b27968637d6b7859b21a6',1,'mmagic_core_socket_connect_cmd_args::port()'],['../structmmagic__core__socket__bind__cmd__args.html#a0fc082d5661e65e9800b331f6bd3990c',1,'mmagic_core_socket_bind_cmd_args::port()'],['../structmmagic__core__mqtt__start__agent__cmd__args.html#abbc2cc703a5080395da0f79ea43217cb',1,'mmagic_core_mqtt_start_agent_cmd_args::port()']]],
   ['porting_5fassistant_2ec_40',['porting_assistant.c',['../porting__assistant_8c.html',1,'']]],

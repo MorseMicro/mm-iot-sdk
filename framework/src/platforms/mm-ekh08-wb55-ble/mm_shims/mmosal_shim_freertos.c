@@ -268,7 +268,7 @@ int mmosal_main(mmosal_app_init_cb_t app_init_cb)
     configASSERT(init_task != NULL);
     vTaskStartScheduler();
     /* We should never get here. */
-    return -1;
+    return 0;
 }
 
 void *mmosal_malloc_(size_t size)

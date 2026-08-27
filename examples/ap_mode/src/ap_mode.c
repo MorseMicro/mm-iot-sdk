@@ -122,7 +122,7 @@
 /** Convert the content of the given macro to a string. */
 #define STRINGIFY(x) _STRINGIFY(x)
 
-/** A throw away variable for checking that the opaque argument is correct. */
+/** A throwaway variable for checking that the opaque argument is correct. */
 uint32_t opaque_argument_value;
 
 /**
@@ -130,7 +130,7 @@ uint32_t opaque_argument_value;
  *
  * @param state State enum to convert
  *
- * @return sting representation of the enumeration.
+ * @return string representation of the enumeration.
  */
 static char *mmwlan_ap_sta_state_to_str(enum mmwlan_ap_sta_state state)
 {
@@ -348,6 +348,32 @@ void load_mmwlan_ap_args(struct mmwlan_ap_args *ap_args)
         else
         {
             MMLOG_APP("%s out of range\n", "wlan.ap_pri_1mhz_chan_idx");
+        }
+    }
+
+    /* Load DTIM period */
+    if (mmconfig_read_uint32("wlan.ap_dtim_period", &uint32val) == MMCONFIG_OK)
+    {
+        if (uint32val <= UINT16_MAX)
+        {
+            ap_args->dtim_period = uint32val;
+        }
+        else
+        {
+            MMLOG_APP("%s out of range\n", "wlan.ap_dtim_period");
+        }
+    }
+
+    /* Load Beacon Interval */
+    if (mmconfig_read_uint32("wlan.ap_beacon_interval_tus", &uint32val) == MMCONFIG_OK)
+    {
+        if (uint32val <= UINT16_MAX)
+        {
+            ap_args->beacon_interval_tus = uint32val;
+        }
+        else
+        {
+            MMLOG_APP("%s out of range\n", "wlan.ap_beacon_interval_tus");
         }
     }
 }

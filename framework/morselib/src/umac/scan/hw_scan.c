@@ -8,6 +8,7 @@
 #include "mmlog.h"
 #include "common/consbuf.h"
 #include "umac_scan_data.h"
+#include "umac/ap/umac_ap.h"
 #include "umac/stats/umac_stats.h"
 #include "umac/connection/umac_connection.h"
 #include "umac/interface/umac_interface.h"
@@ -132,10 +133,44 @@ static uint32_t hw_scan_pack_channel(const struct mmwlan_s1g_channel *channel, u
     return packed_channel;
 }
 
-static void hw_scan_construct_channel_list_tlv(struct umac_data *umacd, struct consbuf *cbuf)
-{
-    MM_UNUSED(umacd);
 
+static bool hw_scan_chan_is_scannable(struct umac_data *umacd,
+                                      const struct mmwlan_s1g_channel *ch,
+                                      const struct mmwlan_scan_args *scan_args)
+{
+    if (ch == NULL || ch->bw_mhz > 2)
+    {
+        return false;
+    }
+
+#if !(defined(MMWLAN_AP_DISABLED) && MMWLAN_AP_DISABLED)
+    if (!umac_ap_is_scan_channel_allowed(umacd, ch))
+    {
+        return false;
+    }
+#else
+    MM_UNUSED(umacd);
+#endif
+
+    if (scan_args->selected_channels != NULL && scan_args->selected_channels_len != 0)
+    {
+        for (size_t i = 0; i < scan_args->selected_channels_len; i++)
+        {
+            if (scan_args->selected_channels[i] == ch->s1g_chan_num)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    return true;
+}
+
+static void hw_scan_construct_channel_list_tlv(struct umac_data *umacd,
+                                               struct consbuf *cbuf,
+                                               const struct mmwlan_scan_args *scan_args)
+{
     uint32_t offset_at_start = cbuf->offset;
     struct hw_scan_tlv_channel_list *channel_list_tlv =
         (struct hw_scan_tlv_channel_list *)consbuf_reserve(cbuf, sizeof(*channel_list_tlv));
@@ -147,8 +182,15 @@ static void hw_scan_construct_channel_list_tlv(struct umac_data *umacd, struct c
          current_channel_index++)
     {
 
-        if (s1g_channel->bw_mhz <= 2)
+        if (hw_scan_chan_is_scannable(umacd, s1g_channel, scan_args))
         {
+#if MMLOG_LEVEL >= MMLOG_LEVEL_DBG
+            uint32_t freq_khz = s1g_channel->centre_freq_hz / 1000;
+            MMLOG_DBG("Scan chan %u (%lu.%lu MHz)\n",
+                      s1g_channel->s1g_chan_num,
+                      freq_khz / 1000,
+                      freq_khz % 1000);
+#endif
             uint32_t index;
             uint32_t sub_index;
             uint32_t unique_index = 0;
@@ -324,7 +366,7 @@ static void hw_scan_add_request_tlvs_to_cbuf(struct umac_data *umacd,
                                              struct consbuf *cbuf,
                                              const struct mmwlan_scan_args *scan_args)
 {
-    hw_scan_construct_channel_list_tlv(umacd, cbuf);
+    hw_scan_construct_channel_list_tlv(umacd, cbuf, scan_args);
     hw_scan_construct_power_list_tlv(umacd, cbuf);
 
     if (scan_args->dwell_on_home_ms != 0)

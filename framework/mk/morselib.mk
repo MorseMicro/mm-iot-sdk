@@ -77,6 +77,7 @@ MORSELIB_SRCS_C += morselib/src/umac/ies/s1g_tim.c
 MORSELIB_SRCS_C += morselib/src/umac/ies/ies_common.c 
 MORSELIB_SRCS_C += morselib/src/umac/ies/wmm.c 
 MORSELIB_SRCS_C += morselib/src/umac/ies/morse_ie.c 
+MORSELIB_SRCS_C += morselib/src/umac/ies/vendor_ie.c 
 MORSELIB_SRCS_C += morselib/src/umac/interface/umac_interface.c 
 MORSELIB_SRCS_C += morselib/src/umac/keys/connection_keys.c 
 MORSELIB_SRCS_C += morselib/src/umac/keys/umac_keys.c 

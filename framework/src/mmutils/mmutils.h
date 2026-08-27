@@ -418,6 +418,31 @@ static inline bool mm_mac_addr_is_equal(const uint8_t *mac_addr1, const uint8_t 
     return memcmp(mac_addr1, mac_addr2, 6) == 0;
 }
 
+/**
+ * Determines if a given MAC address is a valid STA address.
+ *
+ * @param  mac_addr Array of length @ref MMWLAN_MAC_ADDR_LEN containing a MAC address.
+ *
+ * @return          @c true if given MAC address is valid for a STA, else @c false
+ */
+static inline bool mm_mac_addr_is_valid_sta(const uint8_t *mac_addr)
+{
+    return !mm_mac_addr_is_multicast(mac_addr) && !mm_mac_addr_is_zero(mac_addr);
+}
+
+/** Maximum length of a hostname string, including null-terminator. */
+#define MM_HOSTNAME_MAX_LEN (64)
+
+/**
+ * Validate if a given hostname string is valid i.e. only contains alphanumeric
+ * characters or hyphens and is up to 63 characters in length + NULL terminator.
+ *
+ * @param hostname The hostname to check.
+ *
+ * @returns @c true if the hostname is valid, else @c false.
+ */
+bool mm_validate_hostname(const char *hostname);
+
 /** @} */
 
 #ifdef __cplusplus

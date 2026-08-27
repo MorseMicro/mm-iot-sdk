@@ -56,7 +56,8 @@ static int mbedtls_net_recvfrom_info_sockaddr(void *ctx,
                                               unsigned char *buf,
                                               size_t len,
                                               union sockaddr_union *source_sockaddr,
-                                              size_t source_sockaddr_buf_size);
+                                              size_t source_sockaddr_buf_size,
+                                              bool *datagram_truncated);
 
 /*
  * Return 0 if the file descriptor is valid, an error otherwise.
@@ -602,7 +603,7 @@ static int mbedtls_net_rx_timeout(void *ctx, uint32_t timeout)
  */
 int mbedtls_net_recv(void *ctx, unsigned char *buf, size_t len)
 {
-    return mbedtls_net_recvfrom_info_sockaddr(ctx, buf, len, NULL, 0);
+    return mbedtls_net_recvfrom_info_sockaddr(ctx, buf, len, NULL, 0, NULL);
 }
 
 int mbedtls_net_recvfrom_timeout(void *ctx,
@@ -611,7 +612,8 @@ int mbedtls_net_recvfrom_timeout(void *ctx,
                                  uint32_t timeout,
                                  char *source_ip,
                                  size_t source_ip_len,
-                                 uint16_t *source_port)
+                                 uint16_t *source_port,
+                                 bool *datagram_truncated)
 {
     int ret = mbedtls_net_rx_timeout(ctx, timeout);
     if (ret != 0)
@@ -619,7 +621,13 @@ int mbedtls_net_recvfrom_timeout(void *ctx,
         return ret;
     }
 
-    return mbedtls_net_recvfrom(ctx, buf, len, source_ip, source_ip_len, source_port);
+    return mbedtls_net_recvfrom(ctx,
+                                buf,
+                                len,
+                                source_ip,
+                                source_ip_len,
+                                source_port,
+                                datagram_truncated);
 }
 
 int mbedtls_net_recvfrom(void *ctx,
@@ -627,11 +635,17 @@ int mbedtls_net_recvfrom(void *ctx,
                          size_t len,
                          char *source_ip,
                          size_t source_ip_len,
-                         uint16_t *source_port)
+                         uint16_t *source_port,
+                         bool *datagram_truncated)
 {
     union sockaddr_union source_addr;
 
-    int ret = mbedtls_net_recvfrom_info_sockaddr(ctx, buf, len, &source_addr, sizeof(source_addr));
+    int ret = mbedtls_net_recvfrom_info_sockaddr(ctx,
+                                                 buf,
+                                                 len,
+                                                 &source_addr,
+                                                 sizeof(source_addr),
+                                                 datagram_truncated);
 
     if (ret < 0)
     {
@@ -647,10 +661,13 @@ static int mbedtls_net_recvfrom_info_sockaddr(void *ctx,
                                               unsigned char *buf,
                                               size_t len,
                                               union sockaddr_union *source_sockaddr,
-                                              size_t source_sockaddr_buf_size)
+                                              size_t source_sockaddr_buf_size,
+                                              bool *datagram_truncated)
 {
     int ret = MBEDTLS_ERR_ERROR_CORRUPTION_DETECTED;
     int fd = ((mbedtls_net_context *)ctx)->fd;
+    struct iovec iov;
+    struct msghdr msg;
 
     ret = check_fd(fd, 0);
     if (ret != 0)
@@ -658,19 +675,34 @@ static int mbedtls_net_recvfrom_info_sockaddr(void *ctx,
         return ret;
     }
 
+    if (datagram_truncated != NULL)
+    {
+        *datagram_truncated = false;
+    }
+
     /* Clear RX ready prior to reading from the socket. */
     ((mbedtls_net_context *)ctx)->rx_data_ready = false;
     MMPORT_MEM_SYNC();
 
+    iov.iov_base = buf;
+    iov.iov_len = len;
+    msg.msg_iov = &iov;
+    msg.msg_iovlen = 1;
+    msg.msg_control = NULL;
+    msg.msg_controllen = 0;
+    msg.msg_flags = 0;
     if (source_sockaddr != NULL)
     {
-        socklen_t sockaddr_buf_size = (socklen_t)source_sockaddr_buf_size;
-        ret = (int)lwip_recvfrom(fd, buf, len, 0, &source_sockaddr->sa, &sockaddr_buf_size);
+        msg.msg_name = &source_sockaddr->sa;
+        msg.msg_namelen = (socklen_t)source_sockaddr_buf_size;
     }
     else
     {
-        ret = (int)lwip_recvfrom(fd, buf, len, 0, NULL, NULL);
+        msg.msg_name = NULL;
+        msg.msg_namelen = 0;
     }
+
+    ret = (int)lwip_recvmsg(fd, &msg, 0);
 
     if (ret < 0)
     {
@@ -690,6 +722,17 @@ static int mbedtls_net_recvfrom_info_sockaddr(void *ctx,
         }
 
         return MBEDTLS_ERR_NET_RECV_FAILED;
+    }
+
+    if (datagram_truncated != NULL && (msg.msg_flags & MSG_TRUNC) != 0)
+    {
+        *datagram_truncated = true;
+    }
+
+    /* lwip_recvmsg returns the full UDP datagram length; report bytes copied. */
+    if ((size_t)ret > len)
+    {
+        ret = (int)len;
     }
 
     return ret;

@@ -53,7 +53,7 @@ static int slip_tx_handler(uint8_t c, void *arg)
 }
 
 /**
- * Callback to handle reception of a command packet from the data-link HAL.
+ * Callback to handle reception of a command packet from the data link HAL.
  *
  * @param cmd_buf       The received command.
  */

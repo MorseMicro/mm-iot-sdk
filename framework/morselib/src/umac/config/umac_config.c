@@ -6,6 +6,7 @@
 #include "umac_config.h"
 #include "umac_config_data.h"
 
+#include "mmosal.h"
 #include "umac/datapath/umac_datapath.h"
 
 
@@ -81,6 +82,31 @@ void umac_config_init(struct umac_data *umacd)
     data->supp_scan_home_dwell_time_ms = MMWLAN_SCAN_DEFAULT_DWELL_ON_HOME_MS;
     data->duty_cycle_mode = MMWLAN_DUTY_CYCLE_MODE_SPREAD;
     data->non_tim_mode_enabled = false;
+    data->selected_channels = NULL;
+    data->selected_channels_len = 0;
+    data->selective_scan_attempts = 0;
+    data->vendor_ies = NULL;
+    data->beacon_loss_count = UINT8_MAX;
+    data->relay_depth_override = 0;
+}
+
+void umac_config_deinit(struct umac_data *umacd)
+{
+    struct umac_config_data *data = umac_data_get_config(umacd);
+
+    if (data->selected_channels != NULL)
+    {
+        mmosal_free(data->selected_channels);
+        data->selected_channels = NULL;
+        data->selected_channels_len = 0;
+    }
+
+    if (data->vendor_ies != NULL)
+    {
+        vendor_ies_deinit(data->vendor_ies);
+        mmosal_free(data->vendor_ies);
+        data->vendor_ies = NULL;
+    }
 }
 
 void umac_config_rc_set_override(struct umac_data *umacd,
@@ -202,6 +228,18 @@ uint32_t umac_config_get_rts_threshold(struct umac_data *umacd)
 {
     struct umac_config_data *data = umac_data_get_config(umacd);
     return data->rts_threshold;
+}
+
+void umac_config_set_relay_depth_override(struct umac_data *umacd, uint8_t depth)
+{
+    struct umac_config_data *data = umac_data_get_config(umacd);
+    data->relay_depth_override = depth;
+}
+
+uint8_t umac_config_get_relay_depth_override(struct umac_data *umacd)
+{
+    struct umac_config_data *data = umac_data_get_config(umacd);
+    return data->relay_depth_override;
 }
 
 void umac_config_set_frag_threshold(struct umac_data *umacd, uint32_t threshold)
@@ -402,4 +440,71 @@ enum mmwlan_duty_cycle_mode umac_config_get_duty_cycle_mode(struct umac_data *um
 {
     struct umac_config_data *data = umac_data_get_config(umacd);
     return data->duty_cycle_mode;
+}
+
+void umac_config_set_selective_scan_channels(struct umac_data *umacd,
+                                             uint8_t *channels,
+                                             uint8_t num_channels,
+                                             uint8_t attempts)
+{
+    struct umac_config_data *data = umac_data_get_config(umacd);
+
+    if (data->selected_channels != NULL)
+    {
+        mmosal_free(data->selected_channels);
+    }
+    data->selected_channels = channels;
+    data->selected_channels_len = num_channels;
+    data->selective_scan_attempts = attempts;
+}
+
+void umac_config_get_selective_scan_channels(struct umac_data *umacd,
+                                             uint8_t **channels_out,
+                                             uint8_t *num_out,
+                                             uint8_t *attempts_out)
+{
+    struct umac_config_data *data = umac_data_get_config(umacd);
+    *channels_out = data->selected_channels;
+    *num_out = data->selected_channels_len;
+    *attempts_out = data->selective_scan_attempts;
+}
+
+enum mmwlan_status umac_config_add_vendor_ie(struct umac_data *umacd,
+                                             const struct mmwlan_vendor_ie *ie)
+{
+    struct umac_config_data *data = umac_data_get_config(umacd);
+    if (data->vendor_ies == NULL)
+    {
+        data->vendor_ies = (struct vendor_ies *)mmosal_malloc(sizeof(*data->vendor_ies));
+        if (data->vendor_ies == NULL)
+        {
+            return MMWLAN_NO_MEM;
+        }
+        data->vendor_ies->head = NULL;
+    }
+    return vendor_ie_list_add(data->vendor_ies, ie);
+}
+
+void umac_config_clear_vendor_ies(struct umac_data *umacd, uint8_t mgmt_type_mask)
+{
+    struct umac_config_data *data = umac_data_get_config(umacd);
+    vendor_ie_list_clear(data->vendor_ies, mgmt_type_mask);
+}
+
+struct vendor_ies *umac_config_get_vendor_ies(struct umac_data *umacd)
+{
+    struct umac_config_data *data = umac_data_get_config(umacd);
+    return data->vendor_ies;
+}
+
+void umac_config_set_beacon_loss_count(struct umac_data *umacd, uint8_t beacon_loss_count)
+{
+    struct umac_config_data *data = umac_data_get_config(umacd);
+    data->beacon_loss_count = beacon_loss_count;
+}
+
+uint8_t umac_config_get_beacon_loss_count(struct umac_data *umacd)
+{
+    struct umac_config_data *data = umac_data_get_config(umacd);
+    return data->beacon_loss_count;
 }

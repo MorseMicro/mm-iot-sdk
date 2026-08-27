@@ -11,6 +11,9 @@ MMHAL_CHIP_TYPE ?= mmhal_mm8108
 BUILD_DEFINES += MMHAL_CHIP_TYPE=$(MMHAL_CHIP_TYPE)
 
 FW_MBIN ?= mm8108b2-rl.mbin
+ifeq ($(EXCLUDE_MMCONFIG),1)
+BCF_MBIN_REL ?= mm8108/bcfs/bcf_mf15457.mbin
+endif
 
 # Platform specific files
 BSP_DIR = $(PLATFORM_PATH)/bsp

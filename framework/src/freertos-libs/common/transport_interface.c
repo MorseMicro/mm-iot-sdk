@@ -657,6 +657,7 @@ int32_t transport_recv_with_timeout(NetworkContext_t *pNetworkContext,
                                             timeoutMs,
                                             NULL,
                                             0,
+                                            NULL,
                                             NULL);
 }
 
@@ -666,7 +667,8 @@ int32_t transport_recv_from_with_timeout(NetworkContext_t *pNetworkContext,
                                          uint32_t timeoutMs,
                                          char *source_ip,
                                          size_t source_ip_len,
-                                         uint16_t *source_port)
+                                         uint16_t *source_port,
+                                         bool *datagram_truncated)
 {
     int32_t readStatus = 0;
 
@@ -702,7 +704,8 @@ int32_t transport_recv_from_with_timeout(NetworkContext_t *pNetworkContext,
                                                   timeoutMs,
                                                   source_ip,
                                                   source_ip_len,
-                                                  source_port);
+                                                  source_port,
+                                                  datagram_truncated);
     }
 
     return readStatus;

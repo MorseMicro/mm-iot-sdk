@@ -281,6 +281,8 @@ int mbedtls_net_recv(void *ctx, unsigned char *buf, size_t len);
  * \param client_ip Will contain the source IP address as a string, can be NULL
  * \param client_ip_len  Size of the source_ip buffer
  * \param client_port Source port number in host byte order
+ * \param datagram_truncated If non-NULL, set to true when a UDP datagram was
+ *                           larger than \p buf_len (may be NULL).
  *
  * \return         the number of bytes received,
  *                 or a non-zero error code; with a non-blocking socket,
@@ -291,7 +293,8 @@ int mbedtls_net_recvfrom(void *ctx,
                          size_t buf_len,
                          char *source_ip,
                          size_t source_ip_len,
-                         uint16_t *source_port);
+                         uint16_t *source_port,
+                         bool *datagram_truncated);
 
 /**
  * \brief          Read at most 'len' characters, blocking for at most
@@ -306,6 +309,8 @@ int mbedtls_net_recvfrom(void *ctx,
  * \param client_ip Will contain the source IP address as a string, can be NULL
  * \param client_ip_len  Size of the source_ip buffer
  * \param client_port Source port number in host byte order
+ * \param datagram_truncated If non-NULL, set to true when a UDP datagram was
+ *                           larger than \p buf_len (may be NULL).
  *
  * \return         the number of bytes received,
  *                 or a non-zero error code; with a non-blocking socket,
@@ -317,7 +322,8 @@ int mbedtls_net_recvfrom_timeout(void *ctx,
                                  uint32_t timeout,
                                  char *source_ip,
                                  size_t source_ip_len,
-                                 uint16_t *source_port);
+                                 uint16_t *source_port,
+                                 bool *datagram_truncated);
 
 /**
  * \brief          Write at most 'len' characters. If no error occurs,

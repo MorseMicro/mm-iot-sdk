@@ -23,6 +23,8 @@ extern "C"
 #include <stdbool.h>
 #include <stdint.h>
 
+#include "mmutils.h"
+
 /** Maximum length of an IP address string, including null-terminator. */
 #ifndef MMIPAL_IPADDR_STR_MAXLEN
 #define MMIPAL_IPADDR_STR_MAXLEN (48)
@@ -101,15 +103,14 @@ struct mmipal_ip_config
     mmipal_ip_addr_t netmask;
     /** Gateway address */
     mmipal_ip_addr_t gateway_addr;
+    /** Interface hostname. */
+    char hostname[MM_HOSTNAME_MAX_LEN];
 };
 
 /** Initializer for @ref mmipal_ip_config. */
-#define MMIPAL_IP_CONFIG_DEFAULT \
-    {                            \
-        MMIPAL_DHCP,             \
-        "",                      \
-        "",                      \
-        "",                      \
+#define MMIPAL_IP_CONFIG_DEFAULT     \
+    {                                \
+        MMIPAL_DHCP, "", "", "", "", \
     }
 
 /** Enumeration of IPv6 address allocation modes. */
@@ -179,6 +180,8 @@ struct mmipal_init_args
     mmipal_ip_addr_t netmask;
     /** Gateway IP address to use (if @c mode is @c MMIPAL_STATIC). */
     mmipal_ip_addr_t gateway_addr;
+    /** Interface hostname. */
+    char hostname[MM_HOSTNAME_MAX_LEN];
 
     /** IPv6 address allocation mode to use. */
     enum mmipal_ip6_addr_mode ip6_mode;
@@ -190,7 +193,8 @@ struct mmipal_init_args
  * Default values for @ref mmipal_init_args. This should be used when initializing the
  * @ref mmipal_init_args structure.
  */
-#define MMIPAL_INIT_ARGS_DEFAULT { MMIPAL_DHCP, { 0 }, { 0 }, { 0 }, MMIPAL_IP6_DISABLED, { 0 } }
+#define MMIPAL_INIT_ARGS_DEFAULT \
+    { MMIPAL_DHCP, { 0 }, { 0 }, { 0 }, { 0 }, MMIPAL_IP6_DISABLED, { 0 } }
 
 /**
  * Initialize the IP stack and enable the MMWLAN interface.

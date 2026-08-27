@@ -93,6 +93,10 @@ def _main():
                         help="""
         Optional SSID in Probe Request frames for directed scan.
     """)
+    parser.add_argument("-C", "--selected-channels", nargs="+", type=int, default=[],
+                        help="""
+        Optional list of S1G channel numbers to restrict the scan to.
+    """)
     group = parser.add_mutually_exclusive_group()
     group.add_argument("-S", "--start", action="store_true",
                        help="""
@@ -130,7 +134,8 @@ def _main():
         return
 
     dutif.exec("wlan/sta_scan_request",
-               dwell_time_ms=args.dwell_time_ms, extra_ies=extra_ies, ssid=ssid)
+               dwell_time_ms=args.dwell_time_ms, extra_ies=extra_ies, ssid=ssid,
+               selected_channels=bytes(args.selected_channels))
 
     if not args.start:
         print("Waiting for scan results...")

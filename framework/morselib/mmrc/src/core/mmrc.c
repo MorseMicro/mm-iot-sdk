@@ -1030,10 +1030,6 @@ void mmrc_get_rates(struct mmrc_table *tb,
 		out->rates[3] = tb->baseline;
 	}
 
-	/* For fallback rates, set RTS/CTS */
-	for (i = 1; i < MMRC_MAX_CHAIN_LENGTH; i++)
-		out->rates[i].flags |= MMRC_MASK(MMRC_FLAGS_CTS_RTS);
-
 	/* Allocate initial attempts for rate */
 	allocate_initial_attempts(out, &rem_time, size);
 

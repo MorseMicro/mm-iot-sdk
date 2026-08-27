@@ -240,3 +240,30 @@ int mm_parse_s1g_operation(const uint8_t *ies, uint32_t ies_len, struct mm_s1g_o
 
     return 0;
 }
+
+bool mm_validate_hostname(const char *hostname)
+{
+    if (hostname == NULL)
+    {
+        return false;
+    }
+
+    char curr = 0;
+    for (uint8_t i = 0; i < MM_HOSTNAME_MAX_LEN; i++)
+    {
+        curr = hostname[i];
+        if (curr == 0)
+        {
+            return true;
+        }
+        if (curr < '-' ||
+            (curr > '-' && curr < '0') ||
+            (curr > '9' && curr < 'A') ||
+            (curr > 'Z' && curr < 'a') ||
+            curr > 'z')
+        {
+            return false;
+        }
+    }
+    return false;
+}

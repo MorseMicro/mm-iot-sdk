@@ -26,6 +26,9 @@ enum morse_fw_extended_host_table_tag
     MORSE_FW_HOST_TABLE_TAG_YAPS_TABLE = 3,
     MORSE_FW_HOST_TABLE_TAG_PAGER_PKT_MEMORY = 4,
     MORSE_FW_HOST_TABLE_TAG_PAGER_BYPASS_CMD_RESP = 5,
+    MORSE_FW_HOST_TABLE_TAG_HEADLESS_CONFIG_ADDR = 6,
+    MORSE_FW_HOST_TABLE_TAG_MAX_AP_NUM_STA = 7,
+    MORSE_FW_HOST_TABLE_TAG_BOOT_CODE = 8,
 };
 
 struct MM_PACKED extended_host_table_tlv_hdr
@@ -58,6 +61,30 @@ struct MM_PACKED extended_host_table_capabilites_s1g
     uint8_t maximum_ampdu_length;
 
     uint8_t morse_mmss_offset;
+};
+
+struct MM_PACKED extended_host_table_max_ap_num_sta
+{
+
+    struct extended_host_table_tlv_hdr header;
+
+    uint32_t num_stas;
+};
+
+struct MM_PACKED extended_host_table_boot_code
+{
+
+    struct extended_host_table_tlv_hdr header;
+
+    uint8_t code;
+};
+
+struct MM_PACKED extended_host_table_headless_config_addr
+{
+
+    struct extended_host_table_tlv_hdr header;
+
+    uint32_t headless_config_addr;
 };
 
 struct MM_PACKED extended_host_table

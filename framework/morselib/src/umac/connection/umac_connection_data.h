@@ -36,6 +36,8 @@ enum umac_connection_mode
     UMAC_CONNECTION_MODE_STA,
 
     UMAC_CONNECTION_MODE_DPP,
+
+    UMAC_CONNECTION_MODE_PREASSOC,
 };
 
 struct umac_connection_data
@@ -81,4 +83,6 @@ struct umac_connection_data
     enum mmwlan_dpp_mode dpp_mode;
 
     int32_t dpp_bootstrap_id;
+
+    uint8_t selective_scans_used;
 };

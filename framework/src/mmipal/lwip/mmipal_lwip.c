@@ -47,6 +47,7 @@ static struct mmipal_data
 #if LWIP_IPV6
     enum mmipal_ip6_addr_mode ip6_mode;
 #endif
+    char hostname[MM_HOSTNAME_MAX_LEN];
 } mmipal_data = {};
 
 /** Getter function to retrieve the global mmipal data structure.*/
@@ -87,6 +88,7 @@ enum mmipal_status mmipal_get_ip_config(struct mmipal_ip_config *config)
     char *result;
 
     config->mode = data->ip4_mode;
+    mmosal_safer_strcpy(config->hostname, data->hostname, MM_HOSTNAME_MAX_LEN);
 
     result = ipaddr_ntoa_r(&data->lwip_mmnetif.ip_addr, config->ip_addr, sizeof(config->ip_addr));
     LWIP_ASSERT("IP buf too short", result != NULL);
@@ -109,6 +111,12 @@ enum mmipal_status mmipal_set_ip_config(const struct mmipal_ip_config *config)
     ip_addr_t netmask = ip_addr_any;
     ip_addr_t gateway = ip_addr_any;
     struct netif *netif = &data->lwip_mmnetif;
+
+    if (!mm_validate_hostname(config->hostname))
+    {
+        mmosal_printf("Invalid hostname %s\n", config->hostname);
+        return MMIPAL_INVALID_ARGUMENT;
+    }
 
     switch (config->mode)
     {
@@ -148,6 +156,17 @@ enum mmipal_status mmipal_set_ip_config(const struct mmipal_ip_config *config)
     {
         /* Stop DHCP if it was started earlier before setting static IP */
         dhcp_stop(netif);
+    }
+
+    if (strncmp(data->hostname, config->hostname, MM_HOSTNAME_MAX_LEN) != 0)
+    {
+        mmosal_safer_strcpy(data->hostname, config->hostname, MM_HOSTNAME_MAX_LEN);
+        netif_set_hostname(netif, data->hostname);
+        /* Renew the DHCP lease to ensure that the hostname is updated on the AP side as well. */
+        if (config->mode == MMIPAL_DHCP)
+        {
+            dhcp_renew(netif);
+        }
     }
 
     data->ip4_mode = config->mode;
@@ -550,6 +569,7 @@ static void tcpip_init_done_handler(void *arg)
     netif_add_noaddr(netif, NULL, mmnetif_init, tcpip_input);
     netif_set_default(netif);
     netif_set_up(netif);
+    netif_set_hostname(netif, data->hostname);
 
 #if LWIP_IPV4
     err_t result;
@@ -704,6 +724,16 @@ enum mmipal_status mmipal_init(const struct mmipal_init_args *args)
             break;
     }
 #endif
+
+    if (mm_validate_hostname(args->hostname))
+    {
+        mmosal_safer_strcpy(data->hostname, args->hostname, MM_HOSTNAME_MAX_LEN);
+    }
+    else
+    {
+        mmosal_free(lwip_args);
+        return MMIPAL_INVALID_ARGUMENT;
+    }
 
     tcpip_init(tcpip_init_done_handler, lwip_args);
 

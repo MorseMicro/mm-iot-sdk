@@ -22,6 +22,22 @@ enum ie_result
 };
 
 
+#define IE_SIZEOF_HEADER 2
+
+
+#define IE_ID(p) ((p)[0])
+
+#define IE_LEN(p) ((p)[1])
+
+#define IE_INFO(p) ((p) + IE_SIZEOF_HEADER)
+
+#define IE_NEXT(p) (IE_INFO(p) + IE_LEN(p))
+
+#define IE_VALID(p, end) ((IE_INFO(p) <= (end)) && (IE_NEXT(p) <= (end)))
+
+#define IE_TOTAL_LEN(p) (IE_SIZEOF_HEADER + IE_LEN(p))
+
+
 const uint8_t *ie_find_and_validate_length(const uint8_t *ies,
                                            size_t ies_len,
                                            uint8_t ie_id,
@@ -44,13 +60,6 @@ static inline const uint8_t *ie_find(const uint8_t *ies,
                                                 _ie_id,                                      \
                                                 sizeof(_type) - sizeof(struct dot11_ie_hdr), \
                                                 _result))
-
-
-const uint8_t *ie_vendor_specific_find(const uint8_t *ies,
-                                       size_t ies_len,
-                                       const uint8_t *id,
-                                       size_t id_len,
-                                       enum ie_result *result);
 
 
 static inline void ie_build_hdr(struct consbuf *cbuf, uint8_t element_id, uint8_t length)

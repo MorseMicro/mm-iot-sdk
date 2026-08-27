@@ -219,6 +219,7 @@ bool umac_relay_table_add_done(struct umac_relay_data *data, const uint8_t *da)
     if (table_entry != NULL)
     {
         memcpy(table_entry->next_hop, entry->next_hop, sizeof(table_entry->next_hop));
+        table_entry->relay_capable = entry->relay_capable;
         umac_relay_table_free(data, entry);
         return true;
     }

@@ -8,6 +8,7 @@ var group__MMWLAN =
     [ "WLAN Control API for Access Point (AP) mode", "group__MMWLAN__AP.html", "group__MMWLAN__AP" ],
     [ "WLAN Control API for S1G Relay functionality", "group__MMWLAN__RELAY.html", "group__MMWLAN__RELAY" ],
     [ "WLAN Beacon Vendor Specific IE Filter API", "group__MMWLAN__BEACON__VENDOR__IE__FILTER__API.html", "group__MMWLAN__BEACON__VENDOR__IE__FILTER__API" ],
+    [ "WLAN Vendor Specific IE add / clear API", "group__MMWLAN__VENDOR__IE__API.html", "group__MMWLAN__VENDOR__IE__API" ],
     [ "WLAN Initialization/Deinitialization API", "group__MMWLAN__INIT.html", "group__MMWLAN__INIT" ],
     [ "WLAN Datapath API", "group__MMWLAN__DATA.html", "group__MMWLAN__DATA" ],
     [ "WLAN Statistics API", "group__MMWLAN__STATS.html", "group__MMWLAN__STATS" ],

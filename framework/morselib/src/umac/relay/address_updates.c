@@ -115,6 +115,10 @@ void umac_relay_handle_update_acked(struct umac_relay_data *data,
     {
         const struct dot11_ie_reachable_address *raw_ie =
             ie_reachable_address_find(ies_iter, ies_end - ies_iter, NULL);
+        if (raw_ie == NULL)
+        {
+            break;
+        }
         const uint8_t *initiator_mac = NULL;
         uint8_t address_count;
         bool ok = ie_reachable_address_parse(raw_ie, &initiator_mac, &address_count);

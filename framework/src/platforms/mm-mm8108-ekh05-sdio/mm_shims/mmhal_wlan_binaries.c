@@ -6,7 +6,15 @@
 
 #include "mmhal_wlan.h"
 #include "mmosal.h"
+
+#ifndef EXCLUDE_MMCONFIG
 #include "mmconfig.h"
+#else
+#ifndef INCLUDE_BCF_FILE_IN_APPLICATION
+#error \
+    "If mmconfig is excluded in your build, you must include the BCF in the application, see BCF_MBIN && INCLUDE_BCF_FILE_IN_APPLICATION build defines"
+#endif
+#endif
 
 /*
  * ---------------------------------------------------------------------------------------------
