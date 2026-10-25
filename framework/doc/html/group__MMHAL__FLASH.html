@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.13.1</span>
+   &#160;<span id="projectnumber">2.14.3</span>
    </div>
   </td>
  </tr>
@@ -143,9 +143,6 @@ Functions</h2></td></tr>
 <tr class="memitem:ga39a48646a7ac7d2b7b580c57086ab99c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMHAL__FLASH.html#ga39a48646a7ac7d2b7b580c57086ab99c">mmhal_flash_write</a> (<a class="el" href="group__MMHAL__FLASH.html#ga92471855356eaa7a3e49ed978b885fbb">mmhal_flash_addr_t</a> write_address, const uint8_t *data, size_t size)</td></tr>
 <tr class="memdesc:ga39a48646a7ac7d2b7b580c57086ab99c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write a block of data to the specified Flash address.  <a href="group__MMHAL__FLASH.html#ga39a48646a7ac7d2b7b580c57086ab99c">More...</a><br /></td></tr>
 <tr class="separator:ga39a48646a7ac7d2b7b580c57086ab99c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga9cf859409f0916684a34f5d4726cb2e3"><td class="memItemLeft" align="right" valign="top">const struct lfs_config *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMHAL__FLASH.html#ga9cf859409f0916684a34f5d4726cb2e3">mmhal_get_littlefs_config</a> (void)</td></tr>
-<tr class="memdesc:ga9cf859409f0916684a34f5d4726cb2e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get LittleFS configuration.  <a href="group__MMHAL__FLASH.html#ga9cf859409f0916684a34f5d4726cb2e3">More...</a><br /></td></tr>
-<tr class="separator:ga9cf859409f0916684a34f5d4726cb2e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="ga911306a51678fe4a7ea083e902771016" name="ga911306a51678fe4a7ea083e902771016"></a>
@@ -163,7 +160,7 @@ Functions</h2></td></tr>
 <p>Underlying integer type for <a class="el" href="group__MMHAL__FLASH.html#ga92471855356eaa7a3e49ed978b885fbb">mmhal_flash_addr_t</a>. </p>
 <p >Defaults to <code>uint32_t</code>. May be overridden by the build system (e.g. by defining <code>MMHAL_FLASH_ADDR_T</code> on the compiler command line) if a platform requires a wider integer type to represent a flash address. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmhal__flash_8h_source.html#l00044">44</a> of file <a class="el" href="mmhal__flash_8h_source.html">mmhal_flash.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmhal__flash_8h_source.html#l00041">41</a> of file <a class="el" href="mmhal__flash_8h_source.html">mmhal_flash.h</a>.</p>
 
 </div>
 </div>
@@ -200,7 +197,7 @@ Functions</h2></td></tr>
 
 <p>Initial values for <a class="el" href="structmmhal__flash__partition__config.html">mmhal_flash_partition_config</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmhal__flash_8h_source.html#l00085">85</a> of file <a class="el" href="mmhal__flash_8h_source.html">mmhal_flash.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmhal__flash_8h_source.html#l00082">82</a> of file <a class="el" href="mmhal__flash_8h_source.html">mmhal_flash.h</a>.</p>
 
 </div>
 </div>
@@ -219,7 +216,7 @@ Functions</h2></td></tr>
 
 <p>Address type used by the mmhal flash API. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmhal__flash_8h_source.html#l00048">48</a> of file <a class="el" href="mmhal__flash_8h_source.html">mmhal_flash.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmhal__flash_8h_source.html#l00045">45</a> of file <a class="el" href="mmhal__flash_8h_source.html">mmhal_flash.h</a>.</p>
 
 </div>
 </div>
@@ -393,29 +390,6 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ga9cf859409f0916684a34f5d4726cb2e3" name="ga9cf859409f0916684a34f5d4726cb2e3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga9cf859409f0916684a34f5d4726cb2e3">&#9670;&nbsp;</a></span>mmhal_get_littlefs_config()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">const struct lfs_config * mmhal_get_littlefs_config </td>
-          <td>(</td>
-          <td class="paramtype">void&#160;</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Get LittleFS configuration. </p>
-<p >LittleFS initialization is done by <code>littlefs_init()</code> in <code>mmosal_shim_fileio.c</code>. which in turn calls this function to fetch the hardware configuration for LittleFS from the HAL layer. The LittleFS configuration will vary from platform to platform. If LittleFS is not supported by the platform then we just return NULL. This function returns a static pointer to <code>struct</code> <code>lfs_config</code> which is defined in <code>lfs.h</code>.</p>
-<p >See <code>mmhal_littlefs.c</code> for the full HAL layer implementation for your platform. See <code>mmosal_shim_fileio.c</code> for the <code>libc</code> shims for LittleFS. See <code>README.md</code> in the <code>src/littlefs</code> folder for detailed information on LittleFS.</p>
-<dl class="section return"><dt>Returns</dt><dd>A static pointer to the LittleFS config structure, or NULL if not supported. </dd></dl>
-
-</div>
-</div>
 <a id="gaabe05e475ba03621d7e4ba776ed2d616" name="gaabe05e475ba03621d7e4ba776ed2d616"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#gaabe05e475ba03621d7e4ba776ed2d616">&#9670;&nbsp;</a></span>mmhal_get_mmconfig_partition()</h2>
 
@@ -445,7 +419,7 @@ Functions</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Copyright 2021-2025 Morse Micro </li>
+    <li class="footer">Copyright 2021-2026 Morse Micro </li>
   </ul>
 </div>
 </body>

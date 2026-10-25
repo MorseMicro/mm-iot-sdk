@@ -11,7 +11,6 @@
 
 struct mmpkt *build_mgmt_frame(struct umac_data *umacd, mgmt_frame_builder_t builder, void *params)
 {
-
     struct consbuf cbuf = CONSBUF_INIT_WITHOUT_BUF;
     builder(umacd, &cbuf, params);
     struct mmpkt *mmpkt = umac_datapath_alloc_raw_tx_mmpkt(MMDRV_PKT_CLASS_MGMT, 0, cbuf.offset);

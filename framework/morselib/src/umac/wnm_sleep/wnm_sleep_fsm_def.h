@@ -11,14 +11,12 @@
 
 #define WNM_SLEEP_FSM_INITIAL_STATE WNM_SLEEP_FSM_STATE_IDLE
 
-
 #ifndef WNM_SLEEP_FSM_LOG
 #define WNM_SLEEP_FSM_LOG(format_str, ...) \
     do {                                   \
         (void)format_str;                  \
     } while (0)
 #endif
-
 
 static void wnm_sleep_fsm_entry_requested_entry(struct wnm_sleep_fsm_instance *inst,
                                                 enum wnm_sleep_fsm_state prev_state);
@@ -35,13 +33,10 @@ static void wnm_sleep_fsm_exit_requested_exit(struct wnm_sleep_fsm_instance *ins
 
 
 
-
-
 static void wnm_sleep_fsm_transition_error(struct wnm_sleep_fsm_instance *inst,
                                            enum wnm_sleep_fsm_event event);
 
 static void wnm_sleep_fsm_reentrance_error(struct wnm_sleep_fsm_instance *inst);
-
 
 
 typedef void (*wnm_sleep_fsm_callback_t)(struct wnm_sleep_fsm_instance *inst,
@@ -110,7 +105,6 @@ const struct wnm_sleep_fsm_table_row wnm_sleep_fsm_table[] = {
 };
 
 #define WNM_SLEEP_FSM_TABLE_N_ENTRIES 8
-
 
 static inline const char *wnm_sleep_fsm_state_tostr(enum wnm_sleep_fsm_state state)
 {
@@ -219,7 +213,6 @@ static void wnm_sleep_fsm_handle_event_internal(struct wnm_sleep_fsm_instance *i
     }
     wnm_sleep_fsm_transition_error(inst, event);
 }
-
 
 void wnm_sleep_fsm_handle_event(struct wnm_sleep_fsm_instance *inst, enum wnm_sleep_fsm_event event)
 {

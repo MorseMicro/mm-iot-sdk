@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.13.1</span>
+   &#160;<span id="projectnumber">2.14.3</span>
    </div>
   </td>
  </tr>
@@ -175,6 +175,12 @@ Functions</h2></td></tr>
 <tr class="memitem:ga5cf5f8b78e861e232a9133656daf2df6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMCONFIG__API.html#ga5cf5f8b78e861e232a9133656daf2df6">mmconfig_read_bool</a> (const char *key, bool *value)</td></tr>
 <tr class="memdesc:ga5cf5f8b78e861e232a9133656daf2df6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the boolean value stored in persistent store identified by the key.  <a href="group__MMCONFIG__API.html#ga5cf5f8b78e861e232a9133656daf2df6">More...</a><br /></td></tr>
 <tr class="separator:ga5cf5f8b78e861e232a9133656daf2df6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga8cfc7835b3c1a36a1b04b60686158f41"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMCONFIG__API.html#ga8cfc7835b3c1a36a1b04b60686158f41">mmconfig_write_mac_addr</a> (const char *key, const uint8_t *val)</td></tr>
+<tr class="memdesc:ga8cfc7835b3c1a36a1b04b60686158f41"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts the given MAC address to a string and writes to persistent store.  <a href="group__MMCONFIG__API.html#ga8cfc7835b3c1a36a1b04b60686158f41">More...</a><br /></td></tr>
+<tr class="separator:ga8cfc7835b3c1a36a1b04b60686158f41"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga26b52ee5858fa8edd385f4f301b8f1b2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMCONFIG__API.html#ga26b52ee5858fa8edd385f4f301b8f1b2">mmconfig_read_mac_addr</a> (const char *key, uint8_t *val)</td></tr>
+<tr class="memdesc:ga26b52ee5858fa8edd385f4f301b8f1b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the MAC address stored in persistent store identified by the key.  <a href="group__MMCONFIG__API.html#ga26b52ee5858fa8edd385f4f301b8f1b2">More...</a><br /></td></tr>
+<tr class="separator:ga26b52ee5858fa8edd385f4f301b8f1b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaced6e1453d3114b98696af9bbcca4288"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMCONFIG__API.html#gaced6e1453d3114b98696af9bbcca4288">mmconfig_read_bytes</a> (const char *key, void *buffer, uint32_t buffsize, uint32_t offset)</td></tr>
 <tr class="memdesc:gaced6e1453d3114b98696af9bbcca4288"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the persistent store data identified by the key.  <a href="group__MMCONFIG__API.html#gaced6e1453d3114b98696af9bbcca4288">More...</a><br /></td></tr>
 <tr class="separator:gaced6e1453d3114b98696af9bbcca4288"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -545,6 +551,44 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="ga26b52ee5858fa8edd385f4f301b8f1b2" name="ga26b52ee5858fa8edd385f4f301b8f1b2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga26b52ee5858fa8edd385f4f301b8f1b2">&#9670;&nbsp;</a></span>mmconfig_read_mac_addr()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int mmconfig_read_mac_addr </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>val</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the MAC address stored in persistent store identified by the key. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">key</td><td>Identifies the data element in persistent storage and is a case insensitive alphanumeric (plus underscore) string starting with an alpha. Same rules as a C variable name, but case insensitive. Must be a null terminated string. </td></tr>
+    <tr><td class="paramname">val</td><td>Pointer to a 6 byte buffer to receive the MAC address, it is converted from string. On error, the value is untouched, so can be preloaded with a default. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Returns <code>MMCONFIG_OK</code> on success. On error returns: <code>MMCONFIG_ERR_INVALID_KEY</code> if key is invalid <code>MMCONFIG_ERR_NOT_FOUND</code> if the specified key was not found <code>MMCONFIG_ERR_INCORRECT_TYPE</code> if the data pointed to by the key is not a MAC address represented as a string. </dd></dl>
+
+</div>
+</div>
 <a id="ga49a03e759500ae9d9395a22d3846c11e" name="ga49a03e759500ae9d9395a22d3846c11e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga49a03e759500ae9d9395a22d3846c11e">&#9670;&nbsp;</a></span>mmconfig_read_string()</h2>
 
@@ -809,6 +853,45 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="ga8cfc7835b3c1a36a1b04b60686158f41" name="ga8cfc7835b3c1a36a1b04b60686158f41"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga8cfc7835b3c1a36a1b04b60686158f41">&#9670;&nbsp;</a></span>mmconfig_write_mac_addr()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int mmconfig_write_mac_addr </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const uint8_t *&#160;</td>
+          <td class="paramname"><em>val</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Converts the given MAC address to a string and writes to persistent store. </p>
+<p >If there is already data with the same key then it will be replaced.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">key</td><td>Identifies the data element in persistent storage and is a case insensitive alphanumeric (plus underscore) string starting with an alpha. Same rules as a C variable name, but case insensitive. Must be a null terminated string. </td></tr>
+    <tr><td class="paramname">val</td><td>Pointer to the 6 byte MAC address to be written, it is converted to string and written. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Returns <code>MMCONFIG_OK</code> on success. On error returns: <code>MMCONFIG_ERR_INVALID_KEY</code> if key is invalid Other negative number for other errors. </dd></dl>
+
+</div>
+</div>
 <a id="gad75d2af944e63a2b6f5615ba8a4e7ad6" name="gad75d2af944e63a2b6f5615ba8a4e7ad6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#gad75d2af944e63a2b6f5615ba8a4e7ad6">&#9670;&nbsp;</a></span>mmconfig_write_string()</h2>
 
@@ -922,7 +1005,7 @@ Functions</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Copyright 2021-2025 Morse Micro </li>
+    <li class="footer">Copyright 2021-2026 Morse Micro </li>
   </ul>
 </div>
 </body>

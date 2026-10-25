@@ -10,7 +10,6 @@
 
 #include "driver/morse_driver/skbq.h"
 
-
 #define YAPS_TX_SKBQ_MAX 4
 
 #define test_bit(_n, _p) !!(_n & (1u << _p))
@@ -23,7 +22,6 @@ enum morse_yaps_to_chip_q
     MORSE_YAPS_CMD_Q,
     MORSE_YAPS_BEACON_Q,
     MORSE_YAPS_MGMT_Q,
-
     MORSE_YAPS_NUM_TC_Q
 };
 
@@ -33,7 +31,6 @@ enum morse_yaps_from_chip_q
     MORSE_YAPS_CMD_RESP_Q,
     MORSE_YAPS_TX_STATUS_Q,
     MORSE_YAPS_AUX_Q,
-
 
     MORSE_YAPS_NUM_FC_Q
 };
@@ -55,24 +52,17 @@ struct morse_yaps
 
     uint8_t flags;
 
-
     struct mmpkt *rx_scratch_pkt;
 };
 
-
 int morse_yaps_init(struct driver_data *driverd, struct morse_yaps *yaps, uint8_t flags);
-
 
 void morse_yaps_finish(struct morse_yaps *yaps);
 
-
 void morse_yaps_work(struct driver_data *driverd);
-
 
 void morse_yaps_stale_tx_work(struct driver_data *driverd);
 
-
 int morse_yaps_get_tx_status_pending_count(struct driver_data *driverd);
-
 
 int morse_yaps_get_tx_buffered_count(struct driver_data *driverd);

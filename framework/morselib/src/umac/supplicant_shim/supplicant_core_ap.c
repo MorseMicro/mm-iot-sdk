@@ -4,13 +4,10 @@
  */
 
 #include "mmlog.h"
-#include "mmpkt.h"
 #include "mmwlan.h"
-#include "umac/connection/umac_connection.h"
 #include "umac/data/umac_data.h"
 #include "umac/supplicant_shim/umac_supp_shim.h"
 #include "umac_supp_shim_private.h"
-#include "umac/datapath/umac_datapath.h"
 
 enum mmwlan_status umac_supp_add_ap_interface(struct umac_data *umacd)
 {
@@ -19,7 +16,6 @@ enum mmwlan_status umac_supp_add_ap_interface(struct umac_data *umacd)
     if (data->ap_wpa_s != NULL)
     {
         MMLOG_WRN("AP interface already active\n");
-
         MMOSAL_DEV_ASSERT(false);
         return MMWLAN_SUCCESS;
     }
@@ -42,6 +38,8 @@ enum mmwlan_status umac_supp_add_ap_interface(struct umac_data *umacd)
         MMLOG_WRN("Failed to add Supplicant AP iface\n");
         return MMWLAN_ERROR;
     }
+
+    wpa_supplicant_select_network(data->ap_wpa_s, data->ap_wpa_s->conf->ssid);
 
     return MMWLAN_SUCCESS;
 }

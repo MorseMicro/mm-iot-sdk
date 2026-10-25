@@ -95,6 +95,18 @@
          * ignored otherwise. If set to 0, the device will not return to the home channel
          * during the scan. */
         // "wlan.home_chan_dwell_time_ms": "200"
+        /* Comma separated list of S1G channel numbers to restrict the first
+         * wlan.selective_scan_attempts scans of a connection attempt to. Each channel must
+         * be present in the configured regulatory domain and correspond to a channel of 2
+         * MHz or less. A maximum of 10 channels may be listed. */
+        // "wlan.scan_selected_channels": "38,42"
+        /* Number of scans at the start of a connection attempt that are restricted to
+         * wlan.scan_selected_channels, after which scanning falls back to the full channel
+         * list. The counter resets when the STA leaves the connected state, so each
+         * reconnect attempt begins with another batch of selective scans. Set to 255 to
+         * always use the selected channel list, including for background and roam scans
+         * while connected. Ignored unless wlan.scan_selected_channels is also set. */
+        // "wlan.selective_scan_attempts": "1"
         /* Protected Management Frame mode to use (802.11w). Valid values are "required"
          * and "disabled" */
         // "wlan.pmf_mode": "required"

@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.13.1</span>
+   &#160;<span id="projectnumber">2.14.3</span>
    </div>
   </td>
  </tr>
@@ -107,7 +107,7 @@ Package Structure</h2>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><code>framework/morsefirmware/</code>   </td><td class="markdownTableBodyNone">Firmware and board configuration files for supported Morse Micro chips and modules    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>framework/morselib/</code>   </td><td class="markdownTableBodyNone">Headers and .a files for morselib. <code>Libraries can be found under morselib/lib/&lt;architecture&gt;</code>    </td></tr>
+<td class="markdownTableBodyNone"><code>framework/morselib/</code>   </td><td class="markdownTableBodyNone">Headers, source and .a files for morselib. Morselib is built from source by default. The precompiled libraries under <code>morselib/lib/&lt;architecture&gt;</code> are deprecated and will be removed in a future release.    </td></tr>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><code>framework/src/freertos/</code>   </td><td class="markdownTableBodyNone">FreeRTOS source code    </td></tr>
 <tr class="markdownTableRowOdd">
@@ -123,7 +123,7 @@ Package Structure</h2>
 </table>
 <h2><a class="anchor" id="autotoc_md64"></a>
 Example Application Structure</h2>
-<p >This SDK includes several example applications, source code for which can be found in the <code>mm-iot-sdk-2.13.1/examples/&lt;example&gt;</code> directory. For more detail about each of the example applications see the <a class="el" href="MMAPPS.html">Example Applications</a> page.</p>
+<p >This SDK includes several example applications, source code for which can be found in the <code>mm-iot-sdk-2.14.3/examples/&lt;example&gt;</code> directory. For more detail about each of the example applications see the <a class="el" href="MMAPPS.html">Example Applications</a> page.</p>
 <p >Below is a quick overview of some key files in the <code>ping</code> example application directory. It is not a substitute for reading the source code.</p>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -142,7 +142,7 @@ Python environment</h2>
 <blockquote class="doxtable">
 <p >&zwj;All the Python scripts in the Morse Micro IoT SDK use <b>Python3.10</b> (default for <b>Ubuntu 22.04</b>). </p>
 </blockquote>
-<p>As part of the SDK there are a number of Python scripts used as tools (<a class="el" href="GETTING_STARTED.html#SET_APP_CONFIGURATION">Setting Config Store</a>) or to drive example applications (<a class="el" href="emmet_8c.html#EMMET_APP_HOWTO">How to use the Emmet example application</a>). In order to maximise the chances of these scripts working seamlessly on your machine we utilise a tool called <a href="https://pipenv.pypa.io/">Pipenv</a>. It is a tool used to automatically create and manage a virtualenv. The virtualenv used for the SDK is defined by the Pipfile located in the root of the <code>mm-iot-sdk-2.13.1</code> directory.</p>
+<p>As part of the SDK there are a number of Python scripts used as tools (<a class="el" href="GETTING_STARTED.html#SET_APP_CONFIGURATION">Setting Config Store</a>) or to drive example applications (<a class="el" href="emmet_8c.html#EMMET_APP_HOWTO">How to use the Emmet example application</a>). In order to maximise the chances of these scripts working seamlessly on your machine we utilise a tool called <a href="https://pipenv.pypa.io/">Pipenv</a>. It is a tool used to automatically create and manage a virtualenv. The virtualenv used for the SDK is defined by the Pipfile located in the root of the <code>mm-iot-sdk-2.14.3</code> directory.</p>
 <p >You can run Python scripts from the virtualenv in two ways:</p><ol type="1">
 <li><code>pipenv shell</code>. This will drop you into a shell in the virtual env from which you can run your Python scripts as normal.</li>
 <li><code>pipenv run ./tools/your-script.py</code> . This will run the script in the virtual env and then exit.</li>
@@ -177,12 +177,12 @@ Application Configuration</h1>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><code>bcf_file</code>   </td><td class="markdownTableBodyNone">Board configuration .mbin file to use.   </td></tr>
 </table>
-<p >The full list of configurations can be view in <code>mm-iot-sdk-2.13.1/examples/&lt;application&gt;/config.hjson</code>.</p>
+<p >The full list of configurations can be view in <code>mm-iot-sdk-2.14.3/examples/&lt;application&gt;/config.hjson</code>.</p>
 <p >Fields can be modified individually using: </p><pre class="fragment">pipenv run ./tools/platform/program-configstore.py -H localhost write-string wlan.ssid &lt;new_ssid&gt;
 </pre><p> This also works for integers and boolean values such as <code>ping.size</code> and <code>ip.dhcp_enabled</code>, as they are parsed from strings to their respective types.</p>
 <h2><a class="anchor" id="ABOUT_BCF"></a>
 Board Configuration File</h2>
-<p >The Board Configuration File (BCF) is a configuration file for the Morse Micro chip that provides module-specific information and is required for the system to function properly. BCFs are included in the MM-IoT-SDK package under the <code>mm-iot-sdk-2.13.1/framework/morsefirmware</code> directory. The BCF needed can be identified by inspecting the module on the board you are using, which will have a part number printed on the label that corresponds to a BCF file in the format <code>bcf_&lt;part number&gt;.mbin</code>. </p>
+<p >The Board Configuration File (BCF) is a configuration file for the Morse Micro chip that provides module-specific information and is required for the system to function properly. BCFs are included in the MM-IoT-SDK package under the <code>mm-iot-sdk-2.14.3/framework/morsefirmware/mm_&lt;chip&gt;/bcfs/</code> directory. The BCF needed can be identified by inspecting the module on the board you are using, which will have a part number printed on the label that corresponds to a BCF file in the format <code>bcf_&lt;part number&gt;.mbin</code>. </p>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->
 </div><!-- doc-content -->
@@ -190,7 +190,7 @@ Board Configuration File</h2>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Copyright 2021-2025 Morse Micro </li>
+    <li class="footer">Copyright 2021-2026 Morse Micro </li>
   </ul>
 </div>
 </body>

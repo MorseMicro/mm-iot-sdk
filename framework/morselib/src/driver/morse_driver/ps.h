@@ -14,27 +14,19 @@ enum ps_waker_id
     PS_WAKER_IRQ,
 };
 
-
 int morse_ps_enable(struct driver_data *driverd, enum ps_waker_id waker_id);
-
 
 int morse_ps_enable_async(struct driver_data *driverd, enum ps_waker_id waker_id);
 
-
 int morse_ps_disable(struct driver_data *driverd, enum ps_waker_id waker_id);
-
 
 int morse_ps_disable_async(struct driver_data *driverd, enum ps_waker_id waker_id);
 
-
 void morse_ps_network_activity(struct driver_data *driverd);
-
 
 int morse_ps_set_dynamic_ps_timeout(struct driver_data *driverd, uint32_t timeout_ms);
 
-
 int morse_ps_init(struct driver_data *driverd);
-
 
 void morse_ps_deinit(struct driver_data *driverd);
 

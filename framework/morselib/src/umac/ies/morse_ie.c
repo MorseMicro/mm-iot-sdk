@@ -10,15 +10,11 @@
 #include "umac/relay/umac_relay.h"
 #include "mmlog.h"
 
-
 #define MORSE_IE_OUI_TYPE 0
-
 
 #define MORSE_IE_S1G_RELAY_OUI_TYPE 1
 
-
 static const uint8_t morse_ie_info_id[] = { 0x0C, 0xBF, 0x74, MORSE_IE_OUI_TYPE };
-
 
 static const uint8_t morse_s1g_relay_id[] = { 0x0C, 0xBF, 0x74, MORSE_IE_S1G_RELAY_OUI_TYPE };
 
@@ -70,12 +66,9 @@ void ie_morse_info_build(struct umac_data *umacd, struct consbuf *buf)
 
         ie->hw_ver = htole32(umac_interface_get_chip_id(umacd));
 
-
         ie->cap0 = MORSE_VENDOR_IE_CAP0_SHORT_ACK_TIMEOUT;
 
-
         const struct morse_caps *capabilities = umac_interface_get_capabilities(umacd);
-
 
         ie->cap0 |= MORSE_VENDOR_IE_CAP0_SET_MMSS_OFFSET(
             (capabilities->ampdu_mss > 0) ? capabilities->morse_mmss_offset : 0);

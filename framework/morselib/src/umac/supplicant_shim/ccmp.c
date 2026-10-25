@@ -6,15 +6,12 @@
 #include "umac/keys/umac_keys.h"
 #include "dot11/dot11.h"
 
-
 #define CCMP_HEADER_KEY_OCT_KEY_ID 0xC0
-
 
 static uint8_t parse_ccmp_key_id(uint8_t *ccmp_header)
 {
     return (ccmp_header[3] & CCMP_HEADER_KEY_OCT_KEY_ID) >> 6;
 }
-
 
 static uint64_t parse_ccmp_packet_number(const uint8_t *header)
 {
@@ -36,7 +33,6 @@ bool ccmp_is_valid(struct umac_sta_data *stad,
     }
 
     uint8_t key_id = parse_ccmp_key_id(ccmp_header);
-
 
     if (umac_keys_get_key_type(stad, key_id) == UMAC_KEY_TYPE_BLANK)
     {

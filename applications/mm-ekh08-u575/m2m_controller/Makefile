@@ -40,6 +40,11 @@ ifeq ($(VERBOSE),)
 QUIET = @
 endif
 
+# Set BUILD_MORSELIB_FROM_SOURCE to a non-empty string to build Morselib from source.
+# Note that BUILD_MORSELIB_FROM_SOURCE is enabled by default, but can be set to an empty string to
+# instead link against the precompiled morselib libraries.
+# The precompiled morselib libraries are deprecated and will be removed in a future release.
+BUILD_MORSELIB_FROM_SOURCE?=y
 
 # Set BUILD_SUPPLICANT_FROM_SOURCE to a non-empty string to build the WPA Supplicant from source
 # and link against libmorse_nosupplicant.a. If this is set, the crypto will also be built from
@@ -54,11 +59,12 @@ endif
 BUILD_SUPPLICANT_CRYPTO_FROM_SOURCE?=y
 
 
-
 # Set ENABLE_AP_MODE to a non-empty string to enable additional build time configuration to support
 # AP mode. This will increase heap allocations and compile the WPA supplicant with AP mode support.
 # Additional memory increase is indicative only.
 #ENABLE_AP_MODE=y
+
+
 
 # Example source files
 APP_DIR = .
@@ -131,8 +137,8 @@ include $(MMIOT_ROOT)/mk/mmutils.mk
 include $(MMIOT_ROOT)/mk/littlefs.mk
 include $(MMIOT_ROOT)/mk/freertos-common.mk
 include $(MMIOT_ROOT)/mk/freertos-$(CORE).mk
-include $(MMIOT_ROOT)/mk/morselib.mk
 include $(MMIOT_ROOT)/mk/mmagic_controller.mk
+INCLUDES += $(MMIOT_ROOT)/morselib/include
 
 
 MMIOT_INCLUDES += src
@@ -197,6 +203,11 @@ BUILD_DEFINES += $(DEBUG_BUILD_DEFINES)
 else
 # Production builds
 CFLAGS += -Os
+
+# More user friendly log messages
+CFLAGS += -DMMLOG_PREFIX_FMT="\"%c %8lu \""   # Note: can't use BUILD_DEFINES because of spaces
+BUILD_DEFINES += "MMLOG_PREFIX_ARGS=lvl,mmosal_get_time_ms()"
+
 endif
 $(info Building for $(BUILDTYPE) in $(BUILD_DIR))
 

@@ -19,7 +19,6 @@
 #include "umac/twt/umac_twt.h"
 #include "mmwlan.h"
 
-
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 #pragma GCC diagnostic ignored "-Wc++-compat"
@@ -58,17 +57,12 @@ extern mmtrace_channel sup_channel_handle;
     } while (0)
 #endif
 
-
 #define UMAC_SUPP_AP_CONFIG_NAME "AP"
-
 
 #define UMAC_SUPP_STA_DRIVER_NAME ""
 
-
 #define UMAC_SUPP_AP_DRIVER_NAME "AP"
 
-
 enum mmwlan_status umac_supp_start_supp(struct umac_data *umacd);
-
 
 void umac_supp_event(void *ctx, enum wpa_event_type event, union wpa_event_data *data);

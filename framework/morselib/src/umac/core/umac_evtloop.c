@@ -17,15 +17,12 @@ static void evtloop_dispatch(struct umac_data *umacd,
     umac_evt_free(&core->evtq, evt);
 }
 
-
 static uint32_t evtloop_iteration(struct umac_data *umacd, struct umac_core_data *core)
 {
     uint32_t num_timeouts_fired;
     unsigned ii;
 
-
     bool datapath_pending = umac_datapath_process(umacd);
-
 
     for (ii = 0; ii < MAX_EVTS_DISPATCHED_AT_ONCE; ii++)
     {
@@ -43,7 +40,6 @@ static uint32_t evtloop_iteration(struct umac_data *umacd, struct umac_core_data
 
     if (datapath_pending || !umac_evtq_is_empty(&(core->evtq)))
     {
-
         return 0;
     }
     else
@@ -89,7 +85,6 @@ static void evtloop_main(void *arg)
 #endif
 
 
-
 enum mmwlan_status umac_core_start(struct umac_data *umacd)
 {
 #if !(defined(ENABLE_EXTERNAL_EVENT_LOOP) && ENABLE_EXTERNAL_EVENT_LOOP)
@@ -104,7 +99,6 @@ enum mmwlan_status umac_core_start(struct umac_data *umacd)
         {
             return MMWLAN_NO_MEM;
         }
-
 
         core->evtloop_task =
             mmosal_task_create(evtloop_main, umacd, MMOSAL_TASK_PRI_HIGH, 2152, "evtloop");
@@ -128,14 +122,12 @@ void umac_core_stop(struct umac_data *umacd)
     struct umac_core_data *core = umac_data_get_core(umacd);
     if (!core->evtloop_shutting_down)
     {
-
         core->evtloop_shutting_down = true;
         if (core->evtloop_task != NULL)
         {
             MMLOG_DBG("Waiting for event loop to finish\n");
             invoke_sleep_callback(core, MMWLAN_SLEEP_STATE_BUSY, 0);
             mmosal_semb_give(core->evtloop_semb);
-
             if (!umac_core_evtloop_is_active(umacd))
             {
                 while (!core->evtloop_has_finished)
@@ -178,7 +170,6 @@ bool umac_core_evt_queue(struct umac_data *umacd, const struct umac_evt *evt)
     bool ret;
     struct umac_core_data *core = umac_data_get_core(umacd);
 
-
     if (core->evtloop_shutting_down || core->evtloop_task == NULL)
     {
         return false;
@@ -198,7 +189,6 @@ bool umac_core_evt_queue_at_start(struct umac_data *umacd, const struct umac_evt
     bool ret;
     struct umac_core_data *core = umac_data_get_core(umacd);
 
-
     if (core->evtloop_shutting_down || core->evtloop_task == NULL)
     {
         return false;
@@ -217,7 +207,6 @@ void umac_core_evt_wake(struct umac_data *umacd)
 {
 #if !(defined(ENABLE_EXTERNAL_EVENT_LOOP) && ENABLE_EXTERNAL_EVENT_LOOP)
     struct umac_core_data *core = umac_data_get_core(umacd);
-
 
     if (core->evtloop_shutting_down || core->evtloop_task == NULL)
     {

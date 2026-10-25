@@ -498,7 +498,7 @@ static void netif_status_callback(struct netif *netif)
         new_link_state = MMIPAL_LINK_UP;
     }
 
-    MMLOG_APP("NetIf Link status %s\n", new_link_state == MMIPAL_LINK_UP ? "UP" : "DOWN");
+    MMLOG_DBG("NetIf Link status %s\n", new_link_state == MMIPAL_LINK_UP ? "UP" : "DOWN");
 
     if (data->ip_link_state != new_link_state)
     {

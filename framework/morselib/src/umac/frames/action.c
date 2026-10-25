@@ -18,7 +18,6 @@ bool frame_is_robust_action(struct mmpktview *view)
     {
         return false;
     }
-
     switch (frame->field.category)
     {
         case DOT11_ACTION_CATEGORY_PUBLIC:

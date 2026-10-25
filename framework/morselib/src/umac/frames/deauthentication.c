@@ -52,14 +52,12 @@ void frame_deauthentication_from_ap_build(struct umac_data *umacd, struct consbu
 
     if (data->bip_stad != NULL)
     {
-
         consbuf_reserve(buf, sizeof(struct dot11_ie_mmie));
         if (frame)
         {
             bool ok = bip_generate_mmie(data->bip_stad, (uint8_t *)frame, buf->offset);
             if (!ok)
             {
-
                 buf->offset -= sizeof(struct dot11_ie_mmie);
             }
         }

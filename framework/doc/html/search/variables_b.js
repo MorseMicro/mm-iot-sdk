@@ -2,7 +2,7 @@ var searchData=
 [
   ['mac_5faddr_0',['mac_addr',['../structmmipal__arp__config.html#a7beb6e79eba363e586a0cb801f07bef7',1,'mmipal_arp_config::mac_addr()'],['../structmmagic__core__wlan__get__mac__addr__rsp__args.html#a871b9e9e19224c5c8b229ebe8facabff',1,'mmagic_core_wlan_get_mac_addr_rsp_args::mac_addr()'],['../structmmwlan__ap__sta__status.html#aaf337db9f60ace36eb1333e10ef7f0fb',1,'mmwlan_ap_sta_status::mac_addr()']]],
   ['major_1',['major',['../structmmwlan__bcf__metadata.html#af0010394bc1d65e7a15d33697808db00',1,'mmwlan_bcf_metadata']]],
-  ['max_5fstas_2',['max_stas',['../structmmwlan__ap__args.html#a702c67e18040f41e52518427391e2ef4',1,'mmwlan_ap_args']]],
+  ['max_5fstas_2',['max_stas',['../structmmwlan__ap__args.html#a702c67e18040f41e52518427391e2ef4',1,'mmwlan_ap_args::max_stas()'],['../structmmwlan__relay__ap__args.html#a2479b0e87e5f0044a4d4fc8568edf7da',1,'mmwlan_relay_ap_args::max_stas()']]],
   ['max_5ftime_5fms_3',['max_time_ms',['../structstruct__ping__status.html#adf699134ad881b685447793f8934205e',1,'struct_ping_status']]],
   ['max_5ftx_5feirp_5fdbm_4',['max_tx_eirp_dbm',['../structmmwlan__s1g__channel.html#a1cd5f82c422ee22f9bc4dd06973891b1',1,'mmwlan_s1g_channel']]],
   ['metadata_5',['metadata',['../structmmpkt.html#acbd849aa6d65c8019c122fe07dc9e8d0',1,'mmpkt']]],

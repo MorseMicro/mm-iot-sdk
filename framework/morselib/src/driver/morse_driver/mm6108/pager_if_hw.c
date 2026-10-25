@@ -15,9 +15,7 @@
 #include "driver/morse_driver/chip_if.h"
 #include "driver/transport/morse_transport.h"
 
-
 #define ENABLE_PAGER_HW_IRQ 1
-
 
 #define MORSE_PAGER_BITS_BLOCK_LEN  (1)
 #define MORSE_PAGER_BITS_BITMAP_LEN (32 - MORSE_PAGER_BITS_BLOCK_LEN)
@@ -26,19 +24,16 @@
 
 struct morse_pager_cache
 {
-
     uint32_t bitmap[MORSE_PAGER_NUM_BLOCKS];
 };
 
 struct morse_pager_hw_aux_data
 {
-
     uint32_t put_addr;
     uint32_t pop_addr;
 
     struct morse_pager_cache cache;
 };
-
 
 static struct morse_pager_hw_aux_data morse_pager_hw_aux_data[MAX_PAGERS];
 
@@ -155,7 +150,6 @@ static int _morse_pager_hw_pop(struct morse_pager *pager, struct morse_page *pag
 
     if (!ret)
     {
-
         if (pop_val == 0)
         {
             return -EAGAIN;
@@ -177,7 +171,6 @@ int morse_pager_hw_pop(struct morse_pager *pager, struct morse_page *page)
     {
         return _morse_pager_hw_pop(pager, page);
     }
-
 
     ret = morse_pager_hw_get_page_from_cache(pager, page);
     if (!ret)
@@ -226,7 +219,6 @@ int morse_pager_hw_put(struct morse_pager *pager, struct morse_page *page)
         return _morse_pager_hw_put(pager, page);
     }
 
-
     ret = morse_pager_hw_get_index_from_page(pager, page, &index);
     if (ret)
     {
@@ -267,7 +259,6 @@ static void _morse_pager_hw_notify_pager(const struct morse_pager *pager)
 
 int morse_pager_hw_notify_pager(const struct morse_pager *pager)
 {
-
     if ((pager->flags & (MORSE_PAGER_FLAGS_DIR_TO_HOST | MORSE_PAGER_FLAGS_FREE)) &&
         pager->parent->driverd->chip_if->pkt_memory.num)
     {
@@ -275,10 +266,8 @@ int morse_pager_hw_notify_pager(const struct morse_pager *pager)
     }
 
 #if ENABLE_PAGER_HW_IRQ
-
     return 0;
 #else
-
     return morse_trns_write_le32(pager->driverd,
                                  MORSE_PAGER_TRGR_SET(pager->driverd),
                                  MORSE_PAGER_IRQ_MASK(pager->id));
@@ -392,10 +381,8 @@ int morse_pager_hw_pagesets_init(struct driver_data *driverd)
     MMLOG_INF("morse pagers detected %lu\n", tbl_ptr.count);
     MMOSAL_ASSERT(tbl_ptr.count <= MAX_PAGERS);
 
-
     for (pager = driverd->chip_if->pagers, i = 0; i < tbl_ptr.count; pager++, i++)
     {
-
         const uint32_t addr = tbl_ptr.addr + i * sizeof(struct morse_pager_hw_entry);
 
         ret = morse_trns_read_multi_byte(driverd,
@@ -423,14 +410,11 @@ int morse_pager_hw_pagesets_init(struct driver_data *driverd)
         if (ret)
         {
             MMLOG_ERR("morse_pager_init failed %d\n", ret);
-
             morse_pager_hw_finish(pager);
-
             i--;
             goto err_exit;
         }
     }
-
 
     for (pager = driverd->chip_if->pagers, i = 0; i < tbl_ptr.count; pager++, i++)
     {
@@ -453,7 +437,6 @@ int morse_pager_hw_pagesets_init(struct driver_data *driverd)
                  (pager->flags & MORSE_PAGER_FLAGS_FREE))
         {
             tx_return = pager;
-
             driver_task_notify_event(driverd, DRV_EVT_PAGE_RETURN_PEND);
         }
         else
@@ -497,7 +480,6 @@ int morse_pager_hw_pagesets_init(struct driver_data *driverd)
         goto err_exit;
     }
 
-
     driverd->chip_if->to_chip_pageset = &driverd->chip_if->pagesets[0];
     driverd->chip_if->from_chip_pageset = &driverd->chip_if->pagesets[1];
     memset(driverd->chip_if->bypass.tx_status.to_process,
@@ -507,9 +489,7 @@ int morse_pager_hw_pagesets_init(struct driver_data *driverd)
            0,
            sizeof(driverd->chip_if->bypass.cmd_resp.to_process));
 
-
     morse_trns_release(driverd);
-
 
     morse_pager_irq_enable(tx_return, true);
     morse_pager_irq_enable(rx_data, true);
@@ -520,7 +500,6 @@ int morse_pager_hw_pagesets_init(struct driver_data *driverd)
     return ret;
 
 err_exit:
-
     for (pager = driverd->chip_if->pagers, j = 0; j < i; pager++, j++)
     {
         morse_pager_finish(pager);

@@ -4,11 +4,9 @@
  */
 
 
-
 #pragma once
 
 #include "umac/ies/ies_common.h"
-
 
 static inline const struct dot11_ie_aid_response *ie_aid_response_find(const uint8_t *ies,
                                                                        size_t ies_len)
@@ -20,5 +18,4 @@ static inline const struct dot11_ie_aid_response *ie_aid_response_find(const uin
         sizeof(struct dot11_ie_aid_response) - sizeof(struct dot11_ie_hdr),
         NULL);
 }
-
 

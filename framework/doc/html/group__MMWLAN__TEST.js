@@ -1,5 +1,13 @@
 var group__MMWLAN__TEST =
 [
+    [ "mmwlan_key_info", "structmmwlan__key__info.html", [
+      [ "key_data", "structmmwlan__key__info.html#acc1d519e2e9b2847fdd71416ce8ecf68", null ],
+      [ "key_id", "structmmwlan__key__info.html#a4c091cc1794ee40fa6a6352a6208c4ea", null ],
+      [ "key_len", "structmmwlan__key__info.html#a7284ab27fca505c93c5599085c665a06", null ],
+      [ "key_type", "structmmwlan__key__info.html#af79e07270b6616f180d73d5c3092c421", null ]
+    ] ],
+    [ "MMWLAN_MAX_KEYLEN", "group__MMWLAN__TEST.html#gac626f815c545c4406b3344bab87b3959", null ],
+    [ "MMWLAN_MAX_KEYS", "group__MMWLAN__TEST.html#gadc590534336c2f8b88347620e2f07b39", null ],
     [ "mmwlan_bw", "group__MMWLAN__TEST.html#gab18ca3f793c4121c722767a653ede2f8", [
       [ "MMWLAN_BW_NONE", "group__MMWLAN__TEST.html#ggab18ca3f793c4121c722767a653ede2f8a001236c5b0eb44f3da60df13ff54997b", null ],
       [ "MMWLAN_BW_1MHZ", "group__MMWLAN__TEST.html#ggab18ca3f793c4121c722767a653ede2f8af01c6392438e00681fb2330a26df7261", null ],
@@ -13,6 +21,11 @@ var group__MMWLAN__TEST =
       [ "MMWLAN_GI_SHORT", "group__MMWLAN__TEST.html#ggae62b87e13dc335adf2dfbbf1832244dfa77ee7b64e2cda09b57803bd3bd1c29b9", null ],
       [ "MMWLAN_GI_LONG", "group__MMWLAN__TEST.html#ggae62b87e13dc335adf2dfbbf1832244dfa29eca6d80e257aae1956cdba97b8315d", null ],
       [ "MMWLAN_GI_MAX", "group__MMWLAN__TEST.html#ggae62b87e13dc335adf2dfbbf1832244dfa1541e3914a7999a59a121d6ce2a99c12", null ]
+    ] ],
+    [ "mmwlan_key_type", "group__MMWLAN__TEST.html#ga31e1d8f5d50c4a7481eaba5bf0c5802c", [
+      [ "MMWLAN_KEY_TYPE_PAIRWISE", "group__MMWLAN__TEST.html#gga31e1d8f5d50c4a7481eaba5bf0c5802ca5341a117ef1b52e00323c9ffa3a3b564", null ],
+      [ "MMWLAN_KEY_TYPE_GROUP", "group__MMWLAN__TEST.html#gga31e1d8f5d50c4a7481eaba5bf0c5802ca4df95893b249c27fbdc53d5125ed9e59", null ],
+      [ "MMWLAN_KEY_TYPE_IGTK", "group__MMWLAN__TEST.html#gga31e1d8f5d50c4a7481eaba5bf0c5802cacd6d47e8665dfddd03c5549152720276", null ]
     ] ],
     [ "mmwlan_mcs", "group__MMWLAN__TEST.html#ga717653d3f72f5265b2c583db54f9f7ba", [
       [ "MMWLAN_MCS_NONE", "group__MMWLAN__TEST.html#gga717653d3f72f5265b2c583db54f9f7baa5f482888c6152b9f4b038e8e4d81b217", null ],
@@ -29,5 +42,6 @@ var group__MMWLAN__TEST =
       [ "MMWLAN_MCS_MAX", "group__MMWLAN__TEST.html#gga717653d3f72f5265b2c583db54f9f7baaafd2b6bd1024cc6444c70bbd2f84507b", null ]
     ] ],
     [ "mmwlan_ate_execute_command", "group__MMWLAN__TEST.html#ga9c6f77ec164d316302624fa08af7e692", null ],
+    [ "mmwlan_ate_get_key_info", "group__MMWLAN__TEST.html#gab1047d714a9be32e6e0b3c046e028ed8", null ],
     [ "mmwlan_ate_override_rate_control", "group__MMWLAN__TEST.html#ga6c83c17957242ee0f1cd41de51083de0", null ]
 ];

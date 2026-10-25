@@ -4,7 +4,6 @@
  */
 
 
-
 #pragma once
 
 #include <stdint.h>
@@ -15,16 +14,11 @@
 #include "dot11/dot11.h"
 #include "umac/data/umac_data.h"
 
-
 typedef void (*mgmt_frame_builder_t)(struct umac_data *umacd, struct consbuf *buf, void *params);
-
 
 struct mmpkt *build_mgmt_frame(struct umac_data *umacd, mgmt_frame_builder_t builder, void *params);
 
-
 bool frame_is_robust_mgmt(struct mmpktview *view);
 
-
 bool mgmt_frame_is_bufferable(uint16_t frame_control_le);
-
 

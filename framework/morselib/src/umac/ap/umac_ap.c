@@ -26,22 +26,20 @@
 #include "umac/regdb/umac_regdb.h"
 #include "umac/supplicant_shim/umac_supp_shim.h"
 
+#define AP_STOP_TX_PROPAGATION_MS (100)
 
 uint32_t ieee80211_crc32(const u8 *frame, size_t frame_len);
-
 
 static uint32_t umac_ap_generate_cssid(const uint8_t *ssid, size_t ssid_len)
 {
     return ieee80211_crc32(ssid, ssid_len);
 }
 
-
 static void umac_ap_set_stad_sleep_state_(struct umac_sta_data *stad, bool asleep)
 {
     struct umac_ap_sta_data *sta_data = umac_sta_data_get_ap(stad);
     sta_data->asleep = asleep;
 }
-
 
 static bool umac_ap_set_stad_state_(struct umac_sta_data *stad, enum morse_sta_state state)
 {
@@ -79,6 +77,11 @@ bool umac_ap_validate_ap_args(struct umac_data *umacd, const struct mmwlan_ap_ar
         return false;
     }
 
+    if (mm_mac_addr_is_multicast(args->bssid))
+    {
+        return false;
+    }
+
     bool auto_select = (args->op_class == 0 && args->s1g_chan_num == 0);
 
     struct mmwlan_vif_channel_info sta_channel_info = {};
@@ -87,7 +90,6 @@ bool umac_ap_validate_ap_args(struct umac_data *umacd, const struct mmwlan_ap_ar
 
     if (auto_select)
     {
-
         if (!sta_active)
         {
             MMLOG_ERR("Auto channel selection requires an active STA VIF\n");
@@ -163,10 +165,32 @@ bool umac_ap_validate_ap_args(struct umac_data *umacd, const struct mmwlan_ap_ar
         return false;
     }
 
+    bool zero_terminated = false;
+    for (size_t i = 0; i < MM_ARRAY_COUNT(args->sae_owe_ec_groups); ++i)
+    {
+        if (args->sae_owe_ec_groups[i] == 0)
+        {
+            zero_terminated = true;
+            break;
+        }
+    }
+    if (!zero_terminated)
+    {
+        MMLOG_ERR("SAE/OWE EC groups must be zero terminated [%d,%d,%d,%d].\n",
+                  args->sae_owe_ec_groups[0],
+                  args->sae_owe_ec_groups[1],
+                  args->sae_owe_ec_groups[2],
+                  args->sae_owe_ec_groups[3]);
+        return false;
+    }
+
     return true;
 }
 
-enum mmwlan_status umac_ap_enable_ap(struct umac_data *umacd, const struct mmwlan_ap_args *args)
+enum mmwlan_status umac_ap_enable_ap(struct umac_data *umacd,
+                                     const struct mmwlan_ap_args *args,
+                                     umac_ap_done_cb_t done_cb,
+                                     void *done_cb_arg)
 {
     enum mmwlan_status status = MMWLAN_ERROR;
 
@@ -189,6 +213,8 @@ enum mmwlan_status umac_ap_enable_ap(struct umac_data *umacd, const struct mmwla
         return MMWLAN_NO_MEM;
     }
 
+    data->done_cb = done_cb;
+    data->done_cb_arg = done_cb_arg;
 
     data->max_stas = 1 + (args->max_stas ? args->max_stas : MMWLAN_DEFAULT_AP_MAX_STAS);
     data->stas =
@@ -200,9 +226,7 @@ enum mmwlan_status umac_ap_enable_ap(struct umac_data *umacd, const struct mmwla
         goto error;
     }
 
-
     data->sta_common = umac_sta_data_alloc(umacd);
-
     data->stas[0] = data->sta_common;
     if (data->sta_common == NULL)
     {
@@ -210,7 +234,6 @@ enum mmwlan_status umac_ap_enable_ap(struct umac_data *umacd, const struct mmwla
         status = MMWLAN_NO_MEM;
         goto error;
     }
-
 
     if (args->max_stas > MMWLAN_DEFAULT_AP_MAX_STAS)
     {
@@ -224,6 +247,10 @@ enum mmwlan_status umac_ap_enable_ap(struct umac_data *umacd, const struct mmwla
 
     memcpy(&(data->args), args, sizeof(data->args));
 
+    if (args->max_stas == 0)
+    {
+        data->args.max_stas = MMWLAN_DEFAULT_AP_MAX_STAS;
+    }
 
     if (args->op_class == 0 && args->s1g_chan_num == 0)
     {
@@ -274,14 +301,12 @@ enum mmwlan_status umac_ap_enable_ap(struct umac_data *umacd, const struct mmwla
     }
     else
     {
-
         uint8_t bssid[MMWLAN_MAC_ADDR_LEN] = { 0 };
         status = umac_interface_get_device_mac_addr(umacd, bssid);
         if (status != MMWLAN_SUCCESS)
         {
             goto error;
         }
-
         bssid[0] ^= 0x02;
         MMLOG_DBG("Basing BSSID on device MAC addr: " MM_MAC_ADDR_FMT "\n", MM_MAC_ADDR_VAL(bssid));
         umac_sta_data_set_bssid(data->sta_common, bssid);
@@ -303,10 +328,47 @@ error:
     return status;
 }
 
+struct ap_start_failed
+{
+    umac_ap_done_cb_t start_done_cb;
+    void *start_done_cb_arg;
+    enum mmwlan_status start_status;
+};
+
+static void disable_on_ap_start_failure_complete(struct umac_data *umacd,
+                                                 void *arg,
+                                                 enum mmwlan_status status)
+{
+    struct ap_start_failed *args = (struct ap_start_failed *)arg;
+    MMLOG_DBG("AP disable finished with status %d\n", status);
+    if (args == NULL)
+    {
+        MMLOG_WRN("Args pointer NULL. Nothing to do.\n");
+        return;
+    }
+    if (args->start_done_cb)
+    {
+        args->start_done_cb(umacd, args->start_done_cb_arg, args->start_status);
+    }
+    mmosal_free(args);
+}
+
+static void disable_ap_on_start_failure(void *arg1, void *arg2)
+{
+    struct umac_data *umacd = (struct umac_data *)arg1;
+    umac_ap_disable_ap(umacd, disable_on_ap_start_failure_complete, arg2);
+}
+
 enum mmwlan_status umac_ap_start(struct umac_data *umacd, const struct umac_ap_config *cfg)
 {
     struct umac_ap_data *data = umac_data_get_ap(umacd);
     MMOSAL_ASSERT(data != NULL);
+
+    struct ap_start_failed *cb_args = NULL;
+    umac_ap_done_cb_t done_cb = data->done_cb;
+    void *done_cb_arg = data->done_cb_arg;
+    data->done_cb = NULL;
+    data->done_cb_arg = NULL;
 
     enum mmwlan_status status = MMWLAN_ERROR;
 
@@ -324,7 +386,7 @@ enum mmwlan_status umac_ap_start(struct umac_data *umacd, const struct umac_ap_c
         umac_sta_data_set_bssid(data->sta_common, cfg->bssid);
     }
 
-    data->dtim_count = data->config.dtim_period - 1;
+    data->dtim_count = 0;
     umac_ap_set_stad_sleep_state_(data->sta_common, true);
     umac_ap_set_stad_state_(data->sta_common, MORSE_STA_AUTHORIZED);
     umac_sta_data_set_security(data->sta_common, data->args.security_type, data->args.pmf_mode);
@@ -393,7 +455,6 @@ enum mmwlan_status umac_ap_start(struct umac_data *umacd, const struct umac_ap_c
     enum mmwlan_relay_state relay_state = umac_relay_get_state(umacd);
     if (relay_state == MMWLAN_RELAY_STATE_DISABLED || relay_state == MMWLAN_RELAY_STATE_ROOT)
     {
-
         struct mmwlan_vif_state state = {
             .vif = MMWLAN_VIF_AP,
             .link_state = MMWLAN_LINK_UP,
@@ -401,12 +462,31 @@ enum mmwlan_status umac_ap_start(struct umac_data *umacd, const struct umac_ap_c
         umac_interface_invoke_vif_state_cb(umacd, &state);
     }
 
+    if (done_cb)
+    {
+        done_cb(umacd, done_cb_arg, MMWLAN_SUCCESS);
+    }
     return MMWLAN_SUCCESS;
 
 failure:
-    mmosal_free(data->config.head);
-    mmosal_free(data->config.tail);
-    memset(&(data->config), 0, sizeof(data->config));
+    cb_args = (struct ap_start_failed *)mmosal_malloc(sizeof(*cb_args));
+    MMOSAL_DEV_ASSERT(cb_args != NULL);
+    if (cb_args != NULL)
+    {
+        cb_args->start_done_cb = done_cb;
+        cb_args->start_done_cb_arg = done_cb_arg;
+        cb_args->start_status = status;
+    }
+    else if (done_cb)
+    {
+        done_cb(umacd, done_cb_arg, status);
+    }
+    else
+    {
+        MMLOG_ERR("Failed to shutdown AP on start failure\n");
+    }
+
+    umac_core_register_timeout(umacd, 0, disable_ap_on_start_failure, umacd, cb_args);
     return status;
 }
 
@@ -437,10 +517,8 @@ void umac_ap_signal_beacon_critical_update(struct umac_data *umacd)
         data->config.head == NULL ||
         data->config.head_len < sizeof(struct dot11_s1g_beacon_hdr))
     {
-
         return;
     }
-
 
     struct dot11_s1g_beacon_hdr *hdr = (struct dot11_s1g_beacon_hdr *)data->config.head;
     hdr->change_sequence++;
@@ -451,14 +529,12 @@ struct mmpkt *umac_ap_get_beacon(struct umac_data *umacd)
     struct umac_ap_data *data = umac_data_get_ap(umacd);
     MMOSAL_ASSERT(data != NULL);
 
-
     MMOSAL_TASK_ENTER_CRITICAL();
     umac_ap_set_stad_sleep_state_(data->sta_common, true);
     bool traffic_indicator = (data->dtim_count == 0) &&
                              umac_sta_data_get_queued_len(data->sta_common);
     MMOSAL_TASK_EXIT_CRITICAL();
     struct mmpkt *beacon = build_mgmt_frame(umacd, umac_ap_build_beacon, &traffic_indicator);
-
 
     if (data->dtim_count == 0)
     {
@@ -474,7 +550,6 @@ struct mmpkt *umac_ap_get_beacon(struct umac_data *umacd)
         MMLOG_WRN("Failed to generate beacon\n");
         return NULL;
     }
-
 
     if (traffic_indicator)
     {
@@ -494,7 +569,6 @@ struct mmpkt *umac_ap_get_beacon(struct umac_data *umacd)
     umac_rc_init_rate_table_mgmt(umacd, &tx_metadata->rc_data, false);
     return beacon;
 }
-
 
 static bool umac_ap_should_ignore_probe_req(struct umac_data *umacd,
                                             struct mmdrv_rx_metadata *rx_metadata)
@@ -524,7 +598,7 @@ static bool umac_ap_should_ignore_probe_req(struct umac_data *umacd,
         return true;
     }
 
-    if (umac_relay_get_state(umacd) == MMWLAN_RELAY_STATE_RELAY &&
+    if (umac_relay_get_state(umacd) == MMWLAN_RELAY_STATE_REPEATER &&
         umac_relay_get_depth(umacd) == MMWLAN_RELAY_DEPTH_UNKNOWN)
     {
         return true;
@@ -551,12 +625,10 @@ void umac_ap_handle_probe_req(struct umac_data *umacd, struct mmpktview *rxbufvi
 
     const struct dot11_hdr *probe_req_header = (struct dot11_hdr *)mmpkt_get_data_start(rxbufview);
 
-
     uint16_t capability_info = DOT11_MASK_CAPINFO_ESS;
 
     if (data->args.security_type != MMWLAN_OPEN)
     {
-
         capability_info |= DOT11_MASK_CAPINFO_PRIVACY;
     }
 
@@ -598,7 +670,6 @@ void umac_ap_handle_probe_req(struct umac_data *umacd, struct mmpktview *rxbufvi
     }
 }
 
-
 static enum mmwlan_ap_sta_state umac_ap_morse_sta_state_to_mmwlan_ap_sta_state(
     enum morse_sta_state sta_state)
 {
@@ -624,7 +695,6 @@ static enum mmwlan_ap_sta_state umac_ap_morse_sta_state_to_mmwlan_ap_sta_state(
 
     return MMWLAN_AP_STA_UNKNOWN;
 }
-
 
 static struct umac_sta_data *umac_ap_pop_sta_by_addr(struct umac_ap_data *data,
                                                      const uint8_t *sta_addr)
@@ -692,7 +762,6 @@ struct umac_sta_data *umac_ap_lookup_sta_by_aid(struct umac_data *umacd, uint16_
     return data->stas[aid];
 }
 
-
 static struct umac_sta_data *umac_ap_alloc_sta(struct umac_data *umacd,
                                                struct umac_ap_data *data,
                                                uint16_t aid)
@@ -719,7 +788,6 @@ static struct umac_sta_data *umac_ap_alloc_sta(struct umac_data *umacd,
 
     return stad;
 }
-
 
 static void umac_ap_dealloc_sta(struct umac_ap_data *data, struct umac_sta_data *stad)
 {
@@ -767,7 +835,6 @@ enum mmwlan_status umac_ap_add_sta(struct umac_data *umacd,
 
     umac_keys_init(stad);
 
-
     uint8_t sgi_flags = 0;
     uint8_t max_mcs = 7;
     umac_rc_start(stad, sgi_flags, max_mcs);
@@ -784,7 +851,6 @@ enum mmwlan_status umac_ap_add_sta(struct umac_data *umacd,
 
     return status;
 }
-
 
 static void umac_ap_notify_sta_status_change(struct umac_sta_data *stad,
                                              struct umac_ap_data *data,
@@ -854,7 +920,6 @@ static enum mmwlan_status umac_ap_remove_sta_record(struct umac_data *umacd,
 {
     enum mmwlan_status status = MMWLAN_ERROR;
 
-
     uint16_t vif_id = umac_interface_get_vif_id(umacd, UMAC_INTERFACE_AP);
     MMOSAL_DEV_ASSERT(vif_id != MMDRV_VIF_ID_INVALID);
 
@@ -866,7 +931,6 @@ static enum mmwlan_status umac_ap_remove_sta_record(struct umac_data *umacd,
 
     uint8_t mac_addr[6];
     umac_sta_data_get_peer_addr(stad, mac_addr);
-
 
     int ret =
         mmdrv_update_sta_state(vif_id, umac_sta_data_get_aid(stad), mac_addr, MORSE_STA_NOTEXIST);
@@ -911,7 +975,6 @@ enum mmwlan_status umac_ap_remove_sta(struct umac_data *umacd, const uint8_t *ma
     }
 
     MMOSAL_DEV_ASSERT(mac_addr && !mm_mac_addr_is_multicast(mac_addr));
-
 
     struct umac_sta_data *stad = umac_ap_pop_sta_by_addr(data, mac_addr);
     if (stad == NULL)
@@ -1031,7 +1094,6 @@ enum mmwlan_status umac_ap_get_channel_info(struct umac_data *umacd,
         return MMWLAN_UNAVAILABLE;
     }
 
-
     uint8_t bssid[MMWLAN_MAC_ADDR_LEN] = { 0 };
     umac_sta_data_get_bssid(data->sta_common, bssid);
     if (mm_mac_addr_is_zero(bssid))
@@ -1041,13 +1103,11 @@ enum mmwlan_status umac_ap_get_channel_info(struct umac_data *umacd,
 
     cfg->op_class = data->args.op_class;
     cfg->s1g_chan_num = data->args.s1g_chan_num;
-
     cfg->pri_bw_mhz = data->args.pri_bw_mhz;
     cfg->pri_1mhz_chan_idx = data->args.pri_1mhz_chan_idx;
 
     return MMWLAN_SUCCESS;
 }
-
 
 static bool umac_ap_get_stad_sleep_state(struct umac_sta_data *stad)
 {
@@ -1084,20 +1144,16 @@ bool umac_ap_is_stad_paused(struct umac_sta_data *stad)
     return umac_ap_get_stad_sleep_state(stad) || umac_sta_data_is_paused(stad);
 }
 
-
 static struct umac_sta_data *umac_ap_get_next_sta_for_tx(struct umac_ap_data *data)
 {
-
     struct umac_sta_data *stad = data->sta_common;
     if (!umac_ap_is_stad_paused(stad))
     {
-
         bool has_traffic = umac_sta_data_get_queued_len(stad);
         if (has_traffic)
         {
             return stad;
         }
-
         umac_ap_set_stad_sleep_state_(stad, true);
         MMLOG_DBG("No more queued traffic for common STA, restoring sleep\n");
     }
@@ -1105,7 +1161,6 @@ static struct umac_sta_data *umac_ap_get_next_sta_for_tx(struct umac_ap_data *da
     for (size_t ii = 1; ii < data->max_stas; ++ii)
     {
         stad = data->stas[ii];
-
         if (stad != NULL && !umac_ap_is_stad_paused(stad) && umac_sta_data_get_queued_len(stad))
         {
             return stad;
@@ -1158,11 +1213,9 @@ bool umac_ap_set_stad_sleep_state(struct umac_sta_data *stad, bool asleep)
     uint16_t aid = umac_sta_data_get_aid(stad);
     if (!aid_is_valid(aid))
     {
-
         MMLOG_WRN("Attempt to mark invalid AID as asleep %d\n", aid);
         return false;
     }
-
     bool state_change = (umac_ap_get_stad_sleep_state(stad) != asleep);
     if (!state_change)
     {
@@ -1178,7 +1231,6 @@ bool umac_ap_set_stad_sleep_state(struct umac_sta_data *stad, bool asleep)
     }
     else if (umac_sta_data_get_queued_len(stad))
     {
-
         ap_traffic_bitmap_set_aid_bit(data->bitmap, aid);
     }
     return true;
@@ -1230,39 +1282,17 @@ uint32_t umac_ap_get_stad_last_active(struct umac_sta_data *stad)
     return sta_data->last_active_ms;
 }
 
-enum mmwlan_status umac_ap_disable_ap(struct umac_data *umacd)
+static void umac_ap_stop(void *arg1, void *arg2)
 {
-    enum mmwlan_status status = MMWLAN_ERROR;
+    struct umac_data *umacd = (struct umac_data *)arg1;
+    MM_UNUSED(arg2);
     struct umac_ap_data *data = umac_data_get_ap(umacd);
     if (data == NULL)
     {
-        MMLOG_INF("AP not active\n");
-        return MMWLAN_SUCCESS;
+        MMLOG_WRN("AP not active\n");
+        MMOSAL_DEV_ASSERT(false);
+        return;
     }
-
-    enum mmwlan_relay_state relay_state = umac_relay_get_state(umacd);
-    if (relay_state == MMWLAN_RELAY_STATE_DISABLED || relay_state == MMWLAN_RELAY_STATE_ROOT)
-    {
-
-        struct mmwlan_vif_state state = {
-            .vif = MMWLAN_VIF_AP,
-            .link_state = MMWLAN_LINK_DOWN,
-        };
-        umac_interface_invoke_vif_state_cb(umacd, &state);
-    }
-
-    MMLOG_DBG("Removing AP Supplicant interface\n");
-
-    enum mmwlan_status beacon_status = mmdrv_stop_beaconing();
-    if (beacon_status != MMWLAN_SUCCESS)
-    {
-        MMLOG_ERR("Stop beaconing failed (%u)\n", beacon_status);
-        MMOSAL_ASSERT(false);
-    }
-
-    status = umac_supp_remove_ap_interface(umacd);
-
-    MMOSAL_DEV_ASSERT(status == MMWLAN_SUCCESS);
 
     for (size_t ii = 1; ii < data->max_stas; ii++)
     {
@@ -1276,9 +1306,12 @@ enum mmwlan_status umac_ap_disable_ap(struct umac_data *umacd)
     }
 
     umac_datapath_stad_flush_txq(umacd, data->sta_common);
-
-
-    mmosal_task_sleep(100);
+    enum mmwlan_status beacon_status = mmdrv_stop_beaconing();
+    if (beacon_status != MMWLAN_SUCCESS)
+    {
+        MMLOG_ERR("Stop beaconing failed (%u)\n", beacon_status);
+        MMOSAL_ASSERT(false);
+    }
 
     mmosal_free(data->sta_common);
     data->sta_common = NULL;
@@ -1289,11 +1322,72 @@ enum mmwlan_status umac_ap_disable_ap(struct umac_data *umacd)
     mmosal_free(data->config.tail);
     data->config.tail = NULL;
 
+    umac_ap_done_cb_t done_cb = data->done_cb;
+    void *done_cb_arg = data->done_cb_arg;
+
     MMLOG_DBG("Removing AP interface\n");
     umac_interface_remove(umacd, UMAC_INTERFACE_AP);
     MMLOG_DBG("Deallocating AP data structure\n");
     umac_data_dealloc_ap(umacd);
     MMLOG_INF("AP mode disabled\n");
 
+    if (done_cb)
+    {
+        done_cb(umacd, done_cb_arg, MMWLAN_SUCCESS);
+    }
+}
+
+enum mmwlan_status umac_ap_disable_ap(struct umac_data *umacd,
+                                      umac_ap_done_cb_t done_cb,
+                                      void *done_cb_arg)
+{
+    enum mmwlan_status status = MMWLAN_ERROR;
+    struct umac_ap_data *data = umac_data_get_ap(umacd);
+    if (data == NULL)
+    {
+        MMLOG_INF("AP not active\n");
+        if (done_cb)
+        {
+            done_cb(umacd, done_cb_arg, MMWLAN_SUCCESS);
+        }
+        return MMWLAN_SUCCESS;
+    }
+
+    if (data->disconnecting)
+    {
+        return MMWLAN_UNAVAILABLE;
+    }
+
+    enum mmwlan_relay_state relay_state = umac_relay_get_state(umacd);
+    if (relay_state == MMWLAN_RELAY_STATE_DISABLED || relay_state == MMWLAN_RELAY_STATE_ROOT)
+    {
+        struct mmwlan_vif_state state = {
+            .vif = MMWLAN_VIF_AP,
+            .link_state = MMWLAN_LINK_DOWN,
+        };
+        umac_interface_invoke_vif_state_cb(umacd, &state);
+    }
+
+    umac_datapath_stad_flush_txq(umacd, data->sta_common);
+
+    MMOSAL_DEV_ASSERT(data->done_cb == NULL);
+    data->disconnecting = true;
+    data->done_cb = done_cb;
+    data->done_cb_arg = done_cb_arg;
+
+    MMLOG_DBG("Removing AP Supplicant interface\n");
+    status = umac_supp_remove_ap_interface(umacd);
+    MMOSAL_DEV_ASSERT(status == MMWLAN_SUCCESS);
+
+    uint32_t beacons_until_dtim = data->dtim_count + 1;
+    uint32_t timeout_ms =
+        beacons_until_dtim * dot11_convert_tus_to_ms(data->config.beacon_interval_tus) +
+        AP_STOP_TX_PROPAGATION_MS;
+    bool ok = umac_core_register_timeout(umacd, timeout_ms, umac_ap_stop, umacd, NULL);
+    if (!ok)
+    {
+        MMLOG_WRN("Failed to register disconnect timeout\n");
+        umac_ap_stop(umacd, NULL);
+    }
     return MMWLAN_SUCCESS;
 }

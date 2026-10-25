@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.13.1</span>
+   &#160;<span id="projectnumber">2.14.3</span>
    </div>
   </td>
  </tr>
@@ -96,7 +96,7 @@ $(document).ready(function(){initNavTree('structmmwlan__scan__args.html',''); in
 <div class="textblock"><p >Structure to hold scan arguments. </p>
 <p >This structure should be initialized using <a class="el" href="group__MMWLAN__SCAN.html#ga185c90a221a8b25584fa41b8f33c2783">MMWLAN_SCAN_ARGS_INIT</a> for forward compatibility. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00869">869</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00871">871</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 </div>
 <p><code>#include &lt;<a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>&gt;</code></p>
 <table class="memberdecls">
@@ -143,7 +143,7 @@ Data Fields</h2></td></tr>
 <p>Time to dwell on home channel in between channels during a scan, to allow traffic to still pass. </p>
 <p >This will only perform while connected to an AP and is ignored otherwise. If set to 0, the device will not return to the home channel during the scan. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00897">897</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00899">899</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -162,7 +162,7 @@ Data Fields</h2></td></tr>
 <p>Minimum time to dwell on a channel waiting for probe responses/beacons. </p>
 <dl class="section note"><dt>Note</dt><dd>There is some additional delay applied on top of this to allow for tuning to each channel and sending a probe request. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00877">877</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00879">879</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -181,7 +181,7 @@ Data Fields</h2></td></tr>
 <p>Extra Information Elements to include in Probe Request frames. </p>
 <p >May be <code>NULL</code> if <code>extra_ies_len</code> is zero. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00882">882</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00884">884</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -199,7 +199,7 @@ Data Fields</h2></td></tr>
 
 <p>Length of <code>extra_ies</code>. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00884">884</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00886">886</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -219,7 +219,7 @@ Data Fields</h2></td></tr>
 <p >When <code>NULL</code> (and <code>selected_channels_len</code> is zero) the full configured channel list is scanned. If a channel with bandwidth larger than 2 MHz or an invalid channel is entered, <a class="el" href="group__MMWLAN__SCAN.html#gacf6def12dc1c130f80670fc79f30211d">mmwlan_scan_request()</a> will return an error code.</p>
 <p >A copy of the array is made internally; the caller may free it after the call returns. Set to <code>NULL</code> with <code>selected_channels_len</code> of zero to disable. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00907">907</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00909">909</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -238,7 +238,7 @@ Data Fields</h2></td></tr>
 <p>Length of <code>selected_channels</code>. </p>
 <p >Zero means "scan all channels". </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00909">909</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00911">911</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -257,7 +257,7 @@ Data Fields</h2></td></tr>
 <p>SSID used for scan. </p>
 <p >May be <code>NULL</code>, with <code>ssid_len</code> set to zero for an undirected scan. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00889">889</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00891">891</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -275,7 +275,7 @@ Data Fields</h2></td></tr>
 
 <p>Length of the SSID. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00891">891</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l00893">893</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -289,7 +289,7 @@ Data Fields</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="structmmwlan__scan__args.html">mmwlan_scan_args</a></li>
-    <li class="footer">Copyright 2021-2025 Morse Micro </li>
+    <li class="footer">Copyright 2021-2026 Morse Micro </li>
   </ul>
 </div>
 </body>

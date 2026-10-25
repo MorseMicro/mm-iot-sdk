@@ -510,6 +510,41 @@ int mmconfig_write_bool(const char *key, bool value);
 int mmconfig_read_bool(const char *key, bool *value);
 
 /**
+ * Converts the given MAC address to a string and writes to persistent store.
+ *
+ * If there is already data with the same key then it will be replaced.
+ *
+ * @param  key   Identifies the data element in persistent storage and is a
+ *                      case insensitive alphanumeric (plus underscore) string starting
+ *                      with an alpha. Same rules as a C variable name, but case insensitive.
+ *                      Must be a null terminated string.
+ * @param  val   Pointer to the 6 byte MAC address to be written, it is converted to string
+ *                      and written.
+ * @return       Returns @c MMCONFIG_OK on success. On error returns:
+ *                          @c MMCONFIG_ERR_INVALID_KEY if key is invalid
+ *                          Other negative number for other errors.
+ */
+int mmconfig_write_mac_addr(const char *key, const uint8_t *val);
+
+/**
+ * Returns the MAC address stored in persistent store identified by the key.
+ *
+ * @param  key   Identifies the data element in persistent storage and is a
+ *                      case insensitive alphanumeric (plus underscore) string starting
+ *                      with an alpha. Same rules as a C variable name, but case insensitive.
+ *                      Must be a null terminated string.
+ * @param  val   Pointer to a 6 byte buffer to receive the MAC address, it is converted from
+ *                      string. On error, the value is untouched, so can be preloaded with a
+ *                      default.
+ * @return       Returns @c MMCONFIG_OK on success. On error returns:
+ *                          @c MMCONFIG_ERR_INVALID_KEY if key is invalid
+ *                          @c MMCONFIG_ERR_NOT_FOUND if the specified key was not found
+ *                          @c MMCONFIG_ERR_INCORRECT_TYPE if the data pointed to by the key is not
+ *                          a MAC address represented as a string.
+ */
+int mmconfig_read_mac_addr(const char *key, uint8_t *val);
+
+/**
  * Returns the persistent store data identified by the key.
  * @param  key      Identifies the data element in persistent storage and is a
  *                      case insensitive alphanumeric (plus underscore) string starting

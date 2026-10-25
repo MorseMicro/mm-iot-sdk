@@ -22,7 +22,6 @@ int eloop_register_timeout(unsigned int secs,
 {
     uint32_t delta_ms;
 
-
     if (secs > ((INT32_MAX / 1000) - 1))
     {
         MMLOG_WRN("Timeout too long: %u secs", secs);
@@ -61,7 +60,6 @@ int eloop_cancel_timeout_one(eloop_timeout_handler handler,
     if (ret > 0 && remaining != NULL)
     {
         remaining->sec = remaining_ms / 1000;
-
         remaining->usec = (remaining_ms % 1000) * 1000;
     }
 
@@ -80,7 +78,6 @@ int eloop_deplete_timeout(unsigned int req_secs,
                           void *user_data)
 {
     uint32_t delta_ms;
-
 
     if (req_secs > ((INT32_MAX / 1000) - 1))
     {
@@ -117,7 +114,6 @@ int eloop_register_signal_terminate(eloop_signal_handler handler, void *user_dat
     (void)user_data;
 
 
-
     return 0;
 }
 
@@ -125,7 +121,6 @@ int eloop_register_signal_reconfig(eloop_signal_handler handler, void *user_data
 {
     (void)handler;
     (void)user_data;
-
 
 
     return 0;

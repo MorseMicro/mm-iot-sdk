@@ -12,12 +12,6 @@
 #include "driver/transport/morse_transport.h"
 #include "ext_host_table.h"
 
-static int morse_firmware_reset(struct driver_data *driverd)
-{
-    MMOSAL_ASSERT(driverd->cfg->digital_reset);
-    return driverd->cfg->digital_reset(driverd);
-}
-
 static void morse_firmware_clear_aon(struct driver_data *driverd)
 {
     int idx;
@@ -28,7 +22,6 @@ static void morse_firmware_clear_aon(struct driver_data *driverd)
     {
         for (idx = 0; idx < count; idx++, address += 4)
         {
-
             morse_trns_write_le32(driverd, address, 0x0);
         }
     }
@@ -39,7 +32,6 @@ static void morse_firmware_clear_aon(struct driver_data *driverd)
 static int morse_firmware_trigger(struct driver_data *driverd)
 {
     morse_trns_claim(driverd);
-
 
     morse_firmware_clear_aon(driverd);
 
@@ -52,7 +44,6 @@ static int morse_firmware_trigger(struct driver_data *driverd)
 
     morse_trns_write_le32(driverd, MORSE_REG_MSI(driverd), MORSE_REG_MSI_HOST_INT(driverd));
     morse_trns_release(driverd);
-
 
     mmosal_task_sleep(5);
     return 0;
@@ -121,7 +112,6 @@ int morse_firmware_check_compatibility(struct driver_data *driverd)
     minor = MORSE_SEMVER_GET_MINOR(fw_version);
     patch = MORSE_SEMVER_GET_PATCH(fw_version);
 
-
     if (ret == 0 &&
         (major != MORSE_DRIVER_SEMVER_MAJOR || (minor + 1) < (MORSE_DRIVER_SEMVER_MINOR + 1)))
     {
@@ -147,7 +137,6 @@ static int morse_firmware_invalidate_host_ptr(struct driver_data *driverd)
     morse_trns_release(driverd);
     return ret;
 }
-
 
 #define HOST_TABLE_POINTER_POLL_TIMEOUT_MS 1500
 
@@ -200,7 +189,6 @@ static int morse_firmware_read_ext_host_table(struct driver_data *driverd,
         goto exit;
     }
 
-
     if (ext_host_tbl_ptr == 0)
     {
         goto exit;
@@ -209,13 +197,11 @@ static int morse_firmware_read_ext_host_table(struct driver_data *driverd,
     ext_host_tbl_len_ptr_addr =
         ext_host_tbl_ptr + offsetof(struct extended_host_table, extended_host_table_length);
 
-
     ret = morse_trns_read_le32(driverd, ext_host_tbl_len_ptr_addr, &ext_host_tbl_len);
     if (ret)
     {
         goto exit;
     }
-
 
     ext_host_tbl_len = (ext_host_tbl_len + 3) & 0xFFFFFFFC;
 
@@ -250,7 +236,6 @@ exit:
     MMLOG_ERR("Failed %d\n", ret);
     return ret;
 }
-
 
 int morse_firmware_parse_extended_host_table(struct driver_data *driverd, uint8_t *mac_addr)
 {
@@ -298,18 +283,15 @@ int morse_firmware_init(struct driver_data *driverd,
 
     while (retries--)
     {
-
         if (driverd->cfg->pre_load_prepare)
         {
             ret = ret ? ret : driverd->cfg->pre_load_prepare(driverd);
         }
-
         ret = ret ? ret : morse_firmware_invalidate_host_ptr(driverd);
         ret = ret ? ret : morse_firmware_load_mbin(driverd, fw_callback);
         ret = ret ? ret : morse_bcf_load_mbin(driverd, bcf_callback, driverd->bcf_address);
         ret = ret ? ret : morse_firmware_trigger(driverd);
         ret = ret ? ret : morse_firmware_get_host_table_ptr(driverd);
-
 
         ret = ret ? ret : morse_firmware_magic_verify(driverd);
         ret = ret ? ret : morse_firmware_check_compatibility(driverd);
@@ -319,10 +301,9 @@ int morse_firmware_init(struct driver_data *driverd,
             break;
         }
 
-
         if (retries != 0)
         {
-            ret = morse_firmware_reset(driverd);
+            ret = morse_trns_reset(driverd);
         }
     }
 

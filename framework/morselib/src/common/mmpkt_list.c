@@ -106,7 +106,6 @@ void mmpkt_list_insert_after(struct mmpkt_list *list, struct mmpkt *ref, struct 
         }
     }
 
-
     MMOSAL_ASSERT(false);
 }
 
@@ -127,7 +126,6 @@ static struct mmpkt *mmpkt_find_prev(struct mmpkt_list *list, struct mmpkt *mmpk
 void mmpkt_list_remove(struct mmpkt_list *list, struct mmpkt *mmpkt)
 {
     MMPKTLIST_TRACE("remove %x %x", (uint32_t)list, (uint32_t)mmpkt);
-
 
     if (list->head == NULL)
     {

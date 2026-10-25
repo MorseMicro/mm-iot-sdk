@@ -7,5 +7,4 @@
 #include "frames_common.h"
 #include "dot11/dot11_frames.h"
 
-
 bool frame_is_disassociation(const struct dot11_hdr *header);

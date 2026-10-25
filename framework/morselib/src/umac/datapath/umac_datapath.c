@@ -40,23 +40,19 @@
 #define UMAC_802_1_HEADER_LEN 8
 static const uint8_t snap_802_1h[] = { 0xAA, 0xAA, 0x03, 0x00, 0x00, 0x00 };
 
-
 #define MAX_QOS_DATA_MAC_HEADER_LEN (sizeof(struct dot11_data_hdr) + sizeof(struct dot11_qos_ctrl))
-
 
 #define ETHERTYPE_THRESHOLD 1536
 
-
 #define MAX_RX_PROCESS_PER_LOOP (5)
-
 
 #define MAX_TX_PROCESS_PER_LOOP (5)
 
-
 #define RX_REORDER_TIMEOUT_MS (100)
 
-
 #define RX_REORDER_TIMER_PERIOD_MS (RX_REORDER_TIMEOUT_MS / 4)
+
+#define OLD_SEQ_NUM_WINDOW_SIZE (32)
 
 #ifdef ENABLE_DATAPATH_TRACE
 #include "mmtrace.h"
@@ -71,7 +67,6 @@ static mmtrace_channel datapath_channel_handle;
     do {                          \
     } while (0)
 #endif
-
 
 static bool umac_datapath_tx_is_paused(struct umac_datapath_data *data, uint16_t mask)
 {
@@ -114,7 +109,6 @@ enum mmwlan_status umac_datapath_wait_for_tx_ready(struct umac_data *umacd, uint
     return umac_datapath_wait_for_tx_ready_(data, timeout_ms, UINT16_MAX);
 }
 
-
 static bool umac_datapath_validate_buf_len(struct mmpktview *view, uint32_t min_length)
 {
     if (mmpkt_get_data_length(view) < min_length)
@@ -127,7 +121,6 @@ static bool umac_datapath_validate_buf_len(struct mmpktview *view, uint32_t min_
 
     return true;
 }
-
 
 static void umac_datapath_process_s1g_beacon(struct umac_data *umacd, struct mmpktview *rxbufview)
 {
@@ -149,7 +142,6 @@ static void umac_datapath_process_s1g_beacon(struct umac_data *umacd, struct mmp
         MMLOG_VRB("Beacon received from another AP.\n");
         return;
     }
-
 
     if (dot11_frame_control_get_next_tbtt_present(s1g_header->frame_control))
     {
@@ -173,7 +165,6 @@ static void umac_datapath_process_s1g_beacon(struct umac_data *umacd, struct mmp
                                        mmpkt_get_data_start(rxbufview),
                                        mmpkt_get_data_length(rxbufview));
 }
-
 
 static void umac_datapath_process_rx_extension_frame(struct umac_data *umacd,
                                                      struct umac_datapath_data *data,
@@ -231,12 +222,10 @@ void umac_datapath_process_rx_action_frame(struct umac_data *umacd,
     }
 }
 
-
 static void umac_datapath_process_unprotected_robust_mgmt_frame(struct umac_data *umacd,
                                                                 struct mmpktview *rxbufview)
 {
     const struct dot11_hdr *header = (struct dot11_hdr *)mmpkt_get_data_start(rxbufview);
-
     MMOSAL_ASSERT(umac_datapath_validate_buf_len(rxbufview, sizeof(*header)));
 
     if (frame_is_deauthentication(header))
@@ -274,14 +263,12 @@ static void umac_datapath_process_unprotected_robust_mgmt_frame(struct umac_data
     }
 }
 
-
 static void umac_datapath_process_rx_mgmt_frame(struct umac_data *umacd,
                                                 struct umac_sta_data *stad,
                                                 uint16_t vif_id,
                                                 struct mmpktview *rxbufview)
 {
     const struct dot11_hdr *header = (struct dot11_hdr *)mmpkt_get_data_start(rxbufview);
-
     MMOSAL_ASSERT(umac_datapath_validate_buf_len(rxbufview, sizeof(*header)));
 
     uint16_t frame_control_le = header->frame_control;
@@ -290,7 +277,6 @@ static void umac_datapath_process_rx_mgmt_frame(struct umac_data *umacd,
     {
         if (!umac_sta_data_is_associated(stad))
         {
-
             return;
         }
 
@@ -299,7 +285,6 @@ static void umac_datapath_process_rx_mgmt_frame(struct umac_data *umacd,
         {
             const uint8_t *frame_data = mmpkt_get_data_start(rxbufview) + sizeof(*header);
             size_t frame_data_len = mmpkt_get_data_length(rxbufview) - sizeof(*header);
-
 
             if (mm_mac_addr_is_multicast(dot11_get_da(header)) &&
                 (ie_mmie_find(frame_data, frame_data_len) != NULL))
@@ -337,7 +322,6 @@ void umac_datapath_generate_8023_header(const uint8_t *dest_addr,
     header->ethertype_be = htobe16(ethertype);
 }
 
-
 static uint16_t umac_datapath_get_llc_ethertype(struct mmpktview *view)
 {
     if (!umac_datapath_validate_buf_len(view, UMAC_802_1_HEADER_LEN))
@@ -361,25 +345,21 @@ static uint16_t umac_datapath_get_llc_ethertype(struct mmpktview *view)
     return ethertype;
 }
 
-
 static bool umac_datapath_is_eapol_frame(struct mmpktview *rxbufview)
 {
     return (umac_datapath_get_llc_ethertype(rxbufview) == ETHERTYPE_EAPOL);
 }
-
 
 static void umac_datapath_process_rx_eapol_frame(struct umac_data *umacd,
                                                  struct mmpktview *rxbufview,
                                                  const struct dot11_hdr *header)
 {
 
-
     struct mmdrv_rx_metadata *metadata = mmpkt_get_metadata(mmpkt_from_view(rxbufview)).rx;
     uint16_t vif_id = umac_interface_get_vif_id_from_rx_metadata(metadata);
     const struct umac_datapath_ops *datapath_ops =
         umac_interface_get_datapath_ops_by_vif_id(umacd, vif_id);
     MMOSAL_DEV_ASSERT(datapath_ops != NULL);
-
 
     MMOSAL_ASSERT(mmpkt_remove_from_start(rxbufview, UMAC_802_1_HEADER_LEN) != NULL);
 
@@ -392,7 +372,6 @@ static void umac_datapath_process_rx_eapol_frame(struct umac_data *umacd,
     }
 }
 
-
 static void umac_datapath_process_rx_data_frame_after_reorder(
     struct umac_sta_data *stad,
     struct umac_datapath_sta_data *sta_data,
@@ -402,13 +381,11 @@ static void umac_datapath_process_rx_data_frame_after_reorder(
     struct umac_data *umacd = umac_sta_data_get_umacd(stad);
     struct umac_datapath_data *data = umac_data_get_datapath(umacd);
 
-
     const struct dot11_data_hdr *data_hdr =
         (const struct dot11_data_hdr *)mmpkt_get_data_start(rxbufview);
     const size_t data_hdr_len = dot11_data_hdr_get_len(data_hdr);
 
     data_hdr = (const struct dot11_data_hdr *)mmpkt_remove_from_start(rxbufview, data_hdr_len);
-
     MMOSAL_ASSERT(data_hdr);
 
     const struct dot11_hdr *header = &data_hdr->base;
@@ -421,15 +398,12 @@ static void umac_datapath_process_rx_data_frame_after_reorder(
     {
         const struct dot11_qos_ctrl *qos_control =
             (struct dot11_qos_ctrl *)mmpkt_remove_from_start(rxbufview, sizeof(*qos_control));
-
         MMOSAL_ASSERT(qos_control);
-
         if (!mm_mac_addr_is_multicast(dot11_get_ra(header)))
         {
             tid_index = dot11_qos_control_get_tid(qos_control->field);
         }
     }
-
 
     if ((umac_sta_data_get_security_type(stad) != MMWLAN_OPEN) &&
         !dot11_frame_control_get_protected(header->frame_control) &&
@@ -443,22 +417,18 @@ static void umac_datapath_process_rx_data_frame_after_reorder(
     {
         if (!(rx_metadata->flags & MMDRV_RX_FLAG_DECRYPTED))
         {
-
             MMLOG_WRN("Received frame without HW Decryption (FC: 0x%04x, SEQ: 0x%04x).\n",
                       le16toh(header->frame_control),
                       le16toh(header->sequence_control));
             goto drop;
         }
-
         uint8_t *ccmp_header = mmpkt_remove_from_start(rxbufview, DOT11_CCMP_HEADER_LEN);
         if (ccmp_header == NULL ||
             !ccmp_is_valid(stad, ccmp_header, UMAC_KEY_RX_COUNTER_SPACE_DEFAULT))
         {
-
             umac_stats_increment_datapath_rx_ccmp_failures(umacd);
             goto drop;
         }
-
 
         if (mmpkt_remove_from_end(rxbufview, DOT11_CCMP_128_MIC_LEN) == NULL)
         {
@@ -467,15 +437,12 @@ static void umac_datapath_process_rx_data_frame_after_reorder(
         }
     }
 
-
     if (tid_index <= MMWLAN_MAX_QOS_TID &&
         (dot11_frame_control_get_protected(header->frame_control) ||
          umac_sta_data_get_security_type(stad) == MMWLAN_OPEN))
     {
         umac_ba_set_expected_rx_seq_num(stad, tid_index, dot11_get_next_sequence_control(header));
     }
-
-
 
 
     if (mm_mac_addr_is_broadcast(dot11_get_da(header)) ||
@@ -489,14 +456,12 @@ static void umac_datapath_process_rx_data_frame_after_reorder(
     }
     else
     {
-
         MMOSAL_DEV_ASSERT(mmpkt_contains_ptr(rxbufview, (const void *)data_hdr));
         rx_metadata = NULL;
         rxbuf =
             datapath_defrag(umacd, &sta_data->defrag_data, &data_hdr, &rxbufview, rxbuf, tid_index);
         if (rxbuf == NULL)
         {
-
             MMOSAL_DEV_ASSERT(rxbufview == NULL);
             return;
         }
@@ -515,7 +480,6 @@ static void umac_datapath_process_rx_data_frame_after_reorder(
             MMLOG_INF("Received 4-address EAPOL frame. Not supported\n");
             goto drop;
         }
-
 
         umac_datapath_process_rx_eapol_frame(umacd, rxbufview, header);
         goto drop;
@@ -548,16 +512,13 @@ static void umac_datapath_process_rx_data_frame_after_reorder(
         goto drop;
     }
 
-
     mmpkt_remove_from_start(rxbufview, UMAC_802_1_HEADER_LEN);
 
     umac_relay_process_data_frame(stad, vif, tid_index, data_hdr, llc_ethertype, &rxbufview);
     if (rxbufview == NULL)
     {
-
         return;
     }
-
 
     if (umac_interface_addr_matches_mac_addr(stad, dot11_get_sa_data(data_hdr)))
     {
@@ -566,7 +527,6 @@ static void umac_datapath_process_rx_data_frame_after_reorder(
     }
 
 #if !(defined(MMWLAN_AP_DISABLED) && MMWLAN_AP_DISABLED)
-
     if (vif == MMWLAN_VIF_AP &&
         mm_mac_addr_is_equal(umac_ap_peek_bssid(umacd), dot11_get_ra(header)) &&
         umac_interface_addr_matches_mac_addr(umac_connection_get_stad(umacd), dot11_get_da(header)))
@@ -574,7 +534,6 @@ static void umac_datapath_process_rx_data_frame_after_reorder(
         vif = MMWLAN_VIF_STA;
     }
 #endif
-
 
     struct umac_8023_hdr header_8023 = { 0 };
     umac_datapath_generate_8023_header(dot11_get_da(header),
@@ -597,7 +556,6 @@ static void umac_datapath_process_rx_data_frame_after_reorder(
         mmpkt_prepend_data(rxbufview, (const uint8_t *)&header_8023, sizeof(header_8023));
         mmpkt_close(&rxbufview);
         rx_pkt_cb(rxbuf, &metadata, arg);
-
         return;
     }
     if (data->rx_pkt_callback != NULL)
@@ -605,7 +563,6 @@ static void umac_datapath_process_rx_data_frame_after_reorder(
         mmpkt_prepend_data(rxbufview, (const uint8_t *)&header_8023, sizeof(header_8023));
         mmpkt_close(&rxbufview);
         data->rx_pkt_callback(rxbuf, data->rx_arg);
-
         return;
     }
     if (data->rx_callback != NULL)
@@ -624,7 +581,6 @@ drop:
     mmpkt_close(&rxbufview);
     mmpkt_release(rxbuf);
 }
-
 
 static void umac_datapath_flush_rx_reorder_list(struct umac_sta_data *stad,
                                                 struct umac_datapath_sta_data *sta_data)
@@ -655,7 +611,6 @@ void umac_datapath_flush_rx_reorder_list_for_tid(struct umac_sta_data *stad, uin
         umac_datapath_process_rx_data_frame_after_reorder(stad, sta_data, pkt, view);
     }
 }
-
 
 static void umac_datapath_evaluate_rx_reorder_list(struct umac_data *umacd,
                                                    struct umac_sta_data *stad,
@@ -716,7 +671,6 @@ static void umac_datapath_rx_reorder_timeout_handler(void *arg1, void *arg2)
     }
 }
 
-
 static void umac_datapath_add_rx_mpdu_to_reorder_list(struct umac_data *umacd,
                                                       struct umac_sta_data *stad,
                                                       struct umac_datapath_sta_data *sta_data,
@@ -769,12 +723,10 @@ static void umac_datapath_add_rx_mpdu_to_reorder_list(struct umac_data *umacd,
 
     reorder_list_full = mmpkt_list_length(&sta_data->rx_reorder_list) >= reorder_list_maxlen;
 
-
     if (dot11_sequence_control_lt(seq_ctrl, head_seq_ctrl))
     {
         if (reorder_list_full)
         {
-
             mmpkt_release(rxbuf);
             umac_stats_increment_datapath_rx_reorder_overflow(umacd);
         }
@@ -794,13 +746,11 @@ static void umac_datapath_add_rx_mpdu_to_reorder_list(struct umac_data *umacd,
         struct mmpkt *deq;
         struct mmpktview *deqview;
 
-
         deq = mmpkt_list_dequeue(&sta_data->rx_reorder_list);
         deqview = mmpkt_open(deq);
         umac_datapath_process_rx_data_frame_after_reorder(stad, sta_data, deq, deqview);
         umac_stats_increment_datapath_rx_reorder_overflow(umacd);
     }
-
 
 
     MMPKT_LIST_WALK(&sta_data->rx_reorder_list, walk, next)
@@ -811,7 +761,6 @@ static void umac_datapath_add_rx_mpdu_to_reorder_list(struct umac_data *umacd,
 
         if (next == NULL)
         {
-
             break;
         }
 
@@ -829,7 +778,6 @@ static void umac_datapath_add_rx_mpdu_to_reorder_list(struct umac_data *umacd,
 
         if (dot11_sequence_control_lt(seq_ctrl, next_seq_ctrl))
         {
-
             break;
         }
     }
@@ -841,10 +789,16 @@ static void umac_datapath_add_rx_mpdu_to_reorder_list(struct umac_data *umacd,
         umacd,
         mmpkt_list_length(&sta_data->rx_reorder_list));
 
-
     umac_datapath_evaluate_rx_reorder_list(umacd, stad, sta_data);
 }
 
+static bool sequence_control_is_old(uint16_t seq_ctrl, uint16_t expected_seq_ctrl)
+{
+    uint16_t oldest_seq_ctrl =
+        expected_seq_ctrl - (OLD_SEQ_NUM_WINDOW_SIZE << DOT11_SHIFT_SC_SEQUENCE_NUMBER);
+    return dot11_sequence_control_lt(seq_ctrl, expected_seq_ctrl) &&
+           dot11_sequence_control_lt(oldest_seq_ctrl, seq_ctrl);
+}
 
 static void umac_datapath_process_rx_data_frame(struct umac_data *umacd,
                                                 struct umac_sta_data *stad,
@@ -873,10 +827,8 @@ static void umac_datapath_process_rx_data_frame(struct umac_data *umacd,
     if (dot11_frame_control_get_subtype(header->frame_control) == DOT11_FC_SUBTYPE_QOS_DATA)
     {
         MMLOG_VRB("Remove extra QOS CNTL bytes (%p)\n", rxbuf);
-
         const struct dot11_qos_ctrl *qos_control =
             (const struct dot11_qos_ctrl *)((const uint8_t *)data_hdr + data_hdr_len);
-
         if (!mm_mac_addr_is_multicast(dot11_get_ra(header)))
         {
             tid_index = dot11_qos_control_get_tid(qos_control->field);
@@ -884,13 +836,11 @@ static void umac_datapath_process_rx_data_frame(struct umac_data *umacd,
     }
 
     reorder_buf_size = umac_ba_get_reorder_buffer_size(stad, tid_index);
-
     if (tid_index > MMWLAN_MAX_QOS_TID || reorder_buf_size == 0)
     {
         umac_datapath_process_rx_data_frame_after_reorder(stad, sta_data, rxbuf, rxbufview);
         return;
     }
-
 
     if (sta_data->rx_reorder_tid != tid_index)
     {
@@ -901,18 +851,15 @@ static void umac_datapath_process_rx_data_frame(struct umac_data *umacd,
     ret = umac_ba_get_expected_rx_seq_num(stad, tid_index);
     if (ret < 0)
     {
-
         umac_datapath_process_rx_data_frame_after_reorder(stad, sta_data, rxbuf, rxbufview);
         return;
     }
-
 
     expected_seq_ctrl = (uint16_t)ret;
 
     seq_ctrl = le16toh(header->sequence_control);
     if (seq_ctrl == expected_seq_ctrl)
     {
-
         umac_datapath_process_rx_data_frame_after_reorder(stad, sta_data, rxbuf, rxbufview);
         rxbuf = NULL;
         rxbufview = NULL;
@@ -921,9 +868,8 @@ static void umac_datapath_process_rx_data_frame(struct umac_data *umacd,
     }
     else
     {
-        if (dot11_sequence_control_lt(seq_ctrl, expected_seq_ctrl))
+        if (sequence_control_is_old(seq_ctrl, expected_seq_ctrl))
         {
-
             umac_stats_increment_datapath_rx_reorder_outdated_drops(umacd);
             MMLOG_WRN("Dropping outdated frame (SEQ: 0x%x, EXP: 0x%x)\n",
                       seq_ctrl,
@@ -932,7 +878,6 @@ static void umac_datapath_process_rx_data_frame(struct umac_data *umacd,
         }
         else
         {
-
             mmpkt_close(&rxbufview);
             umac_datapath_add_rx_mpdu_to_reorder_list(umacd,
                                                       stad,
@@ -950,7 +895,6 @@ drop:
     mmpkt_release(rxbuf);
 }
 
-
 static bool umac_datapath_process_mgmt_frame_ccmp_header(struct umac_data *umacd,
                                                          struct umac_sta_data *stad,
                                                          struct mmpktview *rxbufview)
@@ -967,15 +911,12 @@ static bool umac_datapath_process_mgmt_frame_ccmp_header(struct umac_data *umacd
     const struct mmdrv_rx_metadata *rx_metadata = mmdrv_get_rx_metadata(rxbuf);
     if (!(rx_metadata->flags & MMDRV_RX_FLAG_DECRYPTED))
     {
-
         MMLOG_WRN("Received frame without HW Decryption (FC: 0x%04x).\n",
                   le16toh(frame_control_le));
         return false;
     }
 
-
     mmpkt_remove_from_start(rxbufview, sizeof(*header));
-
 
     uint8_t *ccmp_header = mmpkt_remove_from_start(rxbufview, DOT11_CCMP_HEADER_LEN);
     if (!ccmp_is_valid(stad, ccmp_header, UMAC_KEY_RX_COUNTER_SPACE_IND_ROBUST_MGMT))
@@ -985,13 +926,11 @@ static bool umac_datapath_process_mgmt_frame_ccmp_header(struct umac_data *umacd
         return false;
     }
 
-
     uint8_t *hdr_dest = mmpkt_prepend(rxbufview, sizeof(*header));
     memmove(hdr_dest, header, sizeof(*header));
 
     return true;
 }
-
 
 static enum mmwlan_frame_filter_flag umac_datapath_rx_frame_filter_matches(struct umac_data *umacd,
                                                                            enum dot11_fc_type type,
@@ -1006,7 +945,6 @@ static enum mmwlan_frame_filter_flag umac_datapath_rx_frame_filter_matches(struc
     return MMWLAN_FRAME_NO_MATCH;
 }
 
-
 static void umac_datapath_process_rx_other_frame(struct umac_data *umacd,
                                                  struct umac_sta_data *stad,
                                                  struct umac_datapath_data *data,
@@ -1014,13 +952,11 @@ static void umac_datapath_process_rx_other_frame(struct umac_data *umacd,
                                                  struct mmpktview *rxbufview)
 {
     const struct dot11_hdr *header = (const struct dot11_hdr *)mmpkt_get_data_start(rxbufview);
-
     MMOSAL_ASSERT(!dot11_is_4addr_hdr(header->frame_control));
 
     const enum dot11_fc_type frame_type =
         (enum dot11_fc_type)dot11_frame_control_get_type(header->frame_control);
     const uint16_t frame_subtype = dot11_frame_control_get_subtype(header->frame_control);
-
 
     if (frame_type == DOT11_FC_TYPE_MGMT &&
         (dot11_sequence_control_get_fragment_number(header->sequence_control) ||
@@ -1030,13 +966,11 @@ static void umac_datapath_process_rx_other_frame(struct umac_data *umacd,
             (const struct dot11_data_hdr *)mmpkt_get_data_start(rxbufview);
         const size_t data_hdr_len = dot11_data_hdr_get_len(data_hdr);
 
-
         data_hdr = (const struct dot11_data_hdr *)mmpkt_remove_from_start(rxbufview, data_hdr_len);
         if (data_hdr == NULL)
         {
             goto drop;
         }
-
 
         struct mmdrv_rx_metadata saved_metadata = *mmdrv_get_rx_metadata(rxbuf);
 
@@ -1049,14 +983,11 @@ static void umac_datapath_process_rx_other_frame(struct umac_data *umacd,
                                 MMDRV_SEQ_NUM_BASELINE);
         if (rxbuf == NULL)
         {
-
             return;
         }
 
-
         header = &data_hdr->base;
         mmpkt_prepend(rxbufview, dot11_data_hdr_get_len(data_hdr));
-
 
         *mmdrv_get_rx_metadata(rxbuf) = saved_metadata;
     }
@@ -1101,7 +1032,6 @@ static void umac_datapath_process_rx_other_frame(struct umac_data *umacd,
             break;
 
         case DOT11_FC_TYPE_DATA:
-
             MMOSAL_ASSERT(false);
             break;
 
@@ -1115,7 +1045,6 @@ drop:
     mmpkt_release(rxbuf);
 }
 
-
 static bool umac_datapath_is_rx_frame_duplicate(struct umac_datapath_sta_data *sta_data,
                                                 struct mmpktview *rxbufview)
 {
@@ -1124,15 +1053,12 @@ static bool umac_datapath_is_rx_frame_duplicate(struct umac_datapath_sta_data *s
     struct dot11_hdr *header = &data_hdr->base;
     const uint32_t data_hdr_len = dot11_data_hdr_get_len(data_hdr);
 
-
     if (dot11_frame_control_get_type(header->frame_control) == DOT11_FC_TYPE_EXT)
     {
         return false;
     }
 
-
     MMOSAL_ASSERT(umac_datapath_validate_buf_len(rxbufview, data_hdr_len));
-
 
     if (mm_mac_addr_is_broadcast(dot11_get_da(header)) ||
         mm_mac_addr_is_multicast(dot11_get_da(header)))
@@ -1140,12 +1066,10 @@ static bool umac_datapath_is_rx_frame_duplicate(struct umac_datapath_sta_data *s
         return false;
     }
 
-
     if (dot11_frame_control_get_type(header->frame_control) == DOT11_FC_TYPE_CTRL)
     {
         return false;
     }
-
 
     if ((dot11_frame_control_get_type(header->frame_control) == DOT11_FC_TYPE_DATA) &&
         (dot11_frame_control_get_subtype(header->frame_control) == DOT11_FC_SUBTYPE_QOS_NULL))
@@ -1161,7 +1085,6 @@ static bool umac_datapath_is_rx_frame_duplicate(struct umac_datapath_sta_data *s
         if (!umac_datapath_validate_buf_len(rxbufview, data_hdr_len + sizeof(*qos_control)))
         {
             MMLOG_INF("No QoS control field\n");
-
             return true;
         }
         tid_index = dot11_qos_control_get_tid(qos_control->field);
@@ -1174,31 +1097,25 @@ static bool umac_datapath_is_rx_frame_duplicate(struct umac_datapath_sta_data *s
     if (tid_index >= MMDRV_SEQ_NUM_SPACES)
     {
         MMLOG_WRN("Received out of range TID: %d.\n", tid_index);
-
         return true;
     }
-
 
     if (dot11_frame_control_get_retry(header->frame_control) &&
         sta_data->rx_seq_num_spaces[tid_index] == header->sequence_control)
     {
-
         MMLOG_INF("Duplicate detected SEQ: 0x%x\n", header->sequence_control);
         return true;
     }
 
-
     sta_data->rx_seq_num_spaces[tid_index] = header->sequence_control;
     return false;
 }
-
 
 static bool umac_datapath_rx_frame_allowed_pre_association(
     const struct umac_datapath_ops *datapath_ops,
     uint16_t frame_ver_type_subtype,
     uint16_t frame_control_le)
 {
-
     if (frame_ver_type_subtype != DOT11_VER_TYPE_SUBTYPE(0, EXT, S1G_BEACON) &&
         dot11_frame_control_get_protected(frame_control_le))
     {
@@ -1222,15 +1139,11 @@ void umac_datapath_set_filter_all_beacons(struct umac_data *umacd, bool filter)
     data->filter_beacons = filter;
 }
 
-
 struct umac_datapath_vif_reassignment
 {
-
     uint32_t ver_type_subtype;
-
     uint16_t interface_type_mask;
 };
-
 
 static void umac_datapath_reassign_vif_id(struct umac_data *umacd,
                                           struct mmdrv_rx_metadata *metadata,
@@ -1281,7 +1194,6 @@ void umac_datapath_stad_init(struct umac_sta_data *stad)
 
     struct umac_datapath_sta_data *sta_data = umac_sta_data_get_datapath(stad);
 
-
     memset(sta_data->rx_seq_num_spaces, 0xff, sizeof(sta_data->rx_seq_num_spaces));
 }
 
@@ -1315,7 +1227,6 @@ static void umac_datapath_flush(struct umac_data *umacd)
 {
     bool more = true;
     do {
-
         more = umac_datapath_process(umacd);
     } while (more);
 
@@ -1390,7 +1301,6 @@ enum mmwlan_status umac_datapath_register_rx_pkt_ext_cb(struct umac_data *umacd,
     return umac_interface_register_rx_pkt_ext_cb(umacd, vif, callback, arg);
 }
 
-
 static void umac_datapath_process_rx_frame(struct umac_data *umacd,
                                            struct umac_datapath_data *data,
                                            struct mmpkt *rxbuf)
@@ -1407,7 +1317,6 @@ static void umac_datapath_process_rx_frame(struct umac_data *umacd,
 
     if (frame_ver_type_subtype == DOT11_VER_TYPE_SUBTYPE(0, CTRL, RTS))
     {
-
         MMLOG_INF("Dropping RTS frame.\n");
         goto drop;
     }
@@ -1420,10 +1329,8 @@ static void umac_datapath_process_rx_frame(struct umac_data *umacd,
             MMLOG_VRB("Dropping beacon.\n");
             goto drop;
         }
-
         header_len = sizeof(struct dot11_s1g_beacon_hdr);
     }
-
 
     if (!umac_datapath_validate_buf_len(rxbufview, header_len))
     {
@@ -1456,8 +1363,6 @@ static void umac_datapath_process_rx_frame(struct umac_data *umacd,
     struct mmdrv_rx_metadata *metadata = mmdrv_get_rx_metadata(rxbuf);
     uint16_t vif_id = umac_interface_get_vif_id_from_rx_metadata(metadata);
 
-
-
     if (vif_id == MMDRV_VIF_ID_INVALID)
     {
         static const struct umac_datapath_vif_reassignment vif_reassignment_lut[] = {
@@ -1471,7 +1376,6 @@ static void umac_datapath_process_rx_frame(struct umac_data *umacd,
                                       frame_ver_type_subtype,
                                       vif_reassignment_lut,
                                       MM_ARRAY_COUNT(vif_reassignment_lut));
-
 
         vif_id = umac_interface_get_vif_id_from_rx_metadata(metadata);
         if (vif_id == MMDRV_VIF_ID_INVALID)
@@ -1508,7 +1412,6 @@ static void umac_datapath_process_rx_frame(struct umac_data *umacd,
             datapath_ops->handle_frame_unknown_sta(umacd, ta);
             goto drop;
         }
-
         stad = datapath_ops->lookup_stad_by_peer_addr(umacd, NULL);
         if (stad == NULL)
         {
@@ -1523,11 +1426,9 @@ static void umac_datapath_process_rx_frame(struct umac_data *umacd,
             uint16_t ap_vif_id = umac_interface_get_vif_id(umacd, UMAC_INTERFACE_AP);
             if (vif_id == ap_vif_id)
             {
-
                 MMLOG_WRN("Frame from us received on AP VIF. Possible loop detected!\n");
                 goto drop;
             }
-
         }
 
         struct umac_datapath_sta_data *sta_data = umac_sta_data_get_datapath(stad);
@@ -1550,7 +1451,6 @@ static void umac_datapath_process_rx_frame(struct umac_data *umacd,
     {
         umac_datapath_process_rx_other_frame(umacd, stad, data, rxbuf, rxbufview);
     }
-
     return;
 
 drop:
@@ -1558,7 +1458,6 @@ drop:
     mmpkt_release(rxbuf);
     return;
 }
-
 
 static inline bool umac_datapath_process_rx(struct umac_data *umacd,
                                             struct umac_datapath_data *data)
@@ -1585,7 +1484,6 @@ static inline bool umac_datapath_process_rx(struct umac_data *umacd,
 
     return true;
 }
-
 
 static void umac_datapath_rx_queue_frame(struct umac_data *umacd,
                                          struct umac_datapath_data *data,
@@ -1617,7 +1515,6 @@ void umac_datapath_rx_frame(struct umac_data *umacd, struct mmpkt *rxbuf)
 {
     struct umac_datapath_data *data = umac_data_get_datapath(umacd);
     struct mmpktview *rxbufview = mmpkt_open(rxbuf);
-
     if (!umac_datapath_validate_buf_len(rxbufview, MM_MEMBER_SIZE(struct dot11_hdr, frame_control)))
     {
         MMLOG_WRN("Frame length invalid. Dropping.\n");
@@ -1731,7 +1628,6 @@ enum mmwlan_status umac_datapath_process_tx_frame(struct umac_data *umacd,
 
     struct umac_datapath_sta_data *sta_data = umac_sta_data_get_datapath(stad);
 
-
     bool is_eapol = (ethertype == ETHERTYPE_EAPOL);
 
     MMLOG_DBG("Dequeued frame for TX (%p, ethertype=0x%04x, tid=%u, %s port)\n",
@@ -1752,13 +1648,11 @@ enum mmwlan_status umac_datapath_process_tx_frame(struct umac_data *umacd,
     datapath_ops->construct_80211_data_header(stad, header_8023, &data_hdr);
     const uint32_t data_hdr_len = dot11_data_hdr_get_len(&data_hdr);
 
-
     mmpkt_remove_from_start(txbufview, 2 * DOT11_MAC_ADDR_LEN);
     MM_STATIC_ASSERT(2 * DOT11_MAC_ADDR_LEN == offsetof(struct umac_8023_hdr, ethertype_be), "");
 
     if (ethertype >= ETHERTYPE_THRESHOLD)
     {
-
         mmpkt_prepend_data(txbufview, snap_802_1h, sizeof(snap_802_1h));
     }
 
@@ -1774,7 +1668,6 @@ enum mmwlan_status umac_datapath_process_tx_frame(struct umac_data *umacd,
     MMOSAL_DEV_ASSERT(!mm_mac_addr_is_zero(dot11_get_ta(&(data_hdr.base))));
     MMOSAL_DEV_ASSERT(!mm_mac_addr_is_zero(dot11_get_da(&(data_hdr.base))));
     MMOSAL_DEV_ASSERT(!mm_mac_addr_is_zero(dot11_get_sa_data(&data_hdr)));
-
 
     MMOSAL_DEV_ASSERT(is_eapol || enc == ENCRYPTION_ENABLED);
 
@@ -1805,14 +1698,12 @@ enum mmwlan_status umac_datapath_process_tx_frame(struct umac_data *umacd,
     DOT11_SEQUENCE_CONTROL_SET_SEQUENCE_NUMBER(header->sequence_control,
                                                sta_data->tx_seq_num_spaces[seq_num_idx]++);
 
-
     if (!is_multicast && !is_eapol)
     {
         umac_datapath_aggr_check(umacd, stad, datapath_ops, tid, header->sequence_control);
     }
 
     rts_threshold = umac_config_get_rts_threshold(umacd);
-
 
     qos_ctrl.field = (uint16_t)(tid & DOT11_MASK_QC_TID);
 
@@ -1831,7 +1722,6 @@ enum mmwlan_status umac_datapath_process_tx_frame(struct umac_data *umacd,
                                        DOT11_FCS_FIELD_LEN +
                                        ccmp_len) > rts_threshold));
 
-
     MMLOG_VRB("Add QOS CNTL bytes\n");
     mmpkt_prepend_data(txbufview, (uint8_t *)&qos_ctrl.field, sizeof(qos_ctrl));
     mmpkt_prepend_data(txbufview, (uint8_t *)&data_hdr, data_hdr_len);
@@ -1844,7 +1734,6 @@ enum mmwlan_status umac_datapath_process_tx_frame(struct umac_data *umacd,
     }
 
     tx_metadata->key_idx = key_id;
-
     if (!is_multicast)
     {
         tx_metadata->tid_max_reorder_buf_size = umac_ba_get_reorder_buffer_size(stad, tid);
@@ -1858,14 +1747,12 @@ enum mmwlan_status umac_datapath_process_tx_frame(struct umac_data *umacd,
 
     tx_metadata->aid = umac_sta_data_get_aid(stad);
 
-
     if (is_eapol)
     {
         umac_rc_init_rate_table_mgmt(umacd, &tx_metadata->rc_data, false);
     }
     else if (is_multicast)
     {
-
         tx_metadata->flags |= MMDRV_TX_FLAG_NO_ACK;
         umac_rc_init_rate_table_mgmt(umacd, &tx_metadata->rc_data, false);
     }
@@ -1915,10 +1802,8 @@ static enum mmwlan_status umac_datapath_process_tx_mgmt_frame(struct umac_data *
     if ((tx_metadata->enc != ENCRYPTION_DISABLED) &&
         (datapath_ops->get_sta_state(stad) == MMWLAN_STA_CONNECTED))
     {
-
         if (umac_sta_data_pmf_is_required(stad) && frame_is_robust_mgmt(txbufview))
         {
-
             if (!mm_mac_addr_is_multicast(dot11_get_da(header)))
             {
                 header->frame_control |= htole16(DOT11_MASK_FC_PROTECTED);
@@ -2066,14 +1951,12 @@ enum mmwlan_status umac_datapath_tx_frame(struct umac_data *umacd,
 
     if (is_eapol && !datapath_ops->is_stad_tx_paused(stad))
     {
-
         return umac_datapath_process_tx_frame(umacd, stad, txbufview);
     }
 
     enum mmwlan_sta_state sta_state = datapath_ops->get_sta_state(stad);
     if (sta_state != MMWLAN_STA_CONNECTED)
     {
-
         MMLOG_WRN("Dropping request to TX frame when not connected (AID: %u, STATE: %s)\n",
                   umac_sta_data_get_aid(stad),
                   sta_state == MMWLAN_STA_DISABLED ? "disabled" : "connecting");
@@ -2097,7 +1980,6 @@ static bool umac_datapath_dequeue_tx_frame(struct umac_data *umacd,
                                            struct umac_sta_data **stad,
                                            struct mmpkt **txbuf)
 {
-
     const struct umac_datapath_ops *datapath_ops;
 
     datapath_ops = umac_interface_get_datapath_ops(umacd, MMWLAN_VIF_STA);
@@ -2123,14 +2005,12 @@ static bool umac_datapath_dequeue_tx_frame(struct umac_data *umacd,
     return false;
 }
 
-
 static inline bool umac_datapath_process_tx(struct umac_data *umacd,
                                             struct umac_datapath_data *data)
 {
     bool has_more = false;
     for (unsigned ii = 0; ii < MAX_TX_PROCESS_PER_LOOP; ii++)
     {
-
         if (umac_datapath_tx_is_paused(data, ~MMDRV_PAUSE_SOURCE_MASK_PKTMEM))
         {
             MMLOG_DBG("TX datapath blocked.\n");
@@ -2157,7 +2037,6 @@ static inline bool umac_datapath_process_tx(struct umac_data *umacd,
                   tx_metadata->vif_id,
                   tx_metadata->is_mgmt);
 
-
         if (tx_metadata->is_mgmt)
         {
             umac_datapath_process_tx_mgmt_frame(umacd, stad, mmpkt);
@@ -2175,7 +2054,6 @@ static void umac_datapath_flush_txq(struct umac_data *umacd)
     struct umac_datapath_data *data = umac_data_get_datapath(umacd);
     bool more = true;
     do {
-
         more = umac_datapath_process_tx(umacd, data);
     } while (more);
 
@@ -2200,10 +2078,9 @@ enum mmwlan_status umac_datapath_tx_mgmt_frame(struct umac_sta_data *stad, struc
 
     const struct umac_datapath_ops *datapath_ops =
         umac_interface_get_datapath_ops_by_vif_id(umacd, tx_metadata->vif_id);
-    MMOSAL_DEV_ASSERT(datapath_ops != NULL);
     if (datapath_ops == NULL)
     {
-        MMLOG_WRN("No datapath ops for vif %u", tx_metadata->vif_id);
+        MMLOG_WRN("No datapath ops for vif %u\n", tx_metadata->vif_id);
         mmpkt_close(&txbufview);
         mmpkt_release(txbuf);
         return MMWLAN_ERROR;
@@ -2224,17 +2101,14 @@ enum mmwlan_status umac_datapath_tx_mgmt_frame(struct umac_sta_data *stad, struc
     bool is_bufferable = mgmt_frame_is_bufferable(header->frame_control);
     mmpkt_close(&txbufview);
 
-
     uint16_t datapath_pause_mask = ~MMDRV_PAUSE_SOURCE_MASK_PKTMEM;
     if (is_probe_request)
     {
-
         datapath_pause_mask &= ~UMAC_DATAPATH_PAUSE_SOURCE_SCAN;
     }
 
     if (!is_bufferable)
     {
-
         uint32_t timeout_ms = umac_datapath_calculate_tx_timeout_ms(umacd, true);
         enum mmwlan_status status =
             umac_datapath_wait_for_tx_ready_(data, timeout_ms, datapath_pause_mask);
@@ -2274,7 +2148,6 @@ void umac_datapath_handle_tx_status(struct umac_data *umacd, struct mmpkt *mmpkt
     DATAPATH_TRACE("tx_status q %x", (uint32_t)mmpkt);
 }
 
-
 static inline void umac_datapath_process_tx_status_queue(struct umac_data *umacd,
                                                          struct umac_datapath_data *data)
 {
@@ -2302,7 +2175,6 @@ static inline void umac_datapath_process_tx_status_queue(struct umac_data *umacd
             continue;
         }
 
-
         struct umac_sta_data *stad = datapath_ops->lookup_stad_by_aid(umacd, tx_metadata->aid);
         if (stad != NULL)
         {
@@ -2325,7 +2197,6 @@ static inline void umac_datapath_process_tx_status_queue(struct umac_data *umacd
                 umac_connection_handle_ack_status(umacd, mmpkt, frame_acked);
                 umac_relay_handle_ack_status(umacd, mmpkt, frame_acked);
             }
-
 
             umac_supp_tx_status(umacd, mmpkt, (valid_ack_status ? frame_acked : false));
 
@@ -2429,11 +2300,9 @@ static enum mmwlan_status umac_datapath_tx_qos_null_frame(struct umac_data *umac
     struct mmpktview *view = mmpkt_open(mmpkt);
     struct dot11_hdr *header = (struct dot11_hdr *)mmpkt_get_data_start(view);
 
-
     DOT11_SEQUENCE_CONTROL_SET_SEQUENCE_NUMBER(
         header->sequence_control,
         sta_data->tx_seq_num_spaces[MMDRV_SEQ_NUM_QOS_NULL]++);
-
 
     struct mmdrv_tx_metadata *tx_metadata = mmdrv_get_tx_metadata(mmpkt);
     tx_metadata->flags = MMDRV_TX_FLAG_IMMEDIATE_REPORT;
@@ -2459,7 +2328,6 @@ enum mmwlan_status umac_datapath_build_and_tx_to_ds_qos_null_frame(struct umac_s
     struct umac_data *umacd = umac_sta_data_get_umacd(stad);
     struct umac_datapath_data *data = umac_data_get_datapath(umacd);
 
-
     uint32_t timeout_ms = umac_datapath_calculate_tx_timeout_ms(umacd, true);
     enum mmwlan_status status = umac_datapath_wait_for_tx_ready_(data, timeout_ms, UINT16_MAX);
     if (status != MMWLAN_SUCCESS)
@@ -2481,7 +2349,6 @@ enum mmwlan_status umac_datapath_build_and_tx_4addr_qos_null_frame(struct umac_s
 {
     struct umac_data *umacd = umac_sta_data_get_umacd(stad);
     struct umac_datapath_data *data = umac_data_get_datapath(umacd);
-
 
     uint32_t timeout_ms = umac_datapath_calculate_tx_timeout_ms(umacd, true);
     enum mmwlan_status status = umac_datapath_wait_for_tx_ready_(data, timeout_ms, UINT16_MAX);
@@ -2536,7 +2403,6 @@ enum mmwlan_status umac_datapath_build_copy_and_queue_mgmt_frame_tx(struct umac_
     return umac_datapath_tx_mgmt_frame(stad, txbuf);
 }
 
-
 #ifndef UNIT_TESTS
 bool umac_datapath_process(struct umac_data *umacd)
 {
@@ -2590,7 +2456,6 @@ void umac_datapath_update_tx_paused(struct umac_data *umacd,
     bool pause_state_changed;
     struct umac_datapath_data *data = umac_data_get_datapath(umacd);
 
-
     MMOSAL_TASK_ENTER_CRITICAL();
     bool is_paused = cb();
     if (is_paused)
@@ -2608,7 +2473,6 @@ void umac_datapath_update_tx_paused(struct umac_data *umacd,
 
     if (pause_state_changed && !is_paused)
     {
-
         umac_core_evt_wake(umacd);
         mmosal_semb_give(data->tx_flowcontrol_sem);
     }

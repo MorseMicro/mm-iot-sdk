@@ -6,13 +6,11 @@
  */
 
 
-
 #pragma once
 
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
-
 
 enum hw_scan_fsm_state
 {
@@ -22,14 +20,12 @@ enum hw_scan_fsm_state
     HW_SCAN_FSM_STATE_ABORT_PENDING,
 };
 
-
 enum hw_scan_fsm_state_mask
 {
     HW_SCAN_FSM_STATE_INACTIVE_MASK = (1ul << HW_SCAN_FSM_STATE_INACTIVE),
     HW_SCAN_FSM_STATE_IN_PROGRESS_MASK = (1ul << HW_SCAN_FSM_STATE_IN_PROGRESS),
     HW_SCAN_FSM_STATE_ABORT_PENDING_MASK = (1ul << HW_SCAN_FSM_STATE_ABORT_PENDING),
 };
-
 
 enum hw_scan_fsm_event
 {
@@ -42,7 +38,6 @@ enum hw_scan_fsm_event
     HW_SCAN_FSM_EVENT_ABORT_ALL,
 };
 
-
 enum hw_scan_fsm_event_mask
 {
     HW_SCAN_FSM_EVENT_REQUEST_MASK = (1ul << HW_SCAN_FSM_EVENT_REQUEST),
@@ -53,19 +48,13 @@ enum hw_scan_fsm_event_mask
     HW_SCAN_FSM_EVENT_ABORT_ALL_MASK = (1ul << HW_SCAN_FSM_EVENT_ABORT_ALL),
 };
 
-
 struct hw_scan_fsm_instance
 {
-
     enum hw_scan_fsm_state current_state;
-
     volatile bool in_event_handler;
-
     enum hw_scan_fsm_event pending_event;
-
     void *arg;
 };
-
 
 #define HW_SCAN_FSM_INSTANCE_INIT                    \
     {                                                \
@@ -75,14 +64,11 @@ struct hw_scan_fsm_instance
         .arg = NULL,                                 \
     }
 
-
 static inline void hw_scan_fsm_init(struct hw_scan_fsm_instance *inst)
 {
     static const struct hw_scan_fsm_instance inst_init = HW_SCAN_FSM_INSTANCE_INIT;
     *inst = inst_init;
 }
 
-
 void hw_scan_fsm_handle_event(struct hw_scan_fsm_instance *inst, enum hw_scan_fsm_event event);
-
 

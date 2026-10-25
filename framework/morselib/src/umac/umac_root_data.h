@@ -6,13 +6,11 @@
 #pragma once
 
 #include "mmwlan.h"
-#include "umac/scan/umac_scan_data.h"
+#include "umac/scan/umac_scan.h"
 
 struct umac_root_data
 {
-
     bool shutdown_in_progress;
-
     bool is_initialised;
     struct umac_scan_req scan_request;
     mmwlan_scan_rx_cb_t scan_rx_cb;
@@ -21,4 +19,6 @@ struct umac_root_data
     mmwlan_fatal_error_handler_t fatal_error_handler;
     void *fatal_error_handler_arg;
     bool fatal_error;
+    mmwlan_relay_status_cb_t relay_status_cb;
+    void *relay_status_cb_arg;
 };

@@ -981,7 +981,7 @@ void vMQTTAgentTask(void *pvParameters)
                             ( void ) bUnlockSubCtx( &( pxCtx->xSubMgrCtx ) );
                         }
 
-                        mmosal_printf("INF: Session already present (no re-subscription)." );
+                        mmosal_printf("INF: Session already present (no re-subscription).\n");
                     }
                 }
             }

@@ -72,7 +72,6 @@ enum mmwlan_status umac_stats_clear_all(struct umac_data *umacd)
     return MMWLAN_SUCCESS;
 }
 
-
 static bool append_tlv(uint8_t *buf,
                        size_t buf_size,
                        size_t *offset,

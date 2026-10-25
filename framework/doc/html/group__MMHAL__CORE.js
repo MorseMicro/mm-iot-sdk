@@ -9,6 +9,7 @@ var group__MMHAL__CORE =
       [ "MMHAL_VETO_ID_MORSELIB_MAX", "group__MMHAL__CORE.html#ggaac79b1527fe06a43a80df65ca4b39e94a1e3114cf7c516e6d5b0fd0aac6a9b1b0", null ],
       [ "MMHAL_VETO_ID_DATALINK", "group__MMHAL__CORE.html#ggaac79b1527fe06a43a80df65ca4b39e94abd74037f268406141b98b4d8065389c9", null ],
       [ "MMHAL_VETO_ID_MMCONFIG", "group__MMHAL__CORE.html#ggaac79b1527fe06a43a80df65ca4b39e94a992c256d7bd16cac717cf08e0f60a372", null ],
+      [ "MMHAL_VETO_ID_EMMET", "group__MMHAL__CORE.html#ggaac79b1527fe06a43a80df65ca4b39e94a99deddb4f21c2f5ee9378a596f7c23e5", null ],
       [ "MMHAL_VETO_ID_RESERVED_MIN", "group__MMHAL__CORE.html#ggaac79b1527fe06a43a80df65ca4b39e94ab23360debd262c486912e1e01127be18", null ],
       [ "MMHAL_VETO_ID_RESERVED_MAX", "group__MMHAL__CORE.html#ggaac79b1527fe06a43a80df65ca4b39e94ad79f0aeecf73a4f376b38c656597227d", null ]
     ] ],

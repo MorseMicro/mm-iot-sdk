@@ -13,7 +13,6 @@
 #endif
 
 
-
 static inline unsigned long atomic_test_bit(
     unsigned bit_num,
     volatile atomic_ulong *var)
@@ -62,7 +61,6 @@ static inline void atomic_clear_bit_unlock(
 }
 
 
-
 #ifdef ENABLE_SPINLOCK_TRACE
 #include "mmtrace.h"
 extern mmtrace_channel spinlock_channel_handle;
@@ -95,7 +93,6 @@ static inline void spin_lock(struct spinlock *spinlock)
 {
     while (atomic_fetch_or(&(spinlock->locked), 1))
     {
-
         mmosal_task_sleep(1);
     }
     SPINLOCK_TRACE("locked %x", (uint32_t)spinlock);

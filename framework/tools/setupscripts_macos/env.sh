@@ -29,16 +29,16 @@ unset VARS_ONLY
 # Set MMIOT_ROOT environment variable to the framework directory that this script resides under.
 export MMIOT_ROOT="$(realpath $SCRIPT_DIR/../..)"
 
-unset SCRIPT_DIR
+MM_RET=0
 
-# Add GNU utilities to the front of PATH so that standard tool names (find, sed, etc.) resolve to
+# Add GNU utilities to the front of PATH so that standard tool names (make, sed, etc.) resolve to
 # the GNU versions rather than the BSD versions shipped with macOS. This is required for build
 # system compatibility with Linux. This only affects the current shell session.
 HOMEBREW_PREFIX="${HOMEBREW_PREFIX:-/opt/homebrew}"
-GNU_PACKAGES=(coreutils findutils gnu-sed gnu-tar grep gawk make)
+GNU_PACKAGES=(coreutils gnu-sed gnu-tar make)
 for pkg in "${GNU_PACKAGES[@]}"; do
     GNUBIN="$HOMEBREW_PREFIX/opt/$pkg/libexec/gnubin"
-    if [ -d "$GNUBIN" ]; then
+    if [[ -d "$GNUBIN" ]] && [[ ":$PATH:" != *":${GNUBIN}:"* ]]; then
         export PATH="$GNUBIN:$PATH"
     fi
 done
@@ -51,6 +51,7 @@ if [[ "$CURRENT_OPENOCD_BIN" != "$MORSE_OPENOCD_DIR/bin" ]]; then
         export PATH=$MORSE_OPENOCD_DIR/bin:$PATH
     else
         echo "OpenOCD not found at $MORSE_OPENOCD_DIR/bin"
+        MM_RET=1
     fi
 fi
 unset CURRENT_OPENOCD_BIN
@@ -64,23 +65,30 @@ if [[ "$CURRENT_ARM_TOOLCHAIN_DIR" != "$MORSE_ARM_TOOLCHAIN_DIR/bin" ]]; then
         export PATH=$MORSE_ARM_TOOLCHAIN_DIR/bin:$PATH
     else
         echo "ARM toolchain not found at $MORSE_ARM_TOOLCHAIN_DIR/bin"
+        MM_RET=1
     fi
 fi
 unset CURRENT_ARM_TOOLCHAIN_DIR
 unset MORSE_ARM_TOOLCHAIN_DIR
 
-# Miniterm is called pyserial-miniterm in newer installations. Create an
-# alias to keep things simple.
-if ! command -v miniterm > /dev/null 2>&1; then
-    PYSERIAL_MINITERM=$(command -v pyserial-miniterm 2>/dev/null)
-    if [[ -z "$PYSERIAL_MINITERM" ]]; then
-        echo "Unable to find miniterm or pyserial-miniterm. Is pyserial installed?"
-        return 1
+# Some tools need to be managed by symlink directly
+MORSE_BIN_DIR=$MORSE_TOOLS_DIR/bin
+if [[ ":$PATH:" != *":${MORSE_BIN_DIR}:"* ]]; then
+    if [ -d "$MORSE_BIN_DIR" ]; then
+        echo "Adding Morse symlinks directory to the path: $MORSE_BIN_DIR"
+        export PATH=$MORSE_BIN_DIR:$PATH
+    else
+        echo "Morse symlinks directory not found at $MORSE_BIN_DIR"
+        echo "Please run $SCRIPT_DIR/macos-setup.sh S02_brew-pkg"
+        MM_RET=1
     fi
-    echo "miniterm command not found, creating alias to $PYSERIAL_MINITERM"
-    alias miniterm="$PYSERIAL_MINITERM"
-    unset PYSERIAL_MINITERM
 fi
+unset MORSE_BIN_DIR SCRIPT_DIR
+
+if [[ "$MM_RET" -ne 0 ]]; then
+    return $MM_RET
+fi
+unset MM_RET
 
 # MM-IoT-SDK Version
-export MMIOT_VERSION="2.13.1"
+export MMIOT_VERSION="2.14.3"

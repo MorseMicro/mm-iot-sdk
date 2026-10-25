@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.13.1</span>
+   &#160;<span id="projectnumber">2.14.3</span>
    </div>
   </td>
  </tr>
@@ -100,12 +100,12 @@ $(document).ready(function(){initNavTree('structmmwlan__relay__args.html',''); i
 <div class="line"><span class="keyword">struct </span><a class="code hl_struct" href="structmmwlan__relay__args.html">mmwlan_relay_args</a> relay_args = <a class="code hl_define" href="group__MMWLAN__RELAY.html#ga0ce1bcde2bb117e82227e825eecb3c9e">MMWLAN_RELAY_ARGS_INIT</a>;</div>
 <div class="line"><span class="comment">// HERE: initialize arguments</span></div>
 <div class="line">status = <a class="code hl_function" href="group__MMWLAN__RELAY.html#ga5bb479d42021d4463902472cbaaf381f">mmwlan_relay_enable</a>(&amp;relay_args);</div>
-<div class="ttc" id="agroup__MMWLAN__RELAY_html_ga0ce1bcde2bb117e82227e825eecb3c9e"><div class="ttname"><a href="group__MMWLAN__RELAY.html#ga0ce1bcde2bb117e82227e825eecb3c9e">MMWLAN_RELAY_ARGS_INIT</a></div><div class="ttdeci">#define MMWLAN_RELAY_ARGS_INIT</div><div class="ttdoc">Initializer for mmwlan_relay_args.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l02324">mmwlan.h:2324</a></div></div>
+<div class="ttc" id="agroup__MMWLAN__RELAY_html_ga0ce1bcde2bb117e82227e825eecb3c9e"><div class="ttname"><a href="group__MMWLAN__RELAY.html#ga0ce1bcde2bb117e82227e825eecb3c9e">MMWLAN_RELAY_ARGS_INIT</a></div><div class="ttdeci">#define MMWLAN_RELAY_ARGS_INIT</div><div class="ttdoc">Initializer for mmwlan_relay_args.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l02512">mmwlan.h:2512</a></div></div>
 <div class="ttc" id="agroup__MMWLAN__RELAY_html_ga5bb479d42021d4463902472cbaaf381f"><div class="ttname"><a href="group__MMWLAN__RELAY.html#ga5bb479d42021d4463902472cbaaf381f">mmwlan_relay_enable</a></div><div class="ttdeci">enum mmwlan_status mmwlan_relay_enable(const struct mmwlan_relay_args *args)</div><div class="ttdoc">Enable S1G Relay mode.</div></div>
 <div class="ttc" id="agroup__MMWLAN_html_ga0039072000d47e5c3712686bf1e43086"><div class="ttname"><a href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a></div><div class="ttdeci">mmwlan_status</div><div class="ttdoc">Enumeration of status return codes.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00049">mmwlan.h:50</a></div></div>
-<div class="ttc" id="astructmmwlan__relay__args_html"><div class="ttname"><a href="structmmwlan__relay__args.html">mmwlan_relay_args</a></div><div class="ttdoc">Arguments data structure for mmwlan_relay_enable().</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l02306">mmwlan.h:2307</a></div></div>
+<div class="ttc" id="astructmmwlan__relay__args_html"><div class="ttname"><a href="structmmwlan__relay__args.html">mmwlan_relay_args</a></div><div class="ttdoc">Arguments data structure for mmwlan_relay_enable().</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l02446">mmwlan.h:2447</a></div></div>
 </div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02306">2306</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02446">2446</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 </div>
 <p><code>#include &lt;<a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>&gt;</code></p>
 <table class="memberdecls">
@@ -114,9 +114,21 @@ Data Fields</h2></td></tr>
 <tr class="memitem:aa7394f10a8d76368966993318d9ad514"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__relay__args.html#aa7394f10a8d76368966993318d9ad514">forwarding_table_size</a></td></tr>
 <tr class="memdesc:aa7394f10a8d76368966993318d9ad514"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum number of entries in the forward table.  <a href="structmmwlan__relay__args.html#aa7394f10a8d76368966993318d9ad514">More...</a><br /></td></tr>
 <tr class="separator:aa7394f10a8d76368966993318d9ad514"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a05f64e630d73f7cab2e01d7104592b9b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__relay__args.html#a05f64e630d73f7cab2e01d7104592b9b">is_root_node</a></td></tr>
-<tr class="memdesc:a05f64e630d73f7cab2e01d7104592b9b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicates whether this is the root node.  <a href="structmmwlan__relay__args.html#a05f64e630d73f7cab2e01d7104592b9b">More...</a><br /></td></tr>
-<tr class="separator:a05f64e630d73f7cab2e01d7104592b9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad0faf1757ce2cef213252c0a4a56f0c6"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__relay__args.html#ad0faf1757ce2cef213252c0a4a56f0c6">recovery_timeout_ms</a></td></tr>
+<tr class="memdesc:ad0faf1757ce2cef213252c0a4a56f0c6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Duration the relay will wait for the relay network to recover, before bringing down the connection and retrying.  <a href="structmmwlan__relay__args.html#ad0faf1757ce2cef213252c0a4a56f0c6">More...</a><br /></td></tr>
+<tr class="separator:ad0faf1757ce2cef213252c0a4a56f0c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a546a849039effdbf1dc959bd1fd879b7"><td class="memItemLeft" align="right" valign="top">const struct <a class="el" href="structmmwlan__sta__args.html">mmwlan_sta_args</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__relay__args.html#a546a849039effdbf1dc959bd1fd879b7">relay_sta_args</a></td></tr>
+<tr class="memdesc:a546a849039effdbf1dc959bd1fd879b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to configuration for relay STA interface.  <a href="structmmwlan__relay__args.html#a546a849039effdbf1dc959bd1fd879b7">More...</a><br /></td></tr>
+<tr class="separator:a546a849039effdbf1dc959bd1fd879b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7dc46fd7e732c465b4c03368a39f99f2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__MMWLAN__STA.html#ga659a0eb950178f650d5909e27d8c773f">mmwlan_sta_status_cb_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__relay__args.html#a7dc46fd7e732c465b4c03368a39f99f2">sta_status_cb</a></td></tr>
+<tr class="memdesc:a7dc46fd7e732c465b4c03368a39f99f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Optional callback to be invoked on STA state changes.  <a href="structmmwlan__relay__args.html#a7dc46fd7e732c465b4c03368a39f99f2">More...</a><br /></td></tr>
+<tr class="separator:a7dc46fd7e732c465b4c03368a39f99f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa62bb01d305af1ed5accf90f6a86c3fc"><td class="memItemLeft" align="right" valign="top">const struct <a class="el" href="structmmwlan__relay__ap__args.html">mmwlan_relay_ap_args</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__relay__args.html#aa62bb01d305af1ed5accf90f6a86c3fc">relay_ap_args</a></td></tr>
+<tr class="memdesc:aa62bb01d305af1ed5accf90f6a86c3fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to configuration for relay AP interface.  <a href="structmmwlan__relay__args.html#aa62bb01d305af1ed5accf90f6a86c3fc">More...</a><br /></td></tr>
+<tr class="separator:aa62bb01d305af1ed5accf90f6a86c3fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a44a18ee3694782c155e67ad2c9b35bb1"><td class="memItemLeft" align="right" valign="top">const struct <a class="el" href="structmmwlan__ap__args.html">mmwlan_ap_args</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__relay__args.html#a44a18ee3694782c155e67ad2c9b35bb1">root_ap_args</a></td></tr>
+<tr class="memdesc:a44a18ee3694782c155e67ad2c9b35bb1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to configuration for Root AP interface.  <a href="structmmwlan__relay__args.html#a44a18ee3694782c155e67ad2c9b35bb1">More...</a><br /></td></tr>
+<tr class="separator:a44a18ee3694782c155e67ad2c9b35bb1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Field Documentation</h2>
 <a id="aa7394f10a8d76368966993318d9ad514" name="aa7394f10a8d76368966993318d9ad514"></a>
@@ -134,25 +146,109 @@ Data Fields</h2></td></tr>
 <p>Maximum number of entries in the forward table. </p>
 <p >This must be large enough to hold one entry for every node under this one (direct and indirect). If zero, then the default value, <a class="el" href="group__MMWLAN__RELAY.html#gae58bd592fd54333be11f6312e80a00ea">MMWLAN_RELAY_DEFAULT_FORWARDING_TABLE_SIZE</a>, will be used. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02313">2313</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02453">2453</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
-<a id="a05f64e630d73f7cab2e01d7104592b9b" name="a05f64e630d73f7cab2e01d7104592b9b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a05f64e630d73f7cab2e01d7104592b9b">&#9670;&nbsp;</a></span>is_root_node</h2>
+<a id="ad0faf1757ce2cef213252c0a4a56f0c6" name="ad0faf1757ce2cef213252c0a4a56f0c6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad0faf1757ce2cef213252c0a4a56f0c6">&#9670;&nbsp;</a></span>recovery_timeout_ms</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool mmwlan_relay_args::is_root_node</td>
+          <td class="memname">uint32_t mmwlan_relay_args::recovery_timeout_ms</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Indicates whether this is the root node. </p>
+<p>Duration the relay will wait for the relay network to recover, before bringing down the connection and retrying. </p>
+<p >On recovery timeout, the AP interface will be brought down until the relay STA interface successfully reconnects.</p>
+<p >Timeout is unused when operating as a root device.</p>
+<dl class="section warning"><dt>Warning</dt><dd>A device with a relay AP interface may never recover if the timeout is set to <code>UINT32_MAX</code>. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02316">2316</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02466">2466</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+
+</div>
+</div>
+<a id="aa62bb01d305af1ed5accf90f6a86c3fc" name="aa62bb01d305af1ed5accf90f6a86c3fc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa62bb01d305af1ed5accf90f6a86c3fc">&#9670;&nbsp;</a></span>relay_ap_args</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const struct <a class="el" href="structmmwlan__relay__ap__args.html">mmwlan_relay_ap_args</a>* mmwlan_relay_args::relay_ap_args</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Pointer to configuration for relay AP interface. </p>
+<p >When present, the device will bring up an AP interface when the STA interface successfully connects to a relay network.</p>
+<p >Relay AP interface may be added after enabling the relay, see <a class="el" href="group__MMWLAN__RELAY.html#ga52b02d67c73915bae3f2677c01482f2a">mmwlan_relay_ap_enable</a>.</p>
+<dl class="section note"><dt>Note</dt><dd>The relay AP interface may be brought down if the device loses connection to the relay network and is unable to recover. See <a class="el" href="structmmwlan__relay__args.html#ad0faf1757ce2cef213252c0a4a56f0c6">recovery_timeout_ms</a> for more. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02493">2493</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+
+</div>
+</div>
+<a id="a546a849039effdbf1dc959bd1fd879b7" name="a546a849039effdbf1dc959bd1fd879b7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a546a849039effdbf1dc959bd1fd879b7">&#9670;&nbsp;</a></span>relay_sta_args</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const struct <a class="el" href="structmmwlan__sta__args.html">mmwlan_sta_args</a>* mmwlan_relay_args::relay_sta_args</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Pointer to configuration for relay STA interface. </p>
+<p >When present, the device will bring up a STA interface in the same way as calling <a class="el" href="group__MMWLAN__STA.html#ga9cdcf82a952afa692f82430f1d6b93a0">mmwlan_sta_enable</a> with the addition of S1G relay awareness. When not present, the device will operate as S1G Relay Root AP.</p>
+<p >If NULL, <a class="el" href="structmmwlan__relay__args.html#aa62bb01d305af1ed5accf90f6a86c3fc">relay_ap_args</a> must be NULL, and <a class="el" href="structmmwlan__relay__args.html#a44a18ee3694782c155e67ad2c9b35bb1">root_ap_args</a> must be non-NULL. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02474">2474</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+
+</div>
+</div>
+<a id="a44a18ee3694782c155e67ad2c9b35bb1" name="a44a18ee3694782c155e67ad2c9b35bb1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a44a18ee3694782c155e67ad2c9b35bb1">&#9670;&nbsp;</a></span>root_ap_args</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const struct <a class="el" href="structmmwlan__ap__args.html">mmwlan_ap_args</a>* mmwlan_relay_args::root_ap_args</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Pointer to configuration for Root AP interface. </p>
+<p >When present, the device will bring up an AP interface in the same way as calling <a class="el" href="group__MMWLAN__AP.html#gacce06602f53a434834463df53d7ff942">mmwlan_ap_enable</a> with the addition of S1G relay awareness. When not present, the device will operate as S1G Relay STA/relay.</p>
+<p >If non-NULL, <a class="el" href="structmmwlan__relay__args.html#a546a849039effdbf1dc959bd1fd879b7">relay_sta_args</a> and <a class="el" href="structmmwlan__relay__args.html#aa62bb01d305af1ed5accf90f6a86c3fc">relay_ap_args</a> must be NULL. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02501">2501</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+
+</div>
+</div>
+<a id="a7dc46fd7e732c465b4c03368a39f99f2" name="a7dc46fd7e732c465b4c03368a39f99f2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7dc46fd7e732c465b4c03368a39f99f2">&#9670;&nbsp;</a></span>sta_status_cb</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__MMWLAN__STA.html#ga659a0eb950178f650d5909e27d8c773f">mmwlan_sta_status_cb_t</a> mmwlan_relay_args::sta_status_cb</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Optional callback to be invoked on STA state changes. </p>
+<p >May be <code>NULL</code>. When <a class="el" href="structmmwlan__relay__args.html#a546a849039effdbf1dc959bd1fd879b7">relay_sta_args</a> is NULL, the callback will be ignored.</p>
+<dl class="section note"><dt>Note</dt><dd>The STA status callback must not block and MMWLAN API functions may not be invoked from the callback. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02483">2483</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -166,7 +262,7 @@ Data Fields</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="structmmwlan__relay__args.html">mmwlan_relay_args</a></li>
-    <li class="footer">Copyright 2021-2025 Morse Micro </li>
+    <li class="footer">Copyright 2021-2026 Morse Micro </li>
   </ul>
 </div>
 </body>

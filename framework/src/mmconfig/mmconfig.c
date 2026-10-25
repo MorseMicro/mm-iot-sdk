@@ -12,6 +12,7 @@
 #include "mmosal.h"
 #include "mmhal_flash.h"
 #include "mmconfig.h"
+#include "mmutils.h"
 
 #ifndef PACKED
 #define PACKED __attribute__((packed))
@@ -1587,6 +1588,57 @@ int mmconfig_read_bool(const char *key, bool *value)
     retval = MMCONFIG_ERR_INCORRECT_TYPE;
 
 mmconfig_read_bool_cleanup:
+    mmosal_mutex_release(mmconfig_mutex);
+
+    return retval;
+}
+
+int mmconfig_write_mac_addr(const char *key, const uint8_t *val)
+{
+    char str[MM_MAC_ADDR_STR_LEN];
+
+    /* For maximum compatibility, we are going to represent the integer as a string */
+    mm_mac_addr_to_str(val, str);
+    return mmconfig_write_string(key, str);
+}
+
+int mmconfig_read_mac_addr(const char *key, uint8_t *val)
+{
+    /* For maximum compatibility, we are going to represent the macaddr as a string */
+    const char *data;
+
+    if (mmconfig_init() == MMCONFIG_ERR_NOT_SUPPORTED)
+    {
+        return MMCONFIG_ERR_NOT_SUPPORTED;
+    }
+
+    mmosal_mutex_get(mmconfig_mutex, UINT32_MAX);
+
+    int retval = mmconfig_read_data(key, (const void **)&data);
+
+    /* Check for error */
+    if (retval < 0)
+    {
+        goto mmconfig_read_mac_addr_cleanup;
+    }
+
+    /* MAC address string is a fixed size */
+    if (retval != MM_MAC_ADDR_STR_LEN)
+    {
+        retval = MMCONFIG_ERR_INCORRECT_TYPE;
+        goto mmconfig_read_mac_addr_cleanup;
+    }
+
+    /* Check for NULL termination */
+    if (data[retval - 1] != 0)
+    {
+        retval = MMCONFIG_ERR_INCORRECT_TYPE;
+        goto mmconfig_read_mac_addr_cleanup;
+    }
+
+    retval = mm_str_to_mac_addr(data, val) ? MMCONFIG_OK : MMCONFIG_ERR_INCORRECT_TYPE;
+
+mmconfig_read_mac_addr_cleanup:
     mmosal_mutex_release(mmconfig_mutex);
 
     return retval;

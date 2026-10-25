@@ -28,7 +28,6 @@ bool mgmt_frame_is_bufferable(uint16_t frame_control_le)
 {
     MMOSAL_DEV_ASSERT(dot11_frame_control_get_type(frame_control_le) == DOT11_FC_TYPE_MGMT);
 
-
     switch (dot11_frame_control_get_subtype(frame_control_le))
     {
         case DOT11_FC_SUBTYPE_ACTION:

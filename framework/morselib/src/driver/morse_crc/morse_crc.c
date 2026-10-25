@@ -7,7 +7,6 @@
 #include "morse_crc.h"
 #include "endian.h"
 
-
 static const uint8_t crc7_sd_lookup_table[256] = {
     0x00, 0x09, 0x12, 0x1b, 0x24, 0x2d, 0x36, 0x3f, 0x48, 0x41, 0x5a, 0x53, 0x6c, 0x65, 0x7e, 0x77,
     0x19, 0x10, 0x0b, 0x02, 0x3d, 0x34, 0x2f, 0x26, 0x51, 0x58, 0x43, 0x4a, 0x75, 0x7c, 0x67, 0x6e,
@@ -27,7 +26,6 @@ static const uint8_t crc7_sd_lookup_table[256] = {
     0x0e, 0x07, 0x1c, 0x15, 0x2a, 0x23, 0x38, 0x31, 0x46, 0x4f, 0x54, 0x5d, 0x62, 0x6b, 0x70, 0x79
 };
 
-
 uint8_t morse_crc7_sd(uint8_t crc, const void *data, uint32_t data_len)
 {
     const uint8_t *d = (const uint8_t *)data;
@@ -38,7 +36,6 @@ uint8_t morse_crc7_sd(uint8_t crc, const void *data, uint32_t data_len)
     }
     return crc;
 }
-
 
 static const uint16_t crc16_xmodem_lookup_table[256] = {
     0x0000, 0x1021, 0x2042, 0x3063, 0x4084, 0x50a5, 0x60c6, 0x70e7, 0x8108, 0x9129, 0xa14a, 0xb16b,
@@ -65,7 +62,6 @@ static const uint16_t crc16_xmodem_lookup_table[256] = {
     0x2e93, 0x3eb2, 0x0ed1, 0x1ef0
 };
 
-
 uint16_t morse_crc16_xmodem(uint16_t crc, const void *data, size_t data_len)
 {
     const uint8_t *d = (const uint8_t *)data;
@@ -79,7 +75,6 @@ uint16_t morse_crc16_xmodem(uint16_t crc, const void *data, size_t data_len)
 
 uint8_t morse_yaps_crc(uint32_t word)
 {
-
     word = htobe32(word & 0x1ffffff);
     return morse_crc7_sd(0, &word, sizeof(word));
 }

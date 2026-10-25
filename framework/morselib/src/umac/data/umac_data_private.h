@@ -15,7 +15,6 @@
 #include "umac/datapath/umac_datapath_data.h"
 #include "umac/rc/umac_rc_data.h"
 
-
 #ifdef ENABLE_UMAC_DATA_SANITY_CHECK
 #define UMAC_DATA_SANITY_CHECK(umacd) MMOSAL_ASSERT(umacd == umac_data_get_umacd())
 #else
@@ -28,9 +27,7 @@ struct umac_sta_data
     uint16_t aid;
     uint8_t bssid[MMWLAN_MAC_ADDR_LEN];
     uint8_t peer_addr[MMWLAN_MAC_ADDR_LEN];
-
     enum mmwlan_security_type security_type;
-
     enum mmwlan_pmf_mode pmf_mode;
     struct umac_data *umacd;
     struct umac_ap_sta_data ap;

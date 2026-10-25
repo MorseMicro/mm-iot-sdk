@@ -23,7 +23,6 @@ enum mmwlan_status umac_timeoutq_alloc_extra(struct umac_core_timeoutq *toq)
         return MMWLAN_SUCCESS;
     }
 
-
     struct umac_core_timeout *extra_pool =
         (struct umac_core_timeout *)mmosal_calloc(UMAC_TIMEOUTQ_EXTRA_LEN,
                                                   sizeof(toq->extra_pool[0]));
@@ -51,7 +50,6 @@ enum mmwlan_status umac_timeoutq_alloc_extra(struct umac_core_timeoutq *toq)
 
 void umac_timeoutq_deinit(struct umac_core_timeoutq *toq)
 {
-
     mmosal_free(toq->extra_pool);
     toq->extra_pool = NULL;
 }
@@ -142,8 +140,6 @@ static void umac_timeoutq_enqueue_protected(struct umac_core_timeoutq *toq,
     }
 
 
-
-
     if (mmosal_time_lt(to->timeout_abs_ms, toq->head->timeout_abs_ms))
     {
         to->next = toq->head;
@@ -195,17 +191,14 @@ static struct umac_core_timeout *umac_timeoutq_remove_one_protected(
         return NULL;
     }
 
-
     if (walk->handler == handler && walk->arg1 == arg1 && walk->arg2 == arg2)
     {
         toq->head = walk->next;
         return walk;
     }
 
-
     prev = walk;
     walk = walk->next;
-
 
     while (walk != NULL)
     {
@@ -253,7 +246,6 @@ static void umac_timeoutq_dispatch_timeout(struct umac_core_data *core,
     void *arg1 = to->arg1;
     void *arg2 = to->arg2;
 
-
     umac_timeoutq_free(&(core->toq), to);
 
     MMOSAL_ASSERT(handler != NULL);
@@ -291,7 +283,6 @@ uint32_t umac_timeoutq_time_to_next_timeout(struct umac_core_data *core)
     next_timeout_valid = umac_timeoutq_peek_next_timeout(&(core->toq), &next_timeout_time);
     if (next_timeout_valid)
     {
-
         uint32_t now = mmosal_get_time_ms();
         int32_t delta = next_timeout_time - now;
         if (delta < 0)
@@ -310,7 +301,6 @@ uint32_t umac_timeoutq_time_to_next_timeout(struct umac_core_data *core)
     }
 }
 
-
 static bool timeout_arg_matches(void *registered, void *query)
 {
     return query == UMAC_CORE_TIMEOUT_ANY_CTX || query == registered;
@@ -324,7 +314,6 @@ static int umac_timeoutq_cancel_protected(struct umac_core_timeoutq *toq,
     struct umac_core_timeout *walk = toq->head;
     struct umac_core_timeout *prev;
     int count = 0;
-
 
     while (walk != NULL &&
            walk->handler == handler &&
@@ -342,10 +331,8 @@ static int umac_timeoutq_cancel_protected(struct umac_core_timeoutq *toq,
         return count;
     }
 
-
     prev = walk;
     walk = walk->next;
-
 
     while (walk != NULL)
     {
@@ -410,7 +397,6 @@ int umac_timeoutq_deplete_timeout_protected(struct umac_core_timeoutq *toq,
     uint32_t new_timeout = mmosal_get_time_ms() + delta_ms;
     int ret = 0;
 
-
     struct umac_core_timeout *to = umac_timeoutq_remove_one_protected(toq, handler, arg1, arg2);
     if (to == NULL)
     {
@@ -427,7 +413,6 @@ int umac_timeoutq_deplete_timeout_protected(struct umac_core_timeoutq *toq,
 
     return ret;
 }
-
 
 bool umac_core_register_timeout(struct umac_data *umacd,
                                 uint32_t delta_ms,
@@ -452,7 +437,6 @@ bool umac_core_register_timeout(struct umac_data *umacd,
     }
 
     to->timeout_abs_ms = mmosal_get_time_ms() + delta_ms;
-
     if (delta_ms == 0)
     {
         uint32_t next_timeout;
@@ -468,7 +452,6 @@ bool umac_core_register_timeout(struct umac_data *umacd,
     to->arg2 = arg2;
 
     umac_timeoutq_enqueue(&(core->toq), to);
-
 
     umac_core_evt_wake(umacd);
 
@@ -554,7 +537,6 @@ int umac_core_deplete_timeout(struct umac_data *umacd,
     MMOSAL_TASK_ENTER_CRITICAL();
     ret = umac_timeoutq_deplete_timeout_protected(&(core->toq), delta_ms, handler, arg1, arg2);
     MMOSAL_TASK_EXIT_CRITICAL();
-
 
     if (ret == 1)
     {

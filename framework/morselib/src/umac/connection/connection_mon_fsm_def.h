@@ -11,14 +11,12 @@
 
 #define CONNECTION_MON_FSM_INITIAL_STATE CONNECTION_MON_FSM_STATE_DISABLED
 
-
 #ifndef CONNECTION_MON_FSM_LOG
 #define CONNECTION_MON_FSM_LOG(format_str, ...) \
     do {                                        \
         (void)format_str;                       \
     } while (0)
 #endif
-
 
 static void connection_mon_fsm_stable_entry(struct connection_mon_fsm_instance *inst,
                                             enum connection_mon_fsm_state prev_state);
@@ -31,13 +29,10 @@ static void connection_mon_fsm_lost_entry(struct connection_mon_fsm_instance *in
 
 
 
-
-
 static void connection_mon_fsm_transition_error(struct connection_mon_fsm_instance *inst,
                                                 enum connection_mon_fsm_event event);
 
 static void connection_mon_fsm_reentrance_error(struct connection_mon_fsm_instance *inst);
-
 
 
 typedef void (*connection_mon_fsm_callback_t)(struct connection_mon_fsm_instance *inst,
@@ -89,7 +84,6 @@ const struct connection_mon_fsm_table_row connection_mon_fsm_table[] = {
 };
 
 #define CONNECTION_MON_FSM_TABLE_N_ENTRIES 5
-
 
 static inline const char *connection_mon_fsm_state_tostr(enum connection_mon_fsm_state state)
 {
@@ -188,7 +182,6 @@ static void connection_mon_fsm_handle_event_internal(struct connection_mon_fsm_i
     }
     connection_mon_fsm_transition_error(inst, event);
 }
-
 
 void connection_mon_fsm_handle_event(struct connection_mon_fsm_instance *inst,
                                      enum connection_mon_fsm_event event)

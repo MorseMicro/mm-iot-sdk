@@ -5,9 +5,10 @@
 
 #include "umac_relay.h"
 #include "umac/config/umac_config.h"
+#include "umac/supplicant_shim/umac_supp_shim.h"
+#include "umac/umac_root_data.h"
 #include "umac_relay_private.h"
 
-#include "common/common.h"
 #include "mmlog.h"
 #include "mmpkt.h"
 
@@ -26,9 +27,93 @@
 #define ADDRESS_UPDATE_RETRY_INTERVAL_MS          (1000)
 #define ADDRESS_UPDATE_RETRY_ON_ERROR_INTERVAL_MS (100)
 
-bool umac_relay_validate_relay_args(struct umac_data *umacd, const struct mmwlan_relay_args *args)
+static void umac_relay_refresh_connection(struct umac_data *umacd)
 {
-    return umacd && args;
+    umac_connection_process_disassoc_req(umacd, NULL);
+}
+
+static bool is_root(struct umac_relay_data *data)
+{
+    MMOSAL_DEV_ASSERT(data);
+    return !data->depth;
+}
+
+static bool has_relay_ap_registered(struct umac_relay_data *data)
+{
+    MMOSAL_DEV_ASSERT(data);
+    return data->args.relay_ap_args != NULL;
+}
+
+bool umac_relay_validate_relay_ap_args(const struct mmwlan_relay_ap_args *args)
+{
+    if (mm_mac_addr_is_multicast(args->bssid))
+    {
+        return false;
+    }
+
+    if (args->max_stas > MMWLAN_AP_MAX_STAS_LIMIT)
+    {
+        MMLOG_ERR("Unable to support %u STAs\n", args->max_stas);
+        return false;
+    }
+
+    return true;
+}
+
+bool umac_relay_validate_relay_args(const struct mmwlan_relay_args *args)
+{
+    if (args == NULL)
+    {
+        return false;
+    }
+
+    if (args->root_ap_args != NULL)
+    {
+        if (args->relay_ap_args != NULL || args->relay_sta_args != NULL)
+        {
+            return false;
+        }
+    }
+    else if (args->relay_sta_args != NULL)
+    {
+        if (!umac_connection_validate_sta_args(args->relay_sta_args))
+        {
+            return false;
+        }
+
+        if (args->relay_ap_args != NULL && !umac_relay_validate_relay_ap_args(args->relay_ap_args))
+        {
+            return false;
+        }
+    }
+    else
+    {
+        return false;
+    }
+
+    return true;
+}
+
+void umac_relay_do_status_update(struct umac_data *umacd, enum mmwlan_sta_state state)
+{
+    struct mmwlan_relay_status status = {
+        .state = umac_relay_get_state(umacd),
+        .sta_state = state,
+        .depth = umac_relay_get_depth(umacd),
+    };
+    MMLOG_INF("State: %d, STA: %d, depth: %u\n", status.state, status.sta_state, status.depth);
+    struct umac_root_data *rootd = umac_data_get_root(umacd);
+    if (rootd->relay_status_cb)
+    {
+        rootd->relay_status_cb(&status, rootd->relay_status_cb_arg);
+    }
+}
+
+static void ap_action_done_cb(struct umac_data *umacd, void *arg, enum mmwlan_status status)
+{
+    MM_UNUSED(arg);
+    MMOSAL_ASSERT(status == MMWLAN_SUCCESS);
+    umac_relay_do_status_update(umacd, umac_connection_get_state(umacd));
 }
 
 static void umac_relay_send_reachable_address_update(void *arg1, void *arg2)
@@ -83,7 +168,6 @@ static void umac_relay_send_reachable_address_update(void *arg1, void *arg2)
 
     if (status == MMWLAN_NOT_FOUND)
     {
-
         return;
     }
 
@@ -126,6 +210,81 @@ static void schedule_update(struct umac_data *umacd, struct umac_relay_data *dat
     }
 }
 
+static enum mmwlan_status umac_relay_start_relay_ap(struct umac_data *umacd,
+                                                    struct umac_relay_data *data)
+{
+    MMLOG_DBG("Start relay ap.\n");
+    if (!has_relay_ap_registered(data) ||
+        umac_ap_enabled(umacd) ||
+        umac_connection_get_state(umacd) != MMWLAN_STA_CONNECTED)
+    {
+        return MMWLAN_UNAVAILABLE;
+    }
+
+    const struct mmwlan_relay_ap_args *relay_args = data->args.relay_ap_args;
+    MMOSAL_DEV_ASSERT(relay_args != NULL);
+    const struct mmwlan_sta_args *sta_args = umac_connection_get_sta_args(umacd);
+    MMOSAL_DEV_ASSERT(sta_args != NULL);
+
+    struct mmwlan_ap_args args = MMWLAN_AP_ARGS_INIT;
+
+    memcpy(args.ssid, sta_args->ssid, sizeof(args.ssid));
+    args.ssid_len = sta_args->ssid_len;
+    memcpy(args.bssid, relay_args->bssid, sizeof(args.bssid));
+    args.security_type = sta_args->security_type;
+    memcpy(args.passphrase, sta_args->passphrase, sizeof(args.passphrase));
+    args.passphrase_len = sta_args->passphrase_len;
+    args.pmf_mode = sta_args->pmf_mode;
+    memcpy(args.sae_owe_ec_groups, sta_args->sae_owe_ec_groups, sizeof(args.sae_owe_ec_groups));
+    args.op_class = 0;
+    args.s1g_chan_num = 0;
+    args.beacon_interval_tus = relay_args->beacon_interval_tus;
+    args.dtim_period = relay_args->dtim_period;
+    args.pri_bw_mhz = 0;
+    args.pri_1mhz_chan_idx = 0;
+    args.sta_status_cb = relay_args->sta_status_cb;
+    args.sta_status_cb_arg = relay_args->sta_status_cb_arg;
+    args.max_stas = relay_args->max_stas;
+    args.async_start = false;
+
+    return umac_ap_enable_ap(umacd, &args, ap_action_done_cb, NULL);
+}
+
+static enum mmwlan_status umac_relay_stop_relay_ap(struct umac_data *umacd,
+                                                   struct umac_relay_data *data)
+{
+    if (!has_relay_ap_registered(data))
+    {
+        return MMWLAN_UNAVAILABLE;
+    }
+
+    if (!umac_ap_enabled(umacd))
+    {
+        return MMWLAN_SUCCESS;
+    }
+
+    return umac_ap_disable_ap(umacd, ap_action_done_cb, NULL);
+}
+
+static void relay_root_lost_timeout(void *arg1, void *arg2)
+{
+    MMLOG_WRN("Relay recovery timed out. Restarting...\n");
+    MM_UNUSED(arg2);
+    struct umac_data *umacd = (struct umac_data *)arg1;
+    struct umac_relay_data *data = umac_data_get_relay(umacd);
+
+    enum mmwlan_status status = umac_relay_stop_relay_ap(umacd, data);
+    if (status != MMWLAN_SUCCESS)
+    {
+        MMLOG_ERR("Remove AP failed with code %d\n", status);
+    }
+
+    data->depth = MMWLAN_RELAY_DEPTH_UNKNOWN;
+    data->recover_depth = MMWLAN_RELAY_DEPTH_UNKNOWN;
+
+    umac_relay_refresh_connection(umacd);
+}
+
 enum mmwlan_status umac_relay_enable(struct umac_data *umacd, const struct mmwlan_relay_args *args)
 {
     if (umac_data_get_relay(umacd))
@@ -134,10 +293,15 @@ enum mmwlan_status umac_relay_enable(struct umac_data *umacd, const struct mmwla
         return MMWLAN_UNAVAILABLE;
     }
 
-    if (umac_connection_get_state(umacd) != MMWLAN_STA_DISABLED || umac_data_get_ap(umacd) != NULL)
+    if (umac_connection_get_state(umacd) != MMWLAN_STA_DISABLED || umac_ap_enabled(umacd))
     {
         MMLOG_WRN("Must start relay before STA and AP\n");
         return MMWLAN_UNAVAILABLE;
+    }
+
+    if (!umac_relay_validate_relay_args(args))
+    {
+        return MMWLAN_INVALID_ARGUMENT;
     }
 
     unsigned forwarding_table_size = args->forwarding_table_size;
@@ -155,30 +319,24 @@ enum mmwlan_status umac_relay_enable(struct umac_data *umacd, const struct mmwla
     }
 
     data->args = *args;
+    if (args->relay_ap_args)
+    {
+        data->_relay_ap_args = *args->relay_ap_args;
+        data->args.relay_ap_args = &data->_relay_ap_args;
+    }
+
+    data->args.relay_sta_args = NULL;
+    data->args.root_ap_args = NULL;
+
     data->args.forwarding_table_size = forwarding_table_size;
     data->reachable_update_latency_ms = ADDRESS_UPDATE_LATENCY_MS;
 
-    data->depth = args->is_root_node ? 0 : MMWLAN_RELAY_DEPTH_UNKNOWN;
+    data->depth = (args->root_ap_args != NULL) ? 0 : MMWLAN_RELAY_DEPTH_UNKNOWN;
     data->recover_depth = data->depth;
-    umac_ap_signal_beacon_critical_update(umacd);
 
     umac_relay_table_init(data);
 
-    if (!args->is_root_node && umac_connection_get_state(umacd) == MMWLAN_STA_CONNECTED)
-    {
-        struct umac_sta_data *stad = umac_connection_get_stad(umacd);
-        if (stad != NULL)
-        {
-            MMLOG_INF("Sending 4addr QoS NULL for relay\n");
-            enum mmwlan_status status = umac_datapath_build_and_tx_4addr_qos_null_frame(stad);
-            if (status != MMWLAN_SUCCESS)
-            {
-                MMLOG_WRN("Failed to TX 4addr QoS NULL\n");
-            }
-        }
-    }
-
-    MMLOG_INF("S1G Relay enabled (%s node)\n", args->is_root_node ? "root" : "non-root");
+    MMLOG_INF("S1G Relay enabled (%s node)\n", is_root(data) ? "root" : "non-root");
     return MMWLAN_SUCCESS;
 }
 
@@ -190,7 +348,18 @@ enum mmwlan_status umac_relay_disable(struct umac_data *umacd)
         MMLOG_WRN("Relay not active\n");
         return MMWLAN_SUCCESS;
     }
+    enum mmwlan_status status = MMWLAN_SUCCESS;
+
+    MMOSAL_ASSERT(!umac_ap_enabled(umacd));
+
+    status = umac_connection_stop(umacd);
+    if (status != MMWLAN_SUCCESS)
+    {
+        MMLOG_ERR("%s tear down failed with code %d\n", "relay STA", status);
+    }
+    umac_core_cancel_timeout(umacd, relay_root_lost_timeout, umacd, NULL);
     umac_data_dealloc_relay(umacd);
+    umac_relay_do_status_update(umacd, MMWLAN_STA_DISABLED);
     return MMWLAN_SUCCESS;
 }
 
@@ -218,6 +387,22 @@ uint8_t umac_relay_get_depth(struct umac_data *umacd)
 {
     struct umac_relay_data *data = umac_data_get_relay(umacd);
     return (data != NULL) ? data->depth : MMWLAN_RELAY_DEPTH_UNKNOWN;
+}
+
+static void relay_link_recovered(struct umac_data *umacd, struct umac_relay_data *data)
+{
+    MMLOG_DBG("Relay link recovered.\n");
+    umac_core_cancel_timeout(umacd, relay_root_lost_timeout, umacd, NULL);
+
+    if (has_relay_ap_registered(data) && !umac_ap_enabled(umacd))
+    {
+        enum mmwlan_status status = umac_relay_start_relay_ap(umacd, data);
+        if (status != MMWLAN_SUCCESS)
+        {
+            MMLOG_ERR("Relay AP start failed with code %d\n", status);
+            MMOSAL_ASSERT(0);
+        }
+    }
 }
 
 bool umac_relay_filter_scan_depth(struct umac_data *umacd, uint8_t *min, uint8_t *max)
@@ -249,6 +434,11 @@ void umac_relay_process_beacon_ies(struct umac_data *umacd, const uint8_t *ies, 
         return;
     }
 
+    if (umac_connection_get_state(umacd) != MMWLAN_STA_CONNECTED)
+    {
+        return;
+    }
+
     uint8_t parent_depth = 0;
 
     {
@@ -259,50 +449,62 @@ void umac_relay_process_beacon_ies(struct umac_data *umacd, const uint8_t *ies, 
         }
     }
 
-
     uint8_t new_depth = (parent_depth == MMWLAN_RELAY_DEPTH_UNKNOWN) ? MMWLAN_RELAY_DEPTH_UNKNOWN :
                                                                        (parent_depth + 1);
-    if (new_depth != data->depth)
+    if (new_depth == data->depth)
     {
-        if (new_depth == MMWLAN_RELAY_DEPTH_UNKNOWN)
+        return;
+    }
+
+    if (new_depth == MMWLAN_RELAY_DEPTH_UNKNOWN)
+    {
+        MMLOG_WRN("Parent relay indicates path to root broken\n");
+        data->recover_depth = data->depth;
+        struct mmwlan_vif_state vif_state = {
+            .vif = MMWLAN_VIF_STA,
+            .link_state = MMWLAN_LINK_DOWN,
+        };
+        umac_interface_invoke_vif_state_cb(umacd, &vif_state);
+        if (data->args.recovery_timeout_ms == 0 ||
+            !umac_core_register_timeout(umacd,
+                                        data->args.recovery_timeout_ms,
+                                        relay_root_lost_timeout,
+                                        umacd,
+                                        NULL))
         {
-            MMLOG_WRN("Parent relay indicates path to root broken\n");
-            data->recover_depth = data->depth;
-            struct mmwlan_vif_state vif_state = {
-                .vif = MMWLAN_VIF_STA,
-                .link_state = MMWLAN_LINK_DOWN,
-            };
-            umac_interface_invoke_vif_state_cb(umacd, &vif_state);
-
-        }
-        else
-        {
-            if (data->depth == MMWLAN_RELAY_DEPTH_UNKNOWN)
-            {
-                struct mmwlan_vif_state vif_state = {
-                    .vif = MMWLAN_VIF_STA,
-                    .link_state = MMWLAN_LINK_UP,
-                };
-                umac_interface_invoke_vif_state_cb(umacd, &vif_state);
-            }
-            uint8_t override_depth = umac_config_get_relay_depth_override(umacd);
-            MMOSAL_DEV_ASSERT(override_depth == 0 || new_depth == override_depth);
-            MMOSAL_DEV_ASSERT(new_depth <= data->recover_depth);
-            data->recover_depth = MMWLAN_RELAY_DEPTH_UNKNOWN;
-
-        }
-
-        MMLOG_INF("Relay depth updated to %u (parent depth %u)\n", new_depth, parent_depth);
-        data->depth = new_depth;
-
-
-        umac_ap_signal_beacon_critical_update(umacd);
-
-        if (data->depth_change_cb != NULL)
-        {
-            data->depth_change_cb(data->depth, data->depth_change_cb_arg);
+            relay_root_lost_timeout(umacd, NULL);
         }
     }
+    else
+    {
+        if (data->depth == MMWLAN_RELAY_DEPTH_UNKNOWN)
+        {
+            struct mmwlan_vif_state vif_state = {
+                .vif = MMWLAN_VIF_STA,
+                .link_state = MMWLAN_LINK_UP,
+            };
+            umac_interface_invoke_vif_state_cb(umacd, &vif_state);
+        }
+        uint8_t override_depth = umac_config_get_relay_depth_override(umacd);
+        if (override_depth && new_depth != override_depth)
+        {
+            MMLOG_WRN("New depth %d does not match override depth %d. Finding new parent\n",
+                      new_depth,
+                      override_depth);
+            umac_relay_refresh_connection(umacd);
+            return;
+        }
+        MMOSAL_DEV_ASSERT(new_depth <= data->recover_depth);
+        data->recover_depth = MMWLAN_RELAY_DEPTH_UNKNOWN;
+        relay_link_recovered(umacd, data);
+    }
+
+    MMLOG_INF("Relay depth updated to %u (parent depth %u)\n", new_depth, parent_depth);
+    data->depth = new_depth;
+
+    umac_ap_signal_beacon_critical_update(umacd);
+
+    umac_relay_do_status_update(umacd, umac_connection_get_state(umacd));
 }
 
 enum mmwlan_relay_state umac_relay_get_state(struct umac_data *umacd)
@@ -312,16 +514,11 @@ enum mmwlan_relay_state umac_relay_get_state(struct umac_data *umacd)
     {
         return MMWLAN_RELAY_STATE_DISABLED;
     }
-    if (data->args.is_root_node)
+    if (is_root(data))
     {
         return MMWLAN_RELAY_STATE_ROOT;
     }
-
-    if (umac_data_get_ap(umacd) != NULL)
-    {
-        return MMWLAN_RELAY_STATE_RELAY;
-    }
-    return MMWLAN_RELAY_STATE_STA;
+    return umac_ap_active(umacd) ? MMWLAN_RELAY_STATE_REPEATER : MMWLAN_RELAY_STATE_STA;
 }
 
 void umac_relay_process_data_frame(struct umac_sta_data *stad,
@@ -335,7 +532,6 @@ void umac_relay_process_data_frame(struct umac_sta_data *stad,
     struct umac_relay_data *data = umac_data_get_relay(umacd);
     if (data == NULL)
     {
-
         MMLOG_VRB("Relay not enabled\n");
         return;
     }
@@ -344,7 +540,6 @@ void umac_relay_process_data_frame(struct umac_sta_data *stad,
     struct umac_sta_data *sta_mode_stad = umac_connection_get_stad(umacd);
     if (sta_mode_stad != NULL && umac_interface_addr_matches_mac_addr(sta_mode_stad, da))
     {
-
         MMLOG_DBG("Packet destined for self -- do not relay\n");
         return;
     }
@@ -366,10 +561,8 @@ void umac_relay_process_data_frame(struct umac_sta_data *stad,
 
     if (is_multicast)
     {
-
-        if (rx_vif == MMWLAN_VIF_AP && !data->args.is_root_node)
+        if (rx_vif == MMWLAN_VIF_AP && !is_root(data))
         {
-
 
             if (sta_mode_stad != NULL)
             {
@@ -382,16 +575,13 @@ void umac_relay_process_data_frame(struct umac_sta_data *stad,
                 MMLOG_WRN("Do not know how to handle this %s frame. Dropping\n", "group addressed");
             }
 
-
             *_rxbufview = NULL;
         }
         else
         {
 
-
             sa = dot11_get_sa_data(data_hdr);
             vif_id = umac_interface_get_vif_id(umacd, UMAC_INTERFACE_AP);
-
 
             if (sta_mode_stad && umac_interface_addr_matches_mac_addr(sta_mode_stad, sa))
             {
@@ -402,11 +592,8 @@ void umac_relay_process_data_frame(struct umac_sta_data *stad,
     else
     {
 
-
-
-        if (rx_vif == MMWLAN_VIF_AP && !data->args.is_root_node)
+        if (rx_vif == MMWLAN_VIF_AP && !is_root(data))
         {
-
 
             if (sta_mode_stad != NULL)
             {
@@ -423,17 +610,14 @@ void umac_relay_process_data_frame(struct umac_sta_data *stad,
         else
         {
 
-
             sa = dot11_get_sa_data(data_hdr);
             vif_id = umac_interface_get_vif_id(umacd, UMAC_INTERFACE_AP);
 
             if (umac_ap_get_sta_status(umacd, da, NULL) == MMWLAN_SUCCESS)
             {
-
             }
             else
             {
-
                 struct umac_relay_table_entry *entry = umac_relay_table_lookup_by_da(data, da);
                 if (entry == NULL)
                 {
@@ -445,7 +629,6 @@ void umac_relay_process_data_frame(struct umac_sta_data *stad,
                 ra = entry->next_hop;
             }
         }
-
 
         *_rxbufview = NULL;
     }
@@ -473,12 +656,10 @@ void umac_relay_process_data_frame(struct umac_sta_data *stad,
                   rx_tid);
     }
 
-
     if (rx_tid > MMWLAN_MAX_QOS_TID)
     {
         rx_tid = MMWLAN_TX_DEFAULT_QOS_TID;
     }
-
 
     struct umac_8023_hdr *header_8023;
     struct mmpkt *txbuf =
@@ -541,7 +722,6 @@ static void umac_relay_process_reachable_address_update(
         {
             MMLOG_ERR("Out of space to append relay update\n");
 
-
             MMOSAL_DEV_ASSERT(false);
         }
     }
@@ -551,12 +731,11 @@ static void umac_relay_process_reachable_address_update(
         if (!removed)
         {
             MMLOG_DBG("No matching entry to remove\n");
-
             return;
         }
     }
 
-    if (!data->args.is_root_node)
+    if (!is_root(data))
     {
         schedule_update(umacd, data);
     }
@@ -617,7 +796,6 @@ static void umac_relay_process_s1g_reachable_address_update_frame(
             return;
         }
 
-
         ies_iter = (const uint8_t *)ie + sizeof(ie->header) + ie->header.length;
         umac_relay_process_s1g_reachable_address_ie(stad, ie);
     }
@@ -629,7 +807,6 @@ void umac_relay_process_s1g_action_frame(struct umac_sta_data *stad, struct mmpk
     struct umac_relay_data *data = umac_data_get_relay(umacd);
     if (data == NULL)
     {
-
         return;
     }
 
@@ -656,7 +833,6 @@ void umac_relay_handle_ap_sta_state(struct umac_sta_data *stad,
     struct umac_relay_data *data = umac_data_get_relay(umacd);
     if (data == NULL)
     {
-
         MMLOG_VRB("Relay not enabled. Ignoring AP STA state update\n");
         return;
     }
@@ -689,7 +865,6 @@ void umac_relay_handle_ack_status(struct umac_data *umacd, struct mmpkt *pkt, bo
     struct umac_relay_data *data = umac_data_get_relay(umacd);
     if (data == NULL)
     {
-
         return;
     }
 
@@ -701,7 +876,6 @@ void umac_relay_handle_ack_status(struct umac_data *umacd, struct mmpkt *pkt, bo
     if (valid_s1g_action_frame &&
         s1g_action.s1g_action == DOT11_S1G_ACTION_REACHABLE_ADDRESS_UPDATE)
     {
-
         if (frame_acked)
         {
             MMLOG_INF("Reachable Address Update ACKed\n");
@@ -709,7 +883,6 @@ void umac_relay_handle_ack_status(struct umac_data *umacd, struct mmpkt *pkt, bo
         }
         else
         {
-
             MMLOG_INF("Reachable Address Update not ACKed\n");
             schedule_update(umacd, data);
         }
@@ -725,14 +898,12 @@ void umac_relay_update_tx_metadata(struct umac_data *umacd,
     struct umac_relay_data *data = umac_data_get_relay(umacd);
     if (data == NULL)
     {
-
         MMLOG_VRB("Relay not enabled. Not updating TX metadata\n");
         return;
     }
 
     if (metadata->ra != NULL)
     {
-
         MMLOG_VRB("Not updating packet with RA\n");
         return;
     }
@@ -771,7 +942,6 @@ void umac_relay_update_tx_metadata(struct umac_data *umacd,
         goto done;
     }
 
-
     if (metadata->vif != MMWLAN_VIF_STA)
     {
         MMLOG_VRB("Rewriting VIF to TX packet via STA VIF\n");
@@ -786,62 +956,89 @@ void umac_relay_handle_sta_state(struct umac_data *umacd, enum mmwlan_sta_state 
     struct umac_relay_data *data = umac_data_get_relay(umacd);
     if (data == NULL)
     {
-
         MMLOG_VRB("Relay not enabled. Ignoring STA state update\n");
         return;
     }
 
-    if (state != MMWLAN_STA_CONNECTED)
+    if (state == MMWLAN_STA_CONNECTED)
     {
-
-        umac_relay_table_mark_entries_as_newly_added(data);
-
-
-        if (data->depth != MMWLAN_RELAY_DEPTH_UNKNOWN && umac_data_get_ap(umacd) != NULL)
-        {
-            data->recover_depth = data->depth;
-            data->depth = MMWLAN_RELAY_DEPTH_UNKNOWN;
-
-            if (data->depth_change_cb != NULL)
-            {
-                data->depth_change_cb(data->depth, data->depth_change_cb_arg);
-            }
-        }
-    }
-    else
-    {
-
         schedule_update(umacd, data);
-        if (!data->args.is_root_node)
+        relay_link_recovered(umacd, data);
+        umac_relay_do_status_update(umacd, state);
+        return;
+    }
+
+    umac_relay_table_mark_entries_as_newly_added(data);
+
+    if (data->depth == MMWLAN_RELAY_DEPTH_UNKNOWN)
+    {
+        umac_relay_do_status_update(umacd, state);
+        return;
+    }
+
+    if (umac_ap_active(umacd))
+    {
+        data->recover_depth = data->depth;
+
+        if (data->args.recovery_timeout_ms == 0 ||
+            !umac_core_register_timeout(umacd,
+                                        data->args.recovery_timeout_ms,
+                                        relay_root_lost_timeout,
+                                        umacd,
+                                        NULL))
         {
-            struct umac_sta_data *stad = umac_connection_get_stad(umacd);
-            if (stad == NULL)
-            {
-                MMLOG_WRN("STA State connected but connection has no STAD\n");
-                return;
-            }
-            MMLOG_INF("Sending 4addr QoS NULL for relay\n");
-            enum mmwlan_status status = umac_datapath_build_and_tx_4addr_qos_null_frame(stad);
-            if (status != MMWLAN_SUCCESS)
-            {
-                MMLOG_WRN("Failed to TX 4addr QoS NULL\n");
-            }
+            relay_root_lost_timeout(umacd, NULL);
         }
     }
+
+    data->depth = MMWLAN_RELAY_DEPTH_UNKNOWN;
+    umac_relay_do_status_update(umacd, state);
 }
 
-enum mmwlan_status umac_relay_register_depth_change_cb(struct umac_data *umacd,
-                                                       mmwlan_relay_depth_change_cb_t callback,
-                                                       void *arg)
+enum mmwlan_status umac_relay_add_relay_ap(struct umac_data *umacd,
+                                           const struct mmwlan_relay_ap_args *args)
 {
     struct umac_relay_data *data = umac_data_get_relay(umacd);
-    if (data == NULL)
+    if (data == NULL || is_root(data) || has_relay_ap_registered(data))
     {
         return MMWLAN_UNAVAILABLE;
     }
-    data->depth_change_cb = callback;
-    data->depth_change_cb_arg = arg;
-    return MMWLAN_SUCCESS;
+    MMOSAL_DEV_ASSERT(!umac_ap_enabled(umacd));
+
+    data->_relay_ap_args = *args;
+    data->args.relay_ap_args = &data->_relay_ap_args;
+
+    enum mmwlan_status status = MMWLAN_SUCCESS;
+    if (umac_connection_get_state(umacd) == MMWLAN_STA_CONNECTED)
+    {
+        status = umac_relay_start_relay_ap(umacd, data);
+    }
+    return status;
+}
+
+enum mmwlan_status umac_relay_remove_relay_ap(struct umac_data *umacd)
+{
+    struct umac_relay_data *data = umac_data_get_relay(umacd);
+    if (data == NULL || is_root(data))
+    {
+        return MMWLAN_UNAVAILABLE;
+    }
+
+    if (!has_relay_ap_registered(data))
+    {
+        return MMWLAN_SUCCESS;
+    }
+
+    enum mmwlan_status status = MMWLAN_SUCCESS;
+    if (umac_ap_enabled(umacd))
+    {
+        status = umac_relay_stop_relay_ap(umacd, data);
+    }
+
+    data->args.relay_ap_args = NULL;
+    memset(&data->_relay_ap_args, 0, sizeof(data->_relay_ap_args));
+
+    return status;
 }
 
 #endif

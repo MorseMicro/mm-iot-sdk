@@ -9,14 +9,10 @@
 #include "common/morse_error.h"
 #include "driver/transport/morse_transport.h"
 
-
 struct MM_PACKED coredump_assert_info
 {
-
     uint32_t hart;
-
     uint32_t line;
-
     char info[];
 };
 

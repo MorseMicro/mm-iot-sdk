@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.13.1</span>
+   &#160;<span id="projectnumber">2.14.3</span>
    </div>
   </td>
  </tr>
@@ -88,6 +88,8 @@ $(document).ready(function(){initNavTree('group__MMWLAN__TEST.html',''); initRes
 
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Data Structures</a> &#124;
+<a href="#define-members">Macros</a> &#124;
 <a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">WLAN Test (ATE) API<div class="ingroups"><a class="el" href="group__MMWLAN.html">Morse Micro Wireless LAN (mmwlan) API</a></div></div></div>
@@ -96,6 +98,21 @@ $(document).ready(function(){initNavTree('group__MMWLAN__TEST.html',''); initRes
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p >Extended API particularly intended for test use cases. </p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Data Structures</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmwlan__key__info.html">mmwlan_key_info</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Data structure representing a WLAN security key.  <a href="structmmwlan__key__info.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:gac626f815c545c4406b3344bab87b3959"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__TEST.html#gac626f815c545c4406b3344bab87b3959">MMWLAN_MAX_KEYLEN</a>&#160;&#160;&#160;(32)</td></tr>
+<tr class="memdesc:gac626f815c545c4406b3344bab87b3959"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum length of a key in <a class="el" href="structmmwlan__key__info.html">mmwlan_key_info</a>.  <a href="group__MMWLAN__TEST.html#gac626f815c545c4406b3344bab87b3959">More...</a><br /></td></tr>
+<tr class="separator:gac626f815c545c4406b3344bab87b3959"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gadc590534336c2f8b88347620e2f07b39"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__TEST.html#gadc590534336c2f8b88347620e2f07b39">MMWLAN_MAX_KEYS</a>&#160;&#160;&#160;(6)</td></tr>
+<tr class="memdesc:gadc590534336c2f8b88347620e2f07b39"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum number of keys that can be returned from <a class="el" href="group__MMWLAN__TEST.html#gab1047d714a9be32e6e0b3c046e028ed8">mmwlan_ate_get_key_info()</a>.  <a href="group__MMWLAN__TEST.html#gadc590534336c2f8b88347620e2f07b39">More...</a><br /></td></tr>
+<tr class="separator:gadc590534336c2f8b88347620e2f07b39"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
 <tr class="memitem:ga717653d3f72f5265b2c583db54f9f7ba"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__TEST.html#ga717653d3f72f5265b2c583db54f9f7ba">mmwlan_mcs</a> { <br />
@@ -136,6 +153,12 @@ Enumerations</h2></td></tr>
  }</td></tr>
 <tr class="memdesc:gae62b87e13dc335adf2dfbbf1832244df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enumeration of guard intervals.  <a href="group__MMWLAN__TEST.html#gae62b87e13dc335adf2dfbbf1832244df">More...</a><br /></td></tr>
 <tr class="separator:gae62b87e13dc335adf2dfbbf1832244df"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga31e1d8f5d50c4a7481eaba5bf0c5802c"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__TEST.html#ga31e1d8f5d50c4a7481eaba5bf0c5802c">mmwlan_key_type</a> { <a class="el" href="group__MMWLAN__TEST.html#gga31e1d8f5d50c4a7481eaba5bf0c5802ca5341a117ef1b52e00323c9ffa3a3b564">MMWLAN_KEY_TYPE_PAIRWISE</a>
+, <a class="el" href="group__MMWLAN__TEST.html#gga31e1d8f5d50c4a7481eaba5bf0c5802ca4df95893b249c27fbdc53d5125ed9e59">MMWLAN_KEY_TYPE_GROUP</a>
+, <a class="el" href="group__MMWLAN__TEST.html#gga31e1d8f5d50c4a7481eaba5bf0c5802cacd6d47e8665dfddd03c5549152720276">MMWLAN_KEY_TYPE_IGTK</a>
+ }</td></tr>
+<tr class="memdesc:ga31e1d8f5d50c4a7481eaba5bf0c5802c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enumeration of key types supported by <a class="el" href="structmmwlan__key__info.html">mmwlan_key_info</a>.  <a href="group__MMWLAN__TEST.html#ga31e1d8f5d50c4a7481eaba5bf0c5802c">More...</a><br /></td></tr>
+<tr class="separator:ga31e1d8f5d50c4a7481eaba5bf0c5802c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -145,7 +168,47 @@ Functions</h2></td></tr>
 <tr class="memitem:ga9c6f77ec164d316302624fa08af7e692"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__TEST.html#ga9c6f77ec164d316302624fa08af7e692">mmwlan_ate_execute_command</a> (uint8_t *command, uint32_t command_len, uint8_t *response, uint32_t *response_len)</td></tr>
 <tr class="memdesc:ga9c6f77ec164d316302624fa08af7e692"><td class="mdescLeft">&#160;</td><td class="mdescRight">Execute a test/debug command.  <a href="group__MMWLAN__TEST.html#ga9c6f77ec164d316302624fa08af7e692">More...</a><br /></td></tr>
 <tr class="separator:ga9c6f77ec164d316302624fa08af7e692"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab1047d714a9be32e6e0b3c046e028ed8"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMWLAN__TEST.html#gab1047d714a9be32e6e0b3c046e028ed8">mmwlan_ate_get_key_info</a> (struct <a class="el" href="structmmwlan__key__info.html">mmwlan_key_info</a> *key_info, uint32_t *key_info_count)</td></tr>
+<tr class="memdesc:gab1047d714a9be32e6e0b3c046e028ed8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read WLAN security keys from the device.  <a href="group__MMWLAN__TEST.html#gab1047d714a9be32e6e0b3c046e028ed8">More...</a><br /></td></tr>
+<tr class="separator:gab1047d714a9be32e6e0b3c046e028ed8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="gac626f815c545c4406b3344bab87b3959" name="gac626f815c545c4406b3344bab87b3959"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gac626f815c545c4406b3344bab87b3959">&#9670;&nbsp;</a></span>MMWLAN_MAX_KEYLEN</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define MMWLAN_MAX_KEYLEN&#160;&#160;&#160;(32)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Maximum length of a key in <a class="el" href="structmmwlan__key__info.html">mmwlan_key_info</a>. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l03456">3456</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+
+</div>
+</div>
+<a id="gadc590534336c2f8b88347620e2f07b39" name="gadc590534336c2f8b88347620e2f07b39"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gadc590534336c2f8b88347620e2f07b39">&#9670;&nbsp;</a></span>MMWLAN_MAX_KEYS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define MMWLAN_MAX_KEYS&#160;&#160;&#160;(6)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Maximum number of keys that can be returned from <a class="el" href="group__MMWLAN__TEST.html#gab1047d714a9be32e6e0b3c046e028ed8">mmwlan_ate_get_key_info()</a>. </p>
+
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l03458">3458</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+
+</div>
+</div>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
 <a id="gab18ca3f793c4121c722767a653ede2f8" name="gab18ca3f793c4121c722767a653ede2f8"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#gab18ca3f793c4121c722767a653ede2f8">&#9670;&nbsp;</a></span>mmwlan_bw</h2>
@@ -175,7 +238,7 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l03236">3236</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l03428">3428</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -203,7 +266,33 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l03247">3247</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l03439">3439</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+
+</div>
+</div>
+<a id="ga31e1d8f5d50c4a7481eaba5bf0c5802c" name="ga31e1d8f5d50c4a7481eaba5bf0c5802c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga31e1d8f5d50c4a7481eaba5bf0c5802c">&#9670;&nbsp;</a></span>mmwlan_key_type</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__MMWLAN__TEST.html#ga31e1d8f5d50c4a7481eaba5bf0c5802c">mmwlan_key_type</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Enumeration of key types supported by <a class="el" href="structmmwlan__key__info.html">mmwlan_key_info</a>. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="gga31e1d8f5d50c4a7481eaba5bf0c5802ca5341a117ef1b52e00323c9ffa3a3b564" name="gga31e1d8f5d50c4a7481eaba5bf0c5802ca5341a117ef1b52e00323c9ffa3a3b564"></a>MMWLAN_KEY_TYPE_PAIRWISE&#160;</td><td class="fielddoc"><p >Pairwise key. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga31e1d8f5d50c4a7481eaba5bf0c5802ca4df95893b249c27fbdc53d5125ed9e59" name="gga31e1d8f5d50c4a7481eaba5bf0c5802ca4df95893b249c27fbdc53d5125ed9e59"></a>MMWLAN_KEY_TYPE_GROUP&#160;</td><td class="fielddoc"><p >Group key. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga31e1d8f5d50c4a7481eaba5bf0c5802cacd6d47e8665dfddd03c5549152720276" name="gga31e1d8f5d50c4a7481eaba5bf0c5802cacd6d47e8665dfddd03c5549152720276"></a>MMWLAN_KEY_TYPE_IGTK&#160;</td><td class="fielddoc"><p >Integrity group key for protected management frames. </p>
+</td></tr>
+</table>
+
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l03448">3448</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -247,7 +336,7 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l03219">3219</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l03411">3411</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -305,6 +394,45 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="gab1047d714a9be32e6e0b3c046e028ed8" name="gab1047d714a9be32e6e0b3c046e028ed8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gab1047d714a9be32e6e0b3c046e028ed8">&#9670;&nbsp;</a></span>mmwlan_ate_get_key_info()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a> mmwlan_ate_get_key_info </td>
+          <td>(</td>
+          <td class="paramtype">struct <a class="el" href="structmmwlan__key__info.html">mmwlan_key_info</a> *&#160;</td>
+          <td class="paramname"><em>key_info</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t *&#160;</td>
+          <td class="paramname"><em>key_info_count</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Read WLAN security keys from the device. </p>
+<p >This is generally used for decrypting sniffer traces. This should not be used in production as it is a security risk.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[out]</td><td class="paramname">key_info</td><td>Array of <a class="el" href="structmmwlan__key__info.html" title="Data structure representing a WLAN security key.">mmwlan_key_info</a> structs to receive the key information. </td></tr>
+    <tr><td class="paramdir"></td><td class="paramname">key_info_count</td><td>Pointer to an integer that is initialized to the number of slots in the <code>key_info</code> array when the function is invoked. On successful return this will be updated to the number of actual keys that were written to <code>key_info</code>.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><code>MMWLAN_SUCCESS</code> on success, or an error code. </dd></dl>
+
+</div>
+</div>
 <a id="ga6c83c17957242ee0f1cd41de51083de0" name="ga6c83c17957242ee0f1cd41de51083de0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga6c83c17957242ee0f1cd41de51083de0">&#9670;&nbsp;</a></span>mmwlan_ate_override_rate_control()</h2>
 
@@ -356,7 +484,7 @@ Functions</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Copyright 2021-2025 Morse Micro </li>
+    <li class="footer">Copyright 2021-2026 Morse Micro </li>
   </ul>
 </div>
 </body>

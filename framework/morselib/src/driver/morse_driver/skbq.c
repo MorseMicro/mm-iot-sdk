@@ -34,21 +34,19 @@ static mmtrace_channel skbq_channel_handle;
     } while (0)
 #endif
 
-
 #define DATA_FRAME_CHECKSUM_DATA_LEN (40)
 MM_STATIC_ASSERT(DATA_FRAME_CHECKSUM_DATA_LEN == sizeof(struct dot11_data_hdr) +
                                                      sizeof(struct dot11_qos_ctrl) +
                                                      DOT11_CCMP_HEADER_LEN,
                  "Firmware expectation");
 
-
 #define TX_STATUS_LIFETIME_MS (15 * 1000)
-
 
 #define SKBQ_POP_TIMEOUT_THRESHOLD_MS (5 * 1000)
 MM_STATIC_ASSERT(SKBQ_POP_TIMEOUT_THRESHOLD_MS < TX_STATUS_LIFETIME_MS, "");
 
-static int __skbq_data_tx_finish(struct mmpkt_list *skbq,
+static int __skbq_data_tx_finish(struct driver_data *driverd,
+                                 struct mmpkt_list *skbq,
                                  struct mmpkt *mmpkt,
                                  struct morse_skb_tx_status *tx_status);
 
@@ -114,16 +112,13 @@ static void insert_pending_mmpkt_to_skbq(struct morse_skbq *mq,
     struct morse_buff_skb_header *mhdr;
     struct mmpkt *tail = mmpkt_list_peek_tail(&mq->skbq);
 
-
     mmpkt_list_remove(&mq->pending, mmpkt);
 
     if (tail == NULL)
     {
-
         mmpkt_list_append(&mq->skbq, mmpkt);
         return;
     }
-
 
     view = mmpkt_open(tail);
     mhdr = (struct morse_buff_skb_header *)mmpkt_get_data_start(view);
@@ -136,7 +131,6 @@ static void insert_pending_mmpkt_to_skbq(struct morse_skbq *mq,
         return;
     }
 
-
     MMPKT_LIST_WALK(&mq->skbq, pfirst, pnext)
     {
         view = mmpkt_open(pfirst);
@@ -146,12 +140,10 @@ static void insert_pending_mmpkt_to_skbq(struct morse_skbq *mq,
         MORSE_WARN_ON(insertion_id == pkt_id);
         if (insertion_id <= pkt_id)
         {
-
             mmpkt_list_prepend(&mq->skbq, mmpkt);
             return;
         }
     }
-
 
     MMOSAL_ASSERT(false);
 }
@@ -163,11 +155,9 @@ static bool tx_mmpkt_is_ps_filtered(struct morse_skbq *mq,
     uint32_t tx_sts_flags = le32toh(tx_sts->flags);
     MMOSAL_ASSERT((tx_sts_flags & MORSE_TX_STATUS_FLAGS_PS_FILTERED));
 
-
     if (false)
     {
-
-        __skbq_data_tx_finish(&mq->pending, mmpkt, NULL);
+        __skbq_data_tx_finish(mq->driverd, &mq->pending, mmpkt, NULL);
         MMLOG_INF("Dropping SKB as ps filter not supported\n");
         return true;
     }
@@ -175,11 +165,9 @@ static bool tx_mmpkt_is_ps_filtered(struct morse_skbq *mq,
     MMOSAL_ASSERT(tx_sts->channel == MORSE_SKB_CHAN_DATA || tx_sts->channel == MORSE_SKB_CHAN_MGMT);
     MMOSAL_ASSERT((mq->flags & MORSE_CHIP_IF_FLAGS_DATA));
 
-
     insert_pending_mmpkt_to_skbq(mq, mmpkt, tx_sts->pkt_id);
     return true;
 }
-
 
 static void morse_skb_remove_padding_after_sent_to_chip(struct mmpktview *view)
 {
@@ -230,8 +218,7 @@ static void morse_skbq_tx_status_process(struct driver_data *driverd,
 
         if (tx_sts_flags & MORSE_TX_STATUS_PAGE_INVALID)
         {
-
-            __skbq_data_tx_finish(&mq->pending, tx_mmpkt, NULL);
+            __skbq_data_tx_finish(mq->driverd, &mq->pending, tx_mmpkt, NULL);
             MMLOG_WRN("Page was invalid");
             spin_unlock(&mq->lock);
             continue;
@@ -239,7 +226,6 @@ static void morse_skbq_tx_status_process(struct driver_data *driverd,
 
         if (is_ps_filtered && tx_mmpkt_is_ps_filtered(mq, tx_mmpkt, tx_sts))
         {
-
             spin_unlock(&mq->lock);
             continue;
         }
@@ -257,7 +243,6 @@ static void morse_skbq_tx_status_process(struct driver_data *driverd,
 
     if (!driverd->ps.suspended && (driverd->cfg->ops->skbq_get_tx_buffered_count(driverd) == 0))
     {
-
         driver_task_notify_event(driverd, DRV_EVT_PS_DELAYED_EVAL_PEND);
     }
 }
@@ -265,7 +250,6 @@ static void morse_skbq_tx_status_process(struct driver_data *driverd,
 void morse_skbq_process_rx(struct driver_data *driverd, struct mmpkt *mmpkt)
 {
     struct mmpktview *view = mmpkt_open(mmpkt);
-
     struct morse_buff_skb_header *hdr =
         (struct morse_buff_skb_header *)mmpkt_remove_from_start(view, sizeof(*hdr));
     uint8_t channel = hdr->channel;
@@ -273,7 +257,6 @@ void morse_skbq_process_rx(struct driver_data *driverd, struct mmpkt *mmpkt)
     if (channel == MORSE_SKB_CHAN_COMMAND)
     {
         SKBQ_TRACE("rx cmd chan");
-
         mmpkt_close(&view);
         morse_cmd_resp_process(driverd, mmpkt, channel);
     }
@@ -305,7 +288,6 @@ void morse_skbq_process_rx(struct driver_data *driverd, struct mmpkt *mmpkt)
         mmdrv_host_process_rx_frame(mmpkt, channel);
     }
 }
-
 
 int morse_skbq_purge(struct morse_skbq *mq, struct mmpkt_list *skbq)
 {
@@ -341,10 +323,8 @@ int morse_skbq_drop_stale_pkts(struct morse_skbq *mq)
     return count;
 }
 
-
 int morse_skbq_deq_num_items(struct morse_skbq *mq, struct mmpkt_list *skbq, int num_items)
 {
-
     morse_skbq_drop_stale_pkts(mq);
 
     spin_lock(&mq->lock);
@@ -352,7 +332,6 @@ int morse_skbq_deq_num_items(struct morse_skbq *mq, struct mmpkt_list *skbq, int
     spin_unlock(&mq->lock);
     return count;
 }
-
 
 static int morse_skbq_tx(struct morse_skbq *mq, struct mmpkt *mmpkt, uint8_t channel)
 {
@@ -409,7 +388,6 @@ int morse_skbq_tx_complete(struct morse_skbq *mq, struct mmpkt_list *skbq)
         return 0;
     }
 
-
     spin_lock(&mq->lock);
     mmpkt_list_append_list(&mq->pending, skbq);
     spin_unlock(&mq->lock);
@@ -424,7 +402,6 @@ int morse_skbq_tx_complete(struct morse_skbq *mq, struct mmpkt_list *skbq)
     return 0;
 }
 
-
 struct mmpkt *morse_skbq_tx_pending(struct morse_skbq *mq)
 {
     struct mmpkt *pfirst;
@@ -435,12 +412,10 @@ struct mmpkt *morse_skbq_tx_pending(struct morse_skbq *mq)
     return pfirst;
 }
 
-
 static struct mmpkt *__skbq_get_pending_by_id(struct morse_skbq *mq, uint32_t pkt_id)
 {
     struct mmpkt *pfirst, *pnext;
     struct mmpkt *ret = NULL;
-
     MMPKT_LIST_WALK(&mq->pending, pfirst, pnext)
     {
         struct mmpktview *view = mmpkt_open(pfirst);
@@ -458,13 +433,12 @@ static struct mmpkt *__skbq_get_pending_by_id(struct morse_skbq *mq, uint32_t pk
         {
             if (mmosal_time_has_passed(get_timeout_from_tx_mmpkt(pfirst)))
             {
-
                 MMLOG_WRN("TX SKB timed out [id:%lu,chan:%u] while searching for pkt_id %lu\n",
                           cur_pkt_id,
                           channel,
                           pkt_id);
                 mmdrv_host_stats_increment_datapath_driver_tx_pending_status_timeout();
-                __skbq_data_tx_finish(&mq->pending, pfirst, NULL);
+                __skbq_data_tx_finish(mq->driverd, &mq->pending, pfirst, NULL);
             }
         }
     }
@@ -483,7 +457,6 @@ int morse_skbq_check_for_stale_tx(struct morse_skbq *mq)
         return 0;
     }
 
-
     spin_lock(&mq->lock);
     MMPKT_LIST_WALK(&mq->pending, pfirst, pnext)
     {
@@ -498,7 +471,7 @@ int morse_skbq_check_for_stale_tx(struct morse_skbq *mq)
             MMLOG_WRN("%s: TX SKB timed out [id:%lu,chan:%u]\n", __func__, pkt_id, channel);
             SKBQ_TRACE("skbq stale tx %x", pfirst);
             mmdrv_host_stats_increment_datapath_driver_tx_pending_status_timeout();
-            __skbq_data_tx_finish(&mq->pending, pfirst, NULL);
+            __skbq_data_tx_finish(mq->driverd, &mq->pending, pfirst, NULL);
             flushed++;
         }
     }
@@ -506,7 +479,6 @@ int morse_skbq_check_for_stale_tx(struct morse_skbq *mq)
 
     return flushed;
 }
-
 
 static int __skbq_cmd_finish(struct morse_skbq *mq, struct mmpkt *mmpkt)
 {
@@ -517,7 +489,6 @@ static int __skbq_cmd_finish(struct morse_skbq *mq, struct mmpkt *mmpkt)
     }
     else if (mq->skbq.len > 0)
     {
-
         MMLOG_INF("Command pending queue empty. Removing from SKBQ.\n");
         mmpkt_list_remove(&mq->skbq, mmpkt);
         mmpkt_release(mmpkt);
@@ -530,8 +501,8 @@ static int __skbq_cmd_finish(struct morse_skbq *mq, struct mmpkt *mmpkt)
     return 0;
 }
 
-
-static int __skbq_data_tx_finish(struct mmpkt_list *skbq,
+static int __skbq_data_tx_finish(struct driver_data *driverd,
+                                 struct mmpkt_list *skbq,
                                  struct mmpkt *mmpkt,
                                  struct morse_skb_tx_status *tx_sts)
 {
@@ -541,7 +512,6 @@ static int __skbq_data_tx_finish(struct mmpkt_list *skbq,
 
     if (tx_sts && tx_sts->channel == MORSE_SKB_CHAN_BEACON)
     {
-
         mmpkt_release(mmpkt);
         return 0;
     }
@@ -551,17 +521,26 @@ static int __skbq_data_tx_finish(struct mmpkt_list *skbq,
         unsigned ii;
         uint32_t tx_sts_flags = le32toh(tx_sts->flags);
 
-
         tx_metadata->attempts = 0;
         for (ii = 0; ii < sizeof(tx_sts->rates) / sizeof(tx_sts->rates[0]); ii++)
         {
-
             tx_metadata->rc_data.rates[ii].attempts = tx_sts->rates[ii].count;
             if (tx_sts->rates[ii].count == 0)
             {
                 break;
             }
             tx_metadata->attempts += tx_sts->rates[ii].count;
+        }
+
+        if (driverd->ampdu_feedback_enabled)
+        {
+            tx_metadata->was_ampdu = tx_sts->was_ampdu;
+            tx_metadata->no_blockack = tx_sts->no_blockack;
+        }
+        else
+        {
+            tx_metadata->was_ampdu = 0;
+            tx_metadata->no_blockack = 0;
         }
 
         tx_metadata->status_flags =
@@ -584,7 +563,6 @@ static int __skbq_data_tx_finish(struct mmpkt_list *skbq,
     return 0;
 }
 
-
 int morse_skbq_tx_finish(struct morse_skbq *mq,
                          struct mmpkt *mmpkt,
                          struct morse_skb_tx_status *tx_sts)
@@ -599,7 +577,7 @@ int morse_skbq_tx_finish(struct morse_skbq *mq,
     }
     else
     {
-        ret_sts = __skbq_data_tx_finish(&mq->pending, mmpkt, tx_sts);
+        ret_sts = __skbq_data_tx_finish(mq->driverd, &mq->pending, mmpkt, tx_sts);
     }
 
     return ret_sts;
@@ -652,7 +630,6 @@ void morse_skbq_finish(struct morse_skbq *mq)
     {
         MMLOG_WRN("Purging a non empty MorseQ. Dropping data!\n");
     }
-
     morse_skbq_purge(mq, &mq->skbq);
     morse_skbq_purge(mq, &mq->pending);
 }
@@ -689,7 +666,6 @@ struct mmpkt *morse_skbq_alloc_mmpkt_for_cmd(uint32_t length)
         FAST_ROUND_UP(length, MORSE_PKT_WORD_ALIGN),
         sizeof(struct mmdrv_tx_metadata));
 }
-
 
 static void convert_tx_metadata_to_tx_info(struct morse_skb_tx_info *tx_info,
                                            const struct mmdrv_tx_metadata *tx_metadata)
@@ -776,7 +752,6 @@ static void morse_skbq_ensure_word_alignment(struct mmpktview *view,
         mmpkt_prepend(view, offset);
     }
 
-
     mmpkt_data_len = (uint32_t)mmpkt_get_data_length(view);
     tail_pad = FAST_ROUND_UP(mmpkt_data_len, 4) - mmpkt_data_len;
 
@@ -813,11 +788,9 @@ int morse_skbq_mmpkt_tx(struct morse_skbq *mq, struct mmpkt *mmpkt, uint8_t chan
     unaligned_hdr = (struct morse_buff_skb_header *)mmpkt_prepend(view, sizeof(*hdr));
     MMOSAL_ASSERT(unaligned_hdr != NULL);
 
-
     memset(unaligned_hdr, 0, sizeof(*unaligned_hdr));
 
     morse_skbq_ensure_word_alignment(view, tx_metadata);
-
 
     hdr = (struct morse_buff_skb_header *)mmpkt_get_data_start(view);
     offset = (const uint8_t *)unaligned_hdr - (const uint8_t *)hdr;
@@ -851,14 +824,12 @@ void morse_skbq_data_traffic_pause(struct driver_data *driverd)
 {
     atomic_set_bit(MORSE_STATE_FLAG_DATA_TX_STOPPED,
                    (volatile atomic_ulong *)&driverd->state_flags);
-
 }
 
 void morse_skbq_data_traffic_resume(struct driver_data *driverd)
 {
     atomic_test_and_clear_bit(MORSE_STATE_FLAG_DATA_TX_STOPPED,
                               (volatile atomic_ulong *)&driverd->state_flags);
-
 
     driver_task_notify_event(driverd, DRV_EVT_TX_DATA_PEND);
 }
@@ -874,19 +845,16 @@ bool morse_validate_skb_checksum(uint8_t *data)
     int i;
 
 
-
     if (skb_hdr->channel == MORSE_SKB_CHAN_DATA)
     {
         const struct dot11_hdr *hdr = (struct dot11_hdr *)(data + sizeof(*skb_hdr));
         const uint16_t ver = dot11_frame_control_get_protocol_version(hdr->frame_control);
         const uint16_t type = dot11_frame_control_get_type(hdr->frame_control);
 
-
         if (ver == 0 && type == DOT11_FC_TYPE_DATA)
         {
             uint16_t data_len = sizeof(*skb_hdr) + DATA_FRAME_CHECKSUM_DATA_LEN;
             len = min_u16(len, data_len);
-
             len = len & 0xfffffffc;
         }
     }

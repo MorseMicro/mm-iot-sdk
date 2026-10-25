@@ -68,7 +68,6 @@ int morse_pager_irq_handler(struct driver_data *driverd, uint32_t status)
     bool is_tx_status_bypass = false;
     bool is_cmd_resp_bypass = false;
 
-
     uint32_t raw_status = status;
     status &= enabled_irqs;
 
@@ -77,7 +76,6 @@ int morse_pager_irq_handler(struct driver_data *driverd, uint32_t status)
         MMLOG_WRN("Handler called with no enabled irqs to process RAW_IRQ:0x%x, EN_IRQ:0x%x\n",
                   raw_status,
                   enabled_irqs);
-
         return 0;
     }
 
@@ -99,7 +97,6 @@ int morse_pager_irq_handler(struct driver_data *driverd, uint32_t status)
             tx_buffer_return_pend |= true;
         }
     }
-
 
     is_tx_status_bypass = status & MORSE_PAGER_IRQ_BYPASS_TX_STATUS_AVAILABLE;
     is_cmd_resp_bypass = status & MORSE_PAGER_IRQ_BYPASS_CMD_RESP_AVAILABLE;
@@ -125,7 +122,6 @@ int morse_pager_irq_handler(struct driver_data *driverd, uint32_t status)
                 MMLOG_ERR("Dropped TX status bypass page\n");
                 MMOSAL_DEV_ASSERT(0);
             }
-
             rx_pend |= true;
         }
     }
@@ -151,7 +147,6 @@ int morse_pager_irq_handler(struct driver_data *driverd, uint32_t status)
                 MMLOG_ERR("Dropped cmd resp bypass page\n");
                 MMOSAL_DEV_ASSERT(0);
             }
-
             rx_pend |= true;
         }
     }

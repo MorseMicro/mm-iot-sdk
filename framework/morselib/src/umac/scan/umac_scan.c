@@ -90,7 +90,6 @@ void umac_scan_handle_hw_restarted(struct umac_data *umacd)
 
     if (data->active_scan_req != NULL)
     {
-
         umac_scan_hw_scan_done(umacd, MMWLAN_SCAN_TERMINATED);
     }
 }
@@ -100,7 +99,6 @@ bool umac_scan_has_scan_req(struct umac_data *umacd)
     struct umac_scan_data *data = umac_data_get_scan(umacd);
     return data->active_scan_req || data->pending_scan_req;
 }
-
 
 static void umac_req_scan_evt_handler(struct umac_data *umacd, const struct umac_evt *evt)
 {
@@ -120,12 +118,10 @@ static void umac_req_scan_evt_handler(struct umac_data *umacd, const struct umac
     {
         data->pending_scan_req = scan_req;
         MMLOG_INF("Scan request: already queued\n");
-
         return;
     }
     else
     {
-
         MMLOG_WRN("Scan request: cannot accept\n");
         scan_req->complete_cb(umacd, MMWLAN_SCAN_TERMINATED);
         return;
@@ -151,7 +147,6 @@ enum mmwlan_status umac_scan_queue_request(struct umac_data *umacd, struct umac_
 void umac_scan_hw_scan_done(struct umac_data *umacd, enum mmwlan_scan_state state)
 {
     struct umac_scan_data *data = umac_data_get_scan(umacd);
-
 
     switch (state)
     {

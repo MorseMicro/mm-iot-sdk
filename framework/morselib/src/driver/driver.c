@@ -37,12 +37,9 @@ static mmtrace_channel drv_channel_handle;
     } while (0)
 #endif
 
-
 SPINLOCK_TRACE_DECLARE
 
-
 static struct driver_data driver_data;
-
 
 extern bool morse_caps_supported(const struct morse_caps *caps, enum morse_caps_flags flag);
 
@@ -103,7 +100,6 @@ static int morse_stale_tx_status_timer_finish(struct driver_data *driverd)
     return 0;
 }
 
-
 static enum mmwlan_status mmdrv_fetch_fw_version(struct driver_data *driverd,
                                                  struct mmdrv_fw_version *fw_version)
 {
@@ -113,12 +109,10 @@ static enum mmwlan_status mmdrv_fetch_fw_version(struct driver_data *driverd,
     int minor;
     int patch;
 
-
     size_t max_version_resp_size =
         sizeof(struct morse_cmd_resp_get_version) +
         (sizeof(((struct morse_cmd_resp_get_version *)0)->version[0]) * MORSE_CMD_MAX_VERSION_LEN +
          1);
-
 
     struct morse_cmd_resp_get_version *resp =
         (struct morse_cmd_resp_get_version *)mmosal_malloc(max_version_resp_size);
@@ -177,7 +171,6 @@ static enum mmwlan_status mmdrv_fetch_fw_version(struct driver_data *driverd,
 
     return MMWLAN_SUCCESS;
 }
-
 
 static bool mmdrv_valid_fw_flags(uint32_t firmware_flags)
 {
@@ -242,13 +235,7 @@ enum mmwlan_status mmdrv_init(struct mmdrv_chip_info *chip_info, const char *cou
         goto error_transport;
     }
 
-    if (driver_data.cfg->enable_sdio_burst_mode)
-    {
-        driver_data.cfg->enable_sdio_burst_mode(&driver_data);
-    }
-
     MMLOG_DBG("Transport initialised\n");
-
 
     if (chip_info != NULL)
     {
@@ -269,6 +256,10 @@ enum mmwlan_status mmdrv_init(struct mmdrv_chip_info *chip_info, const char *cou
         goto error_firmware;
     }
 
+    if (driver_data.cfg->enable_sdio_burst_mode)
+    {
+        (void)driver_data.cfg->enable_sdio_burst_mode(&driver_data);
+    }
     MMLOG_DBG("Firmware downloaded/booted\n");
 
     status = errno_to_status(driver_data.cfg->ops->init(&driver_data));
@@ -312,10 +303,8 @@ enum mmwlan_status mmdrv_init(struct mmdrv_chip_info *chip_info, const char *cou
     status = errno_to_status(morse_cmd_init(&driver_data));
     if (status != MMWLAN_SUCCESS)
     {
-
         goto error_cmd;
     }
-
 
     status = errno_to_status(morse_ps_init(&driver_data));
     if (status != MMWLAN_SUCCESS)
@@ -384,7 +373,6 @@ void mmdrv_deinit(void)
 
     DRV_TRACE("deinit");
 
-
     MMOSAL_ASSERT(driver_data.started);
 
     driver_data.started = false;
@@ -414,6 +402,19 @@ void mmdrv_deinit(void)
 enum mmwlan_status mmdrv_get_bcf_metadata(struct mmwlan_bcf_metadata *metadata)
 {
     return errno_to_status(morse_bcf_get_metadata(metadata));
+}
+
+void mmdrv_enable_ampdu_feedback()
+{
+    enum mmwlan_status status =
+        mmdrv_set_param(MMDRV_VIF_ID_INVALID, MORSE_PARAM_ID_AMPDU_FEEDBACK, true);
+    struct driver_data *driverd = &driver_data;
+
+    driverd->ampdu_feedback_enabled = (status == MMWLAN_SUCCESS);
+    if (status != MMWLAN_SUCCESS)
+    {
+        MMLOG_DBG("Individual aggregation statistics are not supported by firmware\n");
+    }
 }
 
 enum mmwlan_status mmdrv_set_param(uint16_t vif_id, enum morse_param_id param_id, uint32_t value)
@@ -473,7 +474,6 @@ enum mmwlan_status mmdrv_get_duty_cycle(struct mmwlan_duty_cycle_stats *stats)
 
     struct MM_PACKED
     {
-
         struct morse_cmd_header hdr;
     } cmd = MORSE_COMMAND_INIT(cmd, MORSE_CMD_ID_GET_DUTY_CYCLE, MMDRV_VIF_ID_INVALID);
     struct morse_cmd_resp_get_duty_cycle resp = { 0 };
@@ -496,7 +496,6 @@ enum mmwlan_status mmdrv_get_duty_cycle(struct mmwlan_duty_cycle_stats *stats)
         ((resp.config_ext.airtime_remaining_us || resp.config_ext.burst_window_duration_us) &&
          (resp.config_ext.set.mode != MORSE_CMD_DUTY_CYCLE_MODE_BURST)))
     {
-
         return MMWLAN_ERROR;
     }
 
@@ -513,7 +512,6 @@ enum mmwlan_status mmdrv_set_txpower(int32_t *out_power_dbm, int txpower_dbm)
     struct morse_cmd_resp_set_txpower resp;
     struct morse_cmd_req_set_txpower cmd =
         MORSE_COMMAND_INIT(cmd, MORSE_CMD_ID_SET_TXPOWER, MMDRV_VIF_ID_INVALID);
-
 
     if (txpower_dbm > 30)
     {
@@ -729,7 +727,6 @@ enum mmwlan_status mmdrv_set_channel(uint32_t op_chan_freq_hz,
                            .dot11_mode = MORSE_CMD_DOT11_PROTO_MODE_AH,
                            .is_off_channel = is_off_channel);
 
-
     ret = morse_cmd_tx(&driver_data,
                        (struct morse_cmd_resp *)&resp,
                        (struct morse_cmd_req *)&cmd,
@@ -758,7 +755,6 @@ enum mmwlan_status mmdrv_set_channel(uint32_t op_chan_freq_hz,
 
         if (fw_status == MORSE_EPERM)
         {
-
             return MMWLAN_CHANNEL_INVALID;
         }
 
@@ -980,7 +976,6 @@ enum mmwlan_status mmdrv_install_key(uint16_t vif_id, uint16_t aid, struct mmdrv
     key_conf->key_idx = resp.key_idx;
     MMLOG_DBG("%s Installed key @ hw index: %d\n", __func__, resp.key_idx);
 
-
     MMOSAL_ASSERT(requested_key_idx == key_conf->key_idx);
 
     return status;
@@ -1042,9 +1037,7 @@ struct mmpkt *mmdrv_alloc_mmpkt_for_tx(uint8_t pkt_class,
 
 struct mmpkt *mmdrv_alloc_mmpkt_for_defrag(uint32_t min_capacity, uint32_t max_capacity)
 {
-
     const size_t metadata_len = sizeof(struct mmdrv_rx_metadata);
-
 
     struct mmpkt *mmpkt =
         mmhal_wlan_alloc_mmpkt_for_rx(MMHAL_WLAN_PKT_DATA_TID0, max_capacity, metadata_len);
@@ -1052,7 +1045,6 @@ struct mmpkt *mmdrv_alloc_mmpkt_for_defrag(uint32_t min_capacity, uint32_t max_c
     {
         return mmpkt;
     }
-
 
     mmpkt = mmhal_wlan_alloc_mmpkt_for_rx(MMHAL_WLAN_PKT_DATA_TID0, UINT32_MAX, metadata_len);
     if (mmpkt != NULL)
@@ -1067,7 +1059,6 @@ struct mmpkt *mmdrv_alloc_mmpkt_for_defrag(uint32_t min_capacity, uint32_t max_c
         }
         return mmpkt;
     }
-
 
     return mmhal_wlan_alloc_mmpkt_for_rx(MMHAL_WLAN_PKT_DATA_TID0, min_capacity, metadata_len);
 }
@@ -1144,7 +1135,6 @@ enum mmwlan_status mmdrv_cfg_qos_queue(const struct mmwlan_qos_queue_params *par
     }
 
     struct morse_cmd_req_set_qos_params qparams = {
-
         .uapsd = 0,
         .queue_idx = params->aci,
         .aifs_slot_count = params->aifs,
@@ -1193,7 +1183,6 @@ enum mmwlan_status mmdrv_set_chip_power_save_enabled(uint16_t vif_id, bool enabl
     }
 
     MMLOG_DBG("Chip Power Mode set to: %d\n", enabled);
-
 
     struct morse_cmd_req_config_ps cmd = MORSE_COMMAND_INIT(cmd,
                                                             MORSE_CMD_ID_CONFIG_PS,
@@ -1400,9 +1389,7 @@ enum mmwlan_status mmdrv_set_ndp_probe(uint16_t vif_id, bool enabled)
                            MORSE_CMD_ID_SET_NDP_PROBE_SUPPORT,
                            vif_id,
                            .enabled = enabled ? true : false,
-
                            .requested_response_is_pv1 = 0,
-
                            .tx_bw_mhz = -1);
 
     return morse_cmd_tx(&driver_data, NULL, (struct morse_cmd_req *)&cmd, 0, 0, false);
@@ -1435,12 +1422,10 @@ enum mmwlan_status mmdrv_execute_command(uint8_t *command,
 
     if (status == MMWLAN_SUCCESS || status == MMWLAN_COMMAND_ERROR)
     {
-
         *response_len = le16toh(resp->hdr.len) + sizeof(resp->hdr);
     }
     else
     {
-
         resp->hdr.message_id = cmd->hdr.message_id;
         resp->hdr.host_id = cmd->hdr.host_id;
         resp->hdr.vif_id = cmd->hdr.vif_id;
@@ -1457,7 +1442,6 @@ enum mmwlan_status mmdrv_set_seq_num_spaces(uint16_t vif_id,
                                             const uint16_t *tx_seq_num_spaces,
                                             const uint8_t *addr)
 {
-
     struct morse_cmd_req_sequence_number_spaces req =
         MORSE_COMMAND_INIT(req,
                            MORSE_CMD_ID_SEQUENCE_NUMBER_SPACES,
@@ -1468,9 +1452,11 @@ enum mmwlan_status mmdrv_set_seq_num_spaces(uint16_t vif_id,
                            .spaces.baseline = tx_seq_num_spaces[MMDRV_SEQ_NUM_BASELINE],
                            .spaces.qos_null = tx_seq_num_spaces[MMDRV_SEQ_NUM_QOS_NULL]);
 
-    MM_STATIC_ASSERT(MMWLAN_MAX_QOS_TID <= MORSE_CMD_SNS_MAX_TIDS,
+    MM_STATIC_ASSERT(MMWLAN_MAX_QOS_TID < MORSE_CMD_SNS_MAX_TIDS,
                      "Driver sequence number spaces exceed the amount supported by the chip\n");
-    memcpy(req.spaces.individually_addr_qos_data, tx_seq_num_spaces, MMWLAN_MAX_QOS_TID);
+    memcpy(req.spaces.individually_addr_qos_data,
+           tx_seq_num_spaces,
+           (MMWLAN_MAX_QOS_TID + 1) * sizeof(*tx_seq_num_spaces));
     mac_addr_copy(req.addr, addr);
 
     return morse_cmd_tx(&driver_data,
@@ -1518,7 +1504,6 @@ enum mmwlan_status mmdrv_set_control_response_bw(uint16_t vif_id,
 
 enum mmwlan_status mmdrv_hw_scan(uint16_t vif_id, struct mmdrv_hw_scan_params *params)
 {
-
     struct morse_cmd_req_hw_scan *cmd =
         (struct morse_cmd_req_hw_scan *)mmosal_malloc(sizeof(*cmd) + params->tlvs_len);
     if (cmd == NULL)
@@ -1539,7 +1524,6 @@ enum mmwlan_status mmdrv_hw_scan(uint16_t vif_id, struct mmdrv_hw_scan_params *p
     {
         memcpy(cmd->variable, params->tlvs, params->tlvs_len);
     }
-
 
     bool is_abort = params->flags & MORSE_CMD_HW_SCAN_FLAGS_ABORT;
 

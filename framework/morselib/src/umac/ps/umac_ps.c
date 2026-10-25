@@ -15,17 +15,13 @@ void umac_ps_handle_hw_restarted(struct umac_data *umacd)
 {
     struct umac_ps_data *data = umac_data_get_ps(umacd);
 
-
     bool pre_reset_suspend = data->suspended;
     enum mmwlan_ps_mode pre_reset_mode = data->pwr_mode;
 
-
     umac_ps_reset(umacd);
-
 
     umac_ps_set_suspended(umacd, pre_reset_suspend);
     umac_ps_update_mode(umacd);
-
 
     MMOSAL_DEV_ASSERT(data->pwr_mode == pre_reset_mode);
 
@@ -39,7 +35,6 @@ void umac_ps_reset(struct umac_data *umacd)
     data->suspended = false;
     MMLOG_DBG("Power save reset\n");
 }
-
 
 void umac_ps_update_mode(struct umac_data *umacd)
 {

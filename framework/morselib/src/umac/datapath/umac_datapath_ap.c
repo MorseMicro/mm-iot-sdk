@@ -18,6 +18,7 @@
 #include "common/mac_address.h"
 #include "umac/stats/umac_stats.h"
 #include "umac/rc/umac_rc.h"
+#include "umac/ap/umac_ap_data.h"
 
 static void umac_datapath_process_rx_mgmt_frame_ap(struct umac_data *umacd,
                                                    struct umac_sta_data *stad,
@@ -26,6 +27,13 @@ static void umac_datapath_process_rx_mgmt_frame_ap(struct umac_data *umacd,
     const struct dot11_hdr *header = (struct dot11_hdr *)mmpkt_get_data_start(rxbufview);
     uint16_t frame_control_le = header->frame_control;
     uint16_t subtype = dot11_frame_control_get_subtype(frame_control_le);
+    struct umac_ap_data *data = umac_data_get_ap(umacd);
+    MMOSAL_ASSERT(data != NULL);
+    if (data->disconnecting)
+    {
+        MMLOG_DBG("Dropping mgmt frame (subtype %u), AP disconnect in progress\n", subtype);
+        return;
+    }
 
     if (subtype == DOT11_FC_SUBTYPE_PROBE_REQ)
     {
@@ -61,7 +69,6 @@ static void umac_datapath_process_rx_mgmt_frame_ap(struct umac_data *umacd,
     }
 }
 
-
 static void umac_datapath_construct_80211_data_header_ap(struct umac_sta_data *stad,
                                                          const struct umac_8023_hdr *hdr_8023,
                                                          struct dot11_data_hdr *data_hdr)
@@ -74,7 +81,6 @@ static void umac_datapath_construct_80211_data_header_ap(struct umac_sta_data *s
 
     if (mm_mac_addr_is_multicast(hdr_8023->dest_addr))
     {
-
         mac_addr_copy(data_hdr->base.addr1, hdr_8023->dest_addr);
         mac_addr_copy(data_hdr->base.addr3, hdr_8023->src_addr);
     }
@@ -83,12 +89,10 @@ static void umac_datapath_construct_80211_data_header_ap(struct umac_sta_data *s
         umac_sta_data_get_peer_addr(stad, data_hdr->base.addr1);
         if (mm_mac_addr_is_equal(data_hdr->base.addr1, hdr_8023->dest_addr))
         {
-
             mac_addr_copy(data_hdr->base.addr3, hdr_8023->src_addr);
         }
         else
         {
-
             frame_control |= DOT11_MASK_FC_TO_DS;
             mac_addr_copy(data_hdr->base.addr3, hdr_8023->dest_addr);
             mac_addr_copy(data_hdr->addr4, hdr_8023->src_addr);
@@ -118,7 +122,6 @@ enum mmwlan_status umac_datapath_tx_mgmt_frame_ap(struct umac_data *umacd,
     uint16_t pause_mask;
     int key_id = -1;
 
-
     struct umac_sta_data *stad = umac_ap_lookup_sta_by_addr(umacd, NULL);
     MMOSAL_DEV_ASSERT(stad != NULL);
     if (stad == NULL)
@@ -127,15 +130,10 @@ enum mmwlan_status umac_datapath_tx_mgmt_frame_ap(struct umac_data *umacd,
         return MMWLAN_ERROR;
     }
 
-
-
-
     struct umac_datapath_sta_data *sta_data = umac_sta_data_get_datapath(stad);
     uint8_t seq_num_space = MMDRV_SEQ_NUM_BASELINE;
     DOT11_SEQUENCE_CONTROL_SET_SEQUENCE_NUMBER(header->sequence_control,
                                                sta_data->tx_seq_num_spaces[seq_num_space]++);
-
-
 
 
     tx_metadata->flags = MMDRV_TX_FLAG_IMMEDIATE_REPORT;
@@ -171,7 +169,6 @@ enum mmwlan_status umac_datapath_tx_mgmt_frame_ap(struct umac_data *umacd,
         tx_metadata->rc_data.rates[2].rate = MMRC_MCS_UNUSED;
         tx_metadata->rc_data.rates[3].rate = MMRC_MCS_UNUSED;
     }
-
 
     pause_mask = ~MMDRV_PAUSE_SOURCE_MASK_PKTMEM;
 
@@ -211,7 +208,6 @@ static bool umac_datapath_ap_update_stad_state_rx(struct umac_sta_data *stad,
 
     if (!umac_sta_data_is_associated(stad))
     {
-
         return true;
     }
 
@@ -221,14 +217,12 @@ static bool umac_datapath_ap_update_stad_state_rx(struct umac_sta_data *stad,
 
     bool ok = true;
 
-
     if (frame_is_data_mgmt)
     {
         bool asleep = dot11_frame_control_get_power_mgmt(frame_control_le);
         ok = umac_ap_set_stad_sleep_state(stad, asleep);
         MMOSAL_DEV_ASSERT(ok);
     }
-
 
     if (frame_is_data_mgmt || frame_ver_type_subtype == (DOT11_VER_TYPE_SUBTYPE(0, CTRL, PS_POLL)))
     {
@@ -258,7 +252,6 @@ static void umac_datapath_ap_handle_frame_unknown_sta(struct umac_data *umacd, c
         return;
     }
 
-
     struct mmdrv_tx_metadata *tx_metadata = mmdrv_get_tx_metadata(txbuf);
     tx_metadata->enc = ENCRYPTION_DISABLED;
 
@@ -270,14 +263,12 @@ static void umac_datapath_ap_handle_frame_unknown_sta(struct umac_data *umacd, c
     }
 }
 
-
 const uint16_t frames_allowed_pre_association_ap_mode[] = {
     DOT11_VER_TYPE_SUBTYPE(0, MGMT, PROBE_REQ),
     DOT11_VER_TYPE_SUBTYPE(0, MGMT, AUTH),
     DOT11_VER_TYPE_SUBTYPE(0, MGMT, ASSOC_REQ),
     UINT16_MAX,
 };
-
 
 static const struct umac_datapath_ops datapath_ops_ap = {
     .process_rx_mgmt_frame = umac_datapath_process_rx_mgmt_frame_ap,

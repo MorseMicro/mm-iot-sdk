@@ -16,9 +16,7 @@
 #include "umac/regdb/umac_regdb.h"
 #include "umac/health_check/umac_health_check.h"
 
-
 #define WNM_SLEEP_RETRY_REQ_TIMEOUT_MS 1000
-
 
 #define WNM_SLEEP_MAX_RETRY_REQ 60
 
@@ -167,7 +165,6 @@ void umac_wnm_sleep_report_event(struct umac_data *umacd, enum umac_wnm_sleep_ev
     }
 }
 
-
 static void umac_wnm_sleep_retry_request(void *arg1, void *arg2)
 {
     MM_UNUSED(arg2);
@@ -185,8 +182,6 @@ static void umac_wnm_sleep_retry_request(void *arg1, void *arg2)
         wnm_sleep_fsm_handle_event(&data->fsm_inst, WNM_SLEEP_FSM_EVENT_RETRIES_EXHAUSTED);
     }
 }
-
-
 
 
 #define WNM_SLEEP_FSM_LOG(format_str, ...) MMLOG_DBG(format_str, __VA_ARGS__)
@@ -263,7 +258,6 @@ static void wnm_sleep_fsm_active_entry(struct wnm_sleep_fsm_instance *inst,
     {
         (void)mmdrv_set_chip_wnm_sleep_enabled(sta_vif_id, true);
     }
-
 
     umac_health_check_set_veto(umacd, UMAC_HEALTH_CHECK_VETO_ID_WNM_SLEEP);
     umac_connection_set_monitor_disable(umacd, true);

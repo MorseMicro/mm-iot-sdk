@@ -36,7 +36,6 @@ static mmtrace_channel rc_channel_handle;
     } while (0)
 #endif
 
-
 static void umac_rc_update(struct umac_sta_data *stad)
 {
     struct umac_rc_sta_data *sta_data = umac_sta_data_get_rc(stad);
@@ -50,7 +49,6 @@ static void umac_rc_update(struct umac_sta_data *stad)
     MMLOG_DBG("Next update scheduled for %lums.\n", sta_data->next_update_time_ms);
 }
 
-
 static struct mmrc_table *umac_rc_sta_create(struct mmrc_sta_capabilities *caps)
 {
     size_t alloc_size = mmrc_memory_required_for_caps(caps);
@@ -60,7 +58,6 @@ static struct mmrc_table *umac_rc_sta_create(struct mmrc_sta_capabilities *caps)
     return table;
 }
 
-
 static void umac_rc_sta_destroy(struct mmrc_table *tb)
 {
     mmosal_free(tb);
@@ -69,6 +66,7 @@ static void umac_rc_sta_destroy(struct mmrc_table *tb)
 void umac_rc_init(void)
 {
     RC_TRACE_INIT();
+    mmdrv_enable_ampdu_feedback();
     mmrc_init();
 }
 
@@ -106,10 +104,8 @@ void umac_rc_start(struct umac_sta_data *stad, uint8_t sgi_flags, uint8_t max_mc
             MMOSAL_ASSERT(false);
     }
 
-
     sta_data->local_capabilities.guard = MMRC_MASK(MMRC_GUARD_LONG);
     sta_data->local_capabilities.sgi_per_bw = 0;
-
     if (umac_config_rc_is_sgi_enabled(umacd))
     {
         sta_data->local_capabilities.guard |= MMRC_MASK(MMRC_GUARD_SHORT);
@@ -171,10 +167,8 @@ void umac_rc_start(struct umac_sta_data *stad, uint8_t sgi_flags, uint8_t max_mc
     uint16_t supported_bws = s1g_operation->operation_channel_width_mhz;
     if (umac_config_rc_are_subbands_enabled(umacd))
     {
-
         supported_bws |= (supported_bws - 1);
     }
-
 
     capabilities.bandwidth &= supported_bws;
 
@@ -220,11 +214,9 @@ void umac_rc_start(struct umac_sta_data *stad, uint8_t sgi_flags, uint8_t max_mc
     sta_data->reference_table = umac_rc_sta_create(&capabilities);
     sta_data->active_capabilities = capabilities;
 
-
     mmrc_sta_init(sta_data->reference_table,
                   &sta_data->active_capabilities,
                   umac_stats_get_rssi(umacd));
-
 
     sta_data->next_update_time_ms = mmosal_get_time_ms() + MMRC_UPDATE_FREQUENCY_MS;
 }
@@ -258,7 +250,6 @@ static void apply_rate_table_overrides(struct umac_data *umacd, struct mmrc_rate
         switch (override->tx_rate)
         {
             case MMWLAN_MCS_NONE:
-
                 break;
 
             case MMWLAN_MCS_0:
@@ -311,7 +302,6 @@ static void apply_rate_table_overrides(struct umac_data *umacd, struct mmrc_rate
         switch (override->bandwidth)
         {
             case MMWLAN_BW_NONE:
-
                 break;
 
             case MMWLAN_BW_1MHZ:
@@ -433,7 +423,6 @@ void umac_rc_init_rate_table_data(struct umac_sta_data *stad,
     struct umac_data *umacd = umac_sta_data_get_umacd(stad);
     struct umac_rc_sta_data *sta_data = umac_sta_data_get_rc(stad);
 
-
     if (sta_data->reference_table == NULL)
     {
         MMLOG_WRN("MMRC not started, using management frame parameters\n");
@@ -441,14 +430,11 @@ void umac_rc_init_rate_table_data(struct umac_sta_data *stad,
         return;
     }
 
-
     mmrc_get_rates(sta_data->reference_table, table, frame_size);
-
 
     if (rts_required)
     {
         int ii;
-
         for (ii = 0; ii < MMRC_MAX_CHAIN_LENGTH; ii++)
         {
             table->rates[ii].flags |= MMRC_MASK(MMRC_FLAGS_CTS_RTS);
@@ -465,9 +451,7 @@ void umac_rc_feedback(struct umac_sta_data *stad, struct mmdrv_tx_metadata *tx_m
     struct mmrc_rate_table *rate_table = &tx_metadata->rc_data;
     uint8_t attempts_count = tx_metadata->attempts;
     bool frame_acked = (tx_metadata->status_flags & MMDRV_TX_STATUS_FLAG_NO_ACK) == 0;
-    bool was_aggregated = (tx_metadata->status_flags & MMDRV_TX_STATUS_WAS_AGGREGATED) != 0;
     struct umac_rc_sta_data *sta_data = umac_sta_data_get_rc(stad);
-
 
     if (rate_table->rates[0].attempts == 0)
     {
@@ -482,16 +466,17 @@ void umac_rc_feedback(struct umac_sta_data *stad, struct mmdrv_tx_metadata *tx_m
 
     if (attempts_count == 0)
     {
-
         return;
     }
 
     if (sta_data->reference_table != NULL)
     {
-
-        mmrc_feedback(sta_data->reference_table, rate_table, was_aggregated, frame_acked);
+        mmrc_feedback(sta_data->reference_table,
+                      rate_table,
+                      tx_metadata->was_ampdu,
+                      tx_metadata->no_blockack,
+                      frame_acked);
     }
-
 
     if (mmosal_time_has_passed(sta_data->next_update_time_ms))
     {

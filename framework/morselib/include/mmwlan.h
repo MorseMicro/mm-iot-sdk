@@ -155,8 +155,8 @@ struct mmwlan_s1g_channel
     uint32_t centre_freq_hz;
     /** STA Duty Cycle (in 100th of %). */
     uint16_t duty_cycle_sta;
-    /** Boolean indicating whether to omit control response frames from duty cycle. */
-    bool duty_cycle_omit_ctrl_resp;
+    /** AP Duty Cycle (in 100th of %). */
+    uint16_t duty_cycle_ap;
     /** Global operating class. If @ref MMWLAN_SKIP_OP_CLASS_CHECK, check is skipped */
     int16_t global_operating_class;
     /** S1G operating class. If @ref MMWLAN_SKIP_OP_CLASS_CHECK, check is skipped */
@@ -167,6 +167,8 @@ struct mmwlan_s1g_channel
     uint8_t bw_mhz;
     /** Maximum transmit power (EIRP in dBm). */
     int8_t max_tx_eirp_dbm;
+    /** Boolean indicating whether to omit control response frames from duty cycle. */
+    bool duty_cycle_omit_ctrl_resp;
     /** The length of time to close the tx window between packets (in microseconds). */
     uint32_t pkt_spacing_us;
     /** The minimum packet airtime duration to trigger spacing (in microseconds). */
@@ -1157,6 +1159,7 @@ struct mmwlan_sta_args
     /**
      * Preference list of enabled elliptic curve groups for SAE and OWE.
      * By default (if this parameter is not set), the mandatory group 19 is preferred.
+     * List must be zero terminated.
      */
     int sae_owe_ec_groups[MMWLAN_MAX_EC_GROUPS];
     /** Whether Centralized Authentication Controlled is enabled on the STA. */
@@ -1297,6 +1300,9 @@ struct mmwlan_sta_args
  *
  * @warning Channel list must be set before enabling station mode. @ref mmwlan_set_channel_list().
  *
+ * @note Not available while S1G Relay mode is enabled; returns @ref MMWLAN_UNAVAILABLE.
+ *       See @ref mmwlan_relay_enable().
+ *
  * @param args              STA arguments (e.g., SSID, etc.). See @ref mmwlan_sta_args.
  * @param sta_status_cb     Optional callback to be invoked on STA state changes.
  *                          May be @c NULL.
@@ -1312,6 +1318,9 @@ enum mmwlan_status mmwlan_sta_enable(const struct mmwlan_sta_args *args,
  * This will disconnect from the AP. It will also shut down the transceiver if nothing else
  * is holding it open. Note that if the transceiver was booted by @c mmwlan_boot() then
  * this function will not shut down the transceiver.
+ *
+ * @note Not available while S1G Relay mode is enabled; returns @ref MMWLAN_UNAVAILABLE.
+ *       Use @ref mmwlan_relay_disable() instead.
  *
  * @return @ref MMWLAN_SUCCESS if successful, else an appropriate error code.
  */
@@ -2078,6 +2087,7 @@ struct mmwlan_ap_args
     /**
      * Preference list of enabled elliptic curve groups for SAE and OWE.
      * By default (if this parameter is not set), the mandatory group 19 is preferred.
+     * List must be zero terminated.
      */
     int sae_owe_ec_groups[MMWLAN_MAX_EC_GROUPS];
     /**
@@ -2210,6 +2220,9 @@ struct mmwlan_ap_args
  * @note: When the AP interface is active, channels may be restricted for operations such as
  * scanning.
  *
+ * @note Not available while S1G Relay mode is enabled; returns @ref MMWLAN_UNAVAILABLE.
+ *       Use @ref mmwlan_relay_ap_enable() to add an AP interface to a relay STA.
+ *
  * @param args Arguments (e.g., SSID, etc.). See @ref mmwlan_ap_args.
  *
  * @return @ref MMWLAN_SUCCESS on success, else an appropriate error code.
@@ -2225,6 +2238,9 @@ enum mmwlan_status mmwlan_ap_enable(const struct mmwlan_ap_args *args);
  * This will disconnect any stations from the AP. It will also shut down the transceiver if nothing
  * else is holding it open. Note that if the transceiver was booted by @c mmwlan_boot() then
  * this function will not shut down the transceiver.
+ *
+ * @note Not available while S1G Relay mode is enabled; returns @ref MMWLAN_UNAVAILABLE.
+ *       Use @ref mmwlan_relay_ap_disable() or @ref mmwlan_relay_disable() instead.
  *
  * @return @ref MMWLAN_SUCCESS if successful and the transceiver was also shut down,
  *         @ref MMWLAN_SHUTDOWN_BLOCKED if successful and the transceiver was not shut down,
@@ -2264,13 +2280,66 @@ static inline enum mmwlan_status mmwlan_ap_get_bssid(uint8_t *bssid)
 /** Default value for the @c forwarding_table_size member of @ref mmwlan_relay_args. */
 #define MMWLAN_RELAY_DEFAULT_FORWARDING_TABLE_SIZE (64)
 
+/** Relay depth value returned when the depth is unknown. */
+#define MMWLAN_RELAY_DEPTH_UNKNOWN UINT8_MAX
+
 /**
- * Relay depth change callback function prototype.
- *
- * @param new_depth Current depth of the relay node after the change cb was triggered.
- * @param arg       Opaque argument to be passed to the callback.
+ * Enumeration of S1G Relay states.
  */
-typedef void (*mmwlan_relay_depth_change_cb_t)(uint8_t new_depth, void *arg);
+enum mmwlan_relay_state
+{
+    /** Relay mode is not enabled. */
+    MMWLAN_RELAY_STATE_DISABLED,
+    /** Relay is enabled as the root node of the relay network. */
+    MMWLAN_RELAY_STATE_ROOT,
+    /** Relay is enabled as a non-root device, with only the STA interface active. */
+    MMWLAN_RELAY_STATE_STA,
+    /** Relay is enabled as a non-root node, with both an AP and STA interface active. */
+    MMWLAN_RELAY_STATE_REPEATER,
+};
+
+/**
+ * Data structure for communicating relay status information.
+ *
+ * @warning ALPHA NOTICE: This is an alpha API that is under development;
+ *          breaking changes may be introduced in future releases.
+ */
+struct mmwlan_relay_status
+{
+    /** The current state of the relay. */
+    enum mmwlan_relay_state state;
+    /** The current status of the relay STA. Only valid if state is @ref MMWLAN_RELAY_STATE_STA or
+     * @ref MMWLAN_RELAY_STATE_REPEATER */
+    enum mmwlan_sta_state sta_state;
+    /** Current depth of the relay node. */
+    uint8_t depth;
+};
+
+/**
+ * Get the current S1G Relay status.
+ *
+ * @warning ALPHA NOTICE: This is an alpha API that is under development;
+ *          breaking changes may be introduced in future releases.
+ *
+ * @param status Pointer to @ref mmwlan_relay_status struct that the current status will be
+ *               populated in. Must be non-NULL.
+ *
+ * @return @ref MMWLAN_SUCCESS on success, else an appropriate error code.
+ */
+enum mmwlan_status mmwlan_relay_get_status(struct mmwlan_relay_status *status);
+
+/**
+ * Prototype for relay state change callbacks.
+ *
+ * @note The callback must not block and MMWLAN API functions may not be invoked from the callback.
+ *
+ * @warning ALPHA NOTICE: This is an alpha API that is under development;
+ *          breaking changes may be introduced in future releases.
+ *
+ * @param status Current status of the relay node when the cb was triggered.
+ * @param arg    Opaque argument to be passed to the callback.
+ */
+typedef void (*mmwlan_relay_status_cb_t)(const struct mmwlan_relay_status *status, void *arg);
 
 /**
  * Register a relay depth change callback for use in relay mode.
@@ -2283,8 +2352,79 @@ typedef void (*mmwlan_relay_depth_change_cb_t)(uint8_t new_depth, void *arg);
  *
  * @return @ref MMWLAN_SUCCESS on success, else an appropriate error code.
  */
-enum mmwlan_status mmwlan_register_depth_change_cb(mmwlan_relay_depth_change_cb_t callback,
-                                                   void *arg);
+enum mmwlan_status mmwlan_register_relay_status_cb(mmwlan_relay_status_cb_t callback, void *arg);
+
+/**
+ * Arguments data structure for @ref mmwlan_relay_ap_enable().
+ *
+ * @warning ALPHA NOTICE: This is an alpha API that is under development;
+ *          breaking changes may be introduced in future releases.
+ *
+ * This structure should be initialized using @ref MMWLAN_RELAY_AP_ARGS_INIT for sensible
+ * default values, particularly for forward compatibility with new releases that may add
+ * new fields to the struct. For example:
+ *
+ * @code{.c}
+ *     enum mmwlan_status status;
+ *     struct mmwlan_relay_ap_args relay_ap_args = MMWLAN_RELAY_AP_ARGS_INIT;
+ *     // HERE: initialize arguments
+ *     status = mmwlan_relay_ap_enable(&relay_ap_args);
+ * @endcode
+ */
+struct mmwlan_relay_ap_args
+{
+    /**
+     * Optional BSSID of the AP. If zero then the STA MAC address will be used, with the locally
+     * administered bit flipped.
+     *
+     * @warning The MAC address selection behavior may change in future.
+     */
+    uint8_t bssid[MMWLAN_MAC_ADDR_LEN];
+    /**
+     * The Beacon period in units of TUs. A TU is equal to 1.024 ms.
+     *
+     * If zero then the default value, @ref MMWLAN_DEFAULT_AP_BEACON_INTERVAL_TUS, will be used.
+     */
+    uint16_t beacon_interval_tus;
+    /**
+     * The Delivery Traffic Indication Map (DTIM) interval in beacons.
+     *
+     * If zero then the default value, @ref MMWLAN_DEFAULT_AP_DTIM_PERIOD, will be used.
+     */
+    uint16_t dtim_period;
+    /**
+     * Optional callback to be invoked when the status of a connected STA changes. May be
+     * set to @c NULL.
+     */
+    mmwlan_ap_sta_status_cb_t sta_status_cb;
+    /**
+     * Optional opaque argument to be passed to @c sta_status_cb. May optionally be @c NULL.
+     * The value of this parameter must remain valid during the lifetime of the Relay AP.
+     */
+    void *sta_status_cb_arg;
+    /**
+     * Maximum number of stations that can connect to the Relay AP simultaneously. The maximum value
+     * limit is @ref MMWLAN_AP_MAX_STAS_LIMIT.
+     *
+     * If zero, the default value of @ref MMWLAN_DEFAULT_AP_MAX_STAS will be used.
+     */
+    uint8_t max_stas;
+};
+
+/**
+ * Initializer for @ref mmwlan_relay_ap_args.
+ *
+ * @see mmwlan_relay_ap_args
+ */
+#define MMWLAN_RELAY_AP_ARGS_INIT  \
+    {                              \
+        .bssid = { 0 },            \
+        .beacon_interval_tus = 0,  \
+        .dtim_period = 0,          \
+        .sta_status_cb = NULL,     \
+        .sta_status_cb_arg = NULL, \
+        .max_stas = 0,             \
+    }
 
 /**
  * Arguments data structure for @ref mmwlan_relay_enable().
@@ -2311,27 +2451,89 @@ struct mmwlan_relay_args
      * default value, @ref MMWLAN_RELAY_DEFAULT_FORWARDING_TABLE_SIZE, will be used.
      */
     unsigned forwarding_table_size;
-
-    /** Indicates whether this is the root node. */
-    bool is_root_node;
+    /**
+     * Duration the relay will wait for the relay network to recover, before bringing down the
+     * connection and retrying.
+     *
+     * On recovery timeout, the AP interface will be brought down until the relay STA interface
+     * successfully reconnects.
+     *
+     * Timeout is unused when operating as a root device.
+     *
+     * @warning A device with a relay AP interface may never recover if the timeout is set to
+     *          @c UINT32_MAX.
+     */
+    uint32_t recovery_timeout_ms;
+    /**
+     * Pointer to configuration for relay STA interface. When present, the device will bring up a
+     * STA interface in the same way as calling @ref mmwlan_sta_enable with the addition of S1G
+     * relay awareness. When not present, the device will operate as S1G Relay Root AP.
+     *
+     * If NULL, @ref relay_ap_args must be NULL, and @ref root_ap_args must be non-NULL.
+     */
+    const struct mmwlan_sta_args *relay_sta_args;
+    /**
+     * Optional callback to be invoked on STA state changes.
+     *
+     * May be @c NULL. When @ref relay_sta_args is NULL, the callback will be ignored.
+     *
+     * @note The STA status callback must not block and MMWLAN API functions may not be invoked from
+     *       the callback.
+     */
+    mmwlan_sta_status_cb_t sta_status_cb;
+    /**
+     * Pointer to configuration for relay AP interface. When present, the device will bring up an
+     * AP interface when the STA interface successfully connects to a relay network.
+     *
+     * Relay AP interface may be added after enabling the relay, see @ref mmwlan_relay_ap_enable.
+     *
+     * @note The relay AP interface may be brought down if the device loses connection to the relay
+     * network and is unable to recover. See @ref recovery_timeout_ms for more.
+     */
+    const struct mmwlan_relay_ap_args *relay_ap_args;
+    /**
+     * Pointer to configuration for Root AP interface. When present, the device will bring up an
+     * AP interface in the same way as calling @ref mmwlan_ap_enable with the addition of S1G
+     * relay awareness. When not present, the device will operate as S1G Relay STA/relay.
+     *
+     * If non-NULL, @ref relay_sta_args and @ref relay_ap_args must be NULL.
+     */
+    const struct mmwlan_ap_args *root_ap_args;
 };
+
+/** Default recovery timeout used when a device loses its path to the root. */
+#define MMWLAN_RELAY_DEFAULT_RECOVERY_TIMEOUT_MS 10000
 
 /**
  * Initializer for @ref mmwlan_relay_args.
  *
  * @see mmwlan_relay_args
  */
-#define MMWLAN_RELAY_ARGS_INIT      \
-    {                               \
-        .forwarding_table_size = 0, \
-        .is_root_node = false,      \
+#define MMWLAN_RELAY_ARGS_INIT                                           \
+    {                                                                    \
+        .forwarding_table_size = 0,                                      \
+        .recovery_timeout_ms = MMWLAN_RELAY_DEFAULT_RECOVERY_TIMEOUT_MS, \
+        .relay_sta_args = NULL,                                          \
+        .sta_status_cb = NULL,                                           \
+        .relay_ap_args = NULL,                                           \
+        .root_ap_args = NULL,                                            \
     }
 
 /**
  * Enable S1G Relay mode.
  *
- * The relay mode must be enabled prior to enabling the STA or AP, to ensure the device connects
- * to the relay network with relay awareness.
+ * Bring the device up as part of an S1G relay network. The device can be one of three roles:
+ * - Root:  Device at the root of the relay network. Responsible for operating the network. Root
+ *          cannot change role while relay mode is enabled.
+ * - Relay: Device operates as a STA + AP in the relay network, forwarding traffic to and from the
+ *          root. To avoid confusion between the relay role and the subsystem, we refer to an
+ *          S1G Relay "Relay" as a repeater. A Repeater may transition to STA role at any time, by
+ *          bringing down its relay AP interface. See @ref mmwlan_relay_ap_disable.
+ * - STA:   Device operates as a STA in the relay network. This is equivalent to operating with
+ *          @ref mmwlan_sta_enable but with additional awareness of the relay topology. Relay STA
+ *          can be promoted to repeater at any time. See @ref mmwlan_relay_ap_enable.
+ *
+ * @note: Relay mode cannot be enabled if the STA or AP interface is already enabled.
  *
  * @warning ALPHA NOTICE: This is an alpha API that is under development;
  *          breaking changes may be introduced in future releases.
@@ -2343,6 +2545,38 @@ struct mmwlan_relay_args
  *          another appropriate error code.
  */
 enum mmwlan_status mmwlan_relay_enable(const struct mmwlan_relay_args *args);
+
+/**
+ * Promote an existing S1G Relay STA to a repeater.
+ *
+ * The relay AP interface will be managed by the WLAN subsystem, and will only be active when
+ * appropriate.
+ *
+ * @note: Relay mode must be enabled and operating as a Relay STA.
+ *
+ * @warning ALPHA NOTICE: This is an alpha API that is under development;
+ *          breaking changes may be introduced in future releases.
+ *
+ * @param args  Arguments from application.
+ *
+ * @returns @c MMWLAN_SUCCESS on success, @ref MMWLAN_NOT_SUPPORTED if S1G Relay support was not
+ *          enabled at build time, @ref MMWLAN_INVALID_ARGUMENT if arguments are invalid, or
+ *          another appropriate error code.
+ */
+enum mmwlan_status mmwlan_relay_ap_enable(const struct mmwlan_relay_ap_args *args);
+
+/**
+ * Disable the Relay AP interface of a repeater.
+ *
+ * This changes the devices role to be an S1G Relay STA.
+ *
+ * @warning ALPHA NOTICE: This is an alpha API that is under development;
+ *          breaking changes may be introduced in future releases.
+ *
+ * @returns @c MMWLAN_SUCCESS on success, @ref MMWLAN_NOT_SUPPORTED if S1G Relay support was not
+ *          enabled at build time, or another appropriate error code.
+ */
+enum mmwlan_status mmwlan_relay_ap_disable(void);
 
 /** Maximum valid relay depth. */
 #define MMWLAN_RELAY_MAX_DEPTH 8
@@ -2363,7 +2597,7 @@ enum mmwlan_status mmwlan_relay_enable(const struct mmwlan_relay_args *args);
  * @returns @ref MMWLAN_SUCCESS; @ref MMWLAN_UNAVAILABLE if STA/AP active;
  *          @ref MMWLAN_INVALID_ARGUMENT if @p depth is out of range.
  */
-enum mmwlan_status mmwlan_relay_set_depth_override(uint8_t depth);
+enum mmwlan_status mmwlan_relay_ate_set_depth_override(uint8_t depth);
 
 /**
  * Disable S1G Relay mode.
@@ -2375,48 +2609,6 @@ enum mmwlan_status mmwlan_relay_set_depth_override(uint8_t depth);
  *          enabled at build time, or another appropriate error code.
  */
 enum mmwlan_status mmwlan_relay_disable(void);
-
-/**
- * Enumeration of S1G Relay states.
- */
-enum mmwlan_relay_state
-{
-    /** Relay mode is not enabled. */
-    MMWLAN_RELAY_STATE_DISABLED,
-    /** Relay is enabled on a non-root node whose AP interface is not yet up (STA only). */
-    MMWLAN_RELAY_STATE_STA,
-    /** Relay is enabled on a non-root node whose AP interface is up, relaying for children. */
-    MMWLAN_RELAY_STATE_RELAY,
-    /** Relay is enabled on the root node of the relay tree. */
-    MMWLAN_RELAY_STATE_ROOT,
-};
-
-/**
- * Get the current S1G Relay state.
- *
- * @warning ALPHA NOTICE: This is an alpha API that is under development;
- *          breaking changes may be introduced in future releases.
- *
- * @returns The current @ref mmwlan_relay_state. Returns @ref MMWLAN_RELAY_STATE_DISABLED if S1G
- *          Relay support was not enabled at build time or relay is not currently enabled.
- */
-enum mmwlan_relay_state mmwlan_relay_get_state(void);
-
-/** Relay depth value returned when the depth is unknown. */
-#define MMWLAN_RELAY_DEPTH_UNKNOWN UINT8_MAX
-
-/**
- * Get the current S1G Relay depth.
- *
- * The depth is the number of links between this device and the root node.
- *
- * @warning ALPHA NOTICE: This is an alpha API that is under development;
- *          breaking changes may be introduced in future releases.
- *
- * @returns The current relay depth, or @ref MMWLAN_RELAY_DEPTH_UNKNOWN if the depth is unknown
- *          because relay is not active or the node has no path to the root.
- */
-uint8_t mmwlan_relay_get_depth(void);
 
 /** @} */
 
@@ -3252,6 +3444,32 @@ enum mmwlan_gi
     MMWLAN_GI_MAX = MMWLAN_GI_LONG, /**< Maximum valid value of this @c enum. */
 };
 
+/** Enumeration of key types supported by @ref mmwlan_key_info. */
+enum mmwlan_key_type
+{
+    MMWLAN_KEY_TYPE_PAIRWISE, /**< Pairwise key */
+    MMWLAN_KEY_TYPE_GROUP, /**< Group key */
+    MMWLAN_KEY_TYPE_IGTK, /**< Integrity group key for protected management frames */
+};
+
+/** Maximum length of a key in @ref mmwlan_key_info. */
+#define MMWLAN_MAX_KEYLEN (32)
+/** Maximum number of keys that can be returned from @ref mmwlan_ate_get_key_info(). */
+#define MMWLAN_MAX_KEYS (6)
+
+/** Data structure representing a WLAN security key. */
+struct mmwlan_key_info
+{
+    /** Index of the key */
+    uint8_t key_id;
+    /** Type of key */
+    enum mmwlan_key_type key_type;
+    /** Array to store the actual key */
+    uint8_t key_data[MMWLAN_MAX_KEYLEN];
+    /** Length of the key data */
+    size_t key_len;
+};
+
 /**
  * Enable/disable override of rate control parameters.
  *
@@ -3289,6 +3507,21 @@ enum mmwlan_status mmwlan_ate_execute_command(uint8_t *command,
                                               uint32_t command_len,
                                               uint8_t *response,
                                               uint32_t *response_len);
+
+/**
+ * Read WLAN security keys from the device. This is generally used for decrypting sniffer
+ * traces. This should not be used in production as it is a security risk.
+ *
+ * @param[out] key_info     Array of mmwlan_key_info structs to receive the key information.
+ * @param key_info_count    Pointer to an integer that is initialized to the number of slots
+ *                          in the @p key_info array when the function is invoked. On successful
+ *                          return this will be updated to the number of actual keys that were
+ *                          written to @p key_info.
+ *
+ * @returns @c MMWLAN_SUCCESS on success, or an error code.
+ */
+enum mmwlan_status mmwlan_ate_get_key_info(struct mmwlan_key_info *key_info,
+                                           uint32_t *key_info_count);
 
 /** @} */
 

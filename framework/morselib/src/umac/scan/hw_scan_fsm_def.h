@@ -11,7 +11,6 @@
 
 #define HW_SCAN_FSM_INITIAL_STATE HW_SCAN_FSM_STATE_INACTIVE
 
-
 #ifndef HW_SCAN_FSM_LOG
 #define HW_SCAN_FSM_LOG(format_str, ...) \
     do {                                 \
@@ -19,12 +18,10 @@
     } while (0)
 #endif
 
-
 static void hw_scan_fsm_inactive_entry(struct hw_scan_fsm_instance *inst,
                                        enum hw_scan_fsm_state prev_state);
 static void hw_scan_fsm_in_progress_entry(struct hw_scan_fsm_instance *inst,
                                           enum hw_scan_fsm_state prev_state);
-
 
 static void hw_scan_fsm_req_abort(struct hw_scan_fsm_instance *inst, enum hw_scan_fsm_event event);
 
@@ -34,12 +31,10 @@ static void hw_scan_fsm_scan_aborted(struct hw_scan_fsm_instance *inst,
 static void hw_scan_fsm_scan_done(struct hw_scan_fsm_instance *inst, enum hw_scan_fsm_event event);
 
 
-
 static void hw_scan_fsm_transition_error(struct hw_scan_fsm_instance *inst,
                                          enum hw_scan_fsm_event event);
 
 static void hw_scan_fsm_reentrance_error(struct hw_scan_fsm_instance *inst);
-
 
 
 typedef void (*hw_scan_fsm_callback_t)(struct hw_scan_fsm_instance *inst,
@@ -99,7 +94,6 @@ const struct hw_scan_fsm_table_row hw_scan_fsm_table[] = {
 };
 
 #define HW_SCAN_FSM_TABLE_N_ENTRIES 7
-
 
 static inline const char *hw_scan_fsm_state_tostr(enum hw_scan_fsm_state state)
 {
@@ -192,7 +186,6 @@ static void hw_scan_fsm_handle_event_internal(struct hw_scan_fsm_instance *inst,
     }
     hw_scan_fsm_transition_error(inst, event);
 }
-
 
 void hw_scan_fsm_handle_event(struct hw_scan_fsm_instance *inst, enum hw_scan_fsm_event event)
 {

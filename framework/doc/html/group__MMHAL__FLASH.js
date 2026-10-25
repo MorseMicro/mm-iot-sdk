@@ -14,6 +14,5 @@ var group__MMHAL__FLASH =
     [ "mmhal_flash_read", "group__MMHAL__FLASH.html#ga7a709cc462aba985b9f37df6ecda16f2", null ],
     [ "mmhal_flash_write", "group__MMHAL__FLASH.html#ga39a48646a7ac7d2b7b580c57086ab99c", null ],
     [ "mmhal_get_factory_mmconfig_partition", "group__MMHAL__FLASH.html#ga01f94b27ec4bbcb52571217319ae4342", null ],
-    [ "mmhal_get_littlefs_config", "group__MMHAL__FLASH.html#ga9cf859409f0916684a34f5d4726cb2e3", null ],
     [ "mmhal_get_mmconfig_partition", "group__MMHAL__FLASH.html#gaabe05e475ba03621d7e4ba776ed2d616", null ]
 ];

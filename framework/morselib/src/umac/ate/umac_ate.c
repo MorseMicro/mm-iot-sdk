@@ -102,7 +102,6 @@ enum mmwlan_status umac_ate_execute_command(struct umac_data *umacd,
                                             uint8_t *response,
                                             uint32_t *response_len)
 {
-
     struct morse_cmd_header *hdr = (struct morse_cmd_header *)command;
     struct morse_cmd_resp *resp = (struct morse_cmd_resp *)response;
     uint32_t response_max_data_len = 0;

@@ -28,7 +28,7 @@ var searchData=
   ['mmwlan_5ffatal_5ferror_5fhandler_5ft_25',['mmwlan_fatal_error_handler_t',['../group__MMWLAN__DATA.html#ga742b2c509a9f94b7634d69d773d0cb36',1,'mmwlan.h']]],
   ['mmwlan_5flink_5fstate_5fcb_5ft_26',['mmwlan_link_state_cb_t',['../group__MMWLAN__DATA.html#ga6cc7ccec4d0fb93de1648c19487df6bb',1,'mmwlan.h']]],
   ['mmwlan_5foui_5ft_27',['mmwlan_oui_t',['../group__MMWLAN__BEACON__VENDOR__IE__FILTER__API.html#gad3266535d8af2d6eba7cfa17388cfeb9',1,'mmwlan.h']]],
-  ['mmwlan_5frelay_5fdepth_5fchange_5fcb_5ft_28',['mmwlan_relay_depth_change_cb_t',['../group__MMWLAN__RELAY.html#gac4c4c1725874670a90c560fbf86c1a70',1,'mmwlan.h']]],
+  ['mmwlan_5frelay_5fstatus_5fcb_5ft_28',['mmwlan_relay_status_cb_t',['../group__MMWLAN__RELAY.html#ga90af516753f83dd551d8f3ddff660bab',1,'mmwlan.h']]],
   ['mmwlan_5frx_5fcb_5ft_29',['mmwlan_rx_cb_t',['../group__MMWLAN__DATA.html#gabd26309390e6939f003c4ca44128cce0',1,'mmwlan.h']]],
   ['mmwlan_5frx_5fpkt_5fcb_5ft_30',['mmwlan_rx_pkt_cb_t',['../group__MMWLAN__DATA.html#gaf0b978677dad54e133d595dee5d4df71',1,'mmwlan.h']]],
   ['mmwlan_5frx_5fpkt_5fext_5fcb_5ft_31',['mmwlan_rx_pkt_ext_cb_t',['../group__MMWLAN__DATA.html#gaf073e38c2ba01023707ba861d0c79aed',1,'mmwlan.h']]],

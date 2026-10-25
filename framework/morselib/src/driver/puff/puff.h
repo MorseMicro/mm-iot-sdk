@@ -22,7 +22,6 @@
  */
 
 
-
 #ifndef NIL
 #  define NIL ((unsigned char *)0)
 #endif

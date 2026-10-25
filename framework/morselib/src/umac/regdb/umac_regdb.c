@@ -86,7 +86,6 @@ const struct mmwlan_s1g_channel *umac_regdb_get_channel_from_freq_and_bw(struct 
 
         if (match != NULL)
         {
-
             return NULL;
         }
         match = chan;

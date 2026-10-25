@@ -4,13 +4,11 @@
  */
 
 
-
 #pragma once
 
 #include "mmpkt.h"
 #include "dot11/dot11_frames.h"
 #include "umac/datapath/umac_datapath_data.h"
-
 
 struct mmpkt *datapath_defrag(struct umac_data *umacd,
                               struct datapath_defrag_data *data,
@@ -19,7 +17,5 @@ struct mmpkt *datapath_defrag(struct umac_data *umacd,
                               struct mmpkt *rxbuf,
                               uint8_t tid_idx);
 
-
 void datapath_defrag_deinit(struct umac_data *umacd, struct datapath_defrag_data *data);
-
 

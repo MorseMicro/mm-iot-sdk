@@ -17,7 +17,6 @@ void umac_keys_init(struct umac_sta_data *stad)
     connection_keys_init(&sta_data->keys);
 }
 
-
 static enum mmwlan_status umac_keys_mmdrv_install_key(uint16_t vif_id,
                                                       uint16_t aid,
                                                       struct umac_key *key)

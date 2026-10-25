@@ -142,7 +142,6 @@ bool ie_reachable_address_build_single(struct consbuf *buf,
         return false;
     }
 
-
     if (update_type == REACHABLE_ADDRESS_ADD)
     {
         flags |= IE_REACHABLE_ADDRESS_FLAG_ADD_REMOVE;

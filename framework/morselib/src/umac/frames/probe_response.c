@@ -32,7 +32,6 @@ bool frame_probe_response_parse(struct mmpktview *view, struct frame_data_probe_
     uint32_t ies_len = data_length - sizeof(*frame);
     if (ies_len > UINT16_MAX)
     {
-
         return false;
     }
 
@@ -53,7 +52,6 @@ bool frame_probe_response_parse(struct mmpktview *view, struct frame_data_probe_
     result->ssid = ssid_ie->ssid;
     result->ssid_len = ssid_ie->header.length;
 
-
     const struct dot11_ie_short_bcn_int *short_bcn =
         ie_short_bcn_find(result->ies, result->ies_len);
     if (short_bcn == NULL)
@@ -64,7 +62,6 @@ bool frame_probe_response_parse(struct mmpktview *view, struct frame_data_probe_
     {
         result->beacon_interval = le16toh(short_bcn->short_beacon_int);
     }
-
 
     const struct dot11_ie_s1g_capabilities *ie_s1g_caps =
         ie_s1g_capabilities_find(result->ies, result->ies_len);

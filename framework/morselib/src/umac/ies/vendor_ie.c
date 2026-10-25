@@ -164,11 +164,9 @@ void vendor_ie_list_clear(struct vendor_ies *vendor_ies, uint8_t mgmt_type_mask)
 
         if (item->mgmt_type_mask != 0)
         {
-
             link = &item->next;
             continue;
         }
-
 
         *link = item->next;
         mmosal_free(item);

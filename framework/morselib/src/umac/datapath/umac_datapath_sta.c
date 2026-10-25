@@ -59,7 +59,6 @@ static void umac_datapath_process_rx_mgmt_frame_sta(struct umac_data *umacd,
     }
 }
 
-
 static void umac_datapath_construct_80211_data_header_sta(struct umac_sta_data *stad,
                                                           const struct umac_8023_hdr *hdr_8023,
                                                           struct dot11_data_hdr *data_hdr)
@@ -73,7 +72,6 @@ static void umac_datapath_construct_80211_data_header_sta(struct umac_sta_data *
     mac_addr_copy(data_hdr->base.addr3, hdr_8023->dest_addr);
     if (!umac_interface_addr_matches_mac_addr(stad, hdr_8023->src_addr))
     {
-
         frame_control |= DOT11_MASK_FC_FROM_DS;
         mac_addr_copy(data_hdr->addr4, hdr_8023->src_addr);
     }
@@ -86,7 +84,6 @@ static void umac_datapath_construct_80211_data_header_sta(struct umac_sta_data *
               MM_MAC_ADDR_VAL(data_hdr->base.addr2),
               MM_MAC_ADDR_VAL(data_hdr->base.addr3));
 }
-
 
 static struct umac_sta_data *umac_datapath_lookup_stad_by_peer_addr_sta_mode(
     struct umac_data *umacd,
@@ -121,7 +118,6 @@ static struct umac_sta_data *umac_datapath_lookup_stad_by_tx_dest_addr_sta_mode(
 {
     MMLOG_DBG("Lookup dest addr " MM_MAC_ADDR_FMT "\n", MM_MAC_ADDR_VAL(dest_addr));
 
-
     return umac_connection_get_stad(umacd);
 }
 
@@ -141,13 +137,11 @@ static struct umac_sta_data *umac_datapath_lookup_stad_by_aid_sta(struct umac_da
     return stad;
 }
 
-
 static enum mmwlan_sta_state umac_datapath_get_state_sta(struct umac_sta_data *stad)
 {
     MMOSAL_DEV_ASSERT(stad != NULL);
     return umac_connection_get_state(umac_sta_data_get_umacd(stad));
 }
-
 
 const uint16_t frames_allowed_pre_association_sta_mode[] = {
     DOT11_VER_TYPE_SUBTYPE(0, EXT, S1G_BEACON),
@@ -204,9 +198,7 @@ static void umac_datapath_sta_handle_frame_unknown_sta(struct umac_data *umacd, 
 {
     MM_UNUSED(umacd);
     MM_UNUSED(ta);
-
 }
-
 
 static const struct umac_datapath_ops datapath_ops_sta = {
     .process_rx_mgmt_frame = umac_datapath_process_rx_mgmt_frame_sta,

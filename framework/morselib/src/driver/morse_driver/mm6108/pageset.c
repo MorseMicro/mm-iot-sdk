@@ -20,16 +20,13 @@
 #include "driver/morse_driver/skb_header.h"
 #include "driver/transport/morse_transport.h"
 
-
 #ifndef MAX_PAGES_PER_TX_TXN
 #define MAX_PAGES_PER_TX_TXN 16
 #endif
 
-
 #ifndef MAX_PAGES_PER_RX_TXN
 #define MAX_PAGES_PER_RX_TXN 32
 #endif
-
 
 #ifndef PAGE_RETURN_NOTIFY_INT
 #define PAGE_RETURN_NOTIFY_INT 4
@@ -80,7 +77,6 @@ static uint16_t fifo_is_empty(struct page_fifo_hdr *hdr)
     return (hdr->wr_offset == hdr->rd_offset);
 }
 
-
 static uint16_t fifo_len(struct page_fifo_hdr *hdr)
 {
     if (hdr->wr_offset >= hdr->rd_offset)
@@ -92,7 +88,6 @@ static uint16_t fifo_len(struct page_fifo_hdr *hdr)
         return hdr->slots + hdr->wr_offset - hdr->rd_offset;
     }
 }
-
 
 static uint16_t fifo_size(struct page_fifo_hdr *hdr)
 {
@@ -163,7 +158,6 @@ void pageset_unlock(struct morse_pageset *pageset)
     atomic_clear_bit_unlock(0, &pageset->access_lock);
 }
 
-
 static inline struct morse_skbq *skbq_pageset_tc_q_from_aci(struct driver_data *driverd, int aci)
 {
     struct morse_pageset *pageset = driverd->chip_if->to_chip_pageset;
@@ -204,7 +198,6 @@ static struct morse_skbq *skbq_pageset_mgmt_tc_q(struct driver_data *driverd)
 
 static struct morse_skbq *skbq_pageset_get_rx_data_q(struct driver_data *driverd)
 {
-
     const int rx_data_queue = 0;
 
     return (driverd->chip_if && driverd->chip_if->from_chip_pageset) ?
@@ -266,7 +259,6 @@ static void morse_pageset_to_chip_return_handler_no_lock(struct driver_data *dri
     int ret;
     bool pager_empty = false;
     uint32_t popped = 0;
-
     uint32_t max_expected_pops = (fifo_size(&pageset->cached_pages) * 2);
 
     MORSE_WARN_ON(!is_pageset_locked(pageset));
@@ -348,7 +340,6 @@ static void morse_pageset_to_chip_return_handler(struct driver_data *driverd, bo
 static unsigned int bcn_page_get;
 static unsigned int bcn_page_fail;
 
-
 static void morse_pageset_bcn_loss_monitor()
 {
     if (bcn_page_fail > BCN_LOSS_THRESHOLD)
@@ -373,7 +364,6 @@ static bool morse_pageset_rsved_page_is_avail(struct morse_pageset *pageset,
             {
                 morse_pageset_bcn_loss_monitor();
             }
-
             if (fifo_len(&pageset->reserved_pages) <= 1)
             {
                 bcn_page_fail++;
@@ -383,7 +373,6 @@ static bool morse_pageset_rsved_page_is_avail(struct morse_pageset *pageset,
             return true;
 
         case MORSE_SKB_CHAN_COMMAND:
-
             if (fifo_is_empty(&pageset->reserved_pages))
             {
                 morse_pageset_to_chip_return_handler(driverd, have_lock);
@@ -456,7 +445,6 @@ static int morse_pageset_write(struct morse_pageset *pageset, struct mmpkt *mmpk
     if (ret)
     {
         MMLOG_ERR("Failed to write page: %d\n", ret);
-
         if (from_rsvd)
         {
             fifo_put(&pageset->reserved_pages, page);
@@ -469,12 +457,10 @@ static int morse_pageset_write(struct morse_pageset *pageset, struct mmpkt *mmpk
         goto exit;
     }
 
-
     ret = morse_pager_hw_put(populated_pager, &page);
     if (ret)
     {
         MMLOG_ERR("%s failed to return page: %d\n", __func__, ret);
-
         hdr->sync = 0;
         morse_pager_hw_page_write(populated_pager, &page, 0, (const uint8_t *)hdr, sizeof(*hdr));
         morse_pager_hw_put(populated_pager, &page);
@@ -487,13 +473,11 @@ exit:
     return ret;
 }
 
-
 static int morse_pageset_get_next_page(struct morse_pager *populated_pager,
                                        struct morse_chip_if_state *chip_if,
                                        struct morse_page *page,
                                        enum mmhal_wlan_pkt_class *pkt_class)
 {
-
     for (int ii = 0; ii < MORSE_PAGER_BYPASS_CMD_RESP_FIFO_DEPTH; ii++)
     {
         if (chip_if->bypass.cmd_resp.to_process[ii] != 0)
@@ -519,7 +503,6 @@ static int morse_pageset_get_next_page(struct morse_pager *populated_pager,
             return MORSE_SUCCESS;
         }
     }
-
 
     int ret = morse_pager_hw_pop(populated_pager, page);
     if (ret)
@@ -551,14 +534,12 @@ static int morse_pageset_read(struct morse_pageset *pageset)
     ret = morse_pageset_get_next_page(populated_pager, chip_if, &page, &pkt_class);
     if (ret != MORSE_SUCCESS)
     {
-
         page.addr = 0;
         goto exit;
     }
 
     mmpkt_len = FAST_ROUND_UP(page.addr >> 20, 4);
     page.addr = ((page.addr & 0xFFFFF) | 0x80100000);
-
 
     mmpkt = mmhal_wlan_alloc_mmpkt_for_rx(pkt_class, mmpkt_len, sizeof(struct mmdrv_rx_metadata));
     if (!mmpkt)
@@ -571,7 +552,6 @@ static int morse_pageset_read(struct morse_pageset *pageset)
     view = mmpkt_open(mmpkt);
     buf = mmpkt_append(view, mmpkt_len);
     mmpkt_close(&view);
-
 
     ret = morse_pager_hw_page_read(populated_pager, &page, 0, buf, mmpkt_len);
 
@@ -586,10 +566,8 @@ static int morse_pageset_read(struct morse_pageset *pageset)
 
     hdr = (struct morse_buff_skb_header *)buf;
 
-
     if (hdr->sync != MORSE_SKB_HEADER_SYNC)
     {
-
         bool chip_owned = (hdr->sync == MORSE_SKB_HEADER_CHIP_OWNED_SYNC);
 
         MMLOG_WRN("%s sync error:0x%02X page[addr:0x%08lx len:%u]\n",
@@ -602,7 +580,6 @@ static int morse_pageset_read(struct morse_pageset *pageset)
         {
             page.addr = 0;
         }
-
 
         ret = 0;
         mmdrv_host_stats_increment_datapath_driver_rx_read_failures();
@@ -624,7 +601,6 @@ static int morse_pageset_read(struct morse_pageset *pageset)
         {
             break;
         }
-
         if (hdr->channel != MORSE_SKB_CHAN_TX_STATUS)
         {
             break;
@@ -648,7 +624,6 @@ static int morse_pageset_read(struct morse_pageset *pageset)
         mmdrv_host_stats_increment_datapath_driver_rx_read_failures();
         goto exit;
     }
-
     if (hdr->offset > 3)
     {
         MMLOG_ERR("%s: corrupted mmpkt header offset [offset=%u], hdr.len %u, page addr: 0x%08lx\n",
@@ -657,10 +632,8 @@ static int morse_pageset_read(struct morse_pageset *pageset)
                   hdr->len,
                   page.addr);
 
-
         hdr->offset = (hdr->len & 0x03) ? (4 - (uint32_t)(hdr->len & 3)) : 0;
     }
-
 
     mmpkt_len = sizeof(*hdr) + le16toh(hdr->offset) + le16toh(hdr->len);
     mmpkt_truncate(mmpkt, mmpkt_len);
@@ -676,7 +649,6 @@ exit:
 
     if (page.addr)
     {
-
         ret = morse_pager_hw_put(return_pager, &page);
         if (ret)
         {
@@ -686,7 +658,6 @@ exit:
 
     return ret;
 }
-
 
 static int morse_pageset_num_pages(struct morse_pageset *pageset, struct mmpkt *mmpkt)
 {
@@ -706,7 +677,6 @@ static int morse_pageset_num_pages(struct morse_pageset *pageset, struct mmpkt *
         {
             num_pages = (CMD_RSVED_PAGES_MAX - CMD_RSVED_CMD_PAGES_MAX);
         }
-
 
         num_pages = min(MAX_PAGES_PER_TX_TXN, num_pages + (int)fifo_len(&pageset->cached_pages));
     }
@@ -743,7 +713,6 @@ static void morse_pageset_tx(struct morse_pageset *pageset, struct morse_skbq *m
     {
         return;
     }
-
 
     if (mq == &pageset->cmd_q)
     {
@@ -799,7 +768,6 @@ static void morse_pageset_tx(struct morse_pageset *pageset, struct morse_skbq *m
     }
 }
 
-
 static bool morse_pageset_tx_data_handler(struct morse_pageset *pageset)
 {
     int16_t aci;
@@ -828,7 +796,6 @@ static bool morse_pageset_tx_data_handler(struct morse_pageset *pageset)
     return ((count > 0) && driver_is_data_tx_allowed(driverd));
 }
 
-
 static bool morse_pageset_tx_cmd_handler(struct morse_pageset *pageset)
 {
     struct morse_skbq *cmd_q = pageset2cmdq(pageset);
@@ -856,7 +823,6 @@ static bool morse_pageset_tx_mgmt_handler(struct morse_pageset *pageset)
     return (morse_skbq_count(mgmt_q) > 0);
 }
 
-
 static bool morse_pageset_rx_handler(struct morse_pageset *pageset)
 {
     int ret = 0;
@@ -864,7 +830,6 @@ static bool morse_pageset_rx_handler(struct morse_pageset *pageset)
     bool return_notify_req = false;
 
     MORSE_WARN_ON(is_pageset_locked(pageset));
-
 
     do {
         ret = morse_pageset_read(pageset);
@@ -927,7 +892,6 @@ void morse_pagesets_stale_tx_work(struct driver_data *driverd)
 
         if (!driverd->ps.suspended && (morse_pagesets_get_tx_buffered_count(driverd) == 0))
         {
-
             driver_task_notify_event(driverd, DRV_EVT_PS_DELAYED_EVAL_PEND);
         }
     }
@@ -946,10 +910,8 @@ void morse_pagesets_work(struct driver_data *driverd)
         return;
     }
 
-
     morse_ps_disable(driverd, PS_WAKER_PAGESET);
     morse_trns_claim(driverd);
-
 
     if (driver_task_notification_check_and_clear(driverd, DRV_EVT_RX_PEND))
     {
@@ -966,24 +928,20 @@ void morse_pagesets_work(struct driver_data *driverd)
         }
     }
 
-
     if (driver_task_notification_check_and_clear(driverd, DRV_EVT_PAGE_RETURN_PEND))
     {
         MMLOG_VRB("Page return pending\n");
         morse_pageset_to_chip_return_handler(driverd, false);
     }
 
-
     if (driver_task_notification_check_and_clear(driverd, DRV_EVT_TX_COMMAND_PEND))
     {
         MMLOG_INF("TX command pending\n");
         if (morse_pageset_tx_cmd_handler(driverd->chip_if->to_chip_pageset))
         {
-
             driver_task_schedule_notification(driverd, DRV_EVT_TX_COMMAND_PEND, 10);
         }
     }
-
 
     if (driver_task_notification_check_and_clear(driverd, DRV_EVT_TX_BEACON_PEND))
     {
@@ -993,23 +951,19 @@ void morse_pagesets_work(struct driver_data *driverd)
         }
     }
 
-
     if (driver_task_notification_check_and_clear(driverd, DRV_EVT_TX_MGMT_PEND))
     {
         network_activity = true;
         if (morse_pageset_tx_mgmt_handler(driverd->chip_if->to_chip_pageset))
         {
-
             driver_task_schedule_notification(driverd, DRV_EVT_TX_MGMT_PEND, 2);
         }
     }
-
 
     if (driver_task_notification_check_and_clear(driverd, DRV_EVT_TRAFFIC_PAUSE_PEND))
     {
         morse_skbq_data_traffic_pause(driverd);
     }
-
 
     if (driver_task_notification_check_and_clear(driverd, DRV_EVT_TRAFFIC_PAUSE_TIMEOUT))
     {
@@ -1018,19 +972,16 @@ void morse_pagesets_work(struct driver_data *driverd)
         MMLOG_WRN("Traffic pause override event fired\n");
     }
 
-
     if (driver_task_notification_check_and_clear(driverd, DRV_EVT_TRAFFIC_RESUME_PEND))
     {
         morse_skbq_data_traffic_resume(driverd);
     }
-
 
     if (driver_task_notification_check_and_clear(driverd, DRV_EVT_TX_DATA_PEND))
     {
         network_activity = true;
         if (morse_pageset_tx_data_handler(driverd->chip_if->to_chip_pageset))
         {
-
             driver_task_schedule_notification(driverd, DRV_EVT_TX_DATA_PEND, 2);
         }
     }

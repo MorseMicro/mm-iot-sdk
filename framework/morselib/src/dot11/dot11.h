@@ -6,7 +6,6 @@
  */
 
 
-
 #pragma once
 
 #include <stdint.h>
@@ -14,33 +13,19 @@
 
 #include "common/common.h"
 
-
 #define DOT11_MAC_ADDR_LEN 6
-
 #define DOT11_FCS_FIELD_LEN 4
-
 #define DOT11_MAX_PAYLOAD_LEN 2346
-
 #define DOT11_BLOCK_ACK_TIMEOUT_DISABLED 0
-
 #define DOT11_OUI_LEN 3
-
 #define DOT11_SSID_MAXLEN 32
-
 #define DOT11_TIM_BLOCK_SIZE 64
-
 #define DOT11_NEXT_TBTT_LEN 3
-
 #define DOT11_CSSID_LEN 4
-
 #define DOT11_ANO_LEN 1
-
 #define DOT11_CCMP_HEADER_LEN 8
-
 #define DOT11_CCMP_128_MIC_LEN 8
-
 #define DOT11_CCMP_256_MIC_LEN 16
-
 
 enum dot11_sequence_control
 {
@@ -50,12 +35,10 @@ enum dot11_sequence_control
     DOT11_MASK_SC_SEQUENCE_NUMBER = 0xffful << 4,
 };
 
-
 static inline uint16_t dot11_sequence_control_get_fragment_number(uint16_t sc_le)
 {
     return ((le16toh(sc_le) & DOT11_MASK_SC_FRAGMENT_NUMBER) >> DOT11_SHIFT_SC_FRAGMENT_NUMBER);
 }
-
 
 #define DOT11_SEQUENCE_CONTROL_SET_FRAGMENT_NUMBER(sc_le, val_ho)        \
     do {                                                                 \
@@ -64,12 +47,10 @@ static inline uint16_t dot11_sequence_control_get_fragment_number(uint16_t sc_le
                           DOT11_MASK_SC_FRAGMENT_NUMBER));               \
     } while (0)
 
-
 static inline uint16_t dot11_sequence_control_get_sequence_number(uint16_t sc_le)
 {
     return ((le16toh(sc_le) & DOT11_MASK_SC_SEQUENCE_NUMBER) >> DOT11_SHIFT_SC_SEQUENCE_NUMBER);
 }
-
 
 #define DOT11_SEQUENCE_CONTROL_SET_SEQUENCE_NUMBER(sc_le, val_ho)        \
     do {                                                                 \
@@ -78,26 +59,22 @@ static inline uint16_t dot11_sequence_control_get_sequence_number(uint16_t sc_le
                           DOT11_MASK_SC_SEQUENCE_NUMBER));               \
     } while (0)
 
-
 enum dot11_qos_control
 {
     DOT11_SHIFT_QC_TID = 0,
     DOT11_MASK_QC_TID = 0x0ful << 0,
 };
 
-
 static inline uint16_t dot11_qos_control_get_tid(uint16_t qc_le)
 {
     return ((le16toh(qc_le) & DOT11_MASK_QC_TID) >> DOT11_SHIFT_QC_TID);
 }
-
 
 #define DOT11_QOS_CONTROL_SET_TID(qc_le, val_ho)                                  \
     do {                                                                          \
         qc_le &= ~DOT11_MASK_QC_TID;                                              \
         qc_le |= (htole16(((val_ho) << DOT11_SHIFT_QC_TID) & DOT11_MASK_QC_TID)); \
     } while (0)
-
 
 enum dot11_capability_information
 {
@@ -123,12 +100,10 @@ enum dot11_capability_information
     DOT11_MASK_CAPINFO_EPD = 0x01ul << 13,
 };
 
-
 static inline uint16_t dot11_capability_information_get_ess(uint16_t capinfo_le)
 {
     return ((le16toh(capinfo_le) & DOT11_MASK_CAPINFO_ESS) >> DOT11_SHIFT_CAPINFO_ESS);
 }
-
 
 #define DOT11_CAPABILITY_INFORMATION_SET_ESS(capinfo_le, val_ho)                                 \
     do {                                                                                         \
@@ -136,12 +111,10 @@ static inline uint16_t dot11_capability_information_get_ess(uint16_t capinfo_le)
         capinfo_le |= (htole16(((val_ho) << DOT11_SHIFT_CAPINFO_ESS) & DOT11_MASK_CAPINFO_ESS)); \
     } while (0)
 
-
 static inline uint16_t dot11_capability_information_get_ibss(uint16_t capinfo_le)
 {
     return ((le16toh(capinfo_le) & DOT11_MASK_CAPINFO_IBSS) >> DOT11_SHIFT_CAPINFO_IBSS);
 }
-
 
 #define DOT11_CAPABILITY_INFORMATION_SET_IBSS(capinfo_le, val_ho)                                  \
     do {                                                                                           \
@@ -149,12 +122,10 @@ static inline uint16_t dot11_capability_information_get_ibss(uint16_t capinfo_le
         capinfo_le |= (htole16(((val_ho) << DOT11_SHIFT_CAPINFO_IBSS) & DOT11_MASK_CAPINFO_IBSS)); \
     } while (0)
 
-
 static inline uint16_t dot11_capability_information_get_privacy(uint16_t capinfo_le)
 {
     return ((le16toh(capinfo_le) & DOT11_MASK_CAPINFO_PRIVACY) >> DOT11_SHIFT_CAPINFO_PRIVACY);
 }
-
 
 #define DOT11_CAPABILITY_INFORMATION_SET_PRIVACY(capinfo_le, val_ho)                           \
     do {                                                                                       \
@@ -163,13 +134,11 @@ static inline uint16_t dot11_capability_information_get_privacy(uint16_t capinfo
             (htole16(((val_ho) << DOT11_SHIFT_CAPINFO_PRIVACY) & DOT11_MASK_CAPINFO_PRIVACY)); \
     } while (0)
 
-
 static inline uint16_t dot11_capability_information_get_short_preamble(uint16_t capinfo_le)
 {
     return ((le16toh(capinfo_le) & DOT11_MASK_CAPINFO_SHORT_PREAMBLE) >>
             DOT11_SHIFT_CAPINFO_SHORT_PREAMBLE);
 }
-
 
 #define DOT11_CAPABILITY_INFORMATION_SET_SHORT_PREAMBLE(capinfo_le, val_ho)       \
     do {                                                                          \
@@ -178,13 +147,11 @@ static inline uint16_t dot11_capability_information_get_short_preamble(uint16_t 
                                DOT11_MASK_CAPINFO_SHORT_PREAMBLE));               \
     } while (0)
 
-
 static inline uint16_t dot11_capability_information_get_spectrum_mgmt(uint16_t capinfo_le)
 {
     return ((le16toh(capinfo_le) & DOT11_MASK_CAPINFO_SPECTRUM_MGMT) >>
             DOT11_SHIFT_CAPINFO_SPECTRUM_MGMT);
 }
-
 
 #define DOT11_CAPABILITY_INFORMATION_SET_SPECTRUM_MGMT(capinfo_le, val_ho)       \
     do {                                                                         \
@@ -193,12 +160,10 @@ static inline uint16_t dot11_capability_information_get_spectrum_mgmt(uint16_t c
                                DOT11_MASK_CAPINFO_SPECTRUM_MGMT));               \
     } while (0)
 
-
 static inline uint16_t dot11_capability_information_get_qos(uint16_t capinfo_le)
 {
     return ((le16toh(capinfo_le) & DOT11_MASK_CAPINFO_QOS) >> DOT11_SHIFT_CAPINFO_QOS);
 }
-
 
 #define DOT11_CAPABILITY_INFORMATION_SET_QOS(capinfo_le, val_ho)                                 \
     do {                                                                                         \
@@ -206,13 +171,11 @@ static inline uint16_t dot11_capability_information_get_qos(uint16_t capinfo_le)
         capinfo_le |= (htole16(((val_ho) << DOT11_SHIFT_CAPINFO_QOS) & DOT11_MASK_CAPINFO_QOS)); \
     } while (0)
 
-
 static inline uint16_t dot11_capability_information_get_short_slot_time(uint16_t capinfo_le)
 {
     return ((le16toh(capinfo_le) & DOT11_MASK_CAPINFO_SHORT_SLOT_TIME) >>
             DOT11_SHIFT_CAPINFO_SHORT_SLOT_TIME);
 }
-
 
 #define DOT11_CAPABILITY_INFORMATION_SET_SHORT_SLOT_TIME(capinfo_le, val_ho)       \
     do {                                                                           \
@@ -221,12 +184,10 @@ static inline uint16_t dot11_capability_information_get_short_slot_time(uint16_t
                                DOT11_MASK_CAPINFO_SHORT_SLOT_TIME));               \
     } while (0)
 
-
 static inline uint16_t dot11_capability_information_get_apsd(uint16_t capinfo_le)
 {
     return ((le16toh(capinfo_le) & DOT11_MASK_CAPINFO_APSD) >> DOT11_SHIFT_CAPINFO_APSD);
 }
-
 
 #define DOT11_CAPABILITY_INFORMATION_SET_APSD(capinfo_le, val_ho)                                  \
     do {                                                                                           \
@@ -234,13 +195,11 @@ static inline uint16_t dot11_capability_information_get_apsd(uint16_t capinfo_le
         capinfo_le |= (htole16(((val_ho) << DOT11_SHIFT_CAPINFO_APSD) & DOT11_MASK_CAPINFO_APSD)); \
     } while (0)
 
-
 static inline uint16_t dot11_capability_information_get_radio_measurement(uint16_t capinfo_le)
 {
     return ((le16toh(capinfo_le) & DOT11_MASK_CAPINFO_RADIO_MEASUREMENT) >>
             DOT11_SHIFT_CAPINFO_RADIO_MEASUREMENT);
 }
-
 
 #define DOT11_CAPABILITY_INFORMATION_SET_RADIO_MEASUREMENT(capinfo_le, val_ho)       \
     do {                                                                             \
@@ -249,19 +208,16 @@ static inline uint16_t dot11_capability_information_get_radio_measurement(uint16
                                DOT11_MASK_CAPINFO_RADIO_MEASUREMENT));               \
     } while (0)
 
-
 static inline uint16_t dot11_capability_information_get_epd(uint16_t capinfo_le)
 {
     return ((le16toh(capinfo_le) & DOT11_MASK_CAPINFO_EPD) >> DOT11_SHIFT_CAPINFO_EPD);
 }
-
 
 #define DOT11_CAPABILITY_INFORMATION_SET_EPD(capinfo_le, val_ho)                                 \
     do {                                                                                         \
         capinfo_le &= ~DOT11_MASK_CAPINFO_EPD;                                                   \
         capinfo_le |= (htole16(((val_ho) << DOT11_SHIFT_CAPINFO_EPD) & DOT11_MASK_CAPINFO_EPD)); \
     } while (0)
-
 
 enum dot11_ba_parameter_set_field
 {
@@ -275,13 +231,11 @@ enum dot11_ba_parameter_set_field
     DOT11_MASK_BA_PARAM_FIELD_BUFFER_SIZE = 0x3fful << 6,
 };
 
-
 static inline uint16_t dot11_ba_parameter_set_field_get_amsdu_supported(uint16_t ba_param_field_le)
 {
     return ((le16toh(ba_param_field_le) & DOT11_MASK_BA_PARAM_FIELD_AMSDU_SUPPORTED) >>
             DOT11_SHIFT_BA_PARAM_FIELD_AMSDU_SUPPORTED);
 }
-
 
 #define DOT11_BA_PARAMETER_SET_FIELD_SET_AMSDU_SUPPORTED(ba_param_field_le, val_ho)              \
     do {                                                                                         \
@@ -290,13 +244,11 @@ static inline uint16_t dot11_ba_parameter_set_field_get_amsdu_supported(uint16_t
                                       DOT11_MASK_BA_PARAM_FIELD_AMSDU_SUPPORTED));               \
     } while (0)
 
-
 static inline uint16_t dot11_ba_parameter_set_field_get_ba_policy(uint16_t ba_param_field_le)
 {
     return ((le16toh(ba_param_field_le) & DOT11_MASK_BA_PARAM_FIELD_BA_POLICY) >>
             DOT11_SHIFT_BA_PARAM_FIELD_BA_POLICY);
 }
-
 
 #define DOT11_BA_PARAMETER_SET_FIELD_SET_BA_POLICY(ba_param_field_le, val_ho)              \
     do {                                                                                   \
@@ -305,13 +257,11 @@ static inline uint16_t dot11_ba_parameter_set_field_get_ba_policy(uint16_t ba_pa
                                       DOT11_MASK_BA_PARAM_FIELD_BA_POLICY));               \
     } while (0)
 
-
 static inline uint16_t dot11_ba_parameter_set_field_get_tid(uint16_t ba_param_field_le)
 {
     return ((le16toh(ba_param_field_le) & DOT11_MASK_BA_PARAM_FIELD_TID) >>
             DOT11_SHIFT_BA_PARAM_FIELD_TID);
 }
-
 
 #define DOT11_BA_PARAMETER_SET_FIELD_SET_TID(ba_param_field_le, val_ho)              \
     do {                                                                             \
@@ -320,13 +270,11 @@ static inline uint16_t dot11_ba_parameter_set_field_get_tid(uint16_t ba_param_fi
                                       DOT11_MASK_BA_PARAM_FIELD_TID));               \
     } while (0)
 
-
 static inline uint16_t dot11_ba_parameter_set_field_get_buffer_size(uint16_t ba_param_field_le)
 {
     return ((le16toh(ba_param_field_le) & DOT11_MASK_BA_PARAM_FIELD_BUFFER_SIZE) >>
             DOT11_SHIFT_BA_PARAM_FIELD_BUFFER_SIZE);
 }
-
 
 #define DOT11_BA_PARAMETER_SET_FIELD_SET_BUFFER_SIZE(ba_param_field_le, val_ho)              \
     do {                                                                                     \
@@ -334,7 +282,6 @@ static inline uint16_t dot11_ba_parameter_set_field_get_buffer_size(uint16_t ba_
         ba_param_field_le |= (htole16(((val_ho) << DOT11_SHIFT_BA_PARAM_FIELD_BUFFER_SIZE) & \
                                       DOT11_MASK_BA_PARAM_FIELD_BUFFER_SIZE));               \
     } while (0)
-
 
 enum dot11_delba_parameter_set_field
 {
@@ -346,13 +293,11 @@ enum dot11_delba_parameter_set_field
     DOT11_MASK_DELBA_PARAM_FIELD_TID = 0x0ful << 12,
 };
 
-
 static inline uint16_t dot11_delba_parameter_set_field_get_reserved(uint16_t delba_param_field_le)
 {
     return ((le16toh(delba_param_field_le) & DOT11_MASK_DELBA_PARAM_FIELD_RESERVED) >>
             DOT11_SHIFT_DELBA_PARAM_FIELD_RESERVED);
 }
-
 
 #define DOT11_DELBA_PARAMETER_SET_FIELD_SET_RESERVED(delba_param_field_le, val_ho)              \
     do {                                                                                        \
@@ -361,13 +306,11 @@ static inline uint16_t dot11_delba_parameter_set_field_get_reserved(uint16_t del
                                          DOT11_MASK_DELBA_PARAM_FIELD_RESERVED));               \
     } while (0)
 
-
 static inline uint16_t dot11_delba_parameter_set_field_get_initiator(uint16_t delba_param_field_le)
 {
     return ((le16toh(delba_param_field_le) & DOT11_MASK_DELBA_PARAM_FIELD_INITIATOR) >>
             DOT11_SHIFT_DELBA_PARAM_FIELD_INITIATOR);
 }
-
 
 #define DOT11_DELBA_PARAMETER_SET_FIELD_SET_INITIATOR(delba_param_field_le, val_ho)              \
     do {                                                                                         \
@@ -376,13 +319,11 @@ static inline uint16_t dot11_delba_parameter_set_field_get_initiator(uint16_t de
                                          DOT11_MASK_DELBA_PARAM_FIELD_INITIATOR));               \
     } while (0)
 
-
 static inline uint16_t dot11_delba_parameter_set_field_get_tid(uint16_t delba_param_field_le)
 {
     return ((le16toh(delba_param_field_le) & DOT11_MASK_DELBA_PARAM_FIELD_TID) >>
             DOT11_SHIFT_DELBA_PARAM_FIELD_TID);
 }
-
 
 #define DOT11_DELBA_PARAMETER_SET_FIELD_SET_TID(delba_param_field_le, val_ho)              \
     do {                                                                                   \
@@ -391,10 +332,8 @@ static inline uint16_t dot11_delba_parameter_set_field_get_tid(uint16_t delba_pa
                                          DOT11_MASK_DELBA_PARAM_FIELD_TID));               \
     } while (0)
 
-
 enum dot11_frame_control
 {
-
     DOT11_SHIFT_FC_PROTOCOL_VERSION = 0,
     DOT11_MASK_FC_PROTOCOL_VERSION = 0x03ul << 0,
     DOT11_SHIFT_FC_TYPE = 2,
@@ -403,7 +342,6 @@ enum dot11_frame_control
     DOT11_MASK_FC_SUBTYPE = 0x0ful << 4,
     DOT11_SHIFT_FC_VER_TYPE_SUBTYPE = 0,
     DOT11_MASK_FC_VER_TYPE_SUBTYPE = 0xfful << 0,
-
     DOT11_SHIFT_FC_TO_DS = 8,
     DOT11_MASK_FC_TO_DS = 0x01ul << 8,
     DOT11_SHIFT_FC_FROM_DS = 9,
@@ -420,7 +358,6 @@ enum dot11_frame_control
     DOT11_MASK_FC_PROTECTED = 0x01ul << 14,
     DOT11_SHIFT_FC_PLUS_HTC = 15,
     DOT11_MASK_FC_PLUS_HTC = 0x01ul << 15,
-
     DOT11_SHIFT_FC_NEXT_TBTT_PRESENT = 8,
     DOT11_MASK_FC_NEXT_TBTT_PRESENT = 0x01ul << 8,
     DOT11_SHIFT_FC_CSSID_PRESENT = 9,
@@ -435,12 +372,10 @@ enum dot11_frame_control
     DOT11_MASK_FC_AP_PM = 0x01ul << 15,
 };
 
-
 static inline uint16_t dot11_frame_control_get_protocol_version(uint16_t fc_le)
 {
     return ((le16toh(fc_le) & DOT11_MASK_FC_PROTOCOL_VERSION) >> DOT11_SHIFT_FC_PROTOCOL_VERSION);
 }
-
 
 #define DOT11_FRAME_CONTROL_SET_PROTOCOL_VERSION(fc_le, val_ho)           \
     do {                                                                  \
@@ -449,12 +384,10 @@ static inline uint16_t dot11_frame_control_get_protocol_version(uint16_t fc_le)
                           DOT11_MASK_FC_PROTOCOL_VERSION));               \
     } while (0)
 
-
 static inline uint16_t dot11_frame_control_get_type(uint16_t fc_le)
 {
     return ((le16toh(fc_le) & DOT11_MASK_FC_TYPE) >> DOT11_SHIFT_FC_TYPE);
 }
-
 
 #define DOT11_FRAME_CONTROL_SET_TYPE(fc_le, val_ho)                                 \
     do {                                                                            \
@@ -462,12 +395,10 @@ static inline uint16_t dot11_frame_control_get_type(uint16_t fc_le)
         fc_le |= (htole16(((val_ho) << DOT11_SHIFT_FC_TYPE) & DOT11_MASK_FC_TYPE)); \
     } while (0)
 
-
 static inline uint16_t dot11_frame_control_get_subtype(uint16_t fc_le)
 {
     return ((le16toh(fc_le) & DOT11_MASK_FC_SUBTYPE) >> DOT11_SHIFT_FC_SUBTYPE);
 }
-
 
 #define DOT11_FRAME_CONTROL_SET_SUBTYPE(fc_le, val_ho)                                    \
     do {                                                                                  \
@@ -475,12 +406,10 @@ static inline uint16_t dot11_frame_control_get_subtype(uint16_t fc_le)
         fc_le |= (htole16(((val_ho) << DOT11_SHIFT_FC_SUBTYPE) & DOT11_MASK_FC_SUBTYPE)); \
     } while (0)
 
-
 static inline uint16_t dot11_frame_control_get_ver_type_subtype(uint16_t fc_le)
 {
     return ((le16toh(fc_le) & DOT11_MASK_FC_VER_TYPE_SUBTYPE) >> DOT11_SHIFT_FC_VER_TYPE_SUBTYPE);
 }
-
 
 #define DOT11_FRAME_CONTROL_SET_VER_TYPE_SUBTYPE(fc_le, val_ho)           \
     do {                                                                  \
@@ -489,12 +418,10 @@ static inline uint16_t dot11_frame_control_get_ver_type_subtype(uint16_t fc_le)
                           DOT11_MASK_FC_VER_TYPE_SUBTYPE));               \
     } while (0)
 
-
 static inline uint16_t dot11_frame_control_get_to_ds(uint16_t fc_le)
 {
     return ((le16toh(fc_le) & DOT11_MASK_FC_TO_DS) >> DOT11_SHIFT_FC_TO_DS);
 }
-
 
 #define DOT11_FRAME_CONTROL_SET_TO_DS(fc_le, val_ho)                                  \
     do {                                                                              \
@@ -502,12 +429,10 @@ static inline uint16_t dot11_frame_control_get_to_ds(uint16_t fc_le)
         fc_le |= (htole16(((val_ho) << DOT11_SHIFT_FC_TO_DS) & DOT11_MASK_FC_TO_DS)); \
     } while (0)
 
-
 static inline uint16_t dot11_frame_control_get_from_ds(uint16_t fc_le)
 {
     return ((le16toh(fc_le) & DOT11_MASK_FC_FROM_DS) >> DOT11_SHIFT_FC_FROM_DS);
 }
-
 
 #define DOT11_FRAME_CONTROL_SET_FROM_DS(fc_le, val_ho)                                    \
     do {                                                                                  \
@@ -515,12 +440,10 @@ static inline uint16_t dot11_frame_control_get_from_ds(uint16_t fc_le)
         fc_le |= (htole16(((val_ho) << DOT11_SHIFT_FC_FROM_DS) & DOT11_MASK_FC_FROM_DS)); \
     } while (0)
 
-
 static inline uint16_t dot11_frame_control_get_more_fragments(uint16_t fc_le)
 {
     return ((le16toh(fc_le) & DOT11_MASK_FC_MORE_FRAGMENTS) >> DOT11_SHIFT_FC_MORE_FRAGMENTS);
 }
-
 
 #define DOT11_FRAME_CONTROL_SET_MORE_FRAGMENTS(fc_le, val_ho)                                      \
     do {                                                                                           \
@@ -529,12 +452,10 @@ static inline uint16_t dot11_frame_control_get_more_fragments(uint16_t fc_le)
             (htole16(((val_ho) << DOT11_SHIFT_FC_MORE_FRAGMENTS) & DOT11_MASK_FC_MORE_FRAGMENTS)); \
     } while (0)
 
-
 static inline uint16_t dot11_frame_control_get_retry(uint16_t fc_le)
 {
     return ((le16toh(fc_le) & DOT11_MASK_FC_RETRY) >> DOT11_SHIFT_FC_RETRY);
 }
-
 
 #define DOT11_FRAME_CONTROL_SET_RETRY(fc_le, val_ho)                                  \
     do {                                                                              \
@@ -542,12 +463,10 @@ static inline uint16_t dot11_frame_control_get_retry(uint16_t fc_le)
         fc_le |= (htole16(((val_ho) << DOT11_SHIFT_FC_RETRY) & DOT11_MASK_FC_RETRY)); \
     } while (0)
 
-
 static inline uint16_t dot11_frame_control_get_power_mgmt(uint16_t fc_le)
 {
     return ((le16toh(fc_le) & DOT11_MASK_FC_POWER_MGMT) >> DOT11_SHIFT_FC_POWER_MGMT);
 }
-
 
 #define DOT11_FRAME_CONTROL_SET_POWER_MGMT(fc_le, val_ho)                                       \
     do {                                                                                        \
@@ -555,12 +474,10 @@ static inline uint16_t dot11_frame_control_get_power_mgmt(uint16_t fc_le)
         fc_le |= (htole16(((val_ho) << DOT11_SHIFT_FC_POWER_MGMT) & DOT11_MASK_FC_POWER_MGMT)); \
     } while (0)
 
-
 static inline uint16_t dot11_frame_control_get_more_data(uint16_t fc_le)
 {
     return ((le16toh(fc_le) & DOT11_MASK_FC_MORE_DATA) >> DOT11_SHIFT_FC_MORE_DATA);
 }
-
 
 #define DOT11_FRAME_CONTROL_SET_MORE_DATA(fc_le, val_ho)                                      \
     do {                                                                                      \
@@ -568,12 +485,10 @@ static inline uint16_t dot11_frame_control_get_more_data(uint16_t fc_le)
         fc_le |= (htole16(((val_ho) << DOT11_SHIFT_FC_MORE_DATA) & DOT11_MASK_FC_MORE_DATA)); \
     } while (0)
 
-
 static inline uint16_t dot11_frame_control_get_protected(uint16_t fc_le)
 {
     return ((le16toh(fc_le) & DOT11_MASK_FC_PROTECTED) >> DOT11_SHIFT_FC_PROTECTED);
 }
-
 
 #define DOT11_FRAME_CONTROL_SET_PROTECTED(fc_le, val_ho)                                      \
     do {                                                                                      \
@@ -581,12 +496,10 @@ static inline uint16_t dot11_frame_control_get_protected(uint16_t fc_le)
         fc_le |= (htole16(((val_ho) << DOT11_SHIFT_FC_PROTECTED) & DOT11_MASK_FC_PROTECTED)); \
     } while (0)
 
-
 static inline uint16_t dot11_frame_control_get_plus_htc(uint16_t fc_le)
 {
     return ((le16toh(fc_le) & DOT11_MASK_FC_PLUS_HTC) >> DOT11_SHIFT_FC_PLUS_HTC);
 }
-
 
 #define DOT11_FRAME_CONTROL_SET_PLUS_HTC(fc_le, val_ho)                                     \
     do {                                                                                    \
@@ -594,12 +507,10 @@ static inline uint16_t dot11_frame_control_get_plus_htc(uint16_t fc_le)
         fc_le |= (htole16(((val_ho) << DOT11_SHIFT_FC_PLUS_HTC) & DOT11_MASK_FC_PLUS_HTC)); \
     } while (0)
 
-
 static inline uint16_t dot11_frame_control_get_next_tbtt_present(uint16_t fc_le)
 {
     return ((le16toh(fc_le) & DOT11_MASK_FC_NEXT_TBTT_PRESENT) >> DOT11_SHIFT_FC_NEXT_TBTT_PRESENT);
 }
-
 
 #define DOT11_FRAME_CONTROL_SET_NEXT_TBTT_PRESENT(fc_le, val_ho)           \
     do {                                                                   \
@@ -608,12 +519,10 @@ static inline uint16_t dot11_frame_control_get_next_tbtt_present(uint16_t fc_le)
                           DOT11_MASK_FC_NEXT_TBTT_PRESENT));               \
     } while (0)
 
-
 static inline uint16_t dot11_frame_control_get_cssid_present(uint16_t fc_le)
 {
     return ((le16toh(fc_le) & DOT11_MASK_FC_CSSID_PRESENT) >> DOT11_SHIFT_FC_CSSID_PRESENT);
 }
-
 
 #define DOT11_FRAME_CONTROL_SET_CSSID_PRESENT(fc_le, val_ho)                                     \
     do {                                                                                         \
@@ -622,12 +531,10 @@ static inline uint16_t dot11_frame_control_get_cssid_present(uint16_t fc_le)
             (htole16(((val_ho) << DOT11_SHIFT_FC_CSSID_PRESENT) & DOT11_MASK_FC_CSSID_PRESENT)); \
     } while (0)
 
-
 static inline uint16_t dot11_frame_control_get_ano_present(uint16_t fc_le)
 {
     return ((le16toh(fc_le) & DOT11_MASK_FC_ANO_PRESENT) >> DOT11_SHIFT_FC_ANO_PRESENT);
 }
-
 
 #define DOT11_FRAME_CONTROL_SET_ANO_PRESENT(fc_le, val_ho)                                        \
     do {                                                                                          \
@@ -635,12 +542,10 @@ static inline uint16_t dot11_frame_control_get_ano_present(uint16_t fc_le)
         fc_le |= (htole16(((val_ho) << DOT11_SHIFT_FC_ANO_PRESENT) & DOT11_MASK_FC_ANO_PRESENT)); \
     } while (0)
 
-
 static inline uint16_t dot11_frame_control_get_bss_bw(uint16_t fc_le)
 {
     return ((le16toh(fc_le) & DOT11_MASK_FC_BSS_BW) >> DOT11_SHIFT_FC_BSS_BW);
 }
-
 
 #define DOT11_FRAME_CONTROL_SET_BSS_BW(fc_le, val_ho)                                   \
     do {                                                                                \
@@ -648,12 +553,10 @@ static inline uint16_t dot11_frame_control_get_bss_bw(uint16_t fc_le)
         fc_le |= (htole16(((val_ho) << DOT11_SHIFT_FC_BSS_BW) & DOT11_MASK_FC_BSS_BW)); \
     } while (0)
 
-
 static inline uint16_t dot11_frame_control_get_security(uint16_t fc_le)
 {
     return ((le16toh(fc_le) & DOT11_MASK_FC_SECURITY) >> DOT11_SHIFT_FC_SECURITY);
 }
-
 
 #define DOT11_FRAME_CONTROL_SET_SECURITY(fc_le, val_ho)                                     \
     do {                                                                                    \
@@ -661,19 +564,16 @@ static inline uint16_t dot11_frame_control_get_security(uint16_t fc_le)
         fc_le |= (htole16(((val_ho) << DOT11_SHIFT_FC_SECURITY) & DOT11_MASK_FC_SECURITY)); \
     } while (0)
 
-
 static inline uint16_t dot11_frame_control_get_ap_pm(uint16_t fc_le)
 {
     return ((le16toh(fc_le) & DOT11_MASK_FC_AP_PM) >> DOT11_SHIFT_FC_AP_PM);
 }
-
 
 #define DOT11_FRAME_CONTROL_SET_AP_PM(fc_le, val_ho)                                  \
     do {                                                                              \
         fc_le &= ~DOT11_MASK_FC_AP_PM;                                                \
         fc_le |= (htole16(((val_ho) << DOT11_SHIFT_FC_AP_PM) & DOT11_MASK_FC_AP_PM)); \
     } while (0)
-
 
 enum dot11_tim_bitmap_ctrl
 {
@@ -685,13 +585,11 @@ enum dot11_tim_bitmap_ctrl
     DOT11_MASK_TIM_BITMAP_CTRL_PAGE_INDEX = 0x03ul << 6,
 };
 
-
 static inline uint8_t dot11_tim_bitmap_ctrl_get_traffic_indicator(uint8_t tim_bitmap_ctrl_le)
 {
     return (((tim_bitmap_ctrl_le)&DOT11_MASK_TIM_BITMAP_CTRL_TRAFFIC_INDICATOR) >>
             DOT11_SHIFT_TIM_BITMAP_CTRL_TRAFFIC_INDICATOR);
 }
-
 
 #define DOT11_TIM_BITMAP_CTRL_SET_TRAFFIC_INDICATOR(tim_bitmap_ctrl_le, val_ho)               \
     do {                                                                                      \
@@ -700,13 +598,11 @@ static inline uint8_t dot11_tim_bitmap_ctrl_get_traffic_indicator(uint8_t tim_bi
                                 DOT11_MASK_TIM_BITMAP_CTRL_TRAFFIC_INDICATOR));               \
     } while (0)
 
-
 static inline uint8_t dot11_tim_bitmap_ctrl_get_page_slice_num(uint8_t tim_bitmap_ctrl_le)
 {
     return (((tim_bitmap_ctrl_le)&DOT11_MASK_TIM_BITMAP_CTRL_PAGE_SLICE_NUM) >>
             DOT11_SHIFT_TIM_BITMAP_CTRL_PAGE_SLICE_NUM);
 }
-
 
 #define DOT11_TIM_BITMAP_CTRL_SET_PAGE_SLICE_NUM(tim_bitmap_ctrl_le, val_ho)               \
     do {                                                                                   \
@@ -715,13 +611,11 @@ static inline uint8_t dot11_tim_bitmap_ctrl_get_page_slice_num(uint8_t tim_bitma
                                 DOT11_MASK_TIM_BITMAP_CTRL_PAGE_SLICE_NUM));               \
     } while (0)
 
-
 static inline uint8_t dot11_tim_bitmap_ctrl_get_page_index(uint8_t tim_bitmap_ctrl_le)
 {
     return (((tim_bitmap_ctrl_le)&DOT11_MASK_TIM_BITMAP_CTRL_PAGE_INDEX) >>
             DOT11_SHIFT_TIM_BITMAP_CTRL_PAGE_INDEX);
 }
-
 
 #define DOT11_TIM_BITMAP_CTRL_SET_PAGE_INDEX(tim_bitmap_ctrl_le, val_ho)               \
     do {                                                                               \
@@ -729,7 +623,6 @@ static inline uint8_t dot11_tim_bitmap_ctrl_get_page_index(uint8_t tim_bitmap_ct
         tim_bitmap_ctrl_le |= ((((val_ho) << DOT11_SHIFT_TIM_BITMAP_CTRL_PAGE_INDEX) & \
                                 DOT11_MASK_TIM_BITMAP_CTRL_PAGE_INDEX));               \
     } while (0)
-
 
 enum dot11_tim_block_hdr
 {
@@ -741,13 +634,11 @@ enum dot11_tim_block_hdr
     DOT11_MASK_TIM_BLOCK_HDR_BLOCK_OFFSET = 0x1ful << 3,
 };
 
-
 static inline uint8_t dot11_tim_block_hdr_get_block_encoding(uint8_t tim_block_hdr_le)
 {
     return (((tim_block_hdr_le)&DOT11_MASK_TIM_BLOCK_HDR_BLOCK_ENCODING) >>
             DOT11_SHIFT_TIM_BLOCK_HDR_BLOCK_ENCODING);
 }
-
 
 #define DOT11_TIM_BLOCK_HDR_SET_BLOCK_ENCODING(tim_block_hdr_le, val_ho)               \
     do {                                                                               \
@@ -756,13 +647,11 @@ static inline uint8_t dot11_tim_block_hdr_get_block_encoding(uint8_t tim_block_h
                               DOT11_MASK_TIM_BLOCK_HDR_BLOCK_ENCODING));               \
     } while (0)
 
-
 static inline uint8_t dot11_tim_block_hdr_get_inverse_bitmap(uint8_t tim_block_hdr_le)
 {
     return (((tim_block_hdr_le)&DOT11_MASK_TIM_BLOCK_HDR_INVERSE_BITMAP) >>
             DOT11_SHIFT_TIM_BLOCK_HDR_INVERSE_BITMAP);
 }
-
 
 #define DOT11_TIM_BLOCK_HDR_SET_INVERSE_BITMAP(tim_block_hdr_le, val_ho)               \
     do {                                                                               \
@@ -771,13 +660,11 @@ static inline uint8_t dot11_tim_block_hdr_get_inverse_bitmap(uint8_t tim_block_h
                               DOT11_MASK_TIM_BLOCK_HDR_INVERSE_BITMAP));               \
     } while (0)
 
-
 static inline uint8_t dot11_tim_block_hdr_get_block_offset(uint8_t tim_block_hdr_le)
 {
     return (((tim_block_hdr_le)&DOT11_MASK_TIM_BLOCK_HDR_BLOCK_OFFSET) >>
             DOT11_SHIFT_TIM_BLOCK_HDR_BLOCK_OFFSET);
 }
-
 
 #define DOT11_TIM_BLOCK_HDR_SET_BLOCK_OFFSET(tim_block_hdr_le, val_ho)               \
     do {                                                                             \
@@ -785,7 +672,6 @@ static inline uint8_t dot11_tim_block_hdr_get_block_offset(uint8_t tim_block_hdr
         tim_block_hdr_le |= ((((val_ho) << DOT11_SHIFT_TIM_BLOCK_HDR_BLOCK_OFFSET) & \
                               DOT11_MASK_TIM_BLOCK_HDR_BLOCK_OFFSET));               \
     } while (0)
-
 
 enum dot11_tim_ade
 {
@@ -795,12 +681,10 @@ enum dot11_tim_ade
     DOT11_MASK_TIM_ADE_LENGTH = 0x1ful << 3,
 };
 
-
 static inline uint8_t dot11_tim_ade_get_ewl(uint8_t tim_ade_le)
 {
     return (((tim_ade_le)&DOT11_MASK_TIM_ADE_EWL) >> DOT11_SHIFT_TIM_ADE_EWL);
 }
-
 
 #define DOT11_TIM_ADE_SET_EWL(tim_ade_le, val_ho)                                         \
     do {                                                                                  \
@@ -808,19 +692,16 @@ static inline uint8_t dot11_tim_ade_get_ewl(uint8_t tim_ade_le)
         tim_ade_le |= ((((val_ho) << DOT11_SHIFT_TIM_ADE_EWL) & DOT11_MASK_TIM_ADE_EWL)); \
     } while (0)
 
-
 static inline uint8_t dot11_tim_ade_get_length(uint8_t tim_ade_le)
 {
     return (((tim_ade_le)&DOT11_MASK_TIM_ADE_LENGTH) >> DOT11_SHIFT_TIM_ADE_LENGTH);
 }
-
 
 #define DOT11_TIM_ADE_SET_LENGTH(tim_ade_le, val_ho)                                            \
     do {                                                                                        \
         tim_ade_le &= ~DOT11_MASK_TIM_ADE_LENGTH;                                               \
         tim_ade_le |= ((((val_ho) << DOT11_SHIFT_TIM_ADE_LENGTH) & DOT11_MASK_TIM_ADE_LENGTH)); \
     } while (0)
-
 
 enum dot11_aci_aifsn
 {
@@ -832,12 +713,10 @@ enum dot11_aci_aifsn
     DOT11_MASK_ACI_AIFSN_ACI = 0x03ul << 5,
 };
 
-
 static inline uint8_t dot11_aci_aifsn_get_aifsn(uint8_t aci_aifsn_le)
 {
     return (((aci_aifsn_le)&DOT11_MASK_ACI_AIFSN_AIFSN) >> DOT11_SHIFT_ACI_AIFSN_AIFSN);
 }
-
 
 #define DOT11_ACI_AIFSN_SET_AIFSN(aci_aifsn_le, val_ho)                                 \
     do {                                                                                \
@@ -846,12 +725,10 @@ static inline uint8_t dot11_aci_aifsn_get_aifsn(uint8_t aci_aifsn_le)
             ((((val_ho) << DOT11_SHIFT_ACI_AIFSN_AIFSN) & DOT11_MASK_ACI_AIFSN_AIFSN)); \
     } while (0)
 
-
 static inline uint8_t dot11_aci_aifsn_get_acm(uint8_t aci_aifsn_le)
 {
     return (((aci_aifsn_le)&DOT11_MASK_ACI_AIFSN_ACM) >> DOT11_SHIFT_ACI_AIFSN_ACM);
 }
-
 
 #define DOT11_ACI_AIFSN_SET_ACM(aci_aifsn_le, val_ho)                                           \
     do {                                                                                        \
@@ -859,19 +736,16 @@ static inline uint8_t dot11_aci_aifsn_get_acm(uint8_t aci_aifsn_le)
         aci_aifsn_le |= ((((val_ho) << DOT11_SHIFT_ACI_AIFSN_ACM) & DOT11_MASK_ACI_AIFSN_ACM)); \
     } while (0)
 
-
 static inline uint8_t dot11_aci_aifsn_get_aci(uint8_t aci_aifsn_le)
 {
     return (((aci_aifsn_le)&DOT11_MASK_ACI_AIFSN_ACI) >> DOT11_SHIFT_ACI_AIFSN_ACI);
 }
-
 
 #define DOT11_ACI_AIFSN_SET_ACI(aci_aifsn_le, val_ho)                                           \
     do {                                                                                        \
         aci_aifsn_le &= ~DOT11_MASK_ACI_AIFSN_ACI;                                              \
         aci_aifsn_le |= ((((val_ho) << DOT11_SHIFT_ACI_AIFSN_ACI) & DOT11_MASK_ACI_AIFSN_ACI)); \
     } while (0)
-
 
 enum dot11_ecw_minmax
 {
@@ -881,12 +755,10 @@ enum dot11_ecw_minmax
     DOT11_MASK_ECW_MINMAX_ECWMAX = 0x0ful << 4,
 };
 
-
 static inline uint8_t dot11_ecw_minmax_get_ecwmin(uint8_t ecw_minmax_le)
 {
     return (((ecw_minmax_le)&DOT11_MASK_ECW_MINMAX_ECWMIN) >> DOT11_SHIFT_ECW_MINMAX_ECWMIN);
 }
-
 
 #define DOT11_ECW_MINMAX_SET_ECWMIN(ecw_minmax_le, val_ho)                                  \
     do {                                                                                    \
@@ -895,12 +767,10 @@ static inline uint8_t dot11_ecw_minmax_get_ecwmin(uint8_t ecw_minmax_le)
             ((((val_ho) << DOT11_SHIFT_ECW_MINMAX_ECWMIN) & DOT11_MASK_ECW_MINMAX_ECWMIN)); \
     } while (0)
 
-
 static inline uint8_t dot11_ecw_minmax_get_ecwmax(uint8_t ecw_minmax_le)
 {
     return (((ecw_minmax_le)&DOT11_MASK_ECW_MINMAX_ECWMAX) >> DOT11_SHIFT_ECW_MINMAX_ECWMAX);
 }
-
 
 #define DOT11_ECW_MINMAX_SET_ECWMAX(ecw_minmax_le, val_ho)                                  \
     do {                                                                                    \
@@ -908,7 +778,6 @@ static inline uint8_t dot11_ecw_minmax_get_ecwmax(uint8_t ecw_minmax_le)
         ecw_minmax_le |=                                                                    \
             ((((val_ho) << DOT11_SHIFT_ECW_MINMAX_ECWMAX) & DOT11_MASK_ECW_MINMAX_ECWMAX)); \
     } while (0)
-
 
 enum dot11_twt_control_field
 {
@@ -924,13 +793,11 @@ enum dot11_twt_control_field
     DOT11_MASK_TWT_CONTROL_WAKE_DURATION_UNIT = 0x01ul << 5,
 };
 
-
 static inline uint8_t dot11_twt_control_field_get_ndp_paging_indicator(uint8_t twt_control_le)
 {
     return (((twt_control_le)&DOT11_MASK_TWT_CONTROL_NDP_PAGING_INDICATOR) >>
             DOT11_SHIFT_TWT_CONTROL_NDP_PAGING_INDICATOR);
 }
-
 
 #define DOT11_TWT_CONTROL_FIELD_SET_NDP_PAGING_INDICATOR(twt_control_le, val_ho)         \
     do {                                                                                 \
@@ -939,13 +806,11 @@ static inline uint8_t dot11_twt_control_field_get_ndp_paging_indicator(uint8_t t
                             DOT11_MASK_TWT_CONTROL_NDP_PAGING_INDICATOR));               \
     } while (0)
 
-
 static inline uint8_t dot11_twt_control_field_get_responder_pm_mode(uint8_t twt_control_le)
 {
     return (((twt_control_le)&DOT11_MASK_TWT_CONTROL_RESPONDER_PM_MODE) >>
             DOT11_SHIFT_TWT_CONTROL_RESPONDER_PM_MODE);
 }
-
 
 #define DOT11_TWT_CONTROL_FIELD_SET_RESPONDER_PM_MODE(twt_control_le, val_ho)         \
     do {                                                                              \
@@ -954,13 +819,11 @@ static inline uint8_t dot11_twt_control_field_get_responder_pm_mode(uint8_t twt_
                             DOT11_MASK_TWT_CONTROL_RESPONDER_PM_MODE));               \
     } while (0)
 
-
 static inline uint8_t dot11_twt_control_field_get_negotiation_type(uint8_t twt_control_le)
 {
     return (((twt_control_le)&DOT11_MASK_TWT_CONTROL_NEGOTIATION_TYPE) >>
             DOT11_SHIFT_TWT_CONTROL_NEGOTIATION_TYPE);
 }
-
 
 #define DOT11_TWT_CONTROL_FIELD_SET_NEGOTIATION_TYPE(twt_control_le, val_ho)         \
     do {                                                                             \
@@ -969,13 +832,11 @@ static inline uint8_t dot11_twt_control_field_get_negotiation_type(uint8_t twt_c
                             DOT11_MASK_TWT_CONTROL_NEGOTIATION_TYPE));               \
     } while (0)
 
-
 static inline uint8_t dot11_twt_control_field_get_twt_inf_frame_disabled(uint8_t twt_control_le)
 {
     return (((twt_control_le)&DOT11_MASK_TWT_CONTROL_TWT_INF_FRAME_DISABLED) >>
             DOT11_SHIFT_TWT_CONTROL_TWT_INF_FRAME_DISABLED);
 }
-
 
 #define DOT11_TWT_CONTROL_FIELD_SET_TWT_INF_FRAME_DISABLED(twt_control_le, val_ho)         \
     do {                                                                                   \
@@ -984,13 +845,11 @@ static inline uint8_t dot11_twt_control_field_get_twt_inf_frame_disabled(uint8_t
                             DOT11_MASK_TWT_CONTROL_TWT_INF_FRAME_DISABLED));               \
     } while (0)
 
-
 static inline uint8_t dot11_twt_control_field_get_wake_duration_unit(uint8_t twt_control_le)
 {
     return (((twt_control_le)&DOT11_MASK_TWT_CONTROL_WAKE_DURATION_UNIT) >>
             DOT11_SHIFT_TWT_CONTROL_WAKE_DURATION_UNIT);
 }
-
 
 #define DOT11_TWT_CONTROL_FIELD_SET_WAKE_DURATION_UNIT(twt_control_le, val_ho)         \
     do {                                                                               \
@@ -998,7 +857,6 @@ static inline uint8_t dot11_twt_control_field_get_wake_duration_unit(uint8_t twt
         twt_control_le |= ((((val_ho) << DOT11_SHIFT_TWT_CONTROL_WAKE_DURATION_UNIT) & \
                             DOT11_MASK_TWT_CONTROL_WAKE_DURATION_UNIT));               \
     } while (0)
-
 
 enum dot11_twt_request_type_field
 {
@@ -1020,13 +878,11 @@ enum dot11_twt_request_type_field
     DOT11_MASK_TWT_REQ_TYPE_PROTECTION = 0x01ul << 15,
 };
 
-
 static inline uint16_t dot11_twt_request_type_field_get_request(uint16_t twt_req_type_le)
 {
     return ((le16toh(twt_req_type_le) & DOT11_MASK_TWT_REQ_TYPE_REQUEST) >>
             DOT11_SHIFT_TWT_REQ_TYPE_REQUEST);
 }
-
 
 #define DOT11_TWT_REQUEST_TYPE_FIELD_SET_REQUEST(twt_req_type_le, val_ho)            \
     do {                                                                             \
@@ -1035,13 +891,11 @@ static inline uint16_t dot11_twt_request_type_field_get_request(uint16_t twt_req
                                     DOT11_MASK_TWT_REQ_TYPE_REQUEST));               \
     } while (0)
 
-
 static inline uint16_t dot11_twt_request_type_field_get_setup_command(uint16_t twt_req_type_le)
 {
     return ((le16toh(twt_req_type_le) & DOT11_MASK_TWT_REQ_TYPE_SETUP_COMMAND) >>
             DOT11_SHIFT_TWT_REQ_TYPE_SETUP_COMMAND);
 }
-
 
 #define DOT11_TWT_REQUEST_TYPE_FIELD_SET_SETUP_COMMAND(twt_req_type_le, val_ho)            \
     do {                                                                                   \
@@ -1050,13 +904,11 @@ static inline uint16_t dot11_twt_request_type_field_get_setup_command(uint16_t t
                                     DOT11_MASK_TWT_REQ_TYPE_SETUP_COMMAND));               \
     } while (0)
 
-
 static inline uint16_t dot11_twt_request_type_field_get_trigger(uint16_t twt_req_type_le)
 {
     return ((le16toh(twt_req_type_le) & DOT11_MASK_TWT_REQ_TYPE_TRIGGER) >>
             DOT11_SHIFT_TWT_REQ_TYPE_TRIGGER);
 }
-
 
 #define DOT11_TWT_REQUEST_TYPE_FIELD_SET_TRIGGER(twt_req_type_le, val_ho)            \
     do {                                                                             \
@@ -1065,13 +917,11 @@ static inline uint16_t dot11_twt_request_type_field_get_trigger(uint16_t twt_req
                                     DOT11_MASK_TWT_REQ_TYPE_TRIGGER));               \
     } while (0)
 
-
 static inline uint16_t dot11_twt_request_type_field_get_implicit(uint16_t twt_req_type_le)
 {
     return ((le16toh(twt_req_type_le) & DOT11_MASK_TWT_REQ_TYPE_IMPLICIT) >>
             DOT11_SHIFT_TWT_REQ_TYPE_IMPLICIT);
 }
-
 
 #define DOT11_TWT_REQUEST_TYPE_FIELD_SET_IMPLICIT(twt_req_type_le, val_ho)            \
     do {                                                                              \
@@ -1080,13 +930,11 @@ static inline uint16_t dot11_twt_request_type_field_get_implicit(uint16_t twt_re
                                     DOT11_MASK_TWT_REQ_TYPE_IMPLICIT));               \
     } while (0)
 
-
 static inline uint16_t dot11_twt_request_type_field_get_flow_type(uint16_t twt_req_type_le)
 {
     return ((le16toh(twt_req_type_le) & DOT11_MASK_TWT_REQ_TYPE_FLOW_TYPE) >>
             DOT11_SHIFT_TWT_REQ_TYPE_FLOW_TYPE);
 }
-
 
 #define DOT11_TWT_REQUEST_TYPE_FIELD_SET_FLOW_TYPE(twt_req_type_le, val_ho)            \
     do {                                                                               \
@@ -1095,13 +943,11 @@ static inline uint16_t dot11_twt_request_type_field_get_flow_type(uint16_t twt_r
                                     DOT11_MASK_TWT_REQ_TYPE_FLOW_TYPE));               \
     } while (0)
 
-
 static inline uint16_t dot11_twt_request_type_field_get_flow_identifier(uint16_t twt_req_type_le)
 {
     return ((le16toh(twt_req_type_le) & DOT11_MASK_TWT_REQ_TYPE_FLOW_IDENTIFIER) >>
             DOT11_SHIFT_TWT_REQ_TYPE_FLOW_IDENTIFIER);
 }
-
 
 #define DOT11_TWT_REQUEST_TYPE_FIELD_SET_FLOW_IDENTIFIER(twt_req_type_le, val_ho)            \
     do {                                                                                     \
@@ -1110,13 +956,11 @@ static inline uint16_t dot11_twt_request_type_field_get_flow_identifier(uint16_t
                                     DOT11_MASK_TWT_REQ_TYPE_FLOW_IDENTIFIER));               \
     } while (0)
 
-
 static inline uint16_t dot11_twt_request_type_field_get_wake_interval_exp(uint16_t twt_req_type_le)
 {
     return ((le16toh(twt_req_type_le) & DOT11_MASK_TWT_REQ_TYPE_WAKE_INTERVAL_EXP) >>
             DOT11_SHIFT_TWT_REQ_TYPE_WAKE_INTERVAL_EXP);
 }
-
 
 #define DOT11_TWT_REQUEST_TYPE_FIELD_SET_WAKE_INTERVAL_EXP(twt_req_type_le, val_ho)            \
     do {                                                                                       \
@@ -1125,13 +969,11 @@ static inline uint16_t dot11_twt_request_type_field_get_wake_interval_exp(uint16
                                     DOT11_MASK_TWT_REQ_TYPE_WAKE_INTERVAL_EXP));               \
     } while (0)
 
-
 static inline uint16_t dot11_twt_request_type_field_get_protection(uint16_t twt_req_type_le)
 {
     return ((le16toh(twt_req_type_le) & DOT11_MASK_TWT_REQ_TYPE_PROTECTION) >>
             DOT11_SHIFT_TWT_REQ_TYPE_PROTECTION);
 }
-
 
 #define DOT11_TWT_REQUEST_TYPE_FIELD_SET_PROTECTION(twt_req_type_le, val_ho)            \
     do {                                                                                \
@@ -1139,7 +981,6 @@ static inline uint16_t dot11_twt_request_type_field_get_protection(uint16_t twt_
         twt_req_type_le |= (htole16(((val_ho) << DOT11_SHIFT_TWT_REQ_TYPE_PROTECTION) & \
                                     DOT11_MASK_TWT_REQ_TYPE_PROTECTION));               \
     } while (0)
-
 
 enum dot11_s1g_cap_info_0
 {
@@ -1159,13 +1000,11 @@ enum dot11_s1g_cap_info_0
     DOT11_MASK_S1G_CAP0_SUPP_CHAN_WIDTH = 0x03ul << 6,
 };
 
-
 static inline uint8_t dot11_s1g_cap_info_0_get_s1g_long_support(uint8_t s1g_cap0_le)
 {
     return (((s1g_cap0_le)&DOT11_MASK_S1G_CAP0_S1G_LONG_SUPPORT) >>
             DOT11_SHIFT_S1G_CAP0_S1G_LONG_SUPPORT);
 }
-
 
 #define DOT11_S1G_CAP_INFO_0_SET_S1G_LONG_SUPPORT(s1g_cap0_le, val_ho)         \
     do {                                                                       \
@@ -1174,12 +1013,10 @@ static inline uint8_t dot11_s1g_cap_info_0_get_s1g_long_support(uint8_t s1g_cap0
                          DOT11_MASK_S1G_CAP0_S1G_LONG_SUPPORT));               \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_cap_info_0_get_sgi_1mhz(uint8_t s1g_cap0_le)
 {
     return (((s1g_cap0_le)&DOT11_MASK_S1G_CAP0_SGI_1MHZ) >> DOT11_SHIFT_S1G_CAP0_SGI_1MHZ);
 }
-
 
 #define DOT11_S1G_CAP_INFO_0_SET_SGI_1MHZ(s1g_cap0_le, val_ho)                              \
     do {                                                                                    \
@@ -1188,12 +1025,10 @@ static inline uint8_t dot11_s1g_cap_info_0_get_sgi_1mhz(uint8_t s1g_cap0_le)
             ((((val_ho) << DOT11_SHIFT_S1G_CAP0_SGI_1MHZ) & DOT11_MASK_S1G_CAP0_SGI_1MHZ)); \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_cap_info_0_get_sgi_2mhz(uint8_t s1g_cap0_le)
 {
     return (((s1g_cap0_le)&DOT11_MASK_S1G_CAP0_SGI_2MHZ) >> DOT11_SHIFT_S1G_CAP0_SGI_2MHZ);
 }
-
 
 #define DOT11_S1G_CAP_INFO_0_SET_SGI_2MHZ(s1g_cap0_le, val_ho)                              \
     do {                                                                                    \
@@ -1202,12 +1037,10 @@ static inline uint8_t dot11_s1g_cap_info_0_get_sgi_2mhz(uint8_t s1g_cap0_le)
             ((((val_ho) << DOT11_SHIFT_S1G_CAP0_SGI_2MHZ) & DOT11_MASK_S1G_CAP0_SGI_2MHZ)); \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_cap_info_0_get_sgi_4mhz(uint8_t s1g_cap0_le)
 {
     return (((s1g_cap0_le)&DOT11_MASK_S1G_CAP0_SGI_4MHZ) >> DOT11_SHIFT_S1G_CAP0_SGI_4MHZ);
 }
-
 
 #define DOT11_S1G_CAP_INFO_0_SET_SGI_4MHZ(s1g_cap0_le, val_ho)                              \
     do {                                                                                    \
@@ -1216,12 +1049,10 @@ static inline uint8_t dot11_s1g_cap_info_0_get_sgi_4mhz(uint8_t s1g_cap0_le)
             ((((val_ho) << DOT11_SHIFT_S1G_CAP0_SGI_4MHZ) & DOT11_MASK_S1G_CAP0_SGI_4MHZ)); \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_cap_info_0_get_sgi_8mhz(uint8_t s1g_cap0_le)
 {
     return (((s1g_cap0_le)&DOT11_MASK_S1G_CAP0_SGI_8MHZ) >> DOT11_SHIFT_S1G_CAP0_SGI_8MHZ);
 }
-
 
 #define DOT11_S1G_CAP_INFO_0_SET_SGI_8MHZ(s1g_cap0_le, val_ho)                              \
     do {                                                                                    \
@@ -1230,12 +1061,10 @@ static inline uint8_t dot11_s1g_cap_info_0_get_sgi_8mhz(uint8_t s1g_cap0_le)
             ((((val_ho) << DOT11_SHIFT_S1G_CAP0_SGI_8MHZ) & DOT11_MASK_S1G_CAP0_SGI_8MHZ)); \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_cap_info_0_get_sgi_16mhz(uint8_t s1g_cap0_le)
 {
     return (((s1g_cap0_le)&DOT11_MASK_S1G_CAP0_SGI_16MHZ) >> DOT11_SHIFT_S1G_CAP0_SGI_16MHZ);
 }
-
 
 #define DOT11_S1G_CAP_INFO_0_SET_SGI_16MHZ(s1g_cap0_le, val_ho)                               \
     do {                                                                                      \
@@ -1244,13 +1073,11 @@ static inline uint8_t dot11_s1g_cap_info_0_get_sgi_16mhz(uint8_t s1g_cap0_le)
             ((((val_ho) << DOT11_SHIFT_S1G_CAP0_SGI_16MHZ) & DOT11_MASK_S1G_CAP0_SGI_16MHZ)); \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_cap_info_0_get_supp_chan_width(uint8_t s1g_cap0_le)
 {
     return (((s1g_cap0_le)&DOT11_MASK_S1G_CAP0_SUPP_CHAN_WIDTH) >>
             DOT11_SHIFT_S1G_CAP0_SUPP_CHAN_WIDTH);
 }
-
 
 #define DOT11_S1G_CAP_INFO_0_SET_SUPP_CHAN_WIDTH(s1g_cap0_le, val_ho)         \
     do {                                                                      \
@@ -1258,7 +1085,6 @@ static inline uint8_t dot11_s1g_cap_info_0_get_supp_chan_width(uint8_t s1g_cap0_
         s1g_cap0_le |= ((((val_ho) << DOT11_SHIFT_S1G_CAP0_SUPP_CHAN_WIDTH) & \
                          DOT11_MASK_S1G_CAP0_SUPP_CHAN_WIDTH));               \
     } while (0)
-
 
 enum dot11_s1g_cap_info_2
 {
@@ -1274,13 +1100,11 @@ enum dot11_s1g_cap_info_2
     DOT11_MASK_S1G_CAP2_TRAV_PILOT_SUPPORT = 0x03ul << 6,
 };
 
-
 static inline uint8_t dot11_s1g_cap_info_2_get_num_sounding_dimensions(uint8_t s1g_cap2_le)
 {
     return (((s1g_cap2_le)&DOT11_MASK_S1G_CAP2_NUM_SOUNDING_DIMENSIONS) >>
             DOT11_SHIFT_S1G_CAP2_NUM_SOUNDING_DIMENSIONS);
 }
-
 
 #define DOT11_S1G_CAP_INFO_2_SET_NUM_SOUNDING_DIMENSIONS(s1g_cap2_le, val_ho)         \
     do {                                                                              \
@@ -1289,13 +1113,11 @@ static inline uint8_t dot11_s1g_cap_info_2_get_num_sounding_dimensions(uint8_t s
                          DOT11_MASK_S1G_CAP2_NUM_SOUNDING_DIMENSIONS));               \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_cap_info_2_get_mu_beamformer_cap(uint8_t s1g_cap2_le)
 {
     return (((s1g_cap2_le)&DOT11_MASK_S1G_CAP2_MU_BEAMFORMER_CAP) >>
             DOT11_SHIFT_S1G_CAP2_MU_BEAMFORMER_CAP);
 }
-
 
 #define DOT11_S1G_CAP_INFO_2_SET_MU_BEAMFORMER_CAP(s1g_cap2_le, val_ho)         \
     do {                                                                        \
@@ -1304,13 +1126,11 @@ static inline uint8_t dot11_s1g_cap_info_2_get_mu_beamformer_cap(uint8_t s1g_cap
                          DOT11_MASK_S1G_CAP2_MU_BEAMFORMER_CAP));               \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_cap_info_2_get_mu_beamformee_cap(uint8_t s1g_cap2_le)
 {
     return (((s1g_cap2_le)&DOT11_MASK_S1G_CAP2_MU_BEAMFORMEE_CAP) >>
             DOT11_SHIFT_S1G_CAP2_MU_BEAMFORMEE_CAP);
 }
-
 
 #define DOT11_S1G_CAP_INFO_2_SET_MU_BEAMFORMEE_CAP(s1g_cap2_le, val_ho)         \
     do {                                                                        \
@@ -1319,12 +1139,10 @@ static inline uint8_t dot11_s1g_cap_info_2_get_mu_beamformee_cap(uint8_t s1g_cap
                          DOT11_MASK_S1G_CAP2_MU_BEAMFORMEE_CAP));               \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_cap_info_2_get_htc_vht_cap(uint8_t s1g_cap2_le)
 {
     return (((s1g_cap2_le)&DOT11_MASK_S1G_CAP2_HTC_VHT_CAP) >> DOT11_SHIFT_S1G_CAP2_HTC_VHT_CAP);
 }
-
 
 #define DOT11_S1G_CAP_INFO_2_SET_HTC_VHT_CAP(s1g_cap2_le, val_ho)                                 \
     do {                                                                                          \
@@ -1333,13 +1151,11 @@ static inline uint8_t dot11_s1g_cap_info_2_get_htc_vht_cap(uint8_t s1g_cap2_le)
             ((((val_ho) << DOT11_SHIFT_S1G_CAP2_HTC_VHT_CAP) & DOT11_MASK_S1G_CAP2_HTC_VHT_CAP)); \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_cap_info_2_get_trav_pilot_support(uint8_t s1g_cap2_le)
 {
     return (((s1g_cap2_le)&DOT11_MASK_S1G_CAP2_TRAV_PILOT_SUPPORT) >>
             DOT11_SHIFT_S1G_CAP2_TRAV_PILOT_SUPPORT);
 }
-
 
 #define DOT11_S1G_CAP_INFO_2_SET_TRAV_PILOT_SUPPORT(s1g_cap2_le, val_ho)         \
     do {                                                                         \
@@ -1347,7 +1163,6 @@ static inline uint8_t dot11_s1g_cap_info_2_get_trav_pilot_support(uint8_t s1g_ca
         s1g_cap2_le |= ((((val_ho) << DOT11_SHIFT_S1G_CAP2_TRAV_PILOT_SUPPORT) & \
                          DOT11_MASK_S1G_CAP2_TRAV_PILOT_SUPPORT));               \
     } while (0)
-
 
 enum dot11_s1g_cap_info_3
 {
@@ -1363,12 +1178,10 @@ enum dot11_s1g_cap_info_3
     DOT11_MASK_S1G_CAP3_MIN_MPDU_START_SPACING = 0x07ul << 5,
 };
 
-
 static inline uint8_t dot11_s1g_cap_info_3_get_rd_responder(uint8_t s1g_cap3_le)
 {
     return (((s1g_cap3_le)&DOT11_MASK_S1G_CAP3_RD_RESPONDER) >> DOT11_SHIFT_S1G_CAP3_RD_RESPONDER);
 }
-
 
 #define DOT11_S1G_CAP_INFO_3_SET_RD_RESPONDER(s1g_cap3_le, val_ho)         \
     do {                                                                   \
@@ -1377,12 +1190,10 @@ static inline uint8_t dot11_s1g_cap_info_3_get_rd_responder(uint8_t s1g_cap3_le)
                          DOT11_MASK_S1G_CAP3_RD_RESPONDER));               \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_cap_info_3_get_reserved(uint8_t s1g_cap3_le)
 {
     return (((s1g_cap3_le)&DOT11_MASK_S1G_CAP3_RESERVED) >> DOT11_SHIFT_S1G_CAP3_RESERVED);
 }
-
 
 #define DOT11_S1G_CAP_INFO_3_SET_RESERVED(s1g_cap3_le, val_ho)                              \
     do {                                                                                    \
@@ -1391,12 +1202,10 @@ static inline uint8_t dot11_s1g_cap_info_3_get_reserved(uint8_t s1g_cap3_le)
             ((((val_ho) << DOT11_SHIFT_S1G_CAP3_RESERVED) & DOT11_MASK_S1G_CAP3_RESERVED)); \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_cap_info_3_get_max_mpdu_len(uint8_t s1g_cap3_le)
 {
     return (((s1g_cap3_le)&DOT11_MASK_S1G_CAP3_MAX_MPDU_LEN) >> DOT11_SHIFT_S1G_CAP3_MAX_MPDU_LEN);
 }
-
 
 #define DOT11_S1G_CAP_INFO_3_SET_MAX_MPDU_LEN(s1g_cap3_le, val_ho)         \
     do {                                                                   \
@@ -1405,13 +1214,11 @@ static inline uint8_t dot11_s1g_cap_info_3_get_max_mpdu_len(uint8_t s1g_cap3_le)
                          DOT11_MASK_S1G_CAP3_MAX_MPDU_LEN));               \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_cap_info_3_get_max_ampdu_len_exp(uint8_t s1g_cap3_le)
 {
     return (((s1g_cap3_le)&DOT11_MASK_S1G_CAP3_MAX_AMPDU_LEN_EXP) >>
             DOT11_SHIFT_S1G_CAP3_MAX_AMPDU_LEN_EXP);
 }
-
 
 #define DOT11_S1G_CAP_INFO_3_SET_MAX_AMPDU_LEN_EXP(s1g_cap3_le, val_ho)         \
     do {                                                                        \
@@ -1420,13 +1227,11 @@ static inline uint8_t dot11_s1g_cap_info_3_get_max_ampdu_len_exp(uint8_t s1g_cap
                          DOT11_MASK_S1G_CAP3_MAX_AMPDU_LEN_EXP));               \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_cap_info_3_get_min_mpdu_start_spacing(uint8_t s1g_cap3_le)
 {
     return (((s1g_cap3_le)&DOT11_MASK_S1G_CAP3_MIN_MPDU_START_SPACING) >>
             DOT11_SHIFT_S1G_CAP3_MIN_MPDU_START_SPACING);
 }
-
 
 #define DOT11_S1G_CAP_INFO_3_SET_MIN_MPDU_START_SPACING(s1g_cap3_le, val_ho)         \
     do {                                                                             \
@@ -1434,7 +1239,6 @@ static inline uint8_t dot11_s1g_cap_info_3_get_min_mpdu_start_spacing(uint8_t s1
         s1g_cap3_le |= ((((val_ho) << DOT11_SHIFT_S1G_CAP3_MIN_MPDU_START_SPACING) & \
                          DOT11_MASK_S1G_CAP3_MIN_MPDU_START_SPACING));               \
     } while (0)
-
 
 enum dot11_s1g_cap_info_4
 {
@@ -1454,13 +1258,11 @@ enum dot11_s1g_cap_info_4
     DOT11_MASK_S1G_CAP4_STA_TYPE_SUPPORT = 0x03ul << 6,
 };
 
-
 static inline uint8_t dot11_s1g_cap_info_4_get_uplink_sync_cap(uint8_t s1g_cap4_le)
 {
     return (((s1g_cap4_le)&DOT11_MASK_S1G_CAP4_UPLINK_SYNC_CAP) >>
             DOT11_SHIFT_S1G_CAP4_UPLINK_SYNC_CAP);
 }
-
 
 #define DOT11_S1G_CAP_INFO_4_SET_UPLINK_SYNC_CAP(s1g_cap4_le, val_ho)         \
     do {                                                                      \
@@ -1469,12 +1271,10 @@ static inline uint8_t dot11_s1g_cap_info_4_get_uplink_sync_cap(uint8_t s1g_cap4_
                          DOT11_MASK_S1G_CAP4_UPLINK_SYNC_CAP));               \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_cap_info_4_get_dynamic_aid(uint8_t s1g_cap4_le)
 {
     return (((s1g_cap4_le)&DOT11_MASK_S1G_CAP4_DYNAMIC_AID) >> DOT11_SHIFT_S1G_CAP4_DYNAMIC_AID);
 }
-
 
 #define DOT11_S1G_CAP_INFO_4_SET_DYNAMIC_AID(s1g_cap4_le, val_ho)                                 \
     do {                                                                                          \
@@ -1483,12 +1283,10 @@ static inline uint8_t dot11_s1g_cap_info_4_get_dynamic_aid(uint8_t s1g_cap4_le)
             ((((val_ho) << DOT11_SHIFT_S1G_CAP4_DYNAMIC_AID) & DOT11_MASK_S1G_CAP4_DYNAMIC_AID)); \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_cap_info_4_get_bat_support(uint8_t s1g_cap4_le)
 {
     return (((s1g_cap4_le)&DOT11_MASK_S1G_CAP4_BAT_SUPPORT) >> DOT11_SHIFT_S1G_CAP4_BAT_SUPPORT);
 }
-
 
 #define DOT11_S1G_CAP_INFO_4_SET_BAT_SUPPORT(s1g_cap4_le, val_ho)                                 \
     do {                                                                                          \
@@ -1497,13 +1295,11 @@ static inline uint8_t dot11_s1g_cap_info_4_get_bat_support(uint8_t s1g_cap4_le)
             ((((val_ho) << DOT11_SHIFT_S1G_CAP4_BAT_SUPPORT) & DOT11_MASK_S1G_CAP4_BAT_SUPPORT)); \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_cap_info_4_get_tim_ade_support(uint8_t s1g_cap4_le)
 {
     return (((s1g_cap4_le)&DOT11_MASK_S1G_CAP4_TIM_ADE_SUPPORT) >>
             DOT11_SHIFT_S1G_CAP4_TIM_ADE_SUPPORT);
 }
-
 
 #define DOT11_S1G_CAP_INFO_4_SET_TIM_ADE_SUPPORT(s1g_cap4_le, val_ho)         \
     do {                                                                      \
@@ -1512,13 +1308,11 @@ static inline uint8_t dot11_s1g_cap_info_4_get_tim_ade_support(uint8_t s1g_cap4_
                          DOT11_MASK_S1G_CAP4_TIM_ADE_SUPPORT));               \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_cap_info_4_get_non_tim_support(uint8_t s1g_cap4_le)
 {
     return (((s1g_cap4_le)&DOT11_MASK_S1G_CAP4_NON_TIM_SUPPORT) >>
             DOT11_SHIFT_S1G_CAP4_NON_TIM_SUPPORT);
 }
-
 
 #define DOT11_S1G_CAP_INFO_4_SET_NON_TIM_SUPPORT(s1g_cap4_le, val_ho)         \
     do {                                                                      \
@@ -1527,13 +1321,11 @@ static inline uint8_t dot11_s1g_cap_info_4_get_non_tim_support(uint8_t s1g_cap4_
                          DOT11_MASK_S1G_CAP4_NON_TIM_SUPPORT));               \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_cap_info_4_get_group_aid_support(uint8_t s1g_cap4_le)
 {
     return (((s1g_cap4_le)&DOT11_MASK_S1G_CAP4_GROUP_AID_SUPPORT) >>
             DOT11_SHIFT_S1G_CAP4_GROUP_AID_SUPPORT);
 }
-
 
 #define DOT11_S1G_CAP_INFO_4_SET_GROUP_AID_SUPPORT(s1g_cap4_le, val_ho)         \
     do {                                                                        \
@@ -1542,13 +1334,11 @@ static inline uint8_t dot11_s1g_cap_info_4_get_group_aid_support(uint8_t s1g_cap
                          DOT11_MASK_S1G_CAP4_GROUP_AID_SUPPORT));               \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_cap_info_4_get_sta_type_support(uint8_t s1g_cap4_le)
 {
     return (((s1g_cap4_le)&DOT11_MASK_S1G_CAP4_STA_TYPE_SUPPORT) >>
             DOT11_SHIFT_S1G_CAP4_STA_TYPE_SUPPORT);
 }
-
 
 #define DOT11_S1G_CAP_INFO_4_SET_STA_TYPE_SUPPORT(s1g_cap4_le, val_ho)         \
     do {                                                                       \
@@ -1556,7 +1346,6 @@ static inline uint8_t dot11_s1g_cap_info_4_get_sta_type_support(uint8_t s1g_cap4
         s1g_cap4_le |= ((((val_ho) << DOT11_SHIFT_S1G_CAP4_STA_TYPE_SUPPORT) & \
                          DOT11_MASK_S1G_CAP4_STA_TYPE_SUPPORT));               \
     } while (0)
-
 
 enum dot11_s1g_cap_info_5
 {
@@ -1576,12 +1365,10 @@ enum dot11_s1g_cap_info_5
     DOT11_MASK_S1G_CAP5_SECTORIZED_BEAM_CAP = 0x03ul << 6,
 };
 
-
 static inline uint8_t dot11_s1g_cap_info_5_get_cac(uint8_t s1g_cap5_le)
 {
     return (((s1g_cap5_le)&DOT11_MASK_S1G_CAP5_CAC) >> DOT11_SHIFT_S1G_CAP5_CAC);
 }
-
 
 #define DOT11_S1G_CAP_INFO_5_SET_CAC(s1g_cap5_le, val_ho)                                    \
     do {                                                                                     \
@@ -1589,12 +1376,10 @@ static inline uint8_t dot11_s1g_cap_info_5_get_cac(uint8_t s1g_cap5_le)
         s1g_cap5_le |= ((((val_ho) << DOT11_SHIFT_S1G_CAP5_CAC) & DOT11_MASK_S1G_CAP5_CAC)); \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_cap_info_5_get_dac(uint8_t s1g_cap5_le)
 {
     return (((s1g_cap5_le)&DOT11_MASK_S1G_CAP5_DAC) >> DOT11_SHIFT_S1G_CAP5_DAC);
 }
-
 
 #define DOT11_S1G_CAP_INFO_5_SET_DAC(s1g_cap5_le, val_ho)                                    \
     do {                                                                                     \
@@ -1602,13 +1387,11 @@ static inline uint8_t dot11_s1g_cap_info_5_get_dac(uint8_t s1g_cap5_le)
         s1g_cap5_le |= ((((val_ho) << DOT11_SHIFT_S1G_CAP5_DAC) & DOT11_MASK_S1G_CAP5_DAC)); \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_cap_info_5_get_amsdu_supported(uint8_t s1g_cap5_le)
 {
     return (((s1g_cap5_le)&DOT11_MASK_S1G_CAP5_AMSDU_SUPPORTED) >>
             DOT11_SHIFT_S1G_CAP5_AMSDU_SUPPORTED);
 }
-
 
 #define DOT11_S1G_CAP_INFO_5_SET_AMSDU_SUPPORTED(s1g_cap5_le, val_ho)         \
     do {                                                                      \
@@ -1617,13 +1400,11 @@ static inline uint8_t dot11_s1g_cap_info_5_get_amsdu_supported(uint8_t s1g_cap5_
                          DOT11_MASK_S1G_CAP5_AMSDU_SUPPORTED));               \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_cap_info_5_get_ampdu_supported(uint8_t s1g_cap5_le)
 {
     return (((s1g_cap5_le)&DOT11_MASK_S1G_CAP5_AMPDU_SUPPORTED) >>
             DOT11_SHIFT_S1G_CAP5_AMPDU_SUPPORTED);
 }
-
 
 #define DOT11_S1G_CAP_INFO_5_SET_AMPDU_SUPPORTED(s1g_cap5_le, val_ho)         \
     do {                                                                      \
@@ -1632,13 +1413,11 @@ static inline uint8_t dot11_s1g_cap_info_5_get_ampdu_supported(uint8_t s1g_cap5_
                          DOT11_MASK_S1G_CAP5_AMPDU_SUPPORTED));               \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_cap_info_5_get_asym_ba_supported(uint8_t s1g_cap5_le)
 {
     return (((s1g_cap5_le)&DOT11_MASK_S1G_CAP5_ASYM_BA_SUPPORTED) >>
             DOT11_SHIFT_S1G_CAP5_ASYM_BA_SUPPORTED);
 }
-
 
 #define DOT11_S1G_CAP_INFO_5_SET_ASYM_BA_SUPPORTED(s1g_cap5_le, val_ho)         \
     do {                                                                        \
@@ -1647,13 +1426,11 @@ static inline uint8_t dot11_s1g_cap_info_5_get_asym_ba_supported(uint8_t s1g_cap
                          DOT11_MASK_S1G_CAP5_ASYM_BA_SUPPORTED));               \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_cap_info_5_get_flow_control_supported(uint8_t s1g_cap5_le)
 {
     return (((s1g_cap5_le)&DOT11_MASK_S1G_CAP5_FLOW_CONTROL_SUPPORTED) >>
             DOT11_SHIFT_S1G_CAP5_FLOW_CONTROL_SUPPORTED);
 }
-
 
 #define DOT11_S1G_CAP_INFO_5_SET_FLOW_CONTROL_SUPPORTED(s1g_cap5_le, val_ho)         \
     do {                                                                             \
@@ -1662,13 +1439,11 @@ static inline uint8_t dot11_s1g_cap_info_5_get_flow_control_supported(uint8_t s1
                          DOT11_MASK_S1G_CAP5_FLOW_CONTROL_SUPPORTED));               \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_cap_info_5_get_sectorized_beam_cap(uint8_t s1g_cap5_le)
 {
     return (((s1g_cap5_le)&DOT11_MASK_S1G_CAP5_SECTORIZED_BEAM_CAP) >>
             DOT11_SHIFT_S1G_CAP5_SECTORIZED_BEAM_CAP);
 }
-
 
 #define DOT11_S1G_CAP_INFO_5_SET_SECTORIZED_BEAM_CAP(s1g_cap5_le, val_ho)         \
     do {                                                                          \
@@ -1676,7 +1451,6 @@ static inline uint8_t dot11_s1g_cap_info_5_get_sectorized_beam_cap(uint8_t s1g_c
         s1g_cap5_le |= ((((val_ho) << DOT11_SHIFT_S1G_CAP5_SECTORIZED_BEAM_CAP) & \
                          DOT11_MASK_S1G_CAP5_SECTORIZED_BEAM_CAP));               \
     } while (0)
-
 
 enum dot11_s1g_cap_info_6
 {
@@ -1696,13 +1470,11 @@ enum dot11_s1g_cap_info_6
     DOT11_MASK_S1G_CAP6_VHT_LINK_ADAPTATION_CAPABLE = 0x03ul << 6,
 };
 
-
 static inline uint8_t dot11_s1g_cap_info_6_get_obss_mitigation_support(uint8_t s1g_cap6_le)
 {
     return (((s1g_cap6_le)&DOT11_MASK_S1G_CAP6_OBSS_MITIGATION_SUPPORT) >>
             DOT11_SHIFT_S1G_CAP6_OBSS_MITIGATION_SUPPORT);
 }
-
 
 #define DOT11_S1G_CAP_INFO_6_SET_OBSS_MITIGATION_SUPPORT(s1g_cap6_le, val_ho)         \
     do {                                                                              \
@@ -1711,13 +1483,11 @@ static inline uint8_t dot11_s1g_cap_info_6_get_obss_mitigation_support(uint8_t s
                          DOT11_MASK_S1G_CAP6_OBSS_MITIGATION_SUPPORT));               \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_cap_info_6_get_fragment_ba_support(uint8_t s1g_cap6_le)
 {
     return (((s1g_cap6_le)&DOT11_MASK_S1G_CAP6_FRAGMENT_BA_SUPPORT) >>
             DOT11_SHIFT_S1G_CAP6_FRAGMENT_BA_SUPPORT);
 }
-
 
 #define DOT11_S1G_CAP_INFO_6_SET_FRAGMENT_BA_SUPPORT(s1g_cap6_le, val_ho)         \
     do {                                                                          \
@@ -1726,13 +1496,11 @@ static inline uint8_t dot11_s1g_cap_info_6_get_fragment_ba_support(uint8_t s1g_c
                          DOT11_MASK_S1G_CAP6_FRAGMENT_BA_SUPPORT));               \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_cap_info_6_get_ndp_ps_poll_supported(uint8_t s1g_cap6_le)
 {
     return (((s1g_cap6_le)&DOT11_MASK_S1G_CAP6_NDP_PS_POLL_SUPPORTED) >>
             DOT11_SHIFT_S1G_CAP6_NDP_PS_POLL_SUPPORTED);
 }
-
 
 #define DOT11_S1G_CAP_INFO_6_SET_NDP_PS_POLL_SUPPORTED(s1g_cap6_le, val_ho)         \
     do {                                                                            \
@@ -1741,13 +1509,11 @@ static inline uint8_t dot11_s1g_cap_info_6_get_ndp_ps_poll_supported(uint8_t s1g
                          DOT11_MASK_S1G_CAP6_NDP_PS_POLL_SUPPORTED));               \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_cap_info_6_get_raw_operation_support(uint8_t s1g_cap6_le)
 {
     return (((s1g_cap6_le)&DOT11_MASK_S1G_CAP6_RAW_OPERATION_SUPPORT) >>
             DOT11_SHIFT_S1G_CAP6_RAW_OPERATION_SUPPORT);
 }
-
 
 #define DOT11_S1G_CAP_INFO_6_SET_RAW_OPERATION_SUPPORT(s1g_cap6_le, val_ho)         \
     do {                                                                            \
@@ -1756,13 +1522,11 @@ static inline uint8_t dot11_s1g_cap_info_6_get_raw_operation_support(uint8_t s1g
                          DOT11_MASK_S1G_CAP6_RAW_OPERATION_SUPPORT));               \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_cap_info_6_get_page_slicing_support(uint8_t s1g_cap6_le)
 {
     return (((s1g_cap6_le)&DOT11_MASK_S1G_CAP6_PAGE_SLICING_SUPPORT) >>
             DOT11_SHIFT_S1G_CAP6_PAGE_SLICING_SUPPORT);
 }
-
 
 #define DOT11_S1G_CAP_INFO_6_SET_PAGE_SLICING_SUPPORT(s1g_cap6_le, val_ho)         \
     do {                                                                           \
@@ -1771,13 +1535,11 @@ static inline uint8_t dot11_s1g_cap_info_6_get_page_slicing_support(uint8_t s1g_
                          DOT11_MASK_S1G_CAP6_PAGE_SLICING_SUPPORT));               \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_cap_info_6_get_txop_share_implicit_ack_support(uint8_t s1g_cap6_le)
 {
     return (((s1g_cap6_le)&DOT11_MASK_S1G_CAP6_TXOP_SHARE_IMPLICIT_ACK_SUPPORT) >>
             DOT11_SHIFT_S1G_CAP6_TXOP_SHARE_IMPLICIT_ACK_SUPPORT);
 }
-
 
 #define DOT11_S1G_CAP_INFO_6_SET_TXOP_SHARE_IMPLICIT_ACK_SUPPORT(s1g_cap6_le, val_ho)         \
     do {                                                                                      \
@@ -1786,13 +1548,11 @@ static inline uint8_t dot11_s1g_cap_info_6_get_txop_share_implicit_ack_support(u
                          DOT11_MASK_S1G_CAP6_TXOP_SHARE_IMPLICIT_ACK_SUPPORT));               \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_cap_info_6_get_vht_link_adaptation_capable(uint8_t s1g_cap6_le)
 {
     return (((s1g_cap6_le)&DOT11_MASK_S1G_CAP6_VHT_LINK_ADAPTATION_CAPABLE) >>
             DOT11_SHIFT_S1G_CAP6_VHT_LINK_ADAPTATION_CAPABLE);
 }
-
 
 #define DOT11_S1G_CAP_INFO_6_SET_VHT_LINK_ADAPTATION_CAPABLE(s1g_cap6_le, val_ho)         \
     do {                                                                                  \
@@ -1800,7 +1560,6 @@ static inline uint8_t dot11_s1g_cap_info_6_get_vht_link_adaptation_capable(uint8
         s1g_cap6_le |= ((((val_ho) << DOT11_SHIFT_S1G_CAP6_VHT_LINK_ADAPTATION_CAPABLE) & \
                          DOT11_MASK_S1G_CAP6_VHT_LINK_ADAPTATION_CAPABLE));               \
     } while (0)
-
 
 enum dot11_s1g_cap_info_7
 {
@@ -1822,13 +1581,11 @@ enum dot11_s1g_cap_info_7
     DOT11_MASK_S1G_CAP7_TEMPORARY_PS_MODE_SWITCH = 0x01ul << 7,
 };
 
-
 static inline uint8_t dot11_s1g_cap_info_7_get_tack_support_as_pspoll_response(uint8_t s1g_cap7_le)
 {
     return (((s1g_cap7_le)&DOT11_MASK_S1G_CAP7_TACK_SUPPORT_AS_PSPOLL_RESPONSE) >>
             DOT11_SHIFT_S1G_CAP7_TACK_SUPPORT_AS_PSPOLL_RESPONSE);
 }
-
 
 #define DOT11_S1G_CAP_INFO_7_SET_TACK_SUPPORT_AS_PSPOLL_RESPONSE(s1g_cap7_le, val_ho)         \
     do {                                                                                      \
@@ -1837,13 +1594,11 @@ static inline uint8_t dot11_s1g_cap_info_7_get_tack_support_as_pspoll_response(u
                          DOT11_MASK_S1G_CAP7_TACK_SUPPORT_AS_PSPOLL_RESPONSE));               \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_cap_info_7_get_dup_1mhz_support(uint8_t s1g_cap7_le)
 {
     return (((s1g_cap7_le)&DOT11_MASK_S1G_CAP7_DUP_1MHZ_SUPPORT) >>
             DOT11_SHIFT_S1G_CAP7_DUP_1MHZ_SUPPORT);
 }
-
 
 #define DOT11_S1G_CAP_INFO_7_SET_DUP_1MHZ_SUPPORT(s1g_cap7_le, val_ho)         \
     do {                                                                       \
@@ -1852,13 +1607,11 @@ static inline uint8_t dot11_s1g_cap_info_7_get_dup_1mhz_support(uint8_t s1g_cap7
                          DOT11_MASK_S1G_CAP7_DUP_1MHZ_SUPPORT));               \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_cap_info_7_get_mcs_negotiation_support(uint8_t s1g_cap7_le)
 {
     return (((s1g_cap7_le)&DOT11_MASK_S1G_CAP7_MCS_NEGOTIATION_SUPPORT) >>
             DOT11_SHIFT_S1G_CAP7_MCS_NEGOTIATION_SUPPORT);
 }
-
 
 #define DOT11_S1G_CAP_INFO_7_SET_MCS_NEGOTIATION_SUPPORT(s1g_cap7_le, val_ho)         \
     do {                                                                              \
@@ -1867,13 +1620,11 @@ static inline uint8_t dot11_s1g_cap_info_7_get_mcs_negotiation_support(uint8_t s
                          DOT11_MASK_S1G_CAP7_MCS_NEGOTIATION_SUPPORT));               \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_cap_info_7_get_1mhz_ctrl_rsp_preamble_support(uint8_t s1g_cap7_le)
 {
     return (((s1g_cap7_le)&DOT11_MASK_S1G_CAP7_1MHZ_CTRL_RSP_PREAMBLE_SUPPORT) >>
             DOT11_SHIFT_S1G_CAP7_1MHZ_CTRL_RSP_PREAMBLE_SUPPORT);
 }
-
 
 #define DOT11_S1G_CAP_INFO_7_SET_1MHZ_CTRL_RSP_PREAMBLE_SUPPORT(s1g_cap7_le, val_ho)         \
     do {                                                                                     \
@@ -1882,13 +1633,11 @@ static inline uint8_t dot11_s1g_cap_info_7_get_1mhz_ctrl_rsp_preamble_support(ui
                          DOT11_MASK_S1G_CAP7_1MHZ_CTRL_RSP_PREAMBLE_SUPPORT));               \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_cap_info_7_get_ndp_beamform_report_poll_support(uint8_t s1g_cap7_le)
 {
     return (((s1g_cap7_le)&DOT11_MASK_S1G_CAP7_NDP_BEAMFORM_REPORT_POLL_SUPPORT) >>
             DOT11_SHIFT_S1G_CAP7_NDP_BEAMFORM_REPORT_POLL_SUPPORT);
 }
-
 
 #define DOT11_S1G_CAP_INFO_7_SET_NDP_BEAMFORM_REPORT_POLL_SUPPORT(s1g_cap7_le, val_ho)         \
     do {                                                                                       \
@@ -1897,13 +1646,11 @@ static inline uint8_t dot11_s1g_cap_info_7_get_ndp_beamform_report_poll_support(
                          DOT11_MASK_S1G_CAP7_NDP_BEAMFORM_REPORT_POLL_SUPPORT));               \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_cap_info_7_get_unsolicited_dynamic_aid(uint8_t s1g_cap7_le)
 {
     return (((s1g_cap7_le)&DOT11_MASK_S1G_CAP7_UNSOLICITED_DYNAMIC_AID) >>
             DOT11_SHIFT_S1G_CAP7_UNSOLICITED_DYNAMIC_AID);
 }
-
 
 #define DOT11_S1G_CAP_INFO_7_SET_UNSOLICITED_DYNAMIC_AID(s1g_cap7_le, val_ho)         \
     do {                                                                              \
@@ -1912,13 +1659,11 @@ static inline uint8_t dot11_s1g_cap_info_7_get_unsolicited_dynamic_aid(uint8_t s
                          DOT11_MASK_S1G_CAP7_UNSOLICITED_DYNAMIC_AID));               \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_cap_info_7_get_sector_training_op_support(uint8_t s1g_cap7_le)
 {
     return (((s1g_cap7_le)&DOT11_MASK_S1G_CAP7_SECTOR_TRAINING_OP_SUPPORT) >>
             DOT11_SHIFT_S1G_CAP7_SECTOR_TRAINING_OP_SUPPORT);
 }
-
 
 #define DOT11_S1G_CAP_INFO_7_SET_SECTOR_TRAINING_OP_SUPPORT(s1g_cap7_le, val_ho)         \
     do {                                                                                 \
@@ -1927,13 +1672,11 @@ static inline uint8_t dot11_s1g_cap_info_7_get_sector_training_op_support(uint8_
                          DOT11_MASK_S1G_CAP7_SECTOR_TRAINING_OP_SUPPORT));               \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_cap_info_7_get_temporary_ps_mode_switch(uint8_t s1g_cap7_le)
 {
     return (((s1g_cap7_le)&DOT11_MASK_S1G_CAP7_TEMPORARY_PS_MODE_SWITCH) >>
             DOT11_SHIFT_S1G_CAP7_TEMPORARY_PS_MODE_SWITCH);
 }
-
 
 #define DOT11_S1G_CAP_INFO_7_SET_TEMPORARY_PS_MODE_SWITCH(s1g_cap7_le, val_ho)         \
     do {                                                                               \
@@ -1941,7 +1684,6 @@ static inline uint8_t dot11_s1g_cap_info_7_get_temporary_ps_mode_switch(uint8_t 
         s1g_cap7_le |= ((((val_ho) << DOT11_SHIFT_S1G_CAP7_TEMPORARY_PS_MODE_SWITCH) & \
                          DOT11_MASK_S1G_CAP7_TEMPORARY_PS_MODE_SWITCH));               \
     } while (0)
-
 
 enum dot11_s1g_cap_info_8
 {
@@ -1959,13 +1701,11 @@ enum dot11_s1g_cap_info_8
     DOT11_MASK_S1G_CAP8_PV1_FRAME_SUPPORT = 0x01ul << 7,
 };
 
-
 static inline uint8_t dot11_s1g_cap_info_8_get_twt_grouping_support(uint8_t s1g_cap8_le)
 {
     return (((s1g_cap8_le)&DOT11_MASK_S1G_CAP8_TWT_GROUPING_SUPPORT) >>
             DOT11_SHIFT_S1G_CAP8_TWT_GROUPING_SUPPORT);
 }
-
 
 #define DOT11_S1G_CAP_INFO_8_SET_TWT_GROUPING_SUPPORT(s1g_cap8_le, val_ho)         \
     do {                                                                           \
@@ -1974,12 +1714,10 @@ static inline uint8_t dot11_s1g_cap_info_8_get_twt_grouping_support(uint8_t s1g_
                          DOT11_MASK_S1G_CAP8_TWT_GROUPING_SUPPORT));               \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_cap_info_8_get_bdt_capable(uint8_t s1g_cap8_le)
 {
     return (((s1g_cap8_le)&DOT11_MASK_S1G_CAP8_BDT_CAPABLE) >> DOT11_SHIFT_S1G_CAP8_BDT_CAPABLE);
 }
-
 
 #define DOT11_S1G_CAP_INFO_8_SET_BDT_CAPABLE(s1g_cap8_le, val_ho)                                 \
     do {                                                                                          \
@@ -1988,12 +1726,10 @@ static inline uint8_t dot11_s1g_cap_info_8_get_bdt_capable(uint8_t s1g_cap8_le)
             ((((val_ho) << DOT11_SHIFT_S1G_CAP8_BDT_CAPABLE) & DOT11_MASK_S1G_CAP8_BDT_CAPABLE)); \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_cap_info_8_get_color(uint8_t s1g_cap8_le)
 {
     return (((s1g_cap8_le)&DOT11_MASK_S1G_CAP8_COLOR) >> DOT11_SHIFT_S1G_CAP8_COLOR);
 }
-
 
 #define DOT11_S1G_CAP_INFO_8_SET_COLOR(s1g_cap8_le, val_ho)                                      \
     do {                                                                                         \
@@ -2001,13 +1737,11 @@ static inline uint8_t dot11_s1g_cap_info_8_get_color(uint8_t s1g_cap8_le)
         s1g_cap8_le |= ((((val_ho) << DOT11_SHIFT_S1G_CAP8_COLOR) & DOT11_MASK_S1G_CAP8_COLOR)); \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_cap_info_8_get_twt_requester_support(uint8_t s1g_cap8_le)
 {
     return (((s1g_cap8_le)&DOT11_MASK_S1G_CAP8_TWT_REQUESTER_SUPPORT) >>
             DOT11_SHIFT_S1G_CAP8_TWT_REQUESTER_SUPPORT);
 }
-
 
 #define DOT11_S1G_CAP_INFO_8_SET_TWT_REQUESTER_SUPPORT(s1g_cap8_le, val_ho)         \
     do {                                                                            \
@@ -2016,13 +1750,11 @@ static inline uint8_t dot11_s1g_cap_info_8_get_twt_requester_support(uint8_t s1g
                          DOT11_MASK_S1G_CAP8_TWT_REQUESTER_SUPPORT));               \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_cap_info_8_get_twt_responder_support(uint8_t s1g_cap8_le)
 {
     return (((s1g_cap8_le)&DOT11_MASK_S1G_CAP8_TWT_RESPONDER_SUPPORT) >>
             DOT11_SHIFT_S1G_CAP8_TWT_RESPONDER_SUPPORT);
 }
-
 
 #define DOT11_S1G_CAP_INFO_8_SET_TWT_RESPONDER_SUPPORT(s1g_cap8_le, val_ho)         \
     do {                                                                            \
@@ -2031,13 +1763,11 @@ static inline uint8_t dot11_s1g_cap_info_8_get_twt_responder_support(uint8_t s1g
                          DOT11_MASK_S1G_CAP8_TWT_RESPONDER_SUPPORT));               \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_cap_info_8_get_pv1_frame_support(uint8_t s1g_cap8_le)
 {
     return (((s1g_cap8_le)&DOT11_MASK_S1G_CAP8_PV1_FRAME_SUPPORT) >>
             DOT11_SHIFT_S1G_CAP8_PV1_FRAME_SUPPORT);
 }
-
 
 #define DOT11_S1G_CAP_INFO_8_SET_PV1_FRAME_SUPPORT(s1g_cap8_le, val_ho)         \
     do {                                                                        \
@@ -2045,7 +1775,6 @@ static inline uint8_t dot11_s1g_cap_info_8_get_pv1_frame_support(uint8_t s1g_cap
         s1g_cap8_le |= ((((val_ho) << DOT11_SHIFT_S1G_CAP8_PV1_FRAME_SUPPORT) & \
                          DOT11_MASK_S1G_CAP8_PV1_FRAME_SUPPORT));               \
     } while (0)
-
 
 enum dot11_s1g_mcs_map
 {
@@ -2059,12 +1788,10 @@ enum dot11_s1g_mcs_map
     DOT11_MASK_S1G_MCS_MAP_4SS = 0x03ul << 6,
 };
 
-
 static inline uint8_t dot11_s1g_mcs_map_get_1ss(uint8_t s1g_mcs_map_le)
 {
     return (((s1g_mcs_map_le)&DOT11_MASK_S1G_MCS_MAP_1SS) >> DOT11_SHIFT_S1G_MCS_MAP_1SS);
 }
-
 
 #define DOT11_S1G_MCS_MAP_SET_1SS(s1g_mcs_map_le, val_ho)                               \
     do {                                                                                \
@@ -2073,12 +1800,10 @@ static inline uint8_t dot11_s1g_mcs_map_get_1ss(uint8_t s1g_mcs_map_le)
             ((((val_ho) << DOT11_SHIFT_S1G_MCS_MAP_1SS) & DOT11_MASK_S1G_MCS_MAP_1SS)); \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_mcs_map_get_2ss(uint8_t s1g_mcs_map_le)
 {
     return (((s1g_mcs_map_le)&DOT11_MASK_S1G_MCS_MAP_2SS) >> DOT11_SHIFT_S1G_MCS_MAP_2SS);
 }
-
 
 #define DOT11_S1G_MCS_MAP_SET_2SS(s1g_mcs_map_le, val_ho)                               \
     do {                                                                                \
@@ -2087,12 +1812,10 @@ static inline uint8_t dot11_s1g_mcs_map_get_2ss(uint8_t s1g_mcs_map_le)
             ((((val_ho) << DOT11_SHIFT_S1G_MCS_MAP_2SS) & DOT11_MASK_S1G_MCS_MAP_2SS)); \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_mcs_map_get_3ss(uint8_t s1g_mcs_map_le)
 {
     return (((s1g_mcs_map_le)&DOT11_MASK_S1G_MCS_MAP_3SS) >> DOT11_SHIFT_S1G_MCS_MAP_3SS);
 }
-
 
 #define DOT11_S1G_MCS_MAP_SET_3SS(s1g_mcs_map_le, val_ho)                               \
     do {                                                                                \
@@ -2101,12 +1824,10 @@ static inline uint8_t dot11_s1g_mcs_map_get_3ss(uint8_t s1g_mcs_map_le)
             ((((val_ho) << DOT11_SHIFT_S1G_MCS_MAP_3SS) & DOT11_MASK_S1G_MCS_MAP_3SS)); \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_mcs_map_get_4ss(uint8_t s1g_mcs_map_le)
 {
     return (((s1g_mcs_map_le)&DOT11_MASK_S1G_MCS_MAP_4SS) >> DOT11_SHIFT_S1G_MCS_MAP_4SS);
 }
-
 
 #define DOT11_S1G_MCS_MAP_SET_4SS(s1g_mcs_map_le, val_ho)                               \
     do {                                                                                \
@@ -2114,7 +1835,6 @@ static inline uint8_t dot11_s1g_mcs_map_get_4ss(uint8_t s1g_mcs_map_le)
         s1g_mcs_map_le |=                                                               \
             ((((val_ho) << DOT11_SHIFT_S1G_MCS_MAP_4SS) & DOT11_MASK_S1G_MCS_MAP_4SS)); \
     } while (0)
-
 
 enum dot11_s1g_op_chan_width
 {
@@ -2128,13 +1848,11 @@ enum dot11_s1g_op_chan_width
     DOT11_MASK_S1G_OP_CHAN_WIDTH_NO_MCS10 = 0x01ul << 7,
 };
 
-
 static inline uint8_t dot11_s1g_op_chan_width_get_pri_chan_width(uint8_t s1g_op_chan_width_le)
 {
     return (((s1g_op_chan_width_le)&DOT11_MASK_S1G_OP_CHAN_WIDTH_PRI_CHAN_WIDTH) >>
             DOT11_SHIFT_S1G_OP_CHAN_WIDTH_PRI_CHAN_WIDTH);
 }
-
 
 #define DOT11_S1G_OP_CHAN_WIDTH_SET_PRI_CHAN_WIDTH(s1g_op_chan_width_le, val_ho)               \
     do {                                                                                       \
@@ -2143,13 +1861,11 @@ static inline uint8_t dot11_s1g_op_chan_width_get_pri_chan_width(uint8_t s1g_op_
                                   DOT11_MASK_S1G_OP_CHAN_WIDTH_PRI_CHAN_WIDTH));               \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_op_chan_width_get_op_chan_width(uint8_t s1g_op_chan_width_le)
 {
     return (((s1g_op_chan_width_le)&DOT11_MASK_S1G_OP_CHAN_WIDTH_OP_CHAN_WIDTH) >>
             DOT11_SHIFT_S1G_OP_CHAN_WIDTH_OP_CHAN_WIDTH);
 }
-
 
 #define DOT11_S1G_OP_CHAN_WIDTH_SET_OP_CHAN_WIDTH(s1g_op_chan_width_le, val_ho)               \
     do {                                                                                      \
@@ -2158,13 +1874,11 @@ static inline uint8_t dot11_s1g_op_chan_width_get_op_chan_width(uint8_t s1g_op_c
                                   DOT11_MASK_S1G_OP_CHAN_WIDTH_OP_CHAN_WIDTH));               \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_op_chan_width_get_pri_chan_loc(uint8_t s1g_op_chan_width_le)
 {
     return (((s1g_op_chan_width_le)&DOT11_MASK_S1G_OP_CHAN_WIDTH_PRI_CHAN_LOC) >>
             DOT11_SHIFT_S1G_OP_CHAN_WIDTH_PRI_CHAN_LOC);
 }
-
 
 #define DOT11_S1G_OP_CHAN_WIDTH_SET_PRI_CHAN_LOC(s1g_op_chan_width_le, val_ho)               \
     do {                                                                                     \
@@ -2173,13 +1887,11 @@ static inline uint8_t dot11_s1g_op_chan_width_get_pri_chan_loc(uint8_t s1g_op_ch
                                   DOT11_MASK_S1G_OP_CHAN_WIDTH_PRI_CHAN_LOC));               \
     } while (0)
 
-
 static inline uint8_t dot11_s1g_op_chan_width_get_no_mcs10(uint8_t s1g_op_chan_width_le)
 {
     return (((s1g_op_chan_width_le)&DOT11_MASK_S1G_OP_CHAN_WIDTH_NO_MCS10) >>
             DOT11_SHIFT_S1G_OP_CHAN_WIDTH_NO_MCS10);
 }
-
 
 #define DOT11_S1G_OP_CHAN_WIDTH_SET_NO_MCS10(s1g_op_chan_width_le, val_ho)               \
     do {                                                                                 \
@@ -2188,13 +1900,11 @@ static inline uint8_t dot11_s1g_op_chan_width_get_no_mcs10(uint8_t s1g_op_chan_w
                                   DOT11_MASK_S1G_OP_CHAN_WIDTH_NO_MCS10));               \
     } while (0)
 
-
 enum dot11_s1g_ext_cap_info_0
 {
     DOT11_SHIFT_S1G_EXT_CAP0_ECSA_SUPPORTED = 2,
     DOT11_MASK_S1G_EXT_CAP0_ECSA_SUPPORTED = 0x01ul << 2,
 };
-
 
 static inline uint8_t dot11_s1g_ext_cap_info_0_get_ecsa_supported(uint8_t s1g_ext_cap0_le)
 {
@@ -2202,14 +1912,12 @@ static inline uint8_t dot11_s1g_ext_cap_info_0_get_ecsa_supported(uint8_t s1g_ex
             DOT11_SHIFT_S1G_EXT_CAP0_ECSA_SUPPORTED);
 }
 
-
 #define DOT11_S1G_EXT_CAP_INFO_0_SET_ECSA_SUPPORTED(s1g_ext_cap0_le, val_ho)         \
     do {                                                                             \
         s1g_ext_cap0_le &= ~DOT11_MASK_S1G_EXT_CAP0_ECSA_SUPPORTED;                  \
         s1g_ext_cap0_le |= ((((val_ho) << DOT11_SHIFT_S1G_EXT_CAP0_ECSA_SUPPORTED) & \
                              DOT11_MASK_S1G_EXT_CAP0_ECSA_SUPPORTED));               \
     } while (0)
-
 
 enum dot11_fc_type
 {
@@ -2219,10 +1927,8 @@ enum dot11_fc_type
     DOT11_FC_TYPE_EXT = 3,
 };
 
-
 enum dot11_fc_subtype
 {
-
     DOT11_FC_SUBTYPE_ASSOC_REQ = 0,
     DOT11_FC_SUBTYPE_ASSOC_RSP = 1,
     DOT11_FC_SUBTYPE_REASSOC_REQ = 2,
@@ -2237,21 +1943,17 @@ enum dot11_fc_subtype
     DOT11_FC_SUBTYPE_DEAUTH = 12,
     DOT11_FC_SUBTYPE_ACTION = 13,
     DOT11_FC_SUBTYPE_ACTION_NO_ACK = 14,
-
     DOT11_FC_SUBTYPE_TRIGGER = 2,
     DOT11_FC_SUBTYPE_BLOCK_ACK_REQ = 8,
     DOT11_FC_SUBTYPE_BLOCK_ACK = 9,
     DOT11_FC_SUBTYPE_PS_POLL = 10,
     DOT11_FC_SUBTYPE_RTS = 11,
-
     DOT11_FC_SUBTYPE_DATA = 0,
     DOT11_FC_SUBTYPE_NULL_DATA = 4,
     DOT11_FC_SUBTYPE_QOS_DATA = 8,
     DOT11_FC_SUBTYPE_QOS_NULL = 12,
-
     DOT11_FC_SUBTYPE_S1G_BEACON = 1,
 };
-
 
 enum dot11_auth_alg
 {
@@ -2259,16 +1961,13 @@ enum dot11_auth_alg
     DOT11_AUTH_ALG_SHARED_KEY = 1,
     DOT11_AUTH_ALG_FAST_BSS_TRANSITION = 2,
     DOT11_AUTH_ALG_SAE = 3,
-
 };
-
 
 enum dot11_fc_protocol_version
 {
     DOT11_FC_PV0 = 0,
     DOT11_FC_PV1 = 1,
 };
-
 
 enum dot11_reason_code
 {
@@ -2280,13 +1979,11 @@ enum dot11_reason_code
     DOT11_REASON_TIMEOUT = 39,
 };
 
-
 enum dot11_status_code
 {
     DOT11_STATUS_SUCCESS = 0,
     DOT11_STATUS_REFUSED_TEMPORARILY = 30,
 };
-
 
 enum dot11_action_category
 {
@@ -2305,13 +2002,11 @@ enum dot11_action_category
     DOT11_ACTION_CATEGORY_VENDOR_SPECIFIC = 127,
 };
 
-
 enum dot11_block_ack_amsdu
 {
     DOT11_BA_AMSDU_NOT_SUPPORTED = 0,
     DOT11_BA_AMSDU_SUPPORTED = 1,
 };
-
 
 enum dot11_block_ack_policy
 {
@@ -2319,13 +2014,11 @@ enum dot11_block_ack_policy
     DOT11_BA_POLICY_IMMEDIATE = 1,
 };
 
-
 enum dot11_delba_initiator
 {
     DOT11_DELBA_INITIATOR_RECIPIENT = 0,
     DOT11_DELBA_INITIATOR_ORIGINATOR = 1,
 };
-
 
 enum dot11_ie
 {
@@ -2347,7 +2040,6 @@ enum dot11_ie
     DOT11_IE_S1G_OPERATION = 232,
 };
 
-
 enum dot11_tie
 {
     DOT11_TIE_REASSOC_DEADLINE = 1,
@@ -2355,7 +2047,6 @@ enum dot11_tie
     DOT11_TIE_ASSOC_COMEBACK = 3,
     DOT11_TIE_TIME_TO_START = 4,
 };
-
 
 enum dot11_tim_block_encoding
 {
@@ -2365,7 +2056,6 @@ enum dot11_tim_block_encoding
     DOT11_TIM_BLOCK_ENCODING_ADE = 3,
 };
 
-
 enum dot11_aci
 {
     DOT11_ACI_AC_BE = 0,
@@ -2374,7 +2064,6 @@ enum dot11_aci
     DOT11_ACI_AC_VO = 3,
     DOT11_ACI_NUM_ACS = 4,
 };
-
 
 enum dot11_twt_setup_cmd
 {
@@ -2388,7 +2077,6 @@ enum dot11_twt_setup_cmd
     DOT11_TWT_SETUP_CMD_REJECT = 7,
 };
 
-
 enum dot11_s1g_cap_supp_chan_width
 {
     DOT11_S1G_CAP_SUPP_CHAN_WIDTH_1_2_MHZ = 0,
@@ -2396,7 +2084,6 @@ enum dot11_s1g_cap_supp_chan_width
     DOT11_S1G_CAP_SUPP_CHAN_WIDTH_1_2_4_8_MHZ = 2,
     DOT11_S1G_CAP_SUPP_CHAN_WIDTH_1_2_4_8_16_MHZ = 3,
 };
-
 
 enum dot11_s1g_cap_trav_pilot_supp
 {
@@ -2406,7 +2093,6 @@ enum dot11_s1g_cap_trav_pilot_supp
     DOT11_S1G_CAP_TRAV_PILOT_SUPP_1_AND_2_NSTS = 3,
 };
 
-
 enum dot11_s1g_nss_max
 {
     DOT11_S1G_NSS_MAX_MCS_2 = 0,
@@ -2415,14 +2101,12 @@ enum dot11_s1g_nss_max
     DOT11_S1G_NSS_MAX_UNSUPPORTED = 3,
 };
 
-
 enum dot11_block_ack_action
 {
     DOT11_BA_ACTION_NDP_ADDBA_REQ = 128,
     DOT11_BA_ACTION_NDP_ADDBA_RESP = 129,
     DOT11_BA_ACTION_NDP_DELBA = 130,
 };
-
 
 enum dot11_s1g_action
 {
@@ -2442,5 +2126,4 @@ enum dot11_s1g_action
     DOT11_S1G_ACTION_PROTECTED_SECTORIZED_GROUP_ID_LIST = 13,
     DOT11_S1G_ACTION_PROTECTED_SECTOR_ID_FEEDBACK = 14,
 };
-
 

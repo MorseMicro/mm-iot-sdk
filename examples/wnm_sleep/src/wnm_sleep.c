@@ -130,6 +130,9 @@ static void execute_ping_request(int iteration)
 {
     struct mmping_args args = MMPING_ARGS_DEFAULT;
 
+    /* Ensure transition between states is observable. */
+    PWR_MEAS_DELAY_MS(1);
+
     SET_DEBUG_STATE(iteration == 0 ? DEBUG_STATE_PINGING_0 : DEBUG_STATE_PINGING_1);
 
     /* Get the target IP */

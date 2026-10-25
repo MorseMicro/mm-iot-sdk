@@ -12,6 +12,21 @@
  * to avoid redefinition of macros.
  */
 
+/* Enable fast 'modulo p' routines for the NIST primes. Without them, every field reduction in ecp.c
+ * falls back to a full mbedtls_mpi_mod_mpi() division.
+ *
+ * Not compatible with platforms using the alternative ECP implementation, which gets speed up from
+ * the PKA instead. */
+#if !defined(MBEDTLS_ECP_ALT) && !defined(MBEDTLS_ECP_NIST_OPTIM)
+#define MBEDTLS_ECP_NIST_OPTIM
+#endif
+
+/* Enable bignum assembly instructions. Without this the Thumb-2 umaal path in bn_mul.h is compiled
+ * out and multi-precision multiply falls back to generic C. */
+#ifndef MBEDTLS_HAVE_ASM
+#define MBEDTLS_HAVE_ASM
+#endif
+
 /* Cipher modes */
 #ifndef MBEDTLS_CIPHER_MODE_CBC
 #define MBEDTLS_CIPHER_MODE_CBC
@@ -24,14 +39,6 @@
 /* EC curves */
 #ifndef MBEDTLS_ECP_DP_SECP256R1_ENABLED
 #define MBEDTLS_ECP_DP_SECP256R1_ENABLED
-#endif
-
-#ifndef MBEDTLS_ECP_DP_SECP384R1_ENABLED
-#define MBEDTLS_ECP_DP_SECP384R1_ENABLED
-#endif
-
-#ifndef MBEDTLS_ECP_DP_SECP521R1_ENABLED
-#define MBEDTLS_ECP_DP_SECP521R1_ENABLED
 #endif
 
 /* Features */

@@ -5,14 +5,14 @@
 
 #pragma once
 
+#include <endian.h>
+#include <string.h>
 
 #define DEFAULT_HOST_ID 0
-
 
 #define MM_CMD_TIMEOUT_DEFAULT      600
 #define MM_CMD_TIMEOUT_PS           2000
 #define MM_CMD_TIMEOUT_HEALTH_CHECK 1000
-
 
 #define MORSE_COMMAND_INIT(cmd_instance, cmd_id, v_id, ...) \
     {                                                                          \
@@ -25,7 +25,7 @@
             __VA_ARGS__                                                            \
         }
 
-
+#define MMDRV_VIF_ID_INVALID (0xffff)
 
 enum morse_cmd_return_code
 {
@@ -34,7 +34,6 @@ enum morse_cmd_return_code
     MORSE_RET_ENOMEM = -12,
     MORSE_RET_CMD_NOT_HANDLED = -32757,
 };
-
 
 static inline void morse_command_reinit_header(struct morse_cmd_header *hdr,
                                                uint16_t len,

@@ -16,11 +16,9 @@
 #include "umac/supplicant_shim/umac_supp_shim.h"
 
 
-
 void mmdrv_host_process_rx_frame(struct mmpkt *rxbuf, uint16_t channel)
 {
     MM_UNUSED(channel);
-
     MMOSAL_DEV_ASSERT(channel == 0);
     struct umac_data *umacd = umac_data_get_umacd();
 
@@ -108,7 +106,6 @@ void mmdrv_host_hw_restart_required(void)
     bool ok = umac_core_evt_queue_at_start(umacd, &evt);
     if (!ok)
     {
-
         MMLOG_ERR("Failed to queue HW_RESTARTED event.\n");
         MMOSAL_ASSERT(false);
     }
@@ -217,7 +214,6 @@ void mmdrv_host_stats_increment_datapath_driver_rx_alloc_failures(void)
     struct umac_data *umacd = umac_data_get_umacd();
     umac_stats_increment_datapath_driver_rx_alloc_failures(umacd);
 }
-
 
 void mmdrv_host_stats_increment_datapath_driver_rx_read_failures(void)
 {

@@ -127,7 +127,6 @@ uint32_t umac_sta_data_get_queued_len(struct umac_sta_data *stad)
 bool umac_sta_data_is_paused(struct umac_sta_data *stad)
 {
     MM_UNUSED(stad);
-
     return false;
 }
 

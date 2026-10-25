@@ -35,7 +35,6 @@
 #include "hostap/src/ap/hostapd.h"
 #include "hostap/src/ap/ap_config.h"
 
-
 #define HZ_TO_KHZ(x) ((x) / 1000)
 
 static void *mmwpas_init_ap(void *ctx, const char *ifname)
@@ -231,13 +230,11 @@ int mmwpas_set_ap(void *priv, struct wpa_driver_ap_params *params)
     }
     memcpy(cfg.ssid, params->ssid, params->ssid_len);
 
-
     params->head = NULL;
     params->tail = NULL;
 
     return umac_ap_start(umacd, &cfg);
 }
-
 
 static enum morse_sta_state wpa_sta_flags_to_sta_state(uint32_t flags)
 {
@@ -334,7 +331,6 @@ int mmwpas_set_key_ap(void *priv, struct wpa_driver_set_key_params *params)
     {
         if (params->alg == WPA_ALG_NONE)
         {
-
             return 0;
         }
 
@@ -571,7 +567,6 @@ static int mmwpas_sta_deauth(void *priv,
         .own_address = own_addr,
         .sta_address = addr,
         .reason_code = reason,
-
         .bip_stad = mm_mac_addr_is_multicast(addr) ? stad : NULL,
     };
 
@@ -616,7 +611,6 @@ static int mmwpas_hapd_send_eapol(void *priv,
     MMLOG_DBG("EAPOL addr=" MM_MAC_ADDR_FMT ", bssid=" MM_MAC_ADDR_FMT "\n",
               MM_MAC_ADDR_VAL(addr),
               MM_MAC_ADDR_VAL(umac_sta_data_peek_bssid(stad)));
-
 
     struct mmpkt *txbuf =
         umac_datapath_alloc_mmpkt_for_qos_data_tx(sizeof(header) + data_len, MMDRV_PKT_CLASS_MGMT);
@@ -667,17 +661,14 @@ int mmwpas_get_seq_num(const char *ifname,
 
     if (addr != NULL)
     {
-
         return -1;
     }
     else
     {
-
         memset(seq, 0, 6);
         return 0;
     }
 }
-
 
 static int mmwpas_get_inact_sec_ap(void *priv, const u8 *addr)
 {
@@ -695,7 +686,6 @@ static int mmwpas_get_inact_sec_ap(void *priv, const u8 *addr)
     MMLOG_VRB(MM_MAC_ADDR_FMT " inactive for %d sec\n", MM_MAC_ADDR_VAL(addr), inact_sec);
     return inact_sec;
 }
-
 
 const struct wpa_driver_ops mmwlan_wpas_ops_ap = {
     .name = UMAC_SUPP_AP_DRIVER_NAME,

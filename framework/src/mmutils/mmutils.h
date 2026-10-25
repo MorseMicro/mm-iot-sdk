@@ -15,10 +15,13 @@
 #pragma once
 
 #include <stdarg.h>
+#include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+
+#include "mmwlan.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -148,6 +151,30 @@ static inline char mm_nibble_to_hex_char(uint8_t nibble)
     {
         return 'A' + nibble - 0x0a;
     }
+}
+
+/**
+ * Decodes hex value from its character representation.
+ *
+ * @param c Character to convert
+ *
+ * @returns hex value if success, else -1.
+ */
+static inline int8_t mm_decode_hex_char(char c)
+{
+    if (c >= '0' && c <= '9')
+    {
+        return c - '0';
+    }
+    if (c >= 'a' && c <= 'f')
+    {
+        return c - 'a' + 0xa;
+    }
+    if (c >= 'A' && c <= 'F')
+    {
+        return c - 'A' + 0xa;
+    }
+    return -1;
 }
 
 /**
@@ -368,6 +395,40 @@ struct mm_s1g_operation
 int mm_parse_s1g_operation(const uint8_t *ies, uint32_t ies_len, struct mm_s1g_operation *output);
 
 /**
+ * Macro for printing a MAC address. This saves writing it out by hand.
+ *
+ * Must be used in conjunction with @ref MM_MAC_ADDR_FMT. For example:
+ *
+ * @code
+ * uint8_t mac_addr[] = { 0, 1, 2, 3, 4, 5 };
+ * printf("MAC address: " MM_MAC_ADDR_FMT "\n", MM_MAC_ADDR_VAL(mac_addr));
+ * @endcode
+ */
+#define MM_MAC_ADDR_VAL(value) \
+    ((value)[0]), ((value)[1]), ((value)[2]), ((value)[3]), ((value)[4]), ((value)[5])
+
+/** Macro for format specifier to print @ref MM_MAC_ADDR_VAL */
+#define MM_MAC_ADDR_FMT "%02x:%02x:%02x:%02x:%02x:%02x"
+
+/**
+ * Length of string representation of a MAC address (i.e., "XX:XX:XX:XX:XX:XX") including null
+ * terminator.
+ */
+#define MM_MAC_ADDR_STR_LEN (18)
+
+/**
+ * Converts the MAC address to string format.
+ *
+ * @param mac_addr     MAC address in bytes. Length must be at least @ref MMWLAN_MAC_ADDR_LEN.
+ * @param mac_addr_str Buffer to store MAC address string. Length must be at least @ref
+ *                     MM_MAC_ADDR_STR_LEN.
+ */
+static inline void mm_mac_addr_to_str(const uint8_t *mac_addr, char *mac_addr_str)
+{
+    snprintf(mac_addr_str, MM_MAC_ADDR_STR_LEN, MM_MAC_ADDR_FMT, MM_MAC_ADDR_VAL(mac_addr));
+}
+
+/**
  * Determines if a given MAC address is all zeros.
  *
  * @param  mac_addr Array of length @ref MMWLAN_MAC_ADDR_LEN containing a MAC address.
@@ -428,6 +489,39 @@ static inline bool mm_mac_addr_is_equal(const uint8_t *mac_addr1, const uint8_t 
 static inline bool mm_mac_addr_is_valid_sta(const uint8_t *mac_addr)
 {
     return !mm_mac_addr_is_multicast(mac_addr) && !mm_mac_addr_is_zero(mac_addr);
+}
+
+/**
+ * This function converts a string representation of a mac address to a mac address.
+ *
+ * @param  str The string representation of a mac address
+ * @param  val The mac address buffer to return the value in, unchanged on error
+ *
+ * @return     MMCONFIG_OK on success or an error code on failure
+ */
+static inline bool mm_str_to_mac_addr(const char *str, uint8_t *val)
+{
+    if (strnlen(str, MM_MAC_ADDR_STR_LEN) != MM_MAC_ADDR_STR_LEN - 1)
+    {
+        return false;
+    }
+
+    uint8_t temp[MMWLAN_MAC_ADDR_LEN];
+    for (int i = 0; i < MMWLAN_MAC_ADDR_LEN; ++i)
+    {
+        int hi = mm_decode_hex_char(str[0]);
+        int lo = mm_decode_hex_char(str[1]);
+        char mac_delim = str[2];
+        str += 3;
+        if (hi < 0 || lo < 0 || (mac_delim != ':' && mac_delim != '\0'))
+        {
+            return false;
+        }
+        temp[i] = (hi << 4) | lo;
+    }
+
+    memcpy(val, temp, sizeof(temp));
+    return true;
 }
 
 /** Maximum length of a hostname string, including null-terminator. */

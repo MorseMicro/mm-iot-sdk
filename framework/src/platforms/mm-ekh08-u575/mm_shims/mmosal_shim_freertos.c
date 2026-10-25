@@ -66,7 +66,9 @@ void mmosal_log_failure_info(const struct mmosal_failure_info *info)
 }
 
 #if !(defined(ENABLE_MANUAL_FAILURE_LOG_PROCESSING) && ENABLE_MANUAL_FAILURE_LOG_PROCESSING)
-static void mmosal_dump_failure_info(void)
+typedef int (*mmosal_failure_log_fn_t)(const char *fmt, ...);
+
+static void mmosal_dump_failure_info(mmosal_failure_log_fn_t log_fn)
 {
     unsigned first_failure_num = preserved_failure_info.displayed_failure_count;
     unsigned new_failure_count =
@@ -86,7 +88,7 @@ static void mmosal_dump_failure_info(void)
         unsigned idx = FAST_MOD(first_failure_num + failure_offset, MMOSAL_MAX_FAILURE_RECORDS);
         struct mmosal_failure_info *info = &preserved_failure_info.info[idx];
 
-        printf("Failure %u logged at pc 0x%08lx, lr 0x%08lx, line %ld in %08lx\n",
+        log_fn("Failure %u logged at pc 0x%08lx, lr 0x%08lx, line %ld in %08lx\n",
                first_failure_num + failure_offset,
                info->pc,
                info->lr,
@@ -95,7 +97,7 @@ static void mmosal_dump_failure_info(void)
 
         for (ii = 0; ii < sizeof(info->platform_info) / sizeof(info->platform_info[0]); ii++)
         {
-            printf("    0x%08lx\n", info->platform_info[ii]);
+            log_fn("    0x%08lx\n", info->platform_info[ii]);
         }
     }
 
@@ -144,6 +146,24 @@ bool mmosal_extract_failure_info(struct mmosal_failure_info *buf, uint32_t *fail
 
 #endif
 
+/* Approximate CPU cycles per inner loop iteration. Tune per target/compiler. */
+#ifndef BUSY_WAIT_CYCLES_PER_ITER
+#define BUSY_WAIT_CYCLES_PER_ITER 10u
+#endif
+
+static void busy_wait_ms(uint32_t ms)
+{
+    const uint32_t iters_per_ms = configCPU_CLOCK_HZ / (1000u * BUSY_WAIT_CYCLES_PER_ITER);
+
+    for (uint32_t m = 0; m < ms; m++)
+    {
+        for (volatile uint32_t i = 0; i < iters_per_ms; i++)
+        {
+            /* Busy wait for elapsed duration. */
+        }
+    }
+}
+
 void mmosal_impl_assert(void)
 {
     /* Flag to prevent infinite recursion in assert - can occur if assert is called in interrupt
@@ -172,13 +192,15 @@ void mmosal_impl_assert(void)
     if (preserved_failure_info.magic == ASSERT_INFO_MAGIC)
     {
 #if !(defined(ENABLE_MANUAL_FAILURE_LOG_PROCESSING) && ENABLE_MANUAL_FAILURE_LOG_PROCESSING)
-        mmosal_dump_failure_info();
+        mmosal_dump_failure_info(mm_log_final);
 #endif
     }
     mmhal_log_flush();
     MMPORT_BREAKPOINT();
+    busy_wait_ms(0); /* Dummy call to avoid unused-function error */
 #else
-    mmosal_task_sleep(DELAY_BEFORE_RESET_MS);
+    mmhal_log_flush();
+    busy_wait_ms(DELAY_BEFORE_RESET_MS);
     mmhal_reset();
 #endif
     while (1)
@@ -198,7 +220,7 @@ static void init_task_main(void *arg)
     if (preserved_failure_info.magic == ASSERT_INFO_MAGIC)
     {
 #if !(defined(ENABLE_MANUAL_FAILURE_LOG_PROCESSING) && ENABLE_MANUAL_FAILURE_LOG_PROCESSING)
-        mmosal_dump_failure_info();
+        mmosal_dump_failure_info(mmosal_printf);
 #endif
     }
     else
@@ -217,7 +239,7 @@ static void init_task_main(void *arg)
 
         if (all_zeros)
         {
-            printf("Warning: preserved_failure_info may be zeroed on boot\n");
+            mmosal_printf("Warning: preserved_failure_info may be zeroed on boot\n");
         }
     }
 

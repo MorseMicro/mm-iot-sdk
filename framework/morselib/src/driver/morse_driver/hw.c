@@ -16,7 +16,6 @@
 
 int morse_hw_irq_enable(struct driver_data *driverd, uint32_t irq, bool enable)
 {
-
     MMOSAL_DEV_ASSERT(irq < 32);
 
     uint32_t irq_en,
@@ -49,7 +48,6 @@ int morse_hw_irq_handle(struct driver_data *driverd)
     ret = morse_trns_read_le32(driverd, MORSE_REG_INT1_STS(driverd), &status1);
     if (ret != 0)
     {
-
         ret = morse_trns_read_le32(driverd, MORSE_REG_INT1_STS(driverd), &status1);
         if (ret != 0)
         {
@@ -98,7 +96,6 @@ void morse_hw_toggle_aon_latch(struct driver_data *driverd)
 
     if (address)
     {
-
         morse_trns_read_le32(driverd, address, &latch);
         morse_trns_write_le32(driverd, address, latch & ~(mask));
         mmosal_task_sleep(5);
@@ -117,7 +114,6 @@ bool is_efuse_xtal_wait_supported(struct driver_data *driverd)
 
     if (MORSE_REG_EFUSE_DATA0(driverd) == 0)
     {
-
         return true;
     }
 

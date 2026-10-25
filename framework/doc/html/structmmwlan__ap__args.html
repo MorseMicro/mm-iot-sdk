@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.13.1</span>
+   &#160;<span id="projectnumber">2.14.3</span>
    </div>
   </td>
  </tr>
@@ -100,12 +100,12 @@ $(document).ready(function(){initNavTree('structmmwlan__ap__args.html',''); init
 <div class="line"><span class="keyword">struct </span><a class="code hl_struct" href="structmmwlan__ap__args.html">mmwlan_ap_args</a> ap_args = <a class="code hl_define" href="group__MMWLAN__AP.html#ga471aec5c5cf5adf216186b429bf05f31">MMWLAN_AP_ARGS_INIT</a>;</div>
 <div class="line"><span class="comment">// HERE: initialize arguments</span></div>
 <div class="line">status = <a class="code hl_function" href="group__MMWLAN__AP.html#gacce06602f53a434834463df53d7ff942">mmwlan_ap_enable</a>(&amp;ap_args);</div>
-<div class="ttc" id="agroup__MMWLAN__AP_html_ga471aec5c5cf5adf216186b429bf05f31"><div class="ttname"><a href="group__MMWLAN__AP.html#ga471aec5c5cf5adf216186b429bf05f31">MMWLAN_AP_ARGS_INIT</a></div><div class="ttdeci">#define MMWLAN_AP_ARGS_INIT</div><div class="ttdoc">Initializer for mmwlan_ap_args.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l02171">mmwlan.h:2171</a></div></div>
+<div class="ttc" id="agroup__MMWLAN__AP_html_ga471aec5c5cf5adf216186b429bf05f31"><div class="ttname"><a href="group__MMWLAN__AP.html#ga471aec5c5cf5adf216186b429bf05f31">MMWLAN_AP_ARGS_INIT</a></div><div class="ttdeci">#define MMWLAN_AP_ARGS_INIT</div><div class="ttdoc">Initializer for mmwlan_ap_args.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l02181">mmwlan.h:2181</a></div></div>
 <div class="ttc" id="agroup__MMWLAN__AP_html_gacce06602f53a434834463df53d7ff942"><div class="ttname"><a href="group__MMWLAN__AP.html#gacce06602f53a434834463df53d7ff942">mmwlan_ap_enable</a></div><div class="ttdeci">enum mmwlan_status mmwlan_ap_enable(const struct mmwlan_ap_args *args)</div><div class="ttdoc">Enable AP mode.</div></div>
 <div class="ttc" id="agroup__MMWLAN_html_ga0039072000d47e5c3712686bf1e43086"><div class="ttname"><a href="group__MMWLAN.html#ga0039072000d47e5c3712686bf1e43086">mmwlan_status</a></div><div class="ttdeci">mmwlan_status</div><div class="ttdoc">Enumeration of status return codes.</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l00049">mmwlan.h:50</a></div></div>
-<div class="ttc" id="astructmmwlan__ap__args_html"><div class="ttname"><a href="structmmwlan__ap__args.html">mmwlan_ap_args</a></div><div class="ttdoc">Arguments data structure for mmwlan_ap_enable().</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l02058">mmwlan.h:2059</a></div></div>
+<div class="ttc" id="astructmmwlan__ap__args_html"><div class="ttname"><a href="structmmwlan__ap__args.html">mmwlan_ap_args</a></div><div class="ttdoc">Arguments data structure for mmwlan_ap_enable().</div><div class="ttdef"><b>Definition:</b> <a href="mmwlan_8h_source.html#l02067">mmwlan.h:2068</a></div></div>
 </div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02058">2058</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02067">2067</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 </div>
 <p><code>#include &lt;<a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>&gt;</code></p>
 <table class="memberdecls">
@@ -182,7 +182,7 @@ Data Fields</h2></td></tr>
 <p>Whether the function should return immediately instead of waiting for the AP interface to be fully started before returning. </p>
 <p >When returning immediately, the AP interface will not be immediately active and functions such as <a class="el" href="group__MMWLAN__AP.html#gade015bdc0a6893e2799c4b654679eb1e">mmwlan_ap_get_bssid</a> will return <a class="el" href="group__MMWLAN.html#gga0039072000d47e5c3712686bf1e43086af8311c13f95546d0b338ea2b86384a00">MMWLAN_UNAVAILABLE</a> until active. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02163">2163</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02173">2173</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -202,7 +202,7 @@ Data Fields</h2></td></tr>
 <p >A TU is equal to 1.024 ms.</p>
 <p >If zero then the default value, <a class="el" href="group__MMWLAN__AP.html#gade71e33dc06fd110459e9914011f3bee">MMWLAN_DEFAULT_AP_BEACON_INTERVAL_TUS</a>, will be used. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02113">2113</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02123">2123</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -222,7 +222,7 @@ Data Fields</h2></td></tr>
 <p >If zero then the devices MAC address will be used.</p>
 <dl class="section warning"><dt>Warning</dt><dd>The MAC address selection behavior may change in future. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02069">2069</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02078">2078</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -241,7 +241,7 @@ Data Fields</h2></td></tr>
 <p>The Delivery Traffic Indication Map (DTIM) interval in beacons. </p>
 <p >If zero then the default value, <a class="el" href="group__MMWLAN__AP.html#ga13db9da2c16c742b3c4f48e271947e0d">MMWLAN_DEFAULT_AP_DTIM_PERIOD</a>, will be used. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02119">2119</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02129">2129</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -261,7 +261,7 @@ Data Fields</h2></td></tr>
 <p >The maximum value limit is <a class="el" href="group__MMWLAN__AP.html#ga96d44ab20aa3809f7eeb98c87277aa13">MMWLAN_AP_MAX_STAS_LIMIT</a>.</p>
 <p >If zero, the default value of <a class="el" href="group__MMWLAN__AP.html#gadce3323a0b305ef1125330fa5e457cf6">MMWLAN_DEFAULT_AP_MAX_STAS</a> will be used. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02156">2156</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02166">2166</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -281,7 +281,7 @@ Data Fields</h2></td></tr>
 <p >The combination of this field and <code>s1g_chan_num</code> will be used to look up the appropriate entry in the channel list, which must have been previously provided using <a class="el" href="group__MMWLAN__REGDB.html#ga73b6742a29b62bf0091a9b6c9cc770db">mmwlan_set_channel_list()</a>.</p>
 <dl class="section note"><dt>Note</dt><dd>When the STA interface is already active, this must match the STA current operating class. Set both this and <code>s1g_chan_num</code> to 0 to auto-config all four channel fields: <code>op_class</code>, <code>s1g_chan_num</code>, <code>pri_bw_mhz</code>, <code>pri_1mhz_chan_idx</code>. See <a class="el" href="group__MMWLAN__AP.html#gacce06602f53a434834463df53d7ff942">mmwlan_ap_enable()</a> for more details. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02095">2095</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02105">2105</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -299,7 +299,7 @@ Data Fields</h2></td></tr>
 
 <p>Passphrase (only used if <code>security_type</code> is <code>MMWLAN_SAE</code>, otherwise ignored. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02073">2073</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02082">2082</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -318,7 +318,7 @@ Data Fields</h2></td></tr>
 <p>Length of <code>passphrase</code>. </p>
 <p >May be zero if <code>passphrase</code> is null-terminated. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02075">2075</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02084">2084</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -336,7 +336,7 @@ Data Fields</h2></td></tr>
 
 <p>Protected Management Frame mode to use (802.11w) </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02077">2077</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02086">2086</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -356,7 +356,7 @@ Data Fields</h2></td></tr>
 <p >This must be less than the bandwidth of the operating channel.</p>
 <dl class="section note"><dt>Note</dt><dd>When the STA interface is already active, this must match the STA current primary 1 MHz channel index. Overwritten by the STA value when <code>op_class</code> and <code>s1g_chan_num</code> are both 0. See <a class="el" href="group__MMWLAN__AP.html#gacce06602f53a434834463df53d7ff942">mmwlan_ap_enable()</a> for details. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02139">2139</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02149">2149</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -378,7 +378,7 @@ Data Fields</h2></td></tr>
 <dd>
 When the STA interface is already active, this must match the STA current primary bandwidth. Overwritten by the STA value when <code>op_class</code> and <code>s1g_chan_num</code> are both 0. See <a class="el" href="group__MMWLAN__AP.html#gacce06602f53a434834463df53d7ff942">mmwlan_ap_enable()</a> for details. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02130">2130</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02140">2140</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -398,7 +398,7 @@ When the STA interface is already active, this must match the STA current primar
 <p >The combination of this field and <code>op_class</code> will be used to look up the appropriate entry in the channel list, which must have been previously provided using <a class="el" href="group__MMWLAN__REGDB.html#ga73b6742a29b62bf0091a9b6c9cc770db">mmwlan_set_channel_list()</a>.</p>
 <dl class="section note"><dt>Note</dt><dd>When the STA interface is already active, this must match the STA current S1G channel number. Set both this and <code>op_class</code> to 0 to auto-config from the STA. See the note on <code>op_class</code> for details. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02107">2107</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02117">2117</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -415,9 +415,9 @@ When the STA interface is already active, this must match the STA current primar
 </div><div class="memdoc">
 
 <p>Preference list of enabled elliptic curve groups for SAE and OWE. </p>
-<p >By default (if this parameter is not set), the mandatory group 19 is preferred. </p>
+<p >By default (if this parameter is not set), the mandatory group 19 is preferred. List must be zero terminated. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02082">2082</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02092">2092</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -436,7 +436,7 @@ When the STA interface is already active, this must match the STA current primar
 <p>Type of security to use. </p>
 <p >If <code>MMWLAN_SAE</code> then a <code>passphrase</code> must be specified. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02071">2071</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02080">2080</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -454,7 +454,7 @@ When the STA interface is already active, this must match the STA current primar
 
 <p>SSID of the AP. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02061">2061</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02070">2070</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -472,7 +472,7 @@ When the STA interface is already active, this must match the STA current primar
 
 <p>Length of the SSID. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02063">2063</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02072">2072</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -491,7 +491,7 @@ When the STA interface is already active, this must match the STA current primar
 <p>Optional callback to be invoked when the status of a connected STA changes. </p>
 <p >May be set to <code>NULL</code>. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02144">2144</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02154">2154</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -510,7 +510,7 @@ When the STA interface is already active, this must match the STA current primar
 <p>Optional opaque argument to be passed to <code>sta_status_cb</code>. </p>
 <p >May optionally be <code>NULL</code>. The value of this parameter must remain valid during the lifetime of the AP. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02149">2149</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmwlan_8h_source.html#l02159">2159</a> of file <a class="el" href="mmwlan_8h_source.html">mmwlan.h</a>.</p>
 
 </div>
 </div>
@@ -524,7 +524,7 @@ When the STA interface is already active, this must match the STA current primar
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="structmmwlan__ap__args.html">mmwlan_ap_args</a></li>
-    <li class="footer">Copyright 2021-2025 Morse Micro </li>
+    <li class="footer">Copyright 2021-2026 Morse Micro </li>
   </ul>
 </div>
 </body>

@@ -4,12 +4,10 @@
  */
 
 
-
 #pragma once
 
 #include <limits.h>
 #include <stdint.h>
-
 
 
 #define MORSE_MISC_ERROR_SECTION -(0x8000)
@@ -17,10 +15,8 @@
 #define MORSE_MAC_ERROR_SECTION  -(0x18000)
 #define MORSE_PHY_ERROR_SECTION  -(0x20000)
 
-
 typedef enum
 {
-
     MORSE_SUCCESS = 0,
     MORSE_EPERM = -1,
     MORSE_ENOENT = -2,
@@ -151,7 +147,6 @@ typedef enum
     MORSE_EMEDIUMTYPE = -124,
 
 
-
     MORSE_FAILED = MORSE_MISC_ERROR_SECTION,
     MORSE_NULL_POINTER,
     MORSE_INVALID_ARGUMENT,
@@ -160,17 +155,13 @@ typedef enum
     MORSE_UNSUPPORTED_VERSION,
     MORSE_UNSUPPORTED_MAC_CIPHER,
 
-
     MORSE_UNSUPPORTED_MCS = MORSE_PHY_ERROR_SECTION,
     MORSE_UNSUPPORTED_MCS_FOR_CHANNEL,
-
     MORSE_PSDU_OVERSIZE,
-
     MORSE_PSDU_INIT_ERROR,
     MORSE_UNSUPPORTED_FFT_SIZE,
     MORSE_UNSUPPORTED_MODULATION,
     MORSE_LTF_NO_MATCH,
-
     MORSE_UNSUPPORTED_CHANNEL_BANDWIDTH,
     MORSE_1MHZ_PRIMARY_CHAN_INDEX_ERROR,
     MORSE_SERVICE_FIELD_ERROR,
@@ -180,7 +171,6 @@ typedef enum
     MORSE_FINAL_ERROR = INT32_MAX
 } morse_error_t;
 
-
 #define MORSE_ERROR_CHECK(_status_)    \
     do {                               \
         if (_status_ != MORSE_SUCCESS) \
@@ -189,13 +179,11 @@ typedef enum
         }                              \
     } while (0)
 
-
 #define MORSE_ERROR_RAISE(_status_, _error_code_) \
     do {                                          \
         _status_ = _error_code_;                  \
         goto error_handler;                       \
     } while (0)
-
 
 #define MORSE_NULL_CHECK(_status_, _ptr_)                    \
     do {                                                     \

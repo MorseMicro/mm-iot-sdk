@@ -9,12 +9,9 @@
 
 #define S1G_TIM_MAX_BLOCK_SIZE 256
 
-
 const struct dot11_ie_tim *ie_s1g_tim_find(const uint8_t *ies, size_t ies_len);
 
-
 bool ie_s1g_tim_has_aid(const struct dot11_ie_tim *s1g_tim, uint16_t aid);
-
 
 void ie_s1g_tim_build(struct consbuf *buf,
                       uint8_t dtim_count,

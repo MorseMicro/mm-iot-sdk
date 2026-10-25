@@ -7,8 +7,6 @@
 
 struct umac_ps_data
 {
-
     enum mmwlan_ps_mode pwr_mode;
-
     bool suspended;
 };

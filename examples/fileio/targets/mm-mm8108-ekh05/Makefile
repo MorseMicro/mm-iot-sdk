@@ -42,6 +42,11 @@ ifeq ($(VERBOSE),)
 QUIET = @
 endif
 
+# Set BUILD_MORSELIB_FROM_SOURCE to a non-empty string to build Morselib from source.
+# Note that BUILD_MORSELIB_FROM_SOURCE is enabled by default, but can be set to an empty string to
+# instead link against the precompiled morselib libraries.
+# The precompiled morselib libraries are deprecated and will be removed in a future release.
+BUILD_MORSELIB_FROM_SOURCE?=y
 
 # Set BUILD_SUPPLICANT_FROM_SOURCE to a non-empty string to build the WPA Supplicant from source
 # and link against libmorse_nosupplicant.a. If this is set, the crypto will also be built from
@@ -56,12 +61,29 @@ endif
 BUILD_SUPPLICANT_CRYPTO_FROM_SOURCE?=y
 
 
-
+# Set BUILD_WITH_MBEDTLS_ECC_HW_CRYPTO to a non-empty string to enable hardware acceleration of
+# mbedTLS ECC operations where supported by the platform. BUILD_WITH_MBEDTLS_ECC_HW_CRYPTO will be
+# ignored for platforms that do not have hardware crypto support.
+# Note that BUILD_WITH_MBEDTLS_ECC_HW_CRYPTO is enabled by default, but can be set to an empty
+# string to disable it.
+BUILD_WITH_MBEDTLS_ECC_HW_CRYPTO?=y
 # Set ENABLE_AP_MODE to a non-empty string to enable additional build time configuration to support
 # AP mode. This will increase heap allocations and compile the WPA supplicant with AP mode support.
 # Additional memory increase is indicative only.
 #ENABLE_AP_MODE=y
 
+
+
+# Add build defines to enable NIST elliptic curves P-384 and P-521. Enable if using SAE/OWE groups
+# 20 and 21, or if you require them for your cryptographic operations. Enabling these curves
+# increases FLASH usage by ~6KB and ~5KB respectively for platforms with SW crypto, and <1KB for
+# platforms with HW crypto.
+ifneq ($(ENABLE_MBEDTLS_P384),)
+BUILD_DEFINES += MBEDTLS_ECP_DP_SECP384R1_ENABLED
+endif
+ifneq ($(ENABLE_MBEDTLS_P521),)
+BUILD_DEFINES += MBEDTLS_ECP_DP_SECP521R1_ENABLED
+endif
 # Example source files
 APP_DIR = ../..
 SRCS_C = $(wildcard $(APP_DIR)/src/*.c)
@@ -132,6 +154,9 @@ include $(MMIOT_ROOT)/mk/littlefs.mk
 include $(MMIOT_ROOT)/mk/freertos-common.mk
 include $(MMIOT_ROOT)/mk/freertos-$(CORE).mk
 include $(MMIOT_ROOT)/mk/morselib.mk
+include $(MMIOT_ROOT)/mk/wpa_supplicant.mk
+include $(MMIOT_ROOT)/mk/mbedtls.mk
+include $(MMIOT_ROOT)/mk/mmpktmem.mk
 
 
 MMIOT_INCLUDES += src
@@ -196,6 +221,11 @@ BUILD_DEFINES += $(DEBUG_BUILD_DEFINES)
 else
 # Production builds
 CFLAGS += -Os
+
+# More user friendly log messages
+CFLAGS += -DMMLOG_PREFIX_FMT="\"%c %8lu \""   # Note: can't use BUILD_DEFINES because of spaces
+BUILD_DEFINES += "MMLOG_PREFIX_ARGS=lvl,mmosal_get_time_ms()"
+
 endif
 $(info Building for $(BUILDTYPE) in $(BUILD_DIR))
 

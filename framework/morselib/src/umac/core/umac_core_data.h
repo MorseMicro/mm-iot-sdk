@@ -8,12 +8,9 @@
 #include "mmwlan_internal.h"
 #include "umac_core.h"
 
-
 #define UMAC_EVTQ_MAXLEN (25)
 
-
 #define UMAC_TIMEOUTQ_MAXLEN (20)
-
 
 #define UMAC_TIMEOUTQ_EXTRA_LEN (64)
 
@@ -39,7 +36,6 @@ struct umac_core_timeoutq
     struct umac_core_timeout *head;
     struct umac_core_timeout *free;
     struct umac_core_timeout pool[UMAC_TIMEOUTQ_MAXLEN];
-
     struct umac_core_timeout *extra_pool;
 };
 
@@ -50,12 +46,8 @@ struct umac_core_data
 
     struct mmosal_task *evtloop_task;
     struct mmosal_semb *evtloop_semb;
-
     volatile bool evtloop_shutting_down;
-
     volatile bool evtloop_has_finished;
-
     mmwlan_sleep_cb_t sleep_callback;
-
     void *sleep_arg;
 };

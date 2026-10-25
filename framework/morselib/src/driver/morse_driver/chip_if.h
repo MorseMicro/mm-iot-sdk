@@ -10,7 +10,6 @@
 #include "driver/morse_driver/mm8108/yaps.h"
 #include "driver/morse_driver/mm8108/yaps-hw.h"
 
-
 #define MORSE_CHIP_IF_IRQ_MASK_ALL                \
     (GENMASK(13, 0) |                             \
      MORSE_PAGER_IRQ_BYPASS_TX_STATUS_AVAILABLE | \
@@ -21,7 +20,6 @@ enum morse_chip_if_flags
     MORSE_CHIP_IF_FLAGS_DIR_TO_HOST = BIT(0),
     MORSE_CHIP_IF_FLAGS_DIR_TO_CHIP = BIT(1),
     MORSE_CHIP_IF_FLAGS_COMMAND = BIT(2),
-
     MORSE_CHIP_IF_FLAGS_BEACON = BIT(3),
     MORSE_CHIP_IF_FLAGS_DATA = BIT(4)
 };
@@ -34,33 +32,23 @@ enum morse_chip_if
 
 struct chip_if_ops
 {
-
     int (*init)(struct driver_data *driverd);
-
 
     void (*finish)(struct driver_data *driverd);
 
-
     struct morse_skbq *(*skbq_cmd_tc_q)(struct driver_data *driverd);
-
 
     struct morse_skbq *(*skbq_bcn_tc_q)(struct driver_data *driverd);
 
-
     struct morse_skbq *(*skbq_mgmt_tc_q)(struct driver_data *driverd);
-
 
     struct morse_skbq *(*skbq_tc_q_from_aci)(struct driver_data *driverd, int aci);
 
-
     int (*chip_if_handle_irq)(struct driver_data *driverd, uint32_t status);
-
 
     int (*skbq_get_tx_buffered_count)(struct driver_data *driverd);
 
-
     void (*chip_if_work)(struct driver_data *driverd);
-
 
     void (*tx_stale_work)(struct driver_data *driverd);
 };

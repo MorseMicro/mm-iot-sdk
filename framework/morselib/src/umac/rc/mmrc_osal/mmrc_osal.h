@@ -35,8 +35,6 @@ typedef int32_t s32;
 
 #define MMRC_OSAL_PR_ERR            MMLOG_ERR
 
-
 void osal_mmrc_seed_random(void);
-
 
 uint32_t osal_mmrc_random_u32(uint32_t max);

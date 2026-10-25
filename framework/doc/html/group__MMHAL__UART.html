@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.13.1</span>
+   &#160;<span id="projectnumber">2.14.3</span>
    </div>
   </td>
  </tr>
@@ -88,7 +88,6 @@ $(document).ready(function(){initNavTree('group__MMHAL__UART.html',''); initResi
 
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Data Structures</a> &#124;
 <a href="#typedef-members">Typedefs</a> &#124;
 <a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
@@ -100,12 +99,6 @@ $(document).ready(function(){initNavTree('group__MMHAL__UART.html',''); initResi
 <p >This is used by MM-IoT-SDK example applications.</p>
 <p >This is a very simple API and leaves UART configuration to the HAL. </p>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
-Data Structures</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmmhal__uart__config.html">mmhal_uart_config</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Configuration to use for a UART peripheral.  <a href="structmmhal__uart__config.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:ga240b9a33c2c7df9ce753d74a4844b8de"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMHAL__UART.html#ga240b9a33c2c7df9ce753d74a4844b8de">mmhal_uart_rx_cb_t</a>) (const uint8_t *data, size_t length, void *arg)</td></tr>
@@ -135,12 +128,6 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>mmhal_uart_deinit</b>
 <tr class="memitem:gaf31cd17018e1bd3a8387de5a038fd06c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMHAL__UART.html#gaf31cd17018e1bd3a8387de5a038fd06c">mmhal_uart_set_deep_sleep_mode</a> (enum <a class="el" href="group__MMHAL__UART.html#ga88024c213665f84c6273777704117b8c">mmhal_uart_deep_sleep_mode</a> mode)</td></tr>
 <tr class="memdesc:gaf31cd17018e1bd3a8387de5a038fd06c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the deep sleep mode for the UART.  <a href="group__MMHAL__UART.html#gaf31cd17018e1bd3a8387de5a038fd06c">More...</a><br /></td></tr>
 <tr class="separator:gaf31cd17018e1bd3a8387de5a038fd06c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaac18c52d6afd1ade33fbe6751797dd95"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMHAL__UART.html#gaac18c52d6afd1ade33fbe6751797dd95">mmhal_uart_validate_config</a> (const struct <a class="el" href="structmmhal__uart__config.html">mmhal_uart_config</a> *config)</td></tr>
-<tr class="memdesc:gaac18c52d6afd1ade33fbe6751797dd95"><td class="mdescLeft">&#160;</td><td class="mdescRight">Validate the given UART configuration options struct.  <a href="group__MMHAL__UART.html#gaac18c52d6afd1ade33fbe6751797dd95">More...</a><br /></td></tr>
-<tr class="separator:gaac18c52d6afd1ade33fbe6751797dd95"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gafd0a5b98169c53b81da188e7353bca52"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMHAL__UART.html#gafd0a5b98169c53b81da188e7353bca52">mmhal_uart_configure</a> (const struct <a class="el" href="structmmhal__uart__config.html">mmhal_uart_config</a> *config)</td></tr>
-<tr class="memdesc:gafd0a5b98169c53b81da188e7353bca52"><td class="mdescLeft">&#160;</td><td class="mdescRight">Configure the UART to change the current operation.  <a href="group__MMHAL__UART.html#gafd0a5b98169c53b81da188e7353bca52">More...</a><br /></td></tr>
-<tr class="separator:gafd0a5b98169c53b81da188e7353bca52"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Typedef Documentation</h2>
 <a id="ga240b9a33c2c7df9ce753d74a4844b8de" name="ga240b9a33c2c7df9ce753d74a4844b8de"></a>
@@ -191,38 +178,11 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>mmhal_uart_deinit</b>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="mmhal__uart_8h_source.html#l00078">78</a> of file <a class="el" href="mmhal__uart_8h_source.html">mmhal_uart.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmhal__uart_8h_source.html#l00069">69</a> of file <a class="el" href="mmhal__uart_8h_source.html">mmhal_uart.h</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="gafd0a5b98169c53b81da188e7353bca52" name="gafd0a5b98169c53b81da188e7353bca52"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gafd0a5b98169c53b81da188e7353bca52">&#9670;&nbsp;</a></span>mmhal_uart_configure()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool mmhal_uart_configure </td>
-          <td>(</td>
-          <td class="paramtype">const struct <a class="el" href="structmmhal__uart__config.html">mmhal_uart_config</a> *&#160;</td>
-          <td class="paramname"><em>config</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Configure the UART to change the current operation. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">config</td><td>Pointer to configuration options for the UART peripheral.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd><code>true</code> if the new config was applied, else <code>false</code>. </dd></dl>
-
-</div>
-</div>
 <a id="gad368f1afcc9094ac2ff4c85a1be3c4c0" name="gad368f1afcc9094ac2ff4c85a1be3c4c0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#gad368f1afcc9094ac2ff4c85a1be3c4c0">&#9670;&nbsp;</a></span>mmhal_uart_init()</h2>
 
@@ -326,40 +286,13 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>mmhal_uart_deinit</b>
 
 </div>
 </div>
-<a id="gaac18c52d6afd1ade33fbe6751797dd95" name="gaac18c52d6afd1ade33fbe6751797dd95"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gaac18c52d6afd1ade33fbe6751797dd95">&#9670;&nbsp;</a></span>mmhal_uart_validate_config()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool mmhal_uart_validate_config </td>
-          <td>(</td>
-          <td class="paramtype">const struct <a class="el" href="structmmhal__uart__config.html">mmhal_uart_config</a> *&#160;</td>
-          <td class="paramname"><em>config</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Validate the given UART configuration options struct. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">config</td><td>Pointer to configuration options for the UART peripheral.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd><code>true</code> if the arguments are valid, else <code>false</code>. </dd></dl>
-
-</div>
-</div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.17-->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Copyright 2021-2025 Morse Micro </li>
+    <li class="footer">Copyright 2021-2026 Morse Micro </li>
   </ul>
 </div>
 </body>

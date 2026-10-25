@@ -25,7 +25,6 @@ enum mmwlan_status umac_relay_get_update_packet(struct umac_data *umacd,
     enum mmwlan_status status = MMWLAN_ERROR;
     unsigned update_count = 0;
 
-
     const size_t max_payload_len = 1000;
     uint8_t *payload = (uint8_t *)mmosal_calloc(1, max_payload_len);
     if (payload == NULL)
@@ -47,7 +46,6 @@ enum mmwlan_status umac_relay_get_update_packet(struct umac_data *umacd,
                                                     entry->da);
         if (!ok)
         {
-
             MMOSAL_DEV_ASSERT(update_count != 0);
             break;
         }
@@ -65,7 +63,6 @@ enum mmwlan_status umac_relay_get_update_packet(struct umac_data *umacd,
                                                     entry->da);
         if (!ok)
         {
-
             MMOSAL_DEV_ASSERT(update_count != 0);
             break;
         }

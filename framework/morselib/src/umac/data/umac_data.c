@@ -51,7 +51,6 @@ struct umac_data *umac_data_get_umacd(void)
 }
 
 
-
 struct umac_config_data *umac_data_get_config(struct umac_data *umacd)
 {
     UMAC_DATA_SANITY_CHECK(umacd);
@@ -192,7 +191,6 @@ void umac_data_dealloc_relay(struct umac_data *umacd)
 }
 
 
-
 struct umac_ba_sta_data *umac_sta_data_get_ba(struct umac_sta_data *stad)
 {
     MMOSAL_ASSERT(stad != NULL);
@@ -221,7 +219,6 @@ struct umac_ap_sta_data *umac_sta_data_get_ap(struct umac_sta_data *stad)
 {
     return &stad->ap;
 }
-
 
 
 void umac_data_init(void)

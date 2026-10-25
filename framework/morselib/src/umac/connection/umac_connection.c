@@ -39,13 +39,9 @@
 #include "umac/regdb/umac_regdb.h"
 #include "umac/relay/umac_relay.h"
 
-
 #define UMAC_CONNECTION_MON_UNSTABLE_INTERVAL_MS 100
-
 #define UMAC_CONNECTION_DEAUTH_THRESHOLD_AP_QUERIES (2)
-
 #define DEFAULT_MORSE_IBSS_ACK_TIMEOUT_ADJUST_US (1000)
-
 #define MORSE_SHORT_ACK_TIMEOUT_ADJUST_US (300)
 
 static void umac_connection_assoc_reassoc_req_retry(void *arg1, void *arg2);
@@ -119,9 +115,27 @@ bool umac_connection_validate_sta_args(const struct mmwlan_sta_args *args)
         return false;
     }
 
+    bool zero_terminated = false;
+    for (size_t i = 0; i < MM_ARRAY_COUNT(args->sae_owe_ec_groups); ++i)
+    {
+        if (args->sae_owe_ec_groups[i] == 0)
+        {
+            zero_terminated = true;
+            break;
+        }
+    }
+    if (!zero_terminated)
+    {
+        MMLOG_ERR("SAE/OWE EC groups must be zero terminated [%d,%d,%d,%d].\n",
+                  args->sae_owe_ec_groups[0],
+                  args->sae_owe_ec_groups[1],
+                  args->sae_owe_ec_groups[2],
+                  args->sae_owe_ec_groups[3]);
+        return false;
+    }
+
     return true;
 }
-
 
 static enum mmwlan_status umac_connection_start_interface(struct umac_data *umacd,
                                                           const char *confname)
@@ -164,7 +178,6 @@ static void umac_connection_stop_interface(struct umac_data *umacd)
     if (data->mode != UMAC_CONNECTION_MODE_PREASSOC)
     {
         enum mmwlan_status status = umac_supp_remove_sta_interface(umacd);
-
         MMOSAL_DEV_ASSERT(status == MMWLAN_SUCCESS);
     }
     umac_sta_data_set_vif_id(data->stad, MMDRV_VIF_ID_INVALID);
@@ -212,7 +225,6 @@ enum mmwlan_status umac_connection_start_dpp(struct umac_data *umacd,
     data->dpp_event_cb_arg = args->dpp_event_cb_arg;
     data->dpp_mode = args->mode;
 
-
     umac_ps_set_suspended(umacd, true);
 
     data->mode = UMAC_CONNECTION_MODE_DPP;
@@ -241,7 +253,6 @@ enum mmwlan_status umac_connection_stop_dpp(struct umac_data *umacd)
     {
         umac_supp_dpp_push_button_stop(umacd);
     }
-
 
     umac_ps_set_suspended(umacd, false);
 
@@ -281,7 +292,6 @@ void umac_connection_handle_dpp_event(struct umac_data *umacd,
     if ((event->event == MMWLAN_DPP_EVT_PB_RESULT) &&
         (data->dpp_mode == MMWLAN_DPP_MODE_QR_ENROLLEE))
     {
-
         return;
     }
 
@@ -289,7 +299,6 @@ void umac_connection_handle_dpp_event(struct umac_data *umacd,
 }
 
 #endif
-
 
 enum mmwlan_status umac_connection_reassoc(struct umac_data *umacd)
 {
@@ -303,7 +312,6 @@ enum mmwlan_status umac_connection_reassoc(struct umac_data *umacd)
 
     if (data->mode == UMAC_CONNECTION_MODE_NONE)
     {
-
         data->selective_scans_used = 0;
 
         status = umac_connection_start_interface(umacd, UMAC_SUPP_STA_CONFIG_NAME);
@@ -313,7 +321,6 @@ enum mmwlan_status umac_connection_reassoc(struct umac_data *umacd)
         }
 
         data->mode = UMAC_CONNECTION_MODE_STA;
-
         status = umac_supp_connect(umacd);
     }
     else
@@ -349,7 +356,6 @@ enum mmwlan_status umac_connection_start(struct umac_data *umacd,
 
     data->sta_status_cb = sta_status_cb;
     data->sta_args = *args;
-
     if (args->passphrase_len != 0)
     {
         data->sta_args.passphrase[args->passphrase_len] = '\0';
@@ -364,8 +370,12 @@ enum mmwlan_status umac_connection_start(struct umac_data *umacd,
         data->sta_args.extra_assoc_ies = extra_assoc_ies;
     }
 
-
     data->selective_scans_used = 0;
+
+    if (umac_relay_enabled(umacd))
+    {
+        data->sta_args.use_4addr = MMWLAN_4ADDR_MODE_ENABLED;
+    }
 
     enum mmwlan_status status = umac_connection_start_interface(umacd, UMAC_SUPP_STA_CONFIG_NAME);
     if (status != MMWLAN_SUCCESS)
@@ -386,7 +396,6 @@ enum mmwlan_status umac_connection_start(struct umac_data *umacd,
                                                       filter->n_ouis);
         MMOSAL_ASSERT(status == MMWLAN_SUCCESS);
     }
-
 
     status = umac_supp_connect(umacd);
     if (status != MMWLAN_SUCCESS)
@@ -420,13 +429,11 @@ enum mmwlan_status umac_connection_stop(struct umac_data *umacd)
         data->sta_args.extra_assoc_ies_len = 0;
     }
 
-
     umac_supp_disconnect(umacd);
     umac_core_cancel_timeout(umacd, umac_connection_assoc_reassoc_req_retry, umacd, NULL);
     umac_connection_stop_interface(umacd);
     umac_rc_stop(data->stad);
     umac_rc_deinit(data->stad);
-
 
     data->mode = UMAC_CONNECTION_MODE_NONE;
     return MMWLAN_SUCCESS;
@@ -477,10 +484,8 @@ bool umac_connection_consume_selective_scan_attempt(struct umac_data *umacd)
 
     if (iterations == UINT8_MAX)
     {
-
         return true;
     }
-
 
     if (data->conn_fsm.current_state == CONNECTION_FSM_STATE_CONNECTED)
     {
@@ -554,7 +559,6 @@ static bool default_bw_stepdown(const uint8_t max_bw, struct ie_s1g_operation *c
 {
     MMOSAL_DEV_ASSERT(max_bw >= config->primary_channel_width_mhz);
     MMOSAL_DEV_ASSERT(max_bw < config->operation_channel_width_mhz);
-
     if (abs((int)config->operating_channel_index - (int)config->primary_channel_number) >
         config->operation_channel_width_mhz)
     {
@@ -564,12 +568,10 @@ static bool default_bw_stepdown(const uint8_t max_bw, struct ie_s1g_operation *c
         return false;
     }
 
-
     while (config->operation_channel_width_mhz > max_bw)
     {
         --config->operating_class;
         config->operation_channel_width_mhz /= 2;
-
 
         if (config->operating_channel_index > config->primary_channel_number)
         {
@@ -583,9 +585,7 @@ static bool default_bw_stepdown(const uint8_t max_bw, struct ie_s1g_operation *c
     return true;
 }
 
-
 #define IS_4MHZ_AU_REVMF_OPERATING_CLASS(x) (((x) == 39) || ((x) == 48))
-
 
 #define IS_AU_REVMF_OPERATING_CLASS(x) \
     ((((x) == 39) || ((x) == 48)) || (((x) == 40) || ((x) == 49)))
@@ -594,7 +594,6 @@ static bool au_revmf_bw_stepdown(const uint8_t max_bw, struct ie_s1g_operation *
 {
     MMOSAL_DEV_ASSERT(max_bw >= config->primary_channel_width_mhz);
     MMOSAL_DEV_ASSERT(max_bw < config->operation_channel_width_mhz);
-
 
     static const uint8_t low_pri_channel_num = 32;
     static const uint8_t upper_pri_channel_num = 46;
@@ -607,12 +606,10 @@ static bool au_revmf_bw_stepdown(const uint8_t max_bw, struct ie_s1g_operation *
         return false;
     }
 
-
     while (config->operation_channel_width_mhz > max_bw)
     {
         if (IS_4MHZ_AU_REVMF_OPERATING_CLASS(config->operating_class))
         {
-
             config->operating_channel_index -= 16;
             config->operating_class = 24;
         }
@@ -620,11 +617,9 @@ static bool au_revmf_bw_stepdown(const uint8_t max_bw, struct ie_s1g_operation *
         --config->operating_class;
         config->operation_channel_width_mhz /= 2;
 
-
         bool move_to_lower = false;
         if (config->operation_channel_width_mhz == 4)
         {
-
             static const uint8_t pri_center_chan_num = 39;
             move_to_lower = config->primary_channel_number < pri_center_chan_num;
         }
@@ -645,14 +640,10 @@ static bool au_revmf_bw_stepdown(const uint8_t max_bw, struct ie_s1g_operation *
     return true;
 }
 
-
 #define IS_JP_OPERATING_CLASS(x) (((x >= 8) && (x <= 12)) || (x == 64) || (x == 65) || (x == 73))
 
-
 #define IS_JP_CHANNEL_INDEX_1_MHZ(x) ((x == 9) || ((((x - 13) % 2) == 0) && (x >= 13) && (x <= 21)))
-
 #define IS_JP_CHANNEL_INDEX_2_MHZ(x) (((x % 2) == 0) && (x >= 2) && (x <= 8))
-
 #define IS_JP_CHANNEL_INDEX_4_MHZ(x) ((x == 36) || (x == 38))
 
 #define IS_JP_CHANNEL_INDEX(x) \
@@ -669,7 +660,6 @@ static bool japan_bw_stepdown(const uint8_t max_bw, struct ie_s1g_operation *con
         MMLOG_ERR("Invalid channel index\n");
         return false;
     }
-
 
     if (config->primary_channel_width_mhz == max_bw)
     {
@@ -717,7 +707,6 @@ static bool japan_bw_stepdown(const uint8_t max_bw, struct ie_s1g_operation *con
 
     switch (config->operating_channel_index)
     {
-
         case 13:
         case 15:
         case 17:
@@ -729,7 +718,6 @@ static bool japan_bw_stepdown(const uint8_t max_bw, struct ie_s1g_operation *con
             }
             config->operating_class = (config->operating_class > 63) ? 73 : 8;
             break;
-
 
         case 2:
         case 6:
@@ -749,7 +737,6 @@ static bool japan_bw_stepdown(const uint8_t max_bw, struct ie_s1g_operation *con
             config->operating_class = (config->operating_class > 63) ? 65 : 10;
             break;
 
-
         case 38:
         case 36:
         default:
@@ -760,20 +747,17 @@ invalid_channel:
     return true;
 }
 
-
 static bool restrict_channel_bandwidth_config(struct umac_data *umacd,
                                               struct ie_s1g_operation *config)
 {
     const uint8_t max_bw = umac_interface_max_supported_bw(umacd);
     if (config->operation_channel_width_mhz <= max_bw)
     {
-
         return true;
     }
 
     if (config->primary_channel_width_mhz > max_bw)
     {
-
         MMLOG_WRN("Required primary channel width is greater than max width (%u > %u MHz)\n",
                   config->primary_channel_width_mhz,
                   max_bw);
@@ -830,7 +814,6 @@ enum mmwlan_status umac_connection_set_bss_cfg(struct umac_data *umacd,
         status = MMWLAN_UNAVAILABLE;
         goto exit;
     }
-
 
     success = restrict_channel_bandwidth_config(umacd, &config->channel_cfg);
     if (!success)
@@ -929,14 +912,12 @@ bool umac_connection_addr_matches_bssid(struct umac_data *umacd, const uint8_t *
     {
         return umac_sta_data_matches_bssid(data->stad, addr);
     }
-
     return false;
 }
 
 enum mmwlan_status umac_connection_get_aid(struct umac_data *umacd, uint16_t *aid)
 {
     struct umac_connection_data *data = umac_data_get_connection(umacd);
-
     if (data->conn_fsm.current_state == CONNECTION_FSM_STATE_CONNECTED)
     {
         *aid = umac_sta_data_get_aid(data->stad);
@@ -971,14 +952,12 @@ void umac_connection_set_drv_qos_cfg_default(struct umac_data *umacd)
     }
 }
 
-
 static void umac_connection_update_drv_qos_cfg(const struct dot11_ie_wmm_param *wmm_ie)
 {
     for (uint8_t aci = 0; aci < DOT11_ACI_NUM_ACS; aci++)
     {
         struct mmwlan_qos_queue_params queue_params = { 0 };
         const struct dot11_ac_parameter_record *rec = &(wmm_ie->ac_parameter_records[aci]);
-
 
         if (aci != dot11_aci_aifsn_get_aci(rec->aci_aifsn))
         {
@@ -990,7 +969,6 @@ static void umac_connection_update_drv_qos_cfg(const struct dot11_ie_wmm_param *
         queue_params.aifs = dot11_aci_aifsn_get_aifsn(rec->aci_aifsn);
         queue_params.cw_min = (1u << dot11_ecw_minmax_get_ecwmin(rec->ecw_minmax)) - 1;
         queue_params.cw_max = (1u << dot11_ecw_minmax_get_ecwmax(rec->ecw_minmax)) - 1;
-
         queue_params.txop_max_us = (uint32_t)(rec->txop_limit) * 32;
 
         enum mmwlan_status status = mmdrv_cfg_qos_queue(&queue_params);
@@ -1010,7 +988,6 @@ static void umac_connection_update_drv_qos_cfg(const struct dot11_ie_wmm_param *
         }
     }
 }
-
 
 static void umac_connection_clear_cache_assoc_req(struct umac_connection_data *data)
 {
@@ -1055,10 +1032,8 @@ static void umac_connection_assoc_reassoc_req_retry(void *arg1, void *arg2)
     return;
 
 error:
-
     umac_connection_clear_cache_assoc_req(data);
 }
-
 
 static bool umac_handle_assoc_refused_temporarily(struct umac_data *umacd,
                                                   struct frame_data_assoc_rsp *frame_data)
@@ -1068,7 +1043,6 @@ static bool umac_handle_assoc_refused_temporarily(struct umac_data *umacd,
 
     if (timeout_interval && timeout_interval->type == DOT11_TIE_ASSOC_COMEBACK)
     {
-
         uint32_t timeout = le32toh(timeout_interval->interval) * 1024 / 1000;
 
         MMLOG_DBG("Schedule Assoc Req. Comeback duration %lu TU (%lu ms)\n",
@@ -1080,7 +1054,6 @@ static bool umac_handle_assoc_refused_temporarily(struct umac_data *umacd,
                                        umacd,
                                        NULL))
         {
-
             return true;
         }
     }
@@ -1117,7 +1090,6 @@ void umac_connection_process_assoc_reassoc_rsp(struct umac_data *umacd, struct m
         {
             return;
         }
-
         MMLOG_WRN("No valid TIE with Assoc Comeback interval received\n");
     }
 
@@ -1179,14 +1151,12 @@ void umac_connection_process_assoc_reassoc_rsp(struct umac_data *umacd, struct m
         {
             if (morse_ie->cap0 & MORSE_VENDOR_IE_CAP0_SHORT_ACK_TIMEOUT)
             {
-
                 mmdrv_set_param(vif_id,
                                 MORSE_PARAM_ID_EXTRA_ACK_TIMEOUT_ADJUST_US,
                                 MORSE_SHORT_ACK_TIMEOUT_ADJUST_US);
             }
             else
             {
-
                 mmdrv_set_param(vif_id,
                                 MORSE_PARAM_ID_EXTRA_ACK_TIMEOUT_ADJUST_US,
                                 DEFAULT_MORSE_IBSS_ACK_TIMEOUT_ADJUST_US);
@@ -1196,8 +1166,6 @@ void umac_connection_process_assoc_reassoc_rsp(struct umac_data *umacd, struct m
         }
         else
         {
-
-
             mmdrv_set_param(vif_id,
                             MORSE_PARAM_ID_EXTRA_ACK_TIMEOUT_ADJUST_US,
                             DEFAULT_MORSE_IBSS_ACK_TIMEOUT_ADJUST_US);
@@ -1214,7 +1182,6 @@ void umac_connection_process_assoc_reassoc_rsp(struct umac_data *umacd, struct m
 
     umac_supp_process_assoc_reassoc_resp(umacd, &frame_data);
 }
-
 
 static void umac_connection_cache_assoc_req(struct umac_connection_data *data,
                                             struct mmpkt *assoc_req)
@@ -1259,7 +1226,6 @@ void umac_connection_process_disassoc_req(struct umac_data *umacd, struct mmpktv
     umac_supp_process_disassoc_req(umacd, 0);
 }
 
-
 static void umac_connection_timestamp_auth_frame(struct umac_data *umacd,
                                                  const struct frame_data_auth *auth,
                                                  bool is_tx)
@@ -1292,13 +1258,10 @@ void umac_connection_process_auth_resp(struct umac_data *umacd, struct mmpktview
 
     if (ok)
     {
-
         umac_sta_data_set_aid(data->stad, 0);
         umac_connection_timestamp_auth_frame(umacd, &frame_data, false);
-
         umac_datapath_set_filter_all_beacons(umacd, true);
         umac_supp_process_auth_resp(umacd, &frame_data);
-
         umac_datapath_set_filter_all_beacons(umacd, false);
     }
 }
@@ -1337,12 +1300,10 @@ enum mmwlan_status umac_connection_process_deauth_tx(struct umac_data *umacd,
     enum mmwlan_status status =
         umac_datapath_build_and_tx_mgmt_frame(data->stad, frame_deauthentication_build, params);
 
-
     connection_fsm_handle_event(&data->conn_fsm, CONNECTION_FSM_EVENT_DISCONNECT);
 
     return status;
 }
-
 
 static enum mmwlan_status umac_connection_set_sta_state(struct umac_data *umacd,
                                                         struct umac_connection_data *data,
@@ -1377,7 +1338,6 @@ static void umac_connection_process_failed_ap_query(struct umac_connection_data 
 void umac_connection_handle_ack_status(struct umac_data *umacd, struct mmpkt *mmpkt, bool acked)
 {
     struct umac_connection_data *data = umac_data_get_connection(umacd);
-
 
     if (data->conn_mon.fsm.current_state != CONNECTION_MON_FSM_STATE_UNSTABLE)
     {
@@ -1439,7 +1399,6 @@ void umac_connection_set_monitor_disable(struct umac_data *umacd, bool disable)
 
     if (data->conn_fsm.current_state != CONNECTION_FSM_STATE_CONNECTED)
     {
-
         data->conn_mon.disabled = disable;
         MMOSAL_DEV_ASSERT(data->conn_mon.fsm.current_state == CONNECTION_MON_FSM_STATE_DISABLED);
         return;
@@ -1476,7 +1435,6 @@ enum mmwlan_status umac_connection_update_beacon_vendor_ie_filter(
 {
     enum mmwlan_status status;
 
-
     if (umac_connection_get_vif_id(umacd) == MMDRV_VIF_ID_INVALID)
     {
         umac_config_set_beacon_vendor_ie_filter(umacd, filter);
@@ -1499,7 +1457,6 @@ enum mmwlan_status umac_connection_update_beacon_vendor_ie_filter(
 
     if (status == MMWLAN_SUCCESS)
     {
-
         umac_config_set_beacon_vendor_ie_filter(umacd, filter);
     }
 
@@ -1517,13 +1474,11 @@ void umac_connection_beacon_vendor_ie_filter_process(struct umac_data *umacd,
 
     if (filter == NULL)
     {
-
         return;
     }
 
     for (ii = 0; ii < filter->n_ouis; ii++)
     {
-
         (void)
             ie_vendor_specific_find(ies, ies_len, filter->ouis[ii], MMWLAN_OUI_SIZE, &result_code);
         if (result_code == IE_FOUND)
@@ -1544,11 +1499,10 @@ static void umac_connection_handle_ecsa(void *arg1, void *arg2)
     struct umac_data *umacd = (struct umac_data *)arg1;
     struct umac_connection_data *data = umac_data_get_connection(umacd);
     const struct ie_s1g_operation *new_s1g_info = &data->ecsa_s1g_info;
-    const struct ie_s1g_operation *old_s1g_info =
-        umac_interface_get_current_s1g_operation_info(umacd);
+    const struct ie_s1g_operation old_s1g_info =
+        *umac_interface_get_current_s1g_operation_info(umacd);
 
     enum mmwlan_status status = umac_interface_set_channel(umacd, new_s1g_info);
-
 
     data->ecsa_active = false;
     if (status != MMWLAN_SUCCESS)
@@ -1560,8 +1514,7 @@ static void umac_connection_handle_ecsa(void *arg1, void *arg2)
     MMLOG_INF("Succesfully switched to new operating channel %u after ECSA\n",
               new_s1g_info->operating_channel_index);
 
-
-    if (new_s1g_info->operation_channel_width_mhz != old_s1g_info->operation_channel_width_mhz)
+    if (new_s1g_info->operation_channel_width_mhz != old_s1g_info.operation_channel_width_mhz)
     {
         struct umac_sta_data *stad = umac_connection_get_stad(umacd);
         umac_rc_stop(stad);
@@ -1576,7 +1529,6 @@ exit:
     umac_datapath_unpause(umacd, UMAC_DATAPATH_PAUSE_SOURCE_ECSA);
 }
 
-
 static void umac_connection_extract_s1g_info_from_ecsa(
     struct ie_s1g_operation *new_s1g_info,
     const struct dot11_ie_ecsa *ecsa_ie,
@@ -1584,7 +1536,6 @@ static void umac_connection_extract_s1g_info_from_ecsa(
 {
     new_s1g_info->primary_channel_number = ecsa_ie->new_channel_number;
     new_s1g_info->operating_class = ecsa_ie->new_operating_class;
-
     if (wide_bw_chan_switch_ie == NULL)
     {
         new_s1g_info->operation_channel_width_mhz = 1;
@@ -1598,12 +1549,10 @@ static void umac_connection_extract_s1g_info_from_ecsa(
         new_s1g_info->operating_channel_index =
             wide_bw_chan_switch_ie->new_channel_centre_frequency_seg0;
 
-
         new_s1g_info->primary_channel_width_mhz =
             dot11_s1g_op_chan_width_get_pri_chan_width(wide_bw_chan_switch_ie->new_channel_width) ?
                 1 :
                 2;
-
         new_s1g_info->operation_channel_width_mhz =
             dot11_s1g_op_chan_width_get_op_chan_width(wide_bw_chan_switch_ie->new_channel_width) +
             1;
@@ -1614,7 +1563,6 @@ static void umac_connection_extract_s1g_info_from_ecsa(
     }
 }
 
-
 static void umac_connection_process_ecsa(
     struct umac_data *umacd,
     const struct dot11_ie_ecsa *ecsa_ie,
@@ -1623,7 +1571,6 @@ static void umac_connection_process_ecsa(
 {
     struct umac_connection_data *data = umac_data_get_connection(umacd);
     MMLOG_INF("Received ECSA with count %u\n", ecsa_ie->channel_switch_count);
-
     if (data->ecsa_active)
     {
         return;
@@ -1632,9 +1579,7 @@ static void umac_connection_process_ecsa(
                                                ecsa_ie,
                                                wide_bw_chan_switch_ie);
 
-
     uint32_t timeout_ms = 0;
-
     if (ecsa_ie->channel_switch_count > 1)
     {
         timeout_ms = long_beacon_interval_ms * (ecsa_ie->channel_switch_count - 1);
@@ -1646,7 +1591,6 @@ static void umac_connection_process_ecsa(
                                    (void *)umacd,
                                    NULL))
     {
-
         if (ecsa_ie->channel_switch_mode)
         {
             umac_datapath_pause(umacd, UMAC_DATAPATH_PAUSE_SOURCE_ECSA);
@@ -1663,7 +1607,6 @@ void umac_connection_process_beacon_ies(struct umac_data *umacd,
                                         const uint8_t *ies,
                                         uint32_t ies_len)
 {
-
     const struct dot11_ie_ecsa *ecsa_ie = ie_ecsa_find(ies, ies_len);
     if (ecsa_ie != NULL)
     {
@@ -1678,7 +1621,6 @@ void umac_connection_process_beacon_ies(struct umac_data *umacd,
             wide_bw_chan_switch_ie = ie_wide_bw_chan_switch_find(chan_sw_wrapper_ie->sub_elements,
                                                                  chan_sw_wrapper_ie->header.length);
         }
-
         const struct dot11_ie_s1g_beacon_compatibility *s1g_beacon_compat =
             ie_s1g_beacon_compat_find(ies, ies_len);
         if (s1g_beacon_compat == NULL)
@@ -1692,9 +1634,7 @@ void umac_connection_process_beacon_ies(struct umac_data *umacd,
         umac_connection_process_ecsa(umacd, ecsa_ie, wide_bw_chan_switch_ie, long_beacon_int_ms);
     }
 
-
     umac_relay_process_beacon_ies(umacd, ies, ies_len);
-
 
     umac_connection_beacon_vendor_ie_filter_process(umacd, ies, ies_len);
 }
@@ -1718,7 +1658,6 @@ void umac_connection_populate_tx_metadata(struct umac_data *umacd,
     tx_metadata->mmss_offset = data->morse_mmss_offset;
 }
 
-
 static void umac_connection_monitor_check(void *arg1, void *arg2)
 {
     MM_UNUSED(arg2);
@@ -1735,7 +1674,6 @@ static void umac_connection_monitor_check(void *arg1, void *arg2)
                                      umac_connection_monitor_check,
                                      umacd,
                                      NULL);
-
 
     enum mmwlan_status status = umac_datapath_build_and_tx_to_ds_qos_null_frame(data->stad);
     if (status != MMWLAN_SUCCESS)
@@ -1788,7 +1726,6 @@ void umac_connection_handle_hw_restarted(struct umac_data *umacd)
                 UMAC_FATAL_ERROR(umacd);
                 return;
             }
-
 
             if (filter != NULL)
             {
@@ -1852,6 +1789,7 @@ void umac_connection_handle_hw_restarted(struct umac_data *umacd)
             }
         }
 
+        mmdrv_enable_ampdu_feedback();
         umac_datapath_handle_hw_restarted(umacd, data->stad);
     }
 }
@@ -1898,7 +1836,6 @@ static void invoke_link_callback(struct umac_data *umacd,
         callback_invoked = true;
     }
 
-
     if (!callback_invoked)
     {
         MMLOG_ERR("Link/VIF status callback not registered.\n");
@@ -1941,8 +1878,6 @@ enum mmwlan_status umac_connection_stop_preassoc(struct umac_data *umacd)
     data->mode = UMAC_CONNECTION_MODE_NONE;
     return MMWLAN_SUCCESS;
 }
-
-
 
 
 #define CONNECTION_MON_FSM_LOG(format_str, ...) MMLOG_DBG(format_str, __VA_ARGS__)
@@ -1992,7 +1927,6 @@ static void connection_mon_fsm_lost_entry(struct connection_mon_fsm_instance *in
 }
 
 
-
 static void connection_mon_fsm_transition_error(struct connection_mon_fsm_instance *inst,
                                                 enum connection_mon_fsm_event event)
 {
@@ -2013,11 +1947,8 @@ static void connection_mon_fsm_reentrance_error(struct connection_mon_fsm_instan
 }
 
 
-
-
 #define CONNECTION_FSM_LOG(format_str, ...) MMLOG_DBG(format_str, __VA_ARGS__)
 #include "connection_fsm_def.h"
-
 
 
 static void connection_fsm_disconnected_entry(struct connection_fsm_instance *inst,
@@ -2034,15 +1965,11 @@ static void connection_fsm_disconnected_entry(struct connection_fsm_instance *in
         }
 
         umac_datapath_stad_flush(umacd, data->stad);
-
         memset(&data->bss_cfg, 0, sizeof(data->bss_cfg));
         umac_sta_data_set_bssid(data->stad, mac_addr_zero);
         umac_sta_data_set_peer_addr(data->stad, mac_addr_zero);
-
         umac_ba_deinit(data->stad);
-
         umac_connection_set_drv_qos_cfg_default(umacd);
-
 
         umac_ps_set_suspended(umacd, false);
     }
@@ -2067,7 +1994,6 @@ static void connection_fsm_authenticating_entry(struct connection_fsm_instance *
 {
     MM_UNUSED(prev_state);
     struct umac_data *umacd = (struct umac_data *)inst->arg;
-
 
     umac_ps_set_suspended(umacd, true);
 }
@@ -2098,7 +2024,6 @@ static void connection_fsm_connected_entry(struct connection_fsm_instance *inst,
     struct umac_connection_data *data = umac_data_get_connection(umacd);
 
     umac_stats_update_connect_timestamp(umacd, MMWLAN_STATS_CONNECT_TIMESTAMP_LINK_UP);
-
 
     umac_ps_set_suspended(umacd, false);
 
@@ -2132,7 +2057,6 @@ static void connection_fsm_connected_entry(struct connection_fsm_instance *inst,
 
     if (data->sta_args.use_4addr == MMWLAN_4ADDR_MODE_ENABLED)
     {
-
         enum mmwlan_status status = umac_datapath_build_and_tx_4addr_qos_null_frame(data->stad);
         if (status != MMWLAN_SUCCESS)
         {
@@ -2162,10 +2086,8 @@ static void connection_fsm_connected_exit(struct connection_fsm_instance *inst,
         connection_mon_fsm_handle_event(&data->conn_mon.fsm, CONNECTION_MON_FSM_EVENT_STOP);
     }
 
-
     data->selective_scans_used = 0;
 }
-
 
 
 static void connection_fsm_transition_error(struct connection_fsm_instance *inst,

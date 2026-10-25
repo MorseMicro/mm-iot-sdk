@@ -9,7 +9,6 @@
 
 void ie_twt_build(struct umac_data *umacd, struct consbuf *buf)
 {
-
     const struct umac_twt_agreement_data *agreement = umac_twt_get_agreement(umacd, 0);
     const struct mmwlan_twt_config_args *twt_config = umac_twt_get_config(umacd);
 

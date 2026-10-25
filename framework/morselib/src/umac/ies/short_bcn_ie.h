@@ -4,7 +4,6 @@
  */
 
 
-
 #pragma once
 
 #include "common/consbuf.h"
@@ -12,9 +11,7 @@
 #include "umac/ies/ies_common.h"
 #include "mmlog.h"
 
-
 #define SHORT_BCN_IE_LENGTH (2)
-
 
 static inline const struct dot11_ie_short_bcn_int *ie_short_bcn_find(const uint8_t *ies,
                                                                      size_t ies_len)
@@ -28,5 +25,4 @@ static inline const struct dot11_ie_short_bcn_int *ie_short_bcn_find(const uint8
 
     return NULL;
 }
-
 

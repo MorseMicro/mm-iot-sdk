@@ -6,13 +6,11 @@
  */
 
 
-
 #pragma once
 
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
-
 
 enum wnm_sleep_fsm_state
 {
@@ -23,7 +21,6 @@ enum wnm_sleep_fsm_state
     WNM_SLEEP_FSM_STATE_EXIT_REQUESTED,
 };
 
-
 enum wnm_sleep_fsm_state_mask
 {
     WNM_SLEEP_FSM_STATE_IDLE_MASK = (1ul << WNM_SLEEP_FSM_STATE_IDLE),
@@ -31,7 +28,6 @@ enum wnm_sleep_fsm_state_mask
     WNM_SLEEP_FSM_STATE_ACTIVE_MASK = (1ul << WNM_SLEEP_FSM_STATE_ACTIVE),
     WNM_SLEEP_FSM_STATE_EXIT_REQUESTED_MASK = (1ul << WNM_SLEEP_FSM_STATE_EXIT_REQUESTED),
 };
-
 
 enum wnm_sleep_fsm_event
 {
@@ -45,7 +41,6 @@ enum wnm_sleep_fsm_event
     WNM_SLEEP_FSM_EVENT_RETRIES_EXHAUSTED,
 };
 
-
 enum wnm_sleep_fsm_event_mask
 {
     WNM_SLEEP_FSM_EVENT_ENABLE_MASK = (1ul << WNM_SLEEP_FSM_EVENT_ENABLE),
@@ -57,19 +52,13 @@ enum wnm_sleep_fsm_event_mask
     WNM_SLEEP_FSM_EVENT_RETRIES_EXHAUSTED_MASK = (1ul << WNM_SLEEP_FSM_EVENT_RETRIES_EXHAUSTED),
 };
 
-
 struct wnm_sleep_fsm_instance
 {
-
     enum wnm_sleep_fsm_state current_state;
-
     volatile bool in_event_handler;
-
     enum wnm_sleep_fsm_event pending_event;
-
     void *arg;
 };
-
 
 #define WNM_SLEEP_FSM_INSTANCE_INIT                \
     {                                              \
@@ -79,15 +68,12 @@ struct wnm_sleep_fsm_instance
         .arg = NULL,                               \
     }
 
-
 static inline void wnm_sleep_fsm_init(struct wnm_sleep_fsm_instance *inst)
 {
     static const struct wnm_sleep_fsm_instance inst_init = WNM_SLEEP_FSM_INSTANCE_INIT;
     *inst = inst_init;
 }
 
-
 void wnm_sleep_fsm_handle_event(struct wnm_sleep_fsm_instance *inst,
                                 enum wnm_sleep_fsm_event event);
-
 

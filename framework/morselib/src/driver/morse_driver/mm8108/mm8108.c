@@ -15,7 +15,6 @@
 #include "driver/morse_driver/morse.h"
 #include "driver/transport/morse_transport.h"
 
-
 #define MM8108_REG_TRGR_BASE            0x00003c00
 #define MM8108_REG_INT_BASE             0x00003c50
 
@@ -37,9 +36,7 @@
 #define MM8108_REG_AON_LATCH_ADDR       0x00405020
 #define MM8108_REG_AON_LATCH_MASK       0x1
 
-
 #define MM8108_SDIO_DEVICE_REG_ADDR 0x0000207C
-
 #define MM8108_SDIO_DEVICE_BURST_OFFSET        9
 
 #define MM8108_APPSMAC_APPS_DMEM_ADDR_START    0x00100000
@@ -63,7 +60,6 @@
 #define MM8108_PHY_LPHY_AON_ADDR_START         0x0055c000
 #define MM8108_PHY_LPHY_AON_ADDR_END           0x0055e000
 
-
 #define MM8108_REG_RC_CLK_POWER_OFF_ADDR        0x00405020
 #define MM8108_REG_RC_CLK_POWER_OFF_MASK        0x00000040
 #define MM8108_SLOW_RC_POWER_ON_DELAY_MS        2
@@ -77,14 +73,11 @@
 #define HOST_YAPS_STARTS                        0x00170000
 #define HOST_YAPS_ENDS                          0x00180000
 
-
 #define MM8108XX_ID 0x9
-
 
 #define MM8108B0_REV 0x6
 #define MM8108B1_REV 0x7
 #define MM8108B2_REV 0x8
-
 
 #define MM8108B0_ID MORSE_DEVICE_ID(MM8108XX_ID, MM8108B0_REV, CHIP_TYPE_SILICON)
 #define MM8108B1_ID MORSE_DEVICE_ID(MM8108XX_ID, MM8108B1_REV, CHIP_TYPE_SILICON)
@@ -92,7 +85,6 @@
 
 enum mm810x_sdio_burst_mode
 {
-
     SDIO_WORD_BURST_DISABLE = 0,
     SDIO_WORD_BURST_SIZE_0 = 0,
     SDIO_WORD_BURST_SIZE_2 = 1,
@@ -150,7 +142,6 @@ static int mm810x_enable_burst_mode(struct driver_data *driverd)
               (uint32_t)(SDIO_WORD_BURST_SIZE_16 << MM8108_SDIO_DEVICE_BURST_OFFSET));
 
     morse_trns_claim(driverd);
-
     if (morse_trns_read_le32(driverd, MM8108_SDIO_DEVICE_REG_ADDR, &reg32_value))
     {
         ret = -EPERM;
@@ -176,32 +167,22 @@ exit:
 }
 
 static const struct morse_hw_regs mm8108_regs = {
-
     .irq_base_address = MM8108_REG_INT_BASE,
     .trgr_base_address = MM8108_REG_TRGR_BASE,
-
     .chip_id_address = MM8108_REG_CHIP_ID,
-
 
     .cpu_reset_address = MM8108_REG_RESET,
     .cpu_reset_value = MM8108_REG_RESET_VALUE,
 
-
     .manifest_ptr_address = MM8108_REG_MANIFEST_PTR_ADDRESS,
-
 
     .msi_address = MM8108_REG_MSI,
     .msi_value = 0x1,
-
     .magic_num_value = MM8108_REG_HOST_MAGIC_VALUE,
-
 
     .early_clk_ctrl_value = 0,
 
-
-
     .efuse_data_base_address = 0,
-
 
     .mem_count = 8,
     .pager_base_address = MM8108_APPSMAC_APPS_DMEM_ADDR_START,
@@ -216,13 +197,11 @@ static const struct morse_hw_regs mm8108_regs = {
         {MM8108_PHY_LPHY_AON_ADDR_START, MM8108_PHY_LPHY_AON_ADDR_END},
     },
 
-
     .aon_latch = MM8108_REG_AON_LATCH_ADDR,
     .aon_latch_mask = MM8108_REG_AON_LATCH_MASK,
     .aon = MM8108_REG_AON_ADDR,
     .aon_count = 2,
 };
-
 
 static int mm810x_enable_internal_slow_clock(struct driver_data *driverd)
 {
@@ -230,7 +209,6 @@ static int mm810x_enable_internal_slow_clock(struct driver_data *driverd)
     int ret = 0;
 
     MMLOG_INF("Enabling internal slow clock\n");
-
 
     ret = morse_trns_read_le32(driverd, MM8108_REG_RC_CLK_POWER_OFF_ADDR, &rc_clock_reg_value);
     if (ret)
@@ -247,7 +225,6 @@ static int mm810x_enable_internal_slow_clock(struct driver_data *driverd)
 
     morse_hw_toggle_aon_latch(driverd);
 
-
     mmosal_task_sleep(MM8108_SLOW_RC_POWER_ON_DELAY_MS);
 exit:
     if (ret)
@@ -263,7 +240,11 @@ static int mm810x_digital_reset(struct driver_data *driverd)
     int ret = 0;
     morse_trns_claim(driverd);
 
-    mm810x_enable_internal_slow_clock(driverd);
+    ret = mm810x_enable_internal_slow_clock(driverd);
+    if (ret != MORSE_SUCCESS)
+    {
+        goto exit;
+    }
 
     if (MORSE_REG_RESET(driverd) != 0)
     {
@@ -327,7 +308,6 @@ static bool mm810x_ext_host_parse_tlv(struct driver_data *driverd,
 const struct mmhal_chip mmhal_mm8108 = {
     .regs = &mm8108_regs,
     .ops = &morse_yaps_ops,
-
     .warm_boot_delay_ms = 15,
     .bus_double_read = false,
     .get_hw_version = mm810x_get_hw_version,

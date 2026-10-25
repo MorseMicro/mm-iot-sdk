@@ -13,9 +13,7 @@
 #include "umac/core/umac_core.h"
 #include "umac_health_check_data.h"
 
-
 #define MORSE_HEALTH_CHECK_RETRIES 1
-
 
 #define UMAC_PERIODIC_HEALTH_THRESHOLD_MS             \
     (MMWLAN_DEFAULT_MIN_HEALTH_CHECK_INTERVAL_MS +    \
@@ -86,7 +84,6 @@ static void umac_health_check_timeout_handler(void *arg1, void *arg2)
     {
         umac_health_check_schedule_timeout(umacd, data->interval_ms);
     }
-
 }
 
 static void umac_health_check_cancel_timeout(struct umac_data *umacd)
@@ -151,7 +148,6 @@ void umac_health_check_deinit(struct umac_data *umacd)
 void umac_health_check_start(struct umac_data *umacd)
 {
     struct umac_health_check_data *data = umac_data_get_health_check(umacd);
-
 
     data->is_started = true;
     data->last_activity_ms = mmosal_get_time_ms();

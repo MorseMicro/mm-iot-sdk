@@ -14,7 +14,6 @@ void ie_aid_request_build(struct consbuf *buf)
         ie->header.element_id = DOT11_IE_AID_REQUEST;
         ie->header.length = sizeof(*ie) - sizeof(ie->header);
 
-
         ie->aid_request_mode = 0;
     }
 }

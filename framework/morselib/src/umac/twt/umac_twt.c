@@ -12,29 +12,23 @@
 
 static uint32_t umac_twt_calculate_wake_duration(uint32_t wake_duration)
 {
-
     return MORSE_INT_CEIL(wake_duration, TWT_WAKE_DURATION_UNIT);
 }
 
-
 static uint64_t umac_twt_calculate_wake_interval(uint16_t mantissa, int exponent)
 {
-
     return ((uint64_t)mantissa << exponent);
 }
-
 
 static uint64_t umac_twt_calculate_wake_interval_fields(uint64_t wake_interval_us,
                                                         uint16_t *mantissa,
                                                         int *exponent)
 {
-
     uint64_t m = wake_interval_us;
     int e = 0;
 
     while (m > UINT16_MAX)
     {
-
         e++;
         m >>= 1;
     }
@@ -67,7 +61,6 @@ void umac_twt_deinit_vif(struct umac_data *umacd, uint16_t *vif_id)
     memset(data, 0, sizeof(*data));
 }
 
-
 struct umac_twt_agreement_data *umac_twt_get_empty_agreement(struct umac_twt_data *data,
                                                              uint16_t *flow_id)
 {
@@ -83,7 +76,6 @@ struct umac_twt_agreement_data *umac_twt_get_empty_agreement(struct umac_twt_dat
 
     return NULL;
 }
-
 
 static bool is_requestor_setup_cmd(uint8_t twt_setup_cmd)
 {
@@ -101,7 +93,6 @@ static bool is_requestor_setup_cmd(uint8_t twt_setup_cmd)
             break;
     }
 }
-
 
 static enum mmwlan_status umac_twt_handle_configure(struct umac_data *umacd,
                                                     const struct umac_twt_command *cmd)
@@ -155,11 +146,9 @@ static enum mmwlan_status umac_twt_handle_configure(struct umac_data *umacd,
         MMLOG_WRN("TWT requester trying to send response\n");
         return MMWLAN_INVALID_ARGUMENT;
     }
-
     DOT11_TWT_REQUEST_TYPE_FIELD_SET_REQUEST(agreement->params.req_type, 1);
     DOT11_TWT_REQUEST_TYPE_FIELD_SET_SETUP_COMMAND(agreement->params.req_type,
                                                    cmd->twt_setup_command);
-
 
     mmdrv_twt_data.interface_id = data->vif_id;
     mmdrv_twt_data.flow_id = flow_id;
@@ -243,7 +232,6 @@ enum mmwlan_status umac_twt_process_ie(struct umac_data *umacd, const struct dot
         return MMWLAN_ERROR;
     }
 
-
     if (dot11_twt_control_field_get_negotiation_type(twt_ie->control) ||
         dot11_twt_control_field_get_ndp_paging_indicator(twt_ie->control))
     {
@@ -265,7 +253,6 @@ enum mmwlan_status umac_twt_process_ie(struct umac_data *umacd, const struct dot
         return MMWLAN_UNAVAILABLE;
     }
 
-
     if (dot11_twt_request_type_field_get_setup_command(agreement->params.req_type) ==
         DOT11_TWT_SETUP_CMD_SUGGEST)
     {
@@ -276,7 +263,6 @@ enum mmwlan_status umac_twt_process_ie(struct umac_data *umacd, const struct dot
     return MMWLAN_SUCCESS;
 }
 
-
 static enum mmwlan_status
 umac_twt_install_agreement(struct umac_twt_data *data,
                            uint16_t flow_id,
@@ -284,7 +270,6 @@ umac_twt_install_agreement(struct umac_twt_data *data,
 {
     enum mmwlan_status status = MMWLAN_SUCCESS;
     struct mmdrv_twt_data mmdrv_twt_data = { 0 };
-
 
     mmdrv_twt_data.interface_id = data->vif_id;
     mmdrv_twt_data.flow_id = flow_id;

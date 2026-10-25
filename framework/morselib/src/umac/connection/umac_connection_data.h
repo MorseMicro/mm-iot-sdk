@@ -20,31 +20,22 @@ struct connection_mon_data
 
 struct connection_signal_monitor
 {
-
     int16_t signal_threshold_dbm;
-
     int16_t signal_hysteresis_dbm;
-
     bool is_above_threshold;
 };
 
 enum umac_connection_mode
 {
-
     UMAC_CONNECTION_MODE_NONE,
-
     UMAC_CONNECTION_MODE_STA,
-
     UMAC_CONNECTION_MODE_DPP,
-
     UMAC_CONNECTION_MODE_PREASSOC,
 };
 
 struct umac_connection_data
 {
-
     bool is_initialised;
-
     bool ecsa_active;
     struct umac_connection_bss_cfg bss_cfg;
     mmwlan_link_state_cb_t link_callback;
@@ -55,34 +46,19 @@ struct umac_connection_data
     struct connection_fsm_instance conn_fsm;
     struct connection_mon_data conn_mon;
     struct connection_signal_monitor conn_signal_mon;
-
     uint8_t ampdu_mss;
-
     uint8_t morse_mmss_offset;
-
     bool tx_traveling_pilots_supported;
-
     bool non_tim_mode_supported;
-
     uint8_t ssid[MMWLAN_SSID_MAXLEN];
-
     uint16_t ssid_len;
-
     struct umac_sta_data *stad;
-
     enum umac_connection_mode mode;
-
     void (*dpp_event_cb)(const struct mmwlan_dpp_cb_args *dpp_event, void *arg);
-
     void *dpp_event_cb_arg;
-
     bool control_resp_1mhz_in_en;
-
     struct ie_s1g_operation ecsa_s1g_info;
-
     enum mmwlan_dpp_mode dpp_mode;
-
     int32_t dpp_bootstrap_id;
-
     uint8_t selective_scans_used;
 };

@@ -81,7 +81,6 @@ static void handle_boot_code_from_ext_host_table(struct extended_host_table_boot
     }
 }
 
-
 static bool ext_host_parse_common_tlv(struct driver_data *driverd,
                                       struct extended_host_table_tlv *tlv)
 {
@@ -105,7 +104,6 @@ static bool ext_host_parse_common_tlv(struct driver_data *driverd,
             break;
 
         case MORSE_FW_HOST_TABLE_TAG_HEADLESS_CONFIG_ADDR:
-
             break;
 
         default:

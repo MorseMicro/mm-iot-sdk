@@ -32,6 +32,5 @@ var searchData=
   ['ipg_5fcount_29',['ipg_count',['../structmmiperf__report.html#adc61c1a80db3f4068c446d69030e9896',1,'mmiperf_report']]],
   ['ipg_5fsum_5fms_30',['ipg_sum_ms',['../structmmiperf__report.html#a1dfa6e861c4165982d66c52fb383794c',1,'mmiperf_report']]],
   ['ipv6_5fheader_5fsize_5fdiff_31',['IPV6_HEADER_SIZE_DIFF',['../group__MMIPERF.html#gacce2ea31d2fc21aa46f979e157250053',1,'mmiperf.h']]],
-  ['is_5froot_5fnode_32',['is_root_node',['../structmmwlan__relay__args.html#a05f64e630d73f7cab2e01d7104592b9b',1,'mmwlan_relay_args']]],
-  ['is_5fwlan_5fconnected_33',['is_wlan_connected',['../m2m__controller_8c.html#a9aaa8996fe5ec03b1d06d0b3b0838755',1,'m2m_controller.c']]]
+  ['is_5fwlan_5fconnected_32',['is_wlan_connected',['../m2m__controller_8c.html#a9aaa8996fe5ec03b1d06d0b3b0838755',1,'m2m_controller.c']]]
 ];

@@ -1,7 +1,5 @@
 var group__MMLOG =
 [
-    [ "MM_MAC_ADDR_FMT", "group__MMLOG.html#gad5790f85ae3776f7a993db55397d397a", null ],
-    [ "MM_MAC_ADDR_VAL", "group__MMLOG.html#gaeec35215f3cbbcef1681198de5276683", null ],
     [ "MM_X64_FMT", "group__MMLOG.html#gad27791bee53a183be5239b5d45465340", null ],
     [ "MM_X64_VAL", "group__MMLOG.html#ga8c68be9b3149dc8c0f9aca417f5d2079", null ],
     [ "MMLOG", "group__MMLOG.html#gac76b0b4c5fda0394d7937d5f67420b54", null ],
@@ -41,6 +39,7 @@ var group__MMLOG =
     [ "MMLOG_WRN", "group__MMLOG.html#ga1b1d6c4c3cff18989973bee19c26cf78", null ],
     [ "mm_hexdump", "group__MMLOG.html#gae014f5e0ef3901a7bd3c8dcd9ee2de87", null ],
     [ "mm_hexdump_blackhole", "group__MMLOG.html#gaa0355a13254dd665738b665670bee444", null ],
+    [ "mm_log_final", "group__MMLOG.html#ga73c7eaf0d5d7e4bcd52f79ab87a76bbc", null ],
     [ "mm_logging_init", "group__MMLOG.html#gabc9749d59a11de9855c4c71f07e7097f", null ],
     [ "printf_blackhole", "group__MMLOG.html#gafb2ec5feda89f262a473d91dc2bf8d66", null ]
 ];

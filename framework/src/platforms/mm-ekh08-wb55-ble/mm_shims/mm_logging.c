@@ -11,7 +11,6 @@
 #include "mmlog.h"
 #include "mmosal.h"
 #include "mmhal_os.h"
-#include "mmhal_app.h"
 #include "mmutils.h"
 
 /** Timeout when  acquiring log mutex (in milliseconds). */
@@ -51,14 +50,19 @@ static int vprintf_protected(const char *fmt, va_list arg)
 {
     static char buf[512];
 
+    bool truncated = false;
     int len = vsnprintf(buf, sizeof(buf), fmt, arg);
     if (len < 0)
     {
         return len;
     }
-
+    if (len > (int)sizeof(buf) - 1)
+    {
+        len = (int)sizeof(buf) - 1;
+        truncated = true;
+    }
     mmhal_log_write((const uint8_t *)buf, len);
-
+    MMOSAL_DEV_ASSERT(!truncated);
     return len;
 }
 
@@ -83,18 +87,29 @@ static int printf_protected(const char *fmt, ...)
 {
     va_list args;
     va_start(args, fmt);
-    vprintf_protected(fmt, args);
+    int ret = vprintf_protected(fmt, args);
     va_end(args);
-    return 0;
+    return ret;
+}
+
+int mm_log_final(const char *fmt, ...)
+{
+    mmhal_log_flush(); /* Make room for the log message. */
+    va_list args;
+    va_start(args, fmt);
+    int ret = vprintf_protected(fmt, args);
+    va_end(args);
+    mmhal_log_flush(); /* Ensure the log message is displayed. */
+    return ret;
 }
 
 int printf(const char *fmt, ...)
 {
     va_list args;
     va_start(args, fmt);
-    vprintf(fmt, args);
+    int ret = vprintf(fmt, args);
     va_end(args);
-    return 0;
+    return ret;
 }
 
 int putchar(int c)

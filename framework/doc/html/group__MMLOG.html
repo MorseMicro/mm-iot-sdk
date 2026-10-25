@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.13.1</span>
+   &#160;<span id="projectnumber">2.14.3</span>
    </div>
   </td>
  </tr>
@@ -104,12 +104,6 @@ Macros</h2></td></tr>
 <tr class="memitem:gad27791bee53a183be5239b5d45465340"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMLOG.html#gad27791bee53a183be5239b5d45465340">MM_X64_FMT</a>&#160;&#160;&#160;&quot;%08lx%08lx&quot;</td></tr>
 <tr class="memdesc:gad27791bee53a183be5239b5d45465340"><td class="mdescLeft">&#160;</td><td class="mdescRight">Macro for format specifier to print <a class="el" href="group__MMLOG.html#ga8c68be9b3149dc8c0f9aca417f5d2079">MM_X64_VAL</a>.  <a href="group__MMLOG.html#gad27791bee53a183be5239b5d45465340">More...</a><br /></td></tr>
 <tr class="separator:gad27791bee53a183be5239b5d45465340"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaeec35215f3cbbcef1681198de5276683"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMLOG.html#gaeec35215f3cbbcef1681198de5276683">MM_MAC_ADDR_VAL</a>(value)&#160;&#160;&#160;    ((value)[0]), ((value)[1]), ((value)[2]), ((value)[3]), ((value)[4]), ((value)[5])</td></tr>
-<tr class="memdesc:gaeec35215f3cbbcef1681198de5276683"><td class="mdescLeft">&#160;</td><td class="mdescRight">Macro for printing a MAC address.  <a href="group__MMLOG.html#gaeec35215f3cbbcef1681198de5276683">More...</a><br /></td></tr>
-<tr class="separator:gaeec35215f3cbbcef1681198de5276683"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gad5790f85ae3776f7a993db55397d397a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMLOG.html#gad5790f85ae3776f7a993db55397d397a">MM_MAC_ADDR_FMT</a>&#160;&#160;&#160;&quot;%02x:%02x:%02x:%02x:%02x:%02x&quot;</td></tr>
-<tr class="memdesc:gad5790f85ae3776f7a993db55397d397a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Macro for format specifier to print <a class="el" href="group__MMLOG.html#gaeec35215f3cbbcef1681198de5276683">MM_MAC_ADDR_VAL</a>.  <a href="group__MMLOG.html#gad5790f85ae3776f7a993db55397d397a">More...</a><br /></td></tr>
-<tr class="separator:gad5790f85ae3776f7a993db55397d397a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga15fe885df872be52e9d3dbeb4bcc08de"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMLOG.html#ga15fe885df872be52e9d3dbeb4bcc08de">MMLOG_LEVEL</a>&#160;&#160;&#160;<a class="el" href="group__MMLOG.html#gaafec33e2febc0dfead631d84e0f6467a">MMLOG_LEVEL_ERR</a></td></tr>
 <tr class="memdesc:ga15fe885df872be52e9d3dbeb4bcc08de"><td class="mdescLeft">&#160;</td><td class="mdescRight">The selected log level.  <a href="group__MMLOG.html#ga15fe885df872be52e9d3dbeb4bcc08de">More...</a><br /></td></tr>
 <tr class="separator:ga15fe885df872be52e9d3dbeb4bcc08de"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -224,6 +218,9 @@ Functions</h2></td></tr>
 <tr class="memitem:gae014f5e0ef3901a7bd3c8dcd9ee2de87"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMLOG.html#gae014f5e0ef3901a7bd3c8dcd9ee2de87">mm_hexdump</a> (char level, const char *function, unsigned line_number, const char *title, const uint8_t *<a class="el" href="sslclient_8c.html#abdc8ea8147d82c962a7d88863ee32ee0">buf</a>, size_t len)</td></tr>
 <tr class="memdesc:gae014f5e0ef3901a7bd3c8dcd9ee2de87"><td class="mdescLeft">&#160;</td><td class="mdescRight">Dumps a binary buffer in hex.  <a href="group__MMLOG.html#gae014f5e0ef3901a7bd3c8dcd9ee2de87">More...</a><br /></td></tr>
 <tr class="separator:gae014f5e0ef3901a7bd3c8dcd9ee2de87"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga73c7eaf0d5d7e4bcd52f79ab87a76bbc"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMLOG.html#ga73c7eaf0d5d7e4bcd52f79ab87a76bbc">mm_log_final</a> (const char *fmt,...)</td></tr>
+<tr class="memdesc:ga73c7eaf0d5d7e4bcd52f79ab87a76bbc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Log a final message on system crash.  <a href="group__MMLOG.html#ga73c7eaf0d5d7e4bcd52f79ab87a76bbc">More...</a><br /></td></tr>
+<tr class="separator:ga73c7eaf0d5d7e4bcd52f79ab87a76bbc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gafb2ec5feda89f262a473d91dc2bf8d66"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__MMLOG.html#gafb2ec5feda89f262a473d91dc2bf8d66">printf_blackhole</a> (const char *fmt,...)</td></tr>
 <tr class="memdesc:gafb2ec5feda89f262a473d91dc2bf8d66"><td class="mdescLeft">&#160;</td><td class="mdescRight">Black hole <code>printf</code> to ensure arguments are referenced when a given log level is disabled.  <a href="group__MMLOG.html#gafb2ec5feda89f262a473d91dc2bf8d66">More...</a><br /></td></tr>
 <tr class="separator:gafb2ec5feda89f262a473d91dc2bf8d66"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -232,52 +229,6 @@ Functions</h2></td></tr>
 <tr class="separator:gaa0355a13254dd665738b665670bee444"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="gad5790f85ae3776f7a993db55397d397a" name="gad5790f85ae3776f7a993db55397d397a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gad5790f85ae3776f7a993db55397d397a">&#9670;&nbsp;</a></span>MM_MAC_ADDR_FMT</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define MM_MAC_ADDR_FMT&#160;&#160;&#160;&quot;%02x:%02x:%02x:%02x:%02x:%02x&quot;</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Macro for format specifier to print <a class="el" href="group__MMLOG.html#gaeec35215f3cbbcef1681198de5276683">MM_MAC_ADDR_VAL</a>. </p>
-
-<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00051">51</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
-
-</div>
-</div>
-<a id="gaeec35215f3cbbcef1681198de5276683" name="gaeec35215f3cbbcef1681198de5276683"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gaeec35215f3cbbcef1681198de5276683">&#9670;&nbsp;</a></span>MM_MAC_ADDR_VAL</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define MM_MAC_ADDR_VAL</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">value</td><td>)</td>
-          <td>&#160;&#160;&#160;    ((value)[0]), ((value)[1]), ((value)[2]), ((value)[3]), ((value)[4]), ((value)[5])</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Macro for printing a MAC address. </p>
-<p >This saves writing it out by hand.</p>
-<p >Must be used in conjunction with <a class="el" href="group__MMLOG.html#gad5790f85ae3776f7a993db55397d397a">MM_MAC_ADDR_FMT</a>. For example:</p>
-<div class="fragment"><div class="line">uint8_t mac_addr[] = { 0, 1, 2, 3, 4, 5 };</div>
-<div class="line">printf(<span class="stringliteral">&quot;MAC address: &quot;</span> <a class="code hl_define" href="group__MMLOG.html#gad5790f85ae3776f7a993db55397d397a">MM_MAC_ADDR_FMT</a> <span class="stringliteral">&quot;\n&quot;</span>, <a class="code hl_define" href="group__MMLOG.html#gaeec35215f3cbbcef1681198de5276683">MM_MAC_ADDR_VAL</a>(mac_addr));</div>
-<div class="ttc" id="agroup__MMLOG_html_gad5790f85ae3776f7a993db55397d397a"><div class="ttname"><a href="group__MMLOG.html#gad5790f85ae3776f7a993db55397d397a">MM_MAC_ADDR_FMT</a></div><div class="ttdeci">#define MM_MAC_ADDR_FMT</div><div class="ttdoc">Macro for format specifier to print MM_MAC_ADDR_VAL.</div><div class="ttdef"><b>Definition:</b> <a href="mmlog_8h_source.html#l00051">mmlog.h:51</a></div></div>
-<div class="ttc" id="agroup__MMLOG_html_gaeec35215f3cbbcef1681198de5276683"><div class="ttname"><a href="group__MMLOG.html#gaeec35215f3cbbcef1681198de5276683">MM_MAC_ADDR_VAL</a></div><div class="ttdeci">#define MM_MAC_ADDR_VAL(value)</div><div class="ttdoc">Macro for printing a MAC address.</div><div class="ttdef"><b>Definition:</b> <a href="mmlog_8h_source.html#l00047">mmlog.h:47</a></div></div>
-</div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00047">47</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
-
-</div>
-</div>
 <a id="gad27791bee53a183be5239b5d45465340" name="gad27791bee53a183be5239b5d45465340"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#gad27791bee53a183be5239b5d45465340">&#9670;&nbsp;</a></span>MM_X64_FMT</h2>
 
@@ -292,7 +243,7 @@ Functions</h2></td></tr>
 
 <p>Macro for format specifier to print <a class="el" href="group__MMLOG.html#ga8c68be9b3149dc8c0f9aca417f5d2079">MM_X64_VAL</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00035">35</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00036">36</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
 
 </div>
 </div>
@@ -315,7 +266,7 @@ Functions</h2></td></tr>
 <p>Macro for printing a <code>uint64_t</code> as two separate <code>uint32_t</code> values. </p>
 <p >This is to allow printing of these values even when the <code>printf</code> implementation doesn't support it. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00032">32</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00033">33</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
 
 </div>
 </div>
@@ -371,14 +322,14 @@ Functions</h2></td></tr>
 <div class="line">        (void)(short_task_name);                                                               \</div>
 <div class="line">        MMLOG_PRINTF(<a class="code hl_define" href="group__MMLOG.html#gaf7f580e6564be436e624513f5766b6f5">MMLOG_PREFIX_FMT</a> fmt <a class="code hl_define" href="group__MMLOG.html#ga03665087cf67d036bdbbc6a85755696b">MMLOG_SUFFIX_FMT</a>, <a class="code hl_define" href="group__MMLOG.html#ga6814f59320f39058e334a1e17d75a2a1">MMLOG_PREFIX_ARGS</a>, ##__VA_ARGS__); \</div>
 <div class="line">    } <span class="keywordflow">while</span> (0)</div>
-<div class="ttc" id="agroup__MMLOG_html_ga03665087cf67d036bdbbc6a85755696b"><div class="ttname"><a href="group__MMLOG.html#ga03665087cf67d036bdbbc6a85755696b">MMLOG_SUFFIX_FMT</a></div><div class="ttdeci">#define MMLOG_SUFFIX_FMT</div><div class="ttdoc">Log line suffix format string (log levels other than APP).</div><div class="ttdef"><b>Definition:</b> <a href="mmlog_8h_source.html#l00176">mmlog.h:176</a></div></div>
-<div class="ttc" id="agroup__MMLOG_html_ga6814f59320f39058e334a1e17d75a2a1"><div class="ttname"><a href="group__MMLOG.html#ga6814f59320f39058e334a1e17d75a2a1">MMLOG_PREFIX_ARGS</a></div><div class="ttdeci">#define MMLOG_PREFIX_ARGS</div><div class="ttdoc">Log line prefix arguments (log levels other than APP).</div><div class="ttdef"><b>Definition:</b> <a href="mmlog_8h_source.html#l00171">mmlog.h:171</a></div></div>
-<div class="ttc" id="agroup__MMLOG_html_gaf7f580e6564be436e624513f5766b6f5"><div class="ttname"><a href="group__MMLOG.html#gaf7f580e6564be436e624513f5766b6f5">MMLOG_PREFIX_FMT</a></div><div class="ttdeci">#define MMLOG_PREFIX_FMT</div><div class="ttdoc">Log line prefix format string (log levels other than APP).</div><div class="ttdef"><b>Definition:</b> <a href="mmlog_8h_source.html#l00166">mmlog.h:166</a></div></div>
+<div class="ttc" id="agroup__MMLOG_html_ga03665087cf67d036bdbbc6a85755696b"><div class="ttname"><a href="group__MMLOG.html#ga03665087cf67d036bdbbc6a85755696b">MMLOG_SUFFIX_FMT</a></div><div class="ttdeci">#define MMLOG_SUFFIX_FMT</div><div class="ttdoc">Log line suffix format string (log levels other than APP).</div><div class="ttdef"><b>Definition:</b> <a href="mmlog_8h_source.html#l00172">mmlog.h:172</a></div></div>
+<div class="ttc" id="agroup__MMLOG_html_ga6814f59320f39058e334a1e17d75a2a1"><div class="ttname"><a href="group__MMLOG.html#ga6814f59320f39058e334a1e17d75a2a1">MMLOG_PREFIX_ARGS</a></div><div class="ttdeci">#define MMLOG_PREFIX_ARGS</div><div class="ttdoc">Log line prefix arguments (log levels other than APP).</div><div class="ttdef"><b>Definition:</b> <a href="mmlog_8h_source.html#l00167">mmlog.h:167</a></div></div>
+<div class="ttc" id="agroup__MMLOG_html_gaf7f580e6564be436e624513f5766b6f5"><div class="ttname"><a href="group__MMLOG.html#gaf7f580e6564be436e624513f5766b6f5">MMLOG_PREFIX_FMT</a></div><div class="ttdeci">#define MMLOG_PREFIX_FMT</div><div class="ttdoc">Log line prefix format string (log levels other than APP).</div><div class="ttdef"><b>Definition:</b> <a href="mmlog_8h_source.html#l00162">mmlog.h:162</a></div></div>
 <div class="ttc" id="agroup__MMOSAL__TASKS_html_ga4b2d2b31bbf2e46da28f5540fac0199c"><div class="ttname"><a href="group__MMOSAL__TASKS.html#ga4b2d2b31bbf2e46da28f5540fac0199c">mmosal_task_name</a></div><div class="ttdeci">const char * mmosal_task_name(void)</div><div class="ttdoc">Get the name of the running task.</div></div>
 </div><!-- fragment -->
 <p>Generic logging macro. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00248">248</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00244">244</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
 
 </div>
 </div>
@@ -410,14 +361,14 @@ Functions</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">    <a class="code hl_define" href="group__MMLOG.html#gaa63fb338a5ef89eebbacce7623794202">MMLOG_PRINTF</a>(<a class="code hl_define" href="group__MMLOG.html#gadbfcf473252dd346b4d9cbffe386f581">MMLOG_APP_PREFIX_FMT</a> fmt <a class="code hl_define" href="group__MMLOG.html#ga75a979149b3650f7f63504a4b730270d">MMLOG_APP_SUFFIX_FMT</a>, \</div>
 <div class="line">                 <a class="code hl_define" href="group__MMLOG.html#gaf7ca8140e5518d35349ce87b69b15907">MMLOG_APP_PREFIX_ARGS</a>,                         \</div>
 <div class="line">                 ##__VA_ARGS__)</div>
-<div class="ttc" id="agroup__MMLOG_html_ga75a979149b3650f7f63504a4b730270d"><div class="ttname"><a href="group__MMLOG.html#ga75a979149b3650f7f63504a4b730270d">MMLOG_APP_SUFFIX_FMT</a></div><div class="ttdeci">#define MMLOG_APP_SUFFIX_FMT</div><div class="ttdoc">Log line suffix format string (APP log level).</div><div class="ttdef"><b>Definition:</b> <a href="mmlog_8h_source.html#l00194">mmlog.h:194</a></div></div>
-<div class="ttc" id="agroup__MMLOG_html_gaa63fb338a5ef89eebbacce7623794202"><div class="ttname"><a href="group__MMLOG.html#gaa63fb338a5ef89eebbacce7623794202">MMLOG_PRINTF</a></div><div class="ttdeci">#define MMLOG_PRINTF(...)</div><div class="ttdoc">Logging printf definition.</div><div class="ttdef"><b>Definition:</b> <a href="mmlog_8h_source.html#l00233">mmlog.h:233</a></div></div>
-<div class="ttc" id="agroup__MMLOG_html_gadbfcf473252dd346b4d9cbffe386f581"><div class="ttname"><a href="group__MMLOG.html#gadbfcf473252dd346b4d9cbffe386f581">MMLOG_APP_PREFIX_FMT</a></div><div class="ttdeci">#define MMLOG_APP_PREFIX_FMT</div><div class="ttdoc">Log line prefix format string (APP log level).</div><div class="ttdef"><b>Definition:</b> <a href="mmlog_8h_source.html#l00184">mmlog.h:184</a></div></div>
-<div class="ttc" id="agroup__MMLOG_html_gaf7ca8140e5518d35349ce87b69b15907"><div class="ttname"><a href="group__MMLOG.html#gaf7ca8140e5518d35349ce87b69b15907">MMLOG_APP_PREFIX_ARGS</a></div><div class="ttdeci">#define MMLOG_APP_PREFIX_ARGS</div><div class="ttdoc">Log line prefix arguments (APP log level).</div><div class="ttdef"><b>Definition:</b> <a href="mmlog_8h_source.html#l00189">mmlog.h:189</a></div></div>
+<div class="ttc" id="agroup__MMLOG_html_ga75a979149b3650f7f63504a4b730270d"><div class="ttname"><a href="group__MMLOG.html#ga75a979149b3650f7f63504a4b730270d">MMLOG_APP_SUFFIX_FMT</a></div><div class="ttdeci">#define MMLOG_APP_SUFFIX_FMT</div><div class="ttdoc">Log line suffix format string (APP log level).</div><div class="ttdef"><b>Definition:</b> <a href="mmlog_8h_source.html#l00190">mmlog.h:190</a></div></div>
+<div class="ttc" id="agroup__MMLOG_html_gaa63fb338a5ef89eebbacce7623794202"><div class="ttname"><a href="group__MMLOG.html#gaa63fb338a5ef89eebbacce7623794202">MMLOG_PRINTF</a></div><div class="ttdeci">#define MMLOG_PRINTF(...)</div><div class="ttdoc">Logging printf definition.</div><div class="ttdef"><b>Definition:</b> <a href="mmlog_8h_source.html#l00229">mmlog.h:229</a></div></div>
+<div class="ttc" id="agroup__MMLOG_html_gadbfcf473252dd346b4d9cbffe386f581"><div class="ttname"><a href="group__MMLOG.html#gadbfcf473252dd346b4d9cbffe386f581">MMLOG_APP_PREFIX_FMT</a></div><div class="ttdeci">#define MMLOG_APP_PREFIX_FMT</div><div class="ttdoc">Log line prefix format string (APP log level).</div><div class="ttdef"><b>Definition:</b> <a href="mmlog_8h_source.html#l00180">mmlog.h:180</a></div></div>
+<div class="ttc" id="agroup__MMLOG_html_gaf7ca8140e5518d35349ce87b69b15907"><div class="ttname"><a href="group__MMLOG.html#gaf7ca8140e5518d35349ce87b69b15907">MMLOG_APP_PREFIX_ARGS</a></div><div class="ttdeci">#define MMLOG_APP_PREFIX_ARGS</div><div class="ttdoc">Log line prefix arguments (APP log level).</div><div class="ttdef"><b>Definition:</b> <a href="mmlog_8h_source.html#l00185">mmlog.h:185</a></div></div>
 </div><!-- fragment -->
 <p>Display an APP level log message. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00238">238</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00234">234</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
 
 </div>
 </div>
@@ -435,7 +386,7 @@ Functions</h2></td></tr>
 
 <p>Log line prefix arguments (APP log level). </p>
 
-<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00189">189</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00185">185</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
 
 </div>
 </div>
@@ -453,7 +404,7 @@ Functions</h2></td></tr>
 
 <p>Log line prefix format string (APP log level). </p>
 
-<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00184">184</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00180">180</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
 
 </div>
 </div>
@@ -471,7 +422,7 @@ Functions</h2></td></tr>
 
 <p>Log line suffix format string (APP log level). </p>
 
-<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00194">194</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00190">190</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
 
 </div>
 </div>
@@ -489,7 +440,7 @@ Functions</h2></td></tr>
 
 <p>ANSI color code: blue. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00119">119</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00115">115</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
 
 </div>
 </div>
@@ -507,7 +458,7 @@ Functions</h2></td></tr>
 
 <p>ANSI color code: cyan. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00123">123</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00119">119</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
 
 </div>
 </div>
@@ -525,7 +476,7 @@ Functions</h2></td></tr>
 
 <p>ANSI color code: green. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00115">115</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00111">111</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
 
 </div>
 </div>
@@ -543,7 +494,7 @@ Functions</h2></td></tr>
 
 <p>ANSI color code: light gray. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00125">125</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00121">121</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
 
 </div>
 </div>
@@ -561,7 +512,7 @@ Functions</h2></td></tr>
 
 <p>ANSI color code: orange. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00117">117</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00113">113</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
 
 </div>
 </div>
@@ -579,7 +530,7 @@ Functions</h2></td></tr>
 
 <p>ANSI color code: purple. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00121">121</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00117">117</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
 
 </div>
 </div>
@@ -597,7 +548,7 @@ Functions</h2></td></tr>
 
 <p>ANSI color code: red. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00113">113</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00109">109</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
 
 </div>
 </div>
@@ -629,7 +580,7 @@ Functions</h2></td></tr>
 
 <p>Display an DEBUG level log message. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00307">307</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00303">303</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
 
 </div>
 </div>
@@ -667,7 +618,7 @@ Functions</h2></td></tr>
 
 <p>Dump the given buffer if DEBUG level logging is enabled. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00309">309</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00305">305</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
 
 </div>
 </div>
@@ -705,7 +656,7 @@ Functions</h2></td></tr>
 
 <p>Dump the given buffer if ERROR level logging is enabled. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00268">268</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00264">264</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
 
 </div>
 </div>
@@ -743,7 +694,7 @@ Functions</h2></td></tr>
 
 <p>Dump the given buffer if INFO level logging is enabled. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00297">297</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00293">293</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
 
 </div>
 </div>
@@ -781,7 +732,7 @@ Functions</h2></td></tr>
 
 <p>Dump the given buffer if VERBOSE level logging is enabled. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00321">321</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00317">317</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
 
 </div>
 </div>
@@ -819,7 +770,7 @@ Functions</h2></td></tr>
 
 <p>Dump the given buffer if WARNING level logging is enabled. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00285">285</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00281">281</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
 
 </div>
 </div>
@@ -851,7 +802,7 @@ Functions</h2></td></tr>
 
 <p>Display an ERROR level log message. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00266">266</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00262">262</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
 
 </div>
 </div>
@@ -883,7 +834,7 @@ Functions</h2></td></tr>
 
 <p>Display an INFO level log message. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00295">295</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00291">291</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
 
 </div>
 </div>
@@ -901,7 +852,7 @@ Functions</h2></td></tr>
 
 <p>The selected log level. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00091">91</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00087">87</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
 
 </div>
 </div>
@@ -920,7 +871,7 @@ Functions</h2></td></tr>
 <p>Special log level for always on "application" log messages. </p>
 <p >These have a special format. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00099">99</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00095">95</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
 
 </div>
 </div>
@@ -938,7 +889,7 @@ Functions</h2></td></tr>
 
 <p>Application, error, warning, info, and debug messages. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00107">107</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00103">103</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
 
 </div>
 </div>
@@ -956,7 +907,7 @@ Functions</h2></td></tr>
 
 <p>Application and error messages only. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00101">101</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00097">97</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
 
 </div>
 </div>
@@ -974,7 +925,7 @@ Functions</h2></td></tr>
 
 <p>Application, error, warning, and info messages. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00105">105</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00101">101</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
 
 </div>
 </div>
@@ -992,7 +943,7 @@ Functions</h2></td></tr>
 
 <p>Invalid log level. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00095">95</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00091">91</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
 
 </div>
 </div>
@@ -1010,7 +961,7 @@ Functions</h2></td></tr>
 
 <p>Logging disabled. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00097">97</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00093">93</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
 
 </div>
 </div>
@@ -1028,7 +979,7 @@ Functions</h2></td></tr>
 
 <p>Application, error, warning, info, and debug messages, plus additional verbose messages. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00109">109</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00105">105</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
 
 </div>
 </div>
@@ -1046,7 +997,7 @@ Functions</h2></td></tr>
 
 <p>Application, error and warning messages only. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00103">103</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00099">99</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
 
 </div>
 </div>
@@ -1064,7 +1015,7 @@ Functions</h2></td></tr>
 
 <p>Log line prefix arguments (log levels other than APP). </p>
 
-<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00171">171</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00167">167</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
 
 </div>
 </div>
@@ -1082,7 +1033,7 @@ Functions</h2></td></tr>
 
 <p>Log line prefix format string (log levels other than APP). </p>
 
-<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00166">166</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00162">162</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
 
 </div>
 </div>
@@ -1104,7 +1055,7 @@ Functions</h2></td></tr>
 
 <p>Logging <code>printf</code> definition. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00233">233</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00229">229</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
 
 </div>
 </div>
@@ -1122,7 +1073,7 @@ Functions</h2></td></tr>
 
 <p>Log line suffix format string (log levels other than APP). </p>
 
-<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00176">176</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00172">172</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
 
 </div>
 </div>
@@ -1154,7 +1105,7 @@ Functions</h2></td></tr>
 
 <p>Display an VERBOSE level log message. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00319">319</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00315">315</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
 
 </div>
 </div>
@@ -1186,7 +1137,7 @@ Functions</h2></td></tr>
 
 <p>Display an WARNING level log message. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00283">283</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00279">279</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
 
 </div>
 </div>
@@ -1306,7 +1257,45 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00220">220</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00216">216</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
+
+</div>
+</div>
+<a id="ga73c7eaf0d5d7e4bcd52f79ab87a76bbc" name="ga73c7eaf0d5d7e4bcd52f79ab87a76bbc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga73c7eaf0d5d7e4bcd52f79ab87a76bbc">&#9670;&nbsp;</a></span>mm_log_final()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int mm_log_final </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>fmt</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>...</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Log a final message on system crash. </p>
+<p >Only valid to call on program end with interrupts disabled.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">fmt</td><td>Format string</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>On success, the total number of characters written. On failure, a negative number. </dd></dl>
 
 </div>
 </div>
@@ -1374,7 +1363,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>0. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00206">206</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmlog_8h_source.html#l00202">202</a> of file <a class="el" href="mmlog_8h_source.html">mmlog.h</a>.</p>
 
 </div>
 </div>
@@ -1384,7 +1373,7 @@ Functions</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Copyright 2021-2025 Morse Micro </li>
+    <li class="footer">Copyright 2021-2026 Morse Micro </li>
   </ul>
 </div>
 </body>

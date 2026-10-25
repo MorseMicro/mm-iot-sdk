@@ -55,8 +55,10 @@ enum mmhal_veto_id
     MMHAL_VETO_ID_DATALINK = 20,
     /** Deep sleep veto ID allocated to @ref MMCONFIG. */
     MMHAL_VETO_ID_MMCONFIG = 21,
+    /** Deep sleep veto ID allocated to Emmet. */
+    MMHAL_VETO_ID_EMMET = 22,
     /** Start of deep sleep veto ID range reserved for future use. */
-    MMHAL_VETO_ID_RESERVED_MIN = 22,
+    MMHAL_VETO_ID_RESERVED_MIN = 23,
     /** End of deep sleep veto ID range reserved for future use. */
     MMHAL_VETO_ID_RESERVED_MAX = 31,
 };

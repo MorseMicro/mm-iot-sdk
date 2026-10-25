@@ -44,32 +44,22 @@ void morse_skbq_init(struct driver_data *driverd,
 
 void morse_skbq_finish(struct morse_skbq *mq);
 
-
 int morse_skbq_tx_flush(struct morse_skbq *mq);
-
 
 int morse_skbq_check_for_stale_tx(struct morse_skbq *mq);
 
-
 int morse_skbq_get_tx_status_lifetime_ms(void);
-
 
 uint32_t morse_skbq_count_tx_ready(struct morse_skbq *mq);
 
-
 uint32_t morse_skbq_count(struct morse_skbq *mq);
-
 
 void morse_skbq_data_traffic_pause(struct driver_data *driverd);
 
-
 void morse_skbq_data_traffic_resume(struct driver_data *driverd);
-
 
 bool morse_validate_skb_checksum(uint8_t *data);
 
-
 void morse_skbq_process_rx(struct driver_data *driverd, struct mmpkt *mmpkt);
-
 
 int morse_skbq_drop_stale_pkts(struct morse_skbq *mq);

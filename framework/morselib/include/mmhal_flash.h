@@ -31,9 +31,6 @@ extern "C"
  */
 #define MMHAL_FLASH_ERASE_VALUE 0xFF
 
-/** LittleFS configuration structure. Include @c lfs.h for definition. */
-struct lfs_config;
-
 /**
  * Underlying integer type for @ref mmhal_flash_addr_t. Defaults to
  * @c uint32_t. May be overridden by the build system (e.g. by defining
@@ -169,23 +166,6 @@ int mmhal_flash_read(mmhal_flash_addr_t read_address, uint8_t *buf, size_t size)
  * @return              0 on success, or a negative number on failure.
  */
 int mmhal_flash_write(mmhal_flash_addr_t write_address, const uint8_t *data, size_t size);
-
-/**
- * Get LittleFS configuration.
- *
- * LittleFS initialization is done by @c littlefs_init() in @c mmosal_shim_fileio.c.
- * which in turn calls this function to fetch the hardware configuration for LittleFS
- * from the HAL layer. The LittleFS configuration will vary from platform to platform.
- * If LittleFS is not supported by the platform then we just return NULL. This function
- * returns a static pointer to @c struct @c lfs_config which is defined in @c lfs.h.
- *
- * See @c mmhal_littlefs.c for the full HAL layer implementation for your platform.
- * See @c mmosal_shim_fileio.c for the @c libc shims for LittleFS.
- * See @c README.md in the @c src/littlefs folder for detailed information on LittleFS.
- *
- * @return A static pointer to the LittleFS config structure, or NULL if not supported.
- */
-const struct lfs_config *mmhal_get_littlefs_config(void);
 
 #ifdef __cplusplus
 }

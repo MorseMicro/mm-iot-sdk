@@ -13,5 +13,6 @@ var group__MMUTILS =
     [ "MM_STATIC_ASSERT", "group__MMUTILS.html#ga88c3ad1ebe87a29a9bb932305d4d737d", null ],
     [ "MM_UNUSED", "group__MMUTILS.html#ga0157597bdd038d83fbb0f2f488e6e4ee", null ],
     [ "MM_WEAK", "group__MMUTILS.html#ga08fb889acc204f09b95c4d533f180688", null ],
+    [ "mm_decode_hex_char", "group__MMUTILS.html#gadc9bfd3191304c94f9297f15ed3c6b38", null ],
     [ "mm_nibble_to_hex_char", "group__MMUTILS.html#ga2b4b5b12d04302a9ada0dee5a0342051", null ]
 ];

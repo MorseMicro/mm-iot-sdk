@@ -28,7 +28,6 @@ static mmtrace_channel drv_channel_handle;
 
 #define DRV_TASK_PRIO             MMOSAL_TASK_PRI_HIGH
 #define DRV_TASK_STACK_SIZE_WORDS 768
-
 #define DRV_TASK_MAX_SLEEP_MS (INT32_MAX / 2)
 
 static bool get_next_scheduled_evt_time(struct driver_data *driverd, uint32_t *next_evt_time)
@@ -78,7 +77,6 @@ void driver_task_process_scheduled_evts(struct driver_data *driverd)
                 DRV_TASK_TRACE("schd evt already pending %u",
                                driverd->driver_task.scheduled_evts[ii].evt);
 
-
                 driverd->driver_task.scheduled_evts[ii].evt = DRV_EVT_NONE;
             }
         }
@@ -101,7 +99,6 @@ void driver_task_schedule_notification_at(struct driver_data *driverd,
         {
             if (driverd->driver_task.scheduled_evts[ii].timeout_at_ms == timeout_at_ms)
             {
-
                 signal_driver = false;
                 goto exit;
             }
@@ -120,15 +117,12 @@ void driver_task_schedule_notification_at(struct driver_data *driverd,
         }
     }
 
-
     MMOSAL_ASSERT(false);
 
 exit:
     MMOSAL_TASK_EXIT_CRITICAL();
-
     if (signal_driver)
     {
-
         mmosal_semb_give(driverd->driver_task.pending_semb);
         DRV_TASK_TRACE("schd %u", evt);
     }
@@ -156,7 +150,6 @@ void driver_task_main(void *arg)
             if (driver_task_notification_check_and_clear(driverd, DRV_EVT_STOP_NOTICATION))
             {
                 coredump_log_assert_info(driverd);
-
 
                 mmdrv_host_hw_restart_required();
             }

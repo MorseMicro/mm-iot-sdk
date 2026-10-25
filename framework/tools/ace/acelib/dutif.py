@@ -8,6 +8,7 @@ import logging
 import shlex
 import subprocess
 import sys
+import time
 from threading import Lock
 
 from acelib.openocdtcl import OpenOcdTcl
@@ -84,6 +85,45 @@ def print_commands():
             print(f"    {command_grp}/{command}")
 
 
+def _set_fields(msg, fields):
+    for param, arg in fields.items():
+        # We have support for type conversions for a subset of types
+        try:
+            paramdesc = msg.DESCRIPTOR.fields_by_name[param]
+        except KeyError as e:
+            # At the moment we are using InvalidCommandError for invalid commands
+            # and invalid parameters. We may want to consider having a separate
+            # InvalidParameter error.
+            raise InvalidCommandError from e
+
+        def _fix_arg_type(_arg):
+            if paramdesc.type in [
+                    FieldDescriptor.TYPE_INT32, FieldDescriptor.TYPE_INT64,
+                    FieldDescriptor.TYPE_SINT32, FieldDescriptor.TYPE_SINT64,
+                    FieldDescriptor.TYPE_UINT32, FieldDescriptor.TYPE_UINT64
+            ]:
+                return int(_arg)
+
+            if paramdesc.type == FieldDescriptor.TYPE_BOOL:
+                return bool(_arg)
+
+            if paramdesc.type == FieldDescriptor.TYPE_ENUM:
+                return paramdesc.enum_type.values_by_name[_arg].number
+
+            return _arg
+
+        if paramdesc.label == FieldDescriptor.LABEL_REPEATED:
+            arg = [_fix_arg_type(x) for x in arg]
+            getattr(msg, param).extend(arg)
+        elif paramdesc.type == FieldDescriptor.TYPE_MESSAGE:
+            # Mark the sub-message present even if the dict is empty, so defaults are used
+            submsg = getattr(msg, param)
+            submsg.SetInParent()
+            _set_fields(submsg, arg)
+        else:
+            setattr(msg, param, _fix_arg_type(arg))
+
+
 class Response:
     def __init__(self, cmdgrp, subcmd, rsp_msg):
         self.args = {}
@@ -139,7 +179,8 @@ class DutIf:
     def encode(self, cmd, **kwargs):
         try:
             cmdgrp, subcmd = cmd.split("/")
-            cmdinfo = self.commands[cmdgrp][subcmd]
+            if subcmd not in self.commands[cmdgrp]:
+                raise InvalidCommandError
         except KeyError as e:
             raise InvalidCommandError from e
         except ValueError as e:
@@ -152,37 +193,7 @@ class DutIf:
         cmdmsg = getattr(cmdgrpmsg, subcmd)
         cmdmsg.SetInParent()
 
-        for param, arg in kwargs.items():
-            # We have support for type conversions for a subset of types
-            try:
-                paramdesc = cmdinfo[param]
-            except KeyError as e:
-                # At the moment we are using InvalidCommandError for invalid commands
-                # and invalid parameters. We may want to consider having a separate
-                # InvalidParameter error.
-                raise InvalidCommandError from e
-
-            def _fix_arg_type(_arg):
-                if paramdesc.type in [
-                        FieldDescriptor.TYPE_INT32, FieldDescriptor.TYPE_INT64,
-                        FieldDescriptor.TYPE_SINT32, FieldDescriptor.TYPE_SINT64,
-                        FieldDescriptor.TYPE_UINT32, FieldDescriptor.TYPE_UINT64
-                ]:
-                    return int(_arg)
-
-                if paramdesc.type == FieldDescriptor.TYPE_BOOL:
-                    return bool(_arg)
-
-                if paramdesc.type == FieldDescriptor.TYPE_ENUM:
-                    return paramdesc.enum_type.values_by_name[_arg].number
-
-                return _arg
-
-            if paramdesc.label == FieldDescriptor.LABEL_REPEATED:
-                arg = [_fix_arg_type(x) for x in arg]
-                getattr(cmdmsg, param).extend(arg)
-            else:
-                setattr(cmdmsg, param, _fix_arg_type(arg))
+        _set_fields(cmdmsg, kwargs)
         return (cmdgrp, subcmd, dutcmd)
 
     def exec(self, cmd, exec_dry_run=False, transport=None, **kwargs):  # noqa: A003
@@ -205,25 +216,41 @@ class DutIf:
                     raise CommandExecutionError(cmd, rsp.basic.code, rsp.basic.message)
             return Response(cmdgrp, subcmd, rsp)
 
-    def _gdb_exec(self, commands, elf_file=None, confirm=False):
+    def _gdb_exec(self, commands, elf_file=None, connect_attempts=2, connect_reject_limit=0.3):
+        # Sometimes OpenOCD is slow to close the last GDB connection, and the next connection is
+        # rejected with "no more connections allowed". The connection is fast to fail and cheap to
+        # retry, so if we can detect we've failed fast to connect we give it a retry just in case.
         cmdline = [self.gdb_command]
+        cmdline += ["-batch"]
         if elf_file:
             cmdline.append(elf_file)
-        if not confirm:
-            cmdline += ["-ex", "set confirm off"]
         cmdline += ["-ex", f"target extended-remote {self.debug_host}:{self.gdb_port}"]
         for cmd in commands:
             cmdline += ["-ex", cmd]
-        cmdline += ["-ex", "quit"]
 
         logger.debug(f'GDB Exec: {" ".join([shlex.quote(x) for x in cmdline])}')
-        completed_proc = None
-        try:
-            completed_proc = subprocess.run(cmdline, capture_output=True, text=True,
-                                            timeout=self.gdb_command_timeout, check=False)
-        except subprocess.TimeoutExpired:
-            logger.error("Timed out waiting for GDB to complete")
-            raise GdbError("Timed out waiting for GDB to complete", completed_proc)
+
+        for attempt in range(1, connect_attempts + 1):
+            completed_proc = None
+            try:
+                start = time.monotonic()
+                completed_proc = subprocess.run(cmdline, capture_output=True, text=True,
+                                                timeout=self.gdb_command_timeout, check=False)
+                elapsed = time.monotonic() - start
+            except subprocess.TimeoutExpired:
+                logger.error("Timed out waiting for GDB to complete")
+                raise GdbError("Timed out waiting for GDB to complete", completed_proc)
+
+            if completed_proc.returncode == 0 or elapsed > connect_reject_limit:
+                # If we succeeded or failed slow, we don't attempt the retry mechanism
+                break
+            logger.warning(f"GDB failed to connect to {self.debug_host}:{self.gdb_port}")
+            if attempt < connect_attempts:
+                time.sleep(connect_reject_limit)
+        else:
+            logger.error("Failed to connect, is there another gdb already connected?")
+            raise GdbError(f"Failed to connect to {self.debug_host}:{self.gdb_port} "
+                           f"after {connect_attempts} attempts", completed_proc)
 
         if completed_proc.returncode != 0:
             logger.error(completed_proc.stderr)

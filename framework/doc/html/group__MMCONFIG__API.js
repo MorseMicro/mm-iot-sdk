@@ -29,6 +29,7 @@ var group__MMCONFIG__API =
     [ "mmconfig_read_bool", "group__MMCONFIG__API.html#ga5cf5f8b78e861e232a9133656daf2df6", null ],
     [ "mmconfig_read_bytes", "group__MMCONFIG__API.html#gaced6e1453d3114b98696af9bbcca4288", null ],
     [ "mmconfig_read_int", "group__MMCONFIG__API.html#ga525c691a659dbd32281c0de12432d9c9", null ],
+    [ "mmconfig_read_mac_addr", "group__MMCONFIG__API.html#ga26b52ee5858fa8edd385f4f301b8f1b2", null ],
     [ "mmconfig_read_string", "group__MMCONFIG__API.html#ga49a03e759500ae9d9395a22d3846c11e", null ],
     [ "mmconfig_read_uint32", "group__MMCONFIG__API.html#gae93df8026b038c5b216f7dc16a65ce91", null ],
     [ "mmconfig_validate_key", "group__MMCONFIG__API.html#gac4d12564d7dc99fcdec5aac2cf571669", null ],
@@ -36,6 +37,7 @@ var group__MMCONFIG__API =
     [ "mmconfig_write_bool", "group__MMCONFIG__API.html#ga635c965295967a5965b6bc46c763e173", null ],
     [ "mmconfig_write_data", "group__MMCONFIG__API.html#gab1379a02dfbef05b86b02a475f09f484", null ],
     [ "mmconfig_write_int", "group__MMCONFIG__API.html#ga093ef5caa1ee5d2d49ac26510e3f8d3b", null ],
+    [ "mmconfig_write_mac_addr", "group__MMCONFIG__API.html#ga8cfc7835b3c1a36a1b04b60686158f41", null ],
     [ "mmconfig_write_string", "group__MMCONFIG__API.html#gad75d2af944e63a2b6f5615ba8a4e7ad6", null ],
     [ "mmconfig_write_uint32", "group__MMCONFIG__API.html#ga8339629d27f454f568df2f68e457d5bd", null ],
     [ "mmconfig_write_update_node_list", "group__MMCONFIG__API.html#ga72d00758a37662b66f89386065f3e13f", null ]

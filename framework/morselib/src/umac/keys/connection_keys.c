@@ -13,7 +13,6 @@ static struct umac_key *connection_keys_alloc(struct connection_keys_data *data)
 {
     struct umac_key *key = NULL;
 
-
     int i;
     for (i = 0; i < UMAC_KEYS_KEYCHAIN_LEN; i++)
     {
@@ -29,24 +28,19 @@ static struct umac_key *connection_keys_alloc(struct connection_keys_data *data)
 
 static void connection_keys_free(struct connection_keys_data *data, uint8_t key_id)
 {
-
     enum umac_key_type key_type = data->keys[key_id]->key_type;
     if (data->active_key_lookup[key_type] == key_id)
     {
         data->active_key_lookup[key_type] = -1;
     }
-
     memset(data->keys[key_id], 0, sizeof(*data->keys[key_id]));
-
     data->keys[key_id] = NULL;
 }
-
 
 static bool connection_keys_key_id_is_valid(uint8_t key_id)
 {
     return (key_id < UMAC_KEYS_NUM_KEY_IDS);
 }
-
 
 static bool connection_keys_key_is_installed(struct connection_keys_data *data, uint8_t key_id)
 {
@@ -110,7 +104,6 @@ bool connection_keys_install_key(struct connection_keys_data *data, struct umac_
     }
 
     MMOSAL_TASK_ENTER_CRITICAL();
-
     data->keys[key->key_id] = new_key;
     data->keys[key->key_id]->key_id = key->key_id;
     data->keys[key->key_id]->key_type = key->key_type;
@@ -121,7 +114,6 @@ bool connection_keys_install_key(struct connection_keys_data *data, struct umac_
     data->keys[key->key_id]->tx_seq = key->tx_seq;
     memcpy(data->keys[key->key_id]->key_data, key->key_data, key->key_len);
     data->keys[key->key_id]->key_len = key->key_len;
-
     data->active_key_lookup[key->key_type] = key->key_id;
     MMOSAL_TASK_EXIT_CRITICAL();
 
@@ -173,10 +165,8 @@ enum mmwlan_status connection_keys_check_and_update_rx_replay(struct connection_
     MMOSAL_TASK_ENTER_CRITICAL();
     if (connection_keys_key_is_installed(data, key_id))
     {
-
         if (packet_number > data->keys[key_id]->rx_seq[space])
         {
-
             status = MMWLAN_SUCCESS;
             data->keys[key_id]->rx_seq[space] = packet_number;
         }
@@ -245,7 +235,6 @@ void connection_keys_increment_tx_seq(struct connection_keys_data *data, uint8_t
     MMOSAL_TASK_ENTER_CRITICAL();
     if (connection_keys_key_is_installed(data, key_id))
     {
-
         data->keys[key_id]->tx_seq++;
         success = true;
     }

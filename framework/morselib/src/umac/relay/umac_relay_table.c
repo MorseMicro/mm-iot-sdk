@@ -142,7 +142,6 @@ bool umac_relay_table_add(struct umac_relay_data *data,
         return false;
     }
 
-
     while ((entry = umac_relay_table_list_find_by_da(&data->remove_pending_head, da, true)) != NULL)
     {
         umac_relay_table_free(data, entry);
@@ -250,7 +249,6 @@ bool umac_relay_table_remove(struct umac_relay_data *data,
         }
         cursor = &entry->next;
     }
-
     if (entry == NULL)
     {
         cursor = &data->add_pending_head;

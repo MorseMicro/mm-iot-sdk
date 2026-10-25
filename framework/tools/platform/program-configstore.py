@@ -35,7 +35,7 @@ from configstore import (
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 
 sys.path.append(f"{SCRIPT_DIR}/../ace")
-import acelib
+from acelib.dutif import DutIf
 from acelib.openocdtcl import OpenOcdTcl
 
 DEFAULT_TOOLCHAIN_PREFIX = "arm-none-eabi-"
@@ -151,8 +151,7 @@ class ConfigStoreOpenOCDProgrammer:
         self._load_params(config_params, target)
 
         self._tclif = OpenOcdTcl(debug_host, tcl_port)
-        self.dutif = acelib.dutif.DutIf(debug_host, gdb_port, tcl_port,
-                                        gdb_command=f"{toolchain_prefix}gdb")
+        self.dutif = DutIf(debug_host, gdb_port, tcl_port, gdb_command=f"{toolchain_prefix}gdb")
         self.cache = None
 
     def __enter__(self):

@@ -10,13 +10,10 @@
 #include "mmosal.h"
 #include "mmhal_wlan.h"
 
-
 #define SPI_IRQ_TASK_PRIORITY (MMOSAL_TASK_PRI_HIGH)
 #define SPI_IRQ_TASK_STACK    (768)
 
-
 #define CMD53_MAX_BLOCKS 128
-
 
 #ifdef ENABLE_TRANSPORT_FSM_TRACE
 #include "mmtrace.h"
@@ -34,7 +31,6 @@ static mmtrace_channel transport_fsm_channel_handle;
     } while (0)
 #endif
 
-
 #ifdef ENABLE_ADDR_BASE_FSM_TRACE
 #include "mmtrace.h"
 static mmtrace_channel addr_base_fsm_channel_handle;
@@ -50,7 +46,6 @@ static mmtrace_channel addr_base_fsm_channel_handle;
     do {                               \
     } while (0)
 #endif
-
 
 enum block_size
 {
@@ -69,7 +64,6 @@ enum max_block_transfer_size
 #define MAX_RETRY 3
 
 
-
 #define SDIO_CCCR_IEN_ADDR 0x04u
 #define SDIO_CCCR_IEN_IENM (1u)
 #define SDIO_CCCR_IEN_IEN1 (1u << 1)
@@ -77,35 +71,24 @@ enum max_block_transfer_size
 #define SDIO_CCCR_BIC_ADDR 0x07u
 #define SDIO_CCCR_BIC_ECSI (1u << 5)
 
-
 static struct mmosal_mutex *bus_lock = NULL;
-
 
 static struct mmosal_semb *spi_irq_semb;
 
 static struct mmosal_task *spi_irq_task_handle;
 
-
 static volatile bool morse_trns_spi_irq_enabled = false;
-
 
 volatile uint32_t mmhal_spi_irq_poll_interval = 5000;
 
-
 static uint32_t address_base_fn1_cache;
-
 static uint32_t address_base_fn2_cache;
 
-
 static volatile bool spi_irq_task_run = false;
-
 static volatile bool spi_irq_task_has_finished = false;
 
-
 #define MAX_COMM_FAILURES 30
-
 static uint8_t consecutive_comm_failures = 0;
-
 static uint32_t xtal_init_sdio_trans_delay_ms = 0;
 
 void morse_xtal_init_delay(void)
@@ -115,7 +98,6 @@ void morse_xtal_init_delay(void)
         mmosal_task_sleep(xtal_init_sdio_trans_delay_ms);
     }
 }
-
 
 static void comms_op_check(struct driver_data *driverd, morse_error_t return_code)
 {
@@ -136,7 +118,6 @@ static void comms_op_check(struct driver_data *driverd, morse_error_t return_cod
     }
 }
 
-
 static morse_error_t morse_cmd52_write(uint32_t address,
                                        uint8_t data,
                                        enum mmhal_sdio_function function)
@@ -147,7 +128,6 @@ static morse_error_t morse_cmd52_write(uint32_t address,
 
     return mmhal_wlan_sdio_cmd(52, arg, NULL) ? MORSE_FAILED : MORSE_SUCCESS;
 }
-
 
 static morse_error_t morse_cmd52_read(uint32_t address,
                                       uint8_t *data,
@@ -170,7 +150,6 @@ static morse_error_t morse_cmd52_read(uint32_t address,
     return MORSE_SUCCESS;
 }
 
-
 static morse_error_t morse_cmd53_read(enum mmhal_sdio_function function,
                                       uint32_t address,
                                       uint8_t *data,
@@ -186,7 +165,6 @@ static morse_error_t morse_cmd53_read(enum mmhal_sdio_function function,
         block_size = BLOCK_SIZE_FN1;
         block_size_log2 = BLOCK_SIZE_FN1_LOG2;
     }
-
 
     uint16_t num_blocks = len >> block_size_log2;
     if (num_blocks > 0)
@@ -217,7 +195,6 @@ static morse_error_t morse_cmd53_read(enum mmhal_sdio_function function,
         len -= transfer_size;
     }
 
-
     if (len > 0)
     {
         int ret;
@@ -243,7 +220,6 @@ static morse_error_t morse_cmd53_read(enum mmhal_sdio_function function,
 exit:
     return result;
 }
-
 
 static morse_error_t morse_cmd53_write(enum mmhal_sdio_function function,
                                        uint32_t address,
@@ -261,7 +237,6 @@ static morse_error_t morse_cmd53_write(enum mmhal_sdio_function function,
         block_size_log2 = BLOCK_SIZE_FN1_LOG2;
     }
 
-
     uint16_t num_blocks = len >> block_size_log2;
     if (num_blocks > 0)
     {
@@ -289,7 +264,6 @@ static morse_error_t morse_cmd53_write(enum mmhal_sdio_function function,
         len -= transfer_size;
     }
 
-
     if (len > 0)
     {
         uint32_t sdio_arg = mmhal_make_cmd53_arg(MMHAL_SDIO_WRITE,
@@ -315,13 +289,11 @@ exit:
     return result;
 }
 
-
 static void morse_address_base_clear_cache(void)
 {
     address_base_fn1_cache = 0xffffffff;
     address_base_fn2_cache = 0xffffffff;
 }
-
 
 static bool morse_address_base_changed(uint32_t address, enum mmhal_sdio_function function)
 {
@@ -338,11 +310,9 @@ static bool morse_address_base_changed(uint32_t address, enum mmhal_sdio_functio
             break;
     }
 
-
     MMOSAL_ASSERT(false);
     return false;
 }
-
 
 static void morse_address_base_update_cache(uint32_t address, enum mmhal_sdio_function function)
 {
@@ -361,7 +331,6 @@ static void morse_address_base_update_cache(uint32_t address, enum mmhal_sdio_fu
             break;
     }
 }
-
 
 static morse_error_t morse_address_base_set(uint32_t address,
                                             uint8_t access,
@@ -410,7 +379,6 @@ exit:
     return result;
 }
 
-
 static void morse_spi_irq_main(void *arg)
 {
     struct driver_data *driverd = (struct driver_data *)arg;
@@ -422,7 +390,6 @@ static void morse_spi_irq_main(void *arg)
         morse_trns_claim(driverd);
         if (morse_trns_spi_irq_enabled)
         {
-
             morse_hw_irq_handle(driverd);
         }
         morse_trns_release(driverd);
@@ -431,15 +398,12 @@ static void morse_spi_irq_main(void *arg)
     spi_irq_task_has_finished = true;
 }
 
-
 void __attribute__((weak)) mmhal_wlan_clear_spi_irq(void)
 {
 }
 
-
 static void morse_spi_irq_handler(void)
 {
-
     mmhal_wlan_set_spi_irq_enabled(false);
     mmhal_wlan_clear_spi_irq();
     mmosal_semb_give_from_isr(spi_irq_semb);
@@ -456,7 +420,6 @@ morse_error_t morse_trns_read_multi_byte(struct driver_data *driverd,
 
     TRANSPORT_FSM_TRACE("read_multi_byte");
 
-
     if (len == 0 || (len & 0x03) != 0)
     {
         MMLOG_DBG("Invalid length %lu\n", len);
@@ -471,7 +434,6 @@ morse_error_t morse_trns_read_multi_byte(struct driver_data *driverd,
         max_transfer_size = MAX_BLOCK_TRANSFER_SIZE_FN1;
     }
 
-
     while (len > 0)
     {
         result = morse_address_base_set(address, MORSE_CONFIG_ACCESS_4BYTE, function);
@@ -480,9 +442,7 @@ morse_error_t morse_trns_read_multi_byte(struct driver_data *driverd,
             goto exit;
         }
 
-
         uint32_t size = min(len, max_transfer_size);
-
 
         uint32_t next_boundary = (address & 0xFFFF0000) + 0x10000;
         if ((address + size) > next_boundary)
@@ -496,10 +456,8 @@ morse_error_t morse_trns_read_multi_byte(struct driver_data *driverd,
             goto exit;
         }
 
-
         if ((size >= 8) && driverd->cfg->bus_double_read && !memcmp(data, data + 4, 4))
         {
-
             MMLOG_WRN("Corrupt Payload. Re-Read first 8 bytes\n");
             result = morse_cmd53_read(function, address, data, 8);
             if (result != MORSE_SUCCESS)
@@ -531,7 +489,6 @@ morse_error_t morse_trns_write_multi_byte(struct driver_data *driverd,
 
     MMLOG_DBG("Write %lu bytes to %08lx\n", len, address);
 
-
     if (len == 0 || (len & 0x03) != 0)
     {
         MMLOG_WRN("Invalid length %lu\n", len);
@@ -547,7 +504,6 @@ morse_error_t morse_trns_write_multi_byte(struct driver_data *driverd,
         max_transfer_size = MAX_BLOCK_TRANSFER_SIZE_FN1;
     }
 
-
     while (len > 0)
     {
         result = morse_address_base_set(address, MORSE_CONFIG_ACCESS_4BYTE, function);
@@ -557,9 +513,7 @@ morse_error_t morse_trns_write_multi_byte(struct driver_data *driverd,
             goto exit;
         }
 
-
         uint32_t size = min(len, max_transfer_size);
-
 
         uint32_t next_boundary = (address & 0xFFFF0000) + 0x10000;
         if ((address + size) > next_boundary)
@@ -676,9 +630,10 @@ void morse_trns_release(struct driver_data *driverd)
     TRANSPORT_FSM_TRACE("release");
 }
 
-static morse_error_t morse_trns_reset(struct driver_data *driverd)
+morse_error_t morse_trns_reset(struct driver_data *driverd)
 {
     int i, ret;
+    uint8_t bic = 0;
     morse_error_t result = MORSE_FAILED;
 
     MMLOG_INF("Transport reset\n");
@@ -696,13 +651,13 @@ static morse_error_t morse_trns_reset(struct driver_data *driverd)
         mmosal_task_sleep(50);
     }
 
-
     morse_address_base_clear_cache();
 
     ret = mmhal_wlan_sdio_startup();
     if (ret != 0)
     {
         MMLOG_WRN("Initial communication with chip failed\n");
+        morse_trns_release(driverd);
         return MORSE_FAILED;
     }
 
@@ -718,14 +673,12 @@ static morse_error_t morse_trns_reset(struct driver_data *driverd)
 
     if (driverd->cfg->xtal_init && xtal_init_required)
     {
-
         driverd->cfg->xtal_init(driverd);
         xtal_init_sdio_trans_delay_ms = 0;
     }
 
     for (i = 0; i < MAX_RETRY; i++)
     {
-
         result =
             morse_trns_read_le32(driverd, driverd->cfg->regs->chip_id_address, &driverd->chip_id);
         if (result == MORSE_SUCCESS)
@@ -734,9 +687,26 @@ static morse_error_t morse_trns_reset(struct driver_data *driverd)
         }
     }
 
+    if (result == MORSE_SUCCESS)
+    {
+        result = morse_cmd52_write(SDIO_CCCR_IEN_ADDR,
+                                   SDIO_CCCR_IEN_IENM | SDIO_CCCR_IEN_IEN1,
+                                   MMHAL_SDIO_FUNCTION_0);
+    }
+    if (result == MORSE_SUCCESS)
+    {
+        result = morse_cmd52_read(SDIO_CCCR_BIC_ADDR, &bic, MMHAL_SDIO_FUNCTION_0);
+    }
+    if (result == MORSE_SUCCESS)
+    {
+        result =
+            morse_cmd52_write(SDIO_CCCR_BIC_ADDR, bic | SDIO_CCCR_BIC_ECSI, MMHAL_SDIO_FUNCTION_0);
+    }
+
     morse_trns_release(driverd);
 
-    if (morse_hw_is_valid_chip_id(driverd->chip_id, driverd->cfg->valid_chip_ids))
+    if (result == MORSE_SUCCESS &&
+        morse_hw_is_valid_chip_id(driverd->chip_id, driverd->cfg->valid_chip_ids))
     {
         MMLOG_INF("Morse Chip Reset Successful\n");
         result = MORSE_SUCCESS;
@@ -772,10 +742,8 @@ void morse_trns_deinit(void)
     mmhal_wlan_pktmem_deinit();
 }
 
-
 morse_error_t morse_trns_start(struct driver_data *driverd)
 {
-    uint8_t bic;
     morse_error_t result = MORSE_FAILED;
 
     TRANSPORT_FSM_TRACE_INIT();
@@ -789,15 +757,8 @@ morse_error_t morse_trns_start(struct driver_data *driverd)
 
     mmhal_wlan_init();
 
-    result = morse_trns_reset(driverd);
-    if (result != MORSE_SUCCESS)
-    {
-        goto exit;
-    }
-
     spi_irq_task_run = true;
     spi_irq_task_has_finished = false;
-
 
     spi_irq_task_handle = mmosal_task_create(morse_spi_irq_main,
                                              driverd,
@@ -810,29 +771,11 @@ morse_error_t morse_trns_start(struct driver_data *driverd)
         goto exit;
     }
 
-
-    result = morse_cmd52_write(SDIO_CCCR_IEN_ADDR,
-                               SDIO_CCCR_IEN_IENM | SDIO_CCCR_IEN_IEN1,
-                               MMHAL_SDIO_FUNCTION_0);
+    result = morse_trns_reset(driverd);
     if (result != MORSE_SUCCESS)
     {
         goto exit;
     }
-
-    result = morse_cmd52_read(SDIO_CCCR_BIC_ADDR, &bic, MMHAL_SDIO_FUNCTION_0);
-    if (result != MORSE_SUCCESS)
-    {
-        goto exit;
-    }
-
-    bic |= SDIO_CCCR_BIC_ECSI;
-
-    result = morse_cmd52_write(SDIO_CCCR_BIC_ADDR, bic, MMHAL_SDIO_FUNCTION_0);
-    if (result != MORSE_SUCCESS)
-    {
-        goto exit;
-    }
-
 
     mmhal_wlan_register_spi_irq_handler(morse_spi_irq_handler);
 
@@ -842,7 +785,6 @@ exit:
 
 void morse_trns_stop(struct driver_data *driverd)
 {
-
     morse_trns_set_irq_enabled(driverd, false);
     spi_irq_task_run = false;
     mmosal_semb_give(spi_irq_semb);
@@ -850,7 +792,6 @@ void morse_trns_stop(struct driver_data *driverd)
     {
         mmosal_task_sleep(1);
     }
-
 
     mmhal_wlan_register_spi_irq_handler(NULL);
 
@@ -864,7 +805,6 @@ void morse_trns_stop(struct driver_data *driverd)
     spi_irq_semb = NULL;
 
     mmhal_wlan_deinit();
-
     mmosal_task_sleep(20);
 }
 
@@ -885,7 +825,6 @@ void morse_trns_set_irq_enabled(struct driver_data *driverd, bool enabled)
             TRANSPORT_FSM_TRACE("irq_enabled");
             morse_trns_spi_irq_enabled = true;
             mmhal_wlan_set_spi_irq_enabled(true);
-
 
             morse_hw_irq_handle(driverd);
 

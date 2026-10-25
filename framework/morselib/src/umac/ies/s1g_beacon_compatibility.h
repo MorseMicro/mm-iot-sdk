@@ -3,13 +3,11 @@
  */
 
 
-
 #pragma once
 
 #include "dot11/dot11.h"
 #include "dot11/dot11_ies.h"
 #include "umac/ies/ies_common.h"
-
 
 static inline const struct dot11_ie_s1g_beacon_compatibility *ie_s1g_beacon_compat_find(
     const uint8_t *ies,
@@ -22,5 +20,4 @@ static inline const struct dot11_ie_s1g_beacon_compatibility *ie_s1g_beacon_comp
         sizeof(struct dot11_ie_s1g_beacon_compatibility) - sizeof(struct dot11_ie_hdr),
         NULL);
 }
-
 

@@ -24,6 +24,7 @@ extern "C"
 #include <stdint.h>
 
 #include "mmosal.h"
+#include "mmutils.h"
 
 /**
  * Macro for printing a @c uint64_t as two separate @c uint32_t values. This is to allow printing
@@ -33,22 +34,6 @@ extern "C"
 
 /** Macro for format specifier to print @ref MM_X64_VAL */
 #define MM_X64_FMT "%08lx%08lx"
-
-/**
- * Macro for printing a MAC address. This saves writing it out by hand.
- *
- * Must be used in conjunction with @ref MM_MAC_ADDR_FMT. For example:
- *
- * @code
- * uint8_t mac_addr[] = { 0, 1, 2, 3, 4, 5 };
- * printf("MAC address: " MM_MAC_ADDR_FMT "\n", MM_MAC_ADDR_VAL(mac_addr));
- * @endcode
- */
-#define MM_MAC_ADDR_VAL(value) \
-    ((value)[0]), ((value)[1]), ((value)[2]), ((value)[3]), ((value)[4]), ((value)[5])
-
-/** Macro for format specifier to print @ref MM_MAC_ADDR_VAL */
-#define MM_MAC_ADDR_FMT "%02x:%02x:%02x:%02x:%02x:%02x"
 
 /**
  * Initialize Morse logging API.
@@ -74,6 +59,17 @@ void mm_hexdump(char level,
                 const char *title,
                 const uint8_t *buf,
                 size_t len);
+
+/**
+ * Log a final message on system crash.
+ *
+ * Only valid to call on program end with interrupts disabled.
+ *
+ * @param fmt Format string
+ *
+ * @returns On success, the total number of characters written. On failure, a negative number.
+ */
+int mm_log_final(const char *fmt, ...);
 
 /*
  * The log level is selected as follows, in decending priority order:
@@ -177,7 +173,7 @@ void mm_hexdump(char level,
 #endif
 
 /*
- * Prefix/Suffix with Colour Enabled (APP messages)
+ * Prefix/Suffix with Colour Disabled (APP messages)
  */
 #ifndef MMLOG_APP_PREFIX_FMT
 /** Log line prefix format string (APP log level). */

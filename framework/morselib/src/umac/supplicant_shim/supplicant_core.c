@@ -202,9 +202,7 @@ void umac_supp_dpp_push_button_stop(struct umac_data *umacd)
 }
 
 
-
 #if !(defined(MM810XB2_HOSTAP_ROM_COMPAT_ENABLED) && MM810XB2_HOSTAP_ROM_COMPAT_ENABLED)
-
 static void bytes_to_hex(char *dst, const uint8_t *src, size_t len)
 {
     static const char hex[] = "0123456789abcdef";
@@ -215,7 +213,6 @@ static void bytes_to_hex(char *dst, const uint8_t *src, size_t len)
     }
     *dst = '\0';
 }
-
 
 static void build_bootstrap_gen_cmd(const struct mmwlan_dpp_qr_args *qr_args,
                                     char *cmd,
@@ -238,11 +235,9 @@ static void build_bootstrap_gen_cmd(const struct mmwlan_dpp_qr_args *qr_args,
             return;
         }
         pos += prefix_len;
-
         bytes_to_hex(cmd + pos, qr_args->bootstrap_private_key, qr_args->bootstrap_private_key_len);
     }
 }
-
 
 static void build_chirp_cmd(int bootstrap_id,
                             const struct mmwlan_dpp_qr_args *qr_args,
@@ -250,7 +245,6 @@ static void build_chirp_cmd(int bootstrap_id,
                             size_t cmd_len)
 {
     uint16_t iterations = qr_args->chirp_iterations ? qr_args->chirp_iterations : 1;
-
 
     snprintf(cmd, cmd_len, " own=%d iter=%u", bootstrap_id, (unsigned)iterations);
 }
@@ -278,7 +272,6 @@ enum mmwlan_status umac_supp_dpp_qr_enrollee_start(struct umac_data *umacd,
     {
         return MMWLAN_UNAVAILABLE;
     }
-
 
     char cmd[320];
 
@@ -321,7 +314,6 @@ void umac_supp_dpp_qr_enrollee_stop(struct umac_data *umacd)
     }
 
     wpas_dpp_chirp_stop(wpa_s);
-
     wpas_dpp_bootstrap_remove(wpa_s, "*");
 #endif
 }
@@ -446,7 +438,6 @@ void umac_supp_process_deauth(struct umac_data *umacd)
     umac_supp_event(data->sta_driver_ctx, EVENT_DEAUTH, NULL);
 }
 
-
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wc++-compat"
 
@@ -564,7 +555,6 @@ void umac_supp_process_mgmt_frame(struct umac_data *umacd,
     wpa_event_data.rx_mgmt.frame = mmpkt_get_data_start(rxbufview);
     wpa_event_data.rx_mgmt.frame_len = mmpkt_get_data_length(rxbufview);
 
-
     wpa_event_data.rx_mgmt.freq = (mmpkt_get_metadata(mmpkt).rx->freq_100khz * 100);
 
     if (vif == MMWLAN_VIF_STA)
@@ -650,12 +640,10 @@ void umac_supp_tx_status(struct umac_data *umacd, struct mmpkt *pkt, bool acked)
     }
     else
     {
-
         MMOSAL_DEV_ASSERT(false);
     }
 
     struct dot11_hdr *hdr = (struct dot11_hdr *)mmpkt_get_data_start(view);
-
 
     if (dot11_frame_control_get_type(hdr->frame_control) == DOT11_FC_TYPE_MGMT)
     {
@@ -769,7 +757,6 @@ int l2_packet_send(struct l2_packet_data *l2,
         MMLOG_DBG("L2 not initialised\n");
         goto fail;
     }
-
 
     txbuf = umac_datapath_alloc_mmpkt_for_qos_data_tx(data_len, MMDRV_PKT_CLASS_MGMT);
     if (txbuf == NULL)

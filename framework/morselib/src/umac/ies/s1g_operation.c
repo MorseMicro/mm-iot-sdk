@@ -10,7 +10,6 @@
 bool ie_s1g_operation_parse(const struct dot11_ie_s1g_operation *raw_ie,
                             struct ie_s1g_operation *result)
 {
-
     result->operation_channel_width_mhz = ie_s1g_operation_get_operating_bw(raw_ie);
     if (!(raw_ie->channel_width & DOT11_MASK_S1G_OP_CHAN_WIDTH_PRI_CHAN_WIDTH))
     {

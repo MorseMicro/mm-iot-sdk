@@ -9,7 +9,6 @@
 
 enum
 {
-
     AID_PAGE_INDEX_SHIFT = 11,
     AID_BLOCK_OFFSET_SHIFT = 6,
     AID_BLOCK_MODE_M_SHIFT = 3,
@@ -19,10 +18,8 @@ enum
     AID_BLOCK_MODE_M_MASK = 0x07ul << AID_BLOCK_MODE_M_SHIFT,
     AID_BLOCK_MODE_Q_MASK = 0x07ul << AID_BLOCK_MODE_Q_SHIFT,
 
-
     AID_SINGLE_MODE_AID_SHIFT = 0,
     AID_SINGLE_MODE_AID_MASK = 0x3ful << AID_SINGLE_MODE_AID_SHIFT,
-
 
     AID_OLB_MODE_M_MOD_8_SHIFT = 3,
     AID_OLB_MODE_Q_SHIFT = 0,
@@ -43,22 +40,17 @@ const struct dot11_ie_tim *ie_s1g_tim_find(const uint8_t *ies, size_t ies_len)
     return NULL;
 }
 
-
 struct tim_parse_state
 {
-
     uint32_t page_index;
     uint32_t page_slice;
     uint32_t block_encoding_mode;
     bool inverse_bitmap;
     uint32_t block_offset;
 
-
     const uint8_t *block;
-
     int data_length_remaining;
 };
-
 
 bool ie_s1g_tim_block_bitmap_has_aid(struct tim_parse_state *state, uint16_t aid)
 {
@@ -73,7 +65,6 @@ bool ie_s1g_tim_block_bitmap_has_aid(struct tim_parse_state *state, uint16_t aid
     state->data_length_remaining -= (1 + subblock_count);
     if (state->data_length_remaining < 0)
     {
-
         MMLOG_DBG("TIM IE too short\n");
         return false;
     }
@@ -92,7 +83,6 @@ bool ie_s1g_tim_block_bitmap_has_aid(struct tim_parse_state *state, uint16_t aid
 
     if (!(block_bitmap & (1 << pos_m)))
     {
-
         return state->inverse_bitmap;
     }
 
@@ -118,7 +108,6 @@ bool ie_s1g_tim_block_bitmap_has_aid(struct tim_parse_state *state, uint16_t aid
 
     return result;
 }
-
 
 bool ie_s1g_tim_single_aid_has_aid(struct tim_parse_state *state, uint16_t aid)
 {
@@ -153,7 +142,6 @@ bool ie_s1g_tim_single_aid_has_aid(struct tim_parse_state *state, uint16_t aid)
     return result;
 }
 
-
 bool ie_s1g_tim_olb_has_aid(struct tim_parse_state *state, uint16_t aid)
 {
     int length = state->block[0];
@@ -169,7 +157,6 @@ bool ie_s1g_tim_olb_has_aid(struct tim_parse_state *state, uint16_t aid)
 
     if (state->data_length_remaining < 0)
     {
-
         MMLOG_DBG("TIM IE too short\n");
         return false;
     }
@@ -179,14 +166,12 @@ bool ie_s1g_tim_olb_has_aid(struct tim_parse_state *state, uint16_t aid)
         return false;
     }
 
-
     num_blocks = FAST_ROUND_UP(length * 8, DOT11_TIM_BLOCK_SIZE) / DOT11_TIM_BLOCK_SIZE;
     aid_block_num = ((aid & AID_BLOCK_OFFSET_MASK) >> AID_BLOCK_OFFSET_SHIFT);
     if (aid_block_num < state->block_offset || aid_block_num >= state->block_offset + num_blocks)
     {
         return false;
     }
-
 
     tmp = ((aid & AID_BLOCK_OFFSET_MASK) >> AID_BLOCK_OFFSET_SHIFT);
     pos_m = (tmp - state->block_offset) * 8;
@@ -201,14 +186,12 @@ bool ie_s1g_tim_olb_has_aid(struct tim_parse_state *state, uint16_t aid)
 
     if (pos_m >= length)
     {
-
         return state->inverse_bitmap;
     }
 
     pos_q = (aid & AID_OLB_MODE_Q_MASK) >> AID_OLB_MODE_Q_SHIFT;
     if (!(subblocks[pos_m] & (1 << pos_q)))
     {
-
         return state->inverse_bitmap;
     }
 
@@ -219,10 +202,8 @@ bool ie_s1g_tim_olb_has_aid(struct tim_parse_state *state, uint16_t aid)
               pos_q,
               subblocks[pos_m]);
 
-
     return !state->inverse_bitmap;
 }
-
 
 bool ie_s1g_tim_ade_has_aid(struct tim_parse_state *state, uint16_t aid)
 {
@@ -242,14 +223,12 @@ bool ie_s1g_tim_ade_has_aid(struct tim_parse_state *state, uint16_t aid)
 
     if (state->data_length_remaining < 0)
     {
-
         MMLOG_DBG("TIM IE too short\n");
         return false;
     }
 
     if (length != 0)
     {
-
         current_aid += (*delta_aids & delta_aid_mask);
         MMLOG_VRB("First AID %u (%d %02x %u %lu %lu)\n",
                   current_aid,
@@ -260,7 +239,6 @@ bool ie_s1g_tim_ade_has_aid(struct tim_parse_state *state, uint16_t aid)
                   state->block_offset);
         if (current_aid == aid)
         {
-
             return !state->inverse_bitmap;
         }
 
@@ -288,12 +266,10 @@ bool ie_s1g_tim_ade_has_aid(struct tim_parse_state *state, uint16_t aid)
 
             if (current_aid == aid)
             {
-
                 return !state->inverse_bitmap;
             }
         }
     }
-
 
     if (state->inverse_bitmap)
     {
@@ -322,7 +298,6 @@ bool ie_s1g_tim_has_aid(const struct dot11_ie_tim *s1g_tim, uint16_t aid)
         .block = s1g_tim->partial_virtual_bitmap,
         .data_length_remaining = block_info_len,
     };
-
 
     if (block_info_len <= 0)
     {
@@ -384,7 +359,6 @@ bool ie_s1g_tim_has_aid(const struct dot11_ie_tim *s1g_tim, uint16_t aid)
                 break;
 
             default:
-
                 MMOSAL_ASSERT(false);
                 break;
         }
@@ -401,7 +375,6 @@ void ie_s1g_tim_build(struct consbuf *buf,
                       const uint8_t *traffic_bitmap)
 {
     MMOSAL_ASSERT(traffic_bitmap);
-
     MMOSAL_DEV_ASSERT((traffic_bitmap[0] & 0x01) == 0);
 
     enum
@@ -419,17 +392,14 @@ void ie_s1g_tim_build(struct consbuf *buf,
 
     if (consbuf_reserve(buf, 0) == NULL)
     {
-
         consbuf_reserve(buf, sizeof(struct dot11_ie_tim) + MAX_PVB_LEN);
         return;
     }
-
 
     uint8_t pvb[MAX_SUPPORTED_PVB_LEN] = {};
     MM_STATIC_ASSERT(MAX_SUPPORTED_PVB_LEN == 10, "Review the TIM logic if changing this limit");
 
     size_t pvb_len = 0;
-
 
     for (size_t block = 0; block < MAX_ENCODED_BLOCKS; ++block)
     {
@@ -446,25 +416,20 @@ void ie_s1g_tim_build(struct consbuf *buf,
             uint8_t sub_block = traffic_bitmap[sub_block_idx];
             if (sub_block == 0)
             {
-
                 continue;
             }
             if (!block_size)
             {
-
                 block_size += BASE_BLOCK_LEN;
             }
-
             *block_bitmap |= BIT(subblock);
             pvb[pvb_len + block_size] = sub_block;
             ++block_size;
         }
         if (block_size == 0)
         {
-
             continue;
         }
-
         DOT11_TIM_BLOCK_HDR_SET_BLOCK_ENCODING(*block_control,
                                                DOT11_TIM_BLOCK_ENCODING_BLOCK_BITMAP);
         DOT11_TIM_BLOCK_HDR_SET_BLOCK_OFFSET(*block_control, block);
@@ -476,7 +441,6 @@ void ie_s1g_tim_build(struct consbuf *buf,
     size_t tim_len = 2;
     if (traffic_indicator || pvb_len > 0)
     {
-
         tim_len += 1 + pvb_len;
     }
 
@@ -506,6 +470,4 @@ void ie_s1g_tim_build(struct consbuf *buf,
     memcpy(tim_ie->partial_virtual_bitmap, pvb, pvb_len);
 }
 
-
 MM_STATIC_ASSERT(MAX_SUPPORTED_AID < 512, "Page index now requires handling");
-

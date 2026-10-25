@@ -15,7 +15,6 @@ ifneq ($(BUILD_MORSELIB_FROM_SOURCE),)
     MMIOT_SRCS_H += $(MORSELIB_SRCS_H)
     MMIOT_INCLUDES += $(MORSELIB_SRC_DIR)
     MMIOT_INCLUDES += $(MORSELIB_SRC_DIR)/internal
-    MMIOT_INCLUDES += $(MORSELIB_SRC_DIR)/emmet
     MMIOT_INCLUDES += $(MORSELIB_SRC_DIR)/umac/rc/mmrc_osal
     MMIOT_INCLUDES += morselib/mmrc/src/core
     CFLAGS-$(MORSELIB_SRC_DIR) += -Wno-c++-compat
@@ -127,5 +126,4 @@ MORSELIB_SRCS_C += morselib/src/driver/morse_driver/hw.c
 MORSELIB_SRCS_C += morselib/src/driver/morse_driver/ps.c 
 MORSELIB_SRCS_C += morselib/src/driver/morse_driver/skbq.c 
 MORSELIB_SRCS_C += morselib/src/driver/transport/sdio.c 
-MORSELIB_SRCS_C += morselib/src/driver/transport/sdio_spi.c 
-MORSELIB_SRCS_C += morselib/src/emmet/emmet_stubs.c
+MORSELIB_SRCS_C += morselib/src/driver/transport/sdio_spi.c

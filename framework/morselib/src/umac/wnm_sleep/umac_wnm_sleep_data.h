@@ -9,7 +9,6 @@
 #include "stdbool.h"
 #include "wnm_sleep_fsm.h"
 
-
 typedef void (
     *umac_wnm_sleep_request_cb_t)(struct umac_data *umacd, enum mmwlan_status status, void *arg);
 

@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.13.1</span>
+   &#160;<span id="projectnumber">2.14.3</span>
    </div>
   </td>
  </tr>
@@ -96,10 +96,10 @@ $(document).ready(function(){initNavTree('structmmhal__flash__partition__config.
 <div class="textblock"><p >Flash partition configuration structure. </p>
 <p >This should be initialized using <code>MMHAL_FLASH_PARTITION_CONFIG_DEFAULT</code>. For example:</p>
 <div class="fragment"><div class="line"><span class="keyword">struct </span><a class="code hl_struct" href="structmmhal__flash__partition__config.html">mmhal_flash_partition_config</a> partition = <a class="code hl_define" href="group__MMHAL__FLASH.html#gac6e349d94610df400d97540a3790f576">MMHAL_FLASH_PARTITION_CONFIG_DEFAULT</a>;</div>
-<div class="ttc" id="agroup__MMHAL__FLASH_html_gac6e349d94610df400d97540a3790f576"><div class="ttname"><a href="group__MMHAL__FLASH.html#gac6e349d94610df400d97540a3790f576">MMHAL_FLASH_PARTITION_CONFIG_DEFAULT</a></div><div class="ttdeci">#define MMHAL_FLASH_PARTITION_CONFIG_DEFAULT</div><div class="ttdoc">Initial values for mmhal_flash_partition_config.</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__flash_8h_source.html#l00085">mmhal_flash.h:85</a></div></div>
-<div class="ttc" id="astructmmhal__flash__partition__config_html"><div class="ttname"><a href="structmmhal__flash__partition__config.html">mmhal_flash_partition_config</a></div><div class="ttdoc">Flash partition configuration structure.</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__flash_8h_source.html#l00059">mmhal_flash.h:60</a></div></div>
+<div class="ttc" id="agroup__MMHAL__FLASH_html_gac6e349d94610df400d97540a3790f576"><div class="ttname"><a href="group__MMHAL__FLASH.html#gac6e349d94610df400d97540a3790f576">MMHAL_FLASH_PARTITION_CONFIG_DEFAULT</a></div><div class="ttdeci">#define MMHAL_FLASH_PARTITION_CONFIG_DEFAULT</div><div class="ttdoc">Initial values for mmhal_flash_partition_config.</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__flash_8h_source.html#l00082">mmhal_flash.h:82</a></div></div>
+<div class="ttc" id="astructmmhal__flash__partition__config_html"><div class="ttname"><a href="structmmhal__flash__partition__config.html">mmhal_flash_partition_config</a></div><div class="ttdoc">Flash partition configuration structure.</div><div class="ttdef"><b>Definition:</b> <a href="mmhal__flash_8h_source.html#l00056">mmhal_flash.h:57</a></div></div>
 </div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="mmhal__flash_8h_source.html#l00059">59</a> of file <a class="el" href="mmhal__flash_8h_source.html">mmhal_flash.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmhal__flash_8h_source.html#l00056">56</a> of file <a class="el" href="mmhal__flash_8h_source.html">mmhal_flash.h</a>.</p>
 </div>
 <p><code>#include &lt;<a class="el" href="mmhal__flash_8h_source.html">mmhal_flash.h</a>&gt;</code></p>
 <table class="memberdecls">
@@ -131,7 +131,7 @@ Data Fields</h2></td></tr>
 <p>If <code>false</code>, then the partition address range (<code>partition_start</code> to <code>partition_start + partition_size</code>) must be directly readable within the CPU's memory map. </p>
 <p >If <code>true</code>, then the partition is not memory mapped and its contents can only be read using <a class="el" href="group__MMHAL__FLASH.html#ga7a709cc462aba985b9f37df6ecda16f2">mmhal_flash_read()</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmhal__flash_8h_source.html#l00081">81</a> of file <a class="el" href="mmhal__flash_8h_source.html">mmhal_flash.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmhal__flash_8h_source.html#l00078">78</a> of file <a class="el" href="mmhal__flash_8h_source.html">mmhal_flash.h</a>.</p>
 
 </div>
 </div>
@@ -149,7 +149,7 @@ Data Fields</h2></td></tr>
 
 <p>The size of the partition (in bytes). </p>
 
-<p class="definition">Definition at line <a class="el" href="mmhal__flash_8h_source.html#l00073">73</a> of file <a class="el" href="mmhal__flash_8h_source.html">mmhal_flash.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmhal__flash_8h_source.html#l00070">70</a> of file <a class="el" href="mmhal__flash_8h_source.html">mmhal_flash.h</a>.</p>
 
 </div>
 </div>
@@ -169,7 +169,7 @@ Data Fields</h2></td></tr>
 <p >If <code>not_memory_mapped</code> is false, then this must be a directly readable address within the CPU's memory map. If <code>not_memory_mapped</code> is true, then this address is implementation defined.</p>
 <p >Regardless of the value <code>not_memory_mapped</code>, the partition address range defined by <code>partition_start</code> and <code>partition_size</code> must be understood by <code><a class="el" href="group__MMHAL__FLASH.html#gafa86d6c04d0138a8eda6193977ad516c" title="Erases a specified block of flash.">mmhal_flash_erase()</a></code>, <code><a class="el" href="group__MMHAL__FLASH.html#ga9c6facda349baf089d3536183dd4f110" title="Returns the size of the flash block at the specified address.">mmhal_flash_getblocksize()</a></code>, <code><a class="el" href="group__MMHAL__FLASH.html#ga7a709cc462aba985b9f37df6ecda16f2" title="Read a block of data from the specified Flash address into the buffer.">mmhal_flash_read()</a></code>, and <code><a class="el" href="group__MMHAL__FLASH.html#ga39a48646a7ac7d2b7b580c57086ab99c" title="Write a block of data to the specified Flash address.">mmhal_flash_write()</a></code>. </p>
 
-<p class="definition">Definition at line <a class="el" href="mmhal__flash_8h_source.html#l00070">70</a> of file <a class="el" href="mmhal__flash_8h_source.html">mmhal_flash.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mmhal__flash_8h_source.html#l00067">67</a> of file <a class="el" href="mmhal__flash_8h_source.html">mmhal_flash.h</a>.</p>
 
 </div>
 </div>
@@ -183,7 +183,7 @@ Data Fields</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="structmmhal__flash__partition__config.html">mmhal_flash_partition_config</a></li>
-    <li class="footer">Copyright 2021-2025 Morse Micro </li>
+    <li class="footer">Copyright 2021-2026 Morse Micro </li>
   </ul>
 </div>
 </body>

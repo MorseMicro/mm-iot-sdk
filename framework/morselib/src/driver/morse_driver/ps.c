@@ -34,12 +34,9 @@ static mmtrace_channel ps_evt_channel_handle;
     } while (0)
 #endif
 
-
 #define MORSE_PS_WAKE_INDICATED_MULTIPLIER 3
 
-
 #define DEFAULT_BUS_TIMEOUT_MS (5)
-
 
 static struct driver_data *volatile ps_mors;
 
@@ -50,7 +47,6 @@ static void morse_ps_wait_after_wake_pin_raise(struct driver_data *driverd)
 
     if (mmhal_wlan_busy_is_asserted())
     {
-
         return;
     }
 
@@ -96,7 +92,6 @@ static void morse_ps_wakeup(struct driver_data *driverd)
     driverd->ps.suspended = false;
     atomic_store(&driverd->ps.pending_wake, false);
 
-
     morse_ps_update_timeout(driverd, DEFAULT_BUS_TIMEOUT_MS);
 }
 
@@ -129,7 +124,6 @@ static void morse_ps_irq_handle(void)
     }
     else
     {
-
         driver_task_notify_event_from_isr(ps_mors, DRV_EVT_PS_ASYNC_WAKEUP_PEND);
     }
 }
@@ -137,7 +131,6 @@ static void morse_ps_irq_handle(void)
 static void morse_ps_evaluate(struct driver_data *driverd)
 {
     bool needs_wake = false;
-
     uint32_t blocking_evt_mask = DRV_EVT_MASK_PAGESET;
     bool blocking_evt_is_pending = driver_task_notification_is_pending(driverd, blocking_evt_mask);
 
@@ -152,7 +145,6 @@ static void morse_ps_evaluate(struct driver_data *driverd)
     const bool skbs_pending = driverd->cfg->ops->skbq_get_tx_buffered_count(driverd);
     if (!skbs_pending && driverd->stale_status.enabled)
     {
-
         mmosal_timer_stop(driverd->stale_status.timer);
     }
     needs_wake = (driverd->ps.wakers != 0) || blocking_evt_is_pending || skbs_pending;
@@ -160,9 +152,7 @@ static void morse_ps_evaluate(struct driver_data *driverd)
     if (driver_is_data_tx_allowed(driverd) && !mmosal_time_has_passed(driverd->ps.bus_ps_timeout))
     {
 
-
         needs_wake = true;
-
 
         driver_task_schedule_notification_at(driverd,
                                              DRV_EVT_PS_BUS_ACTIVITY_PEND,
@@ -185,7 +175,6 @@ static void morse_ps_evaluate(struct driver_data *driverd)
     else if (mmhal_wlan_busy_is_asserted())
     {
         PS_TRACE_EVT("eval sleep blocked");
-
         morse_ps_update_timeout(driverd, DEFAULT_BUS_TIMEOUT_MS);
     }
     else
@@ -212,7 +201,6 @@ int morse_ps_set_dynamic_ps_timeout(struct driver_data *driverd, uint32_t timeou
         return ret;
     }
 
-
     driverd->ps.dynamic_ps_timout_ms = timeout_ms;
 
     MMLOG_INF("Dynamic PS timout set %lu\n", timeout_ms);
@@ -238,7 +226,6 @@ void morse_ps_work(struct driver_data *driverd)
     if (async_wakeup)
     {
         PS_TRACE_EVT("async_wakeup");
-
         MMLOG_DBG("Aysnc wakeup Request from IRQ, waking up.\n");
         MMOSAL_MUTEX_GET_INF(driverd->ps.lock);
         morse_ps_wakeup(driverd);
@@ -355,7 +342,6 @@ int morse_ps_init(struct driver_data *driverd)
     driverd->ps.bus_ps_timeout = 0;
     driverd->ps.dynamic_ps_timout_ms = MMWLAN_DEFAULT_DYNAMIC_PS_TIMEOUT_MS;
     driverd->ps.suspended = false;
-
     driverd->ps.wakers = (1ul << PS_WAKER_UMAC);
     driverd->ps.lock = mmosal_mutex_create("ps");
     MMOSAL_ASSERT(driverd->ps.lock);
@@ -365,7 +351,6 @@ int morse_ps_init(struct driver_data *driverd)
     ps_mors = driverd;
 
     driverd->ps.initialized = true;
-
 
     mmhal_wlan_wake_assert();
     PS_TRACE_STATE("init_awake");
@@ -382,7 +367,6 @@ void morse_ps_deinit(struct driver_data *driverd)
     {
         return;
     }
-
 
     mmhal_wlan_set_busy_irq_enabled(false);
     ps_mors = NULL;

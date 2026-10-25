@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: GPL-3.0-or-later OR LicenseRef-MorseMicroCommercial
  */
 
-
 #include <endian.h>
 
 #include "umac_supp_shim_private.h"
@@ -11,26 +10,20 @@
 #include "umac/ies/mmie.h"
 #include "umac/keys/umac_keys.h"
 
-
 #define AAD_LENGTH 20
-
 #define MIC_LENGTH            8
 #define AES128_BLOCK_SIZE     16
 #define MAX_SUPPORTED_KEY_LEN 16
 
-
 static void bip_aad(uint8_t *aad, const struct dot11_hdr *header)
 {
-
     memcpy(aad, &header->frame_control, sizeof(header->frame_control));
     memcpy(aad + sizeof(header->frame_control), header->addr1, 3 * DOT11_MAC_ADDR_LEN);
-
 
     struct dot11_hdr *aad_hdr = (struct dot11_hdr *)aad;
     aad_hdr->frame_control &=
         ~htole16(DOT11_MASK_FC_RETRY | DOT11_MASK_FC_POWER_MGMT | DOT11_MASK_FC_MORE_DATA);
 }
-
 
 static int bip_generate_mic(const uint8_t *key,
                             const struct dot11_hdr *header,
@@ -46,7 +39,6 @@ static int bip_generate_mic(const uint8_t *key,
     bip_aad(buf, header);
     memcpy(buf + AAD_LENGTH, data, data_len);
     memset(buf + data_len + AAD_LENGTH - MIC_LENGTH, 0, MIC_LENGTH);
-
 
     int ret = omac1_aes_128(key, buf, data_len + AAD_LENGTH, mic);
     if (ret < 0)
@@ -117,7 +109,6 @@ bool bip_is_valid(struct umac_sta_data *stad,
         MMLOG_DBG("Failed to generate BIP MIC\n");
         return false;
     }
-
 
     if (memcmp(mmie->mic, mic, MIC_LENGTH))
     {

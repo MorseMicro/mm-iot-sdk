@@ -4,6 +4,17 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
+function dryrun_gnu_link()
+{
+    local homebrew_prefix="${HOMEBREW_PREFIX:-/opt/homebrew}"
+    local pkg="$1"
+    local tool="$2"
+    local tool_path="$homebrew_prefix/opt/$pkg/libexec/gnubin/$tool"
+    if [ -e "$tool_path" ]; then
+        $DRYRUNCMD $SUDO ln -sf $tool_path $MORSE_BIN_DIR
+    fi
+}
+
 if [[ -x /opt/homebrew/bin/brew ]]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
@@ -11,3 +22,9 @@ fi
 echo -e "\033[32mInstalling required packages from Homebrew.\033[0m"
 
 $DRYRUNCMD brew install $(cat "$SCRIPT_DIR/brew-pkglist.txt")
+MORSE_BIN_DIR=${MORSE_TOOLS_DIR}/bin
+$DRYRUNCMD $SUDO mkdir -p $MORSE_BIN_DIR
+
+# Not all findutils are desired on path, so we add needed ones explicitly
+dryrun_gnu_link findutils find
+dryrun_gnu_link findutils xargs

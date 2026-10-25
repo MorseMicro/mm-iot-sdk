@@ -22,9 +22,7 @@
 #include "umac/health_check/umac_health_check.h"
 #include "mmhal_wlan.h"
 
-
 #define MM_TX_STATUS_BUFFER_FLUSH_WATERMARK (10)
-
 
 #define DEFAULT_MORSE_IBSS_ACK_TIMEOUT_ADJUST_US (1000)
 
@@ -69,7 +67,6 @@ static void umac_interface_populate_device_mac_addr(struct umac_interface_data *
         MMLOG_INF("Using MAC addr from %s\n", "chip");
     }
 
-
     mmhal_read_mac_addr(data->mac_addr);
     if (!mm_mac_addr_is_zero(data->mac_addr))
     {
@@ -86,7 +83,6 @@ static void umac_interface_populate_device_mac_addr(struct umac_interface_data *
     data->mac_addr[4] = rnd >> 8;
     data->mac_addr[5] = rnd >> 0;
 }
-
 
 static void umac_interface_configure_control_response_out_1mhz(
     struct umac_data *umacd,
@@ -105,16 +101,13 @@ bool umac_interface_get_control_response_bw_1mhz_out_enabled(struct umac_data *u
            MORSE_CAP_SUPPORTED(&data->capabilities, 1MHZ_CONTROL_RESPONSE_PREAMBLE);
 }
 
-
 #define VIF_STA_INTERFACE_TYPES_MASK \
     (UMAC_INTERFACE_SCAN | UMAC_INTERFACE_STA | UMAC_INTERFACE_NONE)
 
 static void umac_interface_init_vif(struct umac_data *umacd,
                                     struct umac_interface_vif_data *vif_data)
 {
-
     umac_ps_update_mode(umacd);
-
 
     mmdrv_set_param(vif_data->vif_id,
                     MORSE_PARAM_ID_TX_STATUS_FLUSH_WATERMARK,
@@ -154,7 +147,6 @@ enum mmwlan_status umac_interface_add(struct umac_data *umacd,
     enum mmdrv_interface_type drv_if_type = MMDRV_INTERFACE_TYPE_STA;
     MMOSAL_DEV_ASSERT(data_sta != NULL && data_ap != NULL);
 
-
     if (data_ap->active_interface_types == 0 && data_sta->active_interface_types == 0)
     {
         MMLOG_DBG("Booting device\n");
@@ -180,7 +172,6 @@ enum mmwlan_status umac_interface_add(struct umac_data *umacd,
         data->fw_version.patch = chip_info.fw_version.patch;
         data->morse_chip_id = chip_info.morse_chip_id;
         data->morse_chip_id_string = chip_info.morse_chip_id_string;
-
 
         if (mm_mac_addr_is_zero(data->mac_addr))
         {
@@ -244,7 +235,6 @@ enum mmwlan_status umac_interface_add(struct umac_data *umacd,
     }
     else
     {
-
         if (mac_addr != NULL && !mm_mac_addr_is_equal(vif_data->mac_addr, mac_addr))
         {
             MMLOG_WRN("Trying to change MAC address of STA interface from " MM_MAC_ADDR_FMT
@@ -256,7 +246,6 @@ enum mmwlan_status umac_interface_add(struct umac_data *umacd,
     }
 
     vif_data->active_interface_types |= type;
-
 
     umac_interface_init_vif(umacd, vif_data);
 
@@ -278,7 +267,6 @@ static void umac_interface_execute_inactive_cb(struct umac_interface_data *data)
     {
         data->inactive_callback(data->inactive_cb_arg);
     }
-
 
     data->inactive_callback = NULL;
 }
@@ -317,7 +305,6 @@ void umac_interface_remove(struct umac_data *umacd, enum umac_interface_type typ
 
     if (type & UMAC_INTERFACE_STA)
     {
-
         umac_twt_deinit_vif(umacd, &vif_data->vif_id);
     }
 
@@ -336,7 +323,6 @@ void umac_interface_remove(struct umac_data *umacd, enum umac_interface_type typ
         {
             if (umac_shutdown_is_in_progress(umacd))
             {
-
                 MMLOG_WRN("Failed to remove %s interface (%d); ignoring.\n",
                           umac_interface_type_to_str(type),
                           status);
@@ -358,7 +344,6 @@ void umac_interface_remove(struct umac_data *umacd, enum umac_interface_type typ
         mmdrv_deinit();
 
         umac_interface_execute_inactive_cb(data);
-
 
         uint8_t backup_mac_addr[DOT11_MAC_ADDR_LEN];
         memcpy(backup_mac_addr, data->mac_addr, sizeof(backup_mac_addr));
@@ -456,7 +441,6 @@ static struct umac_interface_vif_data *umac_interface_get_vif_data_by_vif_id(
 enum mmwlan_status umac_interface_reinstall_vif(struct umac_data *umacd, enum mmwlan_vif vif)
 {
     struct umac_interface_vif_data *vif_data = umac_data_get_interface_vif(umacd, vif);
-
     if (vif_data->active_interface_types == 0)
     {
         MMLOG_WRN("Unable to reinstall VIF %u: not active\n", vif);
@@ -614,7 +598,6 @@ const struct mmwlan_s1g_channel *umac_interface_calc_pri_channel(
     MMOSAL_DEV_ASSERT(pri_1mhz_chan_idx < operating_chan->bw_mhz);
     MMOSAL_DEV_ASSERT((pri_bw_mhz == 1) || (pri_bw_mhz == 2));
 
-
     uint8_t primary_1mhz_offset = 0;
     if (pri_bw_mhz == 2)
     {
@@ -629,6 +612,17 @@ const struct mmwlan_s1g_channel *umac_interface_calc_pri_channel(
     return umac_regdb_get_channel_from_freq_and_bw(umacd,
                                                    (uint32_t)primary_centre_freq_hz,
                                                    pri_bw_mhz);
+}
+
+static uint16_t umac_interface_get_duty_cycle(struct umac_data *umacd,
+                                              const struct mmwlan_s1g_channel *operating_chan)
+{
+    if (umac_interface_get_vif_id(umacd, UMAC_INTERFACE_AP) != MMDRV_VIF_ID_INVALID)
+    {
+        return operating_chan->duty_cycle_ap;
+    }
+
+    return operating_chan->duty_cycle_sta;
 }
 
 static enum mmwlan_status umac_interface_set_channel_internal(
@@ -654,7 +648,6 @@ static enum mmwlan_status umac_interface_set_channel_internal(
         s1g_operation->primary_1mhz_channel_loc,
         s1g_channel_info->bw_mhz,
         s1g_operation->primary_channel_width_mhz);
-
 
     if (s1g_operation->primary_channel_width_mhz > 2 ||
         s1g_operation->primary_channel_width_mhz > s1g_operation->operation_channel_width_mhz)
@@ -730,12 +723,13 @@ static enum mmwlan_status umac_interface_set_channel_internal(
     }
 
     enum mmwlan_duty_cycle_mode duty_cycle_mode = umac_config_get_duty_cycle_mode(umacd);
-    status = mmdrv_set_duty_cycle(s1g_channel_info->duty_cycle_sta,
+    uint16_t duty_cycle = umac_interface_get_duty_cycle(umacd, s1g_channel_info);
+    status = mmdrv_set_duty_cycle(duty_cycle,
                                   s1g_channel_info->duty_cycle_omit_ctrl_resp,
                                   duty_cycle_mode);
     if (status != MMWLAN_SUCCESS)
     {
-        MMLOG_WRN("Failed to set duty cycle %d\n", s1g_channel_info->duty_cycle_sta);
+        MMLOG_WRN("Failed to set duty cycle %d\n", duty_cycle);
         return status;
     }
 
@@ -752,8 +746,8 @@ static enum mmwlan_status umac_interface_set_channel_internal(
               "minimum airtime %lu us, maximum airtime %lu us, packet space window %lu us.\n",
               new_txpower,
               actual_txpower,
-              s1g_channel_info->duty_cycle_sta / 100,
-              s1g_channel_info->duty_cycle_sta % 100,
+              duty_cycle / 100,
+              duty_cycle % 100,
               s1g_channel_info->airtime_min_us,
               s1g_channel_info->airtime_max_us,
               s1g_channel_info->pkt_spacing_us);
@@ -807,9 +801,7 @@ enum mmwlan_status umac_interface_reconfigure_channel(struct umac_data *umacd)
 {
     struct umac_interface_data *data = umac_data_get_interface(umacd);
 
-
     struct ie_s1g_operation s1g_operation = data->current_s1g_operation;
-
 
     memset(&data->current_s1g_operation, 0, sizeof(data->current_s1g_operation));
 

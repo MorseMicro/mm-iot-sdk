@@ -22,7 +22,6 @@ static mmtrace_channel evtq_channel_handle;
 
 void umac_evtq_init(struct umac_core_evtq *evtq)
 {
-
     unsigned ii;
     for (ii = 0; ii < UMAC_EVTQ_MAXLEN; ii++)
     {

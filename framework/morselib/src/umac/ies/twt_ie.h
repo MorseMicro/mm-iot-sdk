@@ -4,7 +4,6 @@
  */
 
 
-
 #pragma once
 
 #include "common/consbuf.h"
@@ -12,11 +11,8 @@
 #include "umac/ies/ies_common.h"
 #include "mmlog.h"
 
-
 #define TWT_IE_MIN_LENGTH (10)
-
 #define TWT_IE_MAX_LENGTH (20)
-
 
 static inline const struct dot11_ie_twt *ie_twt_find(const uint8_t *ies, size_t ies_len)
 {
@@ -33,7 +29,5 @@ static inline const struct dot11_ie_twt *ie_twt_find(const uint8_t *ies, size_t 
     return NULL;
 }
 
-
 void ie_twt_build(struct umac_data *umacd, struct consbuf *buf);
-
 

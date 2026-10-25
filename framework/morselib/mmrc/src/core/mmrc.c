@@ -403,12 +403,10 @@ u16 rows_from_sta_caps(struct mmrc_sta_capabilities *caps)
 
 size_t mmrc_memory_required_for_caps(struct mmrc_sta_capabilities *caps)
 {
-	size_t table_size = sizeof(struct mmrc_table) -
-		sizeof(((struct mmrc_table *)0)->table) +
+	size_t table_size = offsetof(struct mmrc_table, table) +
 		rows_from_sta_caps(caps) * sizeof(struct mmrc_stats_table);
 
 	MMRC_OSAL_ASSERT(table_size <= MAX_STATS_TABLE_SIZE);
-	MMRC_OSAL_STATIC_ASSERT(MMRC_DEFAULT_TABLE_SIZE <= MAX_STATS_TABLE_SIZE);
 
 	return table_size;
 }
@@ -507,6 +505,49 @@ u32 get_tx_time(struct mmrc_rate *rate)
 	return tx >> FP_8_SHIFT;
 }
 
+u32 mmrc_calculate_rate_airtime(struct mmrc_rate *rate, size_t size)
+{
+	/*
+	 * Nanoseconds to transmit one byte of payload, indexed [bw][mcs] with
+	 * MCS10 in the last column, i.e. 8e6 / data rate in kbps. SGI values
+	 * are exactly 9/10 of LGI (36us vs 40us symbol). A value of 0 marks an
+	 * invalid rate combination.
+	 */
+	static const u32 s1g_ns_per_byte_lgi[4][11] = {
+		{26667, 13333, 8889, 6667, 4444, 3333, 2963, 2667, 2222, 2000, 53333},
+		{12308, 6154, 4103, 3077, 2051, 1538, 1368, 1231, 1026, 0, 0},
+		{5926, 2963, 1975, 1481, 988, 741, 658, 593, 494, 444, 0},
+		{2735, 1368, 912, 684, 456, 342, 304, 274, 228, 205, 0},
+	};
+
+	static const u32 s1g_ns_per_byte_sgi[4][11] = {
+		{24000, 12000, 8000, 6000, 4000, 3000, 2667, 2400, 2000, 1800, 48000},
+		{11077, 5538, 3692, 2769, 1846, 1385, 1231, 1108, 923, 0, 0},
+		{5333, 2667, 1778, 1333, 889, 667, 593, 533, 444, 400, 0},
+		{2462, 1231, 821, 615, 410, 308, 274, 246, 205, 185, 0},
+	};
+
+	u32 ns_per_byte;
+
+	if (rate->rate >= MMRC_MCS_UNUSED || rate->bw >= MMRC_SUPP_NUM_BW)
+		return 0;
+
+	ns_per_byte = (rate->guard == MMRC_GUARD_SHORT) ?
+		s1g_ns_per_byte_sgi[rate->bw][rate->rate] :
+		s1g_ns_per_byte_lgi[rate->bw][rate->rate];
+
+#if MMRC_SUPP_NUM_NSS > 1
+	ns_per_byte /= (rate->ss + 1);
+#endif
+
+	/*
+	 * u32 arithmetic avoids a 64-bit division (unavailable on 32-bit
+	 * kernels without div_u64); the product only overflows for frames
+	 * over ~80KB at the slowest rate.
+	 */
+	return ((u32)size * ns_per_byte) / 1000;
+}
+
 u32 mmrc_calculate_theoretical_throughput(struct mmrc_rate rate)
 {
 	static const u32 s1g_tpt_lgi[4][11] = {
@@ -535,6 +576,8 @@ u32 mmrc_calculate_theoretical_throughput(struct mmrc_rate rate)
 	return s1g_tpt_lgi[rate.bw][rate.rate] * 1000 * streams;
 }
 
+#define AMPDU_SUCCESS_THRESHOLD 40
+#define AMPDU_EVIDENCE_THRESHOLD 20
 /**
  * Calculate the thoughput of a rate designated by its index in the mmrc_table
  *
@@ -549,17 +592,32 @@ static u32 calculate_throughput(struct mmrc_table *tb, struct mmrc_rate rate)
 	 * multiplying. Should not experience any loss of precision as the throughput is already
 	 * multiplied by 1000 in mmrc_calculate_theoretical_throughput (returned as bits/sec)
 	 */
-	if (tb->table[rate.index].evidence == 0)
+	u32 raw_throughput;
+	u32 ampdu_prob;
+	u32 ampdu_evidence;
+
+	if (tb->table[rate.index].evidence == 0 &&
+	    tb->table[rate.index].ampdu_evidence <= AMPDU_EVIDENCE_THRESHOLD)
 		return mmrc_calculate_theoretical_throughput(rate);
 	else if (tb->table[rate.index].prob < 10)
 		return 0;
 	else if (rate.index == tb->best_tp.index && tb->interference_likely)
 		/* Assist the best rate by increasing the probability by the averaged variation */
-		return (mmrc_calculate_theoretical_throughput(rate) / 100) *
+		raw_throughput = (mmrc_calculate_theoretical_throughput(rate) / 100) *
 				(tb->table[rate.index].prob + tb->probability_variation);
 	else
-		return (mmrc_calculate_theoretical_throughput(rate) / 100) *
+		raw_throughput = (mmrc_calculate_theoretical_throughput(rate) / 100) *
 						tb->table[rate.index].prob;
+
+	ampdu_prob = tb->table[rate.index].ampdu_prob;
+	ampdu_evidence = tb->table[rate.index].ampdu_evidence;
+
+	/* Check if the ampdu success rate is too low. */
+	if (ampdu_prob < AMPDU_SUCCESS_THRESHOLD && ampdu_evidence > AMPDU_EVIDENCE_THRESHOLD)
+		/* Smoothly drop to 0. */
+		return raw_throughput * ampdu_prob / AMPDU_SUCCESS_THRESHOLD;
+
+	return raw_throughput;
 }
 
 bool validate_rate(struct mmrc_table *tb, struct mmrc_rate *rate)
@@ -666,6 +724,8 @@ static void mmrc_fill_retry_rates(struct mmrc_table *tb)
 		tb->best_prob.rate--;
 		if (tb->unconverged && tb->best_prob.rate > MMRC_MCS2)
 			tb->best_prob.rate = MMRC_MCS2;
+		else if (tb->best_prob.rate > MMRC_MCS4)
+			tb->best_prob.rate = MMRC_MCS4;
 		rate_update_index(tb, &tb->best_prob);
 	} else if (tb->best_prob.bw > MMRC_BW_1MHZ) {
 		tb->best_prob.bw--;
@@ -690,10 +750,11 @@ static void generate_lookaround_candidates(struct mmrc_table *tb, u32 best_tp)
 	struct mmrc_rate rate;
 	u32 rate_tp;
 	u16 i;
+	u16 row_count = rows_from_sta_caps(&tb->caps);
 
 	tb->num_lookaround_candidates = 0;
 
-	for (i = 0; i < rows_from_sta_caps(&tb->caps); i++) {
+	for (i = 0; i < row_count; i++) {
 		rate = get_rate_row(tb, i);
 		if (!validate_rate(tb, &rate))
 			continue;
@@ -739,6 +800,7 @@ static void generate_table_priority(struct mmrc_table *tb, u32 new_stats)
 	u32 last_nonzero_prob = 0;
 	struct mmrc_rate tmp;
 	u32 tmp_tp;
+	u16 row_count = rows_from_sta_caps(&tb->caps);
 
 	/* Use fixed rate if set */
 	if (tb->fixed_rate.rate != MMRC_MCS_UNUSED) {
@@ -748,7 +810,7 @@ static void generate_table_priority(struct mmrc_table *tb, u32 new_stats)
 		return;
 	}
 
-	for (i = 0; i < rows_from_sta_caps(&tb->caps); i++) {
+	for (i = 0; i < row_count; i++) {
 		if (tb->table[i].evidence == 0)
 			continue;
 
@@ -1125,10 +1187,10 @@ static void mmrc_process_variation(struct mmrc_table *tb, u16 current_success, u
 		 * Only enter interference mode if the best rate is stable for enough cycles
 		 * to determine the direction is random and not in one direction only
 		 */
-		if (abs(tb->probability_variation_direction) <= VARIATION_DIRECTION_THRESHOLD &&
-		    !tb->interference_likely) {
-			tb->interference_likely = true;
-		}
+
+		tb->interference_likely |=
+			abs(tb->probability_variation_direction) <= VARIATION_DIRECTION_THRESHOLD;
+
 	} else if (tb->interference_likely &&
 			(tb->probability_variation <= MINOR_VARIATION_THRESHOLD ||
 			 abs(tb->probability_variation_direction) == MAX_VARIATION_DIRECTION)) {
@@ -1160,6 +1222,7 @@ void mmrc_update(struct mmrc_table *tb)
 	u32 throughput;
 	bool process_this_rate;
 	u32 evidence_sent;
+	u16 row_count = rows_from_sta_caps(&tb->caps);
 
 	tb->cycle_cnt++;
 
@@ -1169,7 +1232,7 @@ void mmrc_update(struct mmrc_table *tb)
 	else
 		min_stats = STATS_MIN_INIT;
 
-	for (i = 0; i < rows_from_sta_caps(&tb->caps); i++) {
+	for (i = 0; i < row_count; i++) {
 		/* This algorithm is keeping track of the amount of evidence,
 		 * being packets that have been recently sent at this rate.
 		 * This value is smoothed with an EWMA function over time and
@@ -1178,12 +1241,24 @@ void mmrc_update(struct mmrc_table *tb)
 		 * new rate is used that hasn't been used recently
 		 */
 
+		/* Try to use statistics from acknowledged AMPDUs first. */
+		attempts_for_stats = tb->table[i].back_mpdu_sent;
+		success_for_stats = tb->table[i].back_mpdu_success;
+
+		/* Include singletons if there are not enough MPDUs sent. */
+		if ((!tb->table[i].have_sent_ampdus ||
+		     tb->table[i].ampdu_sent < AMPDU_STATS_MIN) &&
+		   tb->table[i].ampdu_evidence < AMPDU_EVIDENCE_THRESHOLD) {
+			attempts_for_stats += tb->table[i].singleton_sent;
+			success_for_stats += tb->table[i].singleton_success;
+		}
+
 		/* Neccesary to prevent a divide by 0 */
 		if (tb->table[i].evidence == 0)
 			scale = 0;
 		else
 			scale = ((tb->table[i].evidence * 2) * 100) /
-				((tb->table[i].sent * EVIDENCE_SCALE) + tb->table[i].evidence);
+				((attempts_for_stats * EVIDENCE_SCALE) + tb->table[i].evidence);
 
 		/* Restrict scale to appropriate values */
 		if (scale > 100)
@@ -1191,51 +1266,56 @@ void mmrc_update(struct mmrc_table *tb)
 
 		scaled_ewma = scale * EWMA / 100;
 
-		/* Try to use statistics from acknowledged AMPDUs first*/
-		attempts_for_stats = tb->table[i].back_mpdu_success +
-				tb->table[i].back_mpdu_failure;
-		success_for_stats = tb->table[i].back_mpdu_success;
-
-		/* Use the full statistics if rates are not converged or there were no AMPDUs
-		 * for this rate or the remaining attempts are less than half of what we have
-		 * from AMPDUs.
-		 */
-		if (!tb->table[i].have_sent_ampdus ||
-		    tb->unconverged ||
-		    attempts_for_stats < AMPDU_STATS_MIN ||
-		    (tb->table[i].sent - attempts_for_stats < attempts_for_stats / 2)) {
-			attempts_for_stats = tb->table[i].sent;
-			success_for_stats = tb->table[i].sent_success;
-		}
-
 		process_this_rate = enough_stats(tb, min_stats, i, attempts_for_stats);
 
 		/* Only count new packets for evidence if we will process them */
-		evidence_sent = process_this_rate ? tb->table[i].sent : 0;
+		evidence_sent = process_this_rate ? attempts_for_stats : 0;
 		tb->table[i].evidence = calc_ewma_average(tb->table[i].evidence,
 							  evidence_sent * EVIDENCE_SCALE,
 							  scaled_ewma);
 		if (tb->table[i].evidence > EVIDENCE_MAX)
 			tb->table[i].evidence = EVIDENCE_MAX;
 
+		/* Process ampdu success & evidence. */
+		tb->table[i].ampdu_evidence =
+			calc_ewma_average(tb->table[i].ampdu_evidence,
+					  min(tb->table[i].ampdu_sent * EVIDENCE_SCALE, 100), EWMA);
+
+		if (tb->table[i].ampdu_sent) {
+			u32 ampdu_prob = (tb->table[i].ampdu_success * 100) /
+					  tb->table[i].ampdu_sent;
+			tb->table[i].ampdu_prob = calc_ewma_average(tb->table[i].ampdu_prob,
+								    ampdu_prob, EWMA);
+			tb->table[i].ampdu_sent = 0;
+			tb->table[i].ampdu_success = 0;
+
+			/* Force the throughput and priority table to be recalculated. */
+			new_stats = 1;
+		}
+
+		/* Process mpdu/singleton success & evidence. */
 		if (process_this_rate) {
 			new_stats = 1;
-			this_success = (100 * success_for_stats) / attempts_for_stats;
 
-			if (scaled_ewma)
-				mmrc_process_variation(tb, this_success, i);
+			if (attempts_for_stats) {
+				this_success = (100 * success_for_stats) / attempts_for_stats;
+				if (scaled_ewma)
+					mmrc_process_variation(tb, this_success, i);
 
-			tb->table[i].prob = calc_ewma_average(tb->table[i].prob, this_success,
-							      scaled_ewma);
+				tb->table[i].prob = calc_ewma_average(tb->table[i].prob,
+								      this_success, scaled_ewma);
+			}
 
 			/* Clear our sent statistics and update totals */
-			tb->table[i].total_sent += tb->table[i].sent;
-			tb->table[i].sent = 0;
+			tb->table[i].total_sent += tb->table[i].singleton_sent
+						+ tb->table[i].back_mpdu_sent;
+			tb->table[i].singleton_sent = 0;
 
-			tb->table[i].total_success += tb->table[i].sent_success;
-			tb->table[i].sent_success = 0;
+			tb->table[i].total_success += tb->table[i].singleton_success
+						   + tb->table[i].back_mpdu_success;
+			tb->table[i].singleton_success = 0;
 
-			tb->table[i].back_mpdu_failure = 0;
+			tb->table[i].back_mpdu_sent = 0;
 			tb->table[i].back_mpdu_success = 0;
 			tb->table[i].have_sent_ampdus = false;
 		}
@@ -1245,6 +1325,7 @@ void mmrc_update(struct mmrc_table *tb)
 		if (tb->table[i].max_throughput < throughput)
 			tb->table[i].max_throughput = throughput;
 
+#if DEBUG_STATISTICS
 		/* Reset the running average windows if reached collector limits */
 		if (tb->table[i].sum_throughput > (0xFFFFFFFF - throughput)) {
 			tb->table[i].sum_throughput /=
@@ -1256,6 +1337,7 @@ void mmrc_update(struct mmrc_table *tb)
 		 */
 		tb->table[i].sum_throughput += throughput;
 		tb->table[i].avg_throughput_counter++;
+#endif
 	}
 
 	generate_table_priority(tb, new_stats);
@@ -1279,23 +1361,43 @@ void mmrc_update(struct mmrc_table *tb)
 
 void mmrc_feedback(struct mmrc_table *tb,
 		   struct mmrc_rate_table *rates,
-		   bool was_aggregated,
+		   u8 per_attempt_ampdu_info,
+		   u8 per_attempt_missing_block_ack,
 		   bool was_acked)
 {
 	u32 i;
+	u32 j;
 	s32 last_index = -1;
+	u32 count = 0;
 
 	for (i = 0; i < MMRC_MAX_CHAIN_LENGTH; i++) {
-		rate_update_index(tb, &rates->rates[i]);
-		tb->table[rates->rates[i].index].have_sent_ampdus |= was_aggregated;
+		struct mmrc_rate cur_rate;
+		struct mmrc_stats_table *rate_table;
 
-		if ((s32)rates->rates[i].attempts > 0) {
-			tb->table[rates->rates[i].index].sent +=
-				rates->rates[i].attempts;
-			if (was_aggregated) {
-				tb->table[rates->rates[i].index].back_mpdu_failure +=
-					rates->rates[i].attempts;
+		rate_update_index(tb, &rates->rates[i]);
+		cur_rate = rates->rates[i];
+		rate_table = &tb->table[cur_rate.index];
+
+		if ((s32)cur_rate.attempts > 0) {
+			u32 num_aggs = 0;
+			u32 num_aggs_dropped = 0;
+
+			for (j = 0; j < cur_rate.attempts; j++) {
+				num_aggs += MMRC_BIT(per_attempt_ampdu_info, count);
+				num_aggs_dropped += MMRC_BIT(per_attempt_missing_block_ack, count);
+				count++;
 			}
+			rate_table->singleton_sent += cur_rate.attempts - num_aggs;
+			rate_table->back_mpdu_sent += num_aggs - num_aggs_dropped;
+
+			rate_table->ampdu_sent += num_aggs;
+			rate_table->ampdu_success += num_aggs - num_aggs_dropped;
+
+			rate_table->have_sent_ampdus |= !!num_aggs;
+
+			MMRC_OSAL_ASSERT(num_aggs >= num_aggs_dropped);
+			MMRC_OSAL_ASSERT(num_aggs <= cur_rate.attempts);
+
 			last_index = i;
 		} else {
 			break;
@@ -1303,11 +1405,17 @@ void mmrc_feedback(struct mmrc_table *tb,
 	}
 
 	if (last_index >= 0 && was_acked) {
-		tb->table[rates->rates[last_index].index].sent_success += 1;
-		if (was_aggregated) {
-			tb->table[rates->rates[last_index].index].back_mpdu_success += 1;
-			tb->table[rates->rates[last_index].index].back_mpdu_failure -= 1;
-		}
+		struct mmrc_rate cur_rate = rates->rates[last_index];
+		struct mmrc_stats_table *rate_table = &tb->table[cur_rate.index];
+
+		bool was_agg = MMRC_BIT(per_attempt_ampdu_info, count - 1);
+		bool agg_dropped = MMRC_BIT(per_attempt_missing_block_ack, count - 1);
+		bool last_attempt_was_agg = was_agg && !agg_dropped;
+
+		if (last_attempt_was_agg)
+			rate_table->back_mpdu_success += 1;
+		else
+			rate_table->singleton_success += 1;
 	}
 }
 
@@ -1361,8 +1469,13 @@ void mmrc_sta_init(struct mmrc_table *tb, struct mmrc_sta_capabilities *caps, s8
 	for (i = 0; i < row_count; i++) {
 		tb->table[i].prob = RATE_INIT_PROBABILITY;
 		tb->table[i].evidence = 0;
+#if DEBUG_STATISTICS
 		tb->table[i].sum_throughput = 0;
 		tb->table[i].avg_throughput_counter = 0;
+#else
+		tb->table[i].fill2 = 0;
+		tb->table[i].fill1 = 0;
+#endif
 		tb->table[i].max_throughput = 0;
 	}
 

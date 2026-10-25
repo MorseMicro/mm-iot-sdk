@@ -104,7 +104,6 @@ int morse_beacon_stop(struct driver_data *driverd)
 
 int morse_beacon_work(struct driver_data *driverd)
 {
-
     if (driverd->beacon.beacon_work_fn != NULL)
     {
         return driverd->beacon.beacon_work_fn(driverd);

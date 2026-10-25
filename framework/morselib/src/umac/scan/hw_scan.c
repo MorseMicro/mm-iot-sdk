@@ -17,21 +17,16 @@
 #include "umac/datapath/umac_datapath.h"
 #include "hw_scan.h"
 
-
 #define HW_SCAN_FSM_LOG(format_str, ...) MMLOG_DBG(format_str, __VA_ARGS__)
 
 #include "hw_scan_fsm.h"
 #include "hw_scan_fsm_def.h"
 
-
 struct MM_PACKED hw_scan_tlv_hdr
 {
-
     uint16_t tag;
-
     uint16_t len;
 };
-
 
 enum hw_scan_tlv_tag
 {
@@ -42,7 +37,6 @@ enum hw_scan_tlv_tag
     HW_SCAN_TLV_TAG_DWELL_ON_HOME = 4,
 };
 
-
 enum hw_scan_operating_bw
 {
     HW_SCAN_CH_OP_BW_1MHZ = 0,
@@ -50,7 +44,6 @@ enum hw_scan_operating_bw
     HW_SCAN_CH_OP_BW_4MHZ = 2,
     HW_SCAN_CH_OP_BW_8MHZ = 3,
 };
-
 
 enum hw_scan_primary_bw
 {
@@ -60,52 +53,39 @@ enum hw_scan_primary_bw
 
 enum hw_scan_channel
 {
-
     HW_SCAN_CH_FREQ_KHZ_SHIFT = 0,
     HW_SCAN_CH_FREQ_KHZ_MASK = 0xffffful << HW_SCAN_CH_FREQ_KHZ_SHIFT,
-
     HW_SCAN_CH_OP_BW_SHIFT = 20,
     HW_SCAN_CH_OP_BW_MASK = 0x3ul << HW_SCAN_CH_OP_BW_SHIFT,
-
     HW_SCAN_CH_PRIM_CH_WIDTH_SHIFT = 22,
     HW_SCAN_CH_PRIM_CH_WIDTH_MASK = 0x1ul << HW_SCAN_CH_PRIM_CH_WIDTH_SHIFT,
-
     HW_SCAN_CH_PRIM_CH_IDX_SHIFT = 23,
     HW_SCAN_CH_PRIM_CH_IDX_MASK = 0x7ul << HW_SCAN_CH_PRIM_CH_IDX_SHIFT,
-
     HW_SCAN_CH_PWR_LIST_IDX_SHIFT = 26,
     HW_SCAN_CH_PWR_LIST_IDX_MASK = 0x3Ful << HW_SCAN_CH_PWR_LIST_IDX_SHIFT,
 };
 
-
 struct MM_PACKED hw_scan_tlv_channel_list
 {
     struct hw_scan_tlv_hdr hdr;
-
     uint32_t channels[];
 };
-
 
 struct MM_PACKED hw_scan_tlv_power_list
 {
     struct hw_scan_tlv_hdr hdr;
-
     int32_t tx_power_qdbm[];
 };
-
 
 struct MM_PACKED hw_scan_tlv_probe_req
 {
     struct hw_scan_tlv_hdr hdr;
-
     uint8_t buf[];
 };
-
 
 struct MM_PACKED hw_scan_tlv_dwell_on_home
 {
     struct hw_scan_tlv_hdr hdr;
-
     uint32_t home_dwell_time_ms;
 };
 
@@ -132,7 +112,6 @@ static uint32_t hw_scan_pack_channel(const struct mmwlan_s1g_channel *channel, u
 
     return packed_channel;
 }
-
 
 static bool hw_scan_chan_is_scannable(struct umac_data *umacd,
                                       const struct mmwlan_s1g_channel *ch,
@@ -181,7 +160,6 @@ static void hw_scan_construct_channel_list_tlv(struct umac_data *umacd,
          (s1g_channel = umac_regdb_get_channel_at_index(umacd, current_channel_index));
          current_channel_index++)
     {
-
         if (hw_scan_chan_is_scannable(umacd, s1g_channel, scan_args))
         {
 #if MMLOG_LEVEL >= MMLOG_LEVEL_DBG
@@ -194,12 +172,10 @@ static void hw_scan_construct_channel_list_tlv(struct umac_data *umacd,
             uint32_t index;
             uint32_t sub_index;
             uint32_t unique_index = 0;
-
             for (index = 0; index < current_channel_index; index++)
             {
                 const struct mmwlan_s1g_channel *channel_at_index =
                     umac_regdb_get_channel_at_index(umacd, index);
-
 
                 if (channel_at_index->bw_mhz > 2)
                 {
@@ -208,16 +184,13 @@ static void hw_scan_construct_channel_list_tlv(struct umac_data *umacd,
 
                 if (channel_at_index->max_tx_eirp_dbm == s1g_channel->max_tx_eirp_dbm)
                 {
-
                     break;
                 }
-
 
                 for (sub_index = 0; sub_index < index; sub_index++)
                 {
                     const struct mmwlan_s1g_channel *channel_at_sub_index =
                         umac_regdb_get_channel_at_index(umacd, sub_index);
-
 
                     if (channel_at_sub_index->bw_mhz > 2)
                     {
@@ -226,18 +199,15 @@ static void hw_scan_construct_channel_list_tlv(struct umac_data *umacd,
 
                     if (channel_at_index->max_tx_eirp_dbm == channel_at_sub_index->max_tx_eirp_dbm)
                     {
-
                         break;
                     }
                 }
 
                 if (sub_index == index)
                 {
-
                     unique_index++;
                 }
             }
-
 
             uint32_t *channel_slot = (uint32_t *)consbuf_reserve(cbuf, sizeof(uint32_t));
             if (channel_slot)
@@ -263,27 +233,22 @@ static void hw_scan_construct_power_list_tlv(struct umac_data *umacd, struct con
     struct hw_scan_tlv_power_list *power_list_tlv =
         (struct hw_scan_tlv_power_list *)consbuf_reserve(cbuf, sizeof(*power_list_tlv));
 
-
     uint32_t current_channel_index = 0;
     const struct mmwlan_s1g_channel *s1g_channel;
     for (current_channel_index = 0;
          (s1g_channel = umac_regdb_get_channel_at_index(umacd, current_channel_index));
          current_channel_index++)
     {
-
         if (s1g_channel->bw_mhz <= 2)
         {
             uint32_t index;
-
             for (index = 0; index < current_channel_index; index++)
             {
                 const struct mmwlan_s1g_channel *channel_at_index =
                     umac_regdb_get_channel_at_index(umacd, index);
 
-
                 if (channel_at_index->bw_mhz <= 2)
                 {
-
                     if (channel_at_index->max_tx_eirp_dbm == s1g_channel->max_tx_eirp_dbm)
                     {
                         break;
@@ -293,7 +258,6 @@ static void hw_scan_construct_power_list_tlv(struct umac_data *umacd, struct con
 
             if (current_channel_index == index)
             {
-
                 int32_t *power_slot = (int32_t *)consbuf_reserve(cbuf, sizeof(*power_slot));
                 if (power_slot)
                 {
@@ -368,12 +332,10 @@ static void hw_scan_add_request_tlvs_to_cbuf(struct umac_data *umacd,
 {
     hw_scan_construct_channel_list_tlv(umacd, cbuf, scan_args);
     hw_scan_construct_power_list_tlv(umacd, cbuf);
-
     if (scan_args->dwell_on_home_ms != 0)
     {
         hw_scan_construct_dwell_on_home_tlv(umacd, cbuf, scan_args);
     }
-
     hw_scan_construct_probe_req_tlv(umacd, cbuf, scan_args);
 }
 
@@ -486,7 +448,6 @@ static enum mmwlan_status hw_scan_abort_scan(struct umac_data *umacd)
 }
 
 
-
 static void hw_scan_fsm_in_progress_entry(struct hw_scan_fsm_instance *inst,
                                           enum hw_scan_fsm_state prev_state)
 {
@@ -515,7 +476,6 @@ static void hw_scan_fsm_in_progress_entry(struct hw_scan_fsm_instance *inst,
         return;
     }
 
-
     status = hw_scan_start(umacd);
     if (status != MMWLAN_SUCCESS)
     {
@@ -538,14 +498,12 @@ static void hw_scan_fsm_inactive_entry(struct hw_scan_fsm_instance *inst,
 }
 
 
-
 static void hw_scan_fsm_req_abort(struct hw_scan_fsm_instance *inst, enum hw_scan_fsm_event event)
 {
     struct umac_data *umacd = (struct umac_data *)inst->arg;
     struct umac_scan_data *data = umac_data_get_scan(umacd);
 
     data->hw_scan_data.abort_all = (event == HW_SCAN_FSM_EVENT_ABORT_ALL);
-
 
     (void)hw_scan_abort_scan(umacd);
 }
@@ -590,7 +548,6 @@ static void hw_scan_fsm_scan_done(struct hw_scan_fsm_instance *inst, enum hw_sca
 
     data->prev_scan_completion_time = mmosal_get_time_ms();
 
-
     if (data->hw_scan_data.abort_all)
     {
         pending_req = data->pending_scan_req;
@@ -615,7 +572,6 @@ static void hw_scan_fsm_scan_done(struct hw_scan_fsm_instance *inst, enum hw_sca
         pending_req->complete_cb(umacd, MMWLAN_SCAN_TERMINATED);
     }
 }
-
 
 
 static void hw_scan_fsm_transition_error(struct hw_scan_fsm_instance *inst,

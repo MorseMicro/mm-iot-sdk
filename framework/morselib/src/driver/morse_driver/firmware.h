@@ -20,7 +20,6 @@
 
 struct driver_data;
 
-
 typedef void (
     *morse_file_read_cb_t)(uint32_t offset, uint32_t requested_len, struct mmhal_robuf *robuf);
 
@@ -31,11 +30,8 @@ enum morse_fw_info_tlv_type
 
 struct MM_PACKED morse_fw_info_tlv_cordump_mem
 {
-
     uint32_t region_type;
-
     uint32_t start;
-
     uint32_t len;
 };
 
@@ -45,7 +41,6 @@ struct MM_PACKED morse_fw_info_tlv
     uint16_t length;
     uint8_t val[];
 };
-
 
 int morse_firmware_init(struct driver_data *driverd,
                         morse_file_read_cb_t fw_callback,
@@ -58,6 +53,5 @@ int morse_bcf_load_mbin(struct driver_data *driverd,
                         unsigned int bcf_address);
 
 int morse_bcf_get_metadata(struct mmwlan_bcf_metadata *metadata);
-
 
 int morse_firmware_parse_extended_host_table(struct driver_data *driverd, uint8_t *mac_addr);

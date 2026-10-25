@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.13.1</span>
+   &#160;<span id="projectnumber">2.14.3</span>
    </div>
   </td>
  </tr>
@@ -95,15 +95,15 @@ $(document).ready(function(){initNavTree('md__home_jenkins_agent_workspace_build
 <p >The CLI is separated into modules, which are described below. Each module has a set of commands and configuration variables.</p>
 <p >For a list of all commands type <code>help</code>. For example:</p>
 <div class="fragment"><div class="line">&gt; help</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md87"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md89"></a>
 Configuration variables</h1>
 <p >Configuration variables provide a means of configuring various aspects of the system. The commands <code>get</code> and <code>set</code> are provided to read and write the values of the variables. To list all the currently set configuration variables, invoke:</p>
 <div class="fragment"><div class="line">&gt; get all</div>
 </div><!-- fragment --><p >When a configuration variable is set the value is stored in volatile memory. The <code>commit</code> command can be used to commit these to non-volatile memory.</p>
 <p >Note that changes to configuration variables may not have an immediate effect. For example, the IP configuration variables will not take effect until the <code>ip-reload</code> command is invoked.</p>
-<h1><a class="anchor" id="autotoc_md88"></a>
+<h1><a class="anchor" id="autotoc_md90"></a>
 Module wlan: Wireless LAN management.</h1>
-<h2><a class="anchor" id="autotoc_md89"></a>
+<h2><a class="anchor" id="autotoc_md91"></a>
 Configuration variables</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -165,20 +165,20 @@ Configuration variables</h2>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><code>wlan.connect_on_boot</code>   </td><td class="markdownTableBodyNone">bool   </td><td class="markdownTableBodyNone">On boot attempt to connect immediately to the AP with the current parameters rather than waiting for a connect command on wlan. Defaults to false.   </td></tr>
 </table>
-<h2><a class="anchor" id="autotoc_md90"></a>
+<h2><a class="anchor" id="autotoc_md92"></a>
 Commands</h2>
-<h3><a class="anchor" id="autotoc_md91"></a>
+<h3><a class="anchor" id="autotoc_md93"></a>
 wlan-connect</h3>
 <p >Brings up the WLAN interface and connects to the AP with configured parameters.</p>
 <div class="fragment"><div class="line">&gt; wlan-connect &lt;timeout&gt; </div>
 </div><!-- fragment --><ul>
 <li><code>timeout</code>: Duration in milliseconds to wait for connection establish, if connection does not get established an explicit disconnect will be sent. 0 to return immediately without waiting.</li>
 </ul>
-<h3><a class="anchor" id="autotoc_md92"></a>
+<h3><a class="anchor" id="autotoc_md94"></a>
 wlan-disconnect</h3>
 <p >Disconnects and brings down the WLAN interface.</p>
 <div class="fragment"><div class="line">&gt; wlan-disconnect </div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md93"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md95"></a>
 wlan-scan</h3>
 <p >Starts an undirected scan for available networks.</p>
 <div class="fragment"><div class="line">&gt; wlan-scan &lt;ssid&gt; &lt;timeout&gt; </div>
@@ -186,47 +186,47 @@ wlan-scan</h3>
 <li><code>ssid</code>: Optional SSID to include in probe requests.</li>
 <li><code>timeout</code>: Optional duration in milliseconds to wait for scan to complete, if scan does not complete by the timeout any available results will be returned and the scan aborted.</li>
 </ul>
-<h3><a class="anchor" id="autotoc_md94"></a>
+<h3><a class="anchor" id="autotoc_md96"></a>
 wlan-get_rssi</h3>
 <p >Retrieves the RSSI if the WLAN interface is up, else 0.</p>
 <div class="fragment"><div class="line">&gt; wlan-get_rssi </div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md95"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md97"></a>
 wlan-get_mac_addr</h3>
 <p >Retrieves the MAC address if the WLAN interface is up.</p>
 <div class="fragment"><div class="line">&gt; wlan-get_mac_addr </div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md96"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md98"></a>
 wlan-wnm_sleep</h3>
 <p >Requests entry or exit from extended sleep (wnm sleep) if the WLAN interface is up.</p>
 <div class="fragment"><div class="line">&gt; wlan-wnm_sleep &lt;wnm_sleep_enabled&gt; </div>
 </div><!-- fragment --><ul>
 <li><code>wnm_sleep_enabled</code>: Boolean indicating whether WNM sleep is enabled.</li>
 </ul>
-<h3><a class="anchor" id="autotoc_md97"></a>
+<h3><a class="anchor" id="autotoc_md99"></a>
 wlan-beacon_monitor_enable</h3>
 <p >Enable beacon monitoring with the given filter settings. If beacon monitoring is already enabled it will be reconfigured with the given arguments.</p>
 <div class="fragment"><div class="line">&gt; wlan-beacon_monitor_enable &lt;oui_filter&gt; </div>
 </div><!-- fragment --><ul>
 <li><code>oui_filter</code>: OUIs to monitor.</li>
 </ul>
-<h3><a class="anchor" id="autotoc_md98"></a>
+<h3><a class="anchor" id="autotoc_md100"></a>
 wlan-beacon_monitor_disable</h3>
 <p >Disable beacon monitoring. If beacon monitor is not enabled then this has no effect.</p>
 <div class="fragment"><div class="line">&gt; wlan-beacon_monitor_disable </div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md99"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md101"></a>
 wlan-get_sta_status</h3>
 <p >Retrieves the STA status of the WLAN interface.</p>
 <div class="fragment"><div class="line">&gt; wlan-get_sta_status </div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md100"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md102"></a>
 wlan-dpp_push_button_start</h3>
 <p >Instructs the WLAN device to start the Device Provisioning Protocol (DPP) Push Button (PB) provisioning process. SSID and password will be automatically copied to wlan.ssid and wlan.password and saved in the persistent config store.</p>
 <div class="fragment"><div class="line">&gt; wlan-dpp_push_button_start </div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md101"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md103"></a>
 wlan-dpp_stop</h3>
 <p >Instructs the WLAN device to abort the ongoing DPP session.</p>
 <div class="fragment"><div class="line">&gt; wlan-dpp_stop </div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md102"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md104"></a>
 Module ip: IP Stack Management</h1>
-<h2><a class="anchor" id="autotoc_md103"></a>
+<h2><a class="anchor" id="autotoc_md105"></a>
 Configuration variables</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -246,19 +246,19 @@ Configuration variables</h2>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><code>ip.link_status_evt_en</code>   </td><td class="markdownTableBodyNone">bool   </td><td class="markdownTableBodyNone">When set to true, IP link status notifications will be provided. Setting this to false will suppress these notifications. Defaults to true.   </td></tr>
 </table>
-<h2><a class="anchor" id="autotoc_md104"></a>
+<h2><a class="anchor" id="autotoc_md106"></a>
 Commands</h2>
-<h3><a class="anchor" id="autotoc_md105"></a>
+<h3><a class="anchor" id="autotoc_md107"></a>
 ip-status</h3>
 <p >Gets the status of the IP stack.</p>
 <div class="fragment"><div class="line">&gt; ip-status </div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md106"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md108"></a>
 ip-reload</h3>
 <p >Reloads the IP stack network configuration based on the current values in the subsystem config.</p>
 <div class="fragment"><div class="line">&gt; ip-reload </div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md107"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md109"></a>
 Module ping: Ping application.</h1>
-<h2><a class="anchor" id="autotoc_md108"></a>
+<h2><a class="anchor" id="autotoc_md110"></a>
 Configuration variables</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -270,15 +270,15 @@ Configuration variables</h2>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><code>ping.count</code>   </td><td class="markdownTableBodyNone">uint32_t   </td><td class="markdownTableBodyNone">This specifies the number of ping requests to send before terminating the session. If this is zero or exceeds UINT16_MAX (65535) then it it will be set to UINT16_MAX.   </td></tr>
 </table>
-<h2><a class="anchor" id="autotoc_md109"></a>
+<h2><a class="anchor" id="autotoc_md111"></a>
 Commands</h2>
-<h3><a class="anchor" id="autotoc_md110"></a>
+<h3><a class="anchor" id="autotoc_md112"></a>
 ping-run</h3>
 <p >Commences a ping session using the current values in the subsystem config.</p>
 <div class="fragment"><div class="line">&gt; ping-run </div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md111"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md113"></a>
 Module iperf: Iperf application.</h1>
-<h2><a class="anchor" id="autotoc_md112"></a>
+<h2><a class="anchor" id="autotoc_md114"></a>
 Configuration variables</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -292,32 +292,32 @@ Configuration variables</h2>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><code>iperf.amount</code>   </td><td class="markdownTableBodyNone">int32_t   </td><td class="markdownTableBodyNone">This specifies the duration for client transfers specified either in seconds or bytes. If this is negative, it specifies a time in seconds; if positive, it specifies the number of bytes to transmit.   </td></tr>
 </table>
-<h2><a class="anchor" id="autotoc_md113"></a>
+<h2><a class="anchor" id="autotoc_md115"></a>
 Commands</h2>
-<h3><a class="anchor" id="autotoc_md114"></a>
+<h3><a class="anchor" id="autotoc_md116"></a>
 iperf-run</h3>
 <p >Starts an iperf session using the current values in the subsystem config.</p>
 <div class="fragment"><div class="line">&gt; iperf-run </div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md115"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md117"></a>
 Module sys: System management.</h1>
-<h2><a class="anchor" id="autotoc_md116"></a>
+<h2><a class="anchor" id="autotoc_md118"></a>
 Commands</h2>
-<h3><a class="anchor" id="autotoc_md117"></a>
+<h3><a class="anchor" id="autotoc_md119"></a>
 sys-reset</h3>
 <p >Performs a soft reset.</p>
 <div class="fragment"><div class="line">&gt; sys-reset </div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md118"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md120"></a>
 sys-deep_sleep</h3>
 <p >Enters deep sleep mode.</p>
 <div class="fragment"><div class="line">&gt; sys-deep_sleep &lt;mode&gt; </div>
 </div><!-- fragment --><ul>
 <li><code>mode</code>: Deep sleep mode to enter.</li>
 </ul>
-<h3><a class="anchor" id="autotoc_md119"></a>
+<h3><a class="anchor" id="autotoc_md121"></a>
 sys-get_version</h3>
 <p >Gets the device firmware and hardware versions.</p>
 <div class="fragment"><div class="line">&gt; sys-get_version </div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md120"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md122"></a>
 sys-get_stats</h3>
 <p >Retrieve subsystem statistics</p>
 <div class="fragment"><div class="line">&gt; sys-get_stats &lt;subsystem&gt; &lt;reset&gt; </div>
@@ -325,7 +325,7 @@ sys-get_stats</h3>
 <li><code>subsystem</code>: Subsystem from which to retrieve statistics.</li>
 <li><code>reset</code>: Reset the statistics after retrieving them where applicable.</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md121"></a>
+<h1><a class="anchor" id="autotoc_md123"></a>
 Enum definitions</h1>
 <h2><a class="anchor" id="CLI_enum_security_type"></a>
 Security type</h2>
@@ -597,7 +597,7 @@ Subsystem id</h2>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Copyright 2021-2025 Morse Micro </li>
+    <li class="footer">Copyright 2021-2026 Morse Micro </li>
   </ul>
 </div>
 </body>

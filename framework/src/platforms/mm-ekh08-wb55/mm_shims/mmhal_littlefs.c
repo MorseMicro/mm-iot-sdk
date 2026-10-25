@@ -8,7 +8,7 @@
  * This file provides the hardware interface for the LittleFS filesystem.
  */
 
-#include "mmhal_flash.h"
+#include "mmhal_fs.h"
 
 const struct lfs_config *mmhal_get_littlefs_config(void)
 {

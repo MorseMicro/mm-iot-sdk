@@ -255,20 +255,6 @@ void UART_IRQ_HANDLER(void)
     }
 }
 
-bool mmhal_uart_validate_config(const struct mmhal_uart_config *config)
-{
-    /* This is not currently configurable, so the given configuration must match the hard coded
-     * configuration. */
-    return (config->baudrate == 115200 && !config->hw_flow_ctrl_en);
-}
-
-bool mmhal_uart_configure(const struct mmhal_uart_config *config)
-{
-    /* Either already in a supported config or trying to set unsupported config options,
-     * so return the output of mmhal_uart_validate_config. */
-    return (mmhal_uart_validate_config(config));
-}
-
 #else
 
 void mmhal_uart_init(mmhal_uart_rx_cb_t rx_cb, void *rx_cb_arg)
@@ -293,18 +279,6 @@ void mmhal_uart_tx(const uint8_t *data, size_t length)
 bool mmhal_uart_set_deep_sleep_mode(enum mmhal_uart_deep_sleep_mode mode)
 {
     MM_UNUSED(mode);
-    return false;
-}
-
-bool mmhal_uart_validate_config(const struct mmhal_uart_config *config)
-{
-    MM_UNUSED(config);
-    return false;
-}
-
-bool mmhal_uart_configure(const struct mmhal_uart_config *config)
-{
-    MM_UNUSED(config);
     return false;
 }
 

@@ -33,12 +33,10 @@ void ie_s1g_capabilities_build(struct umac_data *umacd, struct consbuf *buf)
         }
         else
         {
-
             switch (max_bw)
             {
                 case 1:
                 case 2:
-
                     break;
 
                 case 4:
@@ -67,7 +65,6 @@ void ie_s1g_capabilities_build(struct umac_data *umacd, struct consbuf *buf)
 
         if (umac_config_rc_is_sgi_enabled(umacd))
         {
-
             switch (max_bw)
             {
                 case 16:
@@ -110,7 +107,6 @@ void ie_s1g_capabilities_build(struct umac_data *umacd, struct consbuf *buf)
         const struct mmwlan_sta_args *sta_args = umac_connection_get_sta_args(umacd);
         MMOSAL_ASSERT(sta_args != NULL);
 
-
         DOT11_S1G_CAP_INFO_4_SET_STA_TYPE_SUPPORT(ie->s1g_capabilities_information[4],
                                                   sta_args->sta_type);
 
@@ -133,11 +129,9 @@ void ie_s1g_capabilities_build(struct umac_data *umacd, struct consbuf *buf)
 
         if (umac_connection_is_raw_enabled(sta_args))
         {
-
             DOT11_S1G_CAP_INFO_6_SET_RAW_OPERATION_SUPPORT(ie->s1g_capabilities_information[6],
                                                            true);
         }
-
 
         DOT11_S1G_CAP_INFO_7_SET_DUP_1MHZ_SUPPORT(ie->s1g_capabilities_information[7], true);
         if (umac_interface_get_control_response_bw_1mhz_out_enabled(umacd))
@@ -146,7 +140,6 @@ void ie_s1g_capabilities_build(struct umac_data *umacd, struct consbuf *buf)
                 ie->s1g_capabilities_information[7],
                 true);
         }
-
 
         uint8_t s1g_mcs_map = 0xFF;
         if (MORSE_CAP_SUPPORTED(umac_interface_get_capabilities(umacd), MCS8) &&
@@ -162,7 +155,6 @@ void ie_s1g_capabilities_build(struct umac_data *umacd, struct consbuf *buf)
         DOT11_S1G_MCS_MAP_SET_3SS(s1g_mcs_map, DOT11_S1G_NSS_MAX_UNSUPPORTED);
         DOT11_S1G_MCS_MAP_SET_4SS(s1g_mcs_map, DOT11_S1G_NSS_MAX_UNSUPPORTED);
         ie->supported_s1g_mcs_nss_set[0] |= (s1g_mcs_map & 0xFF);
-
         ie->supported_s1g_mcs_nss_set[2] |= ((s1g_mcs_map << 1) & 0xFE);
         ie->supported_s1g_mcs_nss_set[3] |= ((s1g_mcs_map >> 7) & 0x01);
 
@@ -196,12 +188,10 @@ void ie_s1g_capabilities_build_ap(struct umac_data *umacd, struct consbuf *buf)
         }
         else
         {
-
             switch (max_bw)
             {
                 case 1:
                 case 2:
-
                     break;
 
                 case 4:
@@ -226,10 +216,8 @@ void ie_s1g_capabilities_build_ap(struct umac_data *umacd, struct consbuf *buf)
             }
         }
 
-
         if (true)
         {
-
             ie->s1g_capabilities_information[0] |= (max_bw | (max_bw - 1))
                                                    << DOT11_SHIFT_S1G_CAP0_SGI_1MHZ;
         }
@@ -248,13 +236,6 @@ void ie_s1g_capabilities_build_ap(struct umac_data *umacd, struct consbuf *buf)
 
 
 
-
-
-
-
-
-
-
         if (false)
         {
             DOT11_S1G_CAP_INFO_4_SET_NON_TIM_SUPPORT(ie->s1g_capabilities_information[4], true);
@@ -266,22 +247,17 @@ void ie_s1g_capabilities_build_ap(struct umac_data *umacd, struct consbuf *buf)
             ie->s1g_capabilities_information[5] |= DOT11_MASK_S1G_CAP5_AMPDU_SUPPORTED;
         }
 
-
         if (false)
         {
             ie->s1g_capabilities_information[5] |= DOT11_MASK_S1G_CAP5_CAC;
         }
 
-
         if (false)
         {
-
             ie->s1g_capabilities_information[6] |= DOT11_MASK_S1G_CAP6_RAW_OPERATION_SUPPORT;
         }
 
-
         ie->s1g_capabilities_information[7] |= DOT11_MASK_S1G_CAP7_DUP_1MHZ_SUPPORT;
-
         if (false)
         {
             ie->s1g_capabilities_information[7] |=
@@ -302,7 +278,6 @@ void ie_s1g_capabilities_build_ap(struct umac_data *umacd, struct consbuf *buf)
         DOT11_S1G_MCS_MAP_SET_3SS(s1g_mcs_map, DOT11_S1G_NSS_MAX_UNSUPPORTED);
         DOT11_S1G_MCS_MAP_SET_4SS(s1g_mcs_map, DOT11_S1G_NSS_MAX_UNSUPPORTED);
         ie->supported_s1g_mcs_nss_set[0] |= (s1g_mcs_map & 0xFF);
-
         ie->supported_s1g_mcs_nss_set[2] |= ((s1g_mcs_map << 1) & 0xFE);
         ie->supported_s1g_mcs_nss_set[3] |= ((s1g_mcs_map >> 7) & 0x01);
 
@@ -311,13 +286,6 @@ void ie_s1g_capabilities_build_ap(struct umac_data *umacd, struct consbuf *buf)
             DOT11_S1G_CAP_INFO_8_SET_TWT_REQUESTER_SUPPORT(ie->s1g_capabilities_information[8],
                                                            true);
         }
-
-
-
-
-
-
-
 
     }
 }
@@ -336,7 +304,6 @@ uint8_t ie_s1g_capabilities_get_sgi_flags(const struct dot11_ie_s1g_capabilities
 
 uint8_t ie_s1g_capabilities_get_max_rx_mcs_for_1ss(const struct dot11_ie_s1g_capabilities *s1g_caps)
 {
-
     switch (dot11_s1g_mcs_map_get_1ss(s1g_caps->supported_s1g_mcs_nss_set[0]))
     {
         case DOT11_S1G_NSS_MAX_MCS_2:
@@ -349,7 +316,6 @@ uint8_t ie_s1g_capabilities_get_max_rx_mcs_for_1ss(const struct dot11_ie_s1g_cap
             return 9;
 
         default:
-
             return 0;
     }
 }

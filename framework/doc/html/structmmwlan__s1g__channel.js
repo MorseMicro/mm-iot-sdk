@@ -4,6 +4,7 @@ var structmmwlan__s1g__channel =
     [ "airtime_min_us", "structmmwlan__s1g__channel.html#a1d2de953b66a3f3ab83e9ef31856b69c", null ],
     [ "bw_mhz", "structmmwlan__s1g__channel.html#ae1c67d8e9b6ba9c9589763ab1ce4d6e7", null ],
     [ "centre_freq_hz", "structmmwlan__s1g__channel.html#a66a55b8d2b4a716f50a5df31c567e5ab", null ],
+    [ "duty_cycle_ap", "structmmwlan__s1g__channel.html#af8fe5172bd755118e3a0d3cd9d412d07", null ],
     [ "duty_cycle_omit_ctrl_resp", "structmmwlan__s1g__channel.html#a7c03ee9be00d571eda99569dc3fdf95b", null ],
     [ "duty_cycle_sta", "structmmwlan__s1g__channel.html#aba98be04254bb4235d33e3fbc8ffe4a2", null ],
     [ "global_operating_class", "structmmwlan__s1g__channel.html#a36f35c655c4ae2371eb73db64e7701d9", null ],

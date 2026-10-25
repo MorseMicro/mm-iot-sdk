@@ -8,18 +8,13 @@
 #include "umac/ap/umac_ap.h"
 #include "umac/interface/umac_interface.h"
 
-
 #define AUTOSCAN_CONFIG_MAXLEN (32)
-
 
 struct mmwlan_supp_config_entry
 {
-
     const char *name;
-
     bool (*reader)(struct wpa_config *config, bool ro);
 };
-
 
 static enum mfp_options translate_pmf_option(enum mmwlan_pmf_mode pmf_mode)
 {
@@ -35,11 +30,9 @@ static enum mfp_options translate_pmf_option(enum mmwlan_pmf_mode pmf_mode)
             MMOSAL_ASSERT(false);
     }
 
-
     MMOSAL_ASSERT(false);
     return MGMT_FRAME_PROTECTION_REQUIRED;
 }
-
 
 static bool config_populate_network_security(struct wpa_ssid *ssid,
                                              enum mmwlan_security_type security_type,
@@ -49,7 +42,6 @@ static bool config_populate_network_security(struct wpa_ssid *ssid,
     switch (security_type)
     {
         case MMWLAN_OPEN:
-
             ssid->key_mgmt = WPA_KEY_MGMT_NONE;
             break;
 
@@ -58,7 +50,6 @@ static bool config_populate_network_security(struct wpa_ssid *ssid,
             ssid->group_cipher = WPA_CIPHER_CCMP;
             ssid->key_mgmt = WPA_KEY_MGMT_OWE;
             ssid->proto = WPA_PROTO_RSN;
-
 
             ssid->owe_only = 1;
             break;
@@ -85,7 +76,6 @@ static bool config_populate_network_security(struct wpa_ssid *ssid,
 
     return true;
 }
-
 
 static bool config_add_network(struct wpa_config *config, bool ro, struct umac_data *umacd)
 {
@@ -165,7 +155,6 @@ cleanup:
     return false;
 }
 
-
 static bool config_populate_autoscan(struct wpa_config *config, const struct mmwlan_sta_args *args)
 {
     int ret;
@@ -202,14 +191,30 @@ static bool config_populate_autoscan(struct wpa_config *config, const struct mmw
     return (ret >= 0) ? true : false;
 }
 
-
 static bool config_populate_sae_groups(struct wpa_config *config,
                                        const int *sae_owe_ec_groups,
                                        unsigned n_sae_owe_ec_groups)
 {
+    const int default_groups[] = { 19, 0 };
     if (sae_owe_ec_groups[0] == 0)
     {
-        return true;
+        sae_owe_ec_groups = default_groups;
+        n_sae_owe_ec_groups = MM_ARRAY_COUNT(default_groups);
+    }
+
+    for (unsigned i = 0; i < n_sae_owe_ec_groups - 1; ++i)
+    {
+        if (sae_owe_ec_groups[i] == 0)
+        {
+            MMLOG_DBG("Setting n_sae_owe_ec_groups to %d, was %d\n", i + 1, n_sae_owe_ec_groups);
+            n_sae_owe_ec_groups = i + 1;
+            break;
+        }
+    }
+
+    if (sae_owe_ec_groups[n_sae_owe_ec_groups - 1] != 0)
+    {
+        return false;
     }
 
     if (config->sae_groups != NULL)
@@ -229,7 +234,6 @@ static bool config_populate_sae_groups(struct wpa_config *config,
     return true;
 }
 
-
 static bool wpa_config_read_sta(struct wpa_config *config, bool ro)
 {
     MMOSAL_DEV_ASSERT(config != NULL);
@@ -242,12 +246,9 @@ static bool wpa_config_read_sta(struct wpa_config *config, bool ro)
         return false;
     }
 
-
     config->pmf = translate_pmf_option(args->pmf_mode);
 
-
     config->sae_pwe = SAE_PWE_HASH_TO_ELEMENT;
-
 
     config->filter_ssids = 1;
 
@@ -279,7 +280,6 @@ const struct mmwlan_supp_config_entry mmwlan_wpa_config_sta = {
     wpa_config_read_sta,
 };
 
-
 static bool wpa_config_read_dpp(struct wpa_config *config, bool ro)
 {
     MM_UNUSED(config);
@@ -293,7 +293,6 @@ const struct mmwlan_supp_config_entry mmwlan_wpa_config_dpp = {
 };
 
 #if !(defined(MMWLAN_AP_DISABLED) && MMWLAN_AP_DISABLED)
-
 static bool wpa_config_read_ap(struct wpa_config *config, bool ro)
 {
     struct umac_data *umacd = umac_data_get_umacd();
@@ -307,6 +306,8 @@ static bool wpa_config_read_ap(struct wpa_config *config, bool ro)
     }
 
     wpa_config_set_network_defaults(ssid);
+
+    config->max_num_sta = args->max_stas;
 
     ssid->ro = ro;
 
@@ -369,9 +370,7 @@ static bool wpa_config_read_ap(struct wpa_config *config, bool ro)
         return false;
     }
 
-
     config->pmf = translate_pmf_option(args->pmf_mode);
-
 
     config->sae_pwe = SAE_PWE_HASH_TO_ELEMENT;
 
@@ -392,9 +391,7 @@ const struct mmwlan_supp_config_entry mmwlan_wpa_config_ap = {
 
 #endif
 
-
 extern const struct mmwlan_supp_config_entry *const mmwlan_wpa_configs[];
-
 
 static bool find_and_read_config(const char *name, struct wpa_config *config, bool ro)
 {
@@ -415,7 +412,6 @@ static bool find_and_read_config(const char *name, struct wpa_config *config, bo
     MMOSAL_DEV_ASSERT(false);
     return false;
 }
-
 
 struct wpa_config *
 #if !(defined(MM810XB2_HOSTAP_ROM_COMPAT_ENABLED) && MM810XB2_HOSTAP_ROM_COMPAT_ENABLED)

@@ -8,7 +8,6 @@
 #include "mmutils.h"
 #include "driver/morse_crc/morse_crc.h"
 
-
 #ifdef ENABLE_SDIO_CMD_FSM_TRACE
 #include "mmtrace.h"
 static mmtrace_channel sdio_cmd_fsm_channel_handle;
@@ -24,7 +23,6 @@ static mmtrace_channel sdio_cmd_fsm_channel_handle;
     do {                              \
     } while (0)
 #endif
-
 
 #ifdef ENABLE_CMD53_WRITE_FSM_TRACE
 #include "mmtrace.h"
@@ -42,7 +40,6 @@ static mmtrace_channel cmd53_write_fsm_channel_handle;
     } while (0)
 #endif
 
-
 #ifdef ENABLE_CMD53_READ_FSM_TRACE
 #include "mmtrace.h"
 static mmtrace_channel cmd53_read_fsm_channel_handle;
@@ -59,9 +56,7 @@ static mmtrace_channel cmd53_read_fsm_channel_handle;
     } while (0)
 #endif
 
-
 #define MAX_BUS_ATTEMPTS (200)
-
 
 struct MM_PACKED sdio_spi_r5
 {
@@ -69,23 +64,15 @@ struct MM_PACKED sdio_spi_r5
     uint8_t data;
 };
 
-
 enum sdio_spi_control_token
 {
-
     SDIO_SPI_TKN_MULTI_WRITE = 0xFC,
-
     SDIO_SPI_TKN_READ_SINGLE_WRITE = 0xFE,
-
     SDIO_SPI_TKN_STOP_TRANSACTION = 0xFD,
-
     SDIO_SPI_TKN_DATA_RSP_ACCEPTED = 0xE1 | (0x02 << 1),
-
     SDIO_SPI_TKN_DATA_RSP_REJ_CRC = 0xE1 | (0x05 << 1),
-
     SDIO_SPI_TKN_DATA_RSP_REJ_WRITE = 0xE1 | (0x06 << 1),
 };
-
 
 enum sdio_direction
 {
@@ -93,19 +80,13 @@ enum sdio_direction
     SDIO_DIR_HOST_TO_CARD = 1 << 6,
 };
 
-
 enum sdio_cmd_index
 {
-
     SDIO_CMD0 = 0,
-
     SDIO_CMD52 = 52,
-
     SDIO_CMD53 = 53,
-
     SDIO_CMD63 = 63,
 };
-
 
 static uint8_t morse_receive_spi(void)
 {
@@ -114,13 +95,11 @@ static uint8_t morse_receive_spi(void)
     return ret;
 }
 
-
 static void morse_transmit_spi(uint8_t data)
 {
     (void)mmhal_wlan_spi_rw(data);
     morse_xtal_init_delay();
 }
-
 
 static int morse_cmd53_get_data(const struct mmhal_wlan_sdio_cmd53_read_args *args)
 {
@@ -144,7 +123,6 @@ static int morse_cmd53_get_data(const struct mmhal_wlan_sdio_cmd53_read_args *ar
         uint8_t rcv_data;
         uint32_t attempt;
 
-
         CMD53_READ_FSM_TRACE("wait_tkn");
         for (attempt = 0; attempt < MAX_BUS_ATTEMPTS; attempt++)
         {
@@ -166,7 +144,6 @@ static int morse_cmd53_get_data(const struct mmhal_wlan_sdio_cmd53_read_args *ar
 
         const uint8_t *block_start = data;
 
-
         uint32_t size = byte_cnt;
         if (args->block_size != 0 && args->block_size < byte_cnt)
         {
@@ -174,18 +151,15 @@ static int morse_cmd53_get_data(const struct mmhal_wlan_sdio_cmd53_read_args *ar
         }
 
         CMD53_READ_FSM_TRACE("read_buf");
-
         mmhal_wlan_spi_read_buf(data, size);
         data += size;
 
         CMD53_READ_FSM_TRACE("read_crc");
-
         uint16_t rx_crc16;
         rx_crc16 = morse_receive_spi() << 8;
         rx_crc16 |= morse_receive_spi();
 
         CMD53_READ_FSM_TRACE("chck_crc");
-
         uint16_t crc16 = morse_crc16_xmodem(0, block_start, size);
 
         if (crc16 != rx_crc16)
@@ -235,16 +209,13 @@ exit:
     return result;
 }
 
-
 static bool morse_wait_ready(void)
 {
     uint8_t result = 0;
     uint32_t attempt = MAX_BUS_ATTEMPTS;
-
     while (attempt--)
     {
         result = morse_receive_spi();
-
         if (result == 0xff)
         {
             return true;
@@ -253,7 +224,6 @@ static bool morse_wait_ready(void)
     MMLOG_WRN("Bus not ready after %d attempts (0x%02x)\n", MAX_BUS_ATTEMPTS, result);
     return false;
 }
-
 
 static int morse_cmd53_put_data(const struct mmhal_wlan_sdio_cmd53_write_args *args)
 {
@@ -287,7 +257,6 @@ static int morse_cmd53_put_data(const struct mmhal_wlan_sdio_cmd53_write_args *a
         const uint8_t *block_start = data;
 
 
-
         if (args->block_size == 0)
         {
             cnt = 0;
@@ -298,7 +267,6 @@ static int morse_cmd53_put_data(const struct mmhal_wlan_sdio_cmd53_write_args *a
         }
 
         CMD53_WRITE_FSM_TRACE("calc_crc");
-
         uint16_t crc16 = morse_crc16_xmodem(0, block_start, size);
 
         CMD53_WRITE_FSM_TRACE("wait_rdy");
@@ -310,19 +278,16 @@ static int morse_cmd53_put_data(const struct mmhal_wlan_sdio_cmd53_write_args *a
             goto exit;
         }
 
-
         (void)morse_receive_spi();
 
         CMD53_WRITE_FSM_TRACE("snd_tkn");
         morse_transmit_spi(start_tkn);
 
         CMD53_WRITE_FSM_TRACE("snd_buf");
-
         mmhal_wlan_spi_write_buf(data, size);
         data += size;
 
         CMD53_WRITE_FSM_TRACE("snd_crc");
-
         morse_transmit_spi((uint8_t)(crc16 >> 8));
         morse_transmit_spi((uint8_t)crc16);
 
@@ -330,9 +295,7 @@ static int morse_cmd53_put_data(const struct mmhal_wlan_sdio_cmd53_write_args *a
         uint32_t attempt;
         uint8_t rcv_data;
 
-
         MMOSAL_TASK_ENTER_CRITICAL();
-
         for (attempt = 0; attempt < 4; attempt++)
         {
             rcv_data = morse_receive_spi();
@@ -352,13 +315,11 @@ static int morse_cmd53_put_data(const struct mmhal_wlan_sdio_cmd53_write_args *a
     }
 
 exit:
-
     if (start_tkn == SDIO_SPI_TKN_MULTI_WRITE)
     {
         CMD53_WRITE_FSM_TRACE("stop_tkn");
         morse_transmit_spi(SDIO_SPI_TKN_STOP_TRANSACTION);
     }
-
 
     morse_wait_ready();
 
@@ -378,7 +339,6 @@ MM_WEAK int mmhal_wlan_sdio_cmd(uint8_t cmd_idx, uint32_t arg, uint32_t *rsp)
     SDIO_CMD_FSM_TRACE("wait_rdy");
 
     mmhal_wlan_spi_cs_assert();
-
     if ((cmd_idx != SDIO_CMD63) && !morse_wait_ready())
     {
         MMLOG_WRN("CMD%u: Unable to send cmd -- bus not ready\n", cmd_idx);
@@ -392,7 +352,6 @@ MM_WEAK int mmhal_wlan_sdio_cmd(uint8_t cmd_idx, uint32_t arg, uint32_t *rsp)
 
     UNPACK_BE32((buf + 1), arg);
 
-
     if (cmd_idx == SDIO_CMD52 || cmd_idx == SDIO_CMD53)
     {
         buf[5] = morse_crc7_sd(0x00, (const uint8_t *)&buf[0], sizeof(buf) - 1) << 1;
@@ -400,24 +359,19 @@ MM_WEAK int mmhal_wlan_sdio_cmd(uint8_t cmd_idx, uint32_t arg, uint32_t *rsp)
     }
     else
     {
-
         buf[5] = 0xFF;
     }
 
     SDIO_CMD_FSM_TRACE("Send CMD %u", cmd_idx);
-
     mmhal_wlan_spi_write_buf(buf, sizeof(buf));
 
     SDIO_CMD_FSM_TRACE("Wait Response");
 
     response.data = morse_receive_spi();
-
     for (attempt = 0; attempt < MAX_BUS_ATTEMPTS; attempt++)
     {
-
         response.status = response.data;
         response.data = morse_receive_spi();
-
 
         if (response.status != 0xFF)
         {
@@ -428,7 +382,6 @@ MM_WEAK int mmhal_wlan_sdio_cmd(uint8_t cmd_idx, uint32_t arg, uint32_t *rsp)
     SDIO_CMD_FSM_TRACE("Check Resp");
     if (response.status != 0x00)
     {
-
         MMLOG_DBG("CMD%u: invalid ack (0x%02x)\n", cmd_idx, response.status);
         ret = MMHAL_SDIO_OTHER_ERROR;
     }
@@ -436,7 +389,6 @@ MM_WEAK int mmhal_wlan_sdio_cmd(uint8_t cmd_idx, uint32_t arg, uint32_t *rsp)
     {
         ret = 0;
     }
-
 
     if (cmd_idx == SDIO_CMD53 && response.data != 0x00)
     {
@@ -460,7 +412,6 @@ MM_WEAK int mmhal_wlan_sdio_startup(void)
 {
     uint32_t ii, ret;
     mmhal_wlan_send_training_seq();
-
 
     for (ii = 0; ii < STARTUP_MAX_ATTEMPTS; ii++)
     {

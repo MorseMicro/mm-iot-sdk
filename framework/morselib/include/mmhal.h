@@ -30,3 +30,4 @@
 #include "mmhal_os.h"
 #include "mmhal_app.h"
 #include "mmhal_flash.h"
+#include "mmhal_fs.h"

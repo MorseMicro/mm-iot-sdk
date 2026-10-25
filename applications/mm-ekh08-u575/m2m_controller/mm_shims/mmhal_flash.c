@@ -183,7 +183,3 @@ int mmhal_flash_write(uint32_t write_address, const uint8_t *data, size_t size)
     return retval;
 }
 
-const struct lfs_config *mmhal_get_littlefs_config(void)
-{
-    return NULL;
-}

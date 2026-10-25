@@ -4,11 +4,9 @@
  */
 
 
-
 #pragma once
 
 #include "umac/ies/ies_common.h"
-
 
 static inline const struct dot11_ie_tie *ie_timeout_interval_find(const uint8_t *ies,
                                                                   size_t ies_len)
@@ -20,5 +18,4 @@ static inline const struct dot11_ie_tie *ie_timeout_interval_find(const uint8_t 
         sizeof(struct dot11_ie_tie) - sizeof(struct dot11_ie_hdr),
         NULL);
 }
-
 

@@ -9,23 +9,15 @@
 #include "driver/morse_driver/skbq.h"
 
 
-
-
 #define CMD_RSVED_PAGES_MAX 2
-
 #define CMD_RSVED_FIFO_LEN 2
-
 
 #define CMD_RSVED_CMD_PAGES_MAX 1
 
-
 #define CACHED_PAGES_MAX 32
-
 #define CACHED_PAGES_FIFO_LEN 32
 
-
 #define MAX_PAGESETS (2)
-
 
 #define PAGESET_TX_SKBQ_MAX 4
 
@@ -54,11 +46,9 @@ struct page_fifo_hdr
     struct morse_page *pages;
 };
 
-
 #define DECLARE_PAGE_FIFO(_name, _slots) \
     struct page_fifo_hdr _name;          \
     struct morse_page _name##_pages[(_slots) + 1]
-
 
 #define INIT_PAGE_FIFO(_name, _slots) \
     do {                              \
@@ -87,21 +77,16 @@ struct morse_pageset
     DECLARE_PAGE_FIFO(cached_pages, CACHED_PAGES_FIFO_LEN);
 };
 
-
 int morse_pageset_init(struct driver_data *driverd,
                        struct morse_pageset *pageset,
                        uint8_t flags,
                        struct morse_pager *populated_pager,
                        struct morse_pager *return_pager);
 
-
 void morse_pageset_finish(struct morse_pageset *pageset);
-
 
 void morse_pagesets_stale_tx_work(struct driver_data *driverd);
 
-
 int morse_pagesets_get_tx_buffered_count(struct driver_data *driverd);
-
 
 void morse_pagesets_work(struct driver_data *driverd);

@@ -8,7 +8,6 @@
 #include "chip_if.h"
 #include "ext_host_table.h"
 
-
 #define MORSE_REG_ADDRESS_BASE           0x10000
 #define MORSE_REG_ADDRESS_WINDOW_0       MORSE_REG_ADDRESS_BASE
 #define MORSE_REG_ADDRESS_WINDOW_1       (MORSE_REG_ADDRESS_BASE + 1)
@@ -19,7 +18,6 @@
 #define MORSE_CONFIG_ACCESS_1BYTE        0
 #define MORSE_CONFIG_ACCESS_2BYTE        1
 #define MORSE_CONFIG_ACCESS_4BYTE        2
-
 
 #define MORSE_REG_TRGR_BASE(driverd)                  ((driverd)->cfg->regs->trgr_base_address)
 #define MORSE_REG_TRGR1_STS(driverd)                  (MORSE_REG_TRGR_BASE(driverd) + 0x00)
@@ -79,57 +77,37 @@
 #define MORSE_RESETPIN_RPI_GPIO_DEFAULT               (5)
 #define MORSE_SPI_HW_IRQ_RPI_GPIO_DEFAULT             (25)
 
-
 #define MORSE_INT_HW_STOP_NOTIFICATION_NUM (27)
 #define MORSE_INT_HW_STOP_NOTIFICATION     BIT(MORSE_INT_HW_STOP_NOTIFICATION_NUM)
 
-
 #define MM610X_EFUSE_DATA2_XTAL_WAIT_POS GENMASK(25, 22)
-
 
 #define MM610X_EFUSE_DATA2_SUPPLEMENTAL_CHIP_ID GENMASK(23, 16)
 
-
 #define MM610X_EFUSE_DATA1_8MHZ_SUPPORT BIT(18)
-
 
 #define CHIP_TYPE_SILICON 0x0
 #define CHIP_TYPE_FPGA    0x1
 
-
 #define CHIP_ID_END 0xFFFFFFFF
 
-
 #define MORSE_HW_MEMORY_MAX 8
-
 
 #define MAX_CONSEC_FAILURES (5)
 
 enum host_table_firmware_flags
 {
-
     MORSE_FW_FLAGS_SUPPORT_S1G = BIT(0),
-
     MORSE_FW_FLAGS_BUSY_ACTIVE_LOW = BIT(1),
-
     MORSE_FW_FLAGS_REPORTS_TX_BEACON_COMPLETION = BIT(2),
-
     MORSE_FW_FLAGS_SUPPORT_HW_SCAN = BIT(3),
-
     MORSE_FW_FLAGS_SUPPORT_CHIP_HALT_IRQ = BIT(4),
-
     MORSE_FW_FLAGS_STA_IFACE_MANAGE_SNS_BASELINE = BIT(5),
-
     MORSE_FW_FLAGS_STA_IFACE_MANAGE_SNS_INDIV_ADDR_QOS_DATA = BIT(6),
-
     MORSE_FW_FLAGS_STA_IFACE_MANAGE_SNS_QOS_NULL = BIT(7),
-
     MORSE_FW_FLAGS_TOGGLES_BUSY_PIN_ON_WAKE_PIN = BIT(8),
-
     MORSE_FW_FLAGS_SUPPORT_HW_REATTACH = BIT(9),
-
     MORSE_FW_FLAGS_SUPPORT_FULLMAC_REPORT = BIT(10),
-
     MORSE_FW_FLAGS_FAILSAFE_MODE = BIT(11),
 };
 
@@ -138,14 +116,12 @@ struct MM_PACKED host_table
     uint32_t magic_number;
     uint32_t fw_version_number;
     uint32_t host_flags;
-
     uint32_t firmware_flags;
     uint32_t memcmd_cmd_addr;
     uint32_t memcmd_resp_addr;
     uint32_t extended_host_table_addr;
     struct morse_chip_if_host_table chip_if;
 };
-
 
 struct morse_hw_memory
 {
@@ -185,30 +161,21 @@ struct mmhal_chip
     const struct morse_hw_regs *regs;
     const struct chip_if_ops *ops;
 
-
     const char *(*get_hw_version)(uint32_t chip_id);
-
 
     uint8_t (*get_ps_wakeup_delay_ms)(uint32_t chip_id);
 
-
     int (*enable_sdio_burst_mode)(struct driver_data *driverd);
-
 
     int (*get_board_type)(struct driver_data *driverd);
 
-
     int (*pre_load_prepare)(struct driver_data *driverd);
-
 
     void (*xtal_init)(struct driver_data *driverd);
 
-
     int (*digital_reset)(struct driver_data *driverd);
 
-
     bool (*ext_host_parse_tlv)(struct driver_data *driverd, struct extended_host_table_tlv *tlv);
-
 
     bool bus_double_read;
 
@@ -218,9 +185,7 @@ struct mmhal_chip
     uint32_t mm_wake_gpio;
     uint32_t mm_ps_async_gpio;
     uint32_t mm_spi_irq_gpio;
-
     uint32_t warm_boot_delay_ms;
-
     uint32_t xtal_init_sdio_trans_delay_ms;
     uint32_t valid_chip_ids[];
 };
@@ -229,20 +194,14 @@ int morse_hw_irq_enable(struct driver_data *driverd, uint32_t irq, bool enable);
 
 int morse_hw_irq_handle(struct driver_data *driverd);
 
-
 void morse_hw_toggle_aon_latch(struct driver_data *driverd);
-
 
 void morse_xtal_init_delay(void);
 
-
 bool morse_hw_is_memory(struct driver_data *driverd, uint32_t addr);
-
 
 bool is_efuse_xtal_wait_supported(struct driver_data *driverd);
 
-
 bool morse_hw_is_valid_chip_id(uint32_t chip_id, const uint32_t *valid_chip_ids);
-
 
 void morse_hw_pager_update_consec_failure_cnt(struct driver_data *driverd, int ret);

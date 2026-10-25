@@ -9,19 +9,15 @@
 #include "mmosal.h"
 #include "umac/datapath/umac_datapath.h"
 
-
 #define MORSE_DEFAULT_TXOP_MAX_US (15008)
 
-
 #define MORSE_DEFAULT_CONTENTION_WINDOW_MIN 15
-
 
 #define MORSE_DEFAULT_CONTENTION_WINDOW_MAX 1023
 
 static void populate_default_qos_queue_params(
     struct mmwlan_qos_queue_params qos_queue_params[MMWLAN_QOS_QUEUE_NUM_ACIS])
 {
-
     struct mmwlan_qos_queue_params *params = &qos_queue_params[0];
     params->aci = 0;
     params->aifs = 3;

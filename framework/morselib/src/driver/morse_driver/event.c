@@ -102,7 +102,6 @@ int morse_mac_event_recv(struct driver_data *driverd, struct mmpktview *view)
         return -EINVAL;
     }
 
-
     if (event_iid != 0)
     {
         MMLOG_WRN("Ignoring event with non-zero IID (%04x)\n", event_iid);

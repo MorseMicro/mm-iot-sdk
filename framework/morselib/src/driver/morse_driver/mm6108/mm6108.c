@@ -13,7 +13,6 @@
 #include "driver/morse_driver/morse.h"
 #include "driver/transport/morse_transport.h"
 
-
 #define MM6108_REG_TRGR_BASE            0x100a6000
 #define MM6108_REG_INT_BASE             0x100a6050
 
@@ -49,21 +48,17 @@
 #define MM6108_REG_XTAL_INIT_SEQ_ADDR_3 0x1005805C
 #define MM6108_REG_XTAL_INIT_SEQ_ADDR_4 0x10054000
 
-
 #define MM6108_REG_XTAL_INIT_SEQ_AON_CLK_VAL 0x19
 #define MM6108_REG_XTAL_INIT_SEQ_ADDR_1_VAL  0x2
 #define MM6108_REG_XTAL_INIT_SEQ_ADDR_2_VAL  0x2
 #define MM6108_REG_XTAL_INIT_SEQ_ADDR_3_VAL  0x21D
 #define MM6108_REG_XTAL_INIT_SEQ_ADDR_4_VAL  0x1B06
 
-
 #define MM610X_BOARD_TYPE_MAX_VALUE (0xF - 1)
-
 
 #define MM6108_SPI_INTER_BLOCK_DELAY_NANO_S 40000
 
 #define MM6108_REG_EFUSE_DATA_BASE_ADDRESS  0x10054118
-
 
 #define MM6108A0_ID MORSE_DEVICE_ID(0x6, 2, CHIP_TYPE_SILICON)
 #define MM6108A1_ID MORSE_DEVICE_ID(0x6, 3, CHIP_TYPE_SILICON)
@@ -71,7 +66,6 @@
 
 static uint8_t mm610x_get_wakeup_delay_ms(uint32_t chip_id)
 {
-
     if ((chip_id == MM6108A0_ID) || (chip_id == MM6108A1_ID))
     {
         return 10;
@@ -97,7 +91,6 @@ static int mm610x_digital_reset(struct driver_data *driverd)
             goto exit;
         }
     }
-
 
     mmosal_task_sleep(driverd->cfg->warm_boot_delay_ms);
 
@@ -148,9 +141,7 @@ static int mm610x_read_board_type(struct driver_data *driverd)
 
 static void mm610x_xtal_init(struct driver_data *driverd)
 {
-
     morse_trns_write_le32(driverd, MM6108_REG_AON_LATCH_ADDR, MM6108_REG_XTAL_INIT_SEQ_AON_CLK_VAL);
-
 
     morse_trns_write_le32(driverd,
                           MM6108_REG_XTAL_INIT_SEQ_ADDR_1,
@@ -159,11 +150,9 @@ static void mm610x_xtal_init(struct driver_data *driverd)
                           MM6108_REG_XTAL_INIT_SEQ_ADDR_2,
                           MM6108_REG_XTAL_INIT_SEQ_ADDR_2_VAL);
 
-
     morse_trns_write_le32(driverd,
                           MM6108_REG_XTAL_INIT_SEQ_ADDR_3,
                           MM6108_REG_XTAL_INIT_SEQ_ADDR_3_VAL);
-
 
     morse_trns_write_le32(driverd,
                           MM6108_REG_XTAL_INIT_SEQ_ADDR_4,
@@ -261,33 +250,24 @@ static bool mm610x_ext_host_parse_tlv(struct driver_data *driverd,
 }
 
 static const struct morse_hw_regs mm6108_regs = {
-
     .irq_base_address = MM6108_REG_INT_BASE,
     .trgr_base_address = MM6108_REG_TRGR_BASE,
-
     .chip_id_address = MM6108_REG_CHIP_ID,
-
 
     .cpu_reset_address = MM6108_REG_RESET,
     .cpu_reset_value = MM6108_REG_RESET_VALUE,
 
-
     .manifest_ptr_address = MM6108_REG_MANIFEST_PTR_ADDRESS,
-
 
     .msi_address = MM6108_REG_MSI,
     .msi_value = 0x1,
-
     .magic_num_value = MM6108_REG_HOST_MAGIC_VALUE,
-
 
     .clk_ctrl_address = MM6108_REG_CLK_CTRL,
     .clk_ctrl_value = MM6108_REG_CLK_CTRL_VALUE,
     .early_clk_ctrl_value = MM6108_REG_EARLY_CLK_CTRL_VALUE,
 
-
     .efuse_data_base_address = MM6108_REG_EFUSE_DATA_BASE_ADDRESS,
-
 
     .mem_count = 2,
     .pager_base_address = MM6108_DMEM_ADDR_START,
@@ -295,7 +275,6 @@ static const struct morse_hw_regs mm6108_regs = {
         {MM6108_IMEM_ADDR_START, MM6108_IMEM_ADDR_END},
         {MM6108_DMEM_ADDR_START, MM6108_DMEM_ADDR_END},
     },
-
 
     .aon_latch = MM6108_REG_AON_LATCH_ADDR,
     .aon_latch_mask = MM6108_REG_AON_LATCH_MASK,

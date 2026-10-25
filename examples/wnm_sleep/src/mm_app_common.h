@@ -57,6 +57,17 @@ void app_wlan_init(void);
 void app_wlan_start(void);
 
 /**
+ * Starts the WLAN interface and connects to Wi-Fi using settings specified in the config store.
+ *
+ * If no settings are found, the defaults are used.
+ *
+ * @param is_repeater Whether the device should be brought up as a relay repeater or relay STA.
+ *
+ * @returns whether the relay started successfully or not.
+ */
+bool app_wlan_start_relay(bool is_repeater);
+
+/**
  * Disconnects from Wi-Fi and de-initializes the WLAN interface.
  */
 void app_wlan_stop(void);

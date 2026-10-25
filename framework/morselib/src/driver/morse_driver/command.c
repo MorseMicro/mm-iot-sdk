@@ -62,14 +62,12 @@ enum mmwlan_status morse_cmd_tx(struct driver_data *driverd,
 
     if (driverd->cfg == NULL || driverd->cfg->ops == NULL)
     {
-
         return MMWLAN_NOT_RUNNING;
     }
 
     struct morse_skbq *cmd_q = driverd->cfg->ops->skbq_cmd_tc_q(driverd);
     if (cmd_q == NULL)
     {
-
         return MMWLAN_NOT_RUNNING;
     }
 
@@ -80,7 +78,6 @@ enum mmwlan_status morse_cmd_tx(struct driver_data *driverd,
     {
         return MMWLAN_UNAVAILABLE;
     }
-
 
     if (!driverd->started)
     {
@@ -96,7 +93,6 @@ enum mmwlan_status morse_cmd_tx(struct driver_data *driverd,
         driverd->cmd.seq = 1;
     }
     cmd_seq = driverd->cmd.seq << MORSE_CMD_IID_SEQ_SHIFT;
-
 
     morse_ps_disable_async(driverd, PS_WAKER_COMMAND);
 
@@ -124,7 +120,6 @@ enum mmwlan_status morse_cmd_tx(struct driver_data *driverd,
         ret = morse_skbq_mmpkt_tx(cmd_q, mmpkt, MORSE_SKB_CHAN_COMMAND);
         if (ret == 0)
         {
-
             driverd->cmd.pending_cmd_id = le16toh(cmd->hdr.message_id);
             driverd->cmd.pending_cmd_host_id = le16toh(cmd->hdr.host_id);
         }
@@ -139,7 +134,6 @@ enum mmwlan_status morse_cmd_tx(struct driver_data *driverd,
         DRVCMD_TRACE("cmd wait");
         mmosal_semb_wait(driverd->cmd.semb, timeout);
         MMOSAL_MUTEX_GET_INF(driverd->cmd.lock);
-
 
         if ((retry + 1) == MM_MAX_COMMAND_RETRY)
         {
@@ -173,7 +167,6 @@ enum mmwlan_status morse_cmd_tx(struct driver_data *driverd,
             {
                 struct morse_cmd_resp *rxrsp =
                     (struct morse_cmd_resp *)mmpkt_get_data_start(rspview);
-
 
                 MMOSAL_DEV_ASSERT(rxrsp->hdr.message_id == cmd->hdr.message_id);
                 MMOSAL_DEV_ASSERT((rxrsp->hdr.host_id & MORSE_CMD_IID_SEQ_MASK) ==
@@ -216,13 +209,11 @@ enum mmwlan_status morse_cmd_tx(struct driver_data *driverd,
                           ret);
             }
         }
-
         spin_lock(&cmd_q->lock);
         morse_skbq_tx_finish(cmd_q, mmpkt, NULL);
         spin_unlock(&cmd_q->lock);
 
         retry++;
-
     } while (((ret == -ETIMEDOUT) || (ret == -EBADMSG)) &&
              (fw_ret == 0) &&
              (retry < MM_MAX_COMMAND_RETRY));
@@ -235,18 +226,15 @@ enum mmwlan_status morse_cmd_tx(struct driver_data *driverd,
 
     if (ret < 0)
     {
-
         status = errno_to_status(ret);
     }
     else
     {
-
         status = (fw_ret == 0) ? MMWLAN_SUCCESS : MMWLAN_COMMAND_ERROR;
     }
 
     if (skip_errlog)
     {
-
         return status;
     }
 
@@ -295,7 +283,6 @@ int morse_cmd_resp_process(struct driver_data *driverd, struct mmpkt *mmpkt, uin
         goto exit;
     }
 
-
     if ((cmd_id == 0) ||
         (cmd_id != resp_id) ||
         ((cmd_host_id & MORSE_CMD_IID_SEQ_MASK) != (resp_host_id & MORSE_CMD_IID_SEQ_MASK)))
@@ -320,7 +307,6 @@ int morse_cmd_resp_process(struct driver_data *driverd, struct mmpkt *mmpkt, uin
     MMOSAL_DEV_ASSERT(driverd->cmd.rspview == NULL);
     if (driverd->cmd.rspview != NULL)
     {
-
         struct mmpkt *old = mmpkt_from_view(driverd->cmd.rspview);
         mmpkt_close(&driverd->cmd.rspview);
         mmpkt_release(old);
@@ -387,7 +373,6 @@ void morse_cmd_deinit(struct driver_data *driverd)
         return;
     }
 
-
     MMOSAL_MUTEX_GET_INF(driverd->cmd.lock);
     if (driverd->cmd.pending_cmd_id != 0)
     {
@@ -396,7 +381,6 @@ void morse_cmd_deinit(struct driver_data *driverd)
         mmosal_semb_give(driverd->cmd.semb);
     }
     MMOSAL_MUTEX_RELEASE(driverd->cmd.lock);
-
 
     MMOSAL_MUTEX_GET_INF(driverd->cmd.wait);
     MMOSAL_MUTEX_RELEASE(driverd->cmd.wait);

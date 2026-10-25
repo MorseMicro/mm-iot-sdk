@@ -21,15 +21,11 @@ void umac_ba_deinit(struct umac_sta_data *stad)
     memset(data, 0, sizeof(*data));
 }
 
-
 #define ADDBA_REQ_BASE_TIMEOUT_MS 100
-
 
 #define ADDBA_REQ_MULTIPLIER 2
 
-
 #define ADDBA_REQ_MAX_TIMEOUT_MS 60000
-
 
 static uint32_t umac_ba_calculate_addba_attempt_backoff(uint32_t current_backoff)
 {
@@ -45,7 +41,6 @@ static uint32_t umac_ba_calculate_addba_attempt_backoff(uint32_t current_backoff
 
     return current_backoff * ADDBA_REQ_MULTIPLIER;
 }
-
 
 static enum mmwlan_status umac_ba_tx_delba(struct umac_sta_data *stad,
                                            enum dot11_delba_initiator initiator,
@@ -69,7 +64,6 @@ static enum mmwlan_status umac_ba_tx_delba(struct umac_sta_data *stad,
     return umac_datapath_build_and_tx_mgmt_frame(stad, frame_action_build, &params);
 }
 
-
 static void umac_ba_addba_req_timeout_handler(void *arg1, void *arg2)
 {
     struct umac_sta_data *stad = (struct umac_sta_data *)arg1;
@@ -80,7 +74,6 @@ static void umac_ba_addba_req_timeout_handler(void *arg1, void *arg2)
         MMLOG_DBG("BA session already establish or closed. TID (%u)\n", session->tid);
         return;
     }
-
 
     enum mmwlan_status status = umac_ba_tx_delba(stad,
                                                  DOT11_DELBA_INITIATOR_ORIGINATOR,
@@ -97,7 +90,6 @@ static void umac_ba_addba_req_timeout_handler(void *arg1, void *arg2)
               session->attempt_backoff,
               session->tid);
 }
-
 
 static void umac_ba_rx_delba(struct umac_sta_data *stad, const uint8_t *field, uint32_t field_len)
 {
@@ -120,7 +112,6 @@ static void umac_ba_rx_delba(struct umac_sta_data *stad, const uint8_t *field, u
     }
 
     struct umac_ba_session *session = NULL;
-
     if (dot11_delba_parameter_set_field_get_initiator(delba->delba_param_set) ==
         DOT11_DELBA_INITIATOR_ORIGINATOR)
     {
@@ -133,10 +124,8 @@ static void umac_ba_rx_delba(struct umac_sta_data *stad, const uint8_t *field, u
 
     if (session->status == UMAC_BA_DISABLED)
     {
-
         return;
     }
-
 
     struct umac_data *umacd = umac_sta_data_get_umacd(stad);
     umac_core_cancel_timeout(umacd, umac_ba_addba_req_timeout_handler, stad, session);
@@ -146,7 +135,6 @@ static void umac_ba_rx_delba(struct umac_sta_data *stad, const uint8_t *field, u
     MMLOG_DBG("BA session disabled. TID %u.\n", session->tid);
     session->status = UMAC_BA_DISABLED;
 }
-
 
 static uint16_t umac_ba_build_param_set(struct umac_ba_session *session)
 {
@@ -159,7 +147,6 @@ static uint16_t umac_ba_build_param_set(struct umac_ba_session *session)
 
     return param_set;
 }
-
 
 static void umac_ba_tx_addba_resp(struct umac_sta_data *stad, struct umac_ba_session *session)
 {
@@ -189,7 +176,6 @@ static void umac_ba_tx_addba_resp(struct umac_sta_data *stad, struct umac_ba_ses
     session->status = UMAC_BA_SUCCESS;
 }
 
-
 static void umac_ba_rx_addba_resp(struct umac_sta_data *stad,
                                   const uint8_t *field,
                                   uint32_t field_len)
@@ -213,9 +199,7 @@ static void umac_ba_rx_addba_resp(struct umac_sta_data *stad,
         return;
     }
 
-
     struct umac_ba_session *session = &data->sessions.originator[tid];
-
 
     struct umac_data *umacd = umac_sta_data_get_umacd(stad);
     umac_core_cancel_timeout(umacd, umac_ba_addba_req_timeout_handler, stad, session);
@@ -227,7 +211,6 @@ static void umac_ba_rx_addba_resp(struct umac_sta_data *stad,
                   resp->dialog_token);
         return;
     }
-
 
     if (le16toh(resp->status_code) != DOT11_STATUS_SUCCESS)
     {
@@ -251,7 +234,6 @@ static void umac_ba_rx_addba_resp(struct umac_sta_data *stad,
     MMLOG_DBG("BA session successful, originator. TID %u.\n", session->tid);
     session->status = UMAC_BA_SUCCESS;
 }
-
 
 static void umac_ba_tx_addba_req(struct umac_sta_data *stad, struct umac_ba_session *session)
 {
@@ -281,7 +263,6 @@ static void umac_ba_tx_addba_req(struct umac_sta_data *stad, struct umac_ba_sess
     MMLOG_DBG("BA session requested, originator. TID %u.\n", session->tid);
     session->status = UMAC_BA_REQUESTED;
 }
-
 
 static void umac_ba_rx_addba_req(struct umac_sta_data *stad,
                                  const uint8_t *field,
@@ -315,7 +296,6 @@ static void umac_ba_rx_addba_req(struct umac_sta_data *stad,
         return;
     }
 
-
     struct umac_ba_session *session = &data->sessions.recipient[tid];
     MMLOG_DBG("BA session requested, recipient. TID %u.\n", session->tid);
 
@@ -338,7 +318,6 @@ static void umac_ba_rx_addba_req(struct umac_sta_data *stad,
 
     session->dialog_token = req->dialog_token;
 
-
     MMOSAL_DEV_ASSERT(req->ba_timeout == DOT11_BLOCK_ACK_TIMEOUT_DISABLED);
     session->timeout = DOT11_BLOCK_ACK_TIMEOUT_DISABLED;
 
@@ -353,7 +332,6 @@ void umac_ba_process_rx_frame(struct umac_sta_data *stad, const uint8_t *frame, 
         return;
     }
     const struct dot11_action *action_frame = (const struct dot11_action *)frame;
-
 
     MMOSAL_ASSERT(frame_len >= sizeof(*action_frame));
     const uint8_t *ba_action = action_frame->field.action_details;

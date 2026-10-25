@@ -4,13 +4,11 @@
  */
 
 
-
 #pragma once
 
 #include "dot11/dot11.h"
 #include "dot11/dot11_ies.h"
 #include "umac/ies/ies_common.h"
-
 
 static inline const struct dot11_ie_ecsa *ie_ecsa_find(const uint8_t *ies, size_t ies_len)
 {
@@ -22,7 +20,6 @@ static inline const struct dot11_ie_ecsa *ie_ecsa_find(const uint8_t *ies, size_
         NULL);
 }
 
-
 static inline const struct dot11_ie_channel_switch_wrapper *ie_chan_switch_wrapper_find(
     const uint8_t *ies,
     size_t ies_len)
@@ -30,7 +27,6 @@ static inline const struct dot11_ie_channel_switch_wrapper *ie_chan_switch_wrapp
     return (const struct dot11_ie_channel_switch_wrapper *)
         ie_find(ies, ies_len, DOT11_IE_CHANNEL_SWITCH_WRAPPER, NULL);
 }
-
 
 const struct dot11_ie_wide_bw_chan_switch *ie_wide_bw_chan_switch_find(const uint8_t *ies,
                                                                        size_t ies_len)
@@ -42,5 +38,4 @@ const struct dot11_ie_wide_bw_chan_switch *ie_wide_bw_chan_switch_find(const uin
         sizeof(struct dot11_ie_wide_bw_chan_switch) - sizeof(struct dot11_ie_hdr),
         NULL);
 }
-
 

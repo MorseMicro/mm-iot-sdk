@@ -30,7 +30,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Morse Micro IoT SDK
-   &#160;<span id="projectnumber">2.13.1</span>
+   &#160;<span id="projectnumber">2.14.3</span>
    </div>
   </td>
  </tr>
@@ -105,6 +105,7 @@ $(document).ready(function(){initNavTree('functions_s.html',''); initResizable()
 <li>selected_channels&#160;:&#160;<a class="el" href="structmmwlan__scan__args.html#aa65ab96b665c6440e0884489f4c40686">mmwlan_scan_args</a>, <a class="el" href="structmmwlan__scan__config.html#aae9372e4791ad3a99cab79674d7db686">mmwlan_scan_config</a></li>
 <li>selected_channels_len&#160;:&#160;<a class="el" href="structmmwlan__scan__args.html#af9bb9ac881308ee8e76738349841a0a5">mmwlan_scan_args</a>, <a class="el" href="structmmwlan__scan__config.html#a64c01a273bcbf58e548166f49eb89ce7">mmwlan_scan_config</a></li>
 <li>selective_scan_attempts&#160;:&#160;<a class="el" href="structmmwlan__scan__config.html#a7a47bc2c5b579d3ff4d14352b4278e8a">mmwlan_scan_config</a></li>
+<li>semb&#160;:&#160;<a class="el" href="structrelay__update.html#a56326a1e0fdf5069bd741c5a7fbe85be">relay_update</a></li>
 <li>server_addr&#160;:&#160;<a class="el" href="structmmiperf__client__args.html#a78d1873ae0c8e8effe45fa756ab5b849">mmiperf_client_args</a></li>
 <li>server_port&#160;:&#160;<a class="el" href="structmmiperf__client__args.html#aee5bfdde9ea2315b9729c76d358d820c">mmiperf_client_args</a></li>
 <li>session_id&#160;:&#160;<a class="el" href="structstruct__ping__status.html#a8467c6051f1b0c08e4cdc2b2abbb76ce">struct_ping_status</a></li>
@@ -117,13 +118,14 @@ $(document).ready(function(){initNavTree('functions_s.html',''); initResizable()
 <li>sta_evt_cb&#160;:&#160;<a class="el" href="structmmwlan__sta__args.html#a6062fb9007c88de736bbbf3db5c9ecd3">mmwlan_sta_args</a></li>
 <li>sta_evt_cb_arg&#160;:&#160;<a class="el" href="structmmwlan__sta__args.html#afa0d9b248732cb7cb1cd2c4448f6bf4f">mmwlan_sta_args</a></li>
 <li>sta_mac_addr_override&#160;:&#160;<a class="el" href="structmmwlan__boot__args.html#a451c1a9244468e0ec308eb3f1b3b25ec">mmwlan_boot_args</a></li>
+<li>sta_state&#160;:&#160;<a class="el" href="structmmwlan__relay__status.html#ab28f23d91059ace763736a5ef6219f44">mmwlan_relay_status</a></li>
 <li>sta_status&#160;:&#160;<a class="el" href="structmmagic__core__wlan__get__sta__status__rsp__args.html#a4927fa92976146044dcbe3789e0af992">mmagic_core_wlan_get_sta_status_rsp_args</a></li>
-<li>sta_status_cb&#160;:&#160;<a class="el" href="structmmwlan__ap__args.html#ab09b8a4295c0838c3411dabc1df430ec">mmwlan_ap_args</a></li>
-<li>sta_status_cb_arg&#160;:&#160;<a class="el" href="structmmwlan__ap__args.html#a22f3d1e7fff93c78db051a3c95731110">mmwlan_ap_args</a></li>
+<li>sta_status_cb&#160;:&#160;<a class="el" href="structmmwlan__ap__args.html#ab09b8a4295c0838c3411dabc1df430ec">mmwlan_ap_args</a>, <a class="el" href="structmmwlan__relay__ap__args.html#aeaec1fc73c30a9f243a714a6d0c047f5">mmwlan_relay_ap_args</a>, <a class="el" href="structmmwlan__relay__args.html#a7dc46fd7e732c465b4c03368a39f99f2">mmwlan_relay_args</a></li>
+<li>sta_status_cb_arg&#160;:&#160;<a class="el" href="structmmwlan__ap__args.html#a22f3d1e7fff93c78db051a3c95731110">mmwlan_ap_args</a>, <a class="el" href="structmmwlan__relay__ap__args.html#a46d60a008d3652ce9c4d973005ff188b">mmwlan_relay_ap_args</a></li>
 <li>sta_type&#160;:&#160;<a class="el" href="structmmwlan__sta__args.html#afe8c57db71f388a6afae7badc83e24b3">mmwlan_sta_args</a></li>
 <li>start_offset&#160;:&#160;<a class="el" href="structmmbuf.html#a96d8d924bfafe315c7a7834b4cb9a005">mmbuf</a>, <a class="el" href="structmmpkt.html#a4dbc46791303bc71de5f6e1f00b865c3">mmpkt</a></li>
-<li>state&#160;:&#160;<a class="el" href="structmmwlan__ap__sta__status.html#a4e5c6a5daa5fbd3850a9fa2641043788">mmwlan_ap_sta_status</a></li>
-<li>status&#160;:&#160;<a class="el" href="structmmagic__core__ip__status__rsp__args.html#a56f237f0a710870f8e55cb3fed1adbd4">mmagic_core_ip_status_rsp_args</a>, <a class="el" href="structmmagic__core__iperf__run__rsp__args.html#ae1ab6caa7e44a299fe2b470f120900e0">mmagic_core_iperf_run_rsp_args</a>, <a class="el" href="structmmagic__core__ping__run__rsp__args.html#a8b3be40b2794658cac19ebb6dfccf3aa">mmagic_core_ping_run_rsp_args</a></li>
+<li>state&#160;:&#160;<a class="el" href="structmmwlan__ap__sta__status.html#a4e5c6a5daa5fbd3850a9fa2641043788">mmwlan_ap_sta_status</a>, <a class="el" href="structmmwlan__relay__status.html#a67cfd2b42b0602d368bdc65b2e44ff27">mmwlan_relay_status</a></li>
+<li>status&#160;:&#160;<a class="el" href="structmmagic__core__ip__status__rsp__args.html#a56f237f0a710870f8e55cb3fed1adbd4">mmagic_core_ip_status_rsp_args</a>, <a class="el" href="structmmagic__core__iperf__run__rsp__args.html#ae1ab6caa7e44a299fe2b470f120900e0">mmagic_core_iperf_run_rsp_args</a>, <a class="el" href="structmmagic__core__ping__run__rsp__args.html#a8b3be40b2794658cac19ebb6dfccf3aa">mmagic_core_ping_run_rsp_args</a>, <a class="el" href="structrelay__update.html#ae80cbf9806da09f33d717188d378a281">relay_update</a></li>
 <li>stream_id&#160;:&#160;<a class="el" href="structbeacon__monitor__thread__args.html#a0d45bceaac46e13ade2c9af1aa5c8ea4">beacon_monitor_thread_args</a>, <a class="el" href="structmmagic__core__mqtt__publish__cmd__args.html#a0d25c400d06b5a10382f2de6bbe9562a">mmagic_core_mqtt_publish_cmd_args</a>, <a class="el" href="structmmagic__core__mqtt__start__agent__rsp__args.html#a821246a1133fc25a32183e5da22676d0">mmagic_core_mqtt_start_agent_rsp_args</a>, <a class="el" href="structmmagic__core__mqtt__stop__agent__cmd__args.html#a25176677576451363b909efb7417e84f">mmagic_core_mqtt_stop_agent_cmd_args</a>, <a class="el" href="structmmagic__core__mqtt__subscribe__cmd__args.html#adcfeb75eda316bc51a17820c54514d39">mmagic_core_mqtt_subscribe_cmd_args</a>, <a class="el" href="structmmagic__core__socket__accept__cmd__args.html#a34e146f9094b4cace2eb71cb6a976235">mmagic_core_socket_accept_cmd_args</a>, <a class="el" href="structmmagic__core__socket__accept__rsp__args.html#aa865ea83d42b02f37f6cd41ff9988214">mmagic_core_socket_accept_rsp_args</a>, <a class="el" href="structmmagic__core__socket__bind__rsp__args.html#a30463d5517e3b57053b85d414665ff7b">mmagic_core_socket_bind_rsp_args</a>, <a class="el" href="structmmagic__core__socket__close__cmd__args.html#adfb7b9f37d5953fdee8a3567a7df235b">mmagic_core_socket_close_cmd_args</a>, <a class="el" href="structmmagic__core__socket__connect__rsp__args.html#a9b1fc6dd45c270ce1d2165ed1a86cd49">mmagic_core_socket_connect_rsp_args</a>, <a class="el" href="structmmagic__core__socket__read__poll__cmd__args.html#a61a143b0325d934aee583228c8f007f6">mmagic_core_socket_read_poll_cmd_args</a>, <a class="el" href="structmmagic__core__socket__recv__cmd__args.html#a22bf8aadb8d0086f66e89faff8a0eca4">mmagic_core_socket_recv_cmd_args</a>, <a class="el" href="structmmagic__core__socket__send__cmd__args.html#acba42e4338215550a1d70e281610e5b8">mmagic_core_socket_send_cmd_args</a>, <a class="el" href="structmmagic__core__socket__set__rx__ready__evt__enabled__cmd__args.html#a1ccf74d169f01ae90198987795e7584b">mmagic_core_socket_set_rx_ready_evt_enabled_cmd_args</a>, <a class="el" href="structmmagic__core__socket__write__poll__cmd__args.html#a404b52c8108b0f2b3e5ff63467269832">mmagic_core_socket_write_poll_cmd_args</a>, <a class="el" href="structmmagic__mqtt__broker__connection__event__args.html#aef1d3b6334cee10a73035cffefd33216">mmagic_mqtt_broker_connection_event_args</a>, <a class="el" href="structmmagic__mqtt__message__received__event__args.html#a050ae6803362844acff3d2ebfb0909c5">mmagic_mqtt_message_received_event_args</a>, <a class="el" href="structmmagic__socket__rx__ready__event__args.html#ad8d0c855da7de57b4184cb83e129b01d">mmagic_socket_rx_ready_event_args</a>, <a class="el" href="structtcp__echo__server__thread__args.html#a0d54ebecf5011f0cd21be2177c3c5fcf">tcp_echo_server_thread_args</a></li>
 <li>subsystem&#160;:&#160;<a class="el" href="structmmagic__core__sys__get__stats__cmd__args.html#a3540489f8d7b19b4459bc0228800e59a">mmagic_core_sys_get_stats_cmd_args</a></li>
 </ul>
@@ -133,7 +135,7 @@ $(document).ready(function(){initNavTree('functions_s.html',''); initResizable()
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Copyright 2021-2025 Morse Micro </li>
+    <li class="footer">Copyright 2021-2026 Morse Micro </li>
   </ul>
 </div>
 </body>

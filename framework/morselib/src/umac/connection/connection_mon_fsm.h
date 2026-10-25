@@ -6,13 +6,11 @@
  */
 
 
-
 #pragma once
 
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
-
 
 enum connection_mon_fsm_state
 {
@@ -23,7 +21,6 @@ enum connection_mon_fsm_state
     CONNECTION_MON_FSM_STATE_LOST,
 };
 
-
 enum connection_mon_fsm_state_mask
 {
     CONNECTION_MON_FSM_STATE_DISABLED_MASK = (1ul << CONNECTION_MON_FSM_STATE_DISABLED),
@@ -31,7 +28,6 @@ enum connection_mon_fsm_state_mask
     CONNECTION_MON_FSM_STATE_UNSTABLE_MASK = (1ul << CONNECTION_MON_FSM_STATE_UNSTABLE),
     CONNECTION_MON_FSM_STATE_LOST_MASK = (1ul << CONNECTION_MON_FSM_STATE_LOST),
 };
-
 
 enum connection_mon_fsm_event
 {
@@ -43,7 +39,6 @@ enum connection_mon_fsm_event
     CONNECTION_MON_FSM_EVENT_UNRESPONSIVE,
 };
 
-
 enum connection_mon_fsm_event_mask
 {
     CONNECTION_MON_FSM_EVENT_START_MASK = (1ul << CONNECTION_MON_FSM_EVENT_START),
@@ -53,19 +48,13 @@ enum connection_mon_fsm_event_mask
     CONNECTION_MON_FSM_EVENT_UNRESPONSIVE_MASK = (1ul << CONNECTION_MON_FSM_EVENT_UNRESPONSIVE),
 };
 
-
 struct connection_mon_fsm_instance
 {
-
     enum connection_mon_fsm_state current_state;
-
     volatile bool in_event_handler;
-
     enum connection_mon_fsm_event pending_event;
-
     void *arg;
 };
-
 
 #define CONNECTION_MON_FSM_INSTANCE_INIT                    \
     {                                                       \
@@ -75,15 +64,12 @@ struct connection_mon_fsm_instance
         .arg = NULL,                                        \
     }
 
-
 static inline void connection_mon_fsm_init(struct connection_mon_fsm_instance *inst)
 {
     static const struct connection_mon_fsm_instance inst_init = CONNECTION_MON_FSM_INSTANCE_INIT;
     *inst = inst_init;
 }
 
-
 void connection_mon_fsm_handle_event(struct connection_mon_fsm_instance *inst,
                                      enum connection_mon_fsm_event event);
-
 

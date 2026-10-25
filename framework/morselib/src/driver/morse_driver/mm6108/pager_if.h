@@ -8,7 +8,6 @@
 #include "driver/morse_driver/skbq.h"
 
 
-
 #define MORSE_PAGER_FLAGS_DIR_TO_HOST              (1 << 0)
 #define MORSE_PAGER_FLAGS_DIR_TO_CHIP              (1 << 1)
 #define MORSE_PAGER_FLAGS_FREE                     (1 << 2)
@@ -43,7 +42,6 @@ struct morse_pager
     struct driver_data *driverd;
     struct morse_skbq mq;
 
-
     struct morse_pageset *parent;
 
     uint8_t id;
@@ -51,10 +49,8 @@ struct morse_pager
     int num_pages;
     int page_size_bytes;
 
-
     struct morse_pager_hw_aux_data *aux_data;
 };
-
 
 int morse_pager_init(struct driver_data *driverd,
                      struct morse_pager *pager,
@@ -62,17 +58,12 @@ int morse_pager_init(struct driver_data *driverd,
                      uint8_t flags,
                      uint8_t id);
 
-
 void morse_pager_finish(struct morse_pager *pager);
-
 
 int morse_pager_irq_enable(const struct morse_pager *pager, bool enable);
 
-
 int morse_pager_tx_status_irq_enable(struct driver_data *driverd, bool enable);
 
-
 int morse_pager_cmd_resp_irq_enable(struct driver_data *driverd, bool enable);
-
 
 int morse_pager_irq_handler(struct driver_data *driverd, uint32_t status);

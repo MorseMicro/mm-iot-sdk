@@ -45,17 +45,60 @@ static void sta_status_callback(enum mmwlan_sta_state sta_state)
     switch (sta_state)
     {
         case MMWLAN_STA_DISABLED:
-            printf("WLAN STA disabled\n");
+            MMLOG_APP("WLAN STA disabled\n");
             break;
 
         case MMWLAN_STA_CONNECTING:
-            printf("WLAN STA connecting\n");
+            MMLOG_APP("WLAN STA connecting\n");
             break;
 
         case MMWLAN_STA_CONNECTED:
-            printf("WLAN STA connected\n");
+            MMLOG_APP("WLAN STA connected\n");
             break;
     }
+}
+
+/**
+ * Function to convert @c mmwlan_ap_sta_state enumeration to a human readable string.
+ *
+ * @param state State enum to convert
+ *
+ * @return string representation of the enumeration.
+ */
+static char *ap_sta_state_to_str(enum mmwlan_ap_sta_state state)
+{
+    switch (state)
+    {
+        case MMWLAN_AP_STA_UNKNOWN:
+            return "Unknown (disconnected)";
+
+        case MMWLAN_AP_STA_AUTHENTICATED:
+            return "Authenticated";
+
+        case MMWLAN_AP_STA_ASSOCIATED:
+            return "Associated";
+
+        case MMWLAN_AP_STA_AUTHORIZED:
+            return "Authorized";
+    }
+
+    return "Unrecognized";
+}
+
+/**
+ * Handler for AP STA Status callback.
+ *
+ * @param sta_status    STA status information.
+ * @param arg           Opaque argument that was provided when the callback was registered.
+ */
+static void handle_ap_sta_status(const struct mmwlan_ap_sta_status *sta_status, void *arg)
+{
+    MM_UNUSED(arg);
+
+    MMLOG_APP("AP STA " MM_MAC_ADDR_FMT " State: %s, AID: %u\n",
+              MM_MAC_ADDR_VAL(sta_status->mac_addr),
+              ap_sta_state_to_str(sta_status->state),
+              sta_status->aid);
 }
 
 /**
@@ -87,7 +130,7 @@ static bool set_dns_servers(const char *config_key_format)
         status = mmipal_get_dns_server(ii, addr_str);
         if (status == MMIPAL_SUCCESS && addr_str[0] != '\0')
         {
-            printf("DNS server %d: %s\n", ii, addr_str);
+            MMLOG_APP("DNS server %d: %s\n", ii, addr_str);
             dns_servers_set = true;
         }
     }
@@ -117,10 +160,10 @@ static void link_status_callback(const struct mmipal_link_status *link_status)
             dns_servers_set = set_dns_servers("dns.server%u");
         }
 
-        printf("Link is up. Time: %lu ms, ", time_ms);
-        printf("IP: %s, ", link_status->ip_addr);
-        printf("Netmask: %s, ", link_status->netmask);
-        printf("Gateway: %s", link_status->gateway);
+        MMLOG_PRINTF("Link is up. Time: %lu ms, ", time_ms);
+        MMLOG_PRINTF("IP: %s, ", link_status->ip_addr);
+        MMLOG_PRINTF("Netmask: %s, ", link_status->netmask);
+        MMLOG_PRINTF("Gateway: %s", link_status->gateway);
         for (ii = 0; ii < DNS_MAX_SERVERS; ii++)
         {
             enum mmipal_status status;
@@ -129,16 +172,16 @@ static void link_status_callback(const struct mmipal_link_status *link_status)
             status = mmipal_get_dns_server(ii, addr_str);
             if (status == MMIPAL_SUCCESS && addr_str[0] != '\0')
             {
-                printf(", DNS server %u: %s\n", ii, addr_str);
+                MMLOG_PRINTF(", DNS server %u: %s\n", ii, addr_str);
             }
         }
-        printf("\n");
+        MMLOG_PRINTF("\n");
         /* Indicate to app_wlan_start that link up was successful */
         link_success = true;
     }
     else
     {
-        printf("Link is down. Time: %lu ms\n", time_ms);
+        MMLOG_PRINTF("Link is down. Time: %lu ms\n", time_ms);
         /* Indicate to app_wlan_start that link up was unsuccessful */
         link_success = false;
     }
@@ -172,40 +215,40 @@ void app_print_version_info(void)
         snprintf(hw_version_string, sizeof(hw_version_string), "%s", "Unknown");
     }
 
-    printf("-----------------------------------\n");
+    MMLOG_PRINTF("-----------------------------------\n");
 
-    printf("  HW Version:              %s\n", hw_version_string);
+    MMLOG_PRINTF("  HW Version:              %s\n", hw_version_string);
     status = mmwlan_get_bcf_metadata(&bcf_metadata);
     if (status == MMWLAN_SUCCESS)
     {
-        printf("  BCF API version:         %u.%u.%u\n",
-               bcf_metadata.version.major,
-               bcf_metadata.version.minor,
-               bcf_metadata.version.patch);
+        MMLOG_PRINTF("  BCF API version:         %u.%u.%u\n",
+                     bcf_metadata.version.major,
+                     bcf_metadata.version.minor,
+                     bcf_metadata.version.patch);
         if (bcf_metadata.build_version[0] != '\0')
         {
-            printf("  BCF build version:       %s\n", bcf_metadata.build_version);
+            MMLOG_PRINTF("  BCF build version:       %s\n", bcf_metadata.build_version);
         }
         if (bcf_metadata.board_desc[0] != '\0')
         {
-            printf("  BCF board description:   %s\n", bcf_metadata.board_desc);
+            MMLOG_PRINTF("  BCF board description:   %s\n", bcf_metadata.board_desc);
         }
     }
     else
     {
-        printf("  !! BCF metadata retrival failed !!\n");
+        MMLOG_ERR("BCF metadata retrieval failed with code %d\n", status);
     }
 
     status = mmwlan_get_version(&version);
     if (status != MMWLAN_SUCCESS)
     {
-        printf("  !! Error occured whilst retrieving version info !!\n");
+        MMLOG_ERR("Error occured whilst retrieving version info (%d)\n", status);
     }
-    printf("  Morselib version:        %s\n", version.morselib_version);
-    printf("  Morse firmware version:  %s\n", version.morse_fw_version);
-    printf("  Morse chip ID:           0x%04lx\n", version.morse_chip_id);
-    printf("  Morse chip name:         %s\n", version.morse_chip_id_string);
-    printf("-----------------------------------\n");
+    MMLOG_PRINTF("  Morselib version:        %s\n", version.morselib_version);
+    MMLOG_PRINTF("  Morse firmware version:  %s\n", version.morse_fw_version);
+    MMLOG_PRINTF("  Morse chip ID:           0x%04lx\n", version.morse_chip_id);
+    MMLOG_PRINTF("  Morse chip name:         %s\n", version.morse_chip_id_string);
+    MMLOG_PRINTF("-----------------------------------\n");
 
     MMOSAL_ASSERT(status == MMWLAN_SUCCESS);
 }
@@ -240,7 +283,7 @@ void app_wlan_init(void)
     /* Initialize IP stack. */
     if (mmipal_init(&mmipal_init_args) != MMIPAL_SUCCESS)
     {
-        printf("Error initializing network interface.\n");
+        MMLOG_ERR("Error initializing network interface.\n");
         MMOSAL_ASSERT(false);
     }
 
@@ -254,15 +297,15 @@ void app_wlan_start(void)
     /* Load Wi-Fi settings from config store */
     struct mmwlan_sta_args sta_args = MMWLAN_STA_ARGS_INIT;
     load_mmwlan_sta_args(&sta_args);
-    load_mmwlan_settings();
+    load_mmwlan_sta_settings();
 
-    printf("Attempting to connect to %s ", sta_args.ssid);
+    MMLOG_PRINTF("Attempting to connect to %s ", sta_args.ssid);
     if (sta_args.security_type == MMWLAN_SAE)
     {
-        printf("with passphrase %s", sta_args.passphrase);
+        MMLOG_PRINTF("with passphrase %s", sta_args.passphrase);
     }
-    printf("\n");
-    printf("This may take some time (~10 seconds)\n");
+    MMLOG_PRINTF("\n");
+    MMLOG_PRINTF("This may take some time (~10 seconds)\n");
 
     status = mmwlan_sta_enable(&sta_args, sta_status_callback);
     MMOSAL_ASSERT(status == MMWLAN_SUCCESS);
@@ -272,6 +315,51 @@ void app_wlan_start(void)
      */
     mmosal_semb_wait(attempting_link, UINT32_MAX);
     /* Wi-Fi link is now established, return to caller */
+    MMOSAL_ASSERT(link_success);
+}
+
+bool app_wlan_start_relay(bool is_repeater)
+{
+    enum mmwlan_status status;
+
+    /* Load Wi-Fi STA settings from config store */
+    struct mmwlan_sta_args sta_args = MMWLAN_STA_ARGS_INIT;
+    load_mmwlan_sta_args(&sta_args);
+    load_mmwlan_sta_settings();
+
+    /* Load Wi-Fi Relay settings from config store */
+    struct mmwlan_relay_args relay_args = MMWLAN_RELAY_ARGS_INIT;
+    relay_args.relay_sta_args = &sta_args;
+    relay_args.sta_status_cb = sta_status_callback;
+    load_mmwlan_relay_settings();
+
+    struct mmwlan_relay_ap_args relay_ap_args = MMWLAN_RELAY_AP_ARGS_INIT;
+    if (is_repeater)
+    {
+        /* Load Wi-Fi Relay AP settings from config store */
+        load_mmwlan_relay_ap_args(&relay_ap_args);
+        relay_ap_args.sta_status_cb = handle_ap_sta_status;
+        relay_args.relay_ap_args = &relay_ap_args;
+    }
+
+    MMLOG_PRINTF("Attempting to connect to relay network %s ", sta_args.ssid);
+    if (sta_args.security_type == MMWLAN_SAE)
+    {
+        MMLOG_PRINTF("with passphrase %s", sta_args.passphrase);
+    }
+    MMLOG_PRINTF("\n");
+    MMLOG_PRINTF("This may take some time (~10 seconds)\n");
+
+    status = mmwlan_relay_enable(&relay_args);
+    MMOSAL_ASSERT(status == MMWLAN_SUCCESS);
+
+    /* Wait for link status callback.
+     * Use a binary semaphore to block us until Link is up.
+     */
+    mmosal_semb_wait(attempting_link, UINT32_MAX);
+    /* Wi-Fi link is now established, return to caller */
+    MMOSAL_DEV_ASSERT(link_success);
+    return link_success;
 }
 
 void app_wlan_stop(void)

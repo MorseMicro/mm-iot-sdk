@@ -21,13 +21,9 @@ struct MM_PACKED extended_host_table_pager_bypass_tx_status
 struct MM_PACKED extended_host_table_pager_pkt_memory
 {
     struct extended_host_table_tlv_hdr header;
-
     uint32_t base_addr;
-
     uint16_t page_len;
-
     uint8_t page_len_reserved;
-
     uint8_t num;
 };
 

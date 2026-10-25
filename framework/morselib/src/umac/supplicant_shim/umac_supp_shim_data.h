@@ -9,7 +9,6 @@
 #include "umac/scan/umac_scan.h"
 #include "dot11/dot11_ies.h"
 
-
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 #pragma GCC diagnostic ignored "-Wc++-compat"
@@ -39,15 +38,12 @@ struct l2_packet_data
     uint16_t vif_id;
 };
 
-
 struct bss_cache_entry
 {
     uint8_t bssid[MMWLAN_MAC_ADDR_LEN];
     uint8_t s1g_operation_ie[sizeof(struct dot11_ie_s1g_operation)];
-
     uint16_t beacon_interval;
 };
-
 
 struct bss_cache
 {
@@ -55,16 +51,12 @@ struct bss_cache
     struct bss_cache_entry entries[];
 };
 
-
 #define BSS_CACHE_SIZE(_num_entries) \
     (sizeof(struct bss_cache) + sizeof(struct bss_cache_entry) * (_num_entries))
 
-
 struct umac_supp_config_entry
 {
-
     const char *name;
-
     bool (*reader)(struct wpa_config *config, bool ro);
 };
 
@@ -74,36 +66,24 @@ struct umac_supp_shim_data
     struct wpa_global *global;
     struct wpa_supplicant *sta_wpa_s;
     struct wpa_supplicant *ap_wpa_s;
-
     void *ap_driver_ctx;
 
     struct l2_packet_data l2_ap;
 
     struct l2_packet_data l2;
 
-
     void *sta_driver_ctx;
-
     struct umac_scan_req scan_req;
-
     uint16_t max_scan_results;
-
     struct wpa_scan_results *in_progress_scan_results;
-
     struct wpa_scan_results *completed_scan_results;
-
     struct bss_cache *bss_cache;
-
     bool auto_reconnect_disabled;
-
     bool in_progress_roc;
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wc++-compat"
-
     struct wpa_driver_scan_filter *filter_ssids;
 #pragma GCC diagnostic pop
-
     uint8_t num_filter_ssids;
-
     uint8_t *scan_results_depth_cache;
 };

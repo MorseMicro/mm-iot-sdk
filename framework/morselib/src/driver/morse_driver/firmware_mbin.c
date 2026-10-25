@@ -14,7 +14,6 @@
 #include "driver/transport/morse_transport.h"
 #include "mmhal_wlan.h"
 
-
 static void robuf_cleanup(struct mmhal_robuf *robuf)
 {
     if (robuf->free_cb != NULL)
@@ -23,7 +22,6 @@ static void robuf_cleanup(struct mmhal_robuf *robuf)
     }
     memset(robuf, 0, sizeof(*robuf));
 }
-
 
 static int read_into_robuf(struct mmhal_robuf *robuf,
                            morse_file_read_cb_t file_read_cb,
@@ -54,7 +52,6 @@ static int read_tlv_hdr(morse_file_read_cb_t file_read_cb,
 {
     struct mmhal_robuf robuf = { 0 };
     const struct mbin_tlv_hdr *hdr_overlay;
-
 
     MM_STATIC_ASSERT(sizeof(*tlv_hdr) <= MMHAL_WLAN_FW_BCF_MIN_READ_LENGTH,
                      "MMHAL_WLAN_FW_BCF_MIN_READ_LENGTH too small");
@@ -100,7 +97,6 @@ static int validate_mbin_magic(morse_file_read_cb_t file_read_cb,
 
     struct mmhal_robuf robuf = { 0 };
 
-
     MM_STATIC_ASSERT(sizeof(uint32_t) <= MMHAL_WLAN_FW_BCF_MIN_READ_LENGTH,
                      "MMHAL_WLAN_FW_BCF_MIN_READ_LENGTH too small");
 
@@ -141,7 +137,6 @@ static int process_bcf_addr(struct driver_data *driverd,
         return -EINVAL;
     }
 
-
     MM_STATIC_ASSERT(sizeof(uint32_t) <= MMHAL_WLAN_FW_BCF_MIN_READ_LENGTH,
                      "MMHAL_WLAN_FW_BCF_MIN_READ_LENGTH too small");
 
@@ -178,7 +173,6 @@ static int process_coredump_mem_region(struct driver_data *driverd,
     MM_STATIC_ASSERT(sizeof(struct morse_fw_info_tlv_cordump_mem) <= 12,
                      "Function written with the expectation that this struct was small. Consisder "
                      "reimplementing.");
-
 
     while (received < sizeof(raw_coredump_info))
     {
@@ -261,7 +255,6 @@ static int process_segment(struct driver_data *driverd,
     struct mmhal_robuf robuf = { 0 };
     const struct mbin_segment_hdr *seg_hdr;
 
-
     MM_STATIC_ASSERT(sizeof(*seg_hdr) <= MMHAL_WLAN_FW_BCF_MIN_READ_LENGTH,
                      "MMHAL_WLAN_FW_BCF_MIN_READ_LENGTH too small");
 
@@ -326,8 +319,7 @@ static int process_segment_deflated(struct driver_data *driverd,
         goto cleanup;
     }
 
-
-    *((uint32_t *)buf + rounded_chunk_size - 4) = 0;
+    memset(buf + chunk_size, 0, rounded_chunk_size - chunk_size);
 
     src_len = tlv_hdr.len - sizeof(*seg_hdr);
     dst_len = chunk_size;
@@ -502,7 +494,6 @@ int morse_bcf_load_mbin(struct driver_data *driverd,
             struct mmhal_robuf robuf = { 0 };
             const struct mbin_regdom_hdr *hdr;
             bool country_matched = false;
-
 
             MM_STATIC_ASSERT(sizeof(*hdr) <= MMHAL_WLAN_FW_BCF_MIN_READ_LENGTH,
                              "MMHAL_WLAN_FW_BCF_MIN_READ_LENGTH too small");

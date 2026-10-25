@@ -21,7 +21,6 @@
 #include "driver/morse_driver/morse.h"
 #include "driver/transport/morse_transport.h"
 
-
 #define YAPS_MAX_RX_PAYLOAD 1628
 #define YAPS_MAX_TX_PAYLOAD 1514
 #define TX_DATA_HEADER_LEN                  \
@@ -30,7 +29,6 @@
      sizeof(struct morse_buff_skb_header) + \
      MORSE_PKT_WORD_ALIGN +                 \
      MORSE_YAPS_DELIM_SIZE)
-
 
 #ifndef UNIT_TESTS_64
 MM_STATIC_ASSERT((sizeof(struct mmpkt) + YAPS_MAX_RX_PAYLOAD + sizeof(struct mmdrv_rx_metadata) <=
@@ -46,16 +44,12 @@ MM_STATIC_ASSERT(TX_DATA_HEADER_LEN + YAPS_MAX_TX_PAYLOAD + sizeof(struct mmdrv_
 #define YAPS_METADATA_PAGE_COUNT        1
 #define YAPS_STATUS_REG_READ_TIMEOUT_MS 100
 
-
 #define YAPS_PHANDLE_CORRUPTION_WAR_EXTRA_PAGE 1
 
 #define YAPS_PAGE_SIZE                         256
 #define SDIO_BLOCKSIZE                         512
 
-
 #define YAPS_CALC_PADDING(_bytes) ((_bytes) & 0x3 ? (4 - ((_bytes) & 0x3)) : 0)
-
-
 
 
 #define YAPS_DELIM_GET_PKT_SIZE(_yaps_aux, _delim) \
@@ -64,75 +58,48 @@ MM_STATIC_ASSERT(TX_DATA_HEADER_LEN + YAPS_MAX_TX_PAYLOAD + sizeof(struct mmdrv_
     (((_pkt_size) & 0x3FFF) + (_yaps_aux)->reserved_yaps_page_size)
 #define YAPS_DELIM_GET_PHANDLE_SIZE(_delim) (((_delim) & 0x3FFF))
 
-
 #define YAPS_DELIM_GET_POOL_ID(_delim)   (((_delim) >> 14) & 0x7)
 #define YAPS_DELIM_SET_POOL_ID(_pool_id) (((_pool_id) & 0x7) << 14)
-
 #define YAPS_DELIM_GET_PADDING(_delim)   (((_delim) >> 17) & 0x3)
 #define YAPS_DELIM_SET_PADDING(_padding) (((_padding) & 0x3) << 17)
-
 #define YAPS_DELIM_GET_IRQ(_delim) (((_delim) >> 19) & 0x1)
 #define YAPS_DELIM_SET_IRQ(_irq)   (((_irq) & 0x1) << 19)
-
 #define YAPS_DELIM_GET_RESERVED(_delim)    (((_delim) >> 20) & 0x1F)
 #define YAPS_DELIM_SET_RESERVED(_reserved) (((_reserved) & 0x1F) << 20)
-
 #define YAPS_DELIM_GET_CRC(_delim) (((_delim) >> 25) & 0x7F)
 #define YAPS_DELIM_SET_CRC(_crc)   (((_crc) & 0x7F) << 25)
 
-
 struct MM_PACKED morse_yaps_status_registers
 {
-
     uint32_t tc_tx_pool_num_pages;
-
     uint32_t tc_cmd_pool_num_pages;
-
     uint32_t tc_beacon_pool_num_pages;
-
     uint32_t tc_mgmt_pool_num_pages;
-
     uint32_t fc_rx_pool_num_pages;
-
     uint32_t fc_resp_pool_num_pages;
-
     uint32_t fc_tx_sts_pool_num_pages;
-
     uint32_t fc_aux_pool_num_pages;
 
-
     uint32_t tc_tx_num_pkts;
-
     uint32_t tc_cmd_num_pkts;
-
     uint32_t tc_beacon_num_pkts;
-
     uint32_t tc_mgmt_num_pkts;
-
     uint32_t fc_num_pkts;
-
     uint32_t fc_done_num_pkts;
-
     uint32_t fc_rx_bytes_in_queue;
-
     uint32_t tc_delim_crc_fail_detected;
 
     union
     {
-
         uint32_t fc_host_ysl_status;
-
         uint32_t scratch_0;
     };
 
     union
     {
-
         uint32_t lock;
-
         uint32_t scratch_1;
     };
-
 
 };
 
@@ -144,7 +111,6 @@ struct morse_yaps_hw_aux_data
     uint32_t ysl_addr;
     uint32_t status_regs_addr;
 
-
     int tc_tx_pool_size;
     int tc_cmd_pool_size;
     int tc_beacon_pool_size;
@@ -154,7 +120,6 @@ struct morse_yaps_hw_aux_data
     int fc_tx_sts_pool_size;
     int fc_aux_pool_size;
 
-
     int tc_tx_q_size;
     int tc_cmd_q_size;
     int tc_beacon_q_size;
@@ -163,7 +128,6 @@ struct morse_yaps_hw_aux_data
     int fc_done_q_size;
 
     int reserved_yaps_page_size;
-
 
     struct morse_yaps_status_registers status_regs;
 };
@@ -233,14 +197,12 @@ static void morse_yaps_hw_enable_irqs(struct driver_data *driverd, bool enable)
 void morse_yaps_hw_read_table(struct driver_data *driverd, struct morse_yaps_hw_table *tbl_ptr)
 {
     morse_yaps_fill_aux_data_from_hw_tbl(driverd->chip_if->yaps.aux_data, tbl_ptr);
-
     morse_yaps_hw_enable_irqs(driverd, true);
 }
 
 static unsigned int morse_yaps_pages_required(struct morse_yaps *yaps, const struct mmpkt *mmpkt)
 {
     uint32_t size_bytes = mmpkt_peek_data_length(mmpkt);
-
     return MORSE_INT_CEIL(size_bytes + yaps->aux_data->reserved_yaps_page_size, YAPS_PAGE_SIZE) +
            YAPS_METADATA_PAGE_COUNT +
            YAPS_PHANDLE_CORRUPTION_WAR_EXTRA_PAGE;
@@ -302,7 +264,6 @@ static uint32_t morse_yaps_hw_get_tc_queue_pages(struct morse_yaps *yaps,
             return 0;
     }
 }
-
 
 static bool morse_yaps_will_fit(struct morse_yaps *yaps,
                                 const struct mmpkt *mmpkt,
@@ -397,7 +358,6 @@ int morse_yaps_hw_write_pkt(struct morse_yaps *yaps,
         return ret;
     }
 
-
     ret = morse_yaps_hw_write_pkt_err_check(yaps, mmpkt, tc_queue);
     if (ret)
     {
@@ -405,11 +365,9 @@ int morse_yaps_hw_write_pkt(struct morse_yaps *yaps,
         goto exit;
     }
 
-
     morse_yaps_update_status_pkt_sent(yaps, mmpkt, tc_queue);
 
     struct mmpktview *view = mmpkt_open(mmpkt);
-
 
     bool set_irq = (next_pkt == NULL) || !morse_yaps_will_fit(yaps, next_pkt, tc_queue);
     uint32_t delim = morse_yaps_delimiter(yaps, mmpkt_get_data_length(view), tc_queue, set_irq);
@@ -420,7 +378,6 @@ int morse_yaps_hw_write_pkt(struct morse_yaps *yaps,
                                       yaps->aux_data->yds_addr,
                                       mmpkt_get_data_start(view),
                                       mmpkt_get_data_length(view));
-
 
     mmpkt_remove_from_start(view, sizeof(delim));
     mmpkt_close(&view);
@@ -451,7 +408,6 @@ static bool morse_yaps_is_valid_delimiter(uint32_t delim)
         return false;
     }
 
-
     if (YAPS_CALC_PADDING(pkt_size) != padding)
     {
         return false;
@@ -476,7 +432,6 @@ int morse_yaps_hw_read_pkt(struct morse_yaps *yaps, struct mmpkt **mmpkt)
         return ret;
     }
 
-
     ret = morse_trns_read_multi_byte(yaps->driverd,
                                      yaps->aux_data->ysl_addr,
                                      (uint8_t *)&delim,
@@ -488,7 +443,6 @@ int morse_yaps_hw_read_pkt(struct morse_yaps *yaps, struct mmpkt **mmpkt)
     }
 
     delim = le32toh(delim);
-
     if (delim == 0x0)
     {
         goto exit;
@@ -496,7 +450,6 @@ int morse_yaps_hw_read_pkt(struct morse_yaps *yaps, struct mmpkt **mmpkt)
 
     if (!morse_yaps_is_valid_delimiter(delim))
     {
-
         MMOSAL_DEV_ASSERT(false);
         MMLOG_ERR("Invalid RX delim\n");
         ret = -EIO;
@@ -514,7 +467,6 @@ int morse_yaps_hw_read_pkt(struct morse_yaps *yaps, struct mmpkt **mmpkt)
     uint8_t pkt_class = (fc_queue == MORSE_YAPS_RX_Q) ? MMHAL_WLAN_PKT_DATA_TID0 :
                                                         MMHAL_WLAN_PKT_COMMAND;
 
-
     *mmpkt = mmhal_wlan_alloc_mmpkt_for_rx(pkt_class, total_len, sizeof(struct mmdrv_rx_metadata));
     if (!*mmpkt)
     {
@@ -523,9 +475,7 @@ int morse_yaps_hw_read_pkt(struct morse_yaps *yaps, struct mmpkt **mmpkt)
         if (fc_queue == MORSE_YAPS_RX_Q)
         {
             MMLOG_WRN("No mem for skb, dropping\n");
-
             *mmpkt = yaps->rx_scratch_pkt;
-
             mmpkt_truncate(*mmpkt, 0);
         }
         else
@@ -536,11 +486,9 @@ int morse_yaps_hw_read_pkt(struct morse_yaps *yaps, struct mmpkt **mmpkt)
     }
 
     view = mmpkt_open(*mmpkt);
-
     buf = mmpkt_append(view, total_len);
 
     ret = morse_trns_read_multi_byte(yaps->driverd,
-
                                      yaps->aux_data->ysl_addr + 4,
                                      buf,
                                      total_len);
@@ -549,7 +497,6 @@ int morse_yaps_hw_read_pkt(struct morse_yaps *yaps, struct mmpkt **mmpkt)
         mmdrv_host_stats_increment_datapath_driver_rx_read_failures();
         MMLOG_ERR("Failed to read packet content %d\n", ret);
         mmpkt_close(&view);
-
         if (*mmpkt != yaps->rx_scratch_pkt)
         {
             mmpkt_release(*mmpkt);
@@ -559,7 +506,6 @@ int morse_yaps_hw_read_pkt(struct morse_yaps *yaps, struct mmpkt **mmpkt)
     }
 
     mmpkt_close(&view);
-
 
     if (*mmpkt == yaps->rx_scratch_pkt)
     {
@@ -600,7 +546,6 @@ int morse_yaps_hw_update_status(struct morse_yaps *yaps)
                                          sizeof(*status_regs));
     } while (!ret && le32toh(status_regs->lock));
 
-
     if (ret)
     {
         if (ret != -ENODEV)
@@ -631,11 +576,9 @@ int morse_yaps_hw_update_status(struct morse_yaps *yaps)
 
     if (status_regs->tc_delim_crc_fail_detected)
     {
-
         MMLOG_ERR("to-chip yaps delimiter CRC fail\n");
         ret = -EIO;
     }
-
 
     if (status_regs->fc_num_pkts && ret == MORSE_SUCCESS)
     {
@@ -664,7 +607,6 @@ int morse_yaps_hw_init(struct driver_data *driverd)
     memset(&morse_yaps_hw_aux_data, 0, sizeof(struct morse_yaps_hw_aux_data));
     yaps->aux_data = &morse_yaps_hw_aux_data;
 
-
     flags = MORSE_CHIP_IF_FLAGS_DATA |
             MORSE_CHIP_IF_FLAGS_COMMAND |
             MORSE_CHIP_IF_FLAGS_DIR_TO_HOST |
@@ -677,7 +619,6 @@ int morse_yaps_hw_init(struct driver_data *driverd)
         goto err_exit;
     }
 
-
     yaps->rx_scratch_pkt = mmhal_wlan_alloc_mmpkt_for_rx(MORSE_YAPS_RX_Q,
                                                          YAPS_MAX_RX_PAYLOAD,
                                                          sizeof(struct mmdrv_rx_metadata));
@@ -687,7 +628,6 @@ int morse_yaps_hw_init(struct driver_data *driverd)
         ret = -ENOMEM;
         goto err_exit;
     }
-
 
     morse_trns_release(driverd);
 
@@ -741,14 +681,12 @@ uint32_t morse_yaps_hw_get_num_pkts(struct morse_yaps *yaps,
     {
         if (num_pkts >= num_spaces)
         {
-
             break;
         }
 
         uint32_t pkt_pages = morse_yaps_pages_required(yaps, pfirst);
         if (pkt_pages + pages_needed > num_pages)
         {
-
             break;
         }
         ++num_pkts;

@@ -43,15 +43,6 @@ extern "C"
  */
 typedef void (*mmhal_uart_rx_cb_t)(const uint8_t *data, size_t length, void *arg);
 
-/** Configuration to use for a UART peripheral. */
-struct mmhal_uart_config
-{
-    /** The baud rate to run the UART peripheral at. */
-    uint32_t baudrate;
-    /** Whether or not hardware flow control will be used (RTS/CTS). */
-    bool hw_flow_ctrl_en;
-};
-
 /**
  * Initialize the UART HAL and perform any setup necessary.
  *
@@ -92,24 +83,6 @@ enum mmhal_uart_deep_sleep_mode
  * @returns true if the mode was set successfully; false on failure (e.g., unsupported mode).
  */
 bool mmhal_uart_set_deep_sleep_mode(enum mmhal_uart_deep_sleep_mode mode);
-
-/**
- * Validate the given UART configuration options struct.
- *
- * @param config Pointer to configuration options for the UART peripheral.
- *
- * @returns @c true if the arguments are valid, else @c false.
- */
-bool mmhal_uart_validate_config(const struct mmhal_uart_config *config);
-
-/**
- * Configure the UART to change the current operation.
- *
- * @param config Pointer to configuration options for the UART peripheral.
- *
- * @returns @c true if the new config was applied, else @c false.
- */
-bool mmhal_uart_configure(const struct mmhal_uart_config *config);
 
 #ifdef __cplusplus
 }

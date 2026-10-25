@@ -56,22 +56,9 @@ fi
 unset CURRENT_ARM_TOOLCHAIN_DIR
 unset MORSE_ARM_TOOLCHAIN_DIR
 
-# Miniterm is called pyserial-miniterm in newer installations. Create an
-# alias to keep things simple.
-if ! command -v miniterm > /dev/null 2>&1; then
-    PYSERIAL_MINITERM=$(command -v pyserial-miniterm 2>/dev/null)
-    if [[ -z "$PYSERIAL_MINITERM" ]]; then
-        echo "Unable to find miniterm or pyserial-miniterm. Is pyserial installed?"
-        return 1
-    fi
-    echo "miniterm command not found, creating alias to $PYSERIAL_MINITERM"
-    alias miniterm="$PYSERIAL_MINITERM"
-    unset PYSERIAL_MINITERM
-fi
-
 # Add location of the python user site-packages to PATH. This allows for execution of packages
 # installed using pip
 export PATH=$HOME/.local/bin:$PATH
 
 # MM-IoT-SDK Version
-export MMIOT_VERSION="2.13.1"
+export MMIOT_VERSION="2.14.3"

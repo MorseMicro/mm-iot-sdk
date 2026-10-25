@@ -6,18 +6,12 @@
 #include "wmm.h"
 #include "mmlog.h"
 
-
 #define WMM_VERSION 1
-
 #define WMM_INFO_ELEMENT_SUBTYPE 0
-
 #define WMM_PARAM_ELEMENT_SUBTYPE 1
-
 #define WMM_OUI_TYPE 2
 
-
 static const uint8_t wmm_info_id[] = { 0x00, 0x50, 0xf2, WMM_OUI_TYPE, WMM_INFO_ELEMENT_SUBTYPE };
-
 static const uint8_t wmm_param_id[] = { 0x00, 0x50, 0xf2, WMM_OUI_TYPE, WMM_PARAM_ELEMENT_SUBTYPE };
 
 const struct dot11_ie_wmm_param *ie_wmm_param_find(const uint8_t *ies, size_t ies_len)
@@ -38,7 +32,6 @@ const struct dot11_ie_wmm_param *ie_wmm_param_find(const uint8_t *ies, size_t ie
     MMLOG_VRB("Found WMM parameter element.\n");
     return ie;
 }
-
 
 void ie_wmm_info_build(struct consbuf *buf)
 {

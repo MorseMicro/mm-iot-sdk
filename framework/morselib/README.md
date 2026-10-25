@@ -2,7 +2,11 @@
 
 ## Description
 
-This component contains the compiled Morse Micro driver library for host micro-controllers.
+This component contains the Morse Micro driver library for host micro-controllers.
+
+By default the library is built from source. Precompiled library files are also provided but are
+deprecated and will be removed in a future release. To link against the precompiled libraries
+instead, set `BUILD_MORSELIB_FROM_SOURCE` to an empty string.
 
 # License
 

@@ -37,7 +37,7 @@
 #define MMRC_MAX_CHAIN_ATTEMPTS 2
 
 #ifndef MMRC_SUPP_NUM_MCS
-#define MMRC_SUPP_NUM_MCS	(MMRC_MCS7 + 1)
+#define MMRC_SUPP_NUM_MCS	(MMRC_MCS10 + 1)
 #endif
 #ifndef MMRC_SUPP_NUM_BW
 #define MMRC_SUPP_NUM_BW	(MMRC_BW_8MHZ + 1)
@@ -55,17 +55,6 @@
 #define MAX_STATS_TABLE_SIZE ((1 << 15) - 1)
 
 /**
- * The default rows of a probability table for a STA.
- * It is derived from hardware support of: 1/2/4/8 MHz, L/SGI,
- * 4 NSS and 10 MCS [0..9] and MCS10 twice for 1 MHz channels only.
- *
- * E.g. For MCS 0-7, BW 1,2,4,8 MHz, LGI and SGI, 1SS, MCS10
- * Total: (8 mcs) * (4 bandwidths) * (2 GI) * (1 NSS) + (2 MCS10) = 66
- */
-#define MMRC_DEFAULT_TABLE_SIZE	\
-	((MMRC_SUPP_NUM_MCS * MMRC_SUPP_NUM_BW * MMRC_SUPP_NUM_GUARD * MMRC_SUPP_NUM_NSS) + 2)
-
-/**
  * The frequency of MMRC stat table updates
  */
 #define MMRC_UPDATE_FREQUENCY_MS 100
@@ -79,6 +68,14 @@
  * Used to specify supported features when initialising a STA
  */
 #define MMRC_MASK(x) (1u << (x))
+
+/**
+ * Extra debug statistics for the mmrc rate table are available for devices with space (softmac).
+ * These are not included for MHS &
+ */
+#ifndef DEBUG_STATISTICS
+#define DEBUG_STATISTICS 0
+#endif
 
 /**
  * Flags to be used with a mmrc_rate
@@ -151,6 +148,8 @@ enum mmrc_guard {
 #define MMRC_BW_TO_BITFIELD(x)       ((x) & 0x7)
 #define MMRC_FLAGS_TO_BITFIELD(x)    ((x) & 0x7)
 
+#define MMRC_BIT(x, i)		     (((x) >> (i)) & 1)
+
 /**
  * A single rate chain
  */
@@ -220,20 +219,57 @@ struct mmrc_sta_capabilities {
  * Statistics table of a STA
  */
 struct mmrc_stats_table {
+#if DEBUG_STATISTICS
 	/** The average calculated running throughput counter of this rate */
 	u32 avg_throughput_counter;
 
 	/** The average running throughput sum of this rate */
 	u32 sum_throughput;
 
+	/**
+	 * Number of AMPDUs sent - Currently this is the number of MPDUs sent as part of AMPDUs.
+	 * This biases statistics towards larger AMPDUs.
+	 */
+	u16 ampdu_sent;
+
+	/** AMPDUs succeeding */
+	u16 ampdu_success;
+
+	u16 ampdu_evidence;
+	u8 ampdu_prob;
+#else
+	union {
+		struct {
+			/** These do not exist and are here to keep the rom happy */
+			u32 fill1;
+			u32 fill2;
+		};
+		struct {
+			/**
+			 * Number of AMPDUs sent - Currently this is the number of MPDUs sent as
+			 * part of AMPDUs. This biases statistics towards larger AMPDUs.
+			 */
+			u16 ampdu_sent;
+
+			/** AMPDUs succeeding */
+			u16 ampdu_success;
+
+			u16 ampdu_evidence;
+			u8 ampdu_prob;
+		};
+
+	};
+
+#endif
+
 	/** The maximum observed calculated throughput of this rate */
 	u32 max_throughput;
 
-	/** The number of attempts at sending a packet at this rate since the last update */
-	u16 sent;
+	/** singletons (Not aggregated) */
+	u16 singleton_sent;
 
 	/** The number of successfully sent packets at this rate since the last	update */
-	u16 sent_success;
+	u16 singleton_success;
 
 	/** The number of succesful MPDUs in acknowledged AMPDUs at this rate since the
 	 * last update
@@ -241,7 +277,7 @@ struct mmrc_stats_table {
 	u16 back_mpdu_success;
 
 	/** The number of failed MPDUs in acknowledged AMPDUs at this rate since the last update */
-	u16 back_mpdu_failure;
+	u16 back_mpdu_sent;
 
 	/** The total attempts of packets sent at this rate */
 	u32 total_sent;
@@ -351,15 +387,13 @@ struct mmrc_table {
 	u32 num_lookaround_candidates;
 
 	/**
-	 * The probability table for the STA. This MUST always be the last
-	 * element in the struct.
+	 * The probability table for the STA.
 	 *
-	 * @note The table may not always be of length @ref MMRC_MAX_TABLE_SIZE as the
-	 * @c mmrc_table may be allocated using @ref mmrc_memory_required_for_caps
+	 * @note The number of rows depends on the STA's capabilities and
+	 * the @c mmrc_table is allocated accordingly via
+	 * @ref mmrc_memory_required_for_caps.
 	 */
-	struct mmrc_stats_table table[MMRC_DEFAULT_TABLE_SIZE];
-
-	/* DO NOT add any fields after the definition of table */
+	struct mmrc_stats_table table[];
 };
 
 /**
@@ -400,12 +434,15 @@ void mmrc_get_rates(struct mmrc_table *tb,
  *
  * @param tb A pointer to a mmrc table to update
  * @param rates The rate table used to send the last packet, as returned by the chip
- * @param was_aggregated True if this packet was ever aggregated
+ * @param per_attempt_ampdu_info A bitmap indicating if each mpdu attempt was sent as part of an
+ *        AMPDU
+ * @param per_attempt_missing_block_ack A bitmap indicating if an AMPDU TX recieved no blockack
  * @param was_acked True if this packet was acked
  */
 void mmrc_feedback(struct mmrc_table *tb,
 		   struct mmrc_rate_table *rates,
-		   bool was_aggregated,
+		   u8 per_attempt_ampdu_info,
+		   u8 per_attempt_missing_block_ack,
 		   bool was_acked);
 
 /**
@@ -490,6 +527,16 @@ u32 mmrc_calculate_theoretical_throughput(struct mmrc_rate rate);
  * @returns The MMRC rate with the best throughput.
  */
 struct mmrc_rate mmrc_sta_get_best_rate(struct mmrc_table *tb);
+
+/**
+ * Calculate the TX time estimated for this rate.
+ *
+ * @param rate The rate with updated index, bandwidth, spatial-streams and guard.
+ * @param size The size of the packet to be sent, in bytes
+ *
+ * @returns u32 The total time used for this rate, in microseconds
+ */
+u32 mmrc_calculate_rate_airtime(struct mmrc_rate *rate, size_t size);
 
 /**
  * Initialize the MMRC module

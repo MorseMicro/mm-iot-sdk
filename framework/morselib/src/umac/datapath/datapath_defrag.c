@@ -8,14 +8,10 @@
 #include "umac/datapath/datapath_defrag.h"
 #include "dot11/dot11_utils.h"
 
-
 #define DEFRAG_TIMEOUT_MS (1000)
 
-
 #define FRAG_CHAIN_MIN_ALLOC_LENGTH (1600)
-
 #define FRAG_CHAIN_MAX_ALLOC_LENGTH (DOT11_MAX_PAYLOAD_LEN + sizeof(struct dot11_data_hdr))
-
 
 static struct datapath_defrag_data_chain *datapath_defrag_get_frag_chain(
     struct datapath_defrag_data *data,
@@ -29,7 +25,6 @@ static struct datapath_defrag_data_chain *datapath_defrag_get_frag_chain(
 
     return &data->frag_chains[tid_idx];
 }
-
 
 static bool datapath_defrag_is_in_frag_chain(struct datapath_defrag_data_chain *frag_chain,
                                              uint16_t sequence_control)
@@ -47,11 +42,9 @@ void datapath_defrag_timeout(void *arg1, void *arg2)
     MMOSAL_DEV_ASSERT(frag_chain->buf != NULL);
     MMLOG_INF("Frag chain timed out %p\n", frag_chain);
 
-
     mmpkt_release(frag_chain->buf);
     frag_chain->buf = NULL;
 }
-
 
 static void datapath_defrag_init_buffer(struct umac_data *umacd,
                                         struct datapath_defrag_data_chain *frag_chain)
@@ -82,11 +75,9 @@ static void datapath_defrag_init_buffer(struct umac_data *umacd,
 
     if (!ok)
     {
-
         MMLOG_WRN("Failed to register timeout for defrag\n");
     }
 }
-
 
 static bool datapath_defrag_add_fragment(struct datapath_defrag_data_chain *frag_chain,
                                          struct mmpktview *rxbufview)
@@ -107,7 +98,6 @@ static bool datapath_defrag_add_fragment(struct datapath_defrag_data_chain *frag
     mmpkt_close(&frag_chain_view);
     return true;
 }
-
 
 static bool datapath_defrag_is_first_fragment(const struct dot11_hdr *header)
 {
@@ -143,7 +133,6 @@ struct mmpkt *datapath_defrag(struct umac_data *umacd,
         goto exit;
     }
 
-
     if (datapath_defrag_is_first_fragment(header))
     {
         datapath_defrag_init_buffer(umacd, frag_chain);
@@ -167,28 +156,22 @@ struct mmpkt *datapath_defrag(struct umac_data *umacd,
 
     if (!datapath_defrag_add_fragment(frag_chain, *rxbufview))
     {
-
         mmpkt_release(frag_chain->buf);
         frag_chain->buf = NULL;
-
         (void)umac_core_cancel_timeout(umacd, datapath_defrag_timeout, frag_chain, NULL);
         goto exit;
     }
 
     if (dot11_frame_control_get_more_fragments(header->frame_control))
     {
-
         goto exit;
     }
 
-
     return_buffer = frag_chain->buf;
     frag_chain->buf = NULL;
-
     return_view = mmpkt_open(return_buffer);
     mmpkt_prepend_data(return_view, (const uint8_t *)(*data_hdr), data_hdr_len);
     *data_hdr = (const struct dot11_data_hdr *)mmpkt_remove_from_start(return_view, data_hdr_len);
-
 
     (void)umac_core_cancel_timeout(umacd, datapath_defrag_timeout, frag_chain, NULL);
 

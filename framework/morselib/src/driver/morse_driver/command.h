@@ -18,7 +18,6 @@
 #define MORSE_CMD_IID_SEQ_SHIFT  4
 #define MORSE_CMD_IID_SEQ_MASK   0xfff0
 
-
 enum mmwlan_status morse_cmd_tx(struct driver_data *driverd,
                                 struct morse_cmd_resp *resp,
                                 struct morse_cmd_req *cmd,
@@ -26,11 +25,8 @@ enum mmwlan_status morse_cmd_tx(struct driver_data *driverd,
                                 uint32_t timeout,
                                 bool skip_errlog);
 
-
 int morse_cmd_resp_process(struct driver_data *driverd, struct mmpkt *mmpkt, uint8_t channel);
 
-
 int morse_cmd_init(struct driver_data *driverd);
-
 
 void morse_cmd_deinit(struct driver_data *driverd);

@@ -19,33 +19,22 @@
 #define MORSE_SEMVER_GET_MINOR(x) ((x >> 10) & 0xFFF)
 #define MORSE_SEMVER_GET_PATCH(x) (x & 0x3FF)
 
-
 #define MORSE_DEVICE_ID(chip_id, chip_rev, chip_type) \
     ((chip_id) | ((chip_rev) << 8) | ((chip_type) << 12))
 
-
 #define MORSE_PKT_WORD_ALIGN 4
-
 
 #define MORSE_YAPS_DELIM_SIZE 4
 
 struct morse_ps
 {
-
     volatile uint32_t wakers;
-
     bool initialized;
-
     bool suspended;
-
     uint32_t bus_ps_timeout;
-
     uint32_t dynamic_ps_timout_ms;
-
     struct mmosal_mutex *lock;
-
     struct mmosal_semb *wake;
-
     volatile atomic_bool pending_wake;
 };
 
@@ -55,11 +44,9 @@ struct morse_stale_tx_status
     bool enabled;
 };
 
-
 enum driver_task_event
 {
     DRV_EVT_NONE,
-
     DRV_EVT_RX_PEND,
     DRV_EVT_PAGE_RETURN_PEND,
     DRV_EVT_TX_COMMAND_PEND,
@@ -70,19 +57,14 @@ enum driver_task_event
     DRV_EVT_TRAFFIC_PAUSE_PEND,
     DRV_EVT_TRAFFIC_RESUME_PEND,
     DRV_EVT_TRAFFIC_PAUSE_TIMEOUT,
-
     DRV_EVT_PS_ASYNC_WAKEUP_PEND,
     DRV_EVT_PS_DELAYED_EVAL_PEND,
     DRV_EVT_PS_BUS_ACTIVITY_PEND,
-
     DRV_EVT_STALE_TX_STATUS_PEND,
-
     DRV_EVT_SHUTDOWN,
     DRV_EVT_STOP_NOTICATION,
-
     DRV_EVT_BEACON_REQ_PEND
 };
-
 
 #define DRV_EVT_MASK_PAGESET                   \
     (1ul << DRV_EVT_RX_PEND) |                 \
@@ -94,7 +76,6 @@ enum driver_task_event
         (1ul << DRV_EVT_TRAFFIC_PAUSE_PEND) |  \
         (1ul << DRV_EVT_TRAFFIC_RESUME_PEND) | \
         (1ul << DRV_EVT_TX_PACKET_FREED_UP_PEND)
-
 
 #define DRV_EVT_TX_MASK                   \
     (1ul << DRV_EVT_TX_COMMAND_PEND) |    \
@@ -108,10 +89,8 @@ struct driver_scheduled_evt
     uint32_t timeout_at_ms;
 };
 
-
 enum morse_state_flags
 {
-
     MORSE_STATE_FLAG_DATA_TX_STOPPED,
 };
 
@@ -120,32 +99,26 @@ enum morse_state_flags
 struct driver_data
 {
     uint32_t chip_id;
-
     char country[MMWLAN_COUNTRY_CODE_LEN];
-
 
     uint32_t firmware_flags;
     struct morse_caps capabilities;
 
-    volatile bool started;
+    bool ampdu_feedback_enabled;
 
+    volatile bool started;
 
     uint32_t state_flags;
 
-
     uint32_t bcf_address;
-
 
     struct mmosal_mutex *lock;
 
     int pageset_consec_failure_cnt;
 
-
     struct morse_chip_if_state *chip_if;
 
-
     struct morse_stale_tx_status stale_status;
-
 
     struct morse_ps ps;
 
@@ -153,27 +126,18 @@ struct driver_data
 
     uint32_t host_table_ptr;
 
-
     uint32_t tx_max_pause_time_ms;
-
 
     struct
     {
-
         struct mmosal_mutex *lock;
-
         struct mmosal_mutex *wait;
-
         uint16_t seq;
-
         struct mmosal_semb *semb;
-
 
         struct mmpktview *rspview;
 
-
         uint16_t pending_cmd_id;
-
 
         uint16_t pending_cmd_host_id;
     } cmd;
@@ -201,7 +165,6 @@ struct driver_data
     } beacon;
 };
 
-
 enum morse_page_aci
 {
     MORSE_ACI_BE = 0,
@@ -209,7 +172,6 @@ enum morse_page_aci
     MORSE_ACI_VI = 2,
     MORSE_ACI_VO = 3,
 };
-
 
 enum qos_tid_up_index
 {
@@ -225,7 +187,6 @@ enum qos_tid_up_index
     MORSE_QOS_TID_UP_LOWEST = MORSE_QOS_TID_UP_BK,
     MORSE_QOS_TID_UP_HIGHEST = MORSE_QOS_TID_UP_NC
 };
-
 
 static inline enum morse_page_aci dot11_tid_to_ac(uint8_t tid)
 {
